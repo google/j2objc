@@ -208,7 +208,7 @@ public class MetadataWriter extends TreeVisitor {
         // Add property accessor and static default methods.
         for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
           String name = decl.getName().getIdentifier();
-          String returnType = getTypeName2(decl.getMethodBinding().getReturnType());
+          String returnType = getTypeName(decl.getMethodBinding().getReturnType());
           String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1, -1, -1 },\n",
               cStr(name), cStr(returnType),
               java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
@@ -236,7 +236,7 @@ public class MetadataWriter extends TreeVisitor {
       }
 
       int modifiers = getMethodModifiers(method) & BindingUtil.ACC_FLAG_MASK;
-      String returnTypeStr = method.isConstructor() ? null : getTypeName2(method.getReturnType());
+      String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
       return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s, %s, %s },\n",
           selector, cStr(returnTypeStr), modifiers, cStrIdx(methodName),
           cStrIdx(getTypeList(method.getExceptionTypes())),
@@ -299,7 +299,7 @@ public class MetadataWriter extends TreeVisitor {
       }
       return UnicodeUtils.format(
           "    { %s, %s, %s, 0x%x, %s, %s, %s, %s },\n",
-          cStr(objcName), cStr(getTypeName2(var.getType())), constantValue, modifiers,
+          cStr(objcName), cStr(getTypeName(var.getType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
           cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
     }
@@ -367,19 +367,7 @@ public class MetadataWriter extends TreeVisitor {
     throw new AssertionError();
   }
 
-  // TODO(kstanger): Replace usages of this method with getTypeName2.
-  private static String getTypeName(ITypeBinding type) {
-    if (type.isTypeVariable()) {
-      return "T" + type.getName() + ";";
-    }
-    if (type.isPrimitive() || type.isArray()) {
-      return type.getBinaryName();
-    }
-    return "L" + type.getBinaryName() + ";";
-  }
-
-  // TODO(kstanger): Rename to getTypeName when the original getTypeName is removed.
-  private String getTypeName2(ITypeBinding type) {
+  private String getTypeName(ITypeBinding type) {
     return getTypeName(type, false);
   }
 
