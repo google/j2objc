@@ -21,37 +21,6 @@
 
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/reflect/TypeVariableImpl.h"
-
-// TODO(kstanger): Replace usage of this function with JreClassForString.
-id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
-  if (strlen(typeStr) == 1) {
-    IOSClass *primitiveType = [IOSClass primitiveClassForChar:*typeStr];
-    if (primitiveType) {
-      return primitiveType;
-    }
-  }
-  NSUInteger typeLen = strlen(typeStr);
-  if (typeLen >= 2) {
-    if (*typeStr == '[') {
-      IOSClass *componentType = (IOSClass *) JreTypeForString(typeStr + 1);
-      return IOSClass_arrayOf(componentType);
-    }
-
-    // Extract type from string starting with a 'L' or 'T' and ending with ';'.
-    NSString *typeName = [NSString stringWithUTF8String:typeStr];
-    NSString *className = [typeName substringWithRange:NSMakeRange(1, typeLen - 2)];
-    className = [className stringByReplacingOccurrencesOfString:@"/" withString:@"."];
-    if (*typeStr == 'L') {
-      return [IOSClass forName:className];
-    }
-    if (*typeStr == 'T') {
-      return [JavaLangReflectTypeVariableImpl typeVariableWithName:className];
-    }
-  }
-  NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", typeStr];
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
-}
 
 // Advances strPtr to beyond the next delimiter and returns the length of the string up to that
 // delimiter.

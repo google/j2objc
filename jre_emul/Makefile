@@ -40,7 +40,6 @@ IOS_PUBLIC_OBJS = \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
 	java/lang/reflect/ExecutableMember.o \
-	java/lang/reflect/TypeVariableImpl.o \
 	jni.o
 
 IOS_PRIVATE_OBJS = \

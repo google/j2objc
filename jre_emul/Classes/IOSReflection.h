@@ -100,7 +100,6 @@ typedef struct J2ObjcClassInfo {
 
 // Autoboxing support.
 
-extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
 extern IOSClass *JreClassForString(const char *str);
 extern IOSObjectArray *JreParseClassList(const char *listStr);
 extern IOSClass *TypeToClass(id<JavaLangReflectType>);
