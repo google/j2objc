@@ -1101,10 +1101,8 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
     jboolean publicOnly, jboolean includeInterfaces) {
   const J2ObjcClassInfo *metadata = iosClass->metadata_;
   if (metadata) {
-    IOSObjectArray *innerClasses = JreClassInnerClasses(metadata);
-    if (!innerClasses) {
-      return;
-    }
+    IOSObjectArray *innerClasses = JreParseClassList(
+        JrePtrAtIndex(metadata->ptrTable, metadata->innerClassesIdx));
     for (jint i = 0; i < innerClasses->size_; i++) {
       IOSClass *c = IOSObjectArray_Get(innerClasses, i);
       if (![c isAnonymousClass] && ![c isSynthetic]) {
@@ -1465,7 +1463,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;", "getAnnotationsByType",
     "getDeclaredAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _IOSClass = {
-    4, "Class", "java.lang", NULL, 0x11, 63, methods, 1, fields, 0, NULL, NULL,
+    5, "Class", "java.lang", NULL, 0x11, 63, methods, 1, fields, -1, NULL,
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;", -1,
     ptrTable };

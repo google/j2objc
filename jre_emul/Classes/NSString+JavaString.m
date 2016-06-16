@@ -1023,7 +1023,6 @@ jint javaStringHashCode(NSString *string) {
     { "serialPersistentFields", "[LJavaIoObjectStreamField", .constantValue.asLong = 0, 0x1a, -1,
       33, -1, -1 },
   };
-  static const char *inner_classes[] = {"Ljava.lang.String$CaseInsensitiveComparator;"};
   static const void *ptrTable[] = {
     "LJavaIoUnsupportedEncodingException;", "copyValueOf", "format", "valueOf", "charAt",
     "codePointAt", "codePointBefore", "codePointCount", "compareTo", "compareToIgnoreCase",
@@ -1031,9 +1030,9 @@ jint javaStringHashCode(NSString *string) {
     "lastIndexOf", "matches", "offsetByCodePoints", "regionMatches", "replace", "replaceAll",
     "replaceFirst", "split", "startsWith", "subSequence", "substring", "toLowerCase", "toUpperCase",
     "contentEquals", &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
-    &NSString_serialPersistentFields };
+    &NSString_serialPersistentFields, "LNSString_CaseInsensitiveComparator;" };
   static const J2ObjcClassInfo _NSString = {
-    4, "String", "java.lang", NULL, 0x1, 78, methods, 3, fields, 1, inner_classes, NULL,
+    5, "String", "java.lang", NULL, 0x1, 78, methods, 3, fields, 34, NULL,
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;", -1, ptrTable };
   return &_NSString;
@@ -1069,8 +1068,8 @@ jint javaStringHashCode(NSString *string) {
   };
   static const void *ptrTable[] = { "compare" };
   static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    4, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods, 1, fields, 0, NULL,
-    NULL, "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;", -1,
+    5, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods, 1, fields, -1, NULL,
+    "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;", -1,
     ptrTable };
   return &_NSString_CaseInsensitiveComparator;
 }

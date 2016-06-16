@@ -188,7 +188,7 @@ static void doWait(id obj, long long timeout) {
     "()Ljava/lang/Class<*>;", "hashCode", "equals", "LJavaLangCloneNotSupportedException;",
     "toString", "finalize", "LNSException;", "wait", "LJavaLangInterruptedException;" };
   static const J2ObjcClassInfo _NSObject = {
-    4, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, NULL, NULL, -1, ptrTable };
+    5, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, -1, NULL, NULL, -1, ptrTable };
   return &_NSObject;
 }
 

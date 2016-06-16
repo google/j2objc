@@ -55,7 +55,7 @@ import java.util.List;
 public class MetadataWriter extends TreeVisitor {
 
   // Metadata structure version. Increment it when any structure changes are made.
-  public static final int METADATA_VERSION = 4;
+  public static final int METADATA_VERSION = 5;
 
   private static final NativeTypeBinding CLASS_INFO_TYPE =
       new NativeTypeBinding("const J2ObjcClassInfo *");
@@ -115,12 +115,10 @@ public class MetadataWriter extends TreeVisitor {
     }
 
     private void generateClassMetadata() {
-      ITypeBinding type = typeNode.getTypeBinding();
       String fullName = nameTable.getFullName(type);
       StringBuilder sb = new StringBuilder();
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
-      int innerClassesSize = generateInnerClasses();
       String enclosingMethodStruct = generateEnclosingMethodMetadata();
       String simpleName = type.getName();
       if (type.isAnonymous()) {
@@ -138,8 +136,7 @@ public class MetadataWriter extends TreeVisitor {
       sb.append(methodMetadataCount > 0 ? "methods, " : "NULL, ");
       sb.append(fieldMetadataCount).append(", ");
       sb.append(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
-      sb.append(innerClassesSize).append(", ");
-      sb.append(innerClassesSize > 0 ? "inner_classes, " : "NULL, ");
+      sb.append(cStrIdx(getTypeList(type.getDeclaredTypes()))).append(", ");
       if (enclosingMethodStruct != null) {
         sb.append('&').append(enclosingMethodStruct).append(", ");
       } else {
@@ -305,23 +302,6 @@ public class MetadataWriter extends TreeVisitor {
           cStr(objcName), cStr(getTypeName2(var.getType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
           cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
-    }
-
-    private int generateInnerClasses() {
-      ITypeBinding[] innerTypes = type.getDeclaredTypes();
-      if (innerTypes.length == 0) {
-        return 0;
-      }
-      StringBuilder sb = new StringBuilder("static const char *inner_classes[] = {");
-      for (int i = 0; i < innerTypes.length; i++) {
-        if (i != 0) {
-          sb.append(", ");
-        }
-        sb.append(cStr(getTypeName(innerTypes[i])));
-      }
-      sb.append("};");
-      stmts.add(new NativeStatement(sb.toString()));
-      return innerTypes.length;
     }
 
     private String generateEnclosingMethodMetadata() {

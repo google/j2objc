@@ -30,7 +30,7 @@
 @class IOSClass;
 
 // Current metadata structure version
-#define J2OBJC_METADATA_VERSION 4
+#define J2OBJC_METADATA_VERSION 5
 
 // A raw value is the union of all possible native types.
 typedef union {
@@ -91,8 +91,7 @@ typedef struct J2ObjcClassInfo {
   const J2ObjcMethodInfo *methods;
   uint16_t fieldCount;
   const J2ObjcFieldInfo *fields;
-  uint16_t innerClassCount;
-  const char **innerClassnames;
+  ptr_idx innerClassesIdx;
   const J2ObjCEnclosingMethodInfo *enclosingMethod;
   const char *genericSignature;
   ptr_idx annotationsIdx;
@@ -124,7 +123,6 @@ extern NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassEnclosingName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassGenericString(const J2ObjcClassInfo *metadata);
 extern const J2ObjCEnclosingMethodInfo *JreEnclosingMethod(const J2ObjcClassInfo *metadata);
-extern IOSObjectArray *JreClassInnerClasses(const J2ObjcClassInfo *metadata);
 
 // Field and method lookup functions.
 extern const J2ObjcFieldInfo *JreFindFieldInfo(

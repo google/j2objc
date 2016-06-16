@@ -240,18 +240,6 @@ const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSStr
   return nil;
 }
 
-IOSObjectArray *JreClassInnerClasses(const J2ObjcClassInfo *metadata) {
-  if (!metadata || metadata->innerClassCount == 0) {
-    return nil;
-  }
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:metadata->innerClassCount
-                                                      type:JavaLangReflectType_class_()];
-  for (int i = 0; i < metadata->innerClassCount; i++) {
-    IOSObjectArray_Set(result, i, JreTypeForString(metadata->innerClassnames[i]));
-  }
-  return result;
-}
-
 NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
   const char *javaName = metadata ? JrePtrAtIndex(ptrTable, metadata->javaNameIdx) : NULL;
   return javaName ? [NSString stringWithUTF8String:javaName] : nil;
