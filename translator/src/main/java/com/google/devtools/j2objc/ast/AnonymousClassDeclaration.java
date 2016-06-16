@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public class AnonymousClassDeclaration extends TreeNode {
 
   public AnonymousClassDeclaration(org.eclipse.jdt.core.dom.AnonymousClassDeclaration jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
     for (Object bodyDecl : jdtNode.bodyDeclarations()) {
       bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
     }

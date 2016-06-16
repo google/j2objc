@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.IPackageBinding;
 
@@ -32,7 +33,7 @@ public class PackageDeclaration extends TreeNode {
 
   public PackageDeclaration(org.eclipse.jdt.core.dom.PackageDeclaration jdtNode) {
     super(jdtNode);
-    packageBinding = jdtNode.resolveBinding();
+    packageBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
     javadoc.set((Javadoc) TreeConverter.convert(jdtNode.getJavadoc()));
     for (Object modifier : jdtNode.annotations()) {
       annotations.add((Annotation) TreeConverter.convert(modifier));

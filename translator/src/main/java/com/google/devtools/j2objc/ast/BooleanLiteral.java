@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -29,7 +30,7 @@ public class BooleanLiteral extends Expression {
   public BooleanLiteral(org.eclipse.jdt.core.dom.BooleanLiteral jdtNode) {
     super(jdtNode);
     booleanValue = jdtNode.booleanValue();
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
   }
 
   public BooleanLiteral(BooleanLiteral other) {

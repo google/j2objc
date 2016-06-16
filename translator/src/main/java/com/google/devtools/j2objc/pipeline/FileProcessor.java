@@ -21,6 +21,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
@@ -173,6 +174,8 @@ abstract class FileProcessor {
     } catch (Throwable t) {
       // Report any uncaught exceptions.
       ErrorUtil.fatalError(t, input.getOriginalSourcePath());
+    } finally {
+      BindingConverter.reset();
     }
   }
 

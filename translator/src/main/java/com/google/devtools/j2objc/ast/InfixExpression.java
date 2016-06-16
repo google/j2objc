@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -85,7 +86,7 @@ public class InfixExpression extends Expression {
 
   public InfixExpression(org.eclipse.jdt.core.dom.InfixExpression jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
 
     // The JDT parser apparently does not always take advantage of extended

@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.javac;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -32,7 +34,7 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
   private JdtTypeBinding[] typeParameters;
   private boolean initialized = false;
 
-  JdtMethodBinding(IMethodBinding binding) {
+  protected JdtMethodBinding(IMethodBinding binding) {
     super(binding);
   }
 
@@ -48,17 +50,17 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
     }
   }
 
-  public JdtTypeBinding getDeclaredReceiverType() {
+  public ITypeBinding getDeclaredReceiverType() {
     maybeInitialize();
     return declaredReceiverType;
   }
 
-  public JdtTypeBinding getDeclaringClass() {
+  public ITypeBinding getDeclaringClass() {
     maybeInitialize();
     return declaringClass;
   }
 
-  public JdtBinding getDeclaringMember() {
+  public IBinding getDeclaringMember() {
     return null;
   }
 
@@ -66,7 +68,7 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
     return ((IMethodBinding) binding).getDefaultValue();
   }
 
-  public JdtTypeBinding[] getExceptionTypes() {
+  public ITypeBinding[] getExceptionTypes() {
     if (exceptionTypes == null) {
       exceptionTypes =
           BindingConverter.wrapBindings(((IMethodBinding) binding).getExceptionTypes());
@@ -74,20 +76,20 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
     return exceptionTypes;
   }
 
-  public JdtMethodBinding getMethodDeclaration() {
+  public IMethodBinding getMethodDeclaration() {
     maybeInitialize();
     return methodDeclaration;
   }
 
-  public JdtAnnotationBinding[] getParameterAnnotations(int arg0) {
+  public IAnnotationBinding[] getParameterAnnotations(int i) {
     if (parameterAnnotations == null) {
       parameterAnnotations =
-          BindingConverter.wrapBindings(((IMethodBinding) binding).getParameterAnnotations(arg0));
+          BindingConverter.wrapBindings(((IMethodBinding) binding).getParameterAnnotations(i));
     }
     return parameterAnnotations;
   }
 
-  public JdtTypeBinding[] getParameterTypes() {
+  public ITypeBinding[] getParameterTypes() {
     if (parameterTypes == null) {
       parameterTypes =
           BindingConverter.wrapBindings(((IMethodBinding) binding).getParameterTypes());
@@ -95,12 +97,12 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
     return parameterTypes;
   }
 
-  public JdtTypeBinding getReturnType() {
+  public ITypeBinding getReturnType() {
     maybeInitialize();
     return returnType;
   }
 
-  public JdtTypeBinding[] getTypeArguments() {
+  public ITypeBinding[] getTypeArguments() {
     if (typeArguments == null) {
       typeArguments = BindingConverter.wrapBindings(((IMethodBinding) binding).getTypeArguments());
     }
@@ -140,16 +142,20 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
     return ((IMethodBinding) binding).isRawMethod();
   }
 
-  public boolean isSubsignature(IMethodBinding arg0) {
-    return ((IMethodBinding) binding).isSubsignature(arg0);
+  public boolean isSubsignature(IMethodBinding other) {
+    IMethodBinding otherBinding = other instanceof JdtMethodBinding
+        ? (IMethodBinding) ((JdtMethodBinding) other).binding : other;
+    return ((IMethodBinding) binding).isSubsignature(otherBinding);
   }
 
   public boolean isVarargs() {
     return ((IMethodBinding) binding).isVarargs();
   }
 
-  public boolean overrides(IMethodBinding arg0) {
-    return ((IMethodBinding) binding).overrides(arg0);
+  public boolean overrides(IMethodBinding other) {
+    IMethodBinding otherBinding = other instanceof JdtMethodBinding
+        ? (IMethodBinding) ((JdtMethodBinding) other).binding : other;
+    return ((IMethodBinding) binding).overrides(otherBinding);
   }
 
 }

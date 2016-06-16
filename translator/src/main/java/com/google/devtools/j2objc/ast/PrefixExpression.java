@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -70,7 +71,7 @@ public class PrefixExpression extends Expression {
 
   public PrefixExpression(org.eclipse.jdt.core.dom.PrefixExpression jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
     operand.set((Expression) TreeConverter.convert(jdtNode.getOperand()));
   }

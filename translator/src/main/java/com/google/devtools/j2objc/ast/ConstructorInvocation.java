@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class ConstructorInvocation extends Statement {
 
   public ConstructorInvocation(org.eclipse.jdt.core.dom.ConstructorInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = jdtNode.resolveConstructorBinding();
+    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }

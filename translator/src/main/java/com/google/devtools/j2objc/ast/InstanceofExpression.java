@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -29,7 +30,7 @@ public class InstanceofExpression extends Expression {
 
   public InstanceofExpression(org.eclipse.jdt.core.dom.InstanceofExpression jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     leftOperand.set((Expression) TreeConverter.convert(jdtNode.getLeftOperand()));
     rightOperand.set((Type) TreeConverter.convert(jdtNode.getRightOperand()));
   }

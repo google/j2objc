@@ -13,6 +13,7 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -36,7 +37,7 @@ public class LambdaExpression extends Expression {
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     for (Object x : jdtNode.parameters()) {
       parameters.add((VariableDeclaration) TreeConverter.convert(x));
     }

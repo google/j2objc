@@ -13,6 +13,8 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -40,8 +42,8 @@ public abstract class MethodReference extends Expression {
 
   public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
-    methodBinding = jdtNode.resolveMethodBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
     for (Object x : jdtNode.typeArguments()) {
       typeArguments.add((Type) TreeConverter.convert(x));
     }

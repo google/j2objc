@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.javac;
 
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 
 /**
@@ -35,7 +36,8 @@ public class JdtMemberValuePairBinding extends JdtBinding implements IMemberValu
   }
 
   public Object getValue() {
-    return ((IMemberValuePairBinding) binding).getValue();
+    Object result = ((IMemberValuePairBinding) binding).getValue();
+    return result instanceof IBinding ? BindingConverter.wrapBinding((IBinding) result) : result;
   }
 
   public boolean isDefault() {

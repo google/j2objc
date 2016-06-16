@@ -14,8 +14,15 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.common.collect.Lists;
+
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Wrapper class around IBinding, allowing getKind() to be redefined by
@@ -23,22 +30,30 @@ import org.eclipse.jdt.core.dom.IBinding;
  */
 public abstract class JdtBinding implements IBinding {
   protected final IBinding binding;
-  private JdtAnnotationBinding[] annotations;
+  private final List<IAnnotationBinding> annotations;
 
   JdtBinding(IBinding binding) {
     this.binding = binding;
+    if (binding != null) {
+      JdtAnnotationBinding[] jdtAnnotations =
+          BindingConverter.wrapBindings(binding.getAnnotations());
+      annotations = Lists.newArrayList((IAnnotationBinding[]) jdtAnnotations);
+    } else {
+      annotations = new ArrayList<>();
+    }
   }
 
-  public JdtAnnotationBinding[] getAnnotations() {
-    if (annotations == null) {
-      annotations = BindingConverter.wrapBindings(binding.getAnnotations());
-    }
-    return annotations;
+  public IAnnotationBinding[] getAnnotations() {
+    return annotations.toArray(new JdtAnnotationBinding[annotations.size()]);
+  }
+
+  public void addAnnotations(IBinding binding) {
+    annotations.addAll(Arrays.asList(binding.getAnnotations()));
   }
 
   @Deprecated
   public IJavaElement getJavaElement() {
-    return binding.getJavaElement();
+    throw new AssertionError("not implemented");
   }
 
   public String getKey() {
@@ -58,7 +73,7 @@ public abstract class JdtBinding implements IBinding {
   }
 
   public int getModifiers() {
-    return binding.getModifiers();
+    return binding != null ? binding.getModifiers() : 0;
   }
 
   public String getName() {
@@ -66,26 +81,35 @@ public abstract class JdtBinding implements IBinding {
   }
 
   public boolean isDeprecated() {
-    return binding.isDeprecated();
+    return binding != null ? binding.isDeprecated() : false;
   }
 
-  public boolean isEqualTo(IBinding arg0) {
-    return binding.isEqualTo(arg0);
+  public boolean isEqualTo(IBinding other) {
+    IBinding otherBinding = other instanceof JdtBinding ? ((JdtBinding) other).binding : other;
+    return binding.isEqualTo(otherBinding);
   }
 
   public boolean isRecovered() {
-    return binding.isRecovered();
+    return binding != null ? binding.isRecovered() : false;
   }
 
   public boolean isSynthetic() {
-    return binding.isSynthetic();
+    return binding != null ? binding.isSynthetic() : true;
   }
 
+  @Override
   public boolean equals(Object obj) {
-    return obj instanceof JdtBinding && this.binding.equals(((JdtBinding) obj).binding);
+    return binding != null
+        ? obj instanceof JdtBinding && this.binding.equals(((JdtBinding) obj).binding)
+        : super.equals(obj);
   }
 
+  @Override
   public int hashCode() {
-    return binding.hashCode();
+    return binding != null ? binding.hashCode() : super.hashCode();
+  }
+
+  public String toString() {
+    return binding != null ? binding.toString() : super.toString();
   }
 }

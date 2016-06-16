@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.javac;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Wrapper class around IAnnotationBinding.
@@ -29,14 +30,14 @@ public class JdtAnnotationBinding extends JdtBinding implements IAnnotationBindi
     super(binding);
   }
 
-  public JdtMemberValuePairBinding[] getAllMemberValuePairs() {
+  public IMemberValuePairBinding[] getAllMemberValuePairs() {
     if (allValuePairs == null) {
       allValuePairs = wrapPairs(((IAnnotationBinding) binding).getAllMemberValuePairs());
     }
     return allValuePairs;
   }
 
-  public JdtTypeBinding getAnnotationType() {
+  public ITypeBinding getAnnotationType() {
     if (annotationType == null) {
       annotationType =
           BindingConverter.wrapBinding(((IAnnotationBinding) binding).getAnnotationType());
@@ -44,7 +45,7 @@ public class JdtAnnotationBinding extends JdtBinding implements IAnnotationBindi
     return annotationType;
   }
 
-  public JdtMemberValuePairBinding[] getDeclaredMemberValuePairs() {
+  public IMemberValuePairBinding[] getDeclaredMemberValuePairs() {
     if (declaredValuePairs == null) {
       declaredValuePairs = wrapPairs(((IAnnotationBinding) binding).getDeclaredMemberValuePairs());
     }

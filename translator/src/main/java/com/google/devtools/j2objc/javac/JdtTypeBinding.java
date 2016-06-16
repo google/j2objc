@@ -14,7 +14,12 @@
 
 package com.google.devtools.j2objc.javac;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Wrapper class around ITypeBinding.
@@ -42,7 +47,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   private JdtTypeBinding wildcard;
   protected boolean initialized = false;
 
-  JdtTypeBinding(ITypeBinding binding) {
+  protected JdtTypeBinding(ITypeBinding binding) {
     super(binding);
   }
 
@@ -67,32 +72,32 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
     }
   }
 
-  public JdtTypeBinding createArrayType(int arg0) {
-    return new JdtTypeBinding(((ITypeBinding) binding).createArrayType(arg0));
+  public ITypeBinding createArrayType(int dimension) {
+    return new JdtTypeBinding(((ITypeBinding) binding).createArrayType(dimension));
   }
 
   public String getBinaryName() {
     return ((ITypeBinding) binding).getBinaryName();
   }
 
-  public JdtTypeBinding getBound() {
+  public ITypeBinding getBound() {
     maybeInitialize();
     return bound;
   }
 
-  public JdtTypeBinding getComponentType() {
+  public ITypeBinding getComponentType() {
     maybeInitialize();
     return componentType;
   }
 
-  public JdtVariableBinding[] getDeclaredFields() {
+  public IVariableBinding[] getDeclaredFields() {
     if (declaredFields == null) {
       declaredFields = BindingConverter.wrapBindings(((ITypeBinding) binding).getDeclaredFields());
     }
     return declaredFields;
   }
 
-  public JdtMethodBinding[] getDeclaredMethods() {
+  public IMethodBinding[] getDeclaredMethods() {
     if (declaredMethods == null) {
       declaredMethods =
           BindingConverter.wrapBindings(((ITypeBinding) binding).getDeclaredMethods());
@@ -105,23 +110,23 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
     return ((ITypeBinding) binding).getDeclaredModifiers();
   }
 
-  public JdtTypeBinding[] getDeclaredTypes() {
+  public ITypeBinding[] getDeclaredTypes() {
     if (declaredTypes == null) {
       declaredTypes = BindingConverter.wrapBindings(((ITypeBinding) binding).getDeclaredTypes());
     }
     return declaredTypes;
   }
 
-  public JdtTypeBinding getDeclaringClass() {
+  public ITypeBinding getDeclaringClass() {
     maybeInitialize();
     return declaringClass;
   }
 
-  public JdtBinding getDeclaringMember() {
+  public IBinding getDeclaringMember() {
     return null;
   }
 
-  public JdtMethodBinding getDeclaringMethod() {
+  public IMethodBinding getDeclaringMethod() {
     maybeInitialize();
     return declaringMethod;
   }
@@ -130,34 +135,34 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
     return ((ITypeBinding) binding).getDimensions();
   }
 
-  public JdtTypeBinding getElementType() {
+  public ITypeBinding getElementType() {
     maybeInitialize();
     return elementType;
   }
 
-  public JdtTypeBinding getErasure() {
+  public ITypeBinding getErasure() {
     maybeInitialize();
     return erasure;
   }
 
-  public JdtMethodBinding getFunctionalInterfaceMethod() {
+  public IMethodBinding getFunctionalInterfaceMethod() {
     maybeInitialize();
     return functionalInterfaceMethod;
   }
 
-  public JdtTypeBinding getGenericTypeOfWildcardType() {
+  public ITypeBinding getGenericTypeOfWildcardType() {
     maybeInitialize();
     return genericWildcardType;
   }
 
-  public JdtTypeBinding[] getInterfaces() {
+  public ITypeBinding[] getInterfaces() {
     if (interfaces == null) {
       interfaces = BindingConverter.wrapBindings(((ITypeBinding) binding).getInterfaces());
     }
     return interfaces;
   }
 
-  public JdtPackageBinding getPackage() {
+  public IPackageBinding getPackage() {
     maybeInitialize();
     return pkg;
   }
@@ -170,12 +175,12 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
     return ((ITypeBinding) binding).getRank();
   }
 
-  public JdtTypeBinding getSuperclass() {
+  public ITypeBinding getSuperclass() {
     maybeInitialize();
     return superclass;
   }
 
-  public JdtAnnotationBinding[] getTypeAnnotations() {
+  public IAnnotationBinding[] getTypeAnnotations() {
     if (typeAnnotations == null) {
       typeAnnotations =
           BindingConverter.wrapBindings(((ITypeBinding) binding).getTypeAnnotations());
@@ -183,33 +188,33 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
     return typeAnnotations;
   }
 
-  public JdtTypeBinding[] getTypeArguments() {
+  public ITypeBinding[] getTypeArguments() {
     if (typeArguments == null) {
       typeArguments = BindingConverter.wrapBindings(((ITypeBinding) binding).getTypeArguments());
     }
     return typeArguments;
   }
 
-  public JdtTypeBinding[] getTypeBounds() {
+  public ITypeBinding[] getTypeBounds() {
     if (typeBounds == null) {
       typeBounds = BindingConverter.wrapBindings(((ITypeBinding) binding).getTypeBounds());
     }
     return typeBounds;
   }
 
-  public JdtTypeBinding getTypeDeclaration() {
+  public ITypeBinding getTypeDeclaration() {
     maybeInitialize();
     return typeDeclaration;
   }
 
-  public JdtTypeBinding[] getTypeParameters() {
+  public ITypeBinding[] getTypeParameters() {
     if (typeParameters == null) {
       typeParameters = BindingConverter.wrapBindings(((ITypeBinding) binding).getTypeParameters());
     }
     return typeParameters;
   }
 
-  public JdtTypeBinding getWildcard() {
+  public ITypeBinding getWildcard() {
     maybeInitialize();
     return wildcard;
   }
@@ -227,12 +232,14 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   @Deprecated
-  public boolean isAssignmentCompatible(ITypeBinding arg0) {
-    return ((ITypeBinding) binding).isAssignmentCompatible(arg0);
+  public boolean isAssignmentCompatible(ITypeBinding varType) {
+    ITypeBinding otherVarType = varType instanceof JdtTypeBinding
+        ? (ITypeBinding) ((JdtTypeBinding) varType).binding : varType;
+    return ((ITypeBinding) binding).isAssignmentCompatible(otherVarType);
   }
 
-  public boolean isAssignmentCompatible(JdtTypeBinding arg0) {
-    return ((ITypeBinding) binding).isAssignmentCompatible((ITypeBinding) arg0.binding);
+  public boolean isAssignmentCompatible(JdtTypeBinding varType) {
+    return ((ITypeBinding) binding).isAssignmentCompatible((ITypeBinding) varType.binding);
   }
 
   public boolean isCapture() {
@@ -240,12 +247,14 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   @Deprecated
-  public boolean isCastCompatible(ITypeBinding arg0) {
-    return ((ITypeBinding) binding).isCastCompatible(arg0);
+  public boolean isCastCompatible(ITypeBinding type) {
+    ITypeBinding otherType = type instanceof JdtTypeBinding
+        ? (ITypeBinding) ((JdtTypeBinding) type).binding : type;
+    return ((ITypeBinding) binding).isCastCompatible(otherType);
   }
 
-  public boolean isCastCompatible(JdtTypeBinding arg0) {
-    return ((ITypeBinding) binding).isCastCompatible((ITypeBinding) arg0.binding);
+  public boolean isCastCompatible(JdtTypeBinding type) {
+    return ((ITypeBinding) binding).isCastCompatible((ITypeBinding) type.binding);
   }
 
   public boolean isClass() {
@@ -297,12 +306,14 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   @Deprecated
-  public boolean isSubTypeCompatible(ITypeBinding arg0) {
-    return ((ITypeBinding) binding).isSubTypeCompatible(arg0);
+  public boolean isSubTypeCompatible(ITypeBinding type) {
+    ITypeBinding otherType = type instanceof JdtTypeBinding
+        ? (ITypeBinding) ((JdtTypeBinding) type).binding : type;
+    return ((ITypeBinding) binding).isSubTypeCompatible(otherType);
   }
 
-  public boolean isSubTypeCompatible(JdtTypeBinding arg0) {
-    return ((ITypeBinding) binding).isSubTypeCompatible((ITypeBinding) arg0.binding);
+  public boolean isSubTypeCompatible(JdtTypeBinding type) {
+    return ((ITypeBinding) binding).isSubTypeCompatible((ITypeBinding) type.binding);
   }
 
   public boolean isTopLevel() {

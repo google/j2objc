@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class ArrayInitializer extends Expression {
 
   public ArrayInitializer(org.eclipse.jdt.core.dom.ArrayInitializer jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     for (Object expression : jdtNode.expressions()) {
       expressions.add((Expression) TreeConverter.convert(expression));
     }

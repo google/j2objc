@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.javac;
 
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -26,7 +28,7 @@ public class JdtVariableBinding extends JdtBinding implements IVariableBinding {
   private JdtMethodBinding declaringMethod;
   private boolean initialized = false;
 
-  JdtVariableBinding(IVariableBinding binding) {
+  protected JdtVariableBinding(IVariableBinding binding) {
     super(binding);
   }
 
@@ -45,22 +47,22 @@ public class JdtVariableBinding extends JdtBinding implements IVariableBinding {
     return ((IVariableBinding) binding).getConstantValue();
   }
 
-  public JdtTypeBinding getDeclaringClass() {
+  public ITypeBinding getDeclaringClass() {
     maybeInitialize();
     return declaringClass;
   }
 
-  public JdtMethodBinding getDeclaringMethod() {
+  public IMethodBinding getDeclaringMethod() {
     maybeInitialize();
     return declaringMethod;
   }
 
-  public JdtTypeBinding getType() {
+  public ITypeBinding getType() {
     maybeInitialize();
     return type;
   }
 
-  public JdtVariableBinding getVariableDeclaration() {
+  public IVariableBinding getVariableDeclaration() {
     maybeInitialize();
     return declaration;
   }

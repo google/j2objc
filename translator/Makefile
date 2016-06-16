@@ -184,6 +184,15 @@ JAVA_SOURCES = \
 	gen/TypeGenerator.java \
 	gen/TypeImplementationGenerator.java \
 	gen/TypePrivateDeclarationGenerator.java \
+	javac/BindingConverter.java \
+	javac/JdtAnnotationBinding.java \
+	javac/JdtBinding.java \
+	javac/JdtExtendedModifier.java \
+	javac/JdtMemberValuePairBinding.java \
+	javac/JdtMethodBinding.java \
+	javac/JdtPackageBinding.java \
+	javac/JdtTypeBinding.java \
+	javac/JdtVariableBinding.java \
 	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \
@@ -229,7 +238,6 @@ JAVA_SOURCES = \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \
-	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
 	types/FunctionBinding.java \
 	types/GeneratedMethodBinding.java \

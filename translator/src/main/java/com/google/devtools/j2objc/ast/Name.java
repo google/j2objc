@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
@@ -30,7 +31,7 @@ public abstract class Name extends Expression {
 
   public Name(org.eclipse.jdt.core.dom.Name jdtNode) {
     super(jdtNode);
-    binding = jdtNode.resolveBinding();
+    binding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
   }
 
   public Name(Name other) {

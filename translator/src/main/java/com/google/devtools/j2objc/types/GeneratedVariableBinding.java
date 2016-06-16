@@ -17,6 +17,10 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.javac.BindingConverter;
+import com.google.devtools.j2objc.javac.JdtMethodBinding;
+import com.google.devtools.j2objc.javac.JdtTypeBinding;
+import com.google.devtools.j2objc.javac.JdtVariableBinding;
 
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -31,12 +35,12 @@ import javax.annotation.Nullable;
  *
  * @author Tom Ball
  */
-public class GeneratedVariableBinding extends AbstractBinding implements IVariableBinding {
+public class GeneratedVariableBinding extends JdtVariableBinding {
   private final String name;
   private final int modifiers;
-  private final ITypeBinding type;
-  private ITypeBinding declaringClass;
-  private IMethodBinding declaringMethod;  // optional
+  private final JdtTypeBinding type;
+  private JdtTypeBinding declaringClass;
+  private JdtMethodBinding declaringMethod;  // optional
   private final boolean isParameter;
   private final boolean isField;
   private String typeQualifiers;
@@ -46,13 +50,14 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
   public GeneratedVariableBinding(String name, int modifiers, ITypeBinding type,
       boolean isField, boolean isParameter, @Nullable ITypeBinding declaringClass,
       @Nullable IMethodBinding declaringMethod) {
+    super(null);
     Preconditions.checkNotNull(name);
     this.name = name;
     this.modifiers = modifiers;
-    this.type = type;
+    this.type = BindingConverter.wrapBinding(type);
     this.isParameter = isParameter;
-    this.declaringClass = declaringClass;
-    this.declaringMethod = declaringMethod;
+    this.declaringClass = BindingConverter.wrapBinding(declaringClass);
+    this.declaringMethod = BindingConverter.wrapBinding(declaringMethod);
     this.isField = isField;
   }
 
@@ -129,16 +134,16 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
   }
 
   @Override
-  public ITypeBinding getDeclaringClass() {
+  public JdtTypeBinding getDeclaringClass() {
     return declaringClass;
   }
 
   public void setDeclaringClass(ITypeBinding newBinding) {
-    declaringClass = newBinding;
+    declaringClass = BindingConverter.wrapBinding(newBinding);
   }
 
   @Override
-  public ITypeBinding getType() {
+  public JdtTypeBinding getType() {
     return type;
   }
 
@@ -153,12 +158,12 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
   }
 
   @Override
-  public IMethodBinding getDeclaringMethod() {
+  public JdtMethodBinding getDeclaringMethod() {
     return declaringMethod;
   }
 
   @Override
-  public IVariableBinding getVariableDeclaration() {
+  public JdtVariableBinding getVariableDeclaration() {
     return this;
   }
 

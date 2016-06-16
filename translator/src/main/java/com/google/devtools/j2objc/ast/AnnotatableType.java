@@ -14,6 +14,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -29,7 +30,7 @@ public abstract class AnnotatableType extends Type {
 
   public AnnotatableType(org.eclipse.jdt.core.dom.AnnotatableType jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
     if (Options.isJava8Translator()) {
       for (Object x : jdtNode.annotations()) {
         annotations.add((Annotation) TreeConverter.convert(x));
@@ -51,6 +52,7 @@ public abstract class AnnotatableType extends Type {
     return annotations;
   }
 
+  @Override
   public boolean isAnnotatable() {
     return true;
   }

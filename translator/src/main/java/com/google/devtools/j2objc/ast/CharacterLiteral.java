@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -29,7 +30,7 @@ public class CharacterLiteral extends Expression {
   public CharacterLiteral(org.eclipse.jdt.core.dom.CharacterLiteral jdtNode) {
     super(jdtNode);
     charValue = jdtNode.charValue();
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
   }
 
   public CharacterLiteral(CharacterLiteral other) {

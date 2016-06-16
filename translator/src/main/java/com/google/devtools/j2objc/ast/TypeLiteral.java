@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -28,7 +29,7 @@ public class TypeLiteral extends Expression {
 
   public TypeLiteral(org.eclipse.jdt.core.dom.TypeLiteral jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
   }
 

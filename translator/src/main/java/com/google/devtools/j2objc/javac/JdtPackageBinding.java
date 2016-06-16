@@ -21,7 +21,7 @@ import org.eclipse.jdt.core.dom.IPackageBinding;
  */
 public class JdtPackageBinding extends JdtBinding implements IPackageBinding {
 
-  JdtPackageBinding(IPackageBinding binding) {
+  protected JdtPackageBinding(IPackageBinding binding) {
     super(binding);
   }
 

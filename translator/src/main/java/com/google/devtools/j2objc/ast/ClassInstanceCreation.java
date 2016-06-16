@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -36,7 +38,7 @@ public class ClassInstanceCreation extends Expression {
 
   public ClassInstanceCreation(org.eclipse.jdt.core.dom.ClassInstanceCreation jdtNode) {
     super(jdtNode);
-    methodBinding = jdtNode.resolveConstructorBinding();
+    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
     for (Object argument : jdtNode.arguments()) {

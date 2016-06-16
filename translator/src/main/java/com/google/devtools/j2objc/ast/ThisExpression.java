@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -26,7 +28,7 @@ public class ThisExpression extends Expression {
 
   public ThisExpression(org.eclipse.jdt.core.dom.ThisExpression jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
   }
 

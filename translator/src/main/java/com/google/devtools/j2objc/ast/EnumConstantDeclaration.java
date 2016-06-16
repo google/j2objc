@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -33,8 +35,8 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   public EnumConstantDeclaration(org.eclipse.jdt.core.dom.EnumConstantDeclaration jdtNode) {
     super(jdtNode);
-    variableBinding = jdtNode.resolveVariable();
-    methodBinding = jdtNode.resolveConstructorBinding();
+    variableBinding = BindingConverter.wrapBinding(jdtNode.resolveVariable());
+    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));

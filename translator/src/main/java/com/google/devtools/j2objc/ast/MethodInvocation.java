@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -35,8 +36,8 @@ public class MethodInvocation extends Expression {
 
   public MethodInvocation(org.eclipse.jdt.core.dom.MethodInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = jdtNode.resolveMethodBinding();
-    typeBinding = jdtNode.resolveTypeBinding();
+    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {

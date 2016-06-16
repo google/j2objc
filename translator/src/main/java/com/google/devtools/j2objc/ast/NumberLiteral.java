@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -34,7 +35,7 @@ public class NumberLiteral extends Expression {
     Object constantValue = jdtNode.resolveConstantExpressionValue();
     assert constantValue instanceof Number;
     value = (Number) constantValue;
-    typeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
   }
 
   public NumberLiteral(NumberLiteral other) {

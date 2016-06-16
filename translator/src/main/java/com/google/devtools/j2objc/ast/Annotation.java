@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -27,7 +29,7 @@ public abstract class Annotation extends Expression {
 
   protected Annotation(org.eclipse.jdt.core.dom.Annotation jdtNode) {
     super(jdtNode);
-    annotationBinding = jdtNode.resolveAnnotationBinding();
+    annotationBinding = BindingConverter.wrapBinding(jdtNode.resolveAnnotationBinding());
     typeName.set((Name) TreeConverter.convert(jdtNode.getTypeName()));
   }
 
