@@ -91,8 +91,6 @@ typedef struct J2ObjcClassInfo {
   const J2ObjcMethodInfo *methods;
   uint16_t fieldCount;
   const J2ObjcFieldInfo *fields;
-  uint16_t superclassTypeArgsCount;
-  const char **superclassTypeArgs;
   uint16_t innerClassCount;
   const char **innerClassnames;
   const J2ObjCEnclosingMethodInfo *enclosingMethod;

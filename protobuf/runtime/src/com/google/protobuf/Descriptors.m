@@ -536,8 +536,6 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
     { "javaType_", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType",
       .constantValue.asLong = 0, 0x2, -1, -1, -1, -1 },
   };
-  static const char *superclass_type_args[] = {
-    "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;"};
   static const void *ptrTable[] = {
     "valueOf", &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, DOUBLE),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FLOAT),
@@ -559,8 +557,8 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64) };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_Type = {
     4, "Type", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 3, methods, 19, fields,
-    1, superclass_type_args, 0, NULL, NULL,
-    "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;", -1, ptrTable };
+    0, NULL, NULL, "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;", -1,
+    ptrTable };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_Type;
 }
 
@@ -671,8 +669,6 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
       .constantValue.asLong = 0, 0x4019, -1, 8, -1, -1 },
     { "defaultDefault_", "LNSObject", .constantValue.asLong = 0, 0x12, -1, -1, -1, -1 },
   };
-  static const char *superclass_type_args[] = {
-    "Lcom.google.protobuf.Descriptors$FieldDescriptor$JavaType;"};
   static const void *ptrTable[] = {
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG),
@@ -685,7 +681,7 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE) };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_JavaType = {
     4, "JavaType", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 0, NULL, 10,
-    fields, 1, superclass_type_args, 0, NULL, NULL,
+    fields, 0, NULL, NULL,
     "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$JavaType;>;", -1, ptrTable };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType;
 }

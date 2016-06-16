@@ -1033,7 +1033,7 @@ jint javaStringHashCode(NSString *string) {
     "contentEquals", &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
     &NSString_serialPersistentFields };
   static const J2ObjcClassInfo _NSString = {
-    4, "String", "java.lang", NULL, 0x1, 78, methods, 3, fields, 0, NULL, 1, inner_classes, NULL,
+    4, "String", "java.lang", NULL, 0x1, 78, methods, 3, fields, 1, inner_classes, NULL,
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;", -1, ptrTable };
   return &_NSString;
@@ -1069,9 +1069,8 @@ jint javaStringHashCode(NSString *string) {
   };
   static const void *ptrTable[] = { "compare" };
   static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    4, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods, 1, fields, 0, NULL, 0,
-    NULL, NULL,
-    "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;", -1,
+    4, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods, 1, fields, 0, NULL,
+    NULL, "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;", -1,
     ptrTable };
   return &_NSString_CaseInsensitiveComparator;
 }

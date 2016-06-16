@@ -171,7 +171,7 @@
     "([Ljava/lang/Object;)TT;", "getAnnotation",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    4, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL, 0, NULL, NULL,
+    4, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL, NULL,
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;", -1, ptrTable };
   return &_JavaLangReflectConstructor;

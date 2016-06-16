@@ -120,7 +120,6 @@ public class MetadataWriter extends TreeVisitor {
       StringBuilder sb = new StringBuilder();
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
-      int superclassTypeArgsSize = generateSuperclassTypeArguments();
       int innerClassesSize = generateInnerClasses();
       String enclosingMethodStruct = generateEnclosingMethodMetadata();
       String simpleName = type.getName();
@@ -139,8 +138,6 @@ public class MetadataWriter extends TreeVisitor {
       sb.append(methodMetadataCount > 0 ? "methods, " : "NULL, ");
       sb.append(fieldMetadataCount).append(", ");
       sb.append(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
-      sb.append(superclassTypeArgsSize).append(", ");
-      sb.append(superclassTypeArgsSize > 0 ? "superclass_type_args, " : "NULL, ");
       sb.append(innerClassesSize).append(", ");
       sb.append(innerClassesSize > 0 ? "inner_classes, " : "NULL, ");
       if (enclosingMethodStruct != null) {
@@ -308,27 +305,6 @@ public class MetadataWriter extends TreeVisitor {
           cStr(objcName), cStr(getTypeName2(var.getType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
           cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
-    }
-
-    private int generateSuperclassTypeArguments() {
-      ITypeBinding superclass = type.getSuperclass();
-      if (superclass == null) {
-        return 0;
-      }
-      ITypeBinding[] typeArgs = superclass.getTypeArguments();
-      if (typeArgs.length == 0) {
-        return 0;
-      }
-      StringBuilder sb = new StringBuilder("static const char *superclass_type_args[] = {");
-      for (int i = 0; i < typeArgs.length; i++) {
-        if (i != 0) {
-          sb.append(", ");
-        }
-        sb.append(cStr(getTypeName(typeArgs[i])));
-      }
-      sb.append("};");
-      stmts.add(new NativeStatement(sb.toString()));
-      return typeArgs.length;
     }
 
     private int generateInnerClasses() {
