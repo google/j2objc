@@ -145,11 +145,6 @@ __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodIn
   return sel_registerName(metadata->selector);
 }
 
-__attribute__((always_inline)) inline
-id<JavaLangReflectType> JreMethodReturnType(const J2ObjcMethodInfo *metadata) {
-  return metadata ? JreTypeForString(metadata->returnType) : nil;
-}
-
 // J2ObjCEnclosingMethodInfo accessor functions.
 extern NSString *JreEnclosingMethodTypeName(const J2ObjCEnclosingMethodInfo *metadata);
 extern NSString *JreEnclosingMethodSelector(const J2ObjCEnclosingMethodInfo *metadata);

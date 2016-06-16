@@ -489,12 +489,12 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "toProto", "Lcom.google.protobuf.DescriptorProtos$FieldDescriptorProto$Type;", 0x1, -1, -1,
-      -1, -1, -1 },
-    { "getJavaType", "Lcom.google.protobuf.Descriptors$FieldDescriptor$JavaType;", 0x1, -1, -1, -1,
+    { "toProto", "LComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type", 0x1, -1, -1, -1,
       -1, -1 },
+    { "getJavaType", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", 0x1, -1, -1, -1, -1,
+      -1 },
     { "valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type:",
-      "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;", 0x9, 0, -1, -1, -1, -1 },
+      "LComGoogleProtobufDescriptors_FieldDescriptor_Type", 0x9, 0, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "DOUBLE", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,

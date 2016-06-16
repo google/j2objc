@@ -50,18 +50,16 @@ public class MetadataWriterTest extends GenerationTest {
         + " abstract <V,X> void test11(V one, X two, T three);"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation,
-        "{ \"test1\", \"Ljava.lang.Object;\", 0x0, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test1\", \"LNSObject\", 0x0, -1, -1, -1, -1, -1 },");
     assertTranslation(translation, "{ \"test2\", \"C\", 0x2, -1, -1, -1, -1, -1 },");
     assertTranslation(translation, "{ \"test3\", \"V\", 0x4, -1, -1, -1, -1, -1 },");
     assertTranslation(translation, "{ \"test4\", \"J\", 0x10, -1, -1, -1, -1, -1 },");
     assertTranslation(translation, "{ \"test5\", \"Z\", 0x20, -1, -1, -1, -1, -1 },");
     assertTranslation(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", \"Ljava.lang.String;\", 0x80, 0, -1, -1, -1,"
-        + " -1 }");
+        "{ \"test6WithNSString:withNSObjectArray:\", \"LNSString\", 0x80, 0, -1, -1, -1, -1 }");
     assertTranslation(translation, "{ \"test7\", \"V\", 0x100, -1, -1, -1, -1, -1 },");
     assertTranslation(translation, "{ \"test8\", \"V\", 0x400, -1, 1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test9\", \"TT;\", 0x400, -1, -1, 2, -1, -1 },");
+    assertTranslation(translation, "{ \"test9\", \"LNSObject\", 0x400, -1, -1, 2, -1, -1 },");
     assertTranslation(translation,
         "{ \"test10WithInt:withId:\", \"V\", 0x400, 3, -1, 4, -1, -1 },");
     assertTranslation(translation,
@@ -95,8 +93,7 @@ public class MetadataWriterTest extends GenerationTest {
         + " int num() default 5;"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation,
-        "{ \"foo\", \"Ljava.lang.String;\", 0x401, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"foo\", \"LNSString\", 0x401, -1, -1, -1, -1, -1 },");
     assertTranslation(translation, "{ \"num\", \"I\", 0x401, -1, -1, -1, -1, -1 },");
   }
 
