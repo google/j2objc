@@ -193,6 +193,7 @@ JAVA_SOURCES = \
 	javac/JdtPackageBinding.java \
 	javac/JdtTypeBinding.java \
 	javac/JdtVariableBinding.java \
+	javac/StringName.java \
 	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \

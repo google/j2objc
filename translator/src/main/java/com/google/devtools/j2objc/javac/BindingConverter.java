@@ -24,9 +24,12 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.lang.model.element.Name;
 
 /**
  * Factory for wrapping JDT IBindings, and (soon) generating
@@ -35,6 +38,7 @@ import java.util.Map;
  */
 public final class BindingConverter {
   private static Map<IBinding, JdtBinding> bindingCache = new IdentityHashMap<>();
+  private static Map<String, Name> nameCache = new HashMap<>();
 
   public static JdtAnnotationBinding wrapBinding(IAnnotationBinding binding) {
     if (binding == null) {
@@ -200,7 +204,20 @@ public final class BindingConverter {
     }
   }
 
+  public static Name getName(String s) {
+    if (s == null) {
+      throw new IllegalArgumentException("null name");
+    }
+    Name result = nameCache.get(s);
+    if (result == null) {
+      result = new StringName(s);
+      nameCache.put(s, result);
+    }
+    return result;
+  }
+
   public static void reset() {
     bindingCache.clear();
+    nameCache.clear();
   }
 }
