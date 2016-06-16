@@ -245,21 +245,9 @@ public class MetadataWriter extends TreeVisitor {
       String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
       return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s, %s, %s },\n",
           selector, cStr(returnTypeStr), modifiers, cStrIdx(methodName),
-          cStrIdx(getThrownExceptions(method)),
+          cStrIdx(getTypeList(method.getExceptionTypes())),
           cStrIdx(SignatureGenerator.createMethodTypeSignature(method)),
           funcPtrIdx(annotationsFunc), funcPtrIdx(paramAnnotationsFunc));
-    }
-
-    private String getThrownExceptions(IMethodBinding method) {
-      ITypeBinding[] exceptionTypes = method.getExceptionTypes();
-      if (exceptionTypes.length == 0) {
-        return null;
-      }
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < exceptionTypes.length; i++) {
-        sb.append(getTypeName(exceptionTypes[i]));
-      }
-      return sb.toString();
     }
 
     private int generateFieldsMetadata() {
@@ -436,14 +424,29 @@ public class MetadataWriter extends TreeVisitor {
 
   // TODO(kstanger): Rename to getTypeName when the original getTypeName is removed.
   private String getTypeName2(ITypeBinding type) {
+    return getTypeName(type, false);
+  }
+
+  private String getTypeName(ITypeBinding type, boolean delimited) {
     type = type.getErasure();
     if (type.isPrimitive()) {
       return type.getBinaryName();
     } else if (type.isArray()) {
-      return "[" + getTypeName2(type.getComponentType());
+      return "[" + getTypeName(type.getComponentType(), delimited);
     } else {
-      return "L" + nameTable.getFullName(type);
+      return "L" + nameTable.getFullName(type) + (delimited ? ";" : "");
     }
+  }
+
+  private String getTypeList(ITypeBinding[] types) {
+    if (types.length == 0) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (ITypeBinding type : types) {
+      sb.append(getTypeName(type, true));
+    }
+    return sb.toString();
   }
 
   /**

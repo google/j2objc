@@ -68,7 +68,7 @@ public class MetadataWriterTest extends GenerationTest {
         "{ \"test11WithId:withId:withId:\", \"V\", 0x400, 5, -1, 6, -1, -1 },");
     assertTranslation(translation,
         "static const void *ptrTable[] = { \"test6\", "
-        + "\"Ljava.lang.InterruptedException;Ljava.lang.Error;\", \"()TT;\", \"test10\", "
+        + "\"LJavaLangInterruptedException;LJavaLangError;\", \"()TT;\", \"test10\", "
         + "\"(ITT;)V\", \"test11\", \"<V:Ljava/lang/Object;X:Ljava/lang/Object;>(TV;TX;TT;)V\" };");
   }
 

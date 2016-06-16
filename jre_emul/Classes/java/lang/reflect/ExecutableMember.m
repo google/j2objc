@@ -240,11 +240,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  IOSObjectArray *result = JreMethodExceptionTypes(metadata_, ptrTable_);
-  if (!result) {
-    result = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
-  }
-  return result;
+  return JreParseClassList(metadata_ ? JrePtrAtIndex(ptrTable_, metadata_->exceptionsIdx) : NULL);
 }
 
 - (NSString *)internalName {
@@ -373,7 +369,8 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
   }
   NSString *signatureAttribute = JreMethodGenericString(metadata, self->ptrTable_);
   jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
-  IOSObjectArray *exceptionTypes = JreMethodExceptionTypes(metadata, self->ptrTable_);
+  IOSObjectArray *exceptionTypes = JreParseClassList(
+      JrePtrAtIndex(self->ptrTable_, metadata->exceptionsIdx));
   LibcoreReflectGenericSignatureParser *parser =
       [[[LibcoreReflectGenericSignatureParser alloc]
         initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];

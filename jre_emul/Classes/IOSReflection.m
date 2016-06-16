@@ -53,18 +53,71 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
 }
 
-extern IOSClass *JreClassForString(const char *str) {
-  if (*str == '[') {
-    return IOSClass_arrayOf(JreClassForString(str + 1));
-  } else if (*str == 'L') {
-    return [IOSClass classForIosName:[NSString stringWithUTF8String:str + 1]];
+// Advances strPtr to beyond the next delimiter and returns the length of the string up to that
+// delimiter.
+static NSUInteger LengthOfName(const char **strPtr) {
+  const char *start = *strPtr;
+  const char *ptr = start;
+  while (*ptr != '\0') {
+    if (*ptr == ';') {
+      *strPtr = ptr + 1;
+      return ptr - start;
+    }
+    ptr++;
   }
-  IOSClass *primitiveType = [IOSClass primitiveClassForChar:*str];
+  *strPtr = ptr;
+  return ptr - start;
+}
+
+// Parses the next IOSClass from the delimited string, advancing the c-string pointer past the
+// parsed type.
+static IOSClass *ParseNextClass(const char **strPtr) {
+  const char c = *(*strPtr)++;
+  if (c == '[') {
+    return IOSClass_arrayOf(ParseNextClass(strPtr));
+  } else if (c == 'L') {
+    const char *bytes = *strPtr;
+    NSUInteger len = LengthOfName(strPtr);
+    NSString *name = [[NSString alloc] initWithBytes:bytes
+                                              length:len
+                                             encoding:NSUTF8StringEncoding];
+    IOSClass *result = [IOSClass classForIosName:name];
+    [name release];
+    return result;
+  }
+  IOSClass *primitiveType = [IOSClass primitiveClassForChar:c];
   if (primitiveType) {
     return primitiveType;
   }
-  NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", str];
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
+  // Bad reflection data. Caller should throw AssertionError.
+  return nil;
+}
+
+IOSClass *JreClassForString(const char * const str) {
+  const char *ptr = str;
+  IOSClass *result = ParseNextClass(&ptr);
+  if (!result) {
+    @throw create_JavaLangAssertionError_initWithId_(
+      [NSString stringWithFormat:@"invalid type from metadata %s", str]);
+  }
+  return result;
+}
+
+IOSObjectArray *JreParseClassList(const char * const listStr) {
+  if (!listStr) {
+    return [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
+  }
+  const char *ptr = listStr;
+  NSMutableArray *builder = [NSMutableArray array];
+  while (*ptr) {
+    IOSClass *nextClass = ParseNextClass(&ptr);
+    if (!nextClass) {
+      @throw create_JavaLangAssertionError_initWithId_(
+          [NSString stringWithFormat:@"invalid type list from metadata %s", listStr]);
+    }
+    [builder addObject:nextClass];
+  }
+  return [IOSObjectArray arrayWithNSArray:builder type:IOSClass_class_()];
 }
 
 IOSClass *TypeToClass(id<JavaLangReflectType> type) {
@@ -214,41 +267,6 @@ jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata) {
   }
   const char *name = metadata->selector;
   return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
-}
-
-IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
-  const char *exceptions = metadata ? JrePtrAtIndex(ptrTable, metadata->exceptionsIdx) : NULL;
-  if (!exceptions) {
-    return nil;
-  }
-
-  const char *p = exceptions;
-  int n = 0;
-  while (p != NULL) {
-    const char *semi = strchr(p, ';');
-    if (semi != NULL) {
-      ++n;
-      p = semi + 1;
-    } else {
-      p = NULL;
-    }
-  }
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:(jint)n
-                                                      type:JavaLangReflectType_class_()];
-  jint count = 0;
-  p = exceptions;
-  while (p != NULL) {
-    char *semi = strchr(p, ';');
-    if (semi != NULL) {
-      char *exc = strndup(p, semi - p + 1);  // Include trailing ';'.
-      IOSObjectArray_Set(result, count++, JreTypeForString(exc));
-      free(exc);
-      p = semi + 1;
-    } else {
-      p = NULL;
-    }
-  }
-  return result;
 }
 
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable) {

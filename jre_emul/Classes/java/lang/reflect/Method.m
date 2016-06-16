@@ -308,8 +308,8 @@
   };
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "invoke",
-    "Ljava.lang.IllegalAccessException;Ljava.lang.IllegalArgumentException;"
-    "Ljava.lang.reflect.InvocationTargetException;", "getAnnotation",
+    "LJavaLangIllegalAccessException;LJavaLangIllegalArgumentException;"
+    "LJavaLangReflectInvocationTargetException;", "getAnnotation",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
     4, "Method", "java.lang.reflect", NULL, 0x1, 20, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,

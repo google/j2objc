@@ -105,6 +105,7 @@ typedef struct J2ObjcClassInfo {
 
 extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
 extern IOSClass *JreClassForString(const char *str);
+extern IOSObjectArray *JreParseClassList(const char *listStr);
 extern IOSClass *TypeToClass(id<JavaLangReflectType>);
 extern Method JreFindInstanceMethod(Class cls, const char *name);
 extern Method JreFindClassMethod(Class cls, const char *name);
@@ -136,8 +137,6 @@ extern const J2ObjcMethodInfo *JreFindMethodInfo(
 // J2ObjcMethodInfo accessor functions.
 extern NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable);
 extern NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata);
-extern IOSObjectArray *JreMethodExceptionTypes(
-    const J2ObjcMethodInfo *metadata, const void **ptrTable);
 extern jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata);
 extern NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
 

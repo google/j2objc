@@ -1025,7 +1025,7 @@ jint javaStringHashCode(NSString *string) {
   };
   static const char *inner_classes[] = {"Ljava.lang.String$CaseInsensitiveComparator;"};
   static const void *ptrTable[] = {
-    "Ljava.io.UnsupportedEncodingException;", "copyValueOf", "format", "valueOf", "charAt",
+    "LJavaIoUnsupportedEncodingException;", "copyValueOf", "format", "valueOf", "charAt",
     "codePointAt", "codePointBefore", "codePointCount", "compareTo", "compareToIgnoreCase",
     "concat", "contains", "endsWith", "equalsIgnoreCase", "getBytes", "getChars", "indexOf",
     "lastIndexOf", "matches", "offsetByCodePoints", "regionMatches", "replace", "replaceAll",

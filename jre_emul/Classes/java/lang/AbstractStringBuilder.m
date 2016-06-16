@@ -706,7 +706,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     },
   };
   static const void *ptrTable[] = {
-    "set", "Ljava.io.InvalidObjectException;", "append0", "charAt", "delete0", "deleteCharAt0",
+    "set", "LJavaIoInvalidObjectException;", "append0", "charAt", "delete0", "deleteCharAt0",
     "ensureCapacity", "getChars", "insert0", "replace0", "setCharAt", "setLength", "substring",
     "toString", "subSequence", "indexOf", "lastIndexOf", "codePointAt", "codePointBefore",
     "codePointCount", "offsetByCodePoints" };

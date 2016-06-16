@@ -189,6 +189,12 @@ public class SignatureGenerator {
       }
     }
 
+    for (ITypeBinding exception : method.getExceptionTypes()) {
+      if (exception.isTypeVariable() || exception.getTypeArguments().length > 0) {
+        return true;
+      }
+    }
+
     // Does it override a generic method?
     ITypeBinding superParent = method.getDeclaringClass().getSuperclass();
     if (superParent != null) {
@@ -216,6 +222,7 @@ public class SignatureGenerator {
     return false;
   }
 
+  @Override
   public String toString() {
     return sb.toString();
   }
@@ -362,7 +369,7 @@ public class SignatureGenerator {
     ITypeBinding[] exceptionTypes = method.getExceptionTypes();
     boolean hasGenericException = false;
     for (ITypeBinding exception : exceptionTypes) {
-      if (exception.isGenericType() || exception.isParameterizedType()) {
+      if (exception.isTypeVariable() || exception.getTypeArguments().length > 0) {
         hasGenericException = true;
         break;
       }

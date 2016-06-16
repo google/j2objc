@@ -85,16 +85,17 @@ public class SignatureGeneratorTest extends GenerationTest {
   }
 
   public void testMethodSignatures() throws IOException {
-    CompilationUnit unit = translateType("A", "class A<X,Y> { "
+    CompilationUnit unit = translateType("A", "class A<X, Y, Z extends Throwable> { "
         + "void a() {} "
         + "int b(boolean z) { return 0; } "
         + "void c(int i) throws IndexOutOfBoundsException {} "
         + "X d() { return null; } "
         + "void e(X x, Y y) {} "
+        + "void f() throws Z {} "
         + "<T extends Throwable> void rethrow(Throwable t) {}"
         + "}");
     IMethodBinding[] methods = unit.getTypes().get(0).getTypeBinding().getDeclaredMethods();
-    assertEquals(7, methods.length); // methods[0] is the default constructor.
+    assertEquals(8, methods.length); // methods[0] is the default constructor.
 
     // Verify a, b and c don't return a signature, since they aren't generic types.
     assertNull(SignatureGenerator.createMethodTypeSignature(methods[1]));
@@ -103,8 +104,9 @@ public class SignatureGeneratorTest extends GenerationTest {
 
     assertEquals("()TX;", SignatureGenerator.createMethodTypeSignature(methods[4]));
     assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(methods[5]));
+    assertEquals("()V^TZ;", SignatureGenerator.createMethodTypeSignature(methods[6]));
     assertEquals("<T:Ljava/lang/Throwable;>(Ljava/lang/Throwable;)V",
-        SignatureGenerator.createMethodTypeSignature(methods[6]));
+        SignatureGenerator.createMethodTypeSignature(methods[7]));
   }
 
   public void testMultipleBounds() throws IOException {

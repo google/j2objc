@@ -394,10 +394,10 @@ static void SetWithRawValue(
   };
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "get",
-    "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", "getBoolean",
-    "getByte", "getChar", "getDouble", "getFloat", "getInt", "getLong", "getShort", "set",
-    "setBoolean", "setByte", "setChar", "setDouble", "setFloat", "setInt", "setLong", "setShort",
-    "getAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
+    "LJavaLangIllegalArgumentException;LJavaLangIllegalAccessException;", "getBoolean", "getByte",
+    "getChar", "getDouble", "getFloat", "getInt", "getLong", "getShort", "set", "setBoolean",
+    "setByte", "setChar", "setDouble", "setFloat", "setInt", "setLong", "setShort", "getAnnotation",
+    "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
     4, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,
     -1, ptrTable };
