@@ -226,19 +226,6 @@ NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **
   return genericSig ? [NSString stringWithUTF8String:genericSig] : nil;
 }
 
-
-const J2ObjCEnclosingMethodInfo *JreEnclosingMethod(const J2ObjcClassInfo *metadata) {
-  return metadata ? metadata->enclosingMethod : NULL;
-}
-
-NSString *JreEnclosingMethodTypeName(const J2ObjCEnclosingMethodInfo *metadata) {
-  return metadata ? [NSString stringWithUTF8String:metadata->typeName] : nil;
-}
-
-NSString *JreEnclosingMethodSelector(const J2ObjCEnclosingMethodInfo *metadata) {
-  return metadata ? [NSString stringWithUTF8String:metadata->selector] : nil;
-}
-
 static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
   if (!metadata) {
     return nil;

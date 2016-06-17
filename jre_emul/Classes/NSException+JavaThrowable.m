@@ -441,7 +441,7 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     "initCause", "printStackTrace", "setStackTrace", "addSuppressed", "toString",
     "Ljava/util/List<Ljava/lang/Throwable;>;" };
   static const J2ObjcClassInfo _NSException = {
-    5, "Throwable", "java.lang", -1, 0x1, 18, methods, 5, fields, -1, NULL, NULL, -1, ptrTable };
+    6, "Throwable", "java.lang", -1, 0x1, 18, methods, 5, fields, -1, -1, NULL, -1, ptrTable };
   return &_NSException;
 }
 

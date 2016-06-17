@@ -55,7 +55,7 @@ import java.util.List;
 public class MetadataWriter extends TreeVisitor {
 
   // Metadata structure version. Increment it when any structure changes are made.
-  public static final int METADATA_VERSION = 5;
+  public static final int METADATA_VERSION = 6;
 
   private static final NativeTypeBinding CLASS_INFO_TYPE =
       new NativeTypeBinding("const J2ObjcClassInfo *");
@@ -119,7 +119,6 @@ public class MetadataWriter extends TreeVisitor {
       StringBuilder sb = new StringBuilder();
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
-      String enclosingMethodStruct = generateEnclosingMethodMetadata();
       String simpleName = type.getName();
       if (type.isAnonymous()) {
         simpleName = "";  // Anonymous classes have an empty simple name.
@@ -137,11 +136,7 @@ public class MetadataWriter extends TreeVisitor {
       sb.append(fieldMetadataCount).append(", ");
       sb.append(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
       sb.append(cStrIdx(getTypeList(type.getDeclaredTypes()))).append(", ");
-      if (enclosingMethodStruct != null) {
-        sb.append('&').append(enclosingMethodStruct).append(", ");
-      } else {
-        sb.append("NULL, ");
-      }
+      sb.append(cStrIdx(getEnclosingMethodSelector())).append(", ");
       sb.append(cStr(SignatureGenerator.createClassSignature(type))).append(", ");
       sb.append(funcPtrIdx(annotationsFunc)).append(", ");
       sb.append(getPtrTableEntry());
@@ -283,7 +278,7 @@ public class MetadataWriter extends TreeVisitor {
           cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
     }
 
-    private String generateEnclosingMethodMetadata() {
+    private String getEnclosingMethodSelector() {
       IMethodBinding enclosingMethod = type.getDeclaringMethod();
       if (enclosingMethod == null) {
         return null;
@@ -295,13 +290,7 @@ public class MetadataWriter extends TreeVisitor {
         return null;
       }
 
-      String structName = "enclosing_method";
-      StringBuilder sb = new StringBuilder("static const J2ObjCEnclosingMethodInfo ")
-          .append(structName).append(" = { ")
-          .append(cStr(nameTable.getFullName(enclosingMethod.getDeclaringClass()))).append(", ")
-          .append(cStr(nameTable.getMethodSelector(enclosingMethod))).append(" };");
-      stmts.add(new NativeStatement(sb.toString()));
-      return structName;
+      return nameTable.getMethodSelector(enclosingMethod);
     }
 
     private String cStrIdx(String str) {

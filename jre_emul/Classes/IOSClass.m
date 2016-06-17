@@ -1052,39 +1052,33 @@ static jboolean IsConstructorSelector(NSString *selector) {
 }
 
 - (JavaLangReflectMethod *)getEnclosingMethod {
-  const J2ObjCEnclosingMethodInfo *metadata = JreEnclosingMethod(metadata_);
-  if (metadata) {
-    NSString *selector = JreEnclosingMethodSelector(metadata);
-    if (IsConstructorSelector(selector)) {
-      return nil;
-    }
-    IOSClass *type = ClassForIosName(JreEnclosingMethodTypeName(metadata));
-    if (!type) {
-      // Should always succeed, since the method's class should be defined in
-      // the same object file as the enclosed class.
-      @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
-    }
-    return [type findMethodWithTranslatedName:selector checkSupertypes:false];
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(self);
+  const char *enclosingMethod = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingMethodIdx);
+  if (!enclosingMethod) {
+    return nil;
   }
-  return nil;
+  NSString *selector = [NSString stringWithUTF8String:enclosingMethod];
+  if (IsConstructorSelector(selector)) {
+    return nil;
+  }
+  IOSClass *enclosingClass = JreClassForString(
+      JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx));
+  return [enclosingClass findMethodWithTranslatedName:selector checkSupertypes:false];
 }
 
 - (JavaLangReflectConstructor *)getEnclosingConstructor {
-  const J2ObjCEnclosingMethodInfo *metadata = JreEnclosingMethod(metadata_);
-  if (metadata) {
-    NSString *selector = JreEnclosingMethodSelector(metadata);
-    if (!IsConstructorSelector(selector)) {
-      return nil;
-    }
-    IOSClass *type = ClassForIosName(JreEnclosingMethodTypeName(metadata));
-    if (!type) {
-      // Should always succeed, since the method's class should be defined in
-      // the same object file as the enclosed class.
-      @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
-    }
-    return [type findConstructorWithTranslatedName:selector];
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(self);
+  const char *enclosingMethod = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingMethodIdx);
+  if (!enclosingMethod) {
+    return nil;
   }
-  return nil;
+  NSString *selector = [NSString stringWithUTF8String:enclosingMethod];
+  if (!IsConstructorSelector(selector)) {
+    return nil;
+  }
+  IOSClass *enclosingClass = JreClassForString(
+      JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx));
+  return [enclosingClass findConstructorWithTranslatedName:selector];
 }
 
 
@@ -1455,7 +1449,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;", "getAnnotationsByType",
     "getDeclaredAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _IOSClass = {
-    5, "Class", "java.lang", -1, 0x11, 63, methods, 1, fields, -1, NULL,
+    6, "Class", "java.lang", -1, 0x11, 63, methods, 1, fields, -1, -1,
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;", -1,
     ptrTable };

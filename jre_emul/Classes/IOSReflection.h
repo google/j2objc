@@ -30,7 +30,7 @@
 @class IOSClass;
 
 // Current metadata structure version
-#define J2OBJC_METADATA_VERSION 5
+#define J2OBJC_METADATA_VERSION 6
 
 // A raw value is the union of all possible native types.
 typedef union {
@@ -74,11 +74,6 @@ typedef struct J2ObjcFieldInfo {
   ptr_idx annotationsIdx;
 } J2ObjcFieldInfo;
 
-typedef struct J2ObjCEnclosingMethodInfo {
-  const char *typeName;
-  const char *selector;
-} J2ObjCEnclosingMethodInfo;
-
 // TODO(kstanger): Optimize the size of this struct by using the pointer table
 // and rearranging the fields for better packing.
 typedef struct J2ObjcClassInfo {
@@ -92,7 +87,7 @@ typedef struct J2ObjcClassInfo {
   uint16_t fieldCount;
   const J2ObjcFieldInfo *fields;
   ptr_idx innerClassesIdx;
-  const J2ObjCEnclosingMethodInfo *enclosingMethod;
+  ptr_idx enclosingMethodIdx;
   const char *genericSignature;
   ptr_idx annotationsIdx;
   const void **ptrTable;
@@ -120,7 +115,6 @@ extern NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassGenericString(const J2ObjcClassInfo *metadata);
-extern const J2ObjCEnclosingMethodInfo *JreEnclosingMethod(const J2ObjcClassInfo *metadata);
 
 // Field and method lookup functions.
 extern const J2ObjcFieldInfo *JreFindFieldInfo(
@@ -142,9 +136,5 @@ __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethod
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
   return sel_registerName(metadata->selector);
 }
-
-// J2ObjCEnclosingMethodInfo accessor functions.
-extern NSString *JreEnclosingMethodTypeName(const J2ObjCEnclosingMethodInfo *metadata);
-extern NSString *JreEnclosingMethodSelector(const J2ObjCEnclosingMethodInfo *metadata);
 
 #endif // JreEmulation_IOSReflection_h

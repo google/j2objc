@@ -112,7 +112,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",
     "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    5, "AccessibleObject", "java.lang.reflect", -1, 0x1, 8, methods, 0, NULL, -1, NULL, NULL, -1,
+    6, "AccessibleObject", "java.lang.reflect", -1, 0x1, 8, methods, 0, NULL, -1, -1, NULL, -1,
     ptrTable };
   return &_JavaLangReflectAccessibleObject;
 }
