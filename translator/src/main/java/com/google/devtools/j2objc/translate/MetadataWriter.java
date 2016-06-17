@@ -130,7 +130,7 @@ public class MetadataWriter extends TreeVisitor {
       sb.append(METADATA_VERSION).append(", ");
       sb.append(cStr(simpleName)).append(", ");
       sb.append(cStr(pkgName)).append(", ");
-      sb.append(getEnclosingName(type)).append(", ");
+      sb.append(cStrIdx(getTypeName(type.getDeclaringClass()))).append(", ");
       sb.append("0x").append(Integer.toHexString(getTypeModifiers(type))).append(", ");
       sb.append(methodMetadataCount).append(", ");
       sb.append(methodMetadataCount > 0 ? "methods, " : "NULL, ");
@@ -167,27 +167,6 @@ public class MetadataWriter extends TreeVisitor {
       stmts.add(new NativeStatement(
           "static const void *ptrTable[] = { " + Joiner.on(", ").join(pointers.keySet()) + " };"));
       return "ptrTable";
-    }
-
-    private String getEnclosingName(ITypeBinding type) {
-      ITypeBinding declaringType = type.getDeclaringClass();
-      if (declaringType == null) {
-        return "NULL";
-      }
-      StringBuilder sb = new StringBuilder("\"");
-      List<String> types = new ArrayList<>();
-      while (declaringType != null) {
-        types.add(declaringType.getName());
-        declaringType = declaringType.getDeclaringClass();
-      }
-      for (int i = types.size() - 1; i >= 0; i--) {
-        sb.append(types.get(i));
-        if (i > 0) {
-          sb.append("$");
-        }
-      }
-      sb.append("\"");
-      return sb.toString();
     }
 
     private int generateMethodsMetadata() {
@@ -368,6 +347,9 @@ public class MetadataWriter extends TreeVisitor {
   }
 
   private String getTypeName(ITypeBinding type) {
+    if (type == null) {
+      return null;
+    }
     return getTypeName(type, false);
   }
 

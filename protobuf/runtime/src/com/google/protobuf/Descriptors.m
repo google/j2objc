@@ -554,11 +554,11 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SFIXED32),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SFIXED64),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT32),
-    &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64) };
+    &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64),
+    "LComGoogleProtobufDescriptors_FieldDescriptor" };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_Type = {
-    5, "Type", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 3, methods, 19, fields,
-    -1, NULL, "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;", -1,
-    ptrTable };
+    5, "Type", "com.google.protobuf", 19, 0x4019, 3, methods, 19, fields, -1, NULL,
+    "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;", -1, ptrTable };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_Type;
 }
 
@@ -678,10 +678,10 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, STRING),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BYTE_STRING),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, ENUM),
-    &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE) };
+    &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE),
+    "LComGoogleProtobufDescriptors_FieldDescriptor" };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_JavaType = {
-    5, "JavaType", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 0, NULL, 10,
-    fields, -1, NULL,
+    5, "JavaType", "com.google.protobuf", 9, 0x4019, 0, NULL, 10, fields, -1, NULL,
     "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$JavaType;>;", -1, ptrTable };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType;
 }

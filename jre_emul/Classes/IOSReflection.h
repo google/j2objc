@@ -85,7 +85,7 @@ typedef struct J2ObjcClassInfo {
   const unsigned version;
   const char *typeName;
   const char *packageName;
-  const char *enclosingName;
+  ptr_idx enclosingClassIdx;
   uint16_t modifiers;
   uint16_t methodCount;
   const J2ObjcMethodInfo *methods;
@@ -119,7 +119,6 @@ __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptr
 extern NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
-extern NSString *JreClassEnclosingName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassGenericString(const J2ObjcClassInfo *metadata);
 extern const J2ObjCEnclosingMethodInfo *JreEnclosingMethod(const J2ObjcClassInfo *metadata);
 

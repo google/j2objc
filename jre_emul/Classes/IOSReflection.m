@@ -186,11 +186,6 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
       ? [NSString stringWithUTF8String:metadata->packageName] : nil;
 }
 
-NSString *JreClassEnclosingName(const J2ObjcClassInfo *metadata) {
-  return metadata && metadata->enclosingName
-      ? [NSString stringWithUTF8String:metadata->enclosingName] : nil;
-}
-
 NSString *JreClassGenericString(const J2ObjcClassInfo *metadata) {
   return metadata && metadata->genericSignature
       ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
@@ -244,22 +239,29 @@ NSString *JreEnclosingMethodSelector(const J2ObjCEnclosingMethodInfo *metadata) 
   return metadata ? [NSString stringWithUTF8String:metadata->selector] : nil;
 }
 
-
-NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
+static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
   if (!metadata) {
     return nil;
   }
-  NSMutableString *qName = [NSMutableString string];
-  NSString *packageName = JreClassPackageName(metadata);
-  NSString *enclosingName = JreClassEnclosingName(metadata);
-  if ([packageName length] > 0) {
-    [qName appendString:packageName];
-    [qName appendString:@"."];
-  }
-  if (enclosingName) {
-    [qName appendString:enclosingName];
+  const char *enclosingClass = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx);
+  if (enclosingClass) {
+    NSMutableString *qName = BuildQualifiedName([JreClassForString(enclosingClass) getMetadata]);
+    if (!qName) {
+      return nil;
+    }
     [qName appendString:@"$"];
+    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
+    return qName;
+  } else if (metadata->packageName) {
+    NSMutableString *qName = [NSMutableString stringWithUTF8String:metadata->packageName];
+    [qName appendString:@"."];
+    [qName appendString:[NSString stringWithUTF8String:metadata->typeName]];
+    return qName;
+  } else {
+    return [NSMutableString stringWithUTF8String:metadata->typeName];
   }
-  [qName appendString:JreClassTypeName(metadata)];
-  return qName;
+}
+
+NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
+  return BuildQualifiedName(metadata);
 }

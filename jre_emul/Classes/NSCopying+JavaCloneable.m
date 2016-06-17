@@ -25,7 +25,7 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcClassInfo _NSCopying = {
-    5, "Cloneable", "java.lang", NULL, 0x609, 0, NULL, 0, NULL, -1, NULL, NULL, -1, NULL };
+    5, "Cloneable", "java.lang", -1, 0x609, 0, NULL, 0, NULL, -1, NULL, NULL, -1, NULL };
   return &_NSCopying;
 }
 

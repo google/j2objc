@@ -179,7 +179,7 @@ public class SignatureGeneratorTest extends GenerationTest {
 
     // Assert class metadata has generic signature.
     assertTranslation(translation,
-        "J2ObjcClassInfo _Test = { 5, \"Test\", NULL, NULL, 0x0, 2, methods, 1, fields, -1, NULL, "
+        "J2ObjcClassInfo _Test = { 5, \"Test\", NULL, -1, 0x0, 2, methods, 1, fields, -1, NULL, "
         + "\"<T:Ljava/lang/Object;>Ljava/lang/Object;\", -1, ptrTable };");
 
     // Assert method metadata has generic signature. (in pointer table)

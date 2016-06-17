@@ -70,8 +70,8 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (NSString *)getName {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
-  return metadata ? JreClassQualifiedName(metadata) : NSStringFromProtocol(protocol_);
+  NSString *name = JreClassQualifiedName([self getMetadata]);
+  return name ? name : NSStringFromProtocol(protocol_);
 }
 
 - (NSString *)getSimpleName {

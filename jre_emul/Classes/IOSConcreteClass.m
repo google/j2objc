@@ -71,8 +71,8 @@
 }
 
 - (NSString *)getName {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
-  return metadata ? JreClassQualifiedName(metadata) : NSStringFromClass(class_);
+  NSString *name = JreClassQualifiedName([self getMetadata]);
+  return name ? name : NSStringFromClass(class_);
 }
 
 - (NSString *)getSimpleName {

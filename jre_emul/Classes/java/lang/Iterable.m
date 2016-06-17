@@ -33,7 +33,7 @@
   };
   static const void *ptrTable[] = { "()Ljava/util/Iterator<TT;>;" };
   static const J2ObjcClassInfo _JavaLangIterable = {
-    5, "Iterable", "java.lang", NULL, 0x609, 1, methods, 0, NULL, -1, NULL,
+    5, "Iterable", "java.lang", -1, 0x609, 1, methods, 0, NULL, -1, NULL,
     "<T:Ljava/lang/Object;>Ljava/lang/Object;", -1, ptrTable };
   return &_JavaLangIterable;
 }
