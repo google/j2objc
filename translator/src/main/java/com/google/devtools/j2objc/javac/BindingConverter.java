@@ -39,6 +39,10 @@ import javax.lang.model.element.Name;
 public final class BindingConverter {
   private static Map<IBinding, JdtBinding> bindingCache = new IdentityHashMap<>();
   private static Map<String, Name> nameCache = new HashMap<>();
+  private static Map<JdtBinding, JdtTypeMirror> typeCache = new HashMap<>();
+
+  public static final JdtTypeMirror NO_TYPE = new JdtNoType();
+  public static final JdtTypeMirror NULL_TYPE = new JdtNullType();
 
   public static JdtAnnotationBinding wrapBinding(IAnnotationBinding binding) {
     if (binding == null) {
@@ -216,8 +220,40 @@ public final class BindingConverter {
     return result;
   }
 
+  public static JdtTypeMirror getType(ITypeBinding binding) {
+    if (binding == null) {
+      return NULL_TYPE;
+    }
+    JdtTypeBinding jdtType = wrapBinding(binding);
+    if (binding.isArray()) {
+      return new JdtArrayType(jdtType);
+    }
+    // TODO(tball): enable when Java 8 is minimum version.
+//    if (BindingUtil.isIntersectionType(binding)) {
+//      return new JdtIntersectionType(jdtType);
+//    }
+    if (binding.isPrimitive()) {
+      return new JdtPrimitiveType(jdtType);
+    }
+    if (binding.isTypeVariable()) {
+      return new JdtTypeVariable(jdtType);
+    }
+    if (binding.isWildcardType()) {
+      return new JdtWildcardType(jdtType);
+    }
+    return new JdtDeclaredType(jdtType);
+  }
+
+  public static JdtTypeMirror getExecutableType(IMethodBinding binding) {
+    if (binding == null) {
+      return NULL_TYPE;
+    }
+    return new JdtExecutableType(wrapBinding(binding));
+  }
+
   public static void reset() {
     bindingCache.clear();
     nameCache.clear();
+    typeCache.clear();
   }
 }
