@@ -88,7 +88,7 @@ typedef struct J2ObjcClassInfo {
   const J2ObjcFieldInfo *fields;
   ptr_idx innerClassesIdx;
   ptr_idx enclosingMethodIdx;
-  const char *genericSignature;
+  ptr_idx genericSignatureIdx;
   ptr_idx annotationsIdx;
   const void **ptrTable;
 } J2ObjcClassInfo;
@@ -114,7 +114,6 @@ __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptr
 extern NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata);
 extern NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
-extern NSString *JreClassGenericString(const J2ObjcClassInfo *metadata);
 
 // Field and method lookup functions.
 extern const J2ObjcFieldInfo *JreFindFieldInfo(

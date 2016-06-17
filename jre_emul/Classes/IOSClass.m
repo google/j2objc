@@ -178,22 +178,35 @@ const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass) {
   return nil;
 }
 
+// Returnes a SignatureParser with the already parsed generic class signatur or null if there is no
+// generic signature. The returned SignatureParser must be released by the caller.
+static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *cls) {
+  const J2ObjcClassInfo *metadata = cls->metadata_;
+  if (!metadata) {
+    return nil;
+  }
+  const char *signature = JrePtrAtIndex(metadata->ptrTable, metadata->genericSignatureIdx);
+  if (!signature) {
+    return nil;
+  }
+  LibcoreReflectGenericSignatureParser *parser =
+      new_LibcoreReflectGenericSignatureParser_initWithJavaLangClassLoader_(
+          JavaLangClassLoader_getSystemClassLoader());
+  [parser parseForClassWithJavaLangReflectGenericDeclaration:cls
+      withNSString:[NSString stringWithUTF8String:signature]];
+  return parser;
+}
+
 - (id<JavaLangReflectType>)getGenericSuperclass {
   id<JavaLangReflectType> result = [self getSuperclass];
   if (!result) {
     return nil;
   }
-  NSString *genericSignature = JreClassGenericString(metadata_);
-  if (!genericSignature) {
-    return result;
+  LibcoreReflectGenericSignatureParser *parser = NewParsedClassSignature(self);
+  if (parser) {
+    result = [LibcoreReflectTypes getType:parser->superclassType_];
+    [parser release];
   }
-  LibcoreReflectGenericSignatureParser *parser =
-      [[LibcoreReflectGenericSignatureParser alloc]
-       initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
-  [parser parseForClassWithJavaLangReflectGenericDeclaration:self
-                                                withNSString:genericSignature];
-  result = [LibcoreReflectTypes getType:parser->superclassType_];
-  [parser release];
   return result;
 }
 
@@ -775,26 +788,17 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
 }
 
 - (IOSObjectArray *)getGenericInterfaces {
-  if ([self isPrimitive]) {
-    return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectType_class_()];
+  LibcoreReflectGenericSignatureParser *parser = NewParsedClassSignature(self);
+  if (parser) {
+    IOSObjectArray *result = [LibcoreReflectTypes getTypeArray:parser->interfaceTypes_ clone:false];
+    [parser release];
+    return result;
   }
-  NSString *genericSignature = JreClassGenericString(metadata_);
-  if (!genericSignature) {
-    // Just return regular interfaces list.
-    IOSObjectArray *interfaces = [self getInterfacesInternal];
-    return [IOSObjectArray arrayWithObjects:interfaces->buffer_
-                                      count:interfaces->size_
-                                       type:JavaLangReflectType_class_()];
-  }
-  LibcoreReflectGenericSignatureParser *parser =
-      [[LibcoreReflectGenericSignatureParser alloc]
-       initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
-  [parser parseForClassWithJavaLangReflectGenericDeclaration:self
-                                                withNSString:genericSignature];
-  IOSObjectArray *result =
-      [LibcoreReflectTypes getTypeArray:parser->interfaceTypes_ clone:false];
-  [parser release];
-  return result;
+  // Just return regular interfaces list.
+  IOSObjectArray *interfaces = [self getInterfacesInternal];
+  return [IOSObjectArray arrayWithObjects:interfaces->buffer_
+                                    count:interfaces->size_
+                                     type:JavaLangReflectType_class_()];
 }
 
 // Checks if a ObjC protocol is a translated Java interface.
@@ -836,15 +840,10 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  NSString *genericSignature = JreClassGenericString(metadata_);
-  if (!genericSignature) {
+  LibcoreReflectGenericSignatureParser *parser = NewParsedClassSignature(self);
+  if (!parser) {
     return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
   }
-  LibcoreReflectGenericSignatureParser *parser =
-      [[LibcoreReflectGenericSignatureParser alloc]
-       initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
-  [parser parseForClassWithJavaLangReflectGenericDeclaration:self
-                                                withNSString:genericSignature];
   IOSObjectArray *result = [[parser->formalTypeParameters_ retain] autorelease];
   [parser release];
   return result;
@@ -1447,12 +1446,11 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "LJavaLangInstantiationException;LJavaLangIllegalAccessException;", "()TT;", "toString",
     "getDeclaredAnnotationsByType",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;", "getAnnotationsByType",
-    "getDeclaredAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
-  static const J2ObjcClassInfo _IOSClass = {
-    6, "Class", "java.lang", -1, 0x11, 63, methods, 1, fields, -1, -1,
+    "getDeclaredAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;",
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
-    "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;", -1,
-    ptrTable };
+    "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
+  static const J2ObjcClassInfo _IOSClass = {
+    6, "Class", "java.lang", -1, 0x11, 63, methods, 1, fields, -1, -1, 38, -1, ptrTable };
   return &_IOSClass;
 }
 

@@ -137,7 +137,7 @@ public class MetadataWriter extends TreeVisitor {
       sb.append(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
       sb.append(cStrIdx(getTypeList(type.getDeclaredTypes()))).append(", ");
       sb.append(cStrIdx(getEnclosingMethodSelector())).append(", ");
-      sb.append(cStr(SignatureGenerator.createClassSignature(type))).append(", ");
+      sb.append(cStrIdx(SignatureGenerator.createClassSignature(type))).append(", ");
       sb.append(funcPtrIdx(annotationsFunc)).append(", ");
       sb.append(getPtrTableEntry());
       sb.append(" };");

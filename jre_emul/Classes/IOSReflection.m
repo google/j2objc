@@ -186,11 +186,6 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
       ? [NSString stringWithUTF8String:metadata->packageName] : nil;
 }
 
-NSString *JreClassGenericString(const J2ObjcClassInfo *metadata) {
-  return metadata && metadata->genericSignature
-      ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
-}
-
 const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName) {
   if (!metadata) {
     return NULL;

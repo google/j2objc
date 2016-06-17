@@ -41,7 +41,7 @@
   };
   static const void *ptrTable[] = { "byteValue", "longValue" };
   static const J2ObjcClassInfo _NSNumber = {
-    6, "Number", "java.lang", -1, 0x401, 7, methods, 1, fields, -1, -1, NULL, -1, ptrTable };
+    6, "Number", "java.lang", -1, 0x401, 7, methods, 1, fields, -1, -1, -1, -1, ptrTable };
   return &_NSNumber;
 }
 

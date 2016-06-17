@@ -399,7 +399,7 @@ static void SetWithRawValue(
     "setByte", "setChar", "setDouble", "setFloat", "setInt", "setLong", "setShort", "getAnnotation",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
-    6, "Field", "java.lang.reflect", -1, 0x1, 29, methods, 0, NULL, -1, -1, NULL, -1, ptrTable };
+    6, "Field", "java.lang.reflect", -1, 0x1, 29, methods, 0, NULL, -1, -1, -1, -1, ptrTable };
   return &_JavaLangReflectField;
 }
 

@@ -300,7 +300,7 @@
     "LJavaLangReflectInvocationTargetException;", "getAnnotation",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
-    6, "Method", "java.lang.reflect", -1, 0x1, 20, methods, 0, NULL, -1, -1, NULL, -1, ptrTable };
+    6, "Method", "java.lang.reflect", -1, 0x1, 20, methods, 0, NULL, -1, -1, -1, -1, ptrTable };
   return &_JavaLangReflectMethod;
 }
 

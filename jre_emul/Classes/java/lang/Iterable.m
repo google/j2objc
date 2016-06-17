@@ -31,10 +31,10 @@
   static const J2ObjcMethodInfo methods[] = {
     { "iterator", "LJavaUtilIterator", 0x401, -1, -1, 0, -1, -1 },
   };
-  static const void *ptrTable[] = { "()Ljava/util/Iterator<TT;>;" };
+  static const void *ptrTable[] = {
+    "()Ljava/util/Iterator<TT;>;", "<T:Ljava/lang/Object;>Ljava/lang/Object;" };
   static const J2ObjcClassInfo _JavaLangIterable = {
-    6, "Iterable", "java.lang", -1, 0x609, 1, methods, 0, NULL, -1, -1,
-    "<T:Ljava/lang/Object;>Ljava/lang/Object;", -1, ptrTable };
+    6, "Iterable", "java.lang", -1, 0x609, 1, methods, 0, NULL, -1, -1, 1, -1, ptrTable };
   return &_JavaLangIterable;
 }
 
