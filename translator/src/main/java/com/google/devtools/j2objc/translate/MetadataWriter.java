@@ -55,7 +55,7 @@ import java.util.List;
 public class MetadataWriter extends TreeVisitor {
 
   // Metadata structure version. Increment it when any structure changes are made.
-  public static final int METADATA_VERSION = 6;
+  public static final int METADATA_VERSION = 7;
 
   private static final NativeTypeBinding CLASS_INFO_TYPE =
       new NativeTypeBinding("const J2ObjcClassInfo *");
@@ -116,32 +116,30 @@ public class MetadataWriter extends TreeVisitor {
 
     private void generateClassMetadata() {
       String fullName = nameTable.getFullName(type);
-      StringBuilder sb = new StringBuilder();
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
-      String simpleName = type.getName();
-      if (type.isAnonymous()) {
-        simpleName = "";  // Anonymous classes have an empty simple name.
-      }
-      String pkgName = Strings.emptyToNull(type.getPackage().getName());
       String annotationsFunc = annotationGenerator.createFunction(typeNode);
-      sb.append("static const J2ObjcClassInfo _").append(fullName).append(" = { ");
-      sb.append(METADATA_VERSION).append(", ");
-      sb.append(cStr(simpleName)).append(", ");
-      sb.append(cStr(pkgName)).append(", ");
-      sb.append(cStrIdx(getTypeName(type.getDeclaringClass()))).append(", ");
-      sb.append("0x").append(Integer.toHexString(getTypeModifiers(type))).append(", ");
-      sb.append(methodMetadataCount).append(", ");
-      sb.append(methodMetadataCount > 0 ? "methods, " : "NULL, ");
-      sb.append(fieldMetadataCount).append(", ");
-      sb.append(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
-      sb.append(cStrIdx(getTypeList(type.getDeclaredTypes()))).append(", ");
-      sb.append(cStrIdx(getEnclosingMethodSelector())).append(", ");
-      sb.append(cStrIdx(SignatureGenerator.createClassSignature(type))).append(", ");
-      sb.append(funcPtrIdx(annotationsFunc)).append(", ");
-      sb.append(getPtrTableEntry());
-      sb.append(" };");
-      stmts.add(new NativeStatement(sb.toString()));
+      String metadata = UnicodeUtils.format(
+          "static const J2ObjcClassInfo _%s = { "
+          + "%s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
+          fullName,
+          cStr(type.isAnonymous() ? "" : type.getName()),
+          cStr(Strings.emptyToNull(type.getPackage().getName())),
+          methodMetadataCount > 0 ? "methods" : "NULL",
+          fieldMetadataCount > 0 ? "fields" : "NULL",
+          METADATA_VERSION,
+          getTypeModifiers(type),
+          methodMetadataCount,
+          fieldMetadataCount,
+          cStrIdx(getTypeName(type.getDeclaringClass())),
+          cStrIdx(getTypeList(type.getDeclaredTypes())),
+          cStrIdx(getEnclosingMethodSelector()),
+          cStrIdx(SignatureGenerator.createClassSignature(type)),
+          funcPtrIdx(annotationsFunc));
+      // Add the pointer table in a second format pass since it's value is dependent on all other
+      // values.
+      metadata = UnicodeUtils.format(metadata, getPtrTableEntry());
+      stmts.add(new NativeStatement(metadata));
       stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
     }
 

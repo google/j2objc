@@ -1450,7 +1450,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    6, "Class", "java.lang", -1, 0x11, 63, methods, 1, fields, -1, -1, 38, -1, ptrTable };
+    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 63, 1, -1, -1, -1, 38, -1 };
   return &_IOSClass;
 }
 

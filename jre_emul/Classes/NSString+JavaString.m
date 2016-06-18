@@ -1034,7 +1034,7 @@ jint javaStringHashCode(NSString *string) {
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    6, "String", "java.lang", -1, 0x1, 78, methods, 3, fields, 34, -1, 35, -1, ptrTable };
+    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 78, 3, -1, 34, -1, 35, -1 };
   return &_NSString;
 }
 
@@ -1070,8 +1070,8 @@ jint javaStringHashCode(NSString *string) {
     "compare", "LNSString",
     "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    6, "CaseInsensitiveComparator", "java.lang", 1, 0xa, 2, methods, 1, fields, -1, -1, 2, -1,
-    ptrTable };
+    "CaseInsensitiveComparator", "java.lang", ptrTable, methods, fields, 7, 0xa, 2, 1, 1, -1, -1, 2,
+    -1 };
   return &_NSString_CaseInsensitiveComparator;
 }
 

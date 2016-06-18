@@ -558,7 +558,7 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
     "LComGoogleProtobufDescriptors_FieldDescriptor",
     "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;" };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_Type = {
-    6, "Type", "com.google.protobuf", 19, 0x4019, 3, methods, 19, fields, -1, -1, 20, -1, ptrTable
+    "Type", "com.google.protobuf", ptrTable, methods, fields, 7, 0x4019, 3, 19, 19, -1, -1, 20, -1
   };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_Type;
 }
@@ -683,7 +683,7 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
     "LComGoogleProtobufDescriptors_FieldDescriptor",
     "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$JavaType;>;" };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_JavaType = {
-    6, "JavaType", "com.google.protobuf", 9, 0x4019, 0, NULL, 10, fields, -1, -1, 10, -1, ptrTable
+    "JavaType", "com.google.protobuf", ptrTable, NULL, fields, 7, 0x4019, 0, 10, 9, -1, -1, 10, -1
   };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType;
 }

@@ -173,7 +173,7 @@
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    6, "Constructor", "java.lang.reflect", -1, 0x1, 17, methods, 0, NULL, -1, -1, 6, -1, ptrTable
+    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 17, 0, -1, -1, -1, 6, -1
   };
   return &_JavaLangReflectConstructor;
 }

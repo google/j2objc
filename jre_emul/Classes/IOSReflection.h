@@ -30,7 +30,7 @@
 @class IOSClass;
 
 // Current metadata structure version
-#define J2OBJC_METADATA_VERSION 6
+#define J2OBJC_METADATA_VERSION 7
 
 // A raw value is the union of all possible native types.
 typedef union {
@@ -74,23 +74,22 @@ typedef struct J2ObjcFieldInfo {
   ptr_idx annotationsIdx;
 } J2ObjcFieldInfo;
 
-// TODO(kstanger): Optimize the size of this struct by using the pointer table
-// and rearranging the fields for better packing.
 typedef struct J2ObjcClassInfo {
-  const unsigned version;
   const char *typeName;
   const char *packageName;
-  ptr_idx enclosingClassIdx;
+  const void **ptrTable;
+  const J2ObjcMethodInfo *methods;
+  const J2ObjcFieldInfo *fields;
+  // Pointer types are above version for better packing.
+  const uint16_t version;
   uint16_t modifiers;
   uint16_t methodCount;
-  const J2ObjcMethodInfo *methods;
   uint16_t fieldCount;
-  const J2ObjcFieldInfo *fields;
+  ptr_idx enclosingClassIdx;
   ptr_idx innerClassesIdx;
   ptr_idx enclosingMethodIdx;
   ptr_idx genericSignatureIdx;
   ptr_idx annotationsIdx;
-  const void **ptrTable;
 } J2ObjcClassInfo;
 
 // Autoboxing support.

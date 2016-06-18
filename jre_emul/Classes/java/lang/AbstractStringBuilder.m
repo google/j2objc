@@ -711,8 +711,8 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     "toString", "subSequence", "indexOf", "lastIndexOf", "codePointAt", "codePointBefore",
     "codePointCount", "offsetByCodePoints" };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
-    6, "AbstractStringBuilder", "java.lang", -1, 0x400, 42, methods, 1, fields, -1, -1, -1, -1,
-    ptrTable };
+    "AbstractStringBuilder", "java.lang", ptrTable, methods, fields, 7, 0x400, 42, 1, -1, -1, -1,
+    -1, -1 };
   return &_JavaLangAbstractStringBuilder;
 }
 
