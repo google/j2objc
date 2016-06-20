@@ -171,22 +171,23 @@ static void doWait(id obj, long long timeout) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
-    { "getClass", "LIOSClass;", 0x11, -1, -1, 0, -1, -1 },
-    { "hash", "I", 0x1, 1, -1, -1, -1, -1 },
-    { "isEqual:", "Z", 0x1, 2, -1, -1, -1, -1 },
-    { "clone", "LNSObject;", 0x4, -1, 3, -1, -1, -1 },
-    { "description", "LNSString;", 0x1, 4, -1, -1, -1, -1 },
-    { "javaFinalize", "V", 0x4, 5, 6, -1, -1, -1 },
-    { "notify", "V", 0x11, -1, -1, -1, -1, -1 },
-    { "notifyAll", "V", 0x11, -1, -1, -1, -1, -1 },
-    { "waitWithLong:", "V", 0x11, 7, 8, -1, -1, -1 },
-    { "waitWithLong:withInt:", "V", 0x11, 7, 8, -1, -1, -1 },
-    { "wait", "V", 0x11, -1, 8, -1, -1, -1 },
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getClass", "LIOSClass;", 0x11, -1, -1, -1, 0, -1, -1 },
+    { "hash", "I", 0x1, 1, -1, -1, -1, -1, -1 },
+    { "isEqual:", "Z", 0x1, 2, 3, -1, -1, -1, -1 },
+    { "clone", "LNSObject;", 0x4, -1, -1, 4, -1, -1, -1 },
+    { "description", "LNSString;", 0x1, 5, -1, -1, -1, -1, -1 },
+    { "javaFinalize", "V", 0x4, 6, -1, 7, -1, -1, -1 },
+    { "notify", "V", 0x11, -1, -1, -1, -1, -1, -1 },
+    { "notifyAll", "V", 0x11, -1, -1, -1, -1, -1, -1 },
+    { "waitWithLong:", "V", 0x11, 8, 9, 10, -1, -1, -1 },
+    { "waitWithLong:withInt:", "V", 0x11, 8, 11, 10, -1, -1, -1 },
+    { "wait", "V", 0x11, -1, -1, 10, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
-    "()Ljava/lang/Class<*>;", "hashCode", "equals", "LJavaLangCloneNotSupportedException;",
-    "toString", "finalize", "LNSException;", "wait", "LJavaLangInterruptedException;" };
+    "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;",
+    "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LNSException;", "wait", "J",
+    "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {
     "Object", "java.lang", ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
   return &_NSObject;

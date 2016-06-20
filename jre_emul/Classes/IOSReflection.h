@@ -57,6 +57,7 @@ typedef struct J2ObjcMethodInfo {
   const char *returnType;
   uint16_t modifiers;
   ptr_idx javaNameIdx;
+  ptr_idx paramsIdx;
   ptr_idx exceptionsIdx;
   ptr_idx genericSignatureIdx;
   ptr_idx annotationsIdx;

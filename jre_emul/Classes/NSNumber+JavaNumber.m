@@ -27,13 +27,13 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
-    { "charValue", "B", 0x1, 0, -1, -1, -1, -1 },
-    { "doubleValue", "D", 0x401, -1, -1, -1, -1, -1 },
-    { "floatValue", "F", 0x401, -1, -1, -1, -1, -1 },
-    { "intValue", "I", 0x401, -1, -1, -1, -1, -1 },
-    { "longLongValue", "J", 0x401, 1, -1, -1, -1, -1 },
-    { "shortValue", "S", 0x1, -1, -1, -1, -1, -1 },
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { "charValue", "B", 0x1, 0, -1, -1, -1, -1, -1 },
+    { "doubleValue", "D", 0x401, -1, -1, -1, -1, -1, -1 },
+    { "floatValue", "F", 0x401, -1, -1, -1, -1, -1, -1 },
+    { "intValue", "I", 0x401, -1, -1, -1, -1, -1, -1 },
+    { "longLongValue", "J", 0x401, 1, -1, -1, -1, -1, -1 },
+    { "shortValue", "S", 0x1, -1, -1, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = NSNumber_serialVersionUID, 0x1a, -1, -1, -1,

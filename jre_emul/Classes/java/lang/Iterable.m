@@ -29,7 +29,7 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "iterator", "LJavaUtilIterator;", 0x401, -1, -1, 0, -1, -1 },
+    { "iterator", "LJavaUtilIterator;", 0x401, -1, -1, -1, 0, -1, -1 },
   };
   static const void *ptrTable[] = {
     "()Ljava/util/Iterator<TT;>;", "<T:Ljava/lang/Object;>Ljava/lang/Object;" };

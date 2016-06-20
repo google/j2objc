@@ -38,7 +38,7 @@ public class MetadataWriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "static const J2ObjcMethodInfo methods[] = {",
         // The fourth field, "javaNameIdx", should be -1.
-        "{ \"init\", NULL, 0x0, -1, -1, -1, -1, -1 },");
+        "{ \"init\", NULL, 0x0, -1, -1, -1, -1, -1, -1 },");
   }
 
   public void testMethodMetadata() throws IOException {
@@ -58,24 +58,25 @@ public class MetadataWriterTest extends GenerationTest {
         + " abstract <V,X> void test11(V one, X two, T three);"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"test1\", \"LNSObject;\", 0x0, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test2\", \"C\", 0x2, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test3\", \"V\", 0x4, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test4\", \"J\", 0x10, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test5\", \"Z\", 0x20, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test1\", \"LNSObject;\", 0x0, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test2\", \"C\", 0x2, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test3\", \"V\", 0x4, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test4\", \"J\", 0x10, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test5\", \"Z\", 0x20, -1, -1, -1, -1, -1, -1 },");
     assertTranslation(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", \"LNSString;\", 0x80, 0, -1, -1, -1, -1 }");
-    assertTranslation(translation, "{ \"test7\", \"V\", 0x100, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test8\", \"V\", 0x400, -1, 1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test9\", \"LNSObject;\", 0x400, -1, -1, 2, -1, -1 },");
+        "{ \"test6WithNSString:withNSObjectArray:\", \"LNSString;\", 0x80, 0, 1, -1, -1, -1, -1 }");
+    assertTranslation(translation, "{ \"test7\", \"V\", 0x100, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test8\", \"V\", 0x400, -1, -1, 2, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test9\", \"LNSObject;\", 0x400, -1, -1, -1, 3, -1, -1 },");
     assertTranslation(translation,
-        "{ \"test10WithInt:withId:\", \"V\", 0x400, 3, -1, 4, -1, -1 },");
+        "{ \"test10WithInt:withId:\", \"V\", 0x400, 4, 5, -1, 6, -1, -1 },");
     assertTranslation(translation,
-        "{ \"test11WithId:withId:withId:\", \"V\", 0x400, 5, -1, 6, -1, -1 },");
+        "{ \"test11WithId:withId:withId:\", \"V\", 0x400, 7, 8, -1, 9, -1, -1 },");
     assertTranslation(translation,
-        "static const void *ptrTable[] = { \"test6\", "
+        "static const void *ptrTable[] = { \"test6\", \"LNSString;[LNSObject;\", "
         + "\"LJavaLangInterruptedException;LJavaLangError;\", \"()TT;\", \"test10\", "
-        + "\"(ITT;)V\", \"test11\", \"<V:Ljava/lang/Object;X:Ljava/lang/Object;>(TV;TX;TT;)V\", "
+        + "\"ILNSObject;\", \"(ITT;)V\", \"test11\", \"LNSObject;LNSObject;LNSObject;\", "
+        + "\"<V:Ljava/lang/Object;X:Ljava/lang/Object;>(TV;TX;TT;)V\", "
         + "\"<T:Ljava/lang/Object;>Ljava/lang/Object;\" };");
   }
 
@@ -104,8 +105,8 @@ public class MetadataWriterTest extends GenerationTest {
         + " int num() default 5;"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"foo\", \"LNSString;\", 0x401, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"num\", \"I\", 0x401, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"foo\", \"LNSString;\", 0x401, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"num\", \"I\", 0x401, -1, -1, -1, -1, -1, -1 },");
   }
 
   public void testInnerClassesMetadata() throws IOException {
@@ -140,9 +141,10 @@ public class MetadataWriterTest extends GenerationTest {
         + "0, 0, 1, 2, -1, -1 };");
 
     // Verify D is not enclosed by test(), as it's enclosed by C.
-    assertTranslation(translation,
-        "J2ObjcClassInfo _A_1C_D = { \"D\", NULL, ptrTable, methods, NULL, 7, 0x0, 1, 0, 0, -1, "
-        + "-1, -1, -1 };");
+    assertTranslatedLines(translation,
+        "static const void *ptrTable[] = { \"LA_1C;\" };",
+        "static const J2ObjcClassInfo _A_1C_D = { \"D\", NULL, ptrTable, methods, NULL, 7, 0x0, 1, "
+        + "0, 0, -1, -1, -1, -1 };");
   }
 
   public void testMethodAnnotationNoParameters() throws IOException {

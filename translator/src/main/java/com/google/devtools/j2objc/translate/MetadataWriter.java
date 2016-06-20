@@ -181,7 +181,7 @@ public class MetadataWriter extends TreeVisitor {
         for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
           String name = decl.getName().getIdentifier();
           String returnType = getTypeName(decl.getMethodBinding().getReturnType());
-          String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1, -1, -1 },\n",
+          String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1, -1, -1, -1 },\n",
               cStr(name), cStr(returnType),
               java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
           methodMetadata.add(metadata);
@@ -209,8 +209,9 @@ public class MetadataWriter extends TreeVisitor {
 
       int modifiers = getMethodModifiers(method) & BindingUtil.ACC_FLAG_MASK;
       String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
-      return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s, %s, %s },\n",
+      return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s, %s, %s, %s },\n",
           selector, cStr(returnTypeStr), modifiers, cStrIdx(methodName),
+          cStrIdx(getTypeList(method.getParameterTypes())),
           cStrIdx(getTypeList(method.getExceptionTypes())),
           cStrIdx(SignatureGenerator.createMethodTypeSignature(method)),
           funcPtrIdx(annotationsFunc), funcPtrIdx(paramAnnotationsFunc));

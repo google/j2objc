@@ -146,26 +146,14 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getParameterTypes {
+  if (metadata_) {
+    return JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx));
+  }
+
   jint nArgs = [self getNumParams];
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:IOSClass_class_()];
   if (nArgs == 0) {
     return parameters;
-  }
-
-  // If method has genericSignature with no generic types, it's a concrete implementation
-  // of a generic method and its signature has the declared parameter types.
-  if (metadata_ && metadata_->genericSignatureIdx >= 0) {
-    IOSObjectArray *genericParameterTypes = [self getGenericParameterTypes];
-    BOOL hasTypeParameter = NO;
-    for (jint i = 0; i < nArgs; i++) {
-      if (![IOSObjectArray_Get(genericParameterTypes, i) isKindOfClass:[IOSClass class]]) {
-        hasTypeParameter = YES;
-        break;
-      }
-    }
-    if (!hasTypeParameter) {
-      return genericParameterTypes;
-    }
   }
 
   NSString *selectorStr = NSStringFromSelector(selector_);
@@ -355,10 +343,8 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (void)dealloc {
   free((void *)binaryParameterTypes_);
-#if ! __has_feature(objc_arc)
   [methodSignature_ release];
   [super dealloc];
-#endif
 }
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
@@ -384,10 +370,10 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
                                                         withNSString:signatureAttribute
                                                    withIOSClassArray:exceptionTypes];
   }
-  return [[GenericInfo alloc] init:parser->exceptionTypes_
-                        parameters:parser->parameterTypes_
-                        returnType:parser->returnType_
-                    typeParameters:parser->formalTypeParameters_];
+  return [[[GenericInfo alloc] init:parser->exceptionTypes_
+                         parameters:parser->parameterTypes_
+                         returnType:parser->returnType_
+                     typeParameters:parser->formalTypeParameters_] autorelease];
 }
 
 @end
@@ -399,15 +385,14 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
          returnType:(id<JavaLangReflectType>)returnType
      typeParameters:(IOSObjectArray *)typeParameters {
   if ((self = [super init])) {
-    genericExceptionTypes_ = exceptions;
-    genericParameterTypes_ = parameters;
-    genericReturnType_ = returnType;
-    formalTypeParameters_ = typeParameters;
+    genericExceptionTypes_ = [exceptions retain];
+    genericParameterTypes_ = [parameters retain];
+    genericReturnType_ = [returnType retain];
+    formalTypeParameters_ = [typeParameters retain];
   }
   return self;
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [genericExceptionTypes_ release];
   [genericParameterTypes_ release];
@@ -415,7 +400,5 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
   [formalTypeParameters_ release];
   [super dealloc];
 }
-#endif
-
 
 @end

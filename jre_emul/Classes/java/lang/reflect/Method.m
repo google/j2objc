@@ -273,31 +273,31 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getName", "LNSString;", 0x1, -1, -1, -1, -1, -1 },
-    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1 },
-    { "getReturnType", "LIOSClass;", 0x1, -1, -1, -1, -1, -1 },
-    { "getGenericReturnType", "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1 },
-    { "getDeclaringClass", "LIOSClass;", 0x1, -1, -1, 0, -1, -1 },
-    { "getParameterTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1 },
-    { "getGenericParameterTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1 },
-    { "invokeWithId:withNSObjectArray:", "LNSObject;", 0x81, 1, 2, -1, -1, -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 3, -1, 4, -1, -1 },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1 },
-    { "getParameterAnnotations", "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1 },
-    { "getTypeParameters", "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1 },
-    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1 },
-    { "getExceptionTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1 },
-    { "getGenericExceptionTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1 },
-    { "toGenericString", "LNSString;", 0x1, -1, -1, -1, -1, -1 },
-    { "isBridge", "Z", 0x1, -1, -1, -1, -1, -1 },
-    { "isVarArgs", "Z", 0x1, -1, -1, -1, -1, -1 },
-    { "getDefaultValue", "LNSObject;", 0x1, -1, -1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
+    { "getName", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getReturnType", "LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getGenericReturnType", "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getDeclaringClass", "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
+    { "getParameterTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getGenericParameterTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "invokeWithId:withNSObjectArray:", "LNSObject;", 0x81, 1, 2, 3, -1, -1, -1 },
+    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 4, 5, -1, 6, -1, -1 },
+    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getParameterAnnotations", "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getTypeParameters", "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getExceptionTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getGenericExceptionTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "toGenericString", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "isBridge", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "isVarArgs", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getDefaultValue", "LNSObject;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
-    "()Ljava/lang/Class<*>;", "invoke",
+    "()Ljava/lang/Class<*>;", "invoke", "LNSObject;[LNSObject;",
     "LJavaLangIllegalAccessException;LJavaLangIllegalArgumentException;"
-    "LJavaLangReflectInvocationTargetException;", "getAnnotation",
+    "LJavaLangReflectInvocationTargetException;", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
     "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 20, 0, -1, -1, -1, -1, -1 };
