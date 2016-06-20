@@ -172,11 +172,11 @@ static void doWait(id obj, long long timeout) {
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
-    { "getClass", "LIOSClass", 0x11, -1, -1, 0, -1, -1 },
+    { "getClass", "LIOSClass;", 0x11, -1, -1, 0, -1, -1 },
     { "hash", "I", 0x1, 1, -1, -1, -1, -1 },
     { "isEqual:", "Z", 0x1, 2, -1, -1, -1, -1 },
-    { "clone", "LNSObject", 0x4, -1, 3, -1, -1, -1 },
-    { "description", "LNSString", 0x1, 4, -1, -1, -1, -1 },
+    { "clone", "LNSObject;", 0x4, -1, 3, -1, -1, -1 },
+    { "description", "LNSString;", 0x1, 4, -1, -1, -1, -1 },
     { "javaFinalize", "V", 0x4, 5, 6, -1, -1, -1 },
     { "notify", "V", 0x11, -1, -1, -1, -1, -1 },
     { "notifyAll", "V", 0x11, -1, -1, -1, -1, -1 },

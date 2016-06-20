@@ -22,22 +22,6 @@
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
 
-// Advances strPtr to beyond the next delimiter and returns the length of the string up to that
-// delimiter.
-static NSUInteger LengthOfName(const char **strPtr) {
-  const char *start = *strPtr;
-  const char *ptr = start;
-  while (*ptr != '\0') {
-    if (*ptr == ';') {
-      *strPtr = ptr + 1;
-      return ptr - start;
-    }
-    ptr++;
-  }
-  *strPtr = ptr;
-  return ptr - start;
-}
-
 // Parses the next IOSClass from the delimited string, advancing the c-string pointer past the
 // parsed type.
 static IOSClass *ParseNextClass(const char **strPtr) {
@@ -45,11 +29,11 @@ static IOSClass *ParseNextClass(const char **strPtr) {
   if (c == '[') {
     return IOSClass_arrayOf(ParseNextClass(strPtr));
   } else if (c == 'L') {
-    const char *bytes = *strPtr;
-    NSUInteger len = LengthOfName(strPtr);
-    NSString *name = [[NSString alloc] initWithBytes:bytes
-                                              length:len
+    const char *delimitor = strchr(*strPtr, ';');
+    NSString *name = [[NSString alloc] initWithBytes:*strPtr
+                                              length:delimitor - *strPtr
                                              encoding:NSUTF8StringEncoding];
+    *strPtr = delimitor + 1;
     IOSClass *result = [IOSClass classForIosName:name];
     [name release];
     return result;

@@ -337,17 +337,13 @@ public class MetadataWriter extends TreeVisitor {
     if (type == null) {
       return null;
     }
-    return getTypeName(type, false);
-  }
-
-  private String getTypeName(ITypeBinding type, boolean delimited) {
     type = type.getErasure();
     if (type.isPrimitive()) {
       return type.getBinaryName();
     } else if (type.isArray()) {
-      return "[" + getTypeName(type.getComponentType(), delimited);
+      return "[" + getTypeName(type.getComponentType());
     } else {
-      return "L" + nameTable.getFullName(type) + (delimited ? ";" : "");
+      return "L" + nameTable.getFullName(type) + ";";
     }
   }
 
@@ -357,7 +353,7 @@ public class MetadataWriter extends TreeVisitor {
     }
     StringBuilder sb = new StringBuilder();
     for (ITypeBinding type : types) {
-      sb.append(getTypeName(type, true));
+      sb.append(getTypeName(type));
     }
     return sb.toString();
   }

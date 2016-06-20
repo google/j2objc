@@ -101,10 +101,10 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     { "setAccessibleWithBoolean:", "V", 0x1, 0, -1, -1, -1, -1 },
     { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:", "V", 0x9, 0, -1, -1, -1,
       -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation", 0x1, 1, -1, 2, -1, -1 },
+    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 1, -1, 2, -1, -1 },
     { "isAnnotationPresentWithIOSClass:", "Z", 0x1, 3, -1, 4, -1, -1 },
-    { "getAnnotations", "[LJavaLangAnnotationAnnotation", 0x1, -1, -1, -1, -1, -1 },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation", 0x1, -1, -1, -1, -1, -1 },
+    { "getAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1 },
+    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1 },
     { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {

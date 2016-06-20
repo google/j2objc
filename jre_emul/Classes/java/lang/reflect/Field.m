@@ -362,12 +362,12 @@ static void SetWithRawValue(
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getName", "LNSString", 0x1, -1, -1, -1, -1, -1 },
+    { "getName", "LNSString;", 0x1, -1, -1, -1, -1, -1 },
     { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1 },
-    { "getType", "LIOSClass", 0x1, -1, -1, 0, -1, -1 },
-    { "getGenericType", "LJavaLangReflectType", 0x1, -1, -1, -1, -1, -1 },
-    { "getDeclaringClass", "LIOSClass", 0x1, -1, -1, 0, -1, -1 },
-    { "getWithId:", "LNSObject", 0x1, 1, 2, -1, -1, -1 },
+    { "getType", "LIOSClass;", 0x1, -1, -1, 0, -1, -1 },
+    { "getGenericType", "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1 },
+    { "getDeclaringClass", "LIOSClass;", 0x1, -1, -1, 0, -1, -1 },
+    { "getWithId:", "LNSObject;", 0x1, 1, 2, -1, -1, -1 },
     { "getBooleanWithId:", "Z", 0x1, 3, 2, -1, -1, -1 },
     { "getByteWithId:", "B", 0x1, 4, 2, -1, -1, -1 },
     { "getCharWithId:", "C", 0x1, 5, 2, -1, -1, -1 },
@@ -385,11 +385,11 @@ static void SetWithRawValue(
     { "setIntWithId:withInt:", "V", 0x1, 17, 2, -1, -1, -1 },
     { "setLongWithId:withLong:", "V", 0x1, 18, 2, -1, -1, -1 },
     { "setShortWithId:withShort:", "V", 0x1, 19, 2, -1, -1, -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation", 0x1, 20, -1, 21, -1, -1 },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation", 0x1, -1, -1, -1, -1, -1 },
+    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 20, -1, 21, -1, -1 },
+    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1 },
     { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1 },
     { "isEnumConstant", "Z", 0x1, -1, -1, -1, -1, -1 },
-    { "toGenericString", "LNSString", 0x1, -1, -1, -1, -1, -1 },
+    { "toGenericString", "LNSString;", 0x1, -1, -1, -1, -1, -1 },
     { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
