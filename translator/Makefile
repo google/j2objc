@@ -186,9 +186,13 @@ JAVA_SOURCES = \
 	gen/TypePrivateDeclarationGenerator.java \
 	javac/BindingConverter.java \
 	javac/JdtAnnotationBinding.java \
+	javac/JdtAnnotationMirror.java \
+	javac/JdtAnnotationValue.java \
 	javac/JdtArrayType.java \
 	javac/JdtBinding.java \
 	javac/JdtDeclaredType.java \
+	javac/JdtElement.java \
+	javac/JdtExecutableElement.java \
 	javac/JdtExecutableType.java \
 	javac/JdtExtendedModifier.java \
 	javac/JdtMemberValuePairBinding.java \
@@ -196,11 +200,15 @@ JAVA_SOURCES = \
 	javac/JdtNoType.java \
 	javac/JdtNullType.java \
 	javac/JdtPackageBinding.java \
+	javac/JdtPackageElement.java \
 	javac/JdtPrimitiveType.java \
 	javac/JdtTypeBinding.java \
+	javac/JdtTypeElement.java \
 	javac/JdtTypeMirror.java \
+	javac/JdtTypeParameterElement.java \
 	javac/JdtTypeVariable.java \
 	javac/JdtVariableBinding.java \
+	javac/JdtVariableElement.java \
 	javac/JdtWildcardType.java \
 	javac/StringName.java \
 	pipeline/AnnotationPreProcessor.java \

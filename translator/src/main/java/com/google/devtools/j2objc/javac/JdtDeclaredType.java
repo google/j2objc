@@ -46,15 +46,14 @@ class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceTy
 
   @Override
   public Element asElement() {
-    // TODO(tball): implement.
-    return null;
+    return BindingConverter.getElement(binding);
   }
 
   @Override
   public TypeMirror getEnclosingType() {
     IMethodBinding enclosingMethod = ((JdtTypeBinding) binding).getDeclaringMethod();
     if (enclosingMethod != null) {
-      return BindingConverter.getExecutableType(enclosingMethod);
+      return BindingConverter.getType(enclosingMethod);
     }
     ITypeBinding enclosingType = ((JdtTypeBinding) binding).getDeclaringClass();
     return enclosingType != null

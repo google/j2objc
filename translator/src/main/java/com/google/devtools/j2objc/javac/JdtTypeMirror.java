@@ -14,7 +14,10 @@
 
 package com.google.devtools.j2objc.javac;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
@@ -30,21 +33,18 @@ abstract class JdtTypeMirror implements TypeMirror {
   // TODO(tball): enable when Java 8 is minimum version.
   // @Override
   public List<? extends AnnotationMirror> getAnnotationMirrors() {
-    // TODO Auto-generated method stub
-    return null;
+    List<AnnotationMirror> mirrors = new ArrayList<>();
+    for (IAnnotationBinding annotation : binding.getAnnotations()) {
+      mirrors.add(new JdtAnnotationMirror(annotation));
+    }
+    return mirrors;
   }
 
-  // TODO(tball): enable when Java 8 is minimum version.
-  // @Override
   public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new AssertionError("not implemented");
   }
 
-  // TODO(tball): enable when Java 8 is minimum version.
-  // @Override
   public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new AssertionError("not implemented");
   }
 }

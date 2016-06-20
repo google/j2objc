@@ -29,6 +29,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
 
 /**
@@ -38,6 +39,7 @@ import javax.lang.model.element.Name;
  */
 public final class BindingConverter {
   private static Map<IBinding, JdtBinding> bindingCache = new IdentityHashMap<>();
+  private static Map<JdtBinding, JdtElement> elementCache = new HashMap<>();
   private static Map<String, Name> nameCache = new HashMap<>();
   private static Map<JdtBinding, JdtTypeMirror> typeCache = new HashMap<>();
 
@@ -221,38 +223,87 @@ public final class BindingConverter {
   }
 
   public static JdtTypeMirror getType(ITypeBinding binding) {
-    if (binding == null) {
-      return NULL_TYPE;
+    JdtTypeMirror type = getTypeMirror(binding);
+    if (type != null) {
+      return type;
     }
     JdtTypeBinding jdtType = wrapBinding(binding);
     if (binding.isArray()) {
-      return new JdtArrayType(jdtType);
-    }
+      type = new JdtArrayType(jdtType);
+    } else
     // TODO(tball): enable when Java 8 is minimum version.
 //    if (BindingUtil.isIntersectionType(binding)) {
-//      return new JdtIntersectionType(jdtType);
-//    }
+//      type = new JdtIntersectionType(jdtType);
+//    } else
     if (binding.isPrimitive()) {
-      return new JdtPrimitiveType(jdtType);
+      type = new JdtPrimitiveType(jdtType);
+    } else if (binding.isTypeVariable()) {
+      type = new JdtTypeVariable(jdtType);
+    } else if (binding.isWildcardType()) {
+      type = new JdtWildcardType(jdtType);
+    } else {
+      type = new JdtDeclaredType(jdtType);
     }
-    if (binding.isTypeVariable()) {
-      return new JdtTypeVariable(jdtType);
-    }
-    if (binding.isWildcardType()) {
-      return new JdtWildcardType(jdtType);
-    }
-    return new JdtDeclaredType(jdtType);
+    typeCache.put(jdtType, type);
+    return type;
   }
 
-  public static JdtTypeMirror getExecutableType(IMethodBinding binding) {
+  public static JdtTypeMirror getType(IMethodBinding binding) {
+    JdtTypeMirror type = getTypeMirror(binding);
+    if (type != null) {
+      return type;
+    }
+    JdtMethodBinding wrappedBinding = wrapBinding(binding);
+    JdtExecutableType executableType = new JdtExecutableType(wrappedBinding);
+    typeCache.put(wrappedBinding, executableType);
+    return executableType;
+  }
+
+  public static JdtTypeMirror getTypeMirror(IBinding binding) {
     if (binding == null) {
       return NULL_TYPE;
     }
-    return new JdtExecutableType(wrapBinding(binding));
+    JdtBinding wrappedBinding = wrapBinding(binding);
+    return typeCache.get(wrappedBinding);
+  }
+
+
+  public static Element getElement(IBinding binding) {
+    return getElement(wrapBinding(binding));
+  }
+
+  public static JdtElement getElement(JdtBinding binding) {
+    if (binding == null) {
+      return null;
+    }
+    JdtElement element = elementCache.get(binding);
+    if (element != null) {
+      return element;
+    }
+    if (binding instanceof JdtMethodBinding) {
+      element = new JdtExecutableElement((JdtMethodBinding) binding);
+    } else if (binding instanceof JdtPackageBinding) {
+      element = new JdtPackageElement((JdtPackageBinding) binding);
+    } else if (binding instanceof JdtTypeBinding) {
+      JdtTypeBinding typeBinding = (JdtTypeBinding) binding;
+      element = typeBinding.isParameterizedType()
+          ? new JdtTypeParameterElement(typeBinding) : new JdtTypeElement(typeBinding);
+    } else if (binding instanceof JdtVariableBinding) {
+      element = new JdtVariableElement((JdtVariableBinding) binding);
+    } else {
+      throw new AssertionError("unknown element binding: " + binding.getClass().getSimpleName());
+    }
+    elementCache.put(binding, element);
+    return element;
+  }
+
+  public static IBinding unwrapElement(Element element) {
+    return element != null ? ((JdtElement) element).binding : null;
   }
 
   public static void reset() {
     bindingCache.clear();
+    elementCache.clear();
     nameCache.clear();
     typeCache.clear();
   }
