@@ -64,7 +64,7 @@ public class PackageInfoRewriter {
     }
 
     GeneratedTypeBinding typeBinding = new GeneratedTypeBinding(
-        NameTable.PACKAGE_INFO_CLASS_NAME, pkg.getPackageBinding(), typeEnv.getNSObject(), false,
+        NameTable.PACKAGE_INFO_CLASS_NAME, pkg.getPackageElement(), typeEnv.getNSObject(), false,
         null);
     typeBinding.setModifiers(Modifier.PRIVATE);
     TypeDeclaration typeDecl = new TypeDeclaration(typeBinding);

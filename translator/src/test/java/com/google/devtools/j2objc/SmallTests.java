@@ -79,6 +79,7 @@ import com.google.devtools.j2objc.util.FileUtilTest;
 import com.google.devtools.j2objc.util.NameTableTest;
 import com.google.devtools.j2objc.util.PackagePrefixesTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
+import com.google.devtools.j2objc.util.TranslationUtilTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
 
 import junit.framework.Test;
@@ -146,6 +147,7 @@ public class SmallTests {
     TypeDeclarationGeneratorTest.class,
     TypeImplementationGeneratorTest.class,
     TranslationProcessorTest.class,
+    TranslationUtilTest.class,
     TreeUtilTest.class,
     UnicodeUtilsTest.class,
     UnsequencedExpressionRewriterTest.class,

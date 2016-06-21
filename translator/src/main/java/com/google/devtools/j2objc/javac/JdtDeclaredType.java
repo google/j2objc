@@ -28,7 +28,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
 
 class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceType {
-  JdtTypeBinding binding;
 
   JdtDeclaredType(JdtTypeBinding binding) {
     super(binding);

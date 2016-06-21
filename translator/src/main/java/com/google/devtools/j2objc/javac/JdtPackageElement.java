@@ -16,9 +16,12 @@ package com.google.devtools.j2objc.javac;
 
 import org.eclipse.jdt.core.dom.IPackageBinding;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
@@ -27,6 +30,7 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 
 class JdtPackageElement extends JdtElement implements PackageElement {
+  private List<AnnotationMirror> annotations = new ArrayList<>();
 
   JdtPackageElement(IPackageBinding binding) {
     super(binding, binding.getName(), 0);
@@ -65,5 +69,14 @@ class JdtPackageElement extends JdtElement implements PackageElement {
   @Override
   public String toString() {
     return name.toString();
+  }
+
+  @Override
+  public List<? extends AnnotationMirror> getAnnotationMirrors() {
+    return annotations;
+  }
+
+  public void addAnnotation(AnnotationMirror annotation) {
+    annotations.add(annotation);
   }
 }

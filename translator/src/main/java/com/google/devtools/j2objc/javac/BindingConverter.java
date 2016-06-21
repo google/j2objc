@@ -297,6 +297,21 @@ public final class BindingConverter {
     return element;
   }
 
+  /**
+   * JDT package bindings do not include annotations, so add them from the
+   * package's AST node.
+   */
+  public static JdtPackageElement getPackageElement(
+      org.eclipse.jdt.core.dom.PackageDeclaration pkg) {
+    JdtPackageElement pkgElement = (JdtPackageElement) getElement(pkg.resolveBinding());
+    for (Object modifier : pkg.annotations()) {
+      IAnnotationBinding annotation =
+          ((org.eclipse.jdt.core.dom.Annotation) modifier).resolveAnnotationBinding();
+      pkgElement.addAnnotation(new JdtAnnotationMirror(annotation));
+    }
+    return pkgElement;
+  }
+
   public static IBinding unwrapElement(Element element) {
     return element != null ? ((JdtElement) element).binding : null;
   }

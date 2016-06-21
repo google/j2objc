@@ -19,8 +19,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.file.InputFile;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -31,6 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.type.DeclaredType;
 
 /**
  * Class that creates and stores the prefixes associated with Java packages.
@@ -110,18 +112,19 @@ public final class PackagePrefixes {
      * for the package, then that prefix is returned. Otherwise, a camel-cased
      * prefix is created from the package name.
      */
-    public String getPrefix(IPackageBinding packageBinding) {
-      if (packageBinding == null) {
+    public String getPrefix(PackageElement packageElement) {
+      if (packageElement == null) {
         return "";
       }
-      String packageName = packageBinding.getName();
+      String packageName = packageElement.getQualifiedName().toString();
       if (hasPrefix(packageName)) {
         return getPrefix(packageName);
       }
 
-      for (IAnnotationBinding annotation : packageBinding.getAnnotations()) {
-        if (annotation.getName().endsWith("ObjectiveCName")) {
-          String prefix = (String) BindingUtil.getAnnotationValue(annotation, "value");
+      for (AnnotationMirror annotation : packageElement.getAnnotationMirrors()) {
+        DeclaredType annotationType = annotation.getAnnotationType();
+        if (annotationType.asElement().getSimpleName().toString().equals("ObjectiveCName")) {
+          String prefix = (String) annotation.getElementValues().get("value").getValue();
           addPrefix(packageName, prefix);
           // Don't return, as there may be a prefix annotation that overrides this value.
         }

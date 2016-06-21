@@ -32,6 +32,8 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.javac.BindingConverter;
+import com.google.devtools.j2objc.javac.JdtElements;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -40,7 +42,6 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -54,6 +55,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.lang.model.element.PackageElement;
 
 /**
  * The base class for TypeDeclarationGenerator and TypeImplementationGenerator,
@@ -334,10 +336,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (BindingUtil.hasAnnotation(typeBinding, ParametersAreNonnullByDefault.class)) {
       return true;
     }
-    IPackageBinding pkg = typeBinding.getPackage();
     try {
+      PackageElement pkg =
+          JdtElements.getInstance().getPackageOf(BindingConverter.getElement(typeBinding));
+      String pkgName = pkg.getQualifiedName().toString();
       // See if a package-info source file has a ParametersAreNonnullByDefault annotation.
-      InputFile file = FileUtil.findOnSourcePath(pkg.getName() + ".package-info");
+      InputFile file = FileUtil.findOnSourcePath(pkgName + ".package-info");
       if (file != null) {
         String pkgInfo = FileUtil.readFile(file);
         if (pkgInfo.indexOf("@ParametersAreNonnullByDefault") >= 0) {
@@ -350,7 +354,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
       // See if the package-info class file has it.
       final boolean[] result = new boolean[1];
-      file = FileUtil.findOnClassPath(pkg.getName() + ".package-info");
+      file = FileUtil.findOnClassPath(pkgName + ".package-info");
       if (file != null) {
         ClassReader classReader = new ClassReader(file.getInputStream());
         classReader.accept(new ClassVisitor(Opcodes.ASM5) {

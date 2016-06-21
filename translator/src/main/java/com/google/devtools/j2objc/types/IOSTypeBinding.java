@@ -19,6 +19,8 @@ package com.google.devtools.j2objc.types;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.element.PackageElement;
+
 /**
  * IOSTypeBinding: synthetic binding for an iOS type
  *
@@ -32,7 +34,7 @@ public class IOSTypeBinding extends GeneratedTypeBinding {
 
   protected IOSTypeBinding(
       String name, ITypeBinding mappedType, ITypeBinding superClass, boolean isInterface) {
-    super(name, null, superClass, isInterface, null);
+    super(name, (PackageElement) null, superClass, isInterface, null);
     this.mappedType = mappedType;
   }
 

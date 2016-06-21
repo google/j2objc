@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -37,12 +36,12 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -50,6 +49,10 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 
 /**
  * General collection of utility methods.
@@ -94,13 +97,15 @@ public final class TranslationUtil {
   }
 
   public static boolean needsReflection(PackageDeclaration node) {
-    return needsReflection(getReflectionSupportLevel(getAnnotation(node, ReflectionSupport.class)));
+    return needsReflection(getReflectionSupportLevel(
+        getAnnotation(node.getPackageElement(), ReflectionSupport.class)));
   }
 
   public static boolean needsReflection(ITypeBinding type) {
     while (type != null) {
+      TypeElement element = (TypeElement) BindingConverter.getElement(type);
       ReflectionSupport.Level level = getReflectionSupportLevel(
-          BindingUtil.getAnnotation(type, ReflectionSupport.class));
+          getAnnotation(element, ReflectionSupport.class));
       if (level != null) {
         return level == ReflectionSupport.Level.FULL;
       }
@@ -118,27 +123,21 @@ public final class TranslationUtil {
   }
 
   public static ReflectionSupport.Level getReflectionSupportLevel(
-      IAnnotationBinding reflectionSupport) {
+      AnnotationMirror reflectionSupport) {
     if (reflectionSupport == null) {
       return null;
     }
     Object level = BindingUtil.getAnnotationValue(reflectionSupport, "value");
-    if (level instanceof IVariableBinding) {
-      return ReflectionSupport.Level.valueOf(((IVariableBinding) level).getName());
-    }
-    return null;
+    return level != null
+        ? ReflectionSupport.Level.valueOf(((IVariableBinding) level).getName()) : null;
   }
 
-  /**
-   * The IPackageBinding does not provide the annotations so we must iterate the
-   * annotation from the tree.
-   */
-  private static IAnnotationBinding getAnnotation(
-      PackageDeclaration node, Class<?> annotationClass) {
-    for (Annotation annotation : node.getAnnotations()) {
-      IAnnotationBinding binding = annotation.getAnnotationBinding();
-      if (BindingUtil.typeEqualsClass(binding.getAnnotationType(), annotationClass)) {
-        return binding;
+  private static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
+    String className = annotationClass.getName();
+    for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
+      TypeElement type = (TypeElement) mirror.getAnnotationType().asElement();
+      if (type.getQualifiedName().toString().equals(className)) {
+        return mirror;
       }
     }
     return null;

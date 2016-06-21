@@ -14,13 +14,16 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+import com.google.devtools.j2objc.javac.JdtElements;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
+
+import javax.lang.model.element.PackageElement;
 
 /**
  * Generates signatures for classes, fields and methods, as defined by the JVM spec, 4.3.4,
@@ -105,9 +108,10 @@ public class SignatureGenerator {
 
     String methodName = method.getName();
     ITypeBinding declaringClass = method.getDeclaringClass();
-    IPackageBinding pkg = declaringClass.getPackage();
+    PackageElement pkg =
+        JdtElements.getInstance().getPackageOf(BindingConverter.getElement(declaringClass));
     if (pkg != null && !pkg.isUnnamed()) {
-      String pkgName = pkg.getName();
+      String pkgName = pkg.getQualifiedName().toString();
       for (String part : pkgName.split("\\.")) {
         sb.append(part);
         sb.append('_');

@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
@@ -31,7 +32,6 @@ import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -47,6 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import javax.lang.model.element.PackageElement;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -876,7 +878,8 @@ public class NameTable {
         return getFullName(interfaces[0]);
       }
     }
-    return getPrefix(binding.getPackage()) + getTypeSubName(binding);
+    PackageElement pkg = (PackageElement) BindingConverter.getElement(binding.getPackage());
+    return getPrefix(pkg) + getTypeSubName(binding);
   }
 
   private static String getTypeSubName(ITypeBinding binding) {
@@ -899,12 +902,12 @@ public class NameTable {
   }
 
   public static String getMainTypeFullName(CompilationUnit unit) {
-    return unit.getNameTable().getPrefix(unit.getPackage().getPackageBinding())
-        + unit.getMainTypeName();
+    PackageElement pkgElement = unit.getPackage().getPackageElement();
+    return unit.getNameTable().getPrefix(pkgElement) + unit.getMainTypeName();
   }
 
-  public String getPrefix(IPackageBinding packageBinding) {
-    return prefixMap.getPrefix(packageBinding);
+  public String getPrefix(PackageElement packageElement) {
+    return prefixMap.getPrefix(packageElement);
   }
 
   public boolean hasPrefix(String packageName) {

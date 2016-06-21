@@ -14,9 +14,6 @@
 
 package com.google.devtools.j2objc.javac;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 
@@ -24,7 +21,9 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
@@ -38,7 +37,7 @@ abstract class JdtElement implements Element {
   protected int flags;
   protected JdtBinding binding;
 
-  private static final BiMap<Integer, Set<Modifier>> modifierSets = HashBiMap.create();
+  private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
   protected JdtElement(IBinding binding, String name, int flags) {
     this.binding = BindingConverter.wrapBinding(binding);

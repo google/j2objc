@@ -36,8 +36,13 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * Utility methods for working with binding types.
@@ -569,6 +574,16 @@ public final class BindingUtil {
     for (IMemberValuePairBinding pair : annotation.getAllMemberValuePairs()) {
       if (name.equals(pair.getName())) {
         return pair.getValue();
+      }
+    }
+    return null;
+  }
+
+  public static Object getAnnotationValue(AnnotationMirror annotation, String name) {
+    for (Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
+        : annotation.getElementValues().entrySet()) {
+      if (entry.getKey().getSimpleName().toString().equals(name)) {
+        return entry.getValue().getValue();
       }
     }
     return null;

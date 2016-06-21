@@ -17,23 +17,23 @@ package com.google.devtools.j2objc.ast;
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.javac.BindingConverter;
 
-import org.eclipse.jdt.core.dom.IPackageBinding;
-
 import java.util.List;
+
+import javax.lang.model.element.PackageElement;
 
 /**
  * Tree node for a package declaration.
  */
 public class PackageDeclaration extends TreeNode {
 
-  private IPackageBinding packageBinding = null;
+  private PackageElement packageElement = null;
   private ChildLink<Javadoc> javadoc = ChildLink.create(Javadoc.class, this);
   private ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
   private ChildLink<Name> name = ChildLink.create(Name.class, this);
 
   public PackageDeclaration(org.eclipse.jdt.core.dom.PackageDeclaration jdtNode) {
     super(jdtNode);
-    packageBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
+    packageElement = BindingConverter.getPackageElement(jdtNode);
     javadoc.set((Javadoc) TreeConverter.convert(jdtNode.getJavadoc()));
     for (Object modifier : jdtNode.annotations()) {
       annotations.add((Annotation) TreeConverter.convert(modifier));
@@ -43,7 +43,7 @@ public class PackageDeclaration extends TreeNode {
 
   public PackageDeclaration(PackageDeclaration other) {
     super(other);
-    packageBinding = other.getPackageBinding();
+    packageElement = other.getPackageElement();
     javadoc.copyFrom(other.getJavadoc());
     annotations.copyFrom(other.getAnnotations());
     name.copyFrom(other.getName());
@@ -59,8 +59,8 @@ public class PackageDeclaration extends TreeNode {
     return Kind.PACKAGE_DECLARATION;
   }
 
-  public IPackageBinding getPackageBinding() {
-    return packageBinding;
+  public PackageElement getPackageElement() {
+    return packageElement;
   }
 
   public Name getName() {
