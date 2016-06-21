@@ -349,6 +349,18 @@ public class ClassTest extends TestCase {
     assertNotNull(cls);
   }
 
+  public void testDefaultEnumMethods() throws Exception {
+    Method[] methods = InnerEnum.class.getDeclaredMethods();
+    assertEquals(2, methods.length);
+    Method valuesMethod = InnerEnum.class.getDeclaredMethod("values");
+    assertNotNull(valuesMethod);
+    assertEquals("[Lcom.google.j2objc.ClassTest$InnerEnum;",
+        valuesMethod.getReturnType().getName());
+    Method valueOfMethod = InnerEnum.class.getDeclaredMethod("valueOf", String.class);
+    assertNotNull(valueOfMethod);
+    assertEquals(InnerEnum.class, valueOfMethod.getReturnType());
+  }
+
   boolean canCallAsSubclass(Class<?> x, Class<?> y) {
     boolean callSuccessful;
     try {

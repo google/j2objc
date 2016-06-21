@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
@@ -40,6 +41,7 @@ import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -71,6 +73,8 @@ public class EnumRewriter extends TreeVisitor {
   @Override
   public void endVisit(EnumDeclaration node) {
     addEnumInitialization(node);
+    addValuesMethod(node);
+    addValueOfMethod(node);
     addExtraNativeDecls(node);
   }
 
@@ -206,16 +210,61 @@ public class EnumRewriter extends TreeVisitor {
     node.getArguments().add(new SimpleName(ordinalVar));
   }
 
+  private void addValuesMethod(EnumDeclaration node) {
+    ITypeBinding type = node.getTypeBinding();
+    IMethodBinding method = BindingUtil.findDeclaredMethod(type, "values");
+    assert method != null : "Can't find values method on enum type.";
+    String typeName = nameTable.getFullName(type);
+    MethodDeclaration methodDecl = new MethodDeclaration(method);
+    Block body = new Block();
+    methodDecl.setBody(body);
+    body.getStatements().add(new NativeStatement(UnicodeUtils.format(
+        "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];",
+        typeName, node.getEnumConstants().size(), typeName)));
+    node.getBodyDeclarations().add(methodDecl);
+  }
+
+  private void addValueOfMethod(EnumDeclaration node) {
+    ITypeBinding type = node.getTypeBinding();
+    IMethodBinding method = BindingUtil.findDeclaredMethod(type, "valueOf", "java.lang.String");
+    assert method != null : "Can't find valueOf method on enum type.";
+    String typeName = nameTable.getFullName(type);
+    int numConstants = node.getEnumConstants().size();
+
+    GeneratedVariableBinding nameParam = new GeneratedVariableBinding(
+        "name", 0, method.getParameterTypes()[0], false, true, null, method);
+    MethodDeclaration methodDecl = new MethodDeclaration(method);
+    methodDecl.getParameters().add(new SingleVariableDeclaration(nameParam));
+    Block body = new Block();
+    methodDecl.setBody(body);
+
+    StringBuilder impl = new StringBuilder();
+    if (numConstants > 0) {
+      impl.append(UnicodeUtils.format(
+          "  for (int i = 0; i < %s; i++) {\n"
+          + "    %s *e = %s_values_[i];\n"
+          + "    if ([name isEqual:[e name]]) {\n"
+          + "      return e;\n"
+          + "    }\n"
+          + "  }\n", numConstants, typeName, typeName));
+    }
+    impl.append(
+        "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
+        + "  return nil;");
+
+    body.getStatements().add(new NativeStatement(impl.toString()));
+    node.getBodyDeclarations().add(methodDecl);
+  }
+
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeBinding());
     int numConstants = node.getEnumConstants().size();
     boolean swiftFriendly = Options.swiftFriendly();
 
     StringBuilder header = new StringBuilder();
-    header.append(UnicodeUtils.format(
-        "+ (IOSObjectArray *)values;\n\n"
-        + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
-        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName));
+    StringBuilder implementation = new StringBuilder();
+
+    header.append("- (id)copyWithZone:(NSZone *)zone;\n");
 
     // Append enum type suffix.
     String nativeName = NameTable.getNativeEnumName(typeName);
@@ -224,17 +273,6 @@ public class EnumRewriter extends TreeVisitor {
     if (swiftFriendly && numConstants > 0) {
       header.append(UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName));
     }
-
-    StringBuilder implementation = new StringBuilder();
-    implementation.append(UnicodeUtils.format(
-        "+ (IOSObjectArray *)values {\n"
-        + "  return %s_values();\n"
-        + "}\n\n", typeName));
-
-    implementation.append(UnicodeUtils.format(
-        "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
-        + "  return %s_valueOfWithNSString_(name);\n"
-        + "}\n\n", typeName, typeName));
 
     if (swiftFriendly && numConstants > 0) {
       implementation.append(UnicodeUtils.format(
@@ -253,33 +291,10 @@ public class EnumRewriter extends TreeVisitor {
 
     StringBuilder outerHeader = new StringBuilder();
     StringBuilder outerImpl = new StringBuilder();
+
     outerHeader.append(UnicodeUtils.format(
-        "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
-        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
-        + "FOUNDATION_EXPORT %s *%s_fromOrdinal(NSUInteger ordinal);\n",
-        typeName, typeName, typeName, typeName, typeName));
-
-    outerImpl.append(UnicodeUtils.format(
-        "IOSObjectArray *%s_values() {\n"
-        + "  %s_initialize();\n"
-        + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
-        + "}\n\n", typeName, typeName, typeName, numConstants, typeName));
-
-    outerImpl.append(UnicodeUtils.format(
-        "%s *%s_valueOfWithNSString_(NSString *name) {\n"
-        + "  %s_initialize();\n", typeName, typeName, typeName));
-    if (numConstants > 0) {
-      outerImpl.append(UnicodeUtils.format(
-          "  for (int i = 0; i < %s; i++) {\n"
-          + "    %s *e = %s_values_[i];\n"
-          + "    if ([name isEqual:[e name]]) {\n"
-          + "      return e;\n"
-          + "    }\n"
-          + "  }\n", numConstants, typeName, typeName));
-    }
-    outerImpl.append(
-        "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
-        + "  return nil;\n}\n\n");
+        "FOUNDATION_EXPORT %s *%s_fromOrdinal(NSUInteger ordinal);\n",
+        typeName, typeName));
 
     outerImpl.append(UnicodeUtils.format(
         "%s *%s_fromOrdinal(NSUInteger ordinal) {\n", typeName, typeName));
