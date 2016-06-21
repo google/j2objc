@@ -93,39 +93,42 @@ typedef struct J2ObjcClassInfo {
   ptr_idx annotationsIdx;
 } J2ObjcClassInfo;
 
-// Autoboxing support.
+// An empty class info struct to be used by certain kinds of class objects like
+// arrays and proxies.
+FOUNDATION_EXPORT const J2ObjcClassInfo JreEmptyClassInfo;
 
-extern IOSClass *JreClassForString(const char *str);
-extern IOSObjectArray *JreParseClassList(const char *listStr);
-extern IOSClass *TypeToClass(id<JavaLangReflectType>);
-extern Method JreFindInstanceMethod(Class cls, const char *name);
-extern Method JreFindClassMethod(Class cls, const char *name);
-extern struct objc_method_description *JreFindMethodDescFromList(
+CF_EXTERN_C_BEGIN
+
+const J2ObjcClassInfo *JreFindMetadata(Class cls);
+IOSClass *JreClassForString(const char *str);
+IOSObjectArray *JreParseClassList(const char *listStr);
+IOSClass *TypeToClass(id<JavaLangReflectType>);
+Method JreFindInstanceMethod(Class cls, const char *name);
+Method JreFindClassMethod(Class cls, const char *name);
+struct objc_method_description *JreFindMethodDescFromList(
     SEL sel, struct objc_method_description *methods, unsigned int count);
-extern struct objc_method_description *JreFindMethodDescFromMethodList(
+struct objc_method_description *JreFindMethodDescFromMethodList(
     SEL sel, Method *methods, unsigned int count);
-extern NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
+NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
 
 __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
   return i < 0 ? NULL : ptrTable[i];
 }
 
 // J2ObjcClassInfo accessor functions.
-extern NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
-extern NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata);
-extern NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
+NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
+NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata);
+NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 
 // Field and method lookup functions.
-extern const J2ObjcFieldInfo *JreFindFieldInfo(
-    const J2ObjcClassInfo *metadata, const char *fieldName);
-extern const J2ObjcMethodInfo *JreFindMethodInfo(
-    const J2ObjcClassInfo *metadata, NSString *methodName);
+const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName);
+const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName);
 
 // J2ObjcMethodInfo accessor functions.
-extern NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable);
-extern NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata);
-extern jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata);
-extern NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
+NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable);
+NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata);
+jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata);
+NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
 
 __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethodInfo *metadata) {
   return metadata ? metadata->modifiers : JavaLangReflectModifier_PUBLIC;
@@ -135,5 +138,7 @@ __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethod
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
   return sel_registerName(metadata->selector);
 }
+
+CF_EXTERN_C_END
 
 #endif // JreEmulation_IOSReflection_h

@@ -22,6 +22,7 @@
 #import "IOSPrimitiveArray.h"
 #import "IOSPrimitiveClass.h"
 #import "IOSObjectArray.h"
+#import "IOSReflection.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Byte.h"
 #import "java/lang/Character.h"
@@ -39,7 +40,7 @@
 @implementation IOSPrimitiveClass
 
 - (instancetype)initWithName:(NSString *)name type:(NSString *)type {
-  if ((self = [super initWithClass:NULL])) {
+  if ((self = [super initWithMetadata:&JreEmptyClassInfo])) {
     name_ = RETAIN_(name);
     type_ = RETAIN_(type);
   }

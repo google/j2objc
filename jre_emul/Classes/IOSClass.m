@@ -143,19 +143,9 @@ static JavaUtilProperties *prefixMapping;
   return IOSClass_voidClass;
 }
 
-- (instancetype)initWithClass:(Class)cls {
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata {
   if ((self = [super init])) {
-    if (cls) {
-      // Can't use respondsToSelector here because that will search superclasses.
-      Method metadataMethod = JreFindClassMethod(cls, "__metadata");
-      if (metadataMethod) {
-        const J2ObjcClassInfo *metadata =
-            (const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
-        JreAssert(metadata->version == J2OBJC_METADATA_VERSION,
-            @"J2ObjC metadata is out-of-date, source must be re-translated.");
-        metadata_ = metadata;
-      }
-    }
+    metadata_ = metadata;
   }
   return self;
 }

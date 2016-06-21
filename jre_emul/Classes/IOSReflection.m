@@ -21,6 +21,25 @@
 
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
+#import "objc/message.h"
+
+const J2ObjcClassInfo JreEmptyClassInfo = {
+    NULL, NULL, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
+
+const J2ObjcClassInfo *JreFindMetadata(Class cls) {
+  // Can't use respondsToSelector here because that will search superclasses.
+  Method metadataMethod = cls ? JreFindClassMethod(cls, "__metadata") : NULL;
+  if (metadataMethod) {
+    const J2ObjcClassInfo *metadata = (const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
+    // We don't use any Java based assert or throwables here because this function is called during
+    // IOSClass construction under mutual exclusion so causing any other IOSClass to be initialized
+    // would result in deadlock.
+    NSCAssert(metadata->version == J2OBJC_METADATA_VERSION,
+        @"J2ObjC metadata is out-of-date, source must be re-translated.");
+    return metadata;
+  }
+  return NULL;
+}
 
 // Parses the next IOSClass from the delimited string, advancing the c-string pointer past the
 // parsed type.

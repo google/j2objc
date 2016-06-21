@@ -19,10 +19,23 @@
 
 #import "IOSProxyClass.h"
 
+#import "IOSReflection.h"
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/reflect/Field.h"
 
 @implementation IOSProxyClass
+
+- (instancetype)initWithClass:(Class)cls {
+  return [self initWithClass:cls metadata:&JreEmptyClassInfo];
+}
+
+- (NSString *)getName {
+  return NSStringFromClass(class_);
+}
+
+- (NSString *)getSimpleName {
+  return NSStringFromClass(class_);
+}
 
 - (IOSObjectArray *)getDeclaredFields {
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];

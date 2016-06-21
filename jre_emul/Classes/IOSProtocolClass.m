@@ -31,14 +31,14 @@
 
 @implementation IOSProtocolClass
 
-Class GetBackingClass(Protocol *protocol) {
+static Class GetBackingClass(Protocol *protocol) {
   return objc_lookUpClass(protocol_getName(protocol));
 }
 
 @synthesize objcProtocol = protocol_;
 
 - (instancetype)initWithProtocol:(Protocol *)protocol {
-  if ((self = [super initWithClass:GetBackingClass(protocol)])) {
+  if ((self = [super initWithMetadata:JreFindMetadata(GetBackingClass(protocol))])) {
     protocol_ = RETAIN_(protocol);
   }
   return self;

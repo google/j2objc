@@ -38,11 +38,16 @@
 
 @synthesize objcClass = class_;
 
-- (instancetype)initWithClass:(Class)cls {
-  if ((self = [super initWithClass:cls])) {
+- (instancetype)initWithClass:(Class)cls
+                     metadata:(const J2ObjcClassInfo *)metadata {
+  if ((self = [super initWithMetadata:metadata])) {
     class_ = cls;
   }
   return self;
+}
+
+- (instancetype)initWithClass:(Class)cls {
+  return [self initWithClass:cls metadata:JreFindMetadata(cls)];
 }
 
 - (id)newInstance {

@@ -21,11 +21,14 @@
 #define _IOSConcreteClass_H_
 
 #import "IOSClass.h"
+#import "IOSReflection.h"
 
 @interface IOSConcreteClass : IOSClass {
   Class class_;
 }
 
+- (instancetype)initWithClass:(Class)cls
+                     metadata:(const J2ObjcClassInfo *)metadata;
 - (instancetype)initWithClass:(Class)cls;
 
 @end

@@ -53,7 +53,7 @@
 @property (readonly) Class objcClass;
 @property (readonly) Protocol *objcProtocol;
 
-- (instancetype)initWithClass:(Class)cls;
+- (instancetype)initWithMetadata:(const J2ObjcClassInfo *)metadata;
 
 // IOSClass Getters.
 + (IOSClass *)classForIosName:(NSString *)iosName;
