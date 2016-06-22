@@ -20,78 +20,13 @@
 #ifndef JreEmulation_IOSReflection_h
 #define JreEmulation_IOSReflection_h
 
+#include "IOSMetadata.h"
 #include "J2ObjC_common.h"
 #include "java/lang/reflect/Modifier.h"
-#include "java/lang/reflect/Type.h"
 
 #import "objc/runtime.h"
 
-@protocol JavaLangReflectType;
 @class IOSClass;
-
-// Current metadata structure version
-#define J2OBJC_METADATA_VERSION 7
-
-// A raw value is the union of all possible native types.
-typedef union {
-  void *asId;
-  char asChar;
-  unichar asUnichar;
-  short asShort;
-  int asInt;
-  long long asLong;
-  float asFloat;
-  double asDouble;
-  jboolean asBOOL;
-} J2ObjcRawValue;
-
-// C data structures that hold "raw" metadata for use by the methods that
-// implement Java reflection. This information is necessary because not
-// all information provided by the reflection API is discoverable via the
-// Objective-C runtime.
-
-typedef int16_t ptr_idx;
-
-typedef struct J2ObjcMethodInfo {
-  const char *selector;
-  const char *returnType;
-  uint16_t modifiers;
-  ptr_idx javaNameIdx;
-  ptr_idx paramsIdx;
-  ptr_idx exceptionsIdx;
-  ptr_idx genericSignatureIdx;
-  ptr_idx annotationsIdx;
-  ptr_idx paramAnnotationsIdx;
-} J2ObjcMethodInfo;
-
-typedef struct J2ObjcFieldInfo {
-  const char *name;
-  const char *type;
-  J2ObjcRawValue constantValue;
-  uint16_t modifiers;
-  ptr_idx javaNameIdx;
-  ptr_idx staticRefIdx;
-  ptr_idx genericSignatureIdx;
-  ptr_idx annotationsIdx;
-} J2ObjcFieldInfo;
-
-typedef struct J2ObjcClassInfo {
-  const char *typeName;
-  const char *packageName;
-  const void **ptrTable;
-  const J2ObjcMethodInfo *methods;
-  const J2ObjcFieldInfo *fields;
-  // Pointer types are above version for better packing.
-  const uint16_t version;
-  uint16_t modifiers;
-  uint16_t methodCount;
-  uint16_t fieldCount;
-  ptr_idx enclosingClassIdx;
-  ptr_idx innerClassesIdx;
-  ptr_idx enclosingMethodIdx;
-  ptr_idx genericSignatureIdx;
-  ptr_idx annotationsIdx;
-} J2ObjcClassInfo;
 
 // An empty class info struct to be used by certain kinds of class objects like
 // arrays and proxies.
@@ -102,7 +37,6 @@ CF_EXTERN_C_BEGIN
 const J2ObjcClassInfo *JreFindMetadata(Class cls);
 IOSClass *JreClassForString(const char *str);
 IOSObjectArray *JreParseClassList(const char *listStr);
-IOSClass *TypeToClass(id<JavaLangReflectType>);
 Method JreFindInstanceMethod(Class cls, const char *name);
 Method JreFindClassMethod(Class cls, const char *name);
 struct objc_method_description *JreFindMethodDescFromList(

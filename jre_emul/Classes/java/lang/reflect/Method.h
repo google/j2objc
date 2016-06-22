@@ -22,7 +22,7 @@
 #ifndef _JavaLangReflectMethod_H_
 #define _JavaLangReflectMethod_H_
 
-#import "IOSReflection.h"
+#import "IOSMetadata.h"
 #import "J2ObjC_common.h"
 #import "java/lang/reflect/ExecutableMember.h"
 #import "java/lang/reflect/GenericDeclaration.h"

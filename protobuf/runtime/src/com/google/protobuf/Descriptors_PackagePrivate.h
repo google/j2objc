@@ -36,6 +36,8 @@
 
 #import "com/google/protobuf/Descriptors.h"
 
+#import "objc/runtime.h"
+
 typedef union {
   jint valueInt;
   jlong valueLong;

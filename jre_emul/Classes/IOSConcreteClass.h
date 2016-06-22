@@ -21,7 +21,7 @@
 #define _IOSConcreteClass_H_
 
 #import "IOSClass.h"
-#import "IOSReflection.h"
+#import "IOSMetadata.h"
 
 @interface IOSConcreteClass : IOSClass {
   Class class_;

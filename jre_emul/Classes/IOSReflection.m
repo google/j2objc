@@ -92,16 +92,6 @@ IOSObjectArray *JreParseClassList(const char * const listStr) {
   return [IOSObjectArray arrayWithNSArray:builder type:IOSClass_class_()];
 }
 
-IOSClass *TypeToClass(id<JavaLangReflectType> type) {
-  if (!type) {
-    return nil;
-  }
-  if ([type isKindOfClass:[IOSClass class]]) {
-    return (IOSClass *)type;
-  }
-  return NSObject_class_();
-}
-
 Method JreFindInstanceMethod(Class cls, const char *name) {
   unsigned int count;
   Method result = nil;

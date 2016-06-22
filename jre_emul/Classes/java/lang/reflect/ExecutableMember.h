@@ -22,7 +22,7 @@
 #ifndef _ExecutableMember_H_
 #define _ExecutableMember_H_
 
-#import "IOSReflection.h"
+#import "IOSMetadata.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Member.h"
 

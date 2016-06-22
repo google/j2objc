@@ -29,6 +29,7 @@
 #import "java/util/logging/Logger.h"
 #import "java_lang_IntegralToString.h"
 #import "java_lang_RealToString.h"
+#import "objc/runtime.h"
 
 void JreThrowNullPointerException() {
   @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);

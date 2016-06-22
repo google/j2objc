@@ -16,9 +16,9 @@
 #define _J2OBJC_SOURCE_H_
 
 #import "IOSClass.h"  // Type literal accessors.
+#import "IOSMetadata.h"
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
-#import "IOSReflection.h"  // Metadata methods.
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
 #import "NSCopying+JavaCloneable.h"
@@ -27,6 +27,7 @@
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import "jni.h"
+#import "objc/runtime.h"
 
 #pragma clang system_header
 

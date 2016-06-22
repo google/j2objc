@@ -28,7 +28,6 @@ IOS_PUBLIC_OBJS = \
 	IOSClass.o \
 	IOSObjectArray.o \
 	IOSPrimitiveArray.o \
-	IOSReflection.o \
 	J2ObjC_common.o \
 	JreRetainedWith.o \
 	NSCopying+JavaCloneable.o \
@@ -54,6 +53,7 @@ IOS_PRIVATE_OBJS = \
 	IOSProtocolClass.o \
 	IOSProxyClass.o \
 	IOSReference.o \
+	IOSReflection.o \
 	J2ObjC_icu.o \
 	JavaToIOSInputStreamAdapter.o \
 	java_lang_IntegralToString.o \
@@ -163,6 +163,7 @@ DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 # This list overlaps with EMULATION_HEADERS, but only includes those headers
 # supported for use by native code.
 PUBLIC_EMULATION_HEADERS = \
+    IOSMetadata.h \
     J2ObjC_header.h \
     J2ObjC_source.h \
     J2ObjC_types.h \

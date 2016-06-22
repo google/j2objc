@@ -23,7 +23,7 @@
 #define _JAVA_LANG_REFLECT_CONSTRUCTOR_H
 
 #import "ExecutableMember.h"
-#import "IOSReflection.h"
+#import "IOSMetadata.h"
 #import "J2ObjC_common.h"
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Member.h"
