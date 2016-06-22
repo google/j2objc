@@ -63,10 +63,6 @@
   return name_;
 }
 
-- (NSString *)metadataName {
-  return type_;
-}
-
 - (NSString *)description {
   return name_;
 }

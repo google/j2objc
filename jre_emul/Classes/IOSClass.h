@@ -205,7 +205,6 @@
 - (const J2ObjcClassInfo *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
-- (NSString *)metadataName;
 // Get the IOSArray subclass that would be used to hold this type.
 - (Class)objcArrayClass;
 - (size_t)getSizeof;
@@ -240,6 +239,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
 
 // Internal functions
 const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass);
+NSString *IOSClass_GetTranslatedMethodName(
+    IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
 IOSClass *IOSClass_NewProxyClass(Class cls);
 
 // Return value is retained

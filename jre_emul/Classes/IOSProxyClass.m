@@ -23,17 +23,10 @@
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/reflect/Field.h"
 
-static const void *ptrTable[] = { "LJavaLangReflectInvocationHandler;" } ;
-static const J2ObjcMethodInfo proxyMethods[] = {{
-  "initWithJavaLangReflectInvocationHandler:", NULL, 0x1, -1, 0, -1, -1, -1, -1 }};
-static const J2ObjcClassInfo proxyClassMetadata = {
-  NULL, NULL, ptrTable, proxyMethods, NULL, J2OBJC_METADATA_VERSION, 0x0, 1, 0, -1, -1, -1, -1, -1
-};
-
 @implementation IOSProxyClass
 
 - (instancetype)initWithClass:(Class)cls {
-  return [self initWithClass:cls metadata:&proxyClassMetadata];
+  return [self initWithClass:cls metadata:&JreEmptyClassInfo];
 }
 
 - (NSString *)getName {

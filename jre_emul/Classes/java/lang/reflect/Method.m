@@ -63,8 +63,9 @@
 
 // Returns method name.
 - (NSString *)getName {
-  if (metadata_) {
-    return [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
+  NSString *javaName = JreMethodJavaName(metadata_, ptrTable_);
+  if (javaName) {
+    return javaName;
   }
 
   // Demangle signature to retrieve original method name.

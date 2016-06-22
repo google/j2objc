@@ -28,7 +28,6 @@
 #import "java/lang/InstantiationException.h"
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/reflect/Field.h"
-#import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 
 @implementation IOSArrayClass
@@ -75,10 +74,6 @@
 
 - (NSString *)objcName {
   return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
-}
-
-- (NSString *)metadataName {
-  return [NSString stringWithFormat:@"[%@", [componentType_ metadataName]];
 }
 
 - (NSString *)getCanonicalName {

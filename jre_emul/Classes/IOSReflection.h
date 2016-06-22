@@ -110,7 +110,6 @@ struct objc_method_description *JreFindMethodDescFromList(
 struct objc_method_description *JreFindMethodDescFromMethodList(
     SEL sel, Method *methods, unsigned int count);
 NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
-NSString *JreMetadataNameList(IOSObjectArray *classes);
 
 __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
   return i < 0 ? NULL : ptrTable[i];
@@ -126,14 +125,10 @@ const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const c
 const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName);
 
 // J2ObjcMethodInfo accessor functions.
+NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable);
+NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata);
 jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata);
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
-
-__attribute__((always_inline)) inline const char *JreMethodJavaName(
-    const J2ObjcMethodInfo *metadata, const void **ptrTable) {
-  const char *javaName = (const char *)JrePtrAtIndex(ptrTable, metadata->javaNameIdx);
-  return javaName ? javaName : metadata->selector;
-}
 
 __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethodInfo *metadata) {
   return metadata ? metadata->modifiers : JavaLangReflectModifier_PUBLIC;
@@ -142,10 +137,6 @@ __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethod
 // metadata must not be NULL.
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
   return sel_registerName(metadata->selector);
-}
-
-__attribute__((always_inline)) inline bool JreNullableCStrEquals(const char *a, const char *b) {
-  return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);
 }
 
 CF_EXTERN_C_END
