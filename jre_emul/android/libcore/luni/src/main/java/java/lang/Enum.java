@@ -17,10 +17,12 @@
 package java.lang;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import libcore.util.BasicLruCache;
-import libcore.util.EmptyArray;
+
+/*-[
+#include "java/lang/AssertionError.h"
+#include "objc/message.h"
+]-*/
 
 /**
  * The superclass of all enumerated types. Actual enumeration types inherit from
@@ -33,22 +35,20 @@ public abstract class Enum<E extends Enum<E>> implements Serializable, Comparabl
 
     private static final BasicLruCache<Class<? extends Enum>, Object[]> sharedConstantsCache
             = new BasicLruCache<Class<? extends Enum>, Object[]>(64) {
-        @Override protected Object[] create(Class<? extends Enum> enumType) {
-            if (!enumType.isEnum()) {
-                return null;
-            }
-            try {
-                Method method = enumType.getDeclaredMethod("values", EmptyArray.CLASS);
-                method.setAccessible(true);
-                return (Object[]) method.invoke((Object[]) null);
-            } catch (NoSuchMethodException impossible) {
-                throw new AssertionError("impossible", impossible);
-            } catch (IllegalAccessException impossible) {
-                throw new AssertionError("impossible", impossible);
-            } catch (InvocationTargetException impossible) {
-                throw new AssertionError("impossible", impossible);
-            }
-        }
+        // Use a native reflective lookup so that enums with stripped reflection will work.
+        @Override protected native Object[] create(Class<? extends Enum> enumType) /*-[
+          nil_chk(enumType);
+          if (![enumType isEnum]) {
+            return nil;
+          }
+          Class cls = enumType.objcClass;
+          Method valuesMethod = class_getClassMethod(cls, @selector(values));
+          if (valuesMethod) {
+            return method_invoke(cls, valuesMethod);
+          }
+          @throw create_JavaLangAssertionError_initWithId_(
+              [@"Enum type with no values method: " stringByAppendingString:[enumType getName]]);
+        ]-*/;
     };
 
     private final String name;
