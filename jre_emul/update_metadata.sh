@@ -35,6 +35,7 @@ update_file Classes/java/lang/AbstractStringBuilder.m java/lang/AbstractStringBu
 update_file Classes/java/lang/Iterable.m java/lang/Iterable.java
 update_file Classes/java/lang/reflect/AccessibleObject.m java/lang/reflect/AccessibleObject.java
 update_file Classes/java/lang/reflect/Constructor.m java/lang/reflect/Constructor.java
+update_file Classes/java/lang/reflect/ExecutableMember.m java/lang/reflect/ExecutableMember.java
 update_file Classes/java/lang/reflect/Field.m java/lang/reflect/Field.java
 update_file Classes/java/lang/reflect/Method.m java/lang/reflect/Method.java
 

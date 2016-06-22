@@ -233,6 +233,10 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
+- (NSString *)metadataName {
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
+}
+
 - (jint)getModifiers {
   if (metadata_) {
     return metadata_->modifiers & JavaLangReflectModifier_classModifiers();
@@ -248,15 +252,11 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods, bool publicOnly) {
-  Class cls = iosClass.objcClass;
-  if (!cls) {
-    // Might be an array class.
-    return;
-  }
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   if (metadata->methodCount == 0) {
     return;
   }
+  Class cls = iosClass.objcClass;
   Protocol *protocol = iosClass.objcProtocol;
   unsigned int protocolMethodCount, instanceMethodCount, classMethodCount;
   struct objc_method_description *protocolMethods = NULL;
@@ -348,43 +348,100 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
+static const J2ObjcMethodInfo *FindMethodMetadata(
+    IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes) {
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
+  const void **ptrTable = metadata->ptrTable;
+  const char *cname = [name UTF8String];
+  const char *cparams = [JreMetadataNameList(paramTypes) UTF8String];
+  for (int i = 0; i < metadata->methodCount; i++) {
+    const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
+    if (strcmp(JreMethodJavaName(methodInfo, ptrTable), cname) == 0
+        && JreNullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
+      return methodInfo;
+    }
+  }
+  return NULL;
+}
+
+static JavaLangReflectMethod *FindMethod(
+    IOSClass *iosClass, NSString *name, IOSObjectArray *types) {
+  const J2ObjcMethodInfo *methodInfo = FindMethodMetadata(iosClass, name, types);
+  if (!methodInfo || methodInfo->returnType == NULL) {
+    return nil;
+  }
+  SEL sel = sel_registerName(methodInfo->selector);
+  Class cls = iosClass.objcClass;
+  NSMethodSignature *signature = nil;
+  bool isStatic = (methodInfo->modifiers & JavaLangReflectModifier_STATIC) > 0;
+  if (isStatic) {
+    if (cls) {
+      Method method = JreFindClassMethod(cls, methodInfo->selector);
+      if (method) {
+        signature = JreSignatureOrNull(method_getDescription(method));
+      }
+    }
+  } else {
+    Protocol *protocol = iosClass.objcProtocol;
+    if (protocol) {
+      struct objc_method_description methodDesc =
+          protocol_getMethodDescription(protocol, sel, YES, YES);
+      signature = JreSignatureOrNull(&methodDesc);
+    } else {
+      Method method = JreFindInstanceMethod(cls, methodInfo->selector);
+      if (method) {
+        signature = JreSignatureOrNull(method_getDescription(method));
+      }
+    }
+  }
+  if (!signature) {
+    return nil;
+  }
+  return [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                 selector:sel
+                                                    class:iosClass
+                                                 isStatic:isStatic
+                                                 metadata:methodInfo];
+}
+
+static JavaLangReflectMethod *FindMethodInHierarchy(
+    IOSClass *iosClass, NSString *name, IOSObjectArray *types) {
+  JavaLangReflectMethod *method = FindMethod(iosClass, name, types);
+  if (method) {
+    return method;
+  }
+  for (IOSClass *p in [iosClass getInterfacesInternal]) {
+    method = FindMethodInHierarchy(p, name, types);
+    if (method) {
+      return method;
+    }
+  }
+  IOSClass *superclass = [iosClass getSuperclass];
+  return superclass ? FindMethodInHierarchy(superclass, name, types) : nil;
+}
+
 // Return a method instance described by a name and an array of
 // parameter types.  If the named method isn't a member of the specified
 // class, return a superclass method if available.
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
-  NSString *translatedName = IOSClass_GetTranslatedMethodName(self, name, types);
-  IOSClass *cls = self;
-  do {
-    JavaLangReflectMethod *method = [cls findMethodWithTranslatedName:translatedName
-                                                      checkSupertypes:true];
-    if (method != nil) {
-      if (([method getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
-        break;
-      }
-      return method;
-    }
-    for (IOSClass *p in [cls getInterfacesInternal]) {
-      method = [p findMethodWithTranslatedName:translatedName checkSupertypes:true];
-      if (method != nil) {
-        return method;
-      }
-    }
-  } while ((cls = [cls getSuperclass]) != nil);
-  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
+  nil_chk(name);
+  JavaLangReflectMethod *method = FindMethodInHierarchy(self, name, types);
+  if (method && ([method getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
+    return method;
+  }
+  @throw create_JavaLangNoSuchMethodException_initWithNSString_(name);
 }
 
 // Return a method instance described by a name and an array of parameter
 // types.  Return nil if the named method is not a member of this class.
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
                               parameterTypes:(IOSObjectArray *)types {
-  JavaLangReflectMethod *result =
-      [self findMethodWithTranslatedName:IOSClass_GetTranslatedMethodName(self, name, types)
-                         checkSupertypes:false];
-  if (!result) {
-    @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
+  JavaLangReflectMethod *method = FindMethod(self, name, types);
+  if (method) {
+    return method;
   }
-  return result;
+  @throw create_JavaLangNoSuchMethodException_initWithNSString_(name);
 }
 
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
@@ -405,76 +462,6 @@ static NSString *Capitalize(NSString *s) {
   NSString *firstChar = [[s substringToIndex:1] capitalizedString];
   return [s stringByReplacingCharactersInRange:NSMakeRange(0, 1)
                                     withString:firstChar];
-}
-
-static NSString *GetParameterKeyword(IOSClass *paramType) {
-  if (paramType == IOSClass_objectClass) {
-    return @"Id";
-  }
-  return Capitalize([paramType objcName]);
-}
-
-static jint countArgs(char *s) {
-  jint count = 0;
-  while (*s) {
-    if (*s++ == ':') {
-      ++count;
-    }
-  }
-  return count;
-}
-
-const J2ObjcMethodInfo *FindMethodMetadataWithJavaName(
-    const J2ObjcClassInfo *metadata, NSString *javaName, jint argCount) {
-  if (metadata) {
-    const char *name = [javaName UTF8String];
-    for (int i = 0; i < metadata->methodCount; i++) {
-      const char *cname = JrePtrAtIndex(metadata->ptrTable, metadata->methods[i].javaNameIdx);
-      if (cname && strcmp(name, cname) == 0
-          && argCount == countArgs((char *)metadata->methods[i].selector)) {
-        // Skip leading matches followed by "With", which follow the standard selector
-        // pattern using typed parameters. This method is for resolving mapped methods
-        // which don't follow that pattern, and thus need help from metadata.
-        char buffer[256];
-        strcpy(buffer, cname);
-        strcat(buffer, "With");
-        if (strncmp(buffer, metadata->methods[i].selector, strlen(buffer)) != 0) {
-          return &metadata->methods[i];
-        }
-      }
-    }
-  }
-  return nil;
-}
-
-
-// Return a method's selector as it would be created during j2objc translation.
-// The format is "name" with no parameters, "nameWithType:" for one parameter,
-// and "nameWithType:withType:..." for multiple parameters.
-NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
-                                           IOSObjectArray *parameterTypes) {
-  nil_chk(name);
-  IOSClass *metaCls = cls;
-  jint nParameters = parameterTypes ? parameterTypes->size_ : 0;
-  while (metaCls) {
-    const J2ObjcMethodInfo *methodData =
-        FindMethodMetadataWithJavaName(metaCls->metadata_, name, nParameters);
-    if (methodData) {
-      return JreMethodObjcName(methodData);
-    }
-    metaCls = [metaCls getSuperclass];
-  }
-  if (nParameters == 0) {
-    return name;
-  }
-  IOSClass *firstParameterType = parameterTypes->buffer_[0];
-  NSMutableString *translatedName = [NSMutableString stringWithCapacity:128];
-  [translatedName appendFormat:@"%@With%@:", name, GetParameterKeyword(firstParameterType)];
-  for (jint i = 1; i < nParameters; i++) {
-    IOSClass *parameterType = parameterTypes->buffer_[i];
-    [translatedName appendFormat:@"with%@:", GetParameterKeyword(parameterType)];
-  }
-  return translatedName;
 }
 
 - (IOSClass *)getComponentType {
