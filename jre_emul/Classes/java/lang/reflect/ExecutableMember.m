@@ -347,6 +347,16 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   [super dealloc];
 }
 
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+  };
+  static const J2ObjcClassInfo _ExecutableMember = {
+    "ExecutableMember", "java.lang.reflect", NULL, methods, NULL, 7, 0x401, 1, 0, -1, -1, -1, -1, -1
+  };
+  return &_ExecutableMember;
+}
+
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
 GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
   const J2ObjcMethodInfo *metadata = [self metadata];

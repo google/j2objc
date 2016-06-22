@@ -143,6 +143,9 @@ struct objc_method_description *JreFindMethodDescFromMethodList(
 
 NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
   const char *types = methodDesc->types;
+  if (!types) {
+    return nil;
+  }
   // Some IOS devices crash instead of throwing an exception on struct type
   // encodings.
   const char *badChar = strchr(types, '{');
@@ -156,6 +159,20 @@ NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc
   @catch (NSException *e) {
     return nil;
   }
+}
+
+NSString *JreMetadataNameList(IOSObjectArray *classes) {
+  if (!classes || classes->size_ == 0) {
+    return nil;
+  }
+  NSMutableString *str = [NSMutableString string];
+  for (IOSClass *cls in classes) {
+    if (!cls) {
+      return @"";  // Won't match anything.
+    }
+    [str appendString:[cls metadataName]];
+  }
+  return str;
 }
 
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName) {
@@ -200,15 +217,6 @@ const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSStr
     }
   }
   return nil;
-}
-
-NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
-  const char *javaName = metadata ? JrePtrAtIndex(ptrTable, metadata->javaNameIdx) : NULL;
-  return javaName ? [NSString stringWithUTF8String:javaName] : nil;
-}
-
-NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata) {
-  return metadata ? [NSString stringWithUTF8String:metadata->selector] : nil;
 }
 
 jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata) {

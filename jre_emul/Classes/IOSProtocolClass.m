@@ -83,6 +83,10 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   return NSStringFromProtocol(protocol_);
 }
 
+- (NSString *)metadataName {
+  return [NSString stringWithFormat:@"L%@;", NSStringFromProtocol(protocol_)];
+}
+
 // Returns the class with the same name as the protocol, if it exists.
 - (Class) objcClass {
   return GetBackingClass(protocol_);
