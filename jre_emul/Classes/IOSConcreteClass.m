@@ -161,6 +161,42 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
   return GetConstructorsImpl(self, true);
 }
 
+- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
+                                        checkSupertypes:(jboolean)checkSupertypes {
+  const char *name = [objcName UTF8String];
+
+  // NSException's isEquals: method returns different value than java.lang.Throwable's,
+  // and should use the default Object.equals() implementation. This can't be fixed by
+  // overriding in Throwable, as serialization checks for the default equals() by
+  // checking that the declaring class is Object. Since isEqual: and hash are tied
+  // together, both methods are skipped so that they are reported as being declared by
+  // NSObject.
+  if (strcmp(class_getName(class_), "NSException") == 0
+    && (strcmp(name, "isEqual:") == 0 || strcmp(name, "hash") == 0)) {
+    return nil;
+  }
+
+  jboolean isStatic = false;
+  Method method = JreFindInstanceMethod(class_, name);
+  if (!method) {
+    method = JreFindClassMethod(class_, name);
+    isStatic = true;
+  }
+  if (!method) {
+    return nil;
+  }
+  NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
+  if (!signature) {
+    return nil;
+  }
+  const J2ObjcClassInfo *metadata = [self getMetadata];
+  return [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                 selector:method_getName(method)
+                                                    class:self
+                                                 isStatic:isStatic
+                                                 metadata:JreFindMethodInfo(metadata, objcName)];
+}
+
 - (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)parameterTypes {
   JavaLangReflectConstructor *c = JreConstructorWithParamTypes(self, parameterTypes);
   if (c && ([c getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {

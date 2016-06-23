@@ -133,7 +133,7 @@ struct objc_method_description *JreFindMethodDescFromMethodList(
   return NULL;
 }
 
-static NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
+NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
   const char *types = methodDesc->types;
   if (!types) {
     return nil;
@@ -196,6 +196,19 @@ NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) {
 NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
   return metadata && metadata->packageName
       ? [NSString stringWithUTF8String:metadata->packageName] : nil;
+}
+
+const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName) {
+  if (!metadata) {
+    return NULL;
+  }
+  const char *name = [methodName UTF8String];
+  for (int i = 0; i < metadata->methodCount; i++) {
+    if (strcmp(name, metadata->methods[i].selector) == 0) {
+      return &metadata->methods[i];
+    }
+  }
+  return nil;
 }
 
 static JavaLangReflectMethod *MethodFromMetadata(

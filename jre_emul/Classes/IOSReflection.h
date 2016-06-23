@@ -45,6 +45,7 @@ struct objc_method_description *JreFindMethodDescFromList(
     SEL sel, struct objc_method_description *methods, unsigned int count);
 struct objc_method_description *JreFindMethodDescFromMethodList(
     SEL sel, Method *methods, unsigned int count);
+NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
 
 __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
   return i < 0 ? NULL : ptrTable[i];
@@ -57,6 +58,7 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 
 // Field and method lookup functions.
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName);
+const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName);
 // Find a method or constructor declared in the given class.
 JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
     IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes);
