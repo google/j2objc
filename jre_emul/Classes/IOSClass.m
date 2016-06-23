@@ -348,29 +348,13 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
-static JavaLangReflectMethod *FindMethodInHierarchy(
-    IOSClass *iosClass, NSString *name, IOSObjectArray *types) {
-  JavaLangReflectMethod *method = JreMethodWithNameAndParamTypes(iosClass, name, types);
-  if (method) {
-    return method;
-  }
-  for (IOSClass *p in [iosClass getInterfacesInternal]) {
-    method = FindMethodInHierarchy(p, name, types);
-    if (method) {
-      return method;
-    }
-  }
-  IOSClass *superclass = [iosClass getSuperclass];
-  return superclass ? FindMethodInHierarchy(superclass, name, types) : nil;
-}
-
 // Return a method instance described by a name and an array of
 // parameter types.  If the named method isn't a member of the specified
 // class, return a superclass method if available.
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
   nil_chk(name);
-  JavaLangReflectMethod *method = FindMethodInHierarchy(self, name, types);
+  JavaLangReflectMethod *method = JreMethodWithNameAndParamTypesInherited(self, name, types);
   if (method && ([method getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
     return method;
   }

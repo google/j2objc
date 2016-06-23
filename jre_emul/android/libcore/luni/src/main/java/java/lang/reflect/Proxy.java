@@ -27,6 +27,7 @@ import java.util.WeakHashMap;
 #include "IOSClass.h"
 #include "IOSPrimitiveClass.h"
 #include "IOSProxyClass.h"
+#include "IOSReflection.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
@@ -285,25 +286,27 @@ public class Proxy implements Serializable {
     ]-*/;
 
     /*-[
-    - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-      unsigned int outCount;
-      Protocol * __unsafe_unretained *interfaces = class_copyProtocolList([self class], &outCount);
-      for (unsigned i = 0; i < outCount; i++) {
-        struct objc_method_description methodDescription =
-            protocol_getMethodDescription(interfaces[i], aSelector, YES, YES);
-        if (methodDescription.name && sel_isEqual(aSelector, methodDescription.name)) {
-          free(interfaces);
-          return [NSMethodSignature signatureWithObjCTypes:methodDescription.types];
+    static JavaLangReflectMethod *FindMethod(id self, SEL sel) {
+      const char *selName = sel_getName(sel);
+      for (IOSClass *cls in [[self getClass] getInterfacesInternal]) {
+        JavaLangReflectMethod *result = JreMethodForSelectorInherited(cls, selName);
+        if (result) {
+          return result;
         }
       }
-      free(interfaces);
       return nil;
     }
     ]-*/
 
     /*-[
+    - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+      return FindMethod(self, aSelector).signature;
+    }
+    ]-*/
+
+    /*-[
     - (BOOL)respondsToSelector:(SEL)aSelector {
-      return [self methodSignatureForSelector:aSelector] != nil;
+      return FindMethod(self, aSelector) != nil;
     }
     ]-*/
 
@@ -311,49 +314,38 @@ public class Proxy implements Serializable {
     // Forwards a message to the invocation handler for this proxy.
     -(void)forwardInvocation:(NSInvocation *)anInvocation {
       SEL selector = [anInvocation selector];
-      unsigned int outCount;
-      Protocol * __unsafe_unretained *interfaces = class_copyProtocolList([self class], &outCount);
-      for (unsigned i = 0; i < outCount; i++) {
-        Protocol *protocol = interfaces[i];
-        struct objc_method_description methodDescription =
-            protocol_getMethodDescription(protocol, selector, YES, YES);
-        if (methodDescription.name && sel_isEqual(selector, methodDescription.name)) {
-          IOSClass *iosProtocol = IOSClass_fromProtocol(protocol);
-          JavaLangReflectMethod *method =
-              [iosProtocol findMethodWithTranslatedName:NSStringFromSelector(selector)
-                                        checkSupertypes:YES];
-          IOSObjectArray *paramTypes = [method getParameterTypes];
-          jint numArgs = paramTypes->size_;
-          IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
-
-          for (jint j = 0; j < numArgs; j++) {
-            J2ObjcRawValue arg;
-            [anInvocation getArgument:&arg atIndex:j + 2];
-            id javaArg = [paramTypes->buffer_[j] __boxValue:&arg];
-            [args replaceObjectAtIndex:j withObject:javaArg];
-          }
-          id javaResult = [handler_ invokeWithId:self
-                       withJavaLangReflectMethod:method
-                               withNSObjectArray:args];
-          IOSClass *returnType = [method getReturnType];
-          if (returnType != [IOSClass voidClass]) {
-            IOSClass *resultType = [javaResult getClass];
-            if ([returnType isPrimitive]) {
-              // Return value is currently wrapped, so check wrapper type instead.
-              returnType = [(IOSPrimitiveClass *) returnType wrapperClass];
-            }
-            if (javaResult && ![returnType isAssignableFrom:resultType]) {
-              @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
-            }
-            J2ObjcRawValue result;
-            [[method getReturnType] __unboxValue:javaResult toRawValue:&result];
-            [anInvocation setReturnValue:&result];
-          }
-          return;  // success!
-        }
+      JavaLangReflectMethod *method = FindMethod(self, selector);
+      if (!method) {
+        [self doesNotRecognizeSelector:_cmd];
       }
-      free(interfaces);
-      [self doesNotRecognizeSelector:_cmd];
+
+      IOSObjectArray *paramTypes = [method getParameterTypes];
+      jint numArgs = paramTypes->size_;
+      IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
+      for (jint i = 0; i < numArgs; i++) {
+        J2ObjcRawValue arg;
+        [anInvocation getArgument:&arg atIndex:i + 2];
+        id javaArg = [paramTypes->buffer_[i] __boxValue:&arg];
+        [args replaceObjectAtIndex:i withObject:javaArg];
+      }
+
+      id javaResult = [handler_ invokeWithId:self
+                   withJavaLangReflectMethod:method
+                           withNSObjectArray:args];
+      IOSClass *returnType = [method getReturnType];
+      if (returnType != [IOSClass voidClass]) {
+        IOSClass *resultType = [javaResult getClass];
+        if ([returnType isPrimitive]) {
+          // Return value is currently wrapped, so check wrapper type instead.
+          returnType = [(IOSPrimitiveClass *) returnType wrapperClass];
+        }
+        if (javaResult && ![returnType isAssignableFrom:resultType]) {
+          @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
+        }
+        J2ObjcRawValue result;
+        [[method getReturnType] __unboxValue:javaResult toRawValue:&result];
+        [anInvocation setReturnValue:&result];
+      }
     }
     ]-*/
 }

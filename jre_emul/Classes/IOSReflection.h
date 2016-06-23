@@ -59,12 +59,17 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 // Field and method lookup functions.
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName);
 const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName);
+// Find a method or constructor declared in the given class.
 JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
     IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes);
 JavaLangReflectConstructor *JreConstructorWithParamTypes(
     IOSClass *iosClass, IOSObjectArray *paramTypes);
 JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, const char *selector);
 JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, const char *selector);
+// Find a method in the given class or its hierarchy.
+JavaLangReflectMethod *JreMethodWithNameAndParamTypesInherited(
+    IOSClass *iosClass, NSString *name, IOSObjectArray *types);
+JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, const char *selector);
 
 // J2ObjcMethodInfo accessor functions.
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);

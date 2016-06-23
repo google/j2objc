@@ -320,6 +320,37 @@ JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, const 
   return nil;
 }
 
+JavaLangReflectMethod *JreMethodWithNameAndParamTypesInherited(
+    IOSClass *iosClass, NSString *name, IOSObjectArray *types) {
+  JavaLangReflectMethod *method = JreMethodWithNameAndParamTypes(iosClass, name, types);
+  if (method) {
+    return method;
+  }
+  for (IOSClass *p in [iosClass getInterfacesInternal]) {
+    method = JreMethodWithNameAndParamTypesInherited(p, name, types);
+    if (method) {
+      return method;
+    }
+  }
+  IOSClass *superclass = [iosClass getSuperclass];
+  return superclass ? JreMethodWithNameAndParamTypesInherited(superclass, name, types) : nil;
+}
+
+JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, const char *selector) {
+  JavaLangReflectMethod *method = JreMethodForSelector(iosClass, selector);
+  if (method) {
+    return method;
+  }
+  for (IOSClass *p in [iosClass getInterfacesInternal]) {
+    method = JreMethodForSelectorInherited(p, selector);
+    if (method) {
+      return method;
+    }
+  }
+  IOSClass *superclass = [iosClass getSuperclass];
+  return superclass ? JreMethodForSelectorInherited(superclass, selector) : nil;
+}
+
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
   const char *genericSig = metadata ? JrePtrAtIndex(ptrTable, metadata->genericSignatureIdx) : NULL;
   return genericSig ? [NSString stringWithUTF8String:genericSig] : nil;
