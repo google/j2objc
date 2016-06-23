@@ -63,8 +63,8 @@
   return name_;
 }
 
-- (NSString *)metadataName {
-  return type_;
+- (void)appendMetadataName:(NSMutableString *)str {
+  [str appendString:type_];
 }
 
 - (NSString *)description {

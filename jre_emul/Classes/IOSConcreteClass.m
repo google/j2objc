@@ -89,8 +89,10 @@
   return NSStringFromClass(class_);
 }
 
-- (NSString *)metadataName {
-  return [NSString stringWithFormat:@"L%@;", NSStringFromClass(class_)];
+- (void)appendMetadataName:(NSMutableString *)str {
+  [str appendString:@"L"];
+  [str appendString:NSStringFromClass(class_)];
+  [str appendString:@";"];
 }
 
 - (jboolean)isAssignableFrom:(IOSClass *)cls {

@@ -233,7 +233,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
-- (NSString *)metadataName {
+- (void)appendMetadataName:(NSMutableString *)str {
   @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 

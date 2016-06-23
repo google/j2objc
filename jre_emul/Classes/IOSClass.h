@@ -34,9 +34,9 @@
 @class JavaLangReflectConstructor;
 @class JavaLangReflectField;
 @class JavaLangReflectMethod;
-@protocol JavaLangAnnotationAnnotation;
 @class JavaIoInputStream;
 @class JavaNetURL;
+@protocol JavaLangAnnotationAnnotation;
 
 /**
  * The representation of a Java class, which serves as the starting
@@ -205,7 +205,7 @@
 - (const J2ObjcClassInfo *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
-- (NSString *)metadataName;
+- (void)appendMetadataName:(NSMutableString *)str;
 // Get the IOSArray subclass that would be used to hold this type.
 - (Class)objcArrayClass;
 - (size_t)getSizeof;

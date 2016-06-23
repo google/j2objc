@@ -77,8 +77,9 @@
   return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
-- (NSString *)metadataName {
-  return [NSString stringWithFormat:@"[%@", [componentType_ metadataName]];
+- (void)appendMetadataName:(NSMutableString *)str {
+  [str appendString:@"["];
+  [componentType_ appendMetadataName:str];
 }
 
 - (NSString *)getCanonicalName {

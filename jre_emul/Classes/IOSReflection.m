@@ -160,7 +160,7 @@ NSString *JreMetadataNameList(IOSObjectArray *classes) {
     if (!cls) {
       return @"";  // Won't match anything.
     }
-    [str appendString:[cls metadataName]];
+    [cls appendMetadataName:str];
   }
   return str;
 }
