@@ -197,8 +197,6 @@
 - (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type;
 
 // Internal methods
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(jboolean)checkSupertypes;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
 - (const J2ObjcClassInfo *)getMetadata;

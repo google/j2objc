@@ -372,11 +372,6 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   @throw create_JavaLangNoSuchMethodException_initWithNSString_(name);
 }
 
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(jboolean)includePublic {
-  return nil; // Overriden by subclasses.
-}
-
 static NSString *Capitalize(NSString *s) {
   if ([s length] == 0) {
     return s;
