@@ -48,7 +48,6 @@ IOS_PRIVATE_OBJS = \
 	IOSArrayClass.o \
 	IOSConcreteClass.o \
 	IOSLocaleData.o \
-	IOSMappedClass.o \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSProxyClass.o \

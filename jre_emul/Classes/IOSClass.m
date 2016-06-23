@@ -25,7 +25,6 @@
 #import "FastPointerLookup.h"
 #import "IOSArrayClass.h"
 #import "IOSConcreteClass.h"
-#import "IOSMappedClass.h"
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "IOSPrimitiveClass.h"
@@ -1125,25 +1124,17 @@ static jboolean IsStringType(Class cls) {
 
 static void *ClassLookup(void *clsPtr) {
   Class cls = (Class)clsPtr;
-  if (cls == [NSObject class]) {
-    return [[IOSMappedClass alloc] initWithClass:[NSObject class]
-                                         package:@"java.lang"
-                                            name:@"Object"];
-  } else if (IsStringType(cls)) {
+  if (IsStringType(cls)) {
     // NSString is implemented by several subclasses.
     // Thread safety is guaranteed by the FastPointerLookup that calls this.
     static IOSClass *stringClass;
     if (!stringClass) {
-      stringClass = [[IOSMappedClass alloc] initWithClass:[NSString class]
-                                                  package:@"java.lang"
-                                                     name:@"String"];
+      stringClass = [[IOSConcreteClass alloc] initWithClass:[NSString class]];
     }
     return stringClass;
-  } else {
-    IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
-    return result;
   }
-  return NULL;
+  IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
+  return result;
 }
 
 static FastPointerLookup_t classLookup = FAST_POINTER_LOOKUP_INIT(&ClassLookup);
