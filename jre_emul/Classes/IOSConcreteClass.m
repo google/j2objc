@@ -197,60 +197,8 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
                                                  metadata:JreFindMethodInfo(metadata, objcName)];
 }
 
-static JavaLangReflectConstructor *GetConstructorImpl(
-    IOSConcreteClass *iosClass, NSString *name) {
-  Method method = JreFindInstanceMethod(iosClass->class_, [name UTF8String]);
-  if (method) {
-    NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
-    if (signature) {
-      const J2ObjcClassInfo *metadata = [iosClass getMetadata];
-      return [JavaLangReflectConstructor
-          constructorWithMethodSignature:signature
-                                selector:method_getName(method)
-                                   class:iosClass
-                                metadata:JreFindMethodInfo(metadata, name)];
-    }
-  }
-  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
-}
-
-static const J2ObjcMethodInfo *FindConstructorMetadata(
-    IOSConcreteClass *iosClass, IOSObjectArray *paramTypes) {
-  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
-  const void **ptrTable = metadata->ptrTable;
-  const char *cparams = [JreMetadataNameList(paramTypes) UTF8String];
-  for (int i = 0; i < metadata->methodCount; i++) {
-    const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
-    if (!methodInfo->returnType
-        && JreNullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
-      return methodInfo;
-    }
-  }
-  return NULL;
-}
-
-static JavaLangReflectConstructor *FindConstructor(
-    IOSConcreteClass *iosClass, IOSObjectArray *types) {
-  const J2ObjcMethodInfo *methodInfo = FindConstructorMetadata(iosClass, types);
-  if (!methodInfo) {
-    return nil;
-  }
-  Method method = JreFindInstanceMethod(iosClass->class_, methodInfo->selector);
-  if (!method) {
-    return nil;
-  }
-  NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
-  if (!signature) {
-    return nil;
-  }
-  return [JavaLangReflectConstructor constructorWithMethodSignature:signature
-                                                           selector:method_getName(method)
-                                                              class:iosClass
-                                                           metadata:methodInfo];
-}
-
 - (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)parameterTypes {
-  JavaLangReflectConstructor *c = FindConstructor(self, parameterTypes);
+  JavaLangReflectConstructor *c = JreConstructorWithParamTypes(self, parameterTypes);
   if (c && ([c getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
     return c;
   }
@@ -258,15 +206,11 @@ static JavaLangReflectConstructor *FindConstructor(
 }
 
 - (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)parameterTypes {
-  JavaLangReflectConstructor *c = FindConstructor(self, parameterTypes);
+  JavaLangReflectConstructor *c = JreConstructorWithParamTypes(self, parameterTypes);
   if (c) {
     return c;
   }
   @throw create_JavaLangNoSuchMethodException_init();
-}
-
-- (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)selector {
-  return GetConstructorImpl(self, selector);
 }
 
 - (IOSObjectArray *)getInterfacesInternal {

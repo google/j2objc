@@ -348,65 +348,9 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
-static const J2ObjcMethodInfo *FindMethodMetadata(
-    IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes) {
-  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
-  const void **ptrTable = metadata->ptrTable;
-  const char *cname = [name UTF8String];
-  const char *cparams = [JreMetadataNameList(paramTypes) UTF8String];
-  for (int i = 0; i < metadata->methodCount; i++) {
-    const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
-    if (strcmp(JreMethodJavaName(methodInfo, ptrTable), cname) == 0
-        && JreNullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
-      return methodInfo;
-    }
-  }
-  return NULL;
-}
-
-static JavaLangReflectMethod *FindMethod(
-    IOSClass *iosClass, NSString *name, IOSObjectArray *types) {
-  const J2ObjcMethodInfo *methodInfo = FindMethodMetadata(iosClass, name, types);
-  if (!methodInfo || methodInfo->returnType == NULL) {
-    return nil;
-  }
-  SEL sel = sel_registerName(methodInfo->selector);
-  Class cls = iosClass.objcClass;
-  NSMethodSignature *signature = nil;
-  bool isStatic = (methodInfo->modifiers & JavaLangReflectModifier_STATIC) > 0;
-  if (isStatic) {
-    if (cls) {
-      Method method = JreFindClassMethod(cls, methodInfo->selector);
-      if (method) {
-        signature = JreSignatureOrNull(method_getDescription(method));
-      }
-    }
-  } else {
-    Protocol *protocol = iosClass.objcProtocol;
-    if (protocol) {
-      struct objc_method_description methodDesc =
-          protocol_getMethodDescription(protocol, sel, YES, YES);
-      signature = JreSignatureOrNull(&methodDesc);
-    } else {
-      Method method = JreFindInstanceMethod(cls, methodInfo->selector);
-      if (method) {
-        signature = JreSignatureOrNull(method_getDescription(method));
-      }
-    }
-  }
-  if (!signature) {
-    return nil;
-  }
-  return [JavaLangReflectMethod methodWithMethodSignature:signature
-                                                 selector:sel
-                                                    class:iosClass
-                                                 isStatic:isStatic
-                                                 metadata:methodInfo];
-}
-
 static JavaLangReflectMethod *FindMethodInHierarchy(
     IOSClass *iosClass, NSString *name, IOSObjectArray *types) {
-  JavaLangReflectMethod *method = FindMethod(iosClass, name, types);
+  JavaLangReflectMethod *method = JreMethodWithNameAndParamTypes(iosClass, name, types);
   if (method) {
     return method;
   }
@@ -437,7 +381,7 @@ static JavaLangReflectMethod *FindMethodInHierarchy(
 // types.  Return nil if the named method is not a member of this class.
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
                               parameterTypes:(IOSObjectArray *)types {
-  JavaLangReflectMethod *method = FindMethod(self, name, types);
+  JavaLangReflectMethod *method = JreMethodWithNameAndParamTypes(self, name, types);
   if (method) {
     return method;
   }
@@ -446,10 +390,6 @@ static JavaLangReflectMethod *FindMethodInHierarchy(
 
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
                                         checkSupertypes:(jboolean)includePublic {
-  return nil; // Overriden by subclasses.
-}
-
-- (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)objcName {
   return nil; // Overriden by subclasses.
 }
 
@@ -1023,23 +963,15 @@ static void getAllFields(IOSClass *cls, NSMutableDictionary *fieldMap) {
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
-static jboolean IsConstructorSelector(NSString *selector) {
-  return [selector isEqualToString:@"init"] || [selector hasPrefix:@"initWith"];
-}
-
 - (JavaLangReflectMethod *)getEnclosingMethod {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(self);
   const char *enclosingMethod = JrePtrAtIndex(metadata->ptrTable, metadata->enclosingMethodIdx);
   if (!enclosingMethod) {
     return nil;
   }
-  NSString *selector = [NSString stringWithUTF8String:enclosingMethod];
-  if (IsConstructorSelector(selector)) {
-    return nil;
-  }
   IOSClass *enclosingClass = JreClassForString(
       JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx));
-  return [enclosingClass findMethodWithTranslatedName:selector checkSupertypes:false];
+  return JreMethodForSelector(enclosingClass, enclosingMethod);
 }
 
 - (JavaLangReflectConstructor *)getEnclosingConstructor {
@@ -1048,13 +980,9 @@ static jboolean IsConstructorSelector(NSString *selector) {
   if (!enclosingMethod) {
     return nil;
   }
-  NSString *selector = [NSString stringWithUTF8String:enclosingMethod];
-  if (!IsConstructorSelector(selector)) {
-    return nil;
-  }
   IOSClass *enclosingClass = JreClassForString(
       JrePtrAtIndex(metadata->ptrTable, metadata->enclosingClassIdx));
-  return [enclosingClass findConstructorWithTranslatedName:selector];
+  return JreConstructorForSelector(enclosingClass, enclosingMethod);
 }
 
 

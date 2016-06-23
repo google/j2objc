@@ -27,6 +27,8 @@
 #import "objc/runtime.h"
 
 @class IOSClass;
+@class JavaLangReflectConstructor;
+@class JavaLangReflectMethod;
 
 // An empty class info struct to be used by certain kinds of class objects like
 // arrays and proxies.
@@ -44,7 +46,6 @@ struct objc_method_description *JreFindMethodDescFromList(
 struct objc_method_description *JreFindMethodDescFromMethodList(
     SEL sel, Method *methods, unsigned int count);
 NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
-NSString *JreMetadataNameList(IOSObjectArray *classes);
 
 __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
   return i < 0 ? NULL : ptrTable[i];
@@ -58,9 +59,14 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata);
 // Field and method lookup functions.
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName);
 const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName);
+JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
+    IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes);
+JavaLangReflectConstructor *JreConstructorWithParamTypes(
+    IOSClass *iosClass, IOSObjectArray *paramTypes);
+JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, const char *selector);
+JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, const char *selector);
 
 // J2ObjcMethodInfo accessor functions.
-jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata);
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
 
 __attribute__((always_inline)) inline const char *JreMethodJavaName(
