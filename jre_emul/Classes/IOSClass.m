@@ -928,9 +928,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 - (IOSObjectArray *)getDeclaredFields {
   NSMutableDictionary *fieldDictionary = [NSMutableDictionary dictionary];
-  if (metadata_) {
-    GetFieldsFromClass(self, fieldDictionary, false);
-  }
+  GetFieldsFromClass(self, fieldDictionary, false);
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
