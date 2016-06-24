@@ -161,100 +161,49 @@ public final class IosMockMaker implements MockMaker {
     }
 
     /*-[
-    static IOSClass* getMethodDescription(Class cls, SEL aSelector,
-        struct objc_method_description *md) {
-      IOSClass *mockClass = IOSClass_fromClass(cls);
+    static JavaLangReflectMethod *FindMethod(id self, SEL selector) {
       IOSClass *mockedClass =
-          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:mockClass];
-
-      // Check for an instance method with this selector.
-      unsigned nMethods;
-      Method *instanceMethods = class_copyMethodList(mockedClass.objcClass, &nMethods);
-      for (unsigned i = 0; i < nMethods; i++) {
-        SEL sel = method_getName(instanceMethods[i]);
-        if (sel == aSelector) {
-          struct objc_method_description *methodDescription =
-              method_getDescription(instanceMethods[i]);
-          memcpy(md, methodDescription, sizeof(struct objc_method_description));
-          free(instanceMethods);
-          return mockedClass;
-        }
-      }
-      free(instanceMethods);
-
-      // See if it's a class method.
-      Method *classMethods =
-          class_copyMethodList(object_getClass(mockedClass.objcClass), &nMethods);
-      for (unsigned i = 0; i < nMethods; i++) {
-        SEL sel = method_getName(classMethods[i]);
-        if (sel == aSelector) {
-          struct objc_method_description *methodDescription =
-              method_getDescription(classMethods[i]);
-          memcpy(md, methodDescription, sizeof(struct objc_method_description));
-          free(classMethods);
-          return mockedClass;
-        }
-      }
-      free(classMethods);
-
-      // Check the extra interfaces for the method.
-      unsigned int outCount;
-      Protocol * __unsafe_unretained *interfaces = class_copyProtocolList(cls, &outCount);
-      for (unsigned i = 0; i < outCount; i++) {
-        struct objc_method_description methodDescription =
-            protocol_getMethodDescription(interfaces[i], aSelector, YES, YES);
-        if (methodDescription.name && sel_isEqual(aSelector, methodDescription.name)) {
-          memcpy(md, &methodDescription, sizeof(struct objc_method_description));
-          free(interfaces);
-          return IOSClass_fromProtocol(interfaces[i]);
-        }
-      }
-      free(interfaces);
-      return nil;
+          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self getClass]];
+      return [mockedClass getMethodWithSelector:sel_getName(selector)];
     }
+    ]-*/
 
+    /*-[
     - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-      struct objc_method_description methodDescription;
-      if (getMethodDescription([self class], aSelector, &methodDescription)) {
-        return [NSMethodSignature signatureWithObjCTypes:methodDescription.types];
-      }
-      return nil;
+      return FindMethod(self, aSelector).signature;
     }
+    ]-*/
 
+    /*-[
     // Forwards a message to the invocation handler for this proxy.
     - (void)forwardInvocation:(NSInvocation *)anInvocation {
       SEL selector = [anInvocation selector];
-      struct objc_method_description methodDescription;
-      IOSClass *clazz = getMethodDescription([self class], selector, &methodDescription);
-      if (clazz) {
-        JavaLangReflectMethod *method =
-            [clazz findMethodWithTranslatedName:NSStringFromSelector(selector)
-                                checkSupertypes:YES];
-        IOSObjectArray *paramTypes = [method getParameterTypes];
-        NSUInteger numArgs = paramTypes->size_;
-        IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
-
-        for (unsigned i = 0; i < numArgs; i++) {
-          J2ObjcRawValue arg;
-          [anInvocation getArgument:&arg atIndex:i + 2];
-          id javaArg = [paramTypes->buffer_[i] __boxValue:&arg];
-          [args replaceObjectAtIndex:i withObject:javaArg];
-        }
-        id<JavaLangReflectInvocationHandler> handler = [self getHandler];
-        id javaResult = [handler invokeWithId:self
-                     withJavaLangReflectMethod:method
-                             withNSObjectArray:args];
-        IOSClass *returnType = [method getReturnType];
-        if (returnType != [IOSClass voidClass]) {
-          J2ObjcRawValue result;
-          [[method getReturnType] __unboxValue:javaResult toRawValue:&result];
-          [anInvocation setReturnValue:&result];
-        }
-        return;  // success!
+      JavaLangReflectMethod *method = FindMethod(self, selector);
+      if (!method) {
+        [self doesNotRecognizeSelector:_cmd];
       }
-      [self doesNotRecognizeSelector:_cmd];
+
+      IOSObjectArray *paramTypes = [method getParameterTypes];
+      NSUInteger numArgs = paramTypes->size_;
+      IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
+      for (unsigned i = 0; i < numArgs; i++) {
+        J2ObjcRawValue arg;
+        [anInvocation getArgument:&arg atIndex:i + 2];
+        id javaArg = [paramTypes->buffer_[i] __boxValue:&arg];
+        [args replaceObjectAtIndex:i withObject:javaArg];
+      }
+
+      id<JavaLangReflectInvocationHandler> handler = [self getHandler];
+      id javaResult = [handler invokeWithId:self
+                   withJavaLangReflectMethod:method
+                           withNSObjectArray:args];
+      IOSClass *returnType = [method getReturnType];
+      if (returnType != [IOSClass voidClass]) {
+        J2ObjcRawValue result;
+        [[method getReturnType] __unboxValue:javaResult toRawValue:&result];
+        [anInvocation setReturnValue:&result];
+      }
     }
     ]-*/
   }
-
 }

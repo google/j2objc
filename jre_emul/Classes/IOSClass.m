@@ -371,6 +371,10 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   @throw create_JavaLangNoSuchMethodException_initWithNSString_(name);
 }
 
+- (JavaLangReflectMethod *)getMethodWithSelector:(const char *)selector {
+  return JreMethodForSelectorInherited(self, selector);
+}
+
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
                                         checkSupertypes:(jboolean)includePublic {
   return nil; // Overriden by subclasses.
