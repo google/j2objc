@@ -50,14 +50,6 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
     IOSObjectArray *objects, jboolean b);
 
-// Decodes an Objective-C type encoding, returning the associated iOS class.
-// For example, the type encoding 's' is decoded as JavaLangShort.
-IOSClass *decodeTypeEncoding(const char *type);
-
-// Return a Java type name for an Objective-C type encoding.  For example,
-// "byte" is returned for 'c', since a Java byte is mapped to a C char.
-NSString *describeTypeEncoding(NSString *type);
-
 CF_EXTERN_C_END
 
 J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectAccessibleObject)

@@ -78,17 +78,9 @@ __attribute__((always_inline)) inline const char *JreMethodJavaName(
   return javaName ? javaName : metadata->selector;
 }
 
-__attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethodInfo *metadata) {
-  return metadata ? metadata->modifiers : JavaLangReflectModifier_PUBLIC;
-}
-
 // metadata must not be NULL.
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
   return sel_registerName(metadata->selector);
-}
-
-__attribute__((always_inline)) inline bool JreNullableCStrEquals(const char *a, const char *b) {
-  return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);
 }
 
 CF_EXTERN_C_END

@@ -254,6 +254,10 @@ static JavaLangReflectConstructor *ConstructorFromMetadata(
                                                            metadata:methodInfo];
 }
 
+static bool NullableCStrEquals(const char *a, const char *b) {
+  return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);
+}
+
 JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
     IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
@@ -263,7 +267,7 @@ JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (methodInfo->returnType && strcmp(JreMethodJavaName(methodInfo, ptrTable), cname) == 0
-        && JreNullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
+        && NullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
       return MethodFromMetadata(iosClass, methodInfo);
     }
   }
@@ -278,7 +282,7 @@ JavaLangReflectConstructor *JreConstructorWithParamTypes(
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (!methodInfo->returnType
-        && JreNullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
+        && NullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
       return ConstructorFromMetadata(iosClass, methodInfo);
     }
   }

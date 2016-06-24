@@ -120,8 +120,7 @@
 
 - (NSString *)description {
   NSMutableString *s = [NSMutableString string];
-  NSString *modifiers =
-      JavaLangReflectModifier_toStringWithInt_(JreMethodModifiers(metadata_));
+  NSString *modifiers = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   NSString *type = [[self getDeclaringClass] getName];
   [s appendFormat:@"%@ %@(", modifiers, type];
   IOSObjectArray *params = [self getParameterTypes];

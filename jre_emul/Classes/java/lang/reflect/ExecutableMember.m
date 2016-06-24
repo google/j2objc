@@ -71,10 +71,8 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
     methodSignature_ = [methodSignature retain];
     selector_ = selector;
     class_ = aClass; // IOSClass types are never dealloced.
-    if (metadata) {
-      metadata_ = metadata;
-      ptrTable_ = IOSClass_GetMetadataOrFail(aClass)->ptrTable;
-    }
+    metadata_ = metadata;
+    ptrTable_ = IOSClass_GetMetadataOrFail(aClass)->ptrTable;
   }
   return self;
 }
@@ -86,7 +84,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 }
 
 - (int)getModifiers {
-  return JreMethodModifiers(metadata_);
+  return metadata_->modifiers;
 }
 
 - (jint)getNumParams {
@@ -94,91 +92,8 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return (jint)([methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS);
 }
 
-static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {
-  if ([keyword isEqualToString:@"Byte"]) {
-    return [IOSClass byteClass];
-  } else if ([keyword isEqualToString:@"Short"]) {
-    return [IOSClass shortClass];
-  } else if ([keyword isEqualToString:@"Int"]) {
-    return [IOSClass intClass];
-  } else if ([keyword isEqualToString:@"Long"]) {
-    return [IOSClass longClass];
-  } else if ([keyword isEqualToString:@"Float"]) {
-    return [IOSClass floatClass];
-  } else if ([keyword isEqualToString:@"Double"]) {
-    return [IOSClass doubleClass];
-  } else if ([keyword isEqualToString:@"Char"]) {
-    return [IOSClass charClass];
-  } else if ([keyword isEqualToString:@"Boolean"]) {
-    return [IOSClass booleanClass];
-  }
-  return nil;
-}
-
-static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeyword) {
-  if (![paramKeyword hasPrefix:@"with"] && ![paramKeyword hasPrefix:@"With"]) {
-    // Not a direct java translation, do our best with the ObjC type info.
-    return decodeTypeEncoding(objcType);
-  }
-  // Remove "with" or "With" prefix.
-  paramKeyword = [paramKeyword substringFromIndex:4];
-  IOSClass *type = nil;
-  if (*objcType == '@') {
-    if ([paramKeyword hasSuffix:@"Array"]) {
-      paramKeyword = [paramKeyword substringToIndex:[paramKeyword length] - 5];
-      IOSClass *componentType = DecodePrimitiveParamKeyword(paramKeyword);
-      if (!componentType) {
-        componentType = [IOSClass classForIosName:paramKeyword];
-      }
-      if (componentType) {
-        type = IOSClass_arrayOf(componentType);
-      }
-    } else {
-      type = [IOSClass classForIosName:paramKeyword];
-    }
-  } else {
-    type = DecodePrimitiveParamKeyword(paramKeyword);
-  }
-  if (type) {
-    return type;
-  }
-  return NSObject_class_();
-}
-
 - (IOSObjectArray *)getParameterTypes {
-  if (metadata_) {
-    return JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx));
-  }
-
-  jint nArgs = [self getNumParams];
-  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:IOSClass_class_()];
-  if (nArgs == 0) {
-    return parameters;
-  }
-
-  NSString *selectorStr = NSStringFromSelector(selector_);
-  // Remove method name prefix.
-  if ([selectorStr hasPrefix:@"init"]) {
-    selectorStr = [selectorStr substringFromIndex:4];
-  } else if (nArgs > 0) {
-    NSRange range = [selectorStr rangeOfString:@":"];
-    if (range.location != NSNotFound) {
-      // The name ends with the last "WithType" before the first colon.
-      range = [selectorStr rangeOfString:@"With" options:NSBackwardsSearch
-                                   range:NSMakeRange(0, range.location)];
-      if (range.location != NSNotFound) {
-        selectorStr = [selectorStr substringFromIndex:range.location];
-      }
-    }
-  }
-  NSArray *paramTypes = [selectorStr componentsSeparatedByString:@":"];
-
-  for (jint i = 0; i < nArgs; i++) {
-    const char *argType = [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
-    IOSClass *paramType = ResolveParameterType(argType, [paramTypes objectAtIndex:i]);
-    [parameters replaceObjectAtIndex:i withObject:paramType];
-  }
-  return parameters;
+  return JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx));
 }
 
 - (const char *)getBinaryParameterTypes {
@@ -221,14 +136,11 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (jboolean)isSynthetic {
-  if (metadata_) {
-    return (JreMethodModifiers(metadata_) & JavaLangReflectModifier_SYNTHETIC) > 0;
-  }
-  return false;
+  return (metadata_->modifiers & JavaLangReflectModifier_SYNTHETIC) > 0;
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  return JreParseClassList(metadata_ ? JrePtrAtIndex(ptrTable_, metadata_->exceptionsIdx) : NULL);
+  return JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->exceptionsIdx));
 }
 
 - (NSString *)internalName {
@@ -236,21 +148,17 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  if (metadata_) {
-    id (*annotations)() = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
-    if (annotations) {
-      return annotations();
-    }
+  id (*annotations)() = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
+  if (annotations) {
+    return annotations();
   }
   return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
-  if (metadata_) {
-    id (*paramAnnotations)() = JrePtrAtIndex(ptrTable_, metadata_->paramAnnotationsIdx);
-    if (paramAnnotations) {
-      return paramAnnotations();
-    }
+  id (*paramAnnotations)() = JrePtrAtIndex(ptrTable_, metadata_->paramAnnotationsIdx);
+  if (paramAnnotations) {
+    return paramAnnotations();
   }
   // No parameter annotations, so return an array of empty arrays, one for each parameter.
   jint nParams = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
@@ -262,7 +170,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   // Code generated from Android's java.lang.reflect.AbstractMethod class.
   JavaLangStringBuilder *sb = [[JavaLangStringBuilder alloc] initWithInt:80];
   GenericInfo *info = getMethodOrConstructorGenericInfo(self);
-  jint modifiers = JreMethodModifiers(metadata_);
+  jint modifiers = metadata_->modifiers;
   if (modifiers != 0) {
     [[sb appendWithNSString:
         JavaLangReflectModifier_toStringWithInt_(modifiers & ~JavaLangReflectModifier_VARARGS)]
@@ -309,10 +217,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (jboolean)isVarArgs {
-  if (metadata_) {
-    return (JreMethodModifiers(metadata_) & JavaLangReflectModifier_VARARGS) > 0;
-  }
-  return false;
+  return (metadata_->modifiers & JavaLangReflectModifier_VARARGS) > 0;
 }
 
 - (jboolean)isBridge {

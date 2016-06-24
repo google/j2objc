@@ -63,49 +63,15 @@
 
 // Returns method name.
 - (NSString *)getName {
-  if (metadata_) {
-    return [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
-  }
-
-  // Demangle signature to retrieve original method name.
-  NSString *name = NSStringFromSelector(selector_);
-  NSRange range = [name rangeOfString:@":"];
-  if (range.location == NSNotFound) {
-    return name;  // It's not mangled.
-  }
-
-  // The name ends with the last "WithType" before the first colon.
-  range = [name rangeOfString:@"With" options:NSBackwardsSearch
-      range:NSMakeRange(0, range.location)];
-  if (range.location == NSNotFound) {
-    return name;
-  }
-  return [name substringToIndex:range.location];
+  return [NSString stringWithUTF8String:JreMethodJavaName(metadata_, ptrTable_)];
 }
 
 - (int)getModifiers {
-  int mods = JreMethodModifiers(metadata_);
-  if (isStatic_) {
-    mods |= JavaLangReflectModifier_STATIC;
-  }
-  return mods;
+  return metadata_->modifiers;
 }
 
 - (IOSClass *)getReturnType {
-  if (metadata_) {
-    return JreClassForString(metadata_->returnType);
-  }
-  const char *argType = [methodSignature_ methodReturnType];
-  if (strlen(argType) != 1) {
-    NSString *errorMsg =
-        [NSString stringWithFormat:@"unexpected return type: %s", argType];
-    id exception = [[JavaLangAssertionError alloc] initWithId:errorMsg];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-  return decodeTypeEncoding(argType);
+  return JreClassForString(metadata_->returnType);
 }
 
 - (id<JavaLangReflectType>)getGenericReturnType {
@@ -191,7 +157,7 @@
   IOSClass *declaringClass = [self getDeclaringClass];
   NSException *exception = nil;
   if (object &&
-      (JreMethodModifiers(metadata_) & JavaLangReflectModifier_PRIVATE) > 0 &&
+      (metadata_->modifiers & JavaLangReflectModifier_PRIVATE) > 0 &&
       declaringClass != [object getClass]) {
     // A superclass's private instance method is invoked, so temporarily
     // change the object's type to the superclass.
@@ -219,8 +185,7 @@
 
 - (NSString *)description {
   NSMutableString *s = [NSMutableString string];
-  NSString *modifiers =
-      JavaLangReflectModifier_toStringWithInt_(JreMethodModifiers(metadata_));
+  NSString *modifiers = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   NSString *returnType = [[self getReturnType] getName];
   NSString *declaringClass = [[self getDeclaringClass] getName];
   [s appendFormat:@"%@ %@ %@.%@(", modifiers, returnType, declaringClass, [self getName]];
