@@ -97,7 +97,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
     @synchronized(self) {
       result = __c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED);
       if (!result) {
-        result = JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx));
+        result = [JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx)) retain];
         __c11_atomic_store(&paramTypes_, result, __ATOMIC_RELEASE);
       }
     }
@@ -254,6 +254,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 - (void)dealloc {
   free((void *)binaryParameterTypes_);
   [methodSignature_ release];
+  [__c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED) release];
   [super dealloc];
 }
 
