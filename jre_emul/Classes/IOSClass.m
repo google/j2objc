@@ -375,11 +375,6 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   return JreMethodForSelectorInherited(self, selector);
 }
 
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(jboolean)includePublic {
-  return nil; // Overriden by subclasses.
-}
-
 static NSString *Capitalize(NSString *s) {
   if ([s length] == 0) {
     return s;

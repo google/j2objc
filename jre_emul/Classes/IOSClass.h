@@ -198,8 +198,6 @@
 
 // Internal methods
 - (JavaLangReflectMethod *)getMethodWithSelector:(const char *)selector;
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(jboolean)checkSupertypes;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
 - (const J2ObjcClassInfo *)getMetadata;
