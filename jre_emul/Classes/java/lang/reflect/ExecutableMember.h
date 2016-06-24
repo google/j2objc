@@ -44,7 +44,6 @@
   NSMethodSignature *methodSignature_;
   const J2ObjcMethodInfo *metadata_;
   const void **ptrTable_;
-  const char *binaryParameterTypes_;
 }
 
 @property (readonly) NSMethodSignature *signature;
@@ -92,7 +91,6 @@
 // Internal methods.
 - (jint)getNumParams;
 - (IOSObjectArray *)getParameterTypesInternal;
-- (const char *)getBinaryParameterTypes;
 
 @end
 

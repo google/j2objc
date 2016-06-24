@@ -109,22 +109,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return [IOSObjectArray arrayWithArray:[self getParameterTypesInternal]];
 }
 
-- (const char *)getBinaryParameterTypes {
-  if (!binaryParameterTypes_) {
-    IOSObjectArray *paramTypes = [self getParameterTypesInternal];
-    jint numArgs = paramTypes.length;
-    char *binaryParamTypes = malloc((numArgs + 1) * sizeof(char));
-    char *p = binaryParamTypes;
-    for (jint i = 0; i < numArgs; i++) {
-      IOSClass *paramType = [paramTypes objectAtIndex:i];
-      *p++ = [[paramType binaryName] UTF8String][0];
-    }
-    *p = 0;
-    binaryParameterTypes_ = binaryParamTypes;
-  }
-  return binaryParameterTypes_;
-}
-
 // Returns the class this executable is a member of.
 - (IOSClass *)getDeclaringClass {
   return class_;
@@ -252,7 +236,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 }
 
 - (void)dealloc {
-  free((void *)binaryParameterTypes_);
   [methodSignature_ release];
   [__c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED) release];
   [super dealloc];
