@@ -49,7 +49,7 @@
   NSInvocation *invocation = [self invocationForTarget:newInstance];
 
   jint argCount = initArgs ? initArgs->size_ : 0;
-  IOSObjectArray *parameterTypes = [self getParameterTypes];
+  IOSObjectArray *parameterTypes = [self getParameterTypesInternal];
   if (argCount != parameterTypes->size_) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
         @"wrong number of arguments"]);
@@ -123,7 +123,7 @@
   NSString *modifiers = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   NSString *type = [[self getDeclaringClass] getName];
   [s appendFormat:@"%@ %@(", modifiers, type];
-  IOSObjectArray *params = [self getParameterTypes];
+  IOSObjectArray *params = [self getParameterTypesInternal];
   jint n = params->size_;
   if (n > 0) {
     [s appendString:[(IOSClass *) params->buffer_[0] getName]];

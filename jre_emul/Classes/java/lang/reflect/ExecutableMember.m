@@ -38,10 +38,9 @@
 #import "objc/message.h"
 #import "objc/runtime.h"
 
-@interface ExecutableMember ()
-
-- (const J2ObjcMethodInfo *)metadata;
-
+@interface ExecutableMember () {
+  _Atomic(IOSObjectArray *) paramTypes_;
+}
 @end
 
 // Value class from Android's java.lang.reflect.AbstractMethod class.
@@ -92,13 +91,27 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return (jint)([methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS);
 }
 
+- (IOSObjectArray *)getParameterTypesInternal {
+  IOSObjectArray *result = __c11_atomic_load(&paramTypes_, __ATOMIC_ACQUIRE);
+  if (!result) {
+    @synchronized(self) {
+      result = __c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED);
+      if (!result) {
+        result = JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx));
+        __c11_atomic_store(&paramTypes_, result, __ATOMIC_RELEASE);
+      }
+    }
+  }
+  return result;
+}
+
 - (IOSObjectArray *)getParameterTypes {
-  return JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->paramsIdx));
+  return [IOSObjectArray arrayWithArray:[self getParameterTypesInternal]];
 }
 
 - (const char *)getBinaryParameterTypes {
   if (!binaryParameterTypes_) {
-    IOSObjectArray *paramTypes = [self getParameterTypes];
+    IOSObjectArray *paramTypes = [self getParameterTypesInternal];
     jint numArgs = paramTypes.length;
     char *binaryParamTypes = malloc((numArgs + 1) * sizeof(char));
     char *p = binaryParamTypes;
@@ -141,10 +154,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 - (IOSObjectArray *)getExceptionTypes {
   return JreParseClassList(JrePtrAtIndex(ptrTable_, metadata_->exceptionsIdx));
-}
-
-- (NSString *)internalName {
-  return NSStringFromSelector(selector_);
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
@@ -229,10 +238,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return methodSignature_;
 }
 
-- (const J2ObjcMethodInfo *)metadata {
-  return metadata_;
-}
-
 // isEqual and hash are uniquely identified by their class and selectors.
 - (BOOL)isEqual:(id)anObject {
   if (![anObject isKindOfClass:[ExecutableMember class]]) {
@@ -264,10 +269,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
 GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
-  const J2ObjcMethodInfo *metadata = [self metadata];
-  if (!metadata) {
-    return nil;
-  }
+  const J2ObjcMethodInfo *metadata = self->metadata_;
   NSString *signatureAttribute = JreMethodGenericString(metadata, self->ptrTable_);
   jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
   IOSObjectArray *exceptionTypes = JreParseClassList(

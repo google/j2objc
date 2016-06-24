@@ -90,8 +90,8 @@
 - (jboolean)isSynthetic;
 
 // Internal methods.
-- (NSString *)internalName;
 - (jint)getNumParams;
+- (IOSObjectArray *)getParameterTypesInternal;
 - (const char *)getBinaryParameterTypes;
 
 @end

@@ -98,7 +98,7 @@
       @"null object specified for non-final method"]);
   }
 
-  IOSObjectArray *paramTypes = [self getParameterTypes];
+  IOSObjectArray *paramTypes = [self getParameterTypesInternal];
   jint nArgs = arguments ? arguments->size_ : 0;
   if (nArgs != paramTypes->size_) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
@@ -189,7 +189,7 @@
   NSString *returnType = [[self getReturnType] getName];
   NSString *declaringClass = [[self getDeclaringClass] getName];
   [s appendFormat:@"%@ %@ %@.%@(", modifiers, returnType, declaringClass, [self getName]];
-  IOSObjectArray *params = [self getParameterTypes];
+  IOSObjectArray *params = [self getParameterTypesInternal];
   jint n = params->size_;
   if (n > 0) {
     [s appendString:[(IOSClass *) params->buffer_[0] getName]];
