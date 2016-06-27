@@ -37,7 +37,7 @@ layout: docs
  </td></tr>
 
  <tr><td>
- <img src="http://a2.mzstatic.com/us/r30/Purple2/v4/9e/bb/a1/9ebba197-cd87-dd93-0376-378a5a9947ba/mzl.hruczvda.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/codeword-unlimited-free/id643961117?mt=8">Codeword&nbsp;Unlimited&nbsp;Free</a></b>
+ <img src="http://a3.mzstatic.com/us/r30/Purple18/v4/30/01/25/300125cb-b3f4-e73d-2563-dc544a0f4af8/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/codeword-unlimited-free/id643961117?mt=8">Codeword&nbsp;Unlimited&nbsp;Free</a></b>
  </td><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple6/v4/af/a4/ab/afa4ab14-fbca-6c0e-4c3b-d984b4730214/mzl.oqjfevxa.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/crossword-solver-free-version/id668459828?ls=1&mt=8">Crossword&nbsp;Solver&nbsp;Free&nbsp;Version</a></b>
  </td></tr>
