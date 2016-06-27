@@ -44,6 +44,12 @@ public class LambdaExpressionTest extends GenerationTest {
   }
 
   public void testCaptureDetection() throws IOException {
+    translateSourceFile(functionHeader + "interface A { boolean r(boolean a);"
+        + "default int ret1() { return 2; }} interface B { default int ret() { return 1; } }"
+        + "class Test { void f() { ((A & B)(a) -> a).ret(); } }", "Test", "Test.m");
+    translateSourceFile(functionHeader + "interface A2 { boolean r();"
+        + "default int ret1() { return 2; }} interface B { default int ret() { return 1; } }"
+        + "class Test { void f() { ((A2 & B)() -> true).ret(); } }", "Test", "Test.m");
     String nonCaptureTranslation = translateSourceFile(
         functionHeader + "class Test { Function f = x -> x;}", "Test", "Test.m");
     String captureTranslationOuter = translateSourceFile(
@@ -51,56 +57,71 @@ public class LambdaExpressionTest extends GenerationTest {
     String captureTranslation = translateSourceFile(
         functionHeader + "class Test { Function<Function, Function> f = y -> x -> y;}", "Test",
         "Test.m");
-    assertTranslation(nonCaptureTranslation, "GetNonCapturingLambda");
-    assertTranslation(captureTranslationOuter, "GetCapturingLambda");
-    assertTranslatedSegments(captureTranslation, "GetNonCapturingLambda", "GetCapturingLambda");
+    assertTranslation(nonCaptureTranslation, "instance = CreateNonCapturing");
+    assertTranslation(captureTranslationOuter, "cls = CreatePossiblyCapturingClass");
+    assertTranslatedSegments(captureTranslation, "instance = CreateNonCapturing",
+        "cls = CreatePossiblyCapturingClass");
   }
 
   public void testObjectSelfAddition() throws IOException {
     String translation = translateSourceFile(callableHeader + "class Test { Callable f = () -> 1;}",
         "Test", "Test.m");
-    assertTranslation(translation, "^id(id _self)");
+    assertTranslation(translation, "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {");
   }
 
   public void testTypeInference() throws IOException {
     String quadObjectTranslation = translateSourceFile(
         fourToOneHeader + "class Test { FourToOne f = (a, b, c, d) -> 1;}", "Test", "Test.m");
-    assertTranslatedSegments(quadObjectTranslation, "@selector(applyWithId:withId:withId:withId:)",
-        "^id(id _self, id a, id b, id c, id d)");
+    assertTranslatedSegments(quadObjectTranslation,
+        "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, id a, id b, id c, id d) {",
+        "@selector(applyWithId:withId:withId:withId:)");
     String mixedObjectTranslation = translateSourceFile(fourToOneHeader
         + "class Test { FourToOne<String, Double, Integer, Boolean, String> f = "
         + "(a, b, c, d) -> \"1\";}", "Test", "Test.m");
     assertTranslation(mixedObjectTranslation,
-        "^NSString *(id _self, NSString * a, JavaLangDouble * b, JavaLangInteger * c, JavaLangBoolean * d)");
+        "NSString *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *a, "
+        + "JavaLangDouble *b, JavaLangInteger *c, JavaLangBoolean *d)");
   }
 
   public void testOuterFunctions() throws IOException {
     String translation = translateSourceFile(
         functionHeader + "class Test { Function outerF = (x) -> x;}", "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->outerF_, GetNonCapturingLambda");
+    assertTranslatedSegments(translation, "instance = CreateNonCapturing(",
+        "JreStrongAssign(&self->outerF_, Test$$Lambda$1_get());");
   }
 
   public void testStaticFunctions() throws IOException {
     String translation = translateSourceFile(
         functionHeader + "class Test { static Function staticF = (x) -> x;}", "Test", "Test.m");
     assertTranslatedSegments(translation, "id<Function> Test_staticF;",
-        "if (self == [Test class]) {", "JreStrongAssign(&Test_staticF, GetNonCapturingLambda");
+        "if (self == [Test class]) {", "JreStrongAssign(&Test_staticF, Test$$Lambda$1_get()",
+        "instance = CreateNonCapturing");
   }
 
   public void testNestedLambdas() throws IOException {
     String outerCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> x;}", "Test",
         "Test.m");
-    assertTranslatedSegments(outerCapture, "GetNonCapturingLambda", "@selector(applyWithId:)",
-        "^id<Function>(id _self, NSString * x)", "return GetCapturingLambda",
-        "@selector(applyWithId:)", "^NSString *(id _self, NSString * y)", "return x;");
+    assertTranslatedSegments(outerCapture,
+        "id<Function> Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *x) {",
+        "return Test$$Lambda$2_get(x);",
+        "instance = CreateNonCapturing(",
+        "NSString *Test$$Lambda$2_impl(LambdaBase *self_, SEL _cmd, NSString *y) {",
+        "return x;",
+        "id<Function> Test$$Lambda$2_get(NSString *x) {",
+        "cls = CreatePossiblyCapturingClass("
+        );
     String noCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> y;}", "Test",
         "Test.m");
-    assertTranslatedSegments(noCapture, "GetNonCapturingLambda",
-        "@selector(applyWithId:)", "^id<Function>(id _self, NSString * x)",
-        "return GetNonCapturingLambda", "@selector(applyWithId:)",
-        "^NSString *(id _self, NSString * y)", "return y;");
+    assertTranslatedSegments(noCapture,
+        "id<Function> Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *x) {",
+        "return Test$$Lambda$2_get();",
+        "id<Function> Test$$Lambda$1_get() {",
+        "instance = CreateNonCapturing(",
+        "id<Function> Test$$Lambda$2_get() {",
+        "instance = CreateNonCapturing("
+        );
   }
 
   // There's no need for a cast_check call on a lambda whose type matches the assigned type.
@@ -123,7 +144,7 @@ public class LambdaExpressionTest extends GenerationTest {
         + "class Test { class Foo{ class Bar { Function f = x -> x; }}\n"
         + "Function f = x -> x;}",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "@\"Test$$Lambda$1\"", "@\"Test_Foo_Bar$$Lambda$1\"");
+    assertTranslatedSegments(translation, "Test$$Lambda$1_impl", "Test_Foo_Bar$$Lambda$1_impl");
   }
 
   public void testLargeArgumentCount() throws IOException {
@@ -140,12 +161,10 @@ public class LambdaExpressionTest extends GenerationTest {
         + " at, au, av, aw, ax, ay, az, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn,"
         + " bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, bar) -> foo;}}",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "^id(id _self, id a, id b, id c, id d, id e, id f, id g,",
-        " id bs, id bt, id bu, id bv, id bw, id bx, id by, id bz, id ca)",
-        "return block(_self, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, ",
-        "bn, bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, ca);",
-        "^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i, id j, id k, id l, ",
-        "id bw, id bx, id by, id bz, id bar) {");
+    assertTranslatedSegments(translation,
+        "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, id a, id b, id c, id d, id e, id f",
+        " id bs, id bt, id bu, id bv, id bw, id bx, id by, id bz, id bar) {"
+        );
   }
 
   public void testCapturingBasicTypeReturn() throws IOException {
@@ -153,7 +172,8 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(
         header + "class Test { int f = 1234; " + "  void foo() { I i = () -> f; } }", "Test",
         "Test.m");
-    assertTranslatedLines(translation, "^jint(id _self) {", "return f_;");
+    assertTranslatedSegments(translation, "jint Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+        "return this$0_->f_;");
   }
 
   // Verify that an #include is generated for the lambda's functionalType.
@@ -178,6 +198,7 @@ public class LambdaExpressionTest extends GenerationTest {
         + "    }; "
         + "  }"
         + "}", "Comparator", "foo/bar/Comparator.m");
-    assertTranslation(translation, "GetCapturingLambda([FooBarComparator class]");
+    assertTranslation(translation,
+        "Method method2 = class_getInstanceMethod([FooBarComparator class]");
   }
 }

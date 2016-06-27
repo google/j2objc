@@ -252,76 +252,30 @@ const char *blockTypeSignature(id block) {
   return (const char *) blockLiteral->descriptor->signature[i];
 }
 
-typedef struct {
-  void *id;
-} LambdaHolder;
+// empty implementation base class for lambdas
+@implementation LambdaBase
+@end
 
-static void *LambdaLookup(void *ptr) {
-  LambdaHolder *lh = malloc(sizeof(LambdaHolder));
-  lh->id = nil;
-  return lh;
-}
-
-static FastPointerLookup_t lambdaLookup = FAST_POINTER_LOOKUP_INIT(&LambdaLookup);
-
-// Method to handle dynamic creation of class wrappers surrounding blocks which come from lambdas
-// not requiring a capture.
-id GetNonCapturingLambda(Class clazz, Protocol *protocol, NSString *blockClassName,
-    SEL methodSelector, id block) {
-  // Relies on lambda names being constant strings with matching pointers for matching names.
-  // This should happen as a clang optimization, as all string constants are kept on the stack for
-  // the program duration.
-  LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
-  @synchronized(blockClassName) {
-    if (lambdaHolder->id == nil) {
-      Class blockClass = objc_allocateClassPair(clazz ? : [NSObject class],
-          [blockClassName UTF8String], 0);
-      // Fail quickly if we can't create the runtime class.
-      if (protocol && !class_addProtocol(blockClass, protocol)) {
-        @throw AUTORELEASE([[JavaLangAssertionError alloc]
-            initWithId:@"Unable to add protocol to non-capturing lambda class."]);
-      }
-      IMP block_implementation = imp_implementationWithBlock(block);
-      if (!class_addMethod(blockClass, methodSelector, block_implementation,
-          blockTypeSignature(block))) {
-        @throw AUTORELEASE([[JavaLangAssertionError alloc]
-            initWithId:@"Unable to add method to non-capturing lambda class."]);
-      }
-      objc_registerClassPair(blockClass);
-      lambdaHolder->id = (void*)[[blockClass alloc] init];
-    }
+Class CreatePossiblyCapturingClass(
+    const char *lambdaName, jint numProtocols, Protocol *protocols[],
+    jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]) {
+  Class cls = objc_allocateClassPair([LambdaBase class], lambdaName, 0);
+  for (jint i = 0; i < numProtocols; i++) {
+    class_addProtocol(cls, protocols[i]);
   }
-  return (__bridge id) lambdaHolder->id;
-}
-
-// Method to handle dynamic creation of class wrappers surrounding blocks from lambdas requiring
-// a capture.
-id GetCapturingLambda(Class clazz, Protocol *protocol, NSString *blockClassName,
-    SEL methodSelector, id blockWrapper, id block) {
-  LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
-  @synchronized(blockClassName) {
-    if (lambdaHolder->id == nil) {
-      Class lambdaClass = objc_allocateClassPair(clazz ? : [NSObject class],
-          [blockClassName UTF8String], 0);
-      // Fail quickly if we can't create the runtime class.
-      if (protocol && !class_addProtocol(lambdaClass, protocol)) {
-        @throw AUTORELEASE([[JavaLangAssertionError alloc]
-            initWithId:@"Unable to add protocol to capturing lambda class."]);
-      }
-      IMP block_implementation = imp_implementationWithBlock(blockWrapper);
-      if (!class_addMethod([lambdaClass class], methodSelector, block_implementation,
-          blockTypeSignature(blockWrapper))) {
-        @throw AUTORELEASE([[JavaLangAssertionError alloc]
-          initWithId:@"Unable to add method to capturing lambda class."]);
-      }
-      objc_registerClassPair(lambdaClass);
-      lambdaHolder->id = (void*)lambdaClass;
-    }
+  for (jint i = 0; i < numMethods; i++) {
+    class_addMethod(cls, selectors[i], impls[i], signatures[i]);
   }
-  id instance = [[[(id) lambdaHolder->id alloc] init] autorelease];
-  objc_setAssociatedObject(instance, (void*) 0, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
-  return instance;
-}
+  objc_registerClassPair(cls);
+  return cls;
+};
+
+id CreateNonCapturing(
+    const char *lambdaName, jint numProtocols, Protocol *protocols[],
+    jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]) {
+  return NSAllocateObject(CreatePossiblyCapturingClass(lambdaName, numProtocols,
+      protocols, numMethods, selectors, impls, signatures), 0, nil);
+};
 
 // Counts the number of object types in a string concatenation.
 static NSUInteger CountObjectArgs(const char *types) {

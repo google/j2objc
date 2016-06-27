@@ -24,7 +24,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class LambdaTypeBinding extends AbstractTypeBinding {
 
-  protected final String name;
+  protected String name;
+  private ITypeBinding declaringClass = null;
 
   public LambdaTypeBinding(String name) {
     this.name = name;
@@ -50,9 +51,22 @@ public class LambdaTypeBinding extends AbstractTypeBinding {
     return name;
   }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
   @Override
   public String getQualifiedName() {
     return name;
+  }
+
+  @Override
+  public ITypeBinding getDeclaringClass() {
+    return declaringClass;
+  }
+
+  public void setDeclaringClass(ITypeBinding declaringClass) {
+    this.declaringClass = declaringClass;
   }
 
   @Override

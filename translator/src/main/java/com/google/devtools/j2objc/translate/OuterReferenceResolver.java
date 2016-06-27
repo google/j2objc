@@ -75,7 +75,6 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private Map<ITypeBinding, IVariableBinding> outerVars = new HashMap<>();
   private Set<ITypeBinding> usesOuterParam = new HashSet<>();
-  private Set<ITypeBinding> hasImplicitCaptures = new HashSet<>();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = new HashMap<>();
   private Map<TreeNode.Key, List<List<IVariableBinding>>> captureArgs = new HashMap<>();
@@ -96,10 +95,6 @@ public class OuterReferenceResolver extends TreeVisitor {
     return !type.isLocal() || outerVars.containsKey(type) || usesOuterParam.contains(type);
   }
 
-  public boolean hasImplicitCaptures(ITypeBinding type) {
-    return BindingUtil.isLambda(type) && hasImplicitCaptures.contains(type);
-  }
-
   public IVariableBinding getOuterField(ITypeBinding type) {
     return outerVars.get(type);
   }
@@ -117,7 +112,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     return outerPaths.get(node.getKey());
   }
 
-  public List<List<IVariableBinding>> getCaptureArgPaths(ClassInstanceCreation node) {
+  public List<List<IVariableBinding>> getCaptureArgPaths(TreeNode node) {
+    assert node instanceof ClassInstanceCreation || node instanceof LambdaExpression;
     List<List<IVariableBinding>> result = captureArgs.get(node.getKey());
     if (result != null) {
       return result;
@@ -140,7 +136,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
     private final ITypeBinding type;
     private final Set<ITypeBinding> inheritedScope;
-    private boolean initializingContext = true;
+    private boolean initializingContext;
     private Set<IVariableBinding> declaredVars = new HashSet<>();
 
     private Scope(ITypeBinding type, Types typeEnv) {
@@ -158,6 +154,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();
+      this.initializingContext = !BindingUtil.isLambda(type);
     }
   }
 
@@ -195,12 +192,12 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private IVariableBinding getOrCreateOuterField(Scope scope) {
-    assert !BindingUtil.isLambda(scope.type);
-
+    // Check that this isn't a lambda, since we'll always capture the field itself
     if (scope.initializingContext && scope == peekScope()) {
       usesOuterParam.add(scope.type);
       return OUTER_PARAMETER;
     }
+
     ITypeBinding type = scope.type;
     IVariableBinding outerField = outerVars.get(type);
     if (outerField == null) {
@@ -212,8 +209,6 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private IVariableBinding getOrCreateInnerField(IVariableBinding var, ITypeBinding declaringType) {
-    assert !BindingUtil.isLambda(declaringType);
-
     List<Capture> capturesForType = captures.get(declaringType);
     IVariableBinding innerField = null;
     for (Capture capture : capturesForType) {
@@ -232,19 +227,6 @@ public class OuterReferenceResolver extends TreeVisitor {
     return innerField;
   }
 
-  /**
-   * Mark all lambda scopes in the scope stack as capturing. If a lambda is capturing, its
-   * enclosing lambdas must also be capturing.
-   */
-  private void markImplicitCaptures() {
-    for (int i = scopeStack.size() - 1; i >= 0; i--) {
-      Scope scope = scopeStack.get(i);
-      if (BindingUtil.isLambda(scope.type)) {
-        hasImplicitCaptures.add(scope.type);
-      }
-    }
-  }
-
   private List<IVariableBinding> getOuterPath(ITypeBinding type) {
     type = type.getTypeDeclaration();
     List<IVariableBinding> path = new ArrayList<>();
@@ -256,7 +238,11 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (!BindingUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
       } else {
-        hasImplicitCaptures.add(scope.type);
+        IVariableBinding outerField = getOrCreateOuterField(scope);
+        // A lambda should get added to the outer path only if it is the scope closest to the use.
+        if (i == scopeStack.size() - 1) {
+          path.add(outerField);
+        }
       }
     }
     return path;
@@ -273,7 +259,11 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (!BindingUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
       } else {
-        hasImplicitCaptures.add(scope.type);
+        IVariableBinding outerField = getOrCreateOuterField(scope);
+        // A lambda should get added to the outer path only if it is innermost
+        if (i == scopeStack.size() - 1) {
+          path.add(outerField);
+        }
       }
     }
     return path;
@@ -318,24 +308,32 @@ public class OuterReferenceResolver extends TreeVisitor {
       return path;
     }
 
-    // Traverse from the top of the stack, if the scope is lambda, mark it as a capturing lambda. If
-    // the scope is the last anonymous (or inner/local) class, get/create an inner field and add
-    // that to the path. Otherwise, get/create an outer field reference and add that to the path.
-    // This arrangement ensures that lambdas are always using the variable references closest to
-    // the class scope that encloses it.
+    // Traverse from the top of the stack, if we hit a lambda scope with a non-lambda scope
+    // enclosing it, then we add an outer field to the lambda and add it to the path only if there
+    // is not already an outer field in the path (since lambdas will transparently close over outer
+    // paths if they already exist). Otherwise, we transparently close over the field. If
+    // the scope is the last anonymous or inner class, get/create an inner field and add
+    // that to the path. Otherwise, this class is not the last scope so we get/create an outer field
+    // reference and add that to the path.
     for (int i = scopeStackSize - 1; i >= lastScopeIdx; i--) {
       Scope scope = scopeStack.get(i);
       if (i == lastNonLambdaScopeIdx) {
         path.add(getOrCreateInnerField(var, scope.type));
       } else {
         if (BindingUtil.isLambda(scope.type)) {
-          hasImplicitCaptures.add(scope.type);
+          if (i > lastNonLambdaScopeIdx && lastNonLambdaScopeIdx != -1) {
+            IVariableBinding outer = getOrCreateOuterField(scope);
+            if (i == scopeStackSize - 1) {
+              path.add(outer);
+            }
+          } else {
+            getOrCreateInnerField(var, scope.type);
+          }
         } else {
           path.add(getOrCreateOuterField(scope));
         }
       }
     }
-
     return path;
   }
 
@@ -417,6 +415,24 @@ public class OuterReferenceResolver extends TreeVisitor {
   @Override
   public void endVisit(LambdaExpression node) {
     popType(node);
+
+    // if we have an outer field, add the path to it so we can reference
+    // it in the lambda_get function.
+    IVariableBinding outerField = getOuterField(node.getLambdaTypeBinding());
+    if (outerField != null) {
+      addPath(node, getOuterPathInherited(outerField.getType()));
+    }
+    ITypeBinding type = node.getLambdaTypeBinding();
+    List<Capture> capturesForType = captures.get(type);
+    List<List<IVariableBinding>> capturePaths = new ArrayList<>(capturesForType.size());
+    for (Capture capture : capturesForType) {
+      List<IVariableBinding> path = getPathForLocalVar(capture.var);
+      if (path.isEmpty()) {
+        path = Collections.singletonList(capture.var);
+      }
+      capturePaths.add(path);
+    }
+    captureArgs.put(node.getKey(), capturePaths);
   }
 
   @Override
@@ -450,7 +466,11 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (qualifier != null) {
       addPath(node, getOuterPath(qualifier.getTypeBinding()));
     } else {
-      markImplicitCaptures();
+      assert scopeStack.size() > 0;
+      Scope currentScope = scopeStack.get(scopeStack.size() - 1);
+      if (BindingUtil.isLambda(currentScope.type)) {
+          addPath(node, getOuterPath(currentScope.type.getDeclaringClass()));
+      }
     }
     return true;
   }
@@ -469,15 +489,21 @@ public class OuterReferenceResolver extends TreeVisitor {
       // Default methods can be invoked with a SuperMethodInvocation. In this
       // case the qualifier is not an enclosing class, but the interface that
       // implements the default method. Since the default method is an instance
-      // method it implicitly captures self.
-      markImplicitCaptures();
+      // method it captures self.
+      Scope currentScope = scopeStack.get(scopeStack.size() - 1);
+      if (BindingUtil.isLambda(currentScope.type)) {
+        addPath(node, getOuterPath(currentScope.type.getDeclaringClass()));
+      }
       return;
     }
     Name qualifier = node.getQualifier();
     if (qualifier != null) {
       addPath(node, getOuterPath(qualifier.getTypeBinding()));
     } else {
-      markImplicitCaptures();
+      Scope currentScope = scopeStack.get(scopeStack.size() - 1);
+      if (BindingUtil.isLambda(currentScope.type)) {
+        addPath(node, getOuterPath(currentScope.type.getDeclaringClass()));
+      }
     }
   }
 

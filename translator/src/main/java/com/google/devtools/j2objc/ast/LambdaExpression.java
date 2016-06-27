@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class LambdaExpression extends Expression {
 
-  private final ITypeBinding typeBinding;
+  private ITypeBinding typeBinding;
   // Unique type binding that can be used as a key.
-  private final ITypeBinding lambdaTypeBinding;
+  private final LambdaTypeBinding lambdaTypeBinding;
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
@@ -73,6 +73,7 @@ public class LambdaExpression extends Expression {
   }
 
   public void setUniqueName(String newUniqueName) {
+    lambdaTypeBinding.setName(newUniqueName);
     uniqueName = newUniqueName;
   }
 
@@ -81,7 +82,11 @@ public class LambdaExpression extends Expression {
     return typeBinding;
   }
 
-  public ITypeBinding getLambdaTypeBinding() {
+  public void setTypeBinding(ITypeBinding t) {
+    typeBinding = t;
+  }
+
+  public LambdaTypeBinding getLambdaTypeBinding() {
     return lambdaTypeBinding;
   }
 

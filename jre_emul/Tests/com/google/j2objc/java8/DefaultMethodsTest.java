@@ -94,6 +94,18 @@ public class DefaultMethodsTest extends TestCase {
     }
   }
 
+  interface WithParam {
+    int something(int in);
+    default int get8() {
+      return 8;
+    }
+  }
+  interface Unrelated {
+    default boolean somethingElse() {
+      return false;
+    }
+  }
+
   public void testBasicInstantiation() {
     AP a = new AP();
     assertTrue(a.f());
@@ -124,6 +136,9 @@ public class DefaultMethodsTest extends TestCase {
     assertFalse(b2.f());
     assertTrue(b2.notF());
     assertTrue(b2.not().f());
+
+    assertFalse(((B & Unrelated) () -> true).somethingElse());
+    assertFalse(((WithParam & Unrelated) (a) -> a).somethingElse());
 
     D d = (name) -> D.getDPrefix() + name;
     assertEquals("static-default", d.getDefaultTag());

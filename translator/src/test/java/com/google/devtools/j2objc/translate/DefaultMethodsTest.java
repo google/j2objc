@@ -136,9 +136,11 @@ public class DefaultMethodsTest extends GenerationTest {
         + "  String op(String a, String b);"
         + "  default String underscorePrefix(String a) { return op(\"_\", a); }"
         + "}"
+        + "interface Unrelated { default boolean unrelated() { return false; } }"
         + "class B {"
         + "  void f() { g((x, y) -> x + y); }"
         + "  String g(A a) { return a.underscorePrefix(\"foo\"); }"
+        + "  boolean other() { return ((A & Unrelated) (a,b) -> a).unrelated(); }"
         + "}";
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
@@ -152,7 +154,12 @@ public class DefaultMethodsTest extends GenerationTest {
 
     // Make sure we base the non-capturing lambda on interface A's companion class that has the
     // default method shim.
-    assertTranslation(impl, "GetNonCapturingLambda([A class], NULL");
+    assertTranslatedSegments(impl, "id<A, Unrelated> B$$Lambda$2_get() {",
+        "Method method", "= class_getInstanceMethod([Unrelated class], @selector(unrelated));",
+        "Method method", "= class_getInstanceMethod([A class], "
+            + "@selector(underscorePrefixWithNSString:));",
+        "instance = CreateNonCapturing("
+        );
   }
 
   public void testDefaultMethodsInInterfaceExtensions() throws IOException {
@@ -433,7 +440,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "  }"
         + "}"
         + "interface OfInt extends OfPrimitive<Integer, OfInt> {}}", "Node", "Node.m");
-    assertTranslatedLines(translation, 
+    assertTranslatedLines(translation,
         "return ((id<Node_OfInt>) Node_OfPrimitive_getChildWithInt_(self, arg0));");
   }
 

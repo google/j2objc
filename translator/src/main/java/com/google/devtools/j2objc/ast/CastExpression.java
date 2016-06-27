@@ -28,6 +28,12 @@ public class CastExpression extends Expression {
     super(jdtNode);
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
+    // If we are casting a LambdaExpression, we set its type, as the JDT can
+    // resolve to the wrong type for lambdas under certain circumstances
+    // (casting to an intersection of two interfaces with a parameter-less lambda).
+    if (expression.get() instanceof LambdaExpression) {
+      ((LambdaExpression) expression.get()).setTypeBinding(type.get().getTypeBinding());
+    }
   }
 
   public CastExpression(CastExpression other) {

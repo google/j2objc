@@ -242,6 +242,8 @@ JAVA_SOURCES = \
 	translate/LabelRewriter.java \
 	translate/MetadataWriter.java \
 	translate/MethodReferenceRewriter.java \
+	translate/LambdaTypeBindingFixer.java \
+	translate/LambdaRewriter.java \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \
 	translate/OperatorRewriter.java \

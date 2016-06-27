@@ -109,6 +109,19 @@ public class TreeUtil {
     return null;
   }
 
+  public static TreeNode getNearestAncestorWithTypeOneOf(List<Class<? extends TreeNode>> types,
+      TreeNode node) {
+    while (node != null) {
+      for (Class<? extends TreeNode> c : types) {
+        if (c.isInstance(node)) {
+          return node;
+        }
+      }
+      node = node.getParent();
+    }
+    return null;
+  }
+
   /**
    * Returns the first descendant of the given node that is not a ParenthesizedExpression.
    */
@@ -272,13 +285,13 @@ public class TreeUtil {
         return null;
     }
   }
-  
+
   public static ITypeBinding getEnclosingTypeBinding(TreeNode node) {
     TypeDeclaration enclosingType = TreeUtil.getNearestAncestorWithType(TypeDeclaration.class,
         node);
     return enclosingType == null ? null : enclosingType.getTypeBinding();
   }
-  
+
   public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {
     MethodDeclaration enclosingMethod = TreeUtil.getNearestAncestorWithType(
         MethodDeclaration.class, node);

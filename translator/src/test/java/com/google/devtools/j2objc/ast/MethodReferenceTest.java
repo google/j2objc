@@ -42,20 +42,28 @@ public class MethodReferenceTest extends GenerationTest {
     String noArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { Call<I> iInit = I::new; }",
         "Test", "Test.m");
-    assertTranslatedSegments(noArgumentTranslation, "GetNonCapturingLambda(NULL, @protocol(Call)",
-        "@\"Test$$Lambda$1\"", "^I *(id _self) {", "return create_I_init();");
+    assertTranslatedSegments(noArgumentTranslation,
+        "I *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+        "return create_I_init();",
+        "instance = CreateNonCapturing(",
+        "\"Test$$Lambda$1\""
+        );
     String oneArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt<I> iInit2 = I::new; }", "Test", "Test.m");
     assertTranslatedSegments(oneArgumentTranslation,
-        "GetNonCapturingLambda(NULL, @protocol(FunInt)",
-        "@\"Test$$Lambda$1\"", "^I *(id _self, jint a) {", "return create_I_initWithInt_(a);");
+        "I *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, jint a) {",
+        "return create_I_initWithInt_(a);",
+        "instance = CreateNonCapturing(",
+        "\"Test$$Lambda$1\""
+        );
     String mixedArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt4<I> iInit3 = I::new; }", "Test", "Test.m");
     assertTranslatedSegments(mixedArgumentTranslation,
-        "GetNonCapturingLambda(NULL, @protocol(FunInt4)",
-        "@\"Test$$Lambda$1\"",
-        "^I *(id _self, jint a, I * b, NSString * c, id d) {",
-        "return create_I_initWithInt_withI_withNSString_withId_(a, b, c, d);");
+        "I *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, jint a, I *b, NSString *c, id d) {",
+        "return create_I_initWithInt_withI_withNSString_withId_(a, b, c, d);",
+        "instance = CreateNonCapturing(",
+        "\"Test$$Lambda$1\""
+        );
   }
 
   // Test that expression method references resolve correctly for static and non-static methods.
@@ -65,13 +73,13 @@ public class MethodReferenceTest extends GenerationTest {
     String staticTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { F fun = Q::o; }",
         "Test", "Test.m");
-    assertTranslatedSegments(staticTranslation, "GetNonCapturingLambda", "@\"Test$$Lambda$1\"",
-        "@selector(fWithId:)", "return Q_oWithId_(a);");
+    assertTranslatedSegments(staticTranslation, "return Q_oWithId_(a);", "CreateNonCapturing",
+        "Test$$Lambda$1", "@selector(fWithId:)");
     String instanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
-    assertTranslatedSegments(instanceTranslation, "GetCapturingLambda", "@\"Test$$Lambda$1\"",
-        "@selector(fWithId:)", "return [__emt$0 o2WithId:a];");
+    assertTranslatedSegments(instanceTranslation, "return [__emt$0 o2WithId:a];",
+        "CreatePossiblyCapturingClass", "Test$$Lambda$1", "@selector(fWithId:)");
     assertNotInTranslation(instanceTranslation, "return [create_Q_init() o2WithId:a];");
     String staticInstanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { static F fun = new Q()::o2; }",
@@ -90,9 +98,10 @@ public class MethodReferenceTest extends GenerationTest {
     String typeReferenceHeader = "interface H { Object copy(int[] i); }";
     String translation = translateSourceFile(
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");
-    assertTranslatedSegments(translation, "GetNonCapturingLambda", "@selector(copy__WithIntArray:)",
-        "^id(id _self, IOSIntArray * a)",
-        "return [((IOSIntArray *) nil_chk(a)) clone];");
+    assertTranslatedSegments(translation,
+        "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, IOSIntArray *a) {",
+        "return [((IOSIntArray *) nil_chk(a)) clone];",
+        "CreateNonCapturing", "@selector(copy__WithIntArray:)");
   }
 
   public void testReferenceToInstanceMethodOfType() throws IOException {
@@ -137,19 +146,23 @@ public class MethodReferenceTest extends GenerationTest {
     String translation = translateSourceFile(
         varArgsHeader + "class Test { I i = Y::m; I2 i2 = Y::m; }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "JreStrongAssign(&self->i_, GetNonCapturingLambda(NULL, @protocol(I), "
-        + "@\"Test$$Lambda$1\", @selector(fooWithInt:withNSString:withNSString:),",
-        "^void(id _self, jint a, NSString * b, NSString * c) {",
-        "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c } "
-        + "count:2 type:NSString_class_()]);",
-        "}",
-        "));",
-        "JreStrongAssign(&self->i2_, GetNonCapturingLambda(NULL, @protocol(I2), "
-        + "@\"Test$$Lambda$2\", @selector(fooWithInt:withNSString:withNSString:withNSString:),",
-        "^void(id _self, jint a, NSString * b, NSString * c, NSString * d) {",
+    assertTranslatedSegments(translation,
+        "void Test$$Lambda$2_impl(LambdaBase *self_, SEL _cmd, jint a, NSString *b, NSString *c, "
+            + "NSString *d) {",
         "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c, d } "
-        + "count:3 type:NSString_class_()]);");
+            + "count:3 type:NSString_class_()]);",
+        "instance = CreateNonCapturing(",
+        "\"Test$$Lambda$2\", 1, (Protocol *[]){ @protocol(I2)},",
+        "1,(SEL []){ @selector(fooWithInt:withNSString:withNSString:withNSString:)}, "
+            + "(IMP []){ (IMP)&Test$$Lambda$2_impl}, (const char *[]){ desc1.types});",
+        "void Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, jint a, NSString *b, NSString *c) {",
+        "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c } count:2 "
+            + "type:NSString_class_()]);",
+        "instance = CreateNonCapturing(",
+        "\"Test$$Lambda$1\", 1, (Protocol *[]){ @protocol(I)},",
+        "1,(SEL []){ @selector(fooWithInt:withNSString:withNSString:)}, "
+            + "(IMP []){ (IMP)&Test$$Lambda$1_impl}, (const char *[]){ desc1.types});"
+    );
   }
 
   public void testReferenceToInstanceMethodOfTypeWithVarArgs() throws IOException {
@@ -164,18 +177,20 @@ public class MethodReferenceTest extends GenerationTest {
     String impl3 = translateSourceFile(x3, "X", "X.m");
 
     // Pass an empty array to the referenced method.
-    assertTranslation(impl1, "^void(id _self, X * a) {");
+    assertTranslation(impl1, "void X$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, X *a) {");
     assertTranslation(impl1, "[((X *) nil_chk(a)) "
         + "gWithNSStringArray:[IOSObjectArray arrayWithLength:0 type:NSString_class_()]];");
 
     // Pass an array of the arguments b and c to the referenced method.
-    assertTranslation(impl2, "^void(id _self, X * a, NSString * b, NSString * c) {");
+    assertTranslation(impl2, "void X$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, X *a, "
+        + "NSString *b, NSString *c) {");
     assertTranslation(impl2, "[((X *) nil_chk(a)) "
         + "gWithNSStringArray:"
         + "[IOSObjectArray arrayWithObjects:(id[]){ b, c } count:2 type:NSString_class_()]];");
 
     // Pass the varargs array to the referenced method.
-    assertTranslation(impl3, "^void(id _self, X * a, IOSObjectArray * b) {");
+    assertTranslation(impl3, "void X$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, X *a, "
+        + "IOSObjectArray *b) {");
     assertTranslation(impl3, "[((X *) nil_chk(a)) gWithNSStringArray:b];");
   }
 
@@ -185,10 +200,12 @@ public class MethodReferenceTest extends GenerationTest {
     String translation = translateSourceFile(header
         + "class Test { static void foo(Integer x) {}; static void bar(int x) {};"
         + "IntFun f = Test::foo; IntegerFun f2 = Test::bar; }", "Test", "Test.m");
-    assertTranslatedSegments(translation, "^void(id _self, jint a) {",
-        "Test_fooWithJavaLangInteger_(JavaLangInteger_valueOfWithInt_(a));",
-        "^void(id _self, JavaLangInteger * a) {",
-        "Test_barWithInt_([((JavaLangInteger *) nil_chk(a)) intValue]);");
+    assertTranslatedSegments(translation,
+        "void Test$$Lambda$2_impl(LambdaBase *self_, SEL _cmd, JavaLangInteger *a) {",
+        "Test_barWithInt_([((JavaLangInteger *) nil_chk(a)) intValue]);",
+        "void Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, jint a) {",
+        "Test_fooWithJavaLangInteger_(JavaLangInteger_valueOfWithInt_(a));"
+        );
   }
 
   public void testReturnBoxingAndUnboxing() throws IOException {
@@ -197,9 +214,12 @@ public class MethodReferenceTest extends GenerationTest {
         + "class Test { int size() { return 42; } Integer size2() { return 43; }"
         + "Fun f = this::size; Fun2 f2 = this::size2; }",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "^JavaLangInteger *(id _self) {",
-        "return JavaLangInteger_valueOfWithInt_([self size]);", "^jint(id _self) {",
-        "return [((JavaLangInteger *) nil_chk([self size2])) intValue];");
+    assertTranslatedSegments(translation,
+        "jint Test$$Lambda$2_impl(LambdaBase *self_, SEL _cmd) {",
+        "return [((JavaLangInteger *) nil_chk([this$0_ size2])) intValue];",
+        "JavaLangInteger *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+        "return JavaLangInteger_valueOfWithInt_([this$0_ size]);"
+        );
   }
 
   // Creation references can be initialized only for side effects, and have a void return.
@@ -207,14 +227,16 @@ public class MethodReferenceTest extends GenerationTest {
     String header = "interface V { void f(); }";
     String translation = translateSourceFile(header + "class Test { V v = Test::new; }", "Test",
         "Test.m");
-    assertTranslatedLines(translation, "^void(id _self) {", "create_Test_init();");
+    assertTranslatedLines(translation, "void Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+        "create_Test_init();");
   }
 
   public void testCreationReferenceNonVoidReturn() throws IOException {
     String header = "interface V { Object f(); }";
     String translation = translateSourceFile(header + "class Test { V v = Test::new; }", "Test",
         "Test.m");
-    assertTranslatedLines(translation, "^id(id _self) {", "return create_Test_init();");
+    assertTranslatedLines(translation, "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+         "return create_Test_init();");
   }
 
   public void testArrayCreationReference() throws IOException {
@@ -227,7 +249,8 @@ public class MethodReferenceTest extends GenerationTest {
         + "}", "Test", "Test.m");
     assertNotInTranslation(translation, "return create_IntFunction_initWithIntArray_");
     assertTranslatedLines(translation,
-        "^IOSIntArray *(id _self, jint a) {", "return [IOSIntArray arrayWithLength:a];");
+        "IOSIntArray *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, jint a) {",
+        "return [IOSIntArray arrayWithLength:a];");
   }
 
   public void testCreationReferenceOfLocalCapturingType() throws IOException {
@@ -237,7 +260,8 @@ public class MethodReferenceTest extends GenerationTest {
         + "class Runner implements Runnable { public void run() { r.run(); } }"
         + "return Runner::new; } }", "Test", "Test.m");
     assertTranslatedSegments(translation,
-        "GetCapturingLambda", "return create_Test_1Runner_initWithJavaLangRunnable_(r);");
+        "return create_Test_1Runner_initWithJavaLangRunnable_(r);",
+        "cls = CreatePossiblyCapturingClass(");
   }
 
   public void testQualifiedSuperMethodReference() throws IOException {
@@ -248,8 +272,10 @@ public class MethodReferenceTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedSegments(translation,
         "static void (*Test_TestSub_super$_foo)(id, SEL);",
-        "GetCapturingLambda(NULL, @protocol(I)",
-        "^void(id _self) {", "Test_TestSub_super$_foo(this$0_, @selector(foo));", "}");
+        "void Test_TestSub_Inner$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+        "Test_TestSub_super$_foo(this$0_->this$0_, @selector(foo));", "}",
+        "cls = CreatePossiblyCapturingClass("
+        );
   }
 
   public void testMultipleMethodReferencesNilChecks() throws IOException {
@@ -267,7 +293,7 @@ public class MethodReferenceTest extends GenerationTest {
         + "class Holder { private int num; public Holder(int i) {num = i;} int get() {return num;}}"
         + "class Test { public void run() { Holder h = new Holder(1); Supplier s = h::get; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "GetCapturingLambda");
-    assertNotInTranslation(translation, "GetNonCapturingLambda");
+    assertTranslation(translation, "CreatePossiblyCapturingClass");
+    assertNotInTranslation(translation, "CreateNonCapturing");
   }
 }

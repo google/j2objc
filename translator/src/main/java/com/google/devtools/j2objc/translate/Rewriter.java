@@ -45,6 +45,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
@@ -386,7 +387,9 @@ public class Rewriter extends TreeVisitor {
       node.setBody(block);
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
-    node.setIsCapturing(outerResolver.hasImplicitCaptures(node.getLambdaTypeBinding()));
+    LambdaTypeBinding uniqueLambdaType = node.getLambdaTypeBinding();
+    node.setIsCapturing(outerResolver.getOuterField(uniqueLambdaType) != null
+        || outerResolver.getInnerFields(uniqueLambdaType).size() != 0);
     // Assign a unique name to the lambda.
     node.setUniqueName(getLambdaUniqueName(node));
     return true;

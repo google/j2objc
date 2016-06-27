@@ -142,10 +142,10 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
 #endif
 
 // Defined in J2ObjC_common.m
-FOUNDATION_EXPORT id GetNonCapturingLambda(Class clazz, Protocol *protocol,
-    NSString *blockClassName, SEL methodSelector, id block);
-FOUNDATION_EXPORT id GetCapturingLambda(Class clazz, Protocol *protocol,
-    NSString *blockClassName, SEL methodSelector, id wrapperBlock, id block);
+FOUNDATION_EXPORT id CreateNonCapturing(const char *lambdaName, jint numProtocols,
+    Protocol *protocols[], jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]);
+FOUNDATION_EXPORT Class CreatePossiblyCapturingClass(const char *lambdaName, jint numProtocols,
+    Protocol *protocols[], jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]);
 
 #define J2OBJC_IGNORE_DESIGNATED_BEGIN \
   _Pragma("clang diagnostic push") \

@@ -98,7 +98,6 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnionType;
-import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -673,108 +672,8 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(LambdaExpression node) {
     assert Options.isJava8Translator()
         : "Lambda expression in translator with -source less than 8.";
-    printLambdaCall(node);
-    node.getBody().accept(this);
-    buffer.append(")");
-    return false;
-  }
-
-  /**
-   * Creates a block that is swizzled in as a class method in created capturing lambdas at runtime.
-   * This outer block calls the underlying block for each lambda instance. Each captured lambda has
-   * an outer block that matches the function signature of the functional interface, which calls an
-   * underlying block specific to the instance.
-   */
-  private void printBlockCallWrapper(IMethodBinding methodBinding) {
-    ITypeBinding returnType = methodBinding.getReturnType();
-    printBlockPreExpression(methodBinding, returnType);
-    buffer.append(nameTable.getObjCType(returnType));
-    buffer.append(" (^block)");
-    buffer.append(Options.getLanguage() == Options.OutputLanguageOption.OBJECTIVE_CPLUSPLUS
-        ? "(...)" : "()");
-    buffer.append(" = objc_getAssociatedObject(_self, (void *) 0);\n");
-    if (!BindingUtil.isVoid(returnType)) {
-      buffer.append("return ");
-    }
-    buffer.append("block(_self");
-    if (methodBinding.getParameterTypes().length > 0) {
-      buffer.append(", ");
-      printGenericArguments(methodBinding);
-    }
-    buffer.append(");\n}");
-  }
-
-  /**
-   * Creates a lambda call by combining the call without blocks and the call blocks, so that the
-   * calling portion sans blocks can be reused by method references.
-   */
-  private void printLambdaCall(LambdaExpression node) {
-    ITypeBinding functionalTypeBinding = node.getTypeBinding();
-    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
-    List<VariableDeclaration> parameters = node.getParameters();
-    boolean isCapturing = node.isCapturing();
-    String newClassName = node.getUniqueName();
-    printLambdaCallWithoutBlocks(functionalTypeBinding, newClassName,
-        isCapturing);
-    printLambdaCallBlocks(functionalInterface, parameters, isCapturing);
-  }
-
-  /**
-   * The lambda call without wrapper and method blocks.
-   */
-  private void printLambdaCallWithoutBlocks(ITypeBinding functionalTypeBinding, String newClassName,
-      boolean isCapturing) {
-    String functionalClassName = nameTable.getFullName(functionalTypeBinding);
-    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
-    boolean hasDefaultMethods = BindingUtil.hasDefaultMethodsInFamily(functionalTypeBinding);
-    if (isCapturing) {
-      buffer.append("GetCapturingLambda(");
-    } else {
-      buffer.append("GetNonCapturingLambda(");
-    }
-    if (hasDefaultMethods) {
-      buffer.append("[");
-      buffer.append(functionalClassName);
-      buffer.append(" class]");
-    } else {
-      buffer.append("NULL");
-    }
-    buffer.append(", ");
-    if (hasDefaultMethods) {
-      buffer.append("NULL");
-    } else {
-      buffer.append("@protocol(");
-      buffer.append(functionalClassName);
-      buffer.append(")");
-    }
-    buffer.append(", @\"");
-    buffer.append(newClassName);
-    buffer.append("\", @selector(");
-    buffer.append(nameTable.getMethodSelector(functionalInterface));
-    buffer.append("),\n");
-  }
-
-  /**
-   * The lambda wrapper and method blocks.
-   */
-  private void printLambdaCallBlocks(IMethodBinding functionalInterface,
-      List<VariableDeclaration> parameters, boolean isCapturing) {
-    if (isCapturing) {
-      printBlockCallWrapper(functionalInterface);
-      buffer.append(",\n");
-    }
-    buffer.append('^');
-    buffer.append(nameTable.getObjCType(functionalInterface.getReturnType()));
-    // Required argument for imp_implementationWithBlock.
-    buffer.append("(id _self");
-    for (VariableDeclaration x : parameters) {
-      IVariableBinding variableBinding = x.getVariableBinding();
-      buffer.append(", ");
-      buffer.append(nameTable.getObjCType(x.getVariableBinding().getType()));
-      buffer.append(' ');
-      buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
-    }
-    buffer.append(") ");
+    throw new AssertionError(
+        "Lambda expressions should have been rewritten by LambdaRewriter");
   }
 
   @Override

@@ -42,6 +42,8 @@ import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaCloneWriter;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.LabelRewriter;
+import com.google.devtools.j2objc.translate.LambdaRewriter;
+import com.google.devtools.j2objc.translate.LambdaTypeBindingFixer;
 import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.MethodReferenceRewriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
@@ -137,6 +139,11 @@ public class TranslationProcessor extends FileProcessor {
     new MethodReferenceRewriter().run(unit);
     ticker.tick("MethodReferenceRewriter");
 
+    // After: MethodReferencereWriter - MethodReferenceRewriter adds new lambdas.
+    // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
+    new LambdaTypeBindingFixer().run(unit);
+    ticker.tick("LambdaTypeBindingFixer");
+
     OuterReferenceResolver outerResolver = new OuterReferenceResolver();
     outerResolver.run(unit);
     ticker.tick("OuterReferenceResolver");
@@ -217,6 +224,11 @@ public class TranslationProcessor extends FileProcessor {
 
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
+
+    // After: NilCheckResolver - Don't add nil checks to our generated code,
+    // NilCheckResolver doesn't handle Functions correctly.
+    new LambdaRewriter(outerResolver).run(unit);
+    ticker.tick("LambdaRewriter");
 
     // Before: AnnotationRewriter - Needs AnnotationRewriter to add the
     //   annotation metadata to the generated package-info type.

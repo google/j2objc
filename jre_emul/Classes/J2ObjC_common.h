@@ -64,6 +64,18 @@
  #define J2OBJC_DISABLE_ARRAY_TYPE_CHECKS 1
 #endif
 
+// An empty struct type to declare the capture state in LambdaBase.
+// Actual capturing lambdas will be allocated with extra bytes to
+// accommodate their captures.
+typedef struct LambdaCaptures {
+} LambdaCaptures;
+// A base type for all lambdas to inherit.
+@interface LambdaBase : NSObject {
+  @public
+  LambdaCaptures captures_;
+}
+@end
+
 CF_EXTERN_C_BEGIN
 
 void JreThrowNullPointerException() __attribute__((noreturn));
