@@ -549,22 +549,19 @@ public class IosHttpURLConnection extends HttpURLConnection {
       completionHandler(nil);
     }
   }]-*/
-  
 
   protected List<Certificate> certificates = new ArrayList<Certificate>();
-  private static CertificateFactory certificateFactory = null;
-  
-  static {
-    try {
-      certificateFactory = CertificateFactory.getInstance("X.509");
-    }catch (CertificateException ex)
-    {
-      // this will probably never happen
-    }
-  }
   
   private void addToCertificateList(final byte[] rawCert) throws CertificateException {
     ByteArrayInputStream certificateInputStream = new ByteArrayInputStream(rawCert);
+    
+    CertificateFactory certificateFactory = null;
+    try {
+      certificateFactory = CertificateFactory.getInstance("X.509");
+    }catch (CertificateException ex) {
+      // this will probably never happen
+    }
+    
     Certificate certificate = (Certificate) certificateFactory.generateCertificate(certificateInputStream);
     certificates.add(certificate);
   }

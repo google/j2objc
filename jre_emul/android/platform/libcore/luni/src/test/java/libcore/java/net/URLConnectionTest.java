@@ -2125,33 +2125,6 @@ public final class URLConnectionTest extends TestCase {
 //    }
 
     /**
-     * Test that we can inspect the SSL session after connect().
-     * http://code.google.com/p/android/issues/detail?id=24431
-     */
-    public void testInspectSslAfterConnect() throws Exception {
-        HttpsURLConnection connection = (HttpsURLConnection) new URL("https://www.google.com").openConnection();
-        
-        connection.connect();
-        
-        InputStream is = connection.getInputStream();
-        
-        final Certificate[] certs = connection.getServerCertificates();
-        
-        assertNotNull(certs);
-
-        for (Certificate cert : certs)
-        {
-            System.out.println(cert.toString());
-            assertNotNull(cert.getPublicKey().getEncoded());
-        }
-
-//        assertNotNull(connection.getHostnameVerifier());
-//        assertNull(connection.getLocalCertificates());
-//        assertNotNull(connection.getCipherSuite());
-//        assertNotNull(connection.getPeerPrincipal());
-    }
-
-    /**
      * Returns a gzipped copy of {@code bytes}.
      */
     public byte[] gzip(byte[] bytes) throws IOException {

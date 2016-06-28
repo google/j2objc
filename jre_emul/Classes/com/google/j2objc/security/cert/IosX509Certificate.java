@@ -75,8 +75,7 @@ public class IosX509Certificate extends X509Certificate {
    * This implementation is modelled after harmony's X509CertImpl
    */
   public void lazyDecoding() {
-    if (this.certificate == null)
-    {
+    if (this.certificate == null) {
       try {
         // decode the Certificate object
         this.certificate = (Certificate) Certificate.ASN1.decode(new ByteArrayInputStream(getEncoded()));
@@ -149,7 +148,11 @@ public class IosX509Certificate extends X509Certificate {
   ]-*/;
 
   
-  @Override public String toString() { lazyDecoding(); return certificate.toString(); }
+  @Override
+  public String toString() {
+    lazyDecoding();
+    return certificate.toString();
+  }
 
   /**
    * This can be used for full certificate pinning
@@ -185,9 +188,8 @@ public class IosX509Certificate extends X509Certificate {
   }
 
   // The X509 certificate properties are indirectly available from the iOS Security
-  // Framework API. To get this properties would require an ASN.1 decoder
-  // We have these things since commit fa9c48a1 and 592382e0
-  // by using harmony's TBSCertificate, Certificate, etc.
+  // Framework API. The ASN.1 decoder from Apache Harmony is used to expand the raw
+  // format returned by the Security Framework.
 
   // #getPublicKey#getEncoded can be used for public key pinning
   @Override
@@ -230,7 +232,7 @@ public class IosX509Certificate extends X509Certificate {
   @Override
   public int getVersion() {
     lazyDecoding();
-    return tbsCert.getVersion() + 1; // TODO determine why +1
+    return tbsCert.getVersion();
   }
 
   @Override
@@ -285,7 +287,6 @@ public class IosX509Certificate extends X509Certificate {
 
   @Override
   public String getSigAlgOID() {
-    // according to my reference impl its the same
     // see org.apache.harmony.security.provider.cert.X509CertImpl
     return getSigAlgName();
   }
