@@ -276,6 +276,7 @@ JAVA_SOURCES = \
 	types/Types.java \
 	util/BindingUtil.java \
 	util/DeadCodeMap.java \
+	util/ElementUtil.java \
 	util/ErrorUtil.java \
 	util/FileUtil.java \
 	util/HeaderMap.java \
