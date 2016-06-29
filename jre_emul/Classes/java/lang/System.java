@@ -374,25 +374,9 @@ public class System {
   ]-*/;
 
   public static native Map<String,String> getenv() /*-[
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-#if !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
-    // TODO(tball): move to libcore.io.Posix.
-    char ***nsEnviron = _NSGetEnviron();
-    if (nsEnviron && *nsEnviron) {
-      char **environ = *nsEnviron;
-      for (int i = 0; environ[i]; i++) {
-        NSString *var = [NSString stringWithUTF8String:environ[i]];
-        NSRange range = [var rangeOfString:@"="];
-        if (range.location != NSNotFound) {
-          NSString *key = [var substringToIndex:range.location];
-          NSString *value = [var substringFromIndex:(range.location + 1)];
-          [dict setObject:value forKey:key];
-        }
-      }
-    }
-#endif
-    return [JavaUtilCollections unmodifiableMapWithJavaUtilMap:
-            [NSDictionaryMap mapWithDictionary:dict]];
+    NSDictionaryMap *environmentMap =
+        [NSDictionaryMap mapWithDictionary:[NSProcessInfo processInfo].environment];
+    return [JavaUtilCollections unmodifiableMapWithJavaUtilMap:environmentMap];
   ]-*/;
 
   /**
