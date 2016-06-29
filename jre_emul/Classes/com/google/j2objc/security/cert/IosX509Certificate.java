@@ -90,16 +90,6 @@ public class IosX509Certificate extends X509Certificate {
     }
   }
 
-// Moved to native finalize()
-/*
-- (void)dealloc {
-  CFRelease((SecCertificateRef) secCertificateRef_);
-#if ! __has_feature(objc_arc)
-  [super dealloc];
-#endif
-}
-*/
-
   @Override
   native protected void finalize() throws Throwable /*-[
     CFRelease((SecCertificateRef) secCertificateRef_);
