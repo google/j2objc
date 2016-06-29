@@ -24,15 +24,20 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
+import javax.tools.JavaFileObject;
 
 /**
  * Provides convenient static error and warning methods.
  *
  * @author Tom Ball, Keith Stanger
  */
-public class ErrorUtil {
+public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
 
   private static int errorCount = 0;
   private static int warningCount = 0;
@@ -153,5 +158,24 @@ public class ErrorUtil {
 
   public static int functionizedMethodCount() {
     return functionizedMethodCount;
+  }
+
+  @Override
+  public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
+    JavaFileObject sourceFile = diagnostic.getSource();
+    String text = diagnostic.getMessage(null);
+    String msg = diagnostic.getPosition() != Diagnostic.NOPOS
+        ? String.format("%s:%s: %s", sourceFile.getName(), diagnostic.getLineNumber(), text)
+        : String.format("%s: %s", sourceFile.getName(), text);
+    switch (diagnostic.getKind()) {
+      case ERROR:
+        error(msg);
+        break;
+      case WARNING:
+        warning(msg);
+        break;
+      default:
+        Logger.getGlobal().info(msg);
+    }
   }
 }
