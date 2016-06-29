@@ -59,7 +59,7 @@ endif
 STATIC_FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME).framework
 STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
-MODULE_MAP = $(BUILD_DIR)/module.map
+MODULE_MAP = $(BUILD_DIR)/module.modulemap
 
 STATIC_FRAMEWORK_RESOURCES_DIR = $(STATIC_FRAMEWORK_DIR)/Versions/A/Resources
 RESOURCE_FILES = $(STATIC_FRAMEWORK_RESOURCE_FILES:%=$(STATIC_FRAMEWORK_RESOURCES_DIR)/%)
@@ -105,7 +105,7 @@ $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	    | tar xfp - -C $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
 	@cp $(STATIC_LIBRARY) $(STATIC_FRAMEWORK_DIR)/Versions/A/$(STATIC_FRAMEWORK_NAME)
 	@install -m 0644 $(FRAMEWORK_HEADER) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
-	@install -m 0644 $(MODULE_MAP) $(STATIC_FRAMEWORK_DIR)
+	@install -m 0644 $(MODULE_MAP) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers/
 	@touch $@
 
 # Creates a framework "master" header file that includes all the framework's header files.
@@ -127,7 +127,7 @@ test_warnings: $(FRAMEWORK_HEADER)
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
 
 $(MODULE_MAP):
-	@echo "framework module" $(STATIC_FRAMEWORK_NAME) "{" > $(MODULE_MAP)
+	@echo "module" $(STATIC_FRAMEWORK_NAME) "{" > $(MODULE_MAP)
 	@echo "  umbrella header" '"'$(STATIC_FRAMEWORK_NAME).h'"' >> $(MODULE_MAP)
 	@echo >> $(MODULE_MAP)
 	@echo "  export *" >> $(MODULE_MAP)
