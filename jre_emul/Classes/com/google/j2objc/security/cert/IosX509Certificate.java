@@ -17,6 +17,13 @@
 
 package com.google.j2objc.security.cert;
 
+// ASN.1 Decoder
+import org.apache.harmony.security.utils.AlgNameMapper;
+import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.Extension;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.TBSCertificate;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -33,14 +40,6 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Set;
-
-// ASN.1 Decoder
-import org.apache.harmony.security.utils.AlgNameMapper;
-import org.apache.harmony.security.x509.Certificate;
-import org.apache.harmony.security.x509.Extension;
-import org.apache.harmony.security.x509.Extensions;
-import org.apache.harmony.security.x509.TBSCertificate;
-
 
 /*-[
 #include "NSDataInputStream.h"
@@ -62,7 +61,7 @@ import org.apache.harmony.security.x509.TBSCertificate;
 public class IosX509Certificate extends X509Certificate {
 
   private long secCertificateRef;
-  
+
   private Certificate certificate;
   private TBSCertificate tbsCert;
   private Extensions extensions;
@@ -70,15 +69,17 @@ public class IosX509Certificate extends X509Certificate {
   public IosX509Certificate(long secCertificateRef) {
     this.secCertificateRef = secCertificateRef;
   }
-  
+
   /**
-   * This implementation is modelled after harmony's X509CertImpl
+   * This implementation is modeled after Apache Harmony's X509CertImpl.
    */
   public void lazyDecoding() {
     if (this.certificate == null) {
       try {
         // decode the Certificate object
-        this.certificate = (Certificate) Certificate.ASN1.decode(new ByteArrayInputStream(getEncoded()));
+        this.certificate = (Certificate)
+            Certificate.ASN1.decode(new ByteArrayInputStream(getEncoded()));
+
         // cache the values of TBSCertificate and Extensions
         this.tbsCert = certificate.getTbsCertificate();
         this.extensions = tbsCert.getExtensions();
@@ -91,7 +92,7 @@ public class IosX509Certificate extends X509Certificate {
   }
 
   @Override
-  native protected void finalize() throws Throwable /*-[
+  protected native void finalize() throws Throwable /*-[
     CFRelease((SecCertificateRef) secCertificateRef_);
   ]-*/;
 
@@ -137,7 +138,7 @@ public class IosX509Certificate extends X509Certificate {
     // It's valid!
   ]-*/;
 
-  
+
   @Override
   public String toString() {
     lazyDecoding();
@@ -159,7 +160,6 @@ public class IosX509Certificate extends X509Certificate {
   // AssertionErrors are thrown for the two verify() methods, so that we aren't
   // accidentally "verifying" unchecked keys.
 
-  // TODO
   @Override
   public void verify(PublicKey key) throws CertificateException,
       NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException,
@@ -168,7 +168,6 @@ public class IosX509Certificate extends X509Certificate {
     throw new AssertionError("not implemented");
   }
 
-  // TODO
   @Override
   public void verify(PublicKey key, String sigProvider)
       throws CertificateException, NoSuchAlgorithmException,
@@ -181,7 +180,7 @@ public class IosX509Certificate extends X509Certificate {
   // Framework API. The ASN.1 decoder from Apache Harmony is used to expand the raw
   // format returned by the Security Framework.
 
-  // #getPublicKey#getEncoded can be used for public key pinning
+  // #getPublicKey#getEncoded can be used for public key pinning.
   @Override
   public PublicKey getPublicKey() {
     lazyDecoding();
@@ -264,20 +263,22 @@ public class IosX509Certificate extends X509Certificate {
   @Override
   public String getSigAlgName() {
     lazyDecoding();
-    // if info was not retrieved (and cached), do it:
+
+    // If info was not retrieved (and cached), do it now:
     final String sigAlgOID = tbsCert.getSignature().getAlgorithm();
-    // retrieve the name of the signing algorithm
+
+    // Retrieve the name of the signing algorithm.
     String sigAlgName = AlgNameMapper.map2AlgName(sigAlgOID);
     if (sigAlgName == null) {
-        // if could not be found, use OID as a name
-        sigAlgName = sigAlgOID;
+      // if could not be found, use OID as a name
+      sigAlgName = sigAlgOID;
     }
     return sigAlgName;
   }
 
   @Override
   public String getSigAlgOID() {
-    // see org.apache.harmony.security.provider.cert.X509CertImpl
+    // See org.apache.harmony.security.provider.cert.X509CertImpl.
     return getSigAlgName();
   }
 

@@ -66,13 +66,11 @@ public class IosHttpsURLConnection extends HttpsURLConnection {
     if (getURL().getHost().startsWith("http://")) {
       throw new SSLPeerUnverifiedException("The http protocol does not support certificates");
     }
-      
+
     List<Certificate> certificates = delegate.certificates;
-    
     if (certificates != null && !certificates.isEmpty()) {
       return certificates.toArray(new Certificate[certificates.size()]);
     }
-    
     return null;
   }
 
