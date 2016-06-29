@@ -172,6 +172,7 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
   AddHeaderImports(headers);
   set<string> declarations;
   declarations.insert("@class ComGoogleProtobufExtensionRegistry");
+  declarations.insert("@class ComGoogleProtobufExtensionRegistryLite");
 
   if (!GenerateMultipleFiles()) {
     for (int i = 0; i < file_->message_type_count(); i++) {
@@ -200,11 +201,16 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
           "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
+      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
+          "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;\n"
       "\n"
       "@end\n\n"
       "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
           "ComGoogleProtobufExtensionRegistry_("
-          "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n",
+          "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n"
+      "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
+          "ComGoogleProtobufExtensionRegistryLite_("
+          "ComGoogleProtobufExtensionRegistryLite *extensionRegistry);\n",
       "classname", ClassName(file_));
 
   if (file_->extension_count() > 0) {
@@ -248,6 +254,7 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
   AddSourceImports(headers);
   headers.insert(GetFileName(".h"));
   headers.insert("com/google/protobuf/ExtensionRegistry.h");
+  headers.insert("com/google/protobuf/ExtensionRegistryLite.h");
   for (int i = 0; i < file_->message_type_count(); i++) {
     if (GenerateMultipleFiles()) {
       headers.insert(GetHeader(file_->message_type(i)));
@@ -277,6 +284,11 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
       "(ComGoogleProtobufExtensionRegistry *)extensionRegistry {\n"
       "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
           "ExtensionRegistry_(extensionRegistry);\n"
+      "}\n"
+      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
+      "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry {\n"
+      "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
+          "ExtensionRegistryLite_(extensionRegistry);\n"
       "}\n",
       "classname", ClassName(file_));
 
@@ -310,9 +322,21 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
-      "void $classname$_registerAllExtensionsWith"
-          "ComGoogleProtobufExtensionRegistry_("
+      "void $classname$_registerAllExtensionsWithComGoogleProtobufExtensionRegistry_("
           "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n",
+      "classname", ClassName(file_));
+  printer.Indent();
+  printer.Print(
+      "  $classname$_registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite_("
+      "    extensionRegistry);\n",
+      "classname", ClassName(file_));
+  printer.Outdent();
+  printer.Print(
+      "}\n"
+      "\n"
+      "void $classname$_registerAllExtensionsWith"
+          "ComGoogleProtobufExtensionRegistryLite_("
+          "ComGoogleProtobufExtensionRegistryLite *extensionRegistry) {\n",
       "classname", ClassName(file_));
   printer.Indent();
   for (int i = 0; i < file_->extension_count(); i++) {
