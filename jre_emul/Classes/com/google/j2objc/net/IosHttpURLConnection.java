@@ -17,7 +17,6 @@
 
 package com.google.j2objc.net;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +28,6 @@ import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -537,50 +533,18 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
   }
 
-  /*-[
-  - (void)URLSession:(NSURLSession *)session
-                task:(NSURLSessionTask *)task
-willPerformHTTPRedirection:(NSHTTPURLResponse *)response
-          newRequest:(NSURLRequest *)request
-   completionHandler:(void (^)(NSURLRequest *))completionHandler {
+  /*-[- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+              willPerformHTTPRedirection:(NSHTTPURLResponse *)response
+              newRequest:(NSURLRequest *)request
+              completionHandler:(void (^)(NSURLRequest *))completionHandler {
     if (self->instanceFollowRedirects_
         && [response.URL.scheme isEqualToString:request.URL.scheme]) {
       completionHandler(request);
     } else {
       completionHandler(nil);
     }
-  }
-  ]-*/
-
-  protected List<Certificate> certificates = new ArrayList<Certificate>();
-
-  private void addToCertificateList(final byte[] rawCert) throws CertificateException {
-    CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-    ByteArrayInputStream certificateInputStream = new ByteArrayInputStream(rawCert);
-    Certificate certificate = (Certificate)
-        certificateFactory.generateCertificate(certificateInputStream);
-    certificates.add(certificate);
-  }
-
-  /*-[
-  - (void)URLSession:(NSURLSession *)session
- didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
-   completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
-       NSURLCredential *credential))completionHandler {
-    SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
-    CFIndex count = SecTrustGetCertificateCount(serverTrust);
-
-    for (CFIndex i = 0; i < count; i++) {
-      SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
-      NSData* remoteCertificateData = (__bridge NSData *) SecCertificateCopyData(certificate);
-      IOSByteArray* rawCert = [IOSByteArray arrayWithNSData:remoteCertificateData];
-      [self addToCertificateListWithByteArray:rawCert];
-    }
-
-    completionHandler(NSURLSessionAuthChallengeUseCredential,
-        [NSURLCredential credentialForTrust:serverTrust]);
-  }
-  ]-*/
+  }]-*/
 
   private void addHeader(String k, String v) {
     headers.add(new HeaderEntry(k, v));
