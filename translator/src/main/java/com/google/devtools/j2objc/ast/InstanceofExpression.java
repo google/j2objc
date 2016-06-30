@@ -19,18 +19,22 @@ import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Instanceof expression node type.
  */
 public class InstanceofExpression extends Expression {
 
   private final ITypeBinding typeBinding;
+  private final TypeMirror typeMirror;
   private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
   private ChildLink<Type> rightOperand = ChildLink.create(Type.class, this);
 
   public InstanceofExpression(org.eclipse.jdt.core.dom.InstanceofExpression jdtNode) {
     super(jdtNode);
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
     leftOperand.set((Expression) TreeConverter.convert(jdtNode.getLeftOperand()));
     rightOperand.set((Type) TreeConverter.convert(jdtNode.getRightOperand()));
   }
@@ -38,12 +42,14 @@ public class InstanceofExpression extends Expression {
   public InstanceofExpression(InstanceofExpression other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     leftOperand.copyFrom(other.getLeftOperand());
     rightOperand.copyFrom(other.getRightOperand());
   }
 
   public InstanceofExpression(Expression lhs, ITypeBinding rhsType, Types typeEnv) {
     typeBinding = typeEnv.resolveJavaType("boolean");
+    typeMirror = BindingConverter.getType(typeBinding);
     leftOperand.set(lhs);
     rightOperand.set(Type.newType(rhsType));
   }
@@ -56,6 +62,11 @@ public class InstanceofExpression extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
   }
 
   public Expression getLeftOperand() {

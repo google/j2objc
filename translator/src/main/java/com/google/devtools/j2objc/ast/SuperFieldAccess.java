@@ -19,6 +19,8 @@ import com.google.devtools.j2objc.javac.BindingConverter;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node for accessing a field via "super" keyword.
  */
@@ -54,6 +56,11 @@ public class SuperFieldAccess extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return variableBinding != null ? variableBinding.getType() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return variableBinding != null ? BindingConverter.getType(variableBinding.getType()) : null;
   }
 
   public Name getQualifier() {

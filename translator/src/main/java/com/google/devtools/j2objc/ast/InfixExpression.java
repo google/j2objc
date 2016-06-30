@@ -23,6 +23,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import java.util.List;
 import java.util.Map;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Infix expression node type.
  */
@@ -81,12 +83,14 @@ public class InfixExpression extends Expression {
   // In theory the type binding can be resolved from the operator and operands
   // but we'll keep it simple for now.
   private ITypeBinding typeBinding = null;
+  private TypeMirror typeMirror = null;
   private Operator operator = null;
   private ChildList<Expression> operands = ChildList.create(Expression.class, this);
 
   public InfixExpression(org.eclipse.jdt.core.dom.InfixExpression jdtNode) {
     super(jdtNode);
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
 
     // The JDT parser apparently does not always take advantage of extended
@@ -140,6 +144,7 @@ public class InfixExpression extends Expression {
   public InfixExpression(InfixExpression other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     operator = other.getOperator();
     operands.copyFrom(other.getOperands());
   }
@@ -147,6 +152,7 @@ public class InfixExpression extends Expression {
   public InfixExpression(
       ITypeBinding typeBinding, Operator operator, Expression... operands) {
     this.typeBinding = typeBinding;
+    typeMirror = BindingConverter.getType(typeBinding);
     this.operator = operator;
     for (Expression operand : operands) {
       this.operands.add(operand);
@@ -163,8 +169,14 @@ public class InfixExpression extends Expression {
     return typeBinding;
   }
 
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
+  }
+
   public void setTypeBinding(ITypeBinding newTypeBinding) {
     typeBinding = newTypeBinding;
+    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public Operator getOperator() {

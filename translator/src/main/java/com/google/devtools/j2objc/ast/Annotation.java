@@ -19,6 +19,8 @@ import com.google.devtools.j2objc.javac.BindingConverter;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Base class for annotation nodes.
  */
@@ -54,5 +56,10 @@ public abstract class Annotation extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return annotationBinding.getAnnotationType();
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return BindingConverter.getType(annotationBinding.getAnnotationType());
   }
 }

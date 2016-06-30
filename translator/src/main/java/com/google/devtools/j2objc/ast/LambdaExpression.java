@@ -20,12 +20,15 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Lambda expression AST node type (added in JLS8, section 15.27).
  */
 public class LambdaExpression extends Expression {
 
   private ITypeBinding typeBinding;
+  private TypeMirror typeMirror;
   // Unique type binding that can be used as a key.
   private final LambdaTypeBinding lambdaTypeBinding;
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
@@ -38,6 +41,7 @@ public class LambdaExpression extends Expression {
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
     for (Object x : jdtNode.parameters()) {
       parameters.add((VariableDeclaration) TreeConverter.convert(x));
     }
@@ -51,6 +55,7 @@ public class LambdaExpression extends Expression {
   public LambdaExpression(LambdaExpression other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     lambdaTypeBinding = other.getLambdaTypeBinding();
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
@@ -60,6 +65,7 @@ public class LambdaExpression extends Expression {
 
   public LambdaExpression(String name, ITypeBinding typeBinding) {
     this.typeBinding = typeBinding;
+    typeMirror = BindingConverter.getType(typeBinding);
     lambdaTypeBinding = new LambdaTypeBinding(name);
   }
 
@@ -82,8 +88,14 @@ public class LambdaExpression extends Expression {
     return typeBinding;
   }
 
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
+  }
+
   public void setTypeBinding(ITypeBinding t) {
     typeBinding = t;
+    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public LambdaTypeBinding getLambdaTypeBinding() {

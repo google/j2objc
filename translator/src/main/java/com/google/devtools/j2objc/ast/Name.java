@@ -22,6 +22,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Base node class for a name.
  */
@@ -64,6 +66,11 @@ public abstract class Name extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return BindingUtil.toTypeBinding(binding);
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return BindingConverter.getType(getTypeBinding());
   }
 
   public void setBinding(IBinding newBinding) {

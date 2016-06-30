@@ -20,6 +20,8 @@ import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Number literal node type.
  */
@@ -28,6 +30,7 @@ public class NumberLiteral extends Expression {
   private String token = null;
   private Number value = null;
   private final ITypeBinding typeBinding;
+  private final TypeMirror typeMirror;
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
     super(jdtNode);
@@ -36,6 +39,7 @@ public class NumberLiteral extends Expression {
     assert constantValue instanceof Number;
     value = (Number) constantValue;
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public NumberLiteral(NumberLiteral other) {
@@ -43,11 +47,13 @@ public class NumberLiteral extends Expression {
     token = other.getToken();
     value = other.getValue();
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
   }
 
   public NumberLiteral(Number value, Types typeEnv) {
     this.value = value;
     this.typeBinding = typeForNumber(value, typeEnv);
+    this.typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public static NumberLiteral newIntLiteral(Integer i, Types typeEnv) {
@@ -62,6 +68,11 @@ public class NumberLiteral extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
   }
 
   public String getToken() {

@@ -49,6 +49,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -725,6 +727,15 @@ public class NameTable {
    */
   public static String getPrimitiveObjCType(ITypeBinding type) {
     return type.isPrimitive() ? (BindingUtil.isVoid(type) ? "void" : "j" + type.getName()) : "id";
+  }
+
+  /**
+   * Does the same, but for TypeMirrors.
+   */
+  public static String getPrimitiveObjCType(TypeMirror type) {
+    TypeKind kind = type.getKind();
+    return kind.isPrimitive() ? (kind.equals(TypeKind.VOID)
+        ? "void" : "j" + type.toString()) : "id";
   }
 
   /**

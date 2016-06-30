@@ -21,6 +21,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node type for constructing a new instance. (e.g. "new Foo()")
  */
@@ -84,6 +86,12 @@ public class ClassInstanceCreation extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return methodBinding != null ? methodBinding.getDeclaringClass() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return methodBinding != null
+        ? BindingConverter.getType(methodBinding.getDeclaringClass()) : null;
   }
 
   public boolean hasRetainedResult() {

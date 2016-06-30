@@ -20,6 +20,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node type for array creation.
  */
@@ -71,6 +73,12 @@ public class ArrayCreation extends Expression {
   public ITypeBinding getTypeBinding() {
     ArrayType arrayTypeNode = arrayType.get();
     return arrayTypeNode != null ? arrayTypeNode.getTypeBinding() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    ArrayType arrayTypeNode = arrayType.get();
+    return arrayTypeNode != null ? arrayTypeNode.getTypeMirror() : null;
   }
 
   public boolean hasRetainedResult() {

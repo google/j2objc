@@ -17,9 +17,9 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.regex.Pattern;
+
+import javax.lang.model.type.TypeKind;
 
 /**
  * Utility methods for generating correct Objective-C literals.
@@ -74,19 +74,17 @@ public class LiteralGenerator {
     return buffer.toString();
   }
 
-  public static String fixNumberToken(String token, ITypeBinding type) {
+  public static String fixNumberToken(String token, TypeKind kind) {
     token = token.replace("_", "");  // Remove any embedded underscores.
-    assert type.isPrimitive();
-    char kind = type.getKey().charAt(0);  // Primitive types have single-character keys.
-
+    assert kind.isPrimitive();
     switch (kind) {
-      case 'D':
+      case DOUBLE:
         return fixDoubleToken(token);
-      case 'F':
+      case FLOAT:
         return fixFloatToken(token);
-      case 'J':
+      case LONG:
         return fixLongToken(token);
-      case 'I':
+      case INT:
         return fixIntToken(token);
       default:
         return token;

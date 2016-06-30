@@ -206,11 +206,13 @@ JAVA_SOURCES = \
 	javac/JdtTypeElement.java \
 	javac/JdtTypeMirror.java \
 	javac/JdtTypeParameterElement.java \
+	javac/JdtTypes.java \
 	javac/JdtTypeVariable.java \
 	javac/JdtVariableBinding.java \
 	javac/JdtVariableElement.java \
 	javac/JdtWildcardType.java \
 	javac/StringName.java \
+	javac/TypeUtil.java \
 	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \

@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Adds parentheses to a wrapped expression.
  */
@@ -64,6 +66,12 @@ public class ParenthesizedExpression extends Expression {
   public ITypeBinding getTypeBinding() {
     Expression expressionNode = expression.get();
     return expressionNode != null ? expressionNode.getTypeBinding() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    Expression expressionNode = expression.get();
+    return expressionNode != null ? expressionNode.getTypeMirror() : null;
   }
 
   public Expression getExpression() {

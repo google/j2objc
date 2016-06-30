@@ -21,6 +21,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node type for a method invocation on the super class. (e.g. "super.foo()")
  */
@@ -70,6 +72,11 @@ public class SuperMethodInvocation extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return methodBinding != null ? methodBinding.getReturnType() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return methodBinding != null ? BindingConverter.getType(methodBinding.getReturnType()) : null;
   }
 
   public Name getQualifier() {

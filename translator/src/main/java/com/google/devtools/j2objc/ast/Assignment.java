@@ -20,6 +20,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.Map;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node type for an assignment.
  */
@@ -107,6 +109,12 @@ public class Assignment extends Expression {
   public ITypeBinding getTypeBinding() {
     Expression leftHandSideNode = leftHandSide.get();
     return leftHandSideNode != null ? leftHandSideNode.getTypeBinding() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    Expression leftHandSideNode = leftHandSide.get();
+    return leftHandSideNode != null ? leftHandSideNode.getTypeMirror() : null;
   }
 
   public Operator getOperator() {

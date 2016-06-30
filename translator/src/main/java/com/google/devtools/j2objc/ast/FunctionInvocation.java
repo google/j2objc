@@ -14,11 +14,14 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
+
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Function invocation node type.
@@ -28,6 +31,7 @@ public class FunctionInvocation extends Expression {
   private FunctionBinding functionBinding = null;
   // The context-specific known type of this expression.
   private ITypeBinding typeBinding = null;
+  private TypeMirror typeMirror = null;
   private boolean hasRetainedResult = false;
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
@@ -35,12 +39,14 @@ public class FunctionInvocation extends Expression {
     super(other);
     functionBinding = other.getFunctionBinding();
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     arguments.copyFrom(other.getArguments());
   }
 
   public FunctionInvocation(FunctionBinding functionBinding, ITypeBinding typeBinding) {
     this.functionBinding = functionBinding;
     this.typeBinding = typeBinding;
+    this.typeMirror = BindingConverter.getType(typeBinding);
   }
 
   @Override
@@ -59,6 +65,11 @@ public class FunctionInvocation extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
   }
 
   public boolean hasRetainedResult() {

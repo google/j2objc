@@ -21,6 +21,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.Map;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Prefix expression node type.
  */
@@ -66,12 +68,14 @@ public class PrefixExpression extends Expression {
   }
 
   private ITypeBinding typeBinding = null;
+  private TypeMirror typeMirror = null;
   private Operator operator = null;
   private ChildLink<Expression> operand = ChildLink.create(Expression.class, this);
 
   public PrefixExpression(org.eclipse.jdt.core.dom.PrefixExpression jdtNode) {
     super(jdtNode);
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
     operand.set((Expression) TreeConverter.convert(jdtNode.getOperand()));
   }
@@ -79,12 +83,14 @@ public class PrefixExpression extends Expression {
   public PrefixExpression(PrefixExpression other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     operator = other.getOperator();
     operand.copyFrom(other.getOperand());
   }
 
   public PrefixExpression(ITypeBinding typeBinding, Operator operator, Expression operand) {
     this.typeBinding = typeBinding;
+    this.typeMirror = BindingConverter.getType(typeBinding);
     this.operator = operator;
     this.operand.set(operand);
   }
@@ -97,6 +103,11 @@ public class PrefixExpression extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
   }
 
   public Operator getOperator() {

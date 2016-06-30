@@ -20,6 +20,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Abstract base class of all AST node types that represent a method reference expression (added in
  * JLS8, section 15.13).
@@ -35,6 +37,7 @@ import java.util.List;
 public abstract class MethodReference extends Expression {
 
   protected ITypeBinding typeBinding;
+  protected TypeMirror typeMirror;
   protected IMethodBinding methodBinding;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
   // We generate an invocation to properly resolve translations with normal visitors.
@@ -43,6 +46,7 @@ public abstract class MethodReference extends Expression {
   public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
     super(jdtNode);
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
     methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
     for (Object x : jdtNode.typeArguments()) {
       typeArguments.add((Type) TreeConverter.convert(x));
@@ -52,6 +56,7 @@ public abstract class MethodReference extends Expression {
   public MethodReference(MethodReference other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     methodBinding = other.getMethodBinding();
     typeArguments.copyFrom(other.getTypeArguments());
     invocation.copyFrom(other.getInvocation());
@@ -60,6 +65,11 @@ public abstract class MethodReference extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
   }
 
   public IMethodBinding getMethodBinding() {

@@ -22,6 +22,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Method invocation node type.
  */
@@ -30,6 +32,7 @@ public class MethodInvocation extends Expression {
   private IMethodBinding methodBinding = null;
   // The context-specific known type of this expression.
   private ITypeBinding typeBinding = null;
+  private TypeMirror typeMirror = null;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -38,6 +41,7 @@ public class MethodInvocation extends Expression {
     super(jdtNode);
     methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
@@ -49,6 +53,7 @@ public class MethodInvocation extends Expression {
     super(other);
     methodBinding = other.getMethodBinding();
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
@@ -57,6 +62,7 @@ public class MethodInvocation extends Expression {
   public MethodInvocation(IMethodBinding binding, ITypeBinding typeBinding, Expression expression) {
     methodBinding = binding;
     this.typeBinding = typeBinding;
+    typeMirror = BindingConverter.getType(typeBinding);
     this.expression.set(expression);
     name.set(new SimpleName(binding));
   }
@@ -83,8 +89,14 @@ public class MethodInvocation extends Expression {
     return typeBinding;
   }
 
+  @Override
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
+  }
+
   public void setTypeBinding(ITypeBinding newTypeBinding) {
     typeBinding = newTypeBinding;
+    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public Expression getExpression() {

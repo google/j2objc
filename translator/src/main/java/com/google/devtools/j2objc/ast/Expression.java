@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Base node class for all expressions.
  */
@@ -36,6 +38,8 @@ public abstract class Expression extends TreeNode {
   protected Expression() {}
 
   public abstract ITypeBinding getTypeBinding();
+
+  public abstract TypeMirror getTypeMirror();
 
   public Object getConstantValue() {
     return constantValue;

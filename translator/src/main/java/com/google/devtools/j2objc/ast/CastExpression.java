@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node type for a type cast.
  */
@@ -56,6 +58,12 @@ public class CastExpression extends Expression {
   public ITypeBinding getTypeBinding() {
     Type typeNode = type.get();
     return typeNode != null ? typeNode.getTypeBinding() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    Type typeNode = type.get();
+    return typeNode != null ? typeNode.getTypeMirror() : null;
   }
 
   public Type getType() {

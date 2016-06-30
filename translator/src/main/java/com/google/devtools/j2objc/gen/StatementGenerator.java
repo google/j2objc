@@ -102,6 +102,8 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.javac.JdtTypes;
+import com.google.devtools.j2objc.javac.TypeUtil;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -117,6 +119,9 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Returns an Objective-C equivalent of a Java AST node.
@@ -208,9 +213,8 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ArrayInitializer node) {
-    ITypeBinding type = node.getTypeBinding();
-    assert type.isArray();
-    ITypeBinding componentType = type.getComponentType();
+    javax.lang.model.type.ArrayType type = (javax.lang.model.type.ArrayType) node.getTypeMirror();
+    TypeMirror componentType = type.getComponentType();
     buffer.append(UnicodeUtils.format("(%s[]){ ", NameTable.getPrimitiveObjCType(componentType)));
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
       it.next().accept(this);
@@ -365,10 +369,10 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(ConditionalExpression node) {
     boolean castNeeded = false;
-    ITypeBinding thenType = node.getThenExpression().getTypeBinding();
-    ITypeBinding elseType = node.getElseExpression().getTypeBinding();
+    TypeMirror thenType = node.getThenExpression().getTypeMirror();
+    TypeMirror elseType = node.getElseExpression().getTypeMirror();
 
-    if (!thenType.equals(elseType)
+    if (!JdtTypes.getInstance().isSameType(thenType, elseType)
         && !(node.getThenExpression() instanceof NullLiteral)
         && !(node.getElseExpression() instanceof NullLiteral)) {
       // gcc fails to compile a conditional expression where the two clauses of
@@ -381,21 +385,21 @@ public class StatementGenerator extends TreeVisitor {
     node.getExpression().accept(this);
 
     buffer.append(" ? ");
-    if (castNeeded && thenType.isInterface()) {
-      buffer.append("((id) ");
+    if (castNeeded && (TypeUtil.isInterface(thenType) || TypeUtil.isTypeParameter(thenType))) {
+      buffer.append("((id) (");
     }
     node.getThenExpression().accept(this);
-    if (castNeeded && thenType.isInterface()) {
-      buffer.append(')');
+    if (castNeeded && (TypeUtil.isInterface(thenType) || TypeUtil.isTypeParameter(thenType))) {
+      buffer.append("))");
     }
 
     buffer.append(" : ");
-    if (castNeeded && elseType.isInterface()) {
-      buffer.append("((id) ");
+    if (castNeeded && (TypeUtil.isInterface(elseType) || TypeUtil.isTypeParameter(elseType))) {
+      buffer.append("((id) (");
     }
     node.getElseExpression().accept(this);
-    if (castNeeded && elseType.isInterface()) {
-      buffer.append(')');
+    if (castNeeded && (TypeUtil.isInterface(elseType) || TypeUtil.isTypeParameter(elseType))) {
+      buffer.append("))");
     }
 
     return false;
@@ -525,9 +529,9 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(ExpressionStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding type = expression.getTypeBinding();
-    if (!type.isPrimitive() && Options.useARC()
-        && (expression instanceof MethodInvocation
+    TypeMirror type = expression.getTypeMirror();
+    if (!type.getKind().isPrimitive() && !type.getKind().equals(TypeKind.VOID)
+        && Options.useARC() && (expression instanceof MethodInvocation
             || expression instanceof SuperMethodInvocation
             || expression instanceof FunctionInvocation)) {
       // Avoid clang warning that the return value is unused.
@@ -780,7 +784,7 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(NumberLiteral node) {
     String token = node.getToken();
     if (token != null) {
-      buffer.append(LiteralGenerator.fixNumberToken(token, node.getTypeBinding()));
+      buffer.append(LiteralGenerator.fixNumberToken(token, node.getTypeMirror().getKind()));
     } else {
       buffer.append(LiteralGenerator.generate(node.getValue()));
     }
@@ -811,7 +815,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(PrimitiveType node) {
-    buffer.append(NameTable.getPrimitiveObjCType(node.getTypeBinding()));
+    buffer.append(NameTable.getPrimitiveObjCType(node.getTypeMirror()));
     return false;
   }
 

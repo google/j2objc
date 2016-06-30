@@ -19,26 +19,32 @@ import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Base class for all type nodes.
  */
 public abstract class Type extends TreeNode {
 
   protected ITypeBinding typeBinding;
+  protected TypeMirror typeMirror;
 
   public Type(org.eclipse.jdt.core.dom.Type jdtNode) {
     super(jdtNode);
     typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
+    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public Type(Type other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
   }
 
   public Type(ITypeBinding typeBinding) {
     super();
     this.typeBinding = typeBinding;
+    this.typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public static Type newType(ITypeBinding binding) {
@@ -53,6 +59,10 @@ public abstract class Type extends TreeNode {
 
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  public TypeMirror getTypeMirror() {
+    return typeMirror;
   }
 
   public boolean isPrimitiveType() {

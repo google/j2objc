@@ -21,6 +21,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.Map;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Postfix expression node type.
  */
@@ -88,6 +90,12 @@ public class PostfixExpression extends Expression {
   public ITypeBinding getTypeBinding() {
     Expression operandNode = operand.get();
     return operandNode != null ? operandNode.getTypeBinding() : null;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    Expression operandNode = operand.get();
+    return operand != null ? operandNode.getTypeMirror() : null;
   }
 
   public Operator getOperator() {

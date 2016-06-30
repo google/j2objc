@@ -19,6 +19,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Comma expression node type. eg. "(expr1, expr2, expr3)"
  */
@@ -43,6 +45,11 @@ public class CommaExpression extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return expressions.get(expressions.size() - 1).getTypeBinding();
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return expressions.get(expressions.size() - 1).getTypeMirror();
   }
 
   public List<Expression> getExpressions() {

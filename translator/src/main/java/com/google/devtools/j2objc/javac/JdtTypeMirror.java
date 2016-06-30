@@ -40,6 +40,23 @@ abstract class JdtTypeMirror implements TypeMirror {
     return mirrors;
   }
 
+  public boolean bindingsEqual(JdtTypeMirror other) {
+      if (binding == other.binding) {
+        return true;
+      }
+      if (binding == null || other.binding == null) {
+        return false;
+      }
+      return binding.equals(other.binding);
+  }
+
+  // TypeMirror's toString should return a string reasonable
+  // for representing the type in code, if possible.
+  @Override
+  public String toString() {
+    return binding.getName();
+  }
+
   public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
     throw new AssertionError("not implemented");
   }

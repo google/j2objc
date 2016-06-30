@@ -37,6 +37,7 @@ class JdtPrimitiveType extends JdtTypeMirror implements PrimitiveType {
         case 'I': return TypeKind.INT;
         case 'J': return TypeKind.LONG;
         case 'S': return TypeKind.SHORT;
+        case 'V': return TypeKind.VOID;
         case 'Z': return TypeKind.BOOLEAN;
         default:
           // Fall through and throw assertion error.
