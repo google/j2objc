@@ -17,6 +17,7 @@
 
 package com.google.j2objc.net;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +25,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.security.Permission;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -36,14 +39,15 @@ import javax.net.ssl.SSLPeerUnverifiedException;
  * both http and https URLs, this class uses an HttpURLConnection delegate
  * whenever possible.
  */
-public class IosHttpsURLConnection extends HttpsURLConnection {
+public class IosHttpsURLConnection extends HttpsURLConnection implements SecurityDataHandler {
   private final IosHttpURLConnection delegate;
+  private final List<Certificate> serverCertificates = new ArrayList<>();
 
   private static final Logger logger = Logger.getLogger(IosHttpsURLConnection.class.getName());
 
   public IosHttpsURLConnection(URL url) {
     super(url);
-    delegate = new IosHttpURLConnection(url);
+    delegate = new IosHttpURLConnection(url, this);
   }
 
   @Override
@@ -61,14 +65,23 @@ public class IosHttpsURLConnection extends HttpsURLConnection {
   }
 
   @Override
+  public void handleSecCertificateData(byte[] secCertData) throws Exception {
+    CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+    ByteArrayInputStream certificateInputStream = new ByteArrayInputStream(secCertData);
+    Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
+    serverCertificates.add(certificate);
+  }
+
+  @Override
   public Certificate[] getServerCertificates() throws SSLPeerUnverifiedException {
-    // TODO(tball): implement
-    logger.severe("HttpsURLConnection.getServerCertificates() not implemented");
-    return new Certificate[0];
+    if (getURL().getHost().startsWith("http://")) {
+      throw new SSLPeerUnverifiedException("The http protocol does not support certificates");
+    }
+    return serverCertificates.isEmpty() ? null
+        : serverCertificates.toArray(new Certificate[serverCertificates.size()]);
   }
 
   // Delegate methods.
-
   @Override public void connect() throws IOException {
     connected = true;
     delegate.connect();

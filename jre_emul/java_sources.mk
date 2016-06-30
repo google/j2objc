@@ -527,6 +527,7 @@ JAVA_PUBLIC_SOURCES_NET = \
 JAVA_PRIVATE_SOURCES_NET = \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
+  com/google/j2objc/net/SecurityDataHandler.java \
   java/net/AddressCache.java \
   java/net/DefaultFileNameMap.java \
   java/net/InetUnixAddress.java \

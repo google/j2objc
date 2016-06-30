@@ -17,6 +17,8 @@
 
 package com.google.j2objc.net;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,11 +67,20 @@ public class IosHttpURLConnection extends HttpURLConnection {
   // Cache response failure, so multiple requests to a bad response throw the same exception.
   private IOException responseException;
 
+  // Delegate to handle native security data, to avoid a direct dependency on jre_security.
+  @Weak
+  private final SecurityDataHandler securityDataHandler;
+
   private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
   private static final Map<Integer,String> RESPONSE_CODES = new HashMap<Integer,String>();
 
   public IosHttpURLConnection(URL url) {
+    this(url, null);
+  }
+
+  IosHttpURLConnection(URL url, SecurityDataHandler handler) {
     super(url);
+    securityDataHandler = handler;
   }
 
   @Override
@@ -533,18 +544,42 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
   }
 
-  /*-[- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-              willPerformHTTPRedirection:(NSHTTPURLResponse *)response
-              newRequest:(NSURLRequest *)request
-              completionHandler:(void (^)(NSURLRequest *))completionHandler {
+  /*-[
+  - (void)URLSession:(NSURLSession *)session
+                task:(NSURLSessionTask *)task
+willPerformHTTPRedirection:(NSHTTPURLResponse *)response
+          newRequest:(NSURLRequest *)request
+   completionHandler:(void (^)(NSURLRequest *))completionHandler {
     if (self->instanceFollowRedirects_
         && [response.URL.scheme isEqualToString:request.URL.scheme]) {
       completionHandler(request);
     } else {
       completionHandler(nil);
     }
-  }]-*/
+  }
+  ]-*/
+
+  /*-[
+  - (void)URLSession:(NSURLSession *)session
+ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+   completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
+       NSURLCredential *credential))completionHandler {
+    if (securityDataHandler_) {
+      SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+      CFIndex count = SecTrustGetCertificateCount(serverTrust);
+
+      for (CFIndex i = 0; i < count; i++) {
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
+        NSData* remoteCertificateData = (__bridge NSData *) SecCertificateCopyData(certificate);
+        IOSByteArray* rawCert = [IOSByteArray arrayWithNSData:remoteCertificateData];
+        [securityDataHandler_ handleSecCertificateDataWithByteArray:rawCert];
+      }
+
+      completionHandler(NSURLSessionAuthChallengeUseCredential,
+          [NSURLCredential credentialForTrust:serverTrust]);
+    }
+  }
+  ]-*/
 
   private void addHeader(String k, String v) {
     headers.add(new HeaderEntry(k, v));

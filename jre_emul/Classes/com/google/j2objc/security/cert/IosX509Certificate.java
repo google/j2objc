@@ -17,6 +17,15 @@
 
 package com.google.j2objc.security.cert;
 
+// ASN.1 Decoder
+import org.apache.harmony.security.utils.AlgNameMapper;
+import org.apache.harmony.security.x509.Certificate;
+import org.apache.harmony.security.x509.Extension;
+import org.apache.harmony.security.x509.Extensions;
+import org.apache.harmony.security.x509.TBSCertificate;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -53,18 +62,39 @@ public class IosX509Certificate extends X509Certificate {
 
   private long secCertificateRef;
 
+  private Certificate certificate;
+  private TBSCertificate tbsCert;
+  private Extensions extensions;
+
   public IosX509Certificate(long secCertificateRef) {
     this.secCertificateRef = secCertificateRef;
   }
 
-/*-[
-- (void)dealloc {
-  CFRelease((SecCertificateRef) secCertificateRef_);
-#if ! __has_feature(objc_arc)
-  [super dealloc];
-#endif
-}
-]-*/
+  /**
+   * This implementation is modeled after Apache Harmony's X509CertImpl.
+   */
+  public void lazyDecoding() {
+    if (this.certificate == null) {
+      try {
+        // decode the Certificate object
+        this.certificate = (Certificate)
+            Certificate.ASN1.decode(new ByteArrayInputStream(getEncoded()));
+
+        // cache the values of TBSCertificate and Extensions
+        this.tbsCert = certificate.getTbsCertificate();
+        this.extensions = tbsCert.getExtensions();
+      } catch (CertificateEncodingException e) {
+        throw new RuntimeException(e);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  @Override
+  protected native void finalize() throws Throwable /*-[
+    CFRelease((SecCertificateRef) secCertificateRef_);
+  ]-*/;
 
   @Override
   public void checkValidity() throws CertificateExpiredException,
@@ -108,12 +138,16 @@ public class IosX509Certificate extends X509Certificate {
     // It's valid!
   ]-*/;
 
-  @Override
-  public native String toString() /*-[
-    return (ARCBRIDGE NSString *) SecCertificateCopySubjectSummary(
-        (SecCertificateRef) secCertificateRef_);
-  ]-*/;
 
+  @Override
+  public String toString() {
+    lazyDecoding();
+    return certificate.toString();
+  }
+
+  /**
+   * This can be used for full certificate pinning
+   */
   @Override
   public native byte[] getEncoded() throws CertificateEncodingException /*-[
     CFDataRef dataRef = SecCertificateCopyData((SecCertificateRef) secCertificateRef_);
@@ -142,107 +176,139 @@ public class IosX509Certificate extends X509Certificate {
     throw new AssertionError("not implemented");
   }
 
-  // The X509 certificate properties are not available from the iOS Security
-  // Framework API. To get this properties would require an ASN.1 decoder, so
-  // only implement these when they are required.
+  // The X509 certificate properties are indirectly available from the iOS Security
+  // Framework API. The ASN.1 decoder from Apache Harmony is used to expand the raw
+  // format returned by the Security Framework.
 
+  // #getPublicKey#getEncoded can be used for public key pinning.
   @Override
   public PublicKey getPublicKey() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getSubjectPublicKeyInfo().getPublicKey();
   }
 
   @Override
   public BigInteger getSerialNumber() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getSerialNumber();
   }
 
   @Override
   public Set<String> getCriticalExtensionOIDs() {
-    return null;
+    lazyDecoding();
+    return extensions.getCriticalExtensions();
   }
 
   @Override
   public byte[] getExtensionValue(String oid) {
-    return null;
+    lazyDecoding();
+    Extension ext = extensions.getExtensionByOID(oid);
+    return (ext == null) ? null : ext.getRawExtnValue();
   }
 
   @Override
   public Set<String> getNonCriticalExtensionOIDs() {
-    return null;
+    lazyDecoding();
+    return extensions.getNonCriticalExtensions();
   }
 
   @Override
   public boolean hasUnsupportedCriticalExtension() {
-    return false;
+    lazyDecoding();
+    return extensions.hasUnsupportedCritical();
   }
 
   @Override
   public int getVersion() {
-    return 0;
+    lazyDecoding();
+    return tbsCert.getVersion();
   }
 
   @Override
   public Principal getIssuerDN() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getIssuer().getX500Principal();
   }
 
   @Override
   public Principal getSubjectDN() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getSubject().getX500Principal();
   }
 
   @Override
   public Date getNotBefore() {
-    return null;
+    lazyDecoding();
+    return new Date(tbsCert.getValidity().getNotBefore().getTime());
   }
 
   @Override
   public Date getNotAfter() {
-    return null;
+    lazyDecoding();
+    return new Date(tbsCert.getValidity().getNotAfter().getTime());
   }
 
   @Override
   public byte[] getTBSCertificate() throws CertificateEncodingException {
-    return null;
+    lazyDecoding();
+    return tbsCert.getEncoded();
   }
 
   @Override
   public byte[] getSignature() {
-    return null;
+    lazyDecoding();
+    return certificate.getSignatureValue();
   }
 
   @Override
   public String getSigAlgName() {
-    return null;
+    lazyDecoding();
+
+    // If info was not retrieved (and cached), do it now:
+    final String sigAlgOID = tbsCert.getSignature().getAlgorithm();
+
+    // Retrieve the name of the signing algorithm.
+    String sigAlgName = AlgNameMapper.map2AlgName(sigAlgOID);
+    if (sigAlgName == null) {
+      // if could not be found, use OID as a name
+      sigAlgName = sigAlgOID;
+    }
+    return sigAlgName;
   }
 
   @Override
   public String getSigAlgOID() {
-    return null;
+    // See org.apache.harmony.security.provider.cert.X509CertImpl.
+    return getSigAlgName();
   }
 
   @Override
   public byte[] getSigAlgParams() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getSignature().getParameters();
   }
 
   @Override
   public boolean[] getIssuerUniqueID() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getIssuerUniqueID();
   }
 
   @Override
   public boolean[] getSubjectUniqueID() {
-    return null;
+    lazyDecoding();
+    return tbsCert.getSubjectUniqueID();
   }
 
   @Override
   public boolean[] getKeyUsage() {
-    return null;
+    lazyDecoding();
+    return extensions.valueOfKeyUsage();
   }
 
   @Override
   public int getBasicConstraints() {
-    return 0;
+    lazyDecoding();
+    return extensions.valueOfBasicConstraints();
   }
 }
