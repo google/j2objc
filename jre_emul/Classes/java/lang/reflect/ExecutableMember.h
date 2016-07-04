@@ -40,7 +40,6 @@
     < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
  @protected
   IOSClass *class_;
-  SEL selector_;
   NSMethodSignature *methodSignature_;
   const J2ObjcMethodInfo *metadata_;
   const void **ptrTable_;
@@ -49,7 +48,6 @@
 @property (readonly) NSMethodSignature *signature;
 
 - (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                               selector:(SEL)selector
                                   class:(IOSClass *)aClass
                                metadata:(const J2ObjcMethodInfo *)metadata;
 

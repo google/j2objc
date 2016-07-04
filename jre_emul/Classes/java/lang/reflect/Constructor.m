@@ -35,11 +35,9 @@
 @implementation JavaLangReflectConstructor
 
 + (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
-                                      selector:(SEL)selector
                                          class:(IOSClass *)aClass
                                       metadata:(const J2ObjcMethodInfo *)metadata {
   return [[[JavaLangReflectConstructor alloc] initWithMethodSignature:methodSignature
-                                                             selector:selector
                                                                 class:aClass
                                                              metadata:metadata] autorelease];
 }
@@ -93,7 +91,7 @@
 - (NSInvocation *)invocationForTarget:(id)object {
   NSInvocation *invocation =
       [NSInvocation invocationWithMethodSignature:methodSignature_];
-  [invocation setSelector:selector_];
+  [invocation setSelector:JreMethodSelector(metadata_)];
   [invocation setTarget:object];
   return invocation;
 }

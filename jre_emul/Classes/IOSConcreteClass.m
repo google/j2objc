@@ -142,7 +142,6 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
     NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
     JavaLangReflectConstructor *constructor =
         [JavaLangReflectConstructor constructorWithMethodSignature:signature
-                                                          selector:sel
                                                              class:iosClass
                                                           metadata:methodInfo];
     [constructors addObject:constructor];

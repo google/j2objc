@@ -294,9 +294,7 @@ static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods
     NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
     JavaLangReflectMethod *method =
         [JavaLangReflectMethod methodWithMethodSignature:signature
-                                                selector:sel
                                                    class:iosClass
-                                                isStatic:isStatic
                                                 metadata:methodInfo];
     [methods setObject:method forKey:selector];
   }

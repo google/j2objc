@@ -63,12 +63,10 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 @implementation ExecutableMember
 
 - (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                               selector:(SEL)selector
                                   class:(IOSClass *)aClass
                                metadata:(const J2ObjcMethodInfo *)metadata {
   if ((self = [super init])) {
     methodSignature_ = [methodSignature retain];
-    selector_ = selector;
     class_ = aClass; // IOSClass types are never dealloced.
     metadata_ = metadata;
     ptrTable_ = IOSClass_GetMetadataOrFail(aClass)->ptrTable;
@@ -228,11 +226,11 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
     return NO;
   }
   ExecutableMember *other = (ExecutableMember *) anObject;
-  return class_ == other->class_ && sel_isEqual(selector_, other->selector_);
+  return class_ == other->class_ && metadata_ == other->metadata_;
 }
 
 - (NSUInteger)hash {
-  return [[class_ getName] hash] ^ [NSStringFromSelector(selector_) hash];
+  return [class_ hash] ^ (NSUInteger)metadata_;
 }
 
 - (void)dealloc {

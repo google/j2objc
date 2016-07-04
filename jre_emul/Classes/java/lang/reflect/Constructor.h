@@ -34,7 +34,6 @@
 @interface JavaLangReflectConstructor : ExecutableMember
 
 + (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
-                                      selector:(SEL)selector
                                          class:(IOSClass *)aClass
                                       metadata:(const J2ObjcMethodInfo *)metadata;
 

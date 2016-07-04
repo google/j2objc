@@ -35,30 +35,16 @@
 
 @implementation JavaLangReflectMethod
 
-- (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                               selector:(SEL)selector
-                                  class:(IOSClass *)aClass
-                               isStatic:(jboolean)isStatic
-                               metadata:(const J2ObjcMethodInfo *)metadata {
-  if (self = [super initWithMethodSignature:methodSignature
-                                   selector:selector
-                                      class:aClass
-                                   metadata:metadata]) {
-    isStatic_ = isStatic;
-  }
-  return self;
-}
-
 + (instancetype)methodWithMethodSignature:(NSMethodSignature *)methodSignature
-                                 selector:(SEL)selector
                                     class:(IOSClass *)aClass
-                                 isStatic:(jboolean)isStatic
                                  metadata:(const J2ObjcMethodInfo *)metadata {
   return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
-                                                        selector:selector
                                                            class:aClass
-                                                        isStatic:isStatic
                                                         metadata:metadata] autorelease];
+}
+
+static bool IsStatic(const J2ObjcMethodInfo *metadata) {
+  return (metadata->modifiers & JavaLangReflectModifier_STATIC) > 0;
 }
 
 // Returns method name.
@@ -93,7 +79,7 @@
 
 - (id)invokeWithId:(id)object
     withNSObjectArray:(IOSObjectArray *)arguments {
-  if (!isStatic_ && object == nil) {
+  if (!IsStatic(metadata_) && object == nil) {
     @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
       @"null object specified for non-final method"]);
   }
@@ -144,7 +130,7 @@
 - (NSInvocation *)invocationForTarget:(id)object {
   NSInvocation *invocation =
       [NSInvocation invocationWithMethodSignature:methodSignature_];
-  [invocation setSelector:selector_];
+  [invocation setSelector:JreMethodSelector(metadata_)];
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {
     [invocation setTarget:class_.objcClass];
   } else {

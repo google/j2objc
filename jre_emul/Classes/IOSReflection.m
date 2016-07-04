@@ -200,7 +200,6 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
 
 static JavaLangReflectMethod *MethodFromMetadata(
     IOSClass *iosClass, const J2ObjcMethodInfo *methodInfo) {
-  SEL sel = sel_registerName(methodInfo->selector);
   Class cls = iosClass.objcClass;
   NSMethodSignature *signature = nil;
   bool isStatic = (methodInfo->modifiers & JavaLangReflectModifier_STATIC) > 0;
@@ -215,7 +214,7 @@ static JavaLangReflectMethod *MethodFromMetadata(
     Protocol *protocol = iosClass.objcProtocol;
     if (protocol) {
       struct objc_method_description methodDesc =
-          protocol_getMethodDescription(protocol, sel, YES, YES);
+          protocol_getMethodDescription(protocol, JreMethodSelector(methodInfo), YES, YES);
       signature = JreSignatureOrNull(&methodDesc);
     } else if (cls) {
       Method method = JreFindInstanceMethod(cls, methodInfo->selector);
@@ -228,9 +227,7 @@ static JavaLangReflectMethod *MethodFromMetadata(
     return nil;
   }
   return [JavaLangReflectMethod methodWithMethodSignature:signature
-                                                 selector:sel
                                                     class:iosClass
-                                                 isStatic:isStatic
                                                  metadata:methodInfo];
 }
 
@@ -249,7 +246,6 @@ static JavaLangReflectConstructor *ConstructorFromMetadata(
     return nil;
   }
   return [JavaLangReflectConstructor constructorWithMethodSignature:signature
-                                                           selector:method_getName(method)
                                                               class:iosClass
                                                            metadata:methodInfo];
 }
