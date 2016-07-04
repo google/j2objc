@@ -201,6 +201,7 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
       "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
           "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
+      "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
           "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;\n"
       "\n"
@@ -208,6 +209,7 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
       "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
           "ComGoogleProtobufExtensionRegistry_("
           "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n"
+      "\n"
       "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
           "ComGoogleProtobufExtensionRegistryLite_("
           "ComGoogleProtobufExtensionRegistryLite *extensionRegistry);\n",
@@ -285,6 +287,7 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
       "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
           "ExtensionRegistry_(extensionRegistry);\n"
       "}\n"
+      "\n"
       "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
       "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry {\n"
       "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
@@ -322,16 +325,11 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
-      "void $classname$_registerAllExtensionsWithComGoogleProtobufExtensionRegistry_("
-          "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n",
-      "classname", ClassName(file_));
-  printer.Indent();
-  printer.Print(
-      "  $classname$_registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite_("
-      "    extensionRegistry);\n",
-      "classname", ClassName(file_));
-  printer.Outdent();
-  printer.Print(
+      "void $classname$_registerAllExtensionsWith"
+          "ComGoogleProtobufExtensionRegistry_("
+          "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n"
+      "  $classname$_registerAllExtensionsWith"
+          "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n"
       "}\n"
       "\n"
       "void $classname$_registerAllExtensionsWith"
