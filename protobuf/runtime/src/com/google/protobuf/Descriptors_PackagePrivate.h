@@ -71,7 +71,7 @@ typedef NS_OPTIONS(uint32_t, CGPFieldFlags) {
 typedef struct CGPFieldData {
   const char *name;
   const char *javaName;
-  int number;
+  jint number;
   CGPFieldFlags flags;
   CGPFieldType type;
   CGPValue defaultValue;
@@ -127,7 +127,7 @@ typedef struct CGPFieldData {
 @interface ComGoogleProtobufDescriptors_EnumValueDescriptor () {
  @package
   JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *enum_;
-  int number_;
+  jint number_;
 }
 @end
 
@@ -163,7 +163,7 @@ CGPEnumDescriptor *CGPInitializeEnumType(
 
 void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor);
 
-CGP_ALWAYS_INLINE inline int CGPFieldGetNumber(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE inline jint CGPFieldGetNumber(const CGPFieldDescriptor *field) {
   return field->data_->number;
 }
 
@@ -207,8 +207,8 @@ CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
 }
 
-CGP_ALWAYS_INLINE inline int CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
-  return *(int *)((char *)enumObj + descriptor->valueOffset_);
+CGP_ALWAYS_INLINE inline jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
+  return *(jint *)((char *)enumObj + descriptor->valueOffset_);
 }
 
 CGPDescriptor *CGPFieldGetContainingType(CGPFieldDescriptor *field);
@@ -219,7 +219,7 @@ BOOL CGPIsRetainedType(CGPFieldJavaType type);
 
 size_t CGPGetTypeSize(CGPFieldJavaType type);
 
-CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, int value);
+CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, jint value);
 
 CF_EXTERN_C_END
 

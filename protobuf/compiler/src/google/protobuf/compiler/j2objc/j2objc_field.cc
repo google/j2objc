@@ -59,11 +59,11 @@ namespace {
 
   string GetStorageType(const FieldDescriptor *descriptor) {
     switch (GetJavaType(descriptor)) {
-      case JAVATYPE_INT: return "int";
-      case JAVATYPE_LONG: return "long long int";
-      case JAVATYPE_FLOAT: return "float";
-      case JAVATYPE_DOUBLE: return "double";
-      case JAVATYPE_BOOLEAN: return "BOOL";
+      case JAVATYPE_INT: return "jint";
+      case JAVATYPE_LONG: return "jlong";
+      case JAVATYPE_FLOAT: return "jfloat";
+      case JAVATYPE_DOUBLE: return "jdouble";
+      case JAVATYPE_BOOLEAN: return "jboolean";
       case JAVATYPE_STRING: return "NSString *";
       case JAVATYPE_BYTES: return "ComGoogleProtobufByteString *";
       case JAVATYPE_ENUM:

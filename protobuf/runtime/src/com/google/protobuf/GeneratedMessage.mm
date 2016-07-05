@@ -173,8 +173,8 @@ static CGPHasBitLocator GetHasBitLocator(Class cls, const CGPFieldDescriptor *fi
   return result;
 }
 
-CGP_ALWAYS_INLINE static inline BOOL GetHasBit(id msg, CGPHasBitLocator loc) {
-  return (*(uint32_t *)((uint8_t *)msg + loc.offset) & loc.mask) ? YES : NO;
+CGP_ALWAYS_INLINE static inline bool GetHasBit(id msg, CGPHasBitLocator loc) {
+  return (*(uint32_t *)((uint8_t *)msg + loc.offset) & loc.mask) ? true : false;
 }
 
 CGP_ALWAYS_INLINE static inline void SetHasBit(id msg, CGPHasBitLocator loc) {
@@ -257,11 +257,11 @@ static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 
 static BOOL AddHasMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   CGPHasBitLocator loc = GetHasBitLocator(cls, field);
-  IMP imp = imp_implementationWithBlock(^BOOL(id msg) {
+  IMP imp = imp_implementationWithBlock(^jboolean(id msg) {
     return GetHasBit(msg, loc);
   });
   char encoding[64];
-  strcpy(encoding, @encode(BOOL));
+  strcpy(encoding, @encode(jboolean));
   strcat(encoding, "@:");
   return class_addMethod(cls, sel, imp, encoding);
 }
@@ -272,7 +272,7 @@ static BOOL AddCountMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
     return CGPRepeatedFieldSize(REPEATED_FIELD_PTR(msg, offset));
   });
   char encoding[64];
-  strcpy(encoding, @encode(int));
+  strcpy(encoding, @encode(jint));
   strcat(encoding, "@:");
   return class_addMethod(cls, sel, imp, encoding);
 }
@@ -645,7 +645,7 @@ static BOOL ResolveAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, BOOL 
 
 static id GetSingularField(id msg, CGPFieldDescriptor *field) {
   Class msgCls = object_getClass(msg);
-  BOOL isSet = GetHasBit(msg, GetHasBitLocator(msgCls, field));
+  bool isSet = GetHasBit(msg, GetHasBitLocator(msgCls, field));
   size_t offset = CGPFieldGetOffset(field, msgCls);
 
 #define GET_FIELD_CASE(NAME) \
@@ -672,7 +672,7 @@ static id GetField(id msg, CGPFieldDescriptor *field) {
   }
 }
 
-static BOOL HasField(id msg, CGPFieldDescriptor *descriptor) {
+static jboolean HasField(id msg, CGPFieldDescriptor *descriptor) {
   if (CGPFieldIsRepeated(nil_chk(descriptor))) {
     @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc]
         initWithNSString:@"hasField() called on a repeated field."]);
@@ -888,7 +888,7 @@ ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
 
 static inline BOOL ReadEnumValueDescriptor(
     CGPCodedInputStream *input, CGPEnumDescriptor *enumType, id *valueDescriptor) {
-  int value;
+  jint value;
   if (!CGPReadEnum(input, &value)) return NO;
   *valueDescriptor = CGPEnumValueDescriptorFromInt(enumType, value);
   return YES;
@@ -1816,7 +1816,7 @@ static void WriteRepeatedField(id msg, CGPFieldDescriptor *field, CGPCodedOutput
         id *buffer = (id *)data->buffer;
         CGPEnumDescriptor *enumType = field->valueType_;
         if (CGPFieldIsPacked(field)) {
-          int intValues[arrayLen];
+          jint intValues[arrayLen];
           int arraySize = 0;
           for (uint32_t i = 0; i < arrayLen; i++) {
             intValues[i] = CGPEnumGetIntValue(enumType, buffer[i]);
@@ -1955,7 +1955,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
       BOOL required = CGPFieldIsRequired(field);
       if (!required && !isMessage) continue;
       Class msgCls = object_getClass(msg);
-      BOOL hasField = GetHasBit(msg, GetHasBitLocator(msgCls, field));
+      bool hasField = GetHasBit(msg, GetHasBitLocator(msgCls, field));
       if (required && !hasField) return NO;
       if (isMessage && hasField) {
         size_t offset = CGPFieldGetOffset(field, msgCls);
@@ -2207,8 +2207,8 @@ static BOOL MessageIsEqual(id msg, id other, CGPDescriptor *descriptor) {
       }
     }
     CGPHasBitLocator hasLoc = GetHasBitLocator(msgCls, field);
-    BOOL msgHasField = GetHasBit(msg, hasLoc);
-    BOOL otherHasField = GetHasBit(other, hasLoc);
+    bool msgHasField = GetHasBit(msg, hasLoc);
+    bool otherHasField = GetHasBit(other, hasLoc);
     if (msgHasField != otherHasField) {
       return NO;
     }
@@ -2390,14 +2390,14 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return CGPParseDelimitedFromInputStream([self getDescriptor], input, registry);
 }
 
-- (int)getSerializedSize {
+- (jint)getSerializedSize {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   return SerializedSizeForMessage(self, descriptor);
 }
 
 - (IOSByteArray *)toByteArray {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  int size = [self getSerializedSize];
+  jint size = [self getSerializedSize];
   IOSByteArray *array = [IOSByteArray arrayWithLength:size];
   CGPCodedOutputStream codedStream(array->buffer_, (int)array->size_);
   WriteMessage(self, descriptor, &codedStream);
@@ -2407,7 +2407,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 - (CGPByteString *)toByteString {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  int size = [self getSerializedSize];
+  jint size = [self getSerializedSize];
   CGPByteString *byteString = CGPNewByteString(size);
   CGPCodedOutputStream codedStream(byteString->buffer_, byteString->size_);
   WriteMessage(self, descriptor, &codedStream);
@@ -2417,7 +2417,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 - (NSData *)toNSData {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  int size = [self getSerializedSize];
+  jint size = [self getSerializedSize];
   void *buffer = malloc(size);
   CGPCodedOutputStream codedStream(buffer, size);
   WriteMessage(self, descriptor, &codedStream);
@@ -2448,7 +2448,8 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return GetField(self, descriptor);
 }
 
-- (BOOL)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(CGPFieldDescriptor *)descriptor {
+- (jboolean)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
+    (CGPFieldDescriptor *)descriptor {
   return HasField(self, descriptor);
 }
 
@@ -2577,7 +2578,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return GetField(self, descriptor);
 }
 
-- (BOOL)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(CGPFieldDescriptor *)descriptor {
+- (jboolean)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
+    (CGPFieldDescriptor *)descriptor {
   return HasField(self, descriptor);
 }
 
@@ -2692,16 +2694,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return self;
 }
 
-- (BOOL)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
+- (jboolean)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
   return [self mergeDelimitedFromWithJavaIoInputStream:input
             withComGoogleProtobufExtensionRegistryLite:nil];
 }
 
-- (BOOL)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
+- (jboolean)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)extensionRegistry {
   int firstByte = [input read];
   if (firstByte == -1) {
-    return NO;
+    return false;
   }
   uint32_t length;
   if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length)) InvalidPB();
@@ -2712,7 +2714,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
       || !codedStream.ConsumedEntireMessage()) {
     InvalidPB();
   }
-  return YES;
+  return true;
 }
 
 - (id<ComGoogleProtobufMessage_Builder>)
@@ -2894,16 +2896,16 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_Extendabl
 }
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension withInt:(int)index {
+    (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index {
   return GetRepeatedExtension(&extensionMap_, extension, index);
 }
 
-- (int)getExtensionCountWithComGoogleProtobufExtensionLite:
+- (jint)getExtensionCountWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
   return GetExtensionCount(extension, &extensionMap_);
 }
 
-- (BOOL)hasExtensionWithComGoogleProtobufExtensionLite:
+- (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
@@ -2913,15 +2915,15 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_Extendabl
   return GetSingularExtension(&extensionMap_, extension);
 }
 
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(int)index {
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index {
   return GetRepeatedExtension(&extensionMap_, extension, index);
 }
 
-- (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return GetExtensionCount(extension, &extensionMap_);
 }
 
-- (BOOL)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
 
@@ -2948,16 +2950,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 }
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension withInt:(int)index {
+    (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index {
   return GetRepeatedExtension(&extensionMap_, extension, index);
 }
 
-- (int)getExtensionCountWithComGoogleProtobufExtensionLite:
+- (jint)getExtensionCountWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
   return GetExtensionCount(extension, &extensionMap_);
 }
 
-- (BOOL)hasExtensionWithComGoogleProtobufExtensionLite:
+- (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
@@ -2990,15 +2992,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
   return GetSingularExtension(&extensionMap_, extension);
 }
 
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(int)index {
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index {
   return GetRepeatedExtension(&extensionMap_, extension, index);
 }
 
-- (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return GetExtensionCount(extension, &extensionMap_);
 }
 
-- (BOOL)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
 

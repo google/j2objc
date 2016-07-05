@@ -41,7 +41,7 @@
 
 @protocol ComGoogleProtobufProtocolMessageEnum <JavaObject>
 
-- (int)getNumber;
+- (jint)getNumber;
 
 - (ComGoogleProtobufDescriptors_EnumValueDescriptor *)getValueDescriptor;
 

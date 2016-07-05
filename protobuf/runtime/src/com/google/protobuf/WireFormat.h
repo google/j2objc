@@ -113,52 +113,52 @@ BOOL CGPWireFormatSkipField(CGPCodedInputStream *stream, uint32_t tag);
 
 BOOL CGPWireFormatSkipMessage(CGPCodedInputStream *stream);
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadInt32(CGPCodedInputStream *input, int32_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadInt32(CGPCodedInputStream *input, jint *value) {
   return input->ReadVarint32((uint32_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadSint32(CGPCodedInputStream *input, int32_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadSint32(CGPCodedInputStream *input, jint *value) {
   uint32_t temp;
   if (!input->ReadVarint32(&temp)) return false;
   *value = CGPZigZagDecode32(temp);
   return true;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadFixed32(CGPCodedInputStream *input, int32_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadFixed32(CGPCodedInputStream *input, jint *value) {
   return input->ReadLittleEndian32((uint32_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadInt64(CGPCodedInputStream *input, int64_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadInt64(CGPCodedInputStream *input, jlong *value) {
   return input->ReadVarint64((uint64_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadSint64(CGPCodedInputStream *input, int64_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadSint64(CGPCodedInputStream *input, jlong *value) {
   uint64_t temp;
   if (!input->ReadVarint64(&temp)) return false;
   *value = CGPZigZagDecode64(temp);
   return true;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadFixed64(CGPCodedInputStream *input, int64_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadFixed64(CGPCodedInputStream *input, jlong *value) {
   return input->ReadLittleEndian64((uint64_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadBool(CGPCodedInputStream *input, bool *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadBool(CGPCodedInputStream *input, jboolean *value) {
   uint32_t temp;
   if (!input->ReadVarint32(&temp)) return false;
   *value = temp != 0;
   return true;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadFloat(CGPCodedInputStream *input, float *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadFloat(CGPCodedInputStream *input, jfloat *value) {
   return input->ReadLittleEndian32((uint32_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadDouble(CGPCodedInputStream *input, double *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadDouble(CGPCodedInputStream *input, jdouble *value) {
   return input->ReadLittleEndian64((uint64_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadEnum(CGPCodedInputStream *input, int32_t *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadEnum(CGPCodedInputStream *input, jint *value) {
   return input->ReadVarint32((uint32_t *)value);
 }
 
@@ -166,27 +166,27 @@ CGP_ALWAYS_INLINE inline int CGPGetTagSize(uint32_t tag) {
   return CGPCodedOutputStream::VarintSize32(tag);
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetInt32Size(int32_t value) {
+CGP_ALWAYS_INLINE inline int CGPGetInt32Size(jint value) {
   return CGPCodedOutputStream::VarintSize32SignExtended(value);
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetUint32Size(int32_t value) {
+CGP_ALWAYS_INLINE inline int CGPGetUint32Size(jint value) {
   return CGPCodedOutputStream::VarintSize32(value);
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetSint32Size(int32_t value) {
+CGP_ALWAYS_INLINE inline int CGPGetSint32Size(jint value) {
   return CGPCodedOutputStream::VarintSize32(CGPZigZagEncode32(value));
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetInt64Size(uint64_t value) {
+CGP_ALWAYS_INLINE inline int CGPGetInt64Size(jlong value) {
   return CGPCodedOutputStream::VarintSize64(value);
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetSint64Size(uint64_t value) {
+CGP_ALWAYS_INLINE inline int CGPGetSint64Size(jlong value) {
   return CGPCodedOutputStream::VarintSize64(CGPZigZagEncode64(value));
 }
 
-CGP_ALWAYS_INLINE inline int CGPGetEnumSize(int32_t value) {
+CGP_ALWAYS_INLINE inline int CGPGetEnumSize(jint value) {
   return CGPCodedOutputStream::VarintSize32SignExtended(value);
 }
 
@@ -200,47 +200,47 @@ CGP_ALWAYS_INLINE inline int CGPGetStringSize(NSString *value) {
   return CGPGetInt32Size(length) + length;
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteInt32(int32_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteInt32(jint value, CGPCodedOutputStream *output) {
   output->WriteVarint32SignExtended(value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteUint32(int32_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteUint32(jint value, CGPCodedOutputStream *output) {
   output->WriteVarint32(value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteSint32(int32_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteSint32(jint value, CGPCodedOutputStream *output) {
   output->WriteVarint32(CGPZigZagEncode32(value));
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteFixed32(int32_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteFixed32(jint value, CGPCodedOutputStream *output) {
   output->WriteLittleEndian32(value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteInt64(int64_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteInt64(jlong value, CGPCodedOutputStream *output) {
   output->WriteVarint64(value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteSint64(int64_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteSint64(jlong value, CGPCodedOutputStream *output) {
   output->WriteVarint64(CGPZigZagEncode64(value));
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteFixed64(int64_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteFixed64(jlong value, CGPCodedOutputStream *output) {
   output->WriteLittleEndian64(value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteBool(BOOL value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteBool(jboolean value, CGPCodedOutputStream *output) {
   output->WriteVarint32(value ? 1 : 0);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteFloat(float value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteFloat(jfloat value, CGPCodedOutputStream *output) {
   output->WriteLittleEndian32(*(uint32_t *)&value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteDouble(double value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteDouble(jdouble value, CGPCodedOutputStream *output) {
   output->WriteLittleEndian64(*(uint64_t *)&value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteEnum(int32_t value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteEnum(jint value, CGPCodedOutputStream *output) {
   output->WriteVarint32SignExtended(value);
 }
 

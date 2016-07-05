@@ -174,7 +174,7 @@ static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPF
   return [JavaUtilArrays asListWithNSObjectArray:fields_];
 }
 
-- (CGPFieldDescriptor *)findFieldByNumberWithInt:(int)fieldId {
+- (CGPFieldDescriptor *)findFieldByNumberWithInt:(jint)fieldId {
   NSUInteger count = fields_->size_;
   CGPFieldDescriptor **fieldsBuf = fields_->buffer_;
   for (NSUInteger i = 0; i < count; i++) {
@@ -234,7 +234,7 @@ static ComGoogleProtobufDescriptorProtos_FieldOptions *InitFieldOptions(const ch
   return GetTypeObj(data_->type)->javaType_;
 }
 
-- (int)getNumber {
+- (jint)getNumber {
   return data_->number;
 }
 
@@ -360,7 +360,7 @@ CGPDescriptor *CGPFieldGetContainingType(CGPFieldDescriptor *field) {
   return [msgClass performSelector:@selector(getDescriptor)];
 }
 
-CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, int value) {
+CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, jint value) {
   NSUInteger count = enumType->values_->size_;
   CGPEnumValueDescriptor **valuesBuf = enumType->values_->buffer_;
   for (NSUInteger i = 0; i < count; i++) {
@@ -382,7 +382,7 @@ CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumTyp
   return self;
 }
 
-- (CGPEnumValueDescriptor *)findValueByNumberWithInt:(int)number {
+- (CGPEnumValueDescriptor *)findValueByNumberWithInt:(jint)number {
   return CGPEnumValueDescriptorFromInt(self, number);
 }
 
@@ -394,7 +394,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumDescriptor)
 
 @implementation ComGoogleProtobufDescriptors_EnumValueDescriptor
 
-- (int)getNumber {
+- (jint)getNumber {
   return number_;
 }
 

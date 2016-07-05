@@ -35,7 +35,7 @@
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/Extension.h"
 
-typedef std::pair<const CGPDescriptor *, int> ExtensionRegistryKey;
+typedef std::pair<const CGPDescriptor *, jint> ExtensionRegistryKey;
 typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMap;
 
 @interface ComGoogleProtobufExtensionRegistryLite () {
@@ -84,7 +84,7 @@ void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtension *e
 }
 
 CGPFieldDescriptor *CGPExtensionRegistryFind(
-    CGPExtensionRegistryLite *registry, CGPDescriptor *descriptor, int fieldNumber) {
+    CGPExtensionRegistryLite *registry, CGPDescriptor *descriptor, jint fieldNumber) {
   ExtensionRegistryMap *map = &registry->map_;
   ExtensionRegistryMap::iterator it = map->find(ExtensionRegistryKey(descriptor, fieldNumber));
   if (it != map->end()) {

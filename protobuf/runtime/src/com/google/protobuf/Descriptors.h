@@ -58,7 +58,7 @@ typedef ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum CGPFieldJavaT
 
 - (id<JavaUtilList>)getFields;
 
-- (CGPFieldDescriptor *)findFieldByNumberWithInt:(int)fieldId;
+- (CGPFieldDescriptor *)findFieldByNumberWithInt:(jint)fieldId;
 
 @end
 
@@ -72,7 +72,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_Descriptor)
 
 - (ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)getJavaType;
 
-- (int)getNumber;
+- (jint)getNumber;
 
 - (NSString *)getName;
 
@@ -98,7 +98,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_FieldDescriptor)
 
 @interface ComGoogleProtobufDescriptors_EnumDescriptor : NSObject
 
-- (CGPEnumValueDescriptor *)findValueByNumberWithInt:(int)number;
+- (CGPEnumValueDescriptor *)findValueByNumberWithInt:(jint)number;
 
 @end
 
@@ -108,7 +108,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumDescriptor)
 
 @interface ComGoogleProtobufDescriptors_EnumValueDescriptor : NSObject
 
-- (int)getNumber;
+- (jint)getNumber;
 
 - (NSString *)getName;
 

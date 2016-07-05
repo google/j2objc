@@ -76,23 +76,23 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 @protocol ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder
     <ComGoogleProtobufMessageOrBuilder, JavaObject>
 
-- (BOOL)hasExtensionWithComGoogleProtobufExtensionLite:
+- (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension withInt:(int)index;
+    (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index;
 
-- (int)getExtensionCountWithComGoogleProtobufExtensionLite:
+- (jint)getExtensionCountWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
 
 // Support older API that accepts Extension instead of ExtensionLite
-- (BOOL)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
 - (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(int)index;
-- (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index;
+- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension;
 
 @end
 

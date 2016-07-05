@@ -53,7 +53,7 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
 
 - (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
     findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:(CGPDescriptor *)descriptor
-    withInt:(int)fieldId {
+    withInt:(jint)fieldId {
   CGPFieldDescriptor *field = CGPExtensionRegistryFind(self, descriptor, fieldId);
   if (field != nil) {
     return [[[CGPExtensionInfo alloc] initWithField:field] autorelease];

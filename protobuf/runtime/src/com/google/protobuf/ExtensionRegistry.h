@@ -58,7 +58,7 @@ typedef ComGoogleProtobufExtensionRegistry_ExtensionInfo CGPExtensionInfo;
 - (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
     findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:
         (ComGoogleProtobufDescriptors_Descriptor *)descriptor
-    withInt:(int)fieldId;
+    withInt:(jint)fieldId;
 
 - (ComGoogleProtobufExtensionRegistry *)getUnmodifiable;
 

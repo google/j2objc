@@ -63,7 +63,7 @@ void CGPExtensionRegistryAdd(
 
 ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
     CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors_Descriptor *descriptor,
-    int fieldNumber);
+    jint fieldNumber);
 
 CF_EXTERN_C_END
 
