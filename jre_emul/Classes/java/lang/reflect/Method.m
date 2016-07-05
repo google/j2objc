@@ -127,41 +127,44 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
   }
 }
 
+// Creates a unique method selector by prepending the class name.
+static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
+  NSMutableString *str = [NSMutableString stringWithUTF8String:class_getName(cls)];
+  [str appendString:@"_"];
+  [str appendString:NSStringFromSelector(sel)];
+  return sel_registerName([str UTF8String]);
+}
+
 - (NSInvocation *)invocationForTarget:(id)object {
   NSInvocation *invocation =
       [NSInvocation invocationWithMethodSignature:methodSignature_];
-  [invocation setSelector:JreMethodSelector(metadata_)];
+  SEL sel = JreMethodSelector(metadata_);
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {
     [invocation setTarget:class_.objcClass];
   } else {
     [invocation setTarget:object];
+    if ((metadata_->modifiers & JavaLangReflectModifier_PRIVATE) > 0 &&
+        class_ != [object getClass]) {
+      // Private methods do not have virtual invocation. If an overriding class "overrides" this
+      // private method then the NSInvocation would incorrectly call the overriding method.
+      // To work around this we add a new method to the declaring class with a uniquified name.
+      Class cls = class_.objcClass;
+      Method method = class_getInstanceMethod(cls, sel);
+      sel = GetPrivatizedMethodSelector(cls, sel);
+      class_addMethod(cls, sel, method_getImplementation(method), method_getTypeEncoding(method));
+    }
   }
+  [invocation setSelector:sel];
   return invocation;
 }
 
 - (void)invoke:(NSInvocation *)invocation object:(id)object {
-  IOSClass *declaringClass = [self getDeclaringClass];
   NSException *exception = nil;
-  if (object &&
-      (metadata_->modifiers & JavaLangReflectModifier_PRIVATE) > 0 &&
-      declaringClass != [object getClass]) {
-    // A superclass's private instance method is invoked, so temporarily
-    // change the object's type to the superclass.
-    Class originalClass = object_setClass(object, declaringClass.objcClass);
-    @try {
-      [invocation invoke];
-    }
-    @catch (NSException *t) {
-      exception = t;
-    }
-    object_setClass(object, originalClass);
-  } else {
-    @try {
-      [invocation invoke];
-    }
-    @catch (NSException *t) {
-      exception = t;
-    }
+  @try {
+    [invocation invoke];
+  }
+  @catch (NSException *t) {
+    exception = t;
   }
   if (exception) {
     @throw AUTORELEASE([[JavaLangReflectInvocationTargetException alloc]

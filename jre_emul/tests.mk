@@ -212,6 +212,7 @@ TEST_SOURCES := \
     com/google/j2objc/FieldTest.java \
     com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
+    com/google/j2objc/MethodTest.java \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/RetainedWithTest.java \
     com/google/j2objc/StringTest.java \
