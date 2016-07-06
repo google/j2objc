@@ -54,6 +54,10 @@ static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
   return CGPExtensionRegistryLite_EMPTY_;
 }
 
+- (void)addWithComGoogleProtobufExtensionLite:(CGPExtensionLite *)extension {
+  CGPExtensionRegistryAdd(self, extension);
+}
+
 - (ComGoogleProtobufExtensionRegistryLite *)getUnmodifiable {
   return self;
 }
@@ -77,7 +81,7 @@ CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistr
   return CGPExtensionRegistryLite_EMPTY_;
 }
 
-void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtension *extension) {
+void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLite *extension) {
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   CGPDescriptor *containingType = CGPFieldGetContainingType(field);
   registry->map_[ExtensionRegistryKey(containingType, CGPFieldGetNumber(field))] = field;

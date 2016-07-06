@@ -38,6 +38,7 @@
 @class ComGoogleProtobufDescriptors_Descriptor;
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtension;
+@class ComGoogleProtobufExtensionLite;
 @class ComGoogleProtobufExtensionRegistryLite;
 
 typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
@@ -45,6 +46,8 @@ typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
 @interface ComGoogleProtobufExtensionRegistryLite : NSObject
 
 + (ComGoogleProtobufExtensionRegistryLite *)getEmptyRegistry;
+
+- (void)addWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension;
 
 - (ComGoogleProtobufExtensionRegistryLite *)getUnmodifiable;
 
@@ -59,7 +62,7 @@ ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_n
 ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistry();
 
 void CGPExtensionRegistryAdd(
-    CGPExtensionRegistryLite *registry, ComGoogleProtobufExtension *extension);
+    CGPExtensionRegistryLite *registry, ComGoogleProtobufExtensionLite *extension);
 
 ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
     CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors_Descriptor *descriptor,
