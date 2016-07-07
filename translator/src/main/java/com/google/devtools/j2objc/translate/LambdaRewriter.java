@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.LambdaExpression;
@@ -23,12 +22,10 @@ import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.ThisExpression;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -221,17 +218,7 @@ public class LambdaRewriter extends TreeVisitor {
         funcImpl.getParameters().add(new SingleVariableDeclaration(d.getVariableBinding()));
       }
 
-      TreeNode body = node.getBody();
-      if (body instanceof Expression) {
-        funcImpl.setBody(new Block());
-        funcImpl
-            .getBody()
-            .getStatements()
-            .add(new ReturnStatement((Expression) TreeUtil.remove(body)));
-      } else {
-        assert (body instanceof Block);
-        funcImpl.setBody((Block) TreeUtil.remove(body));
-      }
+      funcImpl.setBody((Block) TreeUtil.remove(node.getBody()));
       enclosingType.getBodyDeclarations().add(0, funcImpl);
     }
 
