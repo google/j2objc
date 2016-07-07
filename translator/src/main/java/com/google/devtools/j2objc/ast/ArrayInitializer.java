@@ -27,14 +27,13 @@ import javax.lang.model.type.TypeMirror;
  */
 public class ArrayInitializer extends Expression {
 
-  private ITypeBinding typeBinding = null;
   private TypeMirror typeMirror = null;
 
   private ChildList<Expression> expressions = ChildList.create(Expression.class, this);
 
   public ArrayInitializer(org.eclipse.jdt.core.dom.ArrayInitializer jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     for (Object expression : jdtNode.expressions()) {
       expressions.add((Expression) TreeConverter.convert(expression));
@@ -43,24 +42,17 @@ public class ArrayInitializer extends Expression {
 
   public ArrayInitializer(ArrayInitializer other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     expressions.copyFrom(other.getExpressions());
   }
 
   public ArrayInitializer(ITypeBinding typeBinding) {
-    this.typeBinding = typeBinding;
     typeMirror = BindingConverter.getType(typeBinding);
   }
 
   @Override
   public Kind getKind() {
     return Kind.ARRAY_INITIALIZER;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

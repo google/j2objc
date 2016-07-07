@@ -25,36 +25,29 @@ import javax.lang.model.type.TypeMirror;
  */
 public class ThisExpression extends Expression {
 
-  private ITypeBinding typeBinding = null;
   private TypeMirror typeMirror = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
 
   public ThisExpression(org.eclipse.jdt.core.dom.ThisExpression jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
   }
 
   public ThisExpression(ThisExpression other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     qualifier.copyFrom(other.getQualifier());
   }
 
   public ThisExpression(ITypeBinding typeBinding) {
-    this.typeBinding = typeBinding;
+    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   @Override
   public Kind getKind() {
     return Kind.THIS_EXPRESSION;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.gen.JavadocGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
+import com.google.devtools.j2objc.javac.TypeUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -114,7 +115,8 @@ public class DebugASTPrinter extends TreeVisitor {
       dim.accept(this);
       sb.print(']');
     }
-    int emptyDims = node.getTypeBinding().getDimensions() - node.getDimensions().size();
+    int emptyDims = TypeUtil.getDimensions((javax.lang.model.type.ArrayType) node.getTypeMirror())
+        - node.getDimensions().size();
     for (int i = 0; i < emptyDims; i++) {
       sb.print("[]");
     }
@@ -1120,7 +1122,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    printModifiers(node.getTypeBinding().getModifiers());
+    printModifiers(TypeUtil.getModifiers(node.getTypeMirror()));
     node.getType().accept(this);
     sb.print(' ');
     for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();

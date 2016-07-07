@@ -27,7 +27,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public class LambdaExpression extends Expression {
 
-  private ITypeBinding typeBinding;
   private TypeMirror typeMirror;
   // Unique type binding that can be used as a key.
   private final LambdaTypeBinding lambdaTypeBinding;
@@ -40,7 +39,7 @@ public class LambdaExpression extends Expression {
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     for (Object x : jdtNode.parameters()) {
       parameters.add((VariableDeclaration) TreeConverter.convert(x));
@@ -54,7 +53,6 @@ public class LambdaExpression extends Expression {
 
   public LambdaExpression(LambdaExpression other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     lambdaTypeBinding = other.getLambdaTypeBinding();
     parameters.copyFrom(other.getParameters());
@@ -64,7 +62,6 @@ public class LambdaExpression extends Expression {
   }
 
   public LambdaExpression(String name, ITypeBinding typeBinding) {
-    this.typeBinding = typeBinding;
     typeMirror = BindingConverter.getType(typeBinding);
     lambdaTypeBinding = new LambdaTypeBinding(name);
   }
@@ -84,18 +81,12 @@ public class LambdaExpression extends Expression {
   }
 
   @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
-  }
-
-  @Override
   public TypeMirror getTypeMirror() {
     return typeMirror;
   }
 
   public void setTypeBinding(ITypeBinding t) {
-    typeBinding = t;
-    typeMirror = BindingConverter.getType(typeBinding);
+    typeMirror = BindingConverter.getType(t);
   }
 
   public LambdaTypeBinding getLambdaTypeBinding() {

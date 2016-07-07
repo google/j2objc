@@ -55,12 +55,6 @@ public class CastExpression extends Expression {
   }
 
   @Override
-  public ITypeBinding getTypeBinding() {
-    Type typeNode = type.get();
-    return typeNode != null ? typeNode.getTypeBinding() : null;
-  }
-
-  @Override
   public TypeMirror getTypeMirror() {
     Type typeNode = type.get();
     return typeNode != null ? typeNode.getTypeMirror() : null;

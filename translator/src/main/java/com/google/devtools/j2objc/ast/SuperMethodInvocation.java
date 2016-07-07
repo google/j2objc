@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
@@ -67,11 +66,6 @@ public class SuperMethodInvocation extends Expression {
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
     methodBinding = newMethodBinding;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return methodBinding != null ? methodBinding.getReturnType() : null;
   }
 
   @Override

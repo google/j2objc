@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.devtools.j2objc.types.NativeTypeBinding;
+import com.google.devtools.j2objc.util.BindingUtil;
+
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -31,6 +34,7 @@ import java.util.Map;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Factory for wrapping JDT IBindings, and (soon) generating
@@ -230,13 +234,14 @@ public final class BindingConverter {
     JdtTypeBinding jdtType = wrapBinding(binding);
     if (binding.isArray()) {
       type = new JdtArrayType(jdtType);
-    } else
-    // TODO(tball): enable when Java 8 is minimum version.
-//    if (BindingUtil.isIntersectionType(binding)) {
-//      type = new JdtIntersectionType(jdtType);
-//    } else
-    if (binding.isPrimitive()) {
-      type = new JdtPrimitiveType(jdtType);
+    } else if (BindingUtil.isIntersectionType(binding)) {
+      type = new JdtIntersectionType(jdtType);
+    } else if (binding.isPrimitive()) {
+      if (jdtType instanceof NativeTypeBinding) {
+        type = new JdtNativeType(jdtType);
+      } else {
+        type = new JdtPrimitiveType(jdtType);
+      }
     } else if (binding.isTypeVariable()) {
       type = new JdtTypeVariable(jdtType);
     } else if (binding.isWildcardType()) {
@@ -261,7 +266,7 @@ public final class BindingConverter {
 
   public static JdtTypeMirror getTypeMirror(IBinding binding) {
     if (binding == null) {
-      return NULL_TYPE;
+      return null;
     }
     JdtBinding wrappedBinding = wrapBinding(binding);
     return typeCache.get(wrappedBinding);
@@ -314,6 +319,14 @@ public final class BindingConverter {
 
   public static IBinding unwrapElement(Element element) {
     return element != null ? ((JdtElement) element).binding : null;
+  }
+
+  public static ITypeBinding unwrapTypeMirrorIntoTypeBinding(TypeMirror t) {
+    if (t == null) {
+      return null;
+    }
+    IBinding b = ((JdtTypeMirror) t).binding;
+    return b instanceof ITypeBinding ? (ITypeBinding) b : null;
   }
 
   public static void reset() {

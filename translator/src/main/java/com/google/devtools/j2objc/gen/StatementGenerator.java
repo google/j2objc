@@ -960,9 +960,9 @@ public class StatementGenerator extends TreeVisitor {
     } else {
       buffer.append("  case ");
       Expression expr = node.getExpression();
-      boolean isEnumConstant = expr.getTypeBinding().isEnum();
+      boolean isEnumConstant = TypeUtil.isEnum(expr.getTypeMirror());
       if (isEnumConstant) {
-        String enumName = NameTable.getNativeEnumName(nameTable.getFullName(expr.getTypeBinding()));
+        String enumName = NameTable.getNativeEnumName(nameTable.getFullName(expr.getTypeMirror()));
         buffer.append(enumName).append("_");
       }
       if (isEnumConstant && expr instanceof SimpleName) {
@@ -980,17 +980,17 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(SwitchStatement node) {
     Expression expr = node.getExpression();
-    ITypeBinding exprType = expr.getTypeBinding();
+    TypeMirror exprType = expr.getTypeMirror();
     if (typeEnv.isJavaStringType(exprType)) {
       printStringSwitchStatement(node);
       return false;
     }
     buffer.append("switch (");
-    if (exprType.isEnum()) {
+    if (TypeUtil.isEnum(exprType)) {
       buffer.append('[');
     }
     expr.accept(this);
-    if (exprType.isEnum()) {
+    if (TypeUtil.isEnum(exprType)) {
       buffer.append(" ordinal]");
     }
     buffer.append(") ");
@@ -1199,7 +1199,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    String typeString = nameTable.getObjCType(node.getTypeBinding());
+    String typeString = nameTable.getObjCType(node.getTypeMirror());
     boolean needsAsterisk = typeString.endsWith("*");
     buffer.append(typeString);
     if (!needsAsterisk) {

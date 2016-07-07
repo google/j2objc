@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import javax.lang.model.type.TypeMirror;
@@ -37,7 +39,9 @@ public abstract class Expression extends TreeNode {
 
   protected Expression() {}
 
-  public abstract ITypeBinding getTypeBinding();
+  public ITypeBinding getTypeBinding() {
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(getTypeMirror());
+  }
 
   public abstract TypeMirror getTypeMirror();
 

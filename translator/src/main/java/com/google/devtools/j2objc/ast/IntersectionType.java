@@ -13,9 +13,6 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.javac.BindingConverter;
-
 import java.util.List;
 
 /**
@@ -27,7 +24,6 @@ public class IntersectionType extends Type {
 
   public IntersectionType(org.eclipse.jdt.core.dom.IntersectionType jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
     for (Object x : jdtNode.types()) {
       types.add((Type) TreeConverter.convert(x));
     }
@@ -35,7 +31,6 @@ public class IntersectionType extends Type {
 
   public IntersectionType(IntersectionType other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     types.copyFrom(other.types);
   }
 
@@ -64,11 +59,5 @@ public class IntersectionType extends Type {
   @Override
   public IntersectionType copy() {
     return new IntersectionType(this);
-  }
-
-  @Override
-  public void validateInner() {
-    super.validateInner();
-    Preconditions.checkNotNull(typeBinding);
   }
 }

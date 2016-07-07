@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -26,39 +27,43 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class Type extends TreeNode {
 
-  protected ITypeBinding typeBinding;
-  protected TypeMirror typeMirror;
+  protected final TypeMirror typeMirror;
 
   public Type(org.eclipse.jdt.core.dom.Type jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
     typeMirror = BindingConverter.getType(typeBinding);
+    Preconditions.checkNotNull(typeMirror);
   }
 
   public Type(Type other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
+    Preconditions.checkNotNull(typeMirror);
   }
 
-  public Type(ITypeBinding typeBinding) {
+  public Type(TypeMirror typeMirror) {
     super();
-    this.typeBinding = typeBinding;
-    this.typeMirror = BindingConverter.getType(typeBinding);
+    this.typeMirror = typeMirror;
+    Preconditions.checkNotNull(typeMirror);
   }
 
-  public static Type newType(ITypeBinding binding) {
-    if (binding.isPrimitive()) {
-      return new PrimitiveType(binding);
-    } else if (binding.isArray()) {
-      return new ArrayType(binding);
+  public static Type newType(TypeMirror typeMirror) {
+    if (typeMirror.getKind().isPrimitive()) {
+      return new PrimitiveType(typeMirror);
+    } else if (typeMirror.getKind().equals(TypeKind.ARRAY)) {
+      return new ArrayType((javax.lang.model.type.ArrayType) typeMirror);
     } else {
-      return new SimpleType(binding);
+      return new SimpleType(typeMirror);
     }
   }
 
+  public static Type newType(ITypeBinding binding) {
+    return newType(BindingConverter.getType(binding));
+  }
+
   public ITypeBinding getTypeBinding() {
-    return typeBinding;
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeMirror);
   }
 
   public TypeMirror getTypeMirror() {
@@ -83,6 +88,5 @@ public abstract class Type extends TreeNode {
   @Override
   public void validateInner() {
     super.validateInner();
-    Preconditions.checkNotNull(typeBinding);
   }
 }

@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node type for a primitive type.
@@ -29,8 +29,8 @@ public class PrimitiveType extends AnnotatableType {
     super(other);
   }
 
-  public PrimitiveType(ITypeBinding typeBinding) {
-    super(typeBinding);
+  public PrimitiveType(TypeMirror typeMirror) {
+    super(typeMirror);
   }
 
   @Override

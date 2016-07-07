@@ -25,7 +25,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public class ConditionalExpression extends Expression {
 
-  private ITypeBinding typeBinding = null;
   private TypeMirror typeMirror = null;
 
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
@@ -34,7 +33,7 @@ public class ConditionalExpression extends Expression {
 
   public ConditionalExpression(org.eclipse.jdt.core.dom.ConditionalExpression jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     thenExpression.set((Expression) TreeConverter.convert(jdtNode.getThenExpression()));
@@ -43,7 +42,6 @@ public class ConditionalExpression extends Expression {
 
   public ConditionalExpression(ConditionalExpression other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     expression.copyFrom(other.getExpression());
     thenExpression.copyFrom(other.getThenExpression());
@@ -53,11 +51,6 @@ public class ConditionalExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.CONDITIONAL_EXPRESSION;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

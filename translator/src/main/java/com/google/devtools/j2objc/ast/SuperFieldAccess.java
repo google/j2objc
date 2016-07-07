@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import javax.lang.model.type.TypeMirror;
@@ -51,11 +50,6 @@ public class SuperFieldAccess extends Expression {
 
   public IVariableBinding getVariableBinding() {
     return variableBinding;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return variableBinding != null ? variableBinding.getType() : null;
   }
 
   @Override

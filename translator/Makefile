@@ -195,9 +195,11 @@ JAVA_SOURCES = \
 	javac/JdtExecutableElement.java \
 	javac/JdtExecutableType.java \
 	javac/JdtExtendedModifier.java \
+	javac/JdtIntersectionType.java \
 	javac/JdtMemberValuePairBinding.java \
 	javac/JdtMethodBinding.java \
 	javac/JdtNoType.java \
+	javac/JdtNativeType.java \
 	javac/JdtNullType.java \
 	javac/JdtPackageBinding.java \
 	javac/JdtPackageElement.java \

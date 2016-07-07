@@ -29,22 +29,19 @@ import javax.lang.model.type.TypeMirror;
 public class NativeExpression extends Expression {
 
   private String code = null;
-  private ITypeBinding typeBinding = null;
   private TypeMirror typeMirror = null;
   private List<ITypeBinding> importTypes = Lists.newArrayList();
 
   public NativeExpression(NativeExpression other) {
     super(other);
     code = other.getCode();
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     importTypes.addAll(other.getImportTypes());
   }
 
   public NativeExpression(String code, ITypeBinding type) {
     this.code = code;
-    this.typeBinding = type;
-    typeMirror = BindingConverter.getType(typeBinding);
+    typeMirror = BindingConverter.getType(type);
   }
 
   @Override
@@ -54,11 +51,6 @@ public class NativeExpression extends Expression {
 
   public String getCode() {
     return code;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

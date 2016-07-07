@@ -22,12 +22,15 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.javac.TypeUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.SourceVersion;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.io.IOException;
+
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Unit tests for the Java 8 compound types.
@@ -65,8 +68,7 @@ public class CompoundTypeTest extends GenerationTest {
           // The function's return type isn't compound, but the cast expression in
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) function.getBody().getStatements().get(0);
-          ITypeBinding binding = stmt.getExpression().getTypeBinding();
-          assertTrue(BindingUtil.isIntersectionType(binding));
+          assertTrue(TypeUtil.isIntersection(stmt.getExpression().getTypeMirror()));
           methodsFound++;
         }
       }
@@ -92,8 +94,8 @@ public class CompoundTypeTest extends GenerationTest {
           // The function's return type isn't compound, but the cast expression in
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) function.getBody().getStatements().get(0);
-          ITypeBinding binding = stmt.getExpression().getTypeBinding();
-          String typeName = unit.getNameTable().getObjCType(binding);
+          TypeMirror mirror = stmt.getExpression().getTypeMirror();
+          String typeName = unit.getNameTable().getObjCType(mirror);
           assertEquals("id<FooBarTest, JavaIoSerializable>", typeName);
           return;
         }

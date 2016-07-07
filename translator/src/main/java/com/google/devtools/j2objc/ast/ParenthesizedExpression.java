@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -60,12 +58,6 @@ public class ParenthesizedExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.PARENTHESIZED_EXPRESSION;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    Expression expressionNode = expression.get();
-    return expressionNode != null ? expressionNode.getTypeBinding() : null;
   }
 
   @Override

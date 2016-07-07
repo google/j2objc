@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.javac.BindingConverter;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import javax.lang.model.type.TypeMirror;
 
@@ -51,11 +50,6 @@ public abstract class Annotation extends Expression {
 
   public boolean isSingleMemberAnnotation() {
     return false;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return annotationBinding.getAnnotationType();
   }
 
   @Override

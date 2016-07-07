@@ -16,8 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
 
 import javax.lang.model.type.TypeMirror;
@@ -50,12 +48,6 @@ public class VariableDeclarationExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.VARIABLE_DECLARATION_EXPRESSION;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    Type typeNode = type.get();
-    return typeNode != null ? typeNode.getTypeBinding() : null;
   }
 
   @Override

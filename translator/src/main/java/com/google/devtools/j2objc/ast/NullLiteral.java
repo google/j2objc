@@ -15,9 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
-import com.google.devtools.j2objc.types.NullTypeBinding;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import javax.lang.model.type.TypeMirror;
 
@@ -39,11 +36,6 @@ public class NullLiteral extends Expression {
   @Override
   public Kind getKind() {
     return Kind.NULL_LITERAL;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return NullTypeBinding.getInstance();
   }
 
   @Override

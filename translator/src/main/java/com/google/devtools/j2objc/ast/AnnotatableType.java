@@ -14,11 +14,10 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.javac.BindingConverter;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
+
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Abstract base class of AST nodes that represent an annotatable type (added in JLS8 API, section
@@ -30,7 +29,6 @@ public abstract class AnnotatableType extends Type {
 
   public AnnotatableType(org.eclipse.jdt.core.dom.AnnotatableType jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
     if (Options.isJava8Translator()) {
       for (Object x : jdtNode.annotations()) {
         annotations.add((Annotation) TreeConverter.convert(x));
@@ -40,12 +38,11 @@ public abstract class AnnotatableType extends Type {
 
   public AnnotatableType(AnnotatableType other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     annotations.copyFrom(other.annotations());
   }
 
-  public AnnotatableType(ITypeBinding typeBinding) {
-    super(typeBinding);
+  public AnnotatableType(TypeMirror typeMirror) {
+    super(typeMirror);
   }
 
   public List<Annotation> annotations() {

@@ -14,37 +14,23 @@
 
 package com.google.devtools.j2objc.javac;
 
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeVisitor;
 
-// When transitioned to Java 8, this should implement IntersectionType,
-// getKind() should return TypeKind.INTERSECTION, accept should visitIntersection,
-// and this should implement getBounds().
-class JdtIntersectionType extends JdtTypeMirror {
-//class JdtIntersectionType extends JdtTypeMirror implements IntersectionType {
+class JdtNativeType extends JdtTypeMirror implements PrimitiveType {
 
-  JdtIntersectionType(JdtTypeBinding binding) {
+  JdtNativeType(JdtTypeBinding binding) {
     super(binding);
   }
 
   @Override
   public TypeKind getKind() {
     return TypeKind.OTHER;
-    //return TypeKind.INTERSECTION;
   }
 
   @Override
   public <R, P> R accept(TypeVisitor<R, P> v, P p) {
     return v.visitUnknown(this, p);
-    //return v.visitIntersection(this, p);
   }
-
-//  @Override
-//  public List<? extends TypeMirror> getBounds() {
-//    List<TypeMirror> bounds = new ArrayList<>();
-//    for (ITypeBinding bound : ((ITypeBinding) binding).getTypeBounds()) {
-//      bounds.add(BindingConverter.getType(bound));
-//    }
-//    return bounds;
-//  }
 }

@@ -27,37 +27,29 @@ import javax.lang.model.type.TypeMirror;
 public class BooleanLiteral extends Expression {
 
   private boolean booleanValue = false;
-  private final ITypeBinding typeBinding;
   private final TypeMirror typeMirror;
 
   public BooleanLiteral(org.eclipse.jdt.core.dom.BooleanLiteral jdtNode) {
     super(jdtNode);
     booleanValue = jdtNode.booleanValue();
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public BooleanLiteral(BooleanLiteral other) {
     super(other);
     booleanValue = other.booleanValue();
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
   }
 
   public BooleanLiteral(boolean booleanValue, Types typeEnv) {
     this.booleanValue = booleanValue;
-    typeBinding = typeEnv.resolveJavaType("boolean");
-    typeMirror = BindingConverter.getType(typeBinding);
+    typeMirror = BindingConverter.getType(typeEnv.resolveJavaType("boolean"));
   }
 
   @Override
   public Kind getKind() {
     return Kind.BOOLEAN_LITERAL;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -53,26 +54,20 @@ public class ArrayCreation extends Expression {
   }
 
   public ArrayCreation(ITypeBinding type, Types typeEnv, int... dimensions) {
-    arrayType.set(new ArrayType(type));
+    arrayType.set(new ArrayType((javax.lang.model.type.ArrayType) BindingConverter.getType(type)));
     for (int i : dimensions) {
       this.dimensions.add(NumberLiteral.newIntLiteral(i, typeEnv));
     }
   }
 
   public ArrayCreation(ArrayInitializer initializer) {
-    arrayType.set(new ArrayType(initializer.getTypeBinding()));
+    arrayType.set(new ArrayType((javax.lang.model.type.ArrayType) initializer.getTypeMirror()));
     this.initializer.set(initializer);
   }
 
   @Override
   public Kind getKind() {
     return Kind.ARRAY_CREATION;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    ArrayType arrayTypeNode = arrayType.get();
-    return arrayTypeNode != null ? arrayTypeNode.getTypeBinding() : null;
   }
 
   @Override

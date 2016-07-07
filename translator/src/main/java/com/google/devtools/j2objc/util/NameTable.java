@@ -775,6 +775,10 @@ public class NameTable {
     return getObjCTypeInner(type, null);
   }
 
+  public String getObjCType(TypeMirror type) {
+    return getObjCTypeInner(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), null);
+  }
+
   public String getObjCType(IVariableBinding var) {
     String qualifiers = null;
     if (var instanceof GeneratedVariableBinding) {
@@ -876,6 +880,10 @@ public class NameTable {
 
   public static String getNativeEnumName(String typeName) {
     return typeName + "_Enum";
+  }
+
+  public String getFullName(TypeMirror t) {
+    return getFullName(BindingConverter.unwrapTypeMirrorIntoTypeBinding(t));
   }
 
   /**

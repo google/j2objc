@@ -36,7 +36,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class MethodReference extends Expression {
 
-  protected ITypeBinding typeBinding;
   protected TypeMirror typeMirror;
   protected IMethodBinding methodBinding;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
@@ -45,7 +44,7 @@ public abstract class MethodReference extends Expression {
 
   public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
     for (Object x : jdtNode.typeArguments()) {
@@ -55,16 +54,10 @@ public abstract class MethodReference extends Expression {
 
   public MethodReference(MethodReference other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     methodBinding = other.getMethodBinding();
     typeArguments.copyFrom(other.getTypeArguments());
     invocation.copyFrom(other.getInvocation());
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

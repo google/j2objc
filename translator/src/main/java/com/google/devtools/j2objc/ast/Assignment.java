@@ -16,8 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.Map;
 
 import javax.lang.model.type.TypeMirror;
@@ -103,12 +101,6 @@ public class Assignment extends Expression {
   @Override
   public Kind getKind() {
     return Kind.ASSIGNMENT;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    Expression leftHandSideNode = leftHandSide.get();
-    return leftHandSideNode != null ? leftHandSideNode.getTypeBinding() : null;
   }
 
   @Override

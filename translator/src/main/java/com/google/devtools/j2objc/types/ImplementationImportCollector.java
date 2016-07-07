@@ -48,6 +48,7 @@ import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -56,6 +57,10 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Set;
+
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Collects the set of imports needed to resolve type references in an
@@ -87,8 +92,12 @@ public class ImplementationImportCollector extends TreeVisitor {
         addImports(t);
       }
     } else if (type != null) {
-      addImports(type.getTypeBinding());
+      addImports(type.getTypeMirror());
     }
+  }
+
+  private void addImports(TypeMirror type) {
+    Import.addImports(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), imports, unit);
   }
 
   private void addImports(ITypeBinding type) {
@@ -127,7 +136,7 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    addImports(node.getExpression().getTypeBinding());
+    addImports(node.getExpression().getTypeMirror());
     return true;
   }
 
@@ -142,7 +151,7 @@ public class ImplementationImportCollector extends TreeVisitor {
     FunctionBinding binding = node.getFunctionBinding();
     addImports(binding.getDeclaringClass());
     for (Expression arg : node.getArguments()) {
-      addImports(arg.getTypeBinding());
+      addImports(arg.getTypeMirror());
     }
     addImports(binding.getReturnType());
     return true;
@@ -150,18 +159,18 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    addImports(node.getRightHandSide().getTypeBinding());
+    addImports(node.getRightHandSide().getTypeMirror());
   }
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    addImports(node.getRightOperand().getTypeBinding());
+    addImports(node.getRightOperand().getTypeMirror());
     return true;
   }
 
   @Override
   public void endVisit(LambdaExpression node) {
-    addImports(node.getTypeBinding());
+    addImports(node.getTypeMirror());
   }
 
   @Override
@@ -184,10 +193,10 @@ public class ImplementationImportCollector extends TreeVisitor {
     addImports(binding.getReturnType());
     Expression receiver = node.getExpression();
     if (receiver != null) {
-      addImports(receiver.getTypeBinding());
+      addImports(receiver.getTypeMirror());
     }
     for (Expression arg : node.getArguments()) {
-      addImports(arg.getTypeBinding());
+      addImports(arg.getTypeMirror());
     }
     return true;
   }
@@ -217,7 +226,7 @@ public class ImplementationImportCollector extends TreeVisitor {
         addImports(var.getDeclaringClass());
         return false;
       } else {
-        addImports(node.getQualifier().getTypeBinding());
+        addImports(node.getQualifier().getTypeMirror());
       }
     }
     return true;
@@ -259,12 +268,12 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    ITypeBinding type = node.getType().getTypeBinding();
-    if (type.isPrimitive()) {
+    TypeMirror type = node.getType().getTypeMirror();
+    if (type.getKind().isPrimitive()) {
       addImports(typeEnv.resolveIOSType("IOSClass"));
-    } else if (type.isArray()) {
+    } else if (type.getKind().equals(TypeKind.ARRAY)) {
       addImports(typeEnv.resolveIOSType("IOSClass"));
-      addImports(type.getElementType());
+      addImports(((ArrayType) type).getComponentType());
     } else {
       addImports(node.getType());
     }

@@ -29,6 +29,8 @@ import org.eclipse.jdt.core.dom.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Types is a singleton service class for type-related operations.
  *
@@ -253,6 +255,10 @@ public class Types {
 
   public boolean isJavaStringType(ITypeBinding type) {
     return javaStringType.equals(type);
+  }
+
+  public boolean isJavaStringType(TypeMirror type) {
+    return javaStringType.equals(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
   }
 
   public boolean isStringType(ITypeBinding type) {

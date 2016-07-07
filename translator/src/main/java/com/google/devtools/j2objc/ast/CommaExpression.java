@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,11 +38,6 @@ public class CommaExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.COMMA_EXPRESSION;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return expressions.get(expressions.size() - 1).getTypeBinding();
   }
 
   @Override

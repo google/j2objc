@@ -27,37 +27,29 @@ import javax.lang.model.type.TypeMirror;
 public class StringLiteral extends Expression {
 
   private String literalValue = null;
-  private final ITypeBinding typeBinding;
   private final TypeMirror typeMirror;
 
   public StringLiteral(org.eclipse.jdt.core.dom.StringLiteral jdtNode) {
     super(jdtNode);
     literalValue = jdtNode.getLiteralValue();
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public StringLiteral(StringLiteral other) {
     super(other);
     literalValue = other.getLiteralValue();
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
   }
 
   public StringLiteral(String literalValue, Types typeEnv) {
     this.literalValue = literalValue;
-    typeBinding = typeEnv.resolveJavaType("java.lang.String");
-    typeMirror = BindingConverter.getType(typeBinding);
+    typeMirror = BindingConverter.getType(typeEnv.resolveJavaType("java.lang.String"));
   }
 
   @Override
   public Kind getKind() {
     return Kind.STRING_LITERAL;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

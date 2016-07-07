@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.devtools.j2objc.types.NullTypeBinding;
+
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +28,7 @@ import javax.lang.model.type.TypeVisitor;
 class JdtNullType extends JdtTypeMirror implements NullType {
 
   JdtNullType() {
-    super(null);
+    super(NullTypeBinding.getInstance());
   }
 
   @Override

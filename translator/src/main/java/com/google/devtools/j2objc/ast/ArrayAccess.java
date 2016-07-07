@@ -14,10 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -46,17 +43,9 @@ public class ArrayAccess extends Expression {
   }
 
   @Override
-  public ITypeBinding getTypeBinding() {
-    Expression arrayNode = array.get();
-    ITypeBinding arrayType = arrayNode != null ? arrayNode.getTypeBinding() : null;
-    return arrayType != null ? arrayType.getComponentType() : null;
-  }
-
-  @Override
   public TypeMirror getTypeMirror() {
     Expression arrayNode = array.get();
     TypeMirror arrayType = arrayNode != null ? arrayNode.getTypeMirror() : null;
-    assert arrayType.getKind() == TypeKind.ARRAY;
     return arrayType != null ? ((ArrayType) arrayType).getComponentType() : null;
   }
 

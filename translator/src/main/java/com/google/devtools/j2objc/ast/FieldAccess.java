@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import javax.lang.model.type.TypeMirror;
@@ -53,11 +52,6 @@ public class FieldAccess extends Expression {
   @Override
   public Kind getKind() {
     return Kind.FIELD_ACCESS;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return variableBinding.getType();
   }
 
   @Override

@@ -29,7 +29,6 @@ public class NumberLiteral extends Expression {
 
   private String token = null;
   private Number value = null;
-  private final ITypeBinding typeBinding;
   private final TypeMirror typeMirror;
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
@@ -38,7 +37,7 @@ public class NumberLiteral extends Expression {
     Object constantValue = jdtNode.resolveConstantExpressionValue();
     assert constantValue instanceof Number;
     value = (Number) constantValue;
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
   }
 
@@ -46,14 +45,12 @@ public class NumberLiteral extends Expression {
     super(other);
     token = other.getToken();
     value = other.getValue();
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
   }
 
   public NumberLiteral(Number value, Types typeEnv) {
     this.value = value;
-    this.typeBinding = typeForNumber(value, typeEnv);
-    this.typeMirror = BindingConverter.getType(typeBinding);
+    this.typeMirror = BindingConverter.getType(typeForNumber(value, typeEnv));
   }
 
   public static NumberLiteral newIntLiteral(Integer i, Types typeEnv) {
@@ -63,11 +60,6 @@ public class NumberLiteral extends Expression {
   @Override
   public Kind getKind() {
     return Kind.NUMBER_LITERAL;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 /**
  * Array type node. Array types are expressed recursively, one dimension at a
  * time.
@@ -38,10 +36,9 @@ public class ArrayType extends Type {
     componentType.copyFrom(other.getComponentType());
   }
 
-  public ArrayType(ITypeBinding typeBinding) {
-    super(typeBinding);
-    assert typeBinding.isArray();
-    componentType.set(Type.newType(typeBinding.getComponentType()));
+  public ArrayType(javax.lang.model.type.ArrayType typeMirror) {
+    super(typeMirror);
+    componentType.set(Type.newType(typeMirror.getComponentType()));
   }
 
   @Override

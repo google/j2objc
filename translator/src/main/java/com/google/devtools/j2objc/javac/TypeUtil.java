@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.javac;
 
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -38,5 +39,33 @@ public final class TypeUtil {
       return false;
     }
     return ((DeclaredType) t).asElement().getKind().equals(ElementKind.INTERFACE);
+  }
+
+  public static boolean isEnum(TypeMirror t) {
+    if (!t.getKind().equals(TypeKind.DECLARED)) {
+      return false;
+    }
+    return ((DeclaredType) t).asElement().getKind().equals(ElementKind.ENUM);
+  }
+
+  // Ugly, but we can't have it actually implement IntersectionType or return TypeKind.INTERSECTION
+  // until Java 8.
+  public static boolean isIntersection(TypeMirror t) {
+    return t instanceof JdtIntersectionType;
+  }
+
+  public static int getDimensions(ArrayType arrayType) {
+    int dimCount = 0;
+    TypeMirror t = arrayType;
+    while (t.getKind().equals(TypeKind.ARRAY)) {
+      dimCount++;
+      t = (((ArrayType) t).getComponentType());
+    }
+    return dimCount;
+  }
+
+  public static int getModifiers(TypeMirror t) {
+    // the public modifier api doesn't expose synthetic
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t).getModifiers();
   }
 }

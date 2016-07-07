@@ -26,38 +26,30 @@ import javax.lang.model.type.TypeMirror;
  */
 public class TypeLiteral extends Expression {
 
-  private final ITypeBinding typeBinding;
   private final TypeMirror typeMirror;
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
   public TypeLiteral(org.eclipse.jdt.core.dom.TypeLiteral jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
+    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
   }
 
   public TypeLiteral(TypeLiteral other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     typeMirror = other.getTypeMirror();
     type.copyFrom(other.getType());
   }
 
   public TypeLiteral(ITypeBinding literalType, Types typeEnv) {
-    typeBinding = typeEnv.resolveJavaType("java.lang.Class");
-    typeMirror = BindingConverter.getType(typeBinding);
+    typeMirror = BindingConverter.getType(typeEnv.resolveJavaType("java.lang.Class"));
     type.set(Type.newType(literalType));
   }
 
   @Override
   public Kind getKind() {
     return Kind.TYPE_LITERAL;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   @Override

@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Creates a type node by wrapping a name.
@@ -29,8 +29,8 @@ public class SimpleType extends AnnotatableType {
     super(other);
   }
 
-  public SimpleType(ITypeBinding typeBinding) {
-    super(typeBinding);
+  public SimpleType(TypeMirror typeMirror) {
+    super(typeMirror);
   }
 
   @Override
