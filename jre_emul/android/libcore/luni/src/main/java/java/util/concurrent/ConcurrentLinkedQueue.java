@@ -189,7 +189,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
         }
     }
 
-    private final Node<E> SENTINEL = new Node<E>(null);
+    private final transient Node<E> SENTINEL = new Node<E>(null);
 
     /**
      * A node from which the first live (non-deleted) node (if any)

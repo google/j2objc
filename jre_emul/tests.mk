@@ -175,7 +175,6 @@ TEST_SOURCES := \
     AtomicReferenceTest.java \
     AtomicStampedReferenceTest.java \
     ConcurrentHashMapTest.java \
-    ConcurrentLinkedQueueTest.java \
     CopyOnWriteArrayListTest.java \
     CopyOnWriteArraySetTest.java \
     CountDownLatchTest.java \
@@ -230,6 +229,8 @@ TEST_SOURCES := \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \
+    jsr166/ConcurrentLinkedDequeTest.java \
+    jsr166/ConcurrentLinkedQueueTest.java \
     jsr166/LinkedTransferQueueTest.java \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \

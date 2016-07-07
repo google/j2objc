@@ -38,7 +38,6 @@ public class ConcurrencyTests extends TestSuite {
     AtomicReferenceTest.class,
     AtomicStampedReferenceTest.class,
     ConcurrentHashMapTest.class,
-    ConcurrentLinkedQueueTest.class,
     CopyOnWriteArrayListTest.class,
     CopyOnWriteArraySetTest.class,
     CountDownLatchTest.class,
