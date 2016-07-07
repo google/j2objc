@@ -16,6 +16,8 @@ package com.google.j2objc;
 
 import junit.framework.TestCase;
 
+import java.lang.reflect.Constructor;
+
 /**
  * Additional tests for java.lang.String support.
  *
@@ -27,5 +29,21 @@ public class StringTest extends TestCase {
   public void testRegexReplace() {
     assertEquals("103456789", "000103456789".replaceFirst("^0+(?!$)", ""));
     assertEquals("103456789", "000103456789".replaceAll("^0+(?!$)", ""));
+  }
+
+  public void testReflectOnStringConstructors() throws Exception {
+    Constructor<String> c;
+
+    c = String.class.getDeclaredConstructor();
+    assertNotNull(c);
+    assertEquals("", c.newInstance());
+
+    c = String.class.getDeclaredConstructor(char[].class);
+    assertNotNull(c);
+    assertEquals("foo", c.newInstance(new char[] { 'f', 'o', 'o' }));
+
+    c = String.class.getDeclaredConstructor(char[].class, int.class, int.class);
+    assertNotNull(c);
+    assertEquals("bar", c.newInstance(new char[] { 'f', 'o', 'o', 'b', 'a', 'r' }, 3, 3));
   }
 }

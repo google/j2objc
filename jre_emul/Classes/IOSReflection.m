@@ -239,6 +239,9 @@ static JavaLangReflectConstructor *ConstructorFromMetadata(
   }
   Method method = JreFindInstanceMethod(cls, methodInfo->selector);
   if (!method) {
+    method = JreFindClassMethod(cls, methodInfo->selector);
+  }
+  if (!method) {
     return nil;
   }
   NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));

@@ -274,6 +274,33 @@ public class NameTable {
       "version");
 
   /**
+   * We convert all the String constructor invocations to factory method
+   * invocations because we want to avoid calling [NSString alloc].
+   */
+  public static final Map<String, String> STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS =
+      ImmutableMap.<String, String>builder()
+      .put("java.lang.String.String()V", "string")
+      .put("java.lang.String.String(Ljava/lang/String;)V", "stringWithString:")
+      .put("java.lang.String.String([B)V", "stringWithBytes:")
+      .put("java.lang.String.String([BLjava/lang/String;)V", "stringWithBytes:charsetName:")
+      .put("java.lang.String.String([BLjava/nio/charset/Charset;)V", "stringWithBytes:charset:")
+      .put("java.lang.String.String([BI)V", "stringWithBytes:hibyte:")
+      .put("java.lang.String.String([BII)V", "stringWithBytes:offset:length:")
+      .put("java.lang.String.String([BIII)V", "stringWithBytes:hibyte:offset:length:")
+      .put("java.lang.String.String([BIILjava/lang/String;)V",
+           "stringWithBytes:offset:length:charsetName:")
+      .put("java.lang.String.String([BIILjava/nio/charset/Charset;)V",
+           "stringWithBytes:offset:length:charset:")
+      .put("java.lang.String.String([C)V", "stringWithCharacters:")
+      .put("java.lang.String.String([CII)V", "stringWithCharacters:offset:length:")
+      .put("java.lang.String.String([III)V", "stringWithInts:offset:length:")
+      .put("java.lang.String.String(II[C)V", "stringWithOffset:length:characters:")
+      .put("java.lang.String.String(Ljava/lang/StringBuffer;)V", "stringWithJavaLangStringBuffer:")
+      .put("java.lang.String.String(Ljava/lang/StringBuilder;)V",
+           "stringWithJavaLangStringBuilder:")
+      .build();
+
+  /**
    * Map of package names to their specified prefixes.  Multiple packages
    * can share a prefix; for example, the com.google.common packages in
    * Guava could share a "GG" (Google Guava) or simply "Guava" prefix.
@@ -292,8 +319,10 @@ public class NameTable {
     // concurrent map, or make a copy for each NameTable.
     private PackagePrefixes prefixMap = Options.getPackagePrefixes();
 
-    private final Map<String, String> methodMappings =
-        ImmutableMap.copyOf(Options.getMethodMappings());
+    private final Map<String, String> methodMappings = ImmutableMap.<String, String>builder()
+        .putAll(Options.getMethodMappings())
+        .putAll(STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS)
+        .build();
 
     private Factory() {
       // Make sure the input mapping files have valid selectors.

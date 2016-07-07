@@ -24,7 +24,6 @@
 #import "J2ObjC_source.h"
 #import "NSException+JavaThrowable.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/ExceptionInInitializerError.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
@@ -42,68 +41,60 @@
                                                              metadata:metadata] autorelease];
 }
 
-- (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs {
-  id newInstance = [self allocInstance];
-  NSInvocation *invocation = [self invocationForTarget:newInstance];
+static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
+  const char *name = self->metadata_->selector;
+  Class cls = self->class_.objcClass;
+  bool isFactory = false;
+  Method method = JreFindInstanceMethod(cls, name);
+  if (!method) {
+    // Special case for constructors declared as class methods.
+    method = JreFindClassMethod(cls, name);
+    isFactory = true;
+  }
+  NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
+      [NSMethodSignature signatureWithObjCTypes:method_getTypeEncoding(method)]];
+  [invocation setSelector:sel_registerName(name)];
+  fillArgs(invocation);
+  id newInstance;
+  @try {
+    if (isFactory) {
+      [invocation invokeWithTarget:cls];
+      [invocation getReturnValue:&newInstance];
+    } else {
+      newInstance = [[cls alloc] autorelease];
+      [invocation invokeWithTarget:newInstance];
+    }
+  }
+  @catch (NSException *e) {
+    @throw create_JavaLangReflectInvocationTargetException_initWithNSException_(e);
+  }
+  return newInstance;
+}
 
+- (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs {
   jint argCount = initArgs ? initArgs->size_ : 0;
   IOSObjectArray *parameterTypes = [self getParameterTypesInternal];
   if (argCount != parameterTypes->size_) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-        @"wrong number of arguments"]);
+    @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"wrong number of arguments");
   }
 
-  for (jint i = 0; i < argCount; i++) {
-    J2ObjcRawValue arg;
-    if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
-      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-          @"argument type mismatch"]);
+  return NewInstance(self, ^(NSInvocation *invocation) {
+    for (jint i = 0; i < argCount; i++) {
+      J2ObjcRawValue arg;
+      if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
+        @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"argument type mismatch");
+      }
+      [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
     }
-    [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
-  }
-
-  [self invoke:invocation];
-
-  return newInstance;
+  });
 }
 
 - (id)jniNewInstance:(const J2ObjcRawValue *)args {
-  id newInstance = [self allocInstance];
-  NSInvocation *invocation = [self invocationForTarget:newInstance];
-  for (int i = 0; i < [self getNumParams]; i++) {
-    [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
-  }
-  [self invoke:invocation];
-  return newInstance;
-}
-
-- (id)allocInstance {
-  id newInstance;
-  @try {
-    newInstance = AUTORELEASE([class_.objcClass alloc]);
-  }
-  @catch (NSException *e) {
-    @throw AUTORELEASE([[JavaLangExceptionInInitializerError alloc] initWithNSException:e]);
-  }
-  return newInstance;
-}
-
-- (NSInvocation *)invocationForTarget:(id)object {
-  NSInvocation *invocation =
-      [NSInvocation invocationWithMethodSignature:methodSignature_];
-  [invocation setSelector:JreMethodSelector(metadata_)];
-  [invocation setTarget:object];
-  return invocation;
-}
-
-- (void)invoke:(NSInvocation *)invocation {
-  @try {
-    [invocation invoke];
-  }
-  @catch (NSException *e) {
-    @throw AUTORELEASE(
-        [[JavaLangReflectInvocationTargetException alloc] initWithNSException:e]);
-  }
+  return NewInstance(self, ^(NSInvocation *invocation) {
+    for (int i = 0; i < [self getNumParams]; i++) {
+      [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
+    }
+  });
 }
 
 // Returns the class name, like java.lang.reflect.Constructor does.
