@@ -62,11 +62,9 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 @implementation ExecutableMember
 
-- (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                                  class:(IOSClass *)aClass
-                               metadata:(const J2ObjcMethodInfo *)metadata {
+- (instancetype)initWithDeclaringClass:(IOSClass *)aClass
+                              metadata:(const J2ObjcMethodInfo *)metadata {
   if ((self = [super init])) {
-    methodSignature_ = [methodSignature retain];
     class_ = aClass; // IOSClass types are never dealloced.
     metadata_ = metadata;
     ptrTable_ = IOSClass_GetMetadataOrFail(aClass)->ptrTable;
@@ -82,11 +80,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 - (int)getModifiers {
   return metadata_->modifiers;
-}
-
-- (jint)getNumParams {
-  // First two slots are class and SEL.
-  return (jint)([methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS);
 }
 
 - (IOSObjectArray *)getParameterTypesInternal {
@@ -152,7 +145,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
     return paramAnnotations();
   }
   // No parameter annotations, so return an array of empty arrays, one for each parameter.
-  jint nParams = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
+  jint nParams = [self getParameterTypesInternal]->size_;
   return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){nParams, 0}
       type:JavaLangAnnotationAnnotation_class_()];
 }
@@ -216,10 +209,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return false;
 }
 
-- (NSMethodSignature *)signature {
-  return methodSignature_;
-}
-
 // isEqual and hash are uniquely identified by their class and selectors.
 - (BOOL)isEqual:(id)anObject {
   if (![anObject isKindOfClass:[ExecutableMember class]]) {
@@ -234,7 +223,6 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 }
 
 - (void)dealloc {
-  [methodSignature_ release];
   [__c11_atomic_load(&paramTypes_, __ATOMIC_RELAXED) release];
   [super dealloc];
 }

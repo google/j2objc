@@ -112,47 +112,6 @@ Method JreFindClassMethod(Class cls, const char *name) {
   return JreFindInstanceMethod(object_getClass(cls), name);
 }
 
-struct objc_method_description *JreFindMethodDescFromList(
-    SEL sel, struct objc_method_description *methods, unsigned int count) {
-  for (unsigned int i = 0; i < count; i++) {
-    if (sel == methods[i].name) {
-      return &methods[i];
-    }
-  }
-  return NULL;
-}
-
-struct objc_method_description *JreFindMethodDescFromMethodList(
-    SEL sel, Method *methods, unsigned int count) {
-  for (unsigned int i = 0; i < count; i++) {
-    struct objc_method_description *desc = method_getDescription(methods[i]);
-    if (sel == desc->name) {
-      return desc;
-    }
-  }
-  return NULL;
-}
-
-static NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
-  const char *types = methodDesc->types;
-  if (!types) {
-    return nil;
-  }
-  // Some IOS devices crash instead of throwing an exception on struct type
-  // encodings.
-  const char *badChar = strchr(types, '{');
-  if (badChar) {
-    return nil;
-  }
-  @try {
-    // Fails when non-ObjC types are included in the type encoding.
-    return [NSMethodSignature signatureWithObjCTypes:types];
-  }
-  @catch (NSException *e) {
-    return nil;
-  }
-}
-
 static NSString *MetadataNameList(IOSObjectArray *classes) {
   if (!classes || classes->size_ == 0) {
     return nil;
@@ -198,61 +157,6 @@ NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
       ? [NSString stringWithUTF8String:metadata->packageName] : nil;
 }
 
-static JavaLangReflectMethod *MethodFromMetadata(
-    IOSClass *iosClass, const J2ObjcMethodInfo *methodInfo) {
-  Class cls = iosClass.objcClass;
-  NSMethodSignature *signature = nil;
-  bool isStatic = (methodInfo->modifiers & JavaLangReflectModifier_STATIC) > 0;
-  if (isStatic) {
-    if (cls) {
-      Method method = JreFindClassMethod(cls, methodInfo->selector);
-      if (method) {
-        signature = JreSignatureOrNull(method_getDescription(method));
-      }
-    }
-  } else {
-    Protocol *protocol = iosClass.objcProtocol;
-    if (protocol) {
-      struct objc_method_description methodDesc =
-          protocol_getMethodDescription(protocol, JreMethodSelector(methodInfo), YES, YES);
-      signature = JreSignatureOrNull(&methodDesc);
-    } else if (cls) {
-      Method method = JreFindInstanceMethod(cls, methodInfo->selector);
-      if (method) {
-        signature = JreSignatureOrNull(method_getDescription(method));
-      }
-    }
-  }
-  if (!signature) {
-    return nil;
-  }
-  return [JavaLangReflectMethod methodWithMethodSignature:signature
-                                                    class:iosClass
-                                                 metadata:methodInfo];
-}
-
-static JavaLangReflectConstructor *ConstructorFromMetadata(
-    IOSClass *iosClass, const J2ObjcMethodInfo *methodInfo) {
-  Class cls = iosClass.objcClass;
-  if (!cls) {
-    return nil;
-  }
-  Method method = JreFindInstanceMethod(cls, methodInfo->selector);
-  if (!method) {
-    method = JreFindClassMethod(cls, methodInfo->selector);
-  }
-  if (!method) {
-    return nil;
-  }
-  NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
-  if (!signature) {
-    return nil;
-  }
-  return [JavaLangReflectConstructor constructorWithMethodSignature:signature
-                                                              class:iosClass
-                                                           metadata:methodInfo];
-}
-
 static bool NullableCStrEquals(const char *a, const char *b) {
   return (a == NULL && b == NULL) || (a != NULL && b != NULL && strcmp(a, b) == 0);
 }
@@ -267,7 +171,7 @@ JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (methodInfo->returnType && strcmp(JreMethodJavaName(methodInfo, ptrTable), cname) == 0
         && NullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
-      return MethodFromMetadata(iosClass, methodInfo);
+      return [JavaLangReflectMethod methodWithDeclaringClass:iosClass metadata:methodInfo];
     }
   }
   return nil;
@@ -282,7 +186,8 @@ JavaLangReflectConstructor *JreConstructorWithParamTypes(
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (!methodInfo->returnType
         && NullableCStrEquals(JrePtrAtIndex(ptrTable, methodInfo->paramsIdx), cparams)) {
-      return ConstructorFromMetadata(iosClass, methodInfo);
+      return [JavaLangReflectConstructor constructorWithDeclaringClass:iosClass
+                                                              metadata:methodInfo];
     }
   }
   return nil;
@@ -293,7 +198,7 @@ JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, const char *sele
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (strcmp(selector, methodInfo->selector) == 0 && methodInfo->returnType) {
-      return MethodFromMetadata(iosClass, methodInfo);
+      return [JavaLangReflectMethod methodWithDeclaringClass:iosClass metadata:methodInfo];
     }
   }
   return nil;
@@ -304,7 +209,8 @@ JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, const 
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (strcmp(selector, methodInfo->selector) == 0 && !methodInfo->returnType) {
-      return ConstructorFromMetadata(iosClass, methodInfo);
+      return [JavaLangReflectConstructor constructorWithDeclaringClass:iosClass
+                                                              metadata:methodInfo];
     }
   }
   return nil;

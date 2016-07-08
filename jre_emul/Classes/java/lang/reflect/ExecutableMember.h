@@ -40,16 +40,12 @@
     < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
  @protected
   IOSClass *class_;
-  NSMethodSignature *methodSignature_;
   const J2ObjcMethodInfo *metadata_;
   const void **ptrTable_;
 }
 
-@property (readonly) NSMethodSignature *signature;
-
-- (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                                  class:(IOSClass *)aClass
-                               metadata:(const J2ObjcMethodInfo *)metadata;
+- (instancetype)initWithDeclaringClass:(IOSClass *)aClass
+                              metadata:(const J2ObjcMethodInfo *)metadata;
 
 - (NSString *)getName;
 
@@ -87,7 +83,6 @@
 - (jboolean)isSynthetic;
 
 // Internal methods.
-- (jint)getNumParams;
 - (IOSObjectArray *)getParameterTypesInternal;
 
 @end

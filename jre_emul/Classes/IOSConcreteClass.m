@@ -123,8 +123,6 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
     return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
   }
   NSMutableArray *constructors = [[NSMutableArray alloc] init];
-  unsigned int count;
-  Method *nativeMethods = class_copyMethodList(iosClass->class_, &count);
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (methodInfo->returnType) {  // Not a constructor.
@@ -133,17 +131,9 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
     if (publicOnly && (methodInfo->modifiers & JavaLangReflectModifier_PUBLIC) == 0) {
       continue;
     }
-    SEL sel = JreMethodSelector(methodInfo);
-    struct objc_method_description *methodDesc =
-        JreFindMethodDescFromMethodList(sel, nativeMethods, count);
-    if (!methodDesc) {
-      continue;
-    }
-    NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
     JavaLangReflectConstructor *constructor =
-        [JavaLangReflectConstructor constructorWithMethodSignature:signature
-                                                             class:iosClass
-                                                          metadata:methodInfo];
+        [JavaLangReflectConstructor constructorWithDeclaringClass:iosClass
+                                                         metadata:methodInfo];
     [constructors addObject:constructor];
   }
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:constructors

@@ -41,10 +41,6 @@ IOSClass *JreClassForString(const char *str);
 IOSObjectArray *JreParseClassList(const char *listStr);
 Method JreFindInstanceMethod(Class cls, const char *name);
 Method JreFindClassMethod(Class cls, const char *name);
-struct objc_method_description *JreFindMethodDescFromList(
-    SEL sel, struct objc_method_description *methods, unsigned int count);
-struct objc_method_description *JreFindMethodDescFromMethodList(
-    SEL sel, Method *methods, unsigned int count);
 
 __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
   return i < 0 ? NULL : ptrTable[i];

@@ -35,12 +35,10 @@
 
 @implementation JavaLangReflectMethod
 
-+ (instancetype)methodWithMethodSignature:(NSMethodSignature *)methodSignature
-                                    class:(IOSClass *)aClass
-                                 metadata:(const J2ObjcMethodInfo *)metadata {
-  return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
-                                                           class:aClass
-                                                        metadata:metadata] autorelease];
++ (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
+                                metadata:(const J2ObjcMethodInfo *)metadata {
+  return [[[JavaLangReflectMethod alloc] initWithDeclaringClass:aClass
+                                                       metadata:metadata] autorelease];
 }
 
 static bool IsStatic(const J2ObjcMethodInfo *metadata) {
@@ -116,7 +114,7 @@ static bool IsStatic(const J2ObjcMethodInfo *metadata) {
                    args:(const J2ObjcRawValue *)args
                  result:(J2ObjcRawValue *)result {
   NSInvocation *invocation = [self invocationForTarget:object];
-  for (int i = 0; i < [self getNumParams]; i++) {
+  for (int i = 0; i < [self getParameterTypesInternal]->size_; i++) {
     [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
   }
 
@@ -136,8 +134,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 }
 
 - (NSInvocation *)invocationForTarget:(id)object {
-  NSInvocation *invocation =
-      [NSInvocation invocationWithMethodSignature:methodSignature_];
+  NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[self getSignature]];
   SEL sel = JreMethodSelector(metadata_);
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {
     [invocation setTarget:class_.objcClass];
@@ -170,6 +167,20 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     @throw AUTORELEASE([[JavaLangReflectInvocationTargetException alloc]
                         initWithNSException:exception]);
   }
+}
+
+- (NSMethodSignature *)getSignature {
+  SEL sel = JreMethodSelector(metadata_);
+  Protocol *protocol = class_.objcProtocol;
+  if (protocol) {
+    struct objc_method_description methodDesc =
+        protocol_getMethodDescription(protocol, sel, YES, YES);
+    return [NSMethodSignature signatureWithObjCTypes:methodDesc.types];
+  }
+  Class cls = class_.objcClass;
+  bool isStatic = (metadata_->modifiers & JavaLangReflectModifier_STATIC) > 0;
+  Method method = isStatic ? class_getClassMethod(cls, sel) : class_getInstanceMethod(cls, sel);
+  return [NSMethodSignature signatureWithObjCTypes:method_getTypeEncoding(method)];
 }
 
 - (NSString *)description {

@@ -33,12 +33,10 @@
 
 @implementation JavaLangReflectConstructor
 
-+ (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
-                                         class:(IOSClass *)aClass
-                                      metadata:(const J2ObjcMethodInfo *)metadata {
-  return [[[JavaLangReflectConstructor alloc] initWithMethodSignature:methodSignature
-                                                                class:aClass
-                                                             metadata:metadata] autorelease];
++ (instancetype)constructorWithDeclaringClass:(IOSClass *)aClass
+                                     metadata:(const J2ObjcMethodInfo *)metadata {
+  return [[[JavaLangReflectConstructor alloc] initWithDeclaringClass:aClass
+                                                            metadata:metadata] autorelease];
 }
 
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
@@ -91,7 +89,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
 
 - (id)jniNewInstance:(const J2ObjcRawValue *)args {
   return NewInstance(self, ^(NSInvocation *invocation) {
-    for (int i = 0; i < [self getNumParams]; i++) {
+    for (int i = 0; i < [self getParameterTypesInternal]->size_; i++) {
       [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
     }
   });

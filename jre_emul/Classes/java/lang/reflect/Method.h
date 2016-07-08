@@ -36,9 +36,8 @@
 // so instances can be created and released as needed.
 @interface JavaLangReflectMethod : ExecutableMember
 
-+ (instancetype)methodWithMethodSignature:(NSMethodSignature *)methodSignature
-                                    class:(IOSClass *)aClass
-                                 metadata:(const J2ObjcMethodInfo *)metadata;
++ (instancetype)methodWithDeclaringClass:(IOSClass *)aClass
+                                metadata:(const J2ObjcMethodInfo *)metadata;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
@@ -64,6 +63,9 @@
 
 // Returns default value.
 - (id)getDefaultValue;
+
+// Internal methods.
+- (NSMethodSignature *)getSignature;
 
 @end
 

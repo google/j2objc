@@ -255,17 +255,6 @@ static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods
   if (metadata->methodCount == 0) {
     return;
   }
-  Class cls = iosClass.objcClass;
-  Protocol *protocol = iosClass.objcProtocol;
-  unsigned int protocolMethodCount, instanceMethodCount, classMethodCount;
-  struct objc_method_description *protocolMethods = NULL;
-  Method *instanceMethods = NULL;
-  if (protocol) {
-    protocolMethods = protocol_copyMethodDescriptionList(protocol, YES, YES, &protocolMethodCount);
-  } else {
-    instanceMethods = class_copyMethodList(cls, &instanceMethodCount);
-  }
-  Method *classMethods = class_copyMethodList(object_getClass(cls), &classMethodCount);
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
     if (!methodInfo->returnType) {  // constructor.
@@ -274,33 +263,15 @@ static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods
     if (publicOnly && (methodInfo->modifiers & JavaLangReflectModifier_PUBLIC) == 0) {
       continue;
     }
-    SEL sel = JreMethodSelector(methodInfo);
-    NSString *selector = NSStringFromSelector(sel);
+    NSString *selector = [NSString stringWithUTF8String:methodInfo->selector];
     if ([methods valueForKey:selector]) {
       continue;
     }
-    jboolean isStatic = (methodInfo->modifiers & JavaLangReflectModifier_STATIC) > 0;
-    struct objc_method_description *methodDesc;
-    if (isStatic) {
-      methodDesc = JreFindMethodDescFromMethodList(sel, classMethods, classMethodCount);
-    } else if (protocolMethods) {
-      methodDesc = JreFindMethodDescFromList(sel, protocolMethods, protocolMethodCount);
-    } else {
-      methodDesc = JreFindMethodDescFromMethodList(sel, instanceMethods, instanceMethodCount);
-    }
-    if (!methodDesc) {
-      continue;
-    }
-    NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
     JavaLangReflectMethod *method =
-        [JavaLangReflectMethod methodWithMethodSignature:signature
-                                                   class:iosClass
-                                                metadata:methodInfo];
+        [JavaLangReflectMethod methodWithDeclaringClass:iosClass
+                                               metadata:methodInfo];
     [methods setObject:method forKey:selector];
   }
-  free(protocolMethods);
-  free(instanceMethods);
-  free(classMethods);
 }
 
 // Return the class and instance methods declared by the Java class.  Superclass

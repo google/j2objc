@@ -300,7 +300,7 @@ public class Proxy implements Serializable {
 
     /*-[
     - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-      return FindMethod(self, aSelector).signature;
+      return [FindMethod(self, aSelector) getSignature];
     }
     ]-*/
 

@@ -33,9 +33,8 @@
 // so instances can be created and released as needed.
 @interface JavaLangReflectConstructor : ExecutableMember
 
-+ (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
-                                         class:(IOSClass *)aClass
-                                      metadata:(const J2ObjcMethodInfo *)metadata;
++ (instancetype)constructorWithDeclaringClass:(IOSClass *)aClass
+                                     metadata:(const J2ObjcMethodInfo *)metadata;
 
 // Create a new instance using this constructor.
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs OBJC_METHOD_FAMILY_NONE;
