@@ -216,6 +216,18 @@ public class ConcurrentLinkedDeque<E>
      * good as we can hope for.
      */
 
+    /*
+     * j2objc: We have modified how nodes are "gc-unlinked" since cyclic
+     * references leak memory in Objective-C. We introduce a SENTINEL node
+     * and set an unlinked node's prev or next (depending on the position
+     * from which it is unlinked) to SENTINEL. We have commented in the
+     * source where it is used to identify "gc-unlinked" nodes. We have
+     * made additional comments on lines that identify TERMINATORs but did
+     * not have the "// PREV_TERMINATOR" or "// NEXT_TERMINATOR" line
+     * comment in the original version. Since the TERMINATOR nodes are
+     * static and will never go away, they can reference to themselves.
+     */
+
     private static final long serialVersionUID = 876323262645176354L;
 
     /**
@@ -248,6 +260,7 @@ public class ConcurrentLinkedDeque<E>
     private transient volatile Node<E> tail;
 
     private static final Node<Object> PREV_TERMINATOR, NEXT_TERMINATOR;
+    private static final Node<Object> SENTINEL;
 
     @SuppressWarnings("unchecked")
     Node<E> prevTerminator() {
@@ -257,6 +270,11 @@ public class ConcurrentLinkedDeque<E>
     @SuppressWarnings("unchecked")
     Node<E> nextTerminator() {
         return (Node<E>) NEXT_TERMINATOR;
+    }
+
+    @SuppressWarnings("unchecked")
+    Node<E> sentinel() {
+        return (Node<E>) SENTINEL;
     }
 
     static final class Node<E> {
@@ -434,13 +452,13 @@ public class ConcurrentLinkedDeque<E>
                 }
                 Node<E> q = p.prev;
                 if (q == null) {
-                    if (p.next == p)
+                    if (p.next == p) // j2objc: PREV_TERMINATOR
                         return;
                     activePred = p;
                     isFirst = true;
                     break;
                 }
-                else if (p == q)
+                else if (sentinel() == q) // j2objc: q == p.prev == sentinel means node GC-unlinked
                     return;
                 else
                     p = q;
@@ -455,13 +473,13 @@ public class ConcurrentLinkedDeque<E>
                 }
                 Node<E> q = p.next;
                 if (q == null) {
-                    if (p.prev == p)
+                    if (p.prev == p) // j2objc: NEXT_TERMINATOR
                         return;
                     activeSucc = p;
                     isLast = true;
                     break;
                 }
-                else if (p == q)
+                else if (sentinel() == q) // j2objc: q == p.next == sentinel means node GC-unlinked
                     return;
                 else
                     p = q;
@@ -491,8 +509,8 @@ public class ConcurrentLinkedDeque<E>
                 updateTail(); // Ensure x is not reachable from tail
 
                 // Finally, actually gc-unlink
-                x.lazySetPrev(isFirst ? prevTerminator() : x);
-                x.lazySetNext(isLast  ? nextTerminator() : x);
+                x.lazySetPrev(isFirst ? prevTerminator() : sentinel());
+                x.lazySetNext(isLast  ? nextTerminator() : sentinel());
             }
         }
     }
@@ -516,13 +534,13 @@ public class ConcurrentLinkedDeque<E>
                         updateTail(); // Ensure o is not reachable from tail
 
                         // Finally, actually gc-unlink
-                        o.lazySetNext(o);
+                        o.lazySetNext(sentinel());
                         o.lazySetPrev(prevTerminator());
                     }
                 }
                 return;
             }
-            else if (p == q)
+            else if (sentinel() == q) // j2objc: q == p.next == sentinel means node GC-unlinked
                 return;
             else {
                 o = p;
@@ -550,13 +568,13 @@ public class ConcurrentLinkedDeque<E>
                         updateTail(); // Ensure o is not reachable from tail
 
                         // Finally, actually gc-unlink
-                        o.lazySetPrev(o);
+                        o.lazySetPrev(sentinel());
                         o.lazySetNext(nextTerminator());
                     }
                 }
                 return;
             }
-            else if (p == q)
+            else if (sentinel() == q) // j2objc: q == p.prev == sentinel means node GC-unlinked
                 return;
             else {
                 o = p;
@@ -639,11 +657,11 @@ public class ConcurrentLinkedDeque<E>
                     break findActive;
                 Node<E> q = p.prev;
                 if (q == null) {
-                    if (p.next == p)
+                    if (p.next == p) // j2objc: PREV_TERMINATOR
                         continue whileActive;
                     break findActive;
                 }
-                else if (p == q)
+                else if (sentinel() == q) // j2objc: q == p.prev == sentinel means node GC-unlinked
                     continue whileActive;
                 else
                     p = q;
@@ -670,11 +688,11 @@ public class ConcurrentLinkedDeque<E>
                     break findActive;
                 Node<E> q = p.next;
                 if (q == null) {
-                    if (p.prev == p)
+                    if (p.prev == p) // j2objc: NEXT_TERMINATOR
                         continue whileActive;
                     break findActive;
                 }
-                else if (p == q)
+                else if (sentinel() == q) // j2objc: q == p.next == sentinel means node GC-unlinked
                     continue whileActive;
                 else
                     p = q;
@@ -695,7 +713,8 @@ public class ConcurrentLinkedDeque<E>
     final Node<E> succ(Node<E> p) {
         // TODO: should we skip deleted nodes here?
         Node<E> q = p.next;
-        return (p == q) ? first() : q;
+        // j2objc: q == p.next == sentinel means node GC-unlinked
+        return (sentinel() == q) ? first() : q;
     }
 
     /**
@@ -705,7 +724,8 @@ public class ConcurrentLinkedDeque<E>
      */
     final Node<E> pred(Node<E> p) {
         Node<E> q = p.prev;
-        return (p == q) ? last() : q;
+        // j2objc: q == p.prev == sentinel means node GC-unlinked
+        return (sentinel() == q) ? last() : q;
     }
 
     /**
@@ -1411,12 +1431,36 @@ public class ConcurrentLinkedDeque<E>
         return UNSAFE.compareAndSwapObject(this, tailOffset, cmp, val);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            // null check for safety (since constructor may throw NPE).
+            if (head != null && tail != null) {
+                clear();
+            }
+
+            // Unlink head and tail; doesn't matter if they are the same.
+            if (head != null) {
+                head.next = null;
+                head.prev = null;
+            }
+
+            if (tail != null) {
+                tail.next = null;
+                tail.prev = null;
+            }
+        } finally {
+            super.finalize();
+        }
+    }
+
     // Unsafe mechanics
 
     private static final sun.misc.Unsafe UNSAFE;
     private static final long headOffset;
     private static final long tailOffset;
     static {
+        SENTINEL = new Node<Object>();
         PREV_TERMINATOR = new Node<Object>();
         PREV_TERMINATOR.next = PREV_TERMINATOR;
         NEXT_TERMINATOR = new Node<Object>();
