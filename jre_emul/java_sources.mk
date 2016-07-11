@@ -16,6 +16,7 @@
 
 # Java sources to be translated normally and included in the core library.
 JAVA_PUBLIC_SOURCES_CORE = \
+  com/google/j2objc/util/ScopedLocalRef.java \
   java/io/BufferedInputStream.java \
   java/io/BufferedOutputStream.java \
   java/io/BufferedReader.java \
@@ -353,7 +354,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/LibraryNotLinkedError.java \
   com/google/j2objc/ReflectionStrippedError.java \
-  com/google/j2objc/util/ScopedLocalRef.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
   java/beans/BeansFactory.java \
