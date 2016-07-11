@@ -870,11 +870,7 @@ public class StatementGenerator extends TreeVisitor {
       return false;
     }
     if (binding instanceof ITypeBinding) {
-      if (binding instanceof IOSTypeBinding) {
-        buffer.append(binding.getName());
-      } else {
-        buffer.append(nameTable.getFullName((ITypeBinding) binding));
-      }
+      buffer.append(nameTable.getFullName((ITypeBinding) binding));
     } else {
       buffer.append(node.getIdentifier());
     }
