@@ -253,7 +253,7 @@ U_STABLE UBool uregex_matches_j2objc(
   return (*j2_uregex_matches)(regexp, startIndex, status);
 }
 
-U_STABLE URegularExpression* uregex_open(const UChar* pattern, int32_t patternLength,
+U_STABLE URegularExpression* uregex_open_j2objc(const UChar* pattern, int32_t patternLength,
     uint32_t flags, UParseError* pe, UErrorCode* status) {
   return (*j2_uregex_open)(pattern, patternLength, flags, pe, status);
 }
