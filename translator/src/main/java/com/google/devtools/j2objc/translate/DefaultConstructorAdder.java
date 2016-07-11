@@ -21,11 +21,11 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.HashSet;
 import java.util.Set;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * Adds the implicie default constructors for classes that have no declared
@@ -44,24 +44,16 @@ public class DefaultConstructorAdder extends TreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
-    Set<IMethodBinding> declaredInAst = new HashSet<>();
+    Set<ExecutableElement> declaredInAst = new HashSet<>();
     for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
-      declaredInAst.add(methodDecl.getMethodBinding());
+      declaredInAst.add(methodDecl.getExecutableElement());
     }
-    for (IMethodBinding methodBinding : node.getTypeBinding().getDeclaredMethods()) {
-      if (!declaredInAst.contains(methodBinding) && isDefaultConstructor(methodBinding)) {
-        addDefaultConstructor(node, methodBinding);
+    Iterable<ExecutableElement> constructors = ElementUtil.filterEnclosedElements(
+        node.getTypeElement(), ExecutableElement.class, ElementKind.CONSTRUCTOR);
+    for (ExecutableElement constructor : constructors) {
+      if (constructor.getParameters().isEmpty() && !declaredInAst.contains(constructor)) {
+        node.addBodyDeclaration(new MethodDeclaration(constructor).setBody(new Block()));
       }
     }
-  }
-
-  private boolean isDefaultConstructor(IMethodBinding method) {
-    return method.isConstructor() && method.getParameterTypes().length == 0;
-  }
-
-  private void addDefaultConstructor(AbstractTypeDeclaration node, IMethodBinding methodBinding) {
-    MethodDeclaration methodDecl = new MethodDeclaration(methodBinding);
-    methodDecl.setBody(new Block());
-    node.addBodyDeclaration(methodDecl);
   }
 }

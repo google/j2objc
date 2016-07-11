@@ -14,10 +14,13 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -292,24 +295,20 @@ public final class ElementUtil {
     }
   }
 
+  public static <T extends Element> Iterable<T> filterEnclosedElements(
+      Element elem, Class<T> resultClass, ElementKind... kinds) {
+    List<ElementKind> kindsList = Arrays.asList(kinds);
+    return Iterables.transform(Iterables.filter(
+        elem.getEnclosedElements(), e -> kindsList.contains(e.getKind())), resultClass::cast);
+  }
+
   public static List<ExecutableElement> getDeclaredMethods(Element e) {
-    List<ExecutableElement> methods = new ArrayList<>();
-    for (Element i : e.getEnclosedElements()) {
-      if (i.getKind() == ElementKind.METHOD || i.getKind() == ElementKind.CONSTRUCTOR) {
-        methods.add((ExecutableElement) i);
-      }
-    }
-    return methods;
+    return Lists.newArrayList(filterEnclosedElements(
+        e, ExecutableElement.class, ElementKind.CONSTRUCTOR, ElementKind.METHOD));
   }
 
   public static List<VariableElement> getDeclaredFields(Element e) {
-    List<VariableElement> fields = new ArrayList<>();
-    for (Element i : e.getEnclosedElements()) {
-      if (i.getKind() == ElementKind.FIELD) {
-        fields.add((VariableElement) i);
-      }
-    }
-    return fields;
+    return Lists.newArrayList(filterEnclosedElements(e, VariableElement.class, ElementKind.FIELD));
   }
 
   private static boolean paramsMatch(ExecutableElement method, String[] paramTypes) {
@@ -327,15 +326,9 @@ public final class ElementUtil {
   }
 
   public static ExecutableElement findMethod(TypeElement type, String name, String... paramTypes) {
-    for (Element e : type.getEnclosedElements()) {
-      if (e.getKind() == ElementKind.METHOD && e.getSimpleName().toString().equals(name)) {
-        ExecutableElement method = (ExecutableElement) e;
-        if (paramsMatch(method, paramTypes)) {
-          return method;
-        }
-      }
-    }
-    return null;
+    return Iterables.getFirst(Iterables.filter(
+        filterEnclosedElements(type, ExecutableElement.class, ElementKind.METHOD),
+        method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
   }
 
   public static Set<Modifier> toModifierSet(int modifiers) {
