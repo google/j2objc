@@ -37,13 +37,8 @@ public class ArrayCreation extends Expression {
   private final ChildLink<ArrayInitializer> initializer =
       ChildLink.create(ArrayInitializer.class, this);
 
-  public ArrayCreation(org.eclipse.jdt.core.dom.ArrayCreation jdtNode) {
-    super(jdtNode);
-    arrayType.set((ArrayType) TreeConverter.convert(jdtNode.getType()));
-    for (Object dimension : jdtNode.dimensions()) {
-      dimensions.add((Expression) TreeConverter.convert(dimension));
-    }
-    initializer.set((ArrayInitializer) TreeConverter.convert(jdtNode.getInitializer()));
+  ArrayCreation() {
+    super();
   }
 
   public ArrayCreation(ArrayCreation other) {
@@ -88,16 +83,27 @@ public class ArrayCreation extends Expression {
     return arrayType.get();
   }
 
+  ArrayCreation setType(ArrayType newType) {
+    arrayType.set(newType);
+    return this;
+  }
+
   public List<Expression> getDimensions() {
     return dimensions;
+  }
+
+  ArrayCreation setDimensions(List<Expression> newDimensions) {
+    dimensions.replaceAll(newDimensions);
+    return this;
   }
 
   public ArrayInitializer getInitializer() {
     return initializer.get();
   }
 
-  public void setInitializer(ArrayInitializer newInitializer) {
+  public ArrayCreation setInitializer(ArrayInitializer newInitializer) {
     initializer.set(newInitializer);
+    return this;
   }
 
   @Override

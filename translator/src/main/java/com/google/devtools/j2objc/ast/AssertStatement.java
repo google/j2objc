@@ -22,10 +22,8 @@ public class AssertStatement extends Statement {
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> message = ChildLink.create(Expression.class, this);
 
-  public AssertStatement(org.eclipse.jdt.core.dom.AssertStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    message.set((Expression) TreeConverter.convert(jdtNode.getMessage()));
+  AssertStatement() {
+    super();
   }
 
   public AssertStatement(AssertStatement other) {
@@ -43,16 +41,18 @@ public class AssertStatement extends Statement {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public AssertStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public Expression getMessage() {
     return message.get();
   }
 
-  public void setMessage(Expression newMessage) {
+  public AssertStatement setMessage(Expression newMessage) {
     message.set(newMessage);
+    return this;
   }
 
   @Override

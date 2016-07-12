@@ -25,10 +25,8 @@ public class ArrayAccess extends Expression {
   private final ChildLink<Expression> array = ChildLink.create(Expression.class, this);
   private final ChildLink<Expression> index = ChildLink.create(Expression.class, this);
 
-  public ArrayAccess(org.eclipse.jdt.core.dom.ArrayAccess jdtNode) {
-    super(jdtNode);
-    array.set((Expression) TreeConverter.convert(jdtNode.getArray()));
-    index.set((Expression) TreeConverter.convert(jdtNode.getIndex()));
+  ArrayAccess() {
+    super();
   }
 
   public ArrayAccess(ArrayAccess other) {
@@ -53,12 +51,18 @@ public class ArrayAccess extends Expression {
     return array.get();
   }
 
+  ArrayAccess setArray(Expression newArray) {
+    array.set(newArray);
+    return this;
+  }
+
   public Expression getIndex() {
     return index.get();
   }
 
-  public void setIndex(Expression newIndex) {
+  public ArrayAccess setIndex(Expression newIndex) {
     index.set(newIndex);
+    return this;
   }
 
   @Override

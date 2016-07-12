@@ -31,6 +31,7 @@ public abstract class TreeNode {
     key = new Key();
   }
 
+  // TODO(tball): remove when all subclasses are converted.
   protected TreeNode(ASTNode jdtNode) {
     this();
     startPosition = jdtNode.getStartPosition();
@@ -135,6 +136,14 @@ public abstract class TreeNode {
 
   public void validateInner() {}
 
+  TreeNode setPosition(SourcePosition position) {
+    this.startPosition = position.getStartPosition();
+    this.length = position.getLength();
+    this.lineNumber = position.getLineNumber();
+    return this;
+  }
+
+  @Override
   public String toString() {
     try {
       return DebugASTPrinter.toString(this);

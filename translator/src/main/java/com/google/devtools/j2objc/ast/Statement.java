@@ -21,6 +21,7 @@ public abstract class Statement extends TreeNode {
 
   protected Statement() {}
 
+  // TODO(tball): remove when all subclasses are converted.
   protected Statement(org.eclipse.jdt.core.dom.Statement jdtNode) {
     super(jdtNode);
   }

@@ -18,6 +18,9 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Converts a Java AST from the JDT data structure to our J2ObjC data structure.
  */
@@ -43,6 +46,18 @@ public class TreeConverter {
     return node;
   }
 
+  private static SourcePosition getPosition(ASTNode jdtNode) {
+    int startPosition = jdtNode.getStartPosition();
+    int length = jdtNode.getLength();
+    ASTNode root = jdtNode.getRoot();
+    if (root instanceof org.eclipse.jdt.core.dom.CompilationUnit) {
+      int line = ((org.eclipse.jdt.core.dom.CompilationUnit) root).getLineNumber(startPosition);
+      return new SourcePosition(startPosition, length, line);
+    } else {
+      return new SourcePosition(startPosition, length);
+    }
+  }
+
   public static TreeNode convertInner(ASTNode jdtNode) {
     switch (jdtNode.getNodeType()) {
       case ASTNode.ANNOTATION_TYPE_DECLARATION:
@@ -55,15 +70,15 @@ public class TreeConverter {
         return new AnonymousClassDeclaration(
             (org.eclipse.jdt.core.dom.AnonymousClassDeclaration) jdtNode);
       case ASTNode.ARRAY_ACCESS:
-        return new ArrayAccess((org.eclipse.jdt.core.dom.ArrayAccess) jdtNode);
+        return convertArrayAccess((org.eclipse.jdt.core.dom.ArrayAccess) jdtNode);
       case ASTNode.ARRAY_CREATION:
-        return new ArrayCreation((org.eclipse.jdt.core.dom.ArrayCreation) jdtNode);
+        return convertArrayCreation((org.eclipse.jdt.core.dom.ArrayCreation) jdtNode);
       case ASTNode.ARRAY_INITIALIZER:
         return new ArrayInitializer((org.eclipse.jdt.core.dom.ArrayInitializer) jdtNode);
       case ASTNode.ARRAY_TYPE:
         return new ArrayType((org.eclipse.jdt.core.dom.ArrayType) jdtNode);
       case ASTNode.ASSERT_STATEMENT:
-        return new AssertStatement((org.eclipse.jdt.core.dom.AssertStatement) jdtNode);
+        return convertAssertStatement((org.eclipse.jdt.core.dom.AssertStatement) jdtNode);
       case ASTNode.ASSIGNMENT:
         return new Assignment((org.eclipse.jdt.core.dom.Assignment) jdtNode);
       case ASTNode.BLOCK:
@@ -239,5 +254,32 @@ public class TreeConverter {
       default:
         throw new AssertionError("Unknown node type: " + jdtNode.getClass().getName());
     }
+  }
+
+  private static TreeNode convertArrayAccess(org.eclipse.jdt.core.dom.ArrayAccess node) {
+    return new ArrayAccess()
+        .setArray((Expression) convert(node.getArray()))
+        .setIndex((Expression) convert(node.getIndex()))
+        .setPosition(getPosition(node));
+  }
+
+  private static TreeNode convertArrayCreation(org.eclipse.jdt.core.dom.ArrayCreation node) {
+    List<Expression> dimensions = new ArrayList<>();
+    for (Object dimension : node.dimensions()) {
+      dimensions.add((Expression) TreeConverter.convert(dimension));
+    }
+    return new ArrayCreation()
+        .setType((ArrayType) convert(node.getType()))
+        .setDimensions(dimensions)
+        .setInitializer((ArrayInitializer) convert(node.getInitializer()))
+        .setConstantValue(node.resolveConstantExpressionValue())
+        .setPosition(getPosition(node));
+  }
+
+  private static TreeNode convertAssertStatement(org.eclipse.jdt.core.dom.AssertStatement node) {
+    return new AssertStatement()
+        .setExpression((Expression) convert(node.getExpression()))
+        .setMessage((Expression) convert(node.getMessage()))
+        .setPosition(getPosition(node));
   }
 }

@@ -25,8 +25,9 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class Expression extends TreeNode {
 
-  private Object constantValue = null;
+  private Object constantValue;
 
+  // TODO(tball): remove when all subclasses are converted.
   protected Expression(org.eclipse.jdt.core.dom.Expression jdtNode) {
     super(jdtNode);
     constantValue = jdtNode.resolveConstantExpressionValue();
@@ -37,7 +38,10 @@ public abstract class Expression extends TreeNode {
     constantValue = other.getConstantValue();
   }
 
-  protected Expression() {}
+  protected Expression() {
+    super();
+    constantValue = null;
+  }
 
   public ITypeBinding getTypeBinding() {
     return BindingConverter.unwrapTypeMirrorIntoTypeBinding(getTypeMirror());
@@ -47,6 +51,11 @@ public abstract class Expression extends TreeNode {
 
   public Object getConstantValue() {
     return constantValue;
+  }
+
+  Expression setConstantValue(Object value) {
+    constantValue = value;
+    return this;
   }
 
   @Override

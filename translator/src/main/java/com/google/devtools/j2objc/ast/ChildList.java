@@ -78,6 +78,11 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
     }
   }
 
+  void replaceAll(List<T> other) {
+    clear();
+    copyFrom(other);
+  }
+
   public void accept(TreeVisitor visitor) {
     // Copy all the children into an array to avoid a
     // ConcurrentModificationException if the visitor removes one of the nodes.
