@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -400,8 +401,9 @@ public class NameTable {
    * This may be wrong if a variable is renamed by a translation phase, but will
    * handle all the reserved and bad parameter renamings correctly.
    */
-  public static String getDocCommentVariableName(IVariableBinding var) {
-    return maybeRenameVar(var, var.getName());
+  public static String getDocCommentVariableName(VariableElement var) {
+    return maybeRenameVar((IVariableBinding) BindingConverter.unwrapElement(var),
+        var.getSimpleName().toString());
   }
 
   /**
@@ -430,6 +432,10 @@ public class NameTable {
       return className + '_' + shortName;
     }
     return shortName;
+  }
+
+  public String getVariableQualifiedName(VariableElement element) {
+    return getVariableQualifiedName((IVariableBinding) BindingConverter.unwrapElement(element));
   }
 
   /**

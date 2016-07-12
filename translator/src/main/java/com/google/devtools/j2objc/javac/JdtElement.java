@@ -40,7 +40,11 @@ abstract class JdtElement implements Element {
   private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
   protected JdtElement(IBinding binding, String name, int flags) {
-    this.binding = BindingConverter.wrapBinding(binding);
+    if (binding instanceof JdtBinding) {
+      this.binding = (JdtBinding) binding;
+    } else {
+      this.binding = BindingConverter.wrapBinding(binding);
+    }
     this.name = BindingConverter.getName(name);
     this.flags = flags;
   }
@@ -50,9 +54,7 @@ abstract class JdtElement implements Element {
   }
 
   @Override
-  public TypeMirror asType() {
-    return BindingConverter.getTypeMirror(binding);
-  }
+  public abstract TypeMirror asType();
 
   @Override
   public Set<Modifier> getModifiers() {

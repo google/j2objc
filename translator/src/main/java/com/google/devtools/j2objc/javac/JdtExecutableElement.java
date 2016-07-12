@@ -34,7 +34,7 @@ import javax.lang.model.type.TypeMirror;
 class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
   public JdtExecutableElement(IMethodBinding binding) {
-    super(binding.getMethodDeclaration(), binding.getName(), binding.getModifiers());
+    super(binding, binding.getName(), binding.getModifiers());
   }
 
   @Override
@@ -57,6 +57,11 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
   @Override
   public TypeMirror getReturnType() {
     return BindingConverter.getType(((JdtMethodBinding) binding).getDeclaringClass());
+  }
+
+  @Override
+  public TypeMirror asType() {
+    return BindingConverter.getType((JdtMethodBinding) binding);
   }
 
   @Override

@@ -40,8 +40,8 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -110,7 +110,7 @@ public class MethodReferenceRewriter extends TreeVisitor {
     Expression callExpression = null;
 
     if (!BindingUtil.isStatic(methodBinding) && target instanceof Name
-        && ((Name) target).getBinding().getKind() == IBinding.TYPE) {
+        && ElementUtil.isType(((Name) target).getElement())) {
       // The expression is actually a type name and doesn't evaluate to an invocable object.
       target = new SimpleName(params.next());
       callExpression = lambda;
@@ -160,7 +160,7 @@ public class MethodReferenceRewriter extends TreeVisitor {
     if (expr instanceof ThisExpression) {
       return true;
     }
-    if (expr instanceof Name && ((Name) expr).getBinding().getKind() == IBinding.TYPE) {
+    if (expr instanceof Name && ElementUtil.isType(((Name) expr).getElement())) {
       return true;
     }
     IVariableBinding var = TreeUtil.getVariableBinding(expr);

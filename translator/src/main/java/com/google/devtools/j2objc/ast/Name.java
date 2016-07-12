@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -29,20 +30,25 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class Name extends Expression {
 
-  private IBinding binding;
+  private Element element;
 
   public Name(org.eclipse.jdt.core.dom.Name jdtNode) {
     super(jdtNode);
-    binding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
+    IBinding binding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
+    element = BindingConverter.getElement(binding);
   }
 
   public Name(Name other) {
     super(other);
-    binding = other.getBinding();
+    element = other.getElement();
   }
 
   public Name(IBinding binding) {
-    this.binding = binding;
+    this.element = BindingConverter.getElement(binding);
+  }
+
+  public Name(Element element) {
+    this.element = element;
   }
 
   public static Name newName(Name qualifier, IBinding binding) {
@@ -59,22 +65,18 @@ public abstract class Name extends Expression {
 
   public abstract String getFullyQualifiedName();
 
-  public IBinding getBinding() {
-    return binding;
+  public Element getElement() {
+    return element;
   }
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return BindingUtil.toTypeBinding(binding);
+    return BindingUtil.toTypeBinding(BindingConverter.unwrapElement(element));
   }
 
   @Override
   public TypeMirror getTypeMirror() {
-    return BindingConverter.getType(getTypeBinding());
-  }
-
-  public void setBinding(IBinding newBinding) {
-    binding = newBinding;
+    return element.asType();
   }
 
   public boolean isQualifiedName() {

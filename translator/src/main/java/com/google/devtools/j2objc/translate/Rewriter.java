@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -62,6 +63,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
+
 /**
  * Rewrites the Java AST to replace difficult to translate code with methods
  * that are more Objective C/iOS specific. For example, Objective C doesn't have
@@ -72,7 +76,7 @@ import java.util.Map;
  */
 public class Rewriter extends TreeVisitor {
 
-  private Map<IVariableBinding, IVariableBinding> localRefs = new HashMap<>();
+  private Map<VariableElement, VariableElement> localRefs = new HashMap<>();
   private final OuterReferenceResolver outerResolver;
   private Map<ITypeBinding, Integer> lambdaCounts = new HashMap<>();
 
@@ -268,10 +272,11 @@ public class Rewriter extends TreeVisitor {
         GeneratedVariableBinding newVar = new GeneratedVariableBinding(
             var.getName(), var.getModifiers(), localRefType, false, false,
             var.getDeclaringClass(), var.getDeclaringMethod());
-        localRefs.put(var, newVar);
+        localRefs.put(BindingConverter.getVariableElement(var),
+            BindingConverter.getVariableElement(newVar));
 
         Expression initializer = fragment.getInitializer();
-        if (localRefs.containsKey(TreeUtil.getVariableBinding(initializer))) {
+        if (localRefs.containsKey(TreeUtil.getVariableElement(initializer))) {
           initializer.accept(this);
         } else {
           // Create a constructor for a ScopedLocalRef for this fragment.
@@ -328,7 +333,7 @@ public class Rewriter extends TreeVisitor {
   @Override
   public void endVisit(SimpleName node) {
     // Check for ScopedLocalRefs.
-    IVariableBinding localRef = localRefs.get(node.getBinding());
+    Element localRef = localRefs.get(node.getElement());
     if (localRef != null) {
       FieldAccess access = new FieldAccess(
           typeEnv.getLocalRefType().getDeclaredFields()[0], new SimpleName(localRef));

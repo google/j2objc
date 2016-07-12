@@ -74,6 +74,10 @@ class JdtTypeElement extends JdtElement implements TypeElement {
     return null;
   }
 
+  @Override public TypeMirror asType() {
+    return BindingConverter.getType((ITypeBinding) binding);
+  }
+
   @Override
   public Element getEnclosingElement() {
     ITypeBinding decl = (ITypeBinding) binding;

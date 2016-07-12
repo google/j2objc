@@ -21,16 +21,17 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.text.BreakIterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Generates Javadoc comments.
@@ -228,9 +229,9 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       } else if (fragment instanceof TagElement) {
         sb.append(printTag((TagElement) fragment));
       } else if (fragment instanceof SimpleName) {
-        IBinding binding = ((Name) fragment).getBinding();
-        if (binding instanceof IVariableBinding) {
-          sb.append(NameTable.getDocCommentVariableName(((IVariableBinding) binding)));
+        Element element = ((Name) fragment).getElement();
+        if (element != null && ElementUtil.isVariable(element)) {
+          sb.append(NameTable.getDocCommentVariableName(((VariableElement) element)));
         } else {
           sb.append(fragment.toString());
         }

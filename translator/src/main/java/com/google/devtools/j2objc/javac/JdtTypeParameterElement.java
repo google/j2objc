@@ -47,6 +47,11 @@ class JdtTypeParameterElement extends JdtElement implements TypeParameterElement
   }
 
   @Override
+  public TypeMirror asType() {
+    throw new AssertionError("not implemented");
+  }
+
+  @Override
   public List<? extends TypeMirror> getBounds() {
     List<TypeMirror> bounds = new ArrayList<>();
     for (ITypeBinding bound : ((ITypeBinding) binding).getTypeBounds()) {

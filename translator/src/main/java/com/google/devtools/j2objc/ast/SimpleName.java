@@ -18,6 +18,8 @@ import com.google.common.base.Preconditions;
 
 import org.eclipse.jdt.core.dom.IBinding;
 
+import javax.lang.model.element.Element;
+
 /**
  * Node for a simple (unqualified) name.
  */
@@ -40,6 +42,11 @@ public class SimpleName extends Name {
     identifier = binding.getName();
   }
 
+  public SimpleName(Element element) {
+    super(element);
+    identifier = element.getSimpleName().toString();
+  }
+
   public SimpleName(String identifier) {
     super((IBinding) null);
     this.identifier = identifier;
@@ -58,6 +65,7 @@ public class SimpleName extends Name {
     this.identifier = identifier;
   }
 
+  @Override
   public String getFullyQualifiedName() {
     return identifier;
   }

@@ -23,12 +23,13 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 class JdtVariableElement extends JdtElement implements VariableElement {
   private final JdtBinding owner;
 
   JdtVariableElement(IVariableBinding binding) {
-    this(binding.getVariableDeclaration(), binding.getName(), binding.getModifiers(),
+    this(binding, binding.getName(), binding.getModifiers(),
         binding.getDeclaringMethod(), binding.getDeclaringClass());
   }
 
@@ -70,6 +71,11 @@ class JdtVariableElement extends JdtElement implements VariableElement {
   public Object getConstantValue() {
     return getKind() != ElementKind.PARAMETER
         ? ((IVariableBinding) binding).getConstantValue() : null;
+  }
+
+  @Override
+  public TypeMirror asType() {
+    return BindingConverter.getType(((IVariableBinding) binding).getType());
   }
 
   @Override

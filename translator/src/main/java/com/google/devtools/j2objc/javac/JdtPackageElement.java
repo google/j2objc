@@ -28,6 +28,7 @@ import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.type.TypeMirror;
 
 class JdtPackageElement extends JdtElement implements PackageElement {
   private List<AnnotationMirror> annotations = new ArrayList<>();
@@ -54,6 +55,11 @@ class JdtPackageElement extends JdtElement implements PackageElement {
   @Override
   public Set<Modifier> getModifiers() {
     return Collections.emptySet();
+  }
+
+  @Override
+  public TypeMirror asType() {
+    throw new AssertionError("not implemented");
   }
 
   @Override

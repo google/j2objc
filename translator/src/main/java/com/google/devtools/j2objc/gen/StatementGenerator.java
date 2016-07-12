@@ -106,11 +106,11 @@ import com.google.devtools.j2objc.javac.JdtTypes;
 import com.google.devtools.j2objc.javac.TypeUtil;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -120,6 +120,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -821,16 +823,16 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(QualifiedName node) {
-    IBinding binding = node.getBinding();
-    if (binding instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) binding;
-      if (BindingUtil.isGlobalVar(var)) {
+    Element element = node.getElement();
+    if (ElementUtil.isVariable(element)) {
+      VariableElement var = (VariableElement) element;
+      if (ElementUtil.isGlobalVar(var)) {
         buffer.append(nameTable.getVariableQualifiedName(var));
         return false;
       }
     }
-    if (binding instanceof ITypeBinding) {
-      buffer.append(nameTable.getFullName((ITypeBinding) binding));
+    if (ElementUtil.isType(element)) {
+      buffer.append(nameTable.getFullName(element.asType()));
       return false;
     }
     Name qualifier = node.getQualifier();
@@ -864,13 +866,13 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SimpleName node) {
-    IBinding binding = node.getBinding();
-    if (binding instanceof IVariableBinding) {
-      buffer.append(nameTable.getVariableQualifiedName((IVariableBinding) binding));
+    Element element = node.getElement();
+    if (element != null && ElementUtil.isVariable(element)) {
+      buffer.append(nameTable.getVariableQualifiedName((VariableElement) element));
       return false;
     }
-    if (binding instanceof ITypeBinding) {
-      buffer.append(nameTable.getFullName((ITypeBinding) binding));
+    if (element != null && ElementUtil.isType(element)) {
+      buffer.append(nameTable.getFullName(element.asType()));
     } else {
       buffer.append(node.getIdentifier());
     }

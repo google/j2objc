@@ -34,6 +34,7 @@ import java.util.Map;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Name;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -272,9 +273,12 @@ public final class BindingConverter {
     return typeCache.get(wrappedBinding);
   }
 
-
   public static Element getElement(IBinding binding) {
-    return getElement(wrapBinding(binding));
+      return getElement(wrapBinding(binding));
+  }
+
+  public static VariableElement getVariableElement(IVariableBinding binding) {
+    return (VariableElement) getElement(binding);
   }
 
   public static JdtElement getElement(JdtBinding binding) {

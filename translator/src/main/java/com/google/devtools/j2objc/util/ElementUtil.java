@@ -180,4 +180,18 @@ public final class ElementUtil {
   private static boolean hasModifier(Element element, Modifier modifier) {
     return element.getModifiers().contains(modifier);
   }
+
+  public static boolean isType(Element element) {
+    ElementKind kind = element.getKind();
+    return kind == ElementKind.ANNOTATION_TYPE || kind == ElementKind.CLASS
+        || kind == ElementKind.ENUM || kind == ElementKind.INTERFACE
+        || kind == ElementKind.TYPE_PARAMETER;
+  }
+
+  public static boolean isVariable(Element element) {
+    ElementKind kind = element.getKind();
+    return kind == ElementKind.FIELD || kind == ElementKind.LOCAL_VARIABLE
+        || kind == ElementKind.PARAMETER || kind == ElementKind.EXCEPTION_PARAMETER
+        || kind == ElementKind.RESOURCE_VARIABLE;
+  }
 }

@@ -18,10 +18,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -32,6 +33,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Collection of utility methods for examining tree nodes.
@@ -72,6 +76,7 @@ public class TreeUtil {
   }
 
   private static final Predicate<Annotation> IS_RUNTIME_PREDICATE = new Predicate<Annotation>() {
+    @Override
     public boolean apply(Annotation annotation) {
       return BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding());
     }
@@ -190,6 +195,7 @@ public class TreeUtil {
   public static Iterable<VariableDeclarationFragment> asFragments(
       final Iterable<FieldDeclaration> fieldDecls) {
     return new Iterable<VariableDeclarationFragment>() {
+      @Override
       public Iterator<VariableDeclarationFragment> iterator() {
         final Iterator<FieldDeclaration> fieldIter = fieldDecls.iterator();
         return new AbstractIterator<VariableDeclarationFragment>() {
@@ -268,9 +274,14 @@ public class TreeUtil {
     }
   }
 
+  public static VariableElement getVariableElement(Expression node) {
+    return (VariableElement) BindingConverter.getElement(getVariableBinding(node));
+  }
+
   public static IVariableBinding getVariableBinding(Name node) {
-    IBinding binding = node.getBinding();
-    return (binding instanceof IVariableBinding) ? (IVariableBinding) binding : null;
+    Element element = node.getElement();
+    return element != null && ElementUtil.isVariable(element)
+        ? (IVariableBinding) BindingConverter.unwrapElement(element) : null;
   }
 
   public static IMethodBinding getMethodBinding(Expression node) {
@@ -364,6 +375,7 @@ public class TreeUtil {
       return delegate;
     }
 
+    @Override
     public Statement get(int idx) {
       if (delegate != null) {
         return delegate.get(idx);
@@ -374,6 +386,7 @@ public class TreeUtil {
       return lonelyStatement;
     }
 
+    @Override
     public int size() {
       if (delegate != null) {
         return delegate.size();
@@ -381,6 +394,7 @@ public class TreeUtil {
       return 1;
     }
 
+    @Override
     public void add(int idx, Statement stmt) {
       getDelegate().add(idx, stmt);
     }
