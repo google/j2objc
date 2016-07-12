@@ -80,7 +80,7 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
 
   void replaceAll(List<T> other) {
     clear();
-    copyFrom(other);
+    addAll(other);
   }
 
   public void accept(TreeVisitor visitor) {
