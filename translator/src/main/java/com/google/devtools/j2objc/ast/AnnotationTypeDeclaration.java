@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
 
-  AnnotationTypeDeclaration() {}
+  public AnnotationTypeDeclaration() {}
 
   public AnnotationTypeDeclaration(AnnotationTypeDeclaration other) {
     super(other);

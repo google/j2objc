@@ -96,7 +96,7 @@ public abstract class BodyDeclaration extends TreeNode {
     return annotations;
   }
 
-  BodyDeclaration setAnnotations(List<Annotation> newAnnotations) {
+  public BodyDeclaration setAnnotations(List<Annotation> newAnnotations) {
     annotations.replaceAll(newAnnotations);
     return this;
   }

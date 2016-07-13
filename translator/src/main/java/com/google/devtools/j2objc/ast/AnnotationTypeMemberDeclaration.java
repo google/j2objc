@@ -74,22 +74,22 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
     return new AnnotationTypeMemberDeclaration(this);
   }
 
-  AnnotationTypeMemberDeclaration setDefault(Expression newDefault) {
+  public AnnotationTypeMemberDeclaration setDefault(Expression newDefault) {
     defaultValue.set(newDefault);
     return this;
   }
 
-  AnnotationTypeMemberDeclaration setElement(ExecutableElement newElement) {
+  public AnnotationTypeMemberDeclaration setElement(ExecutableElement newElement) {
     element = newElement;
     return this;
   }
 
-  AnnotationTypeMemberDeclaration setName(SimpleName newName) {
+  public AnnotationTypeMemberDeclaration setName(SimpleName newName) {
     name.set(newName);
     return this;
   }
 
-  AnnotationTypeMemberDeclaration setType(Type newType) {
+  public AnnotationTypeMemberDeclaration setType(Type newType) {
     type.set(newType);
     return this;
   }

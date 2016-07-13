@@ -22,7 +22,7 @@ public class AssertStatement extends Statement {
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> message = ChildLink.create(Expression.class, this);
 
-  AssertStatement() {
+  public AssertStatement() {
     super();
   }
 

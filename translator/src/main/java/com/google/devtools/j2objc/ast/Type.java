@@ -71,7 +71,7 @@ public abstract class Type extends TreeNode {
     return typeMirror;
   }
 
-  Type setTypeMirror(TypeMirror newTypeMirror) {
+  public Type setTypeMirror(TypeMirror newTypeMirror) {
     typeMirror = newTypeMirror;
     return this;
   }

@@ -136,7 +136,7 @@ public abstract class TreeNode {
 
   public void validateInner() {}
 
-  TreeNode setPosition(SourcePosition position) {
+  public TreeNode setPosition(SourcePosition position) {
     this.startPosition = position.getStartPosition();
     this.length = position.getLength();
     this.lineNumber = position.getLineNumber();

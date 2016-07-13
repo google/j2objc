@@ -51,7 +51,7 @@ public final class AnonymousClassDeclaration extends TreeNode {
     return element;
   }
 
-  AnonymousClassDeclaration setElement(TypeElement newElement) {
+  public AnonymousClassDeclaration setElement(TypeElement newElement) {
     element = newElement;
     return this;
   }
@@ -60,7 +60,7 @@ public final class AnonymousClassDeclaration extends TreeNode {
     return bodyDeclarations;
   }
 
-  AnonymousClassDeclaration setBodyDeclarations(List<BodyDeclaration> newBodyDeclarations) {
+  public AnonymousClassDeclaration setBodyDeclarations(List<BodyDeclaration> newBodyDeclarations) {
     bodyDeclarations.replaceAll(newBodyDeclarations);
     return this;
   }

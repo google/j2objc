@@ -23,7 +23,7 @@ public class ArrayType extends Type {
   // TODO(kirbs): Add dimensions into pipeline processing for annotations support on dimensions.
   private ChildLink<Type> componentType = ChildLink.create(Type.class, this);
 
-  ArrayType() {}
+  public ArrayType() {}
 
   public ArrayType(ArrayType other) {
     super(other);
@@ -44,7 +44,7 @@ public class ArrayType extends Type {
     return componentType.get();
   }
 
-  ArrayType setComponentType(Type newComponentType) {
+  public ArrayType setComponentType(Type newComponentType) {
     componentType.set(newComponentType);
     return this;
   }

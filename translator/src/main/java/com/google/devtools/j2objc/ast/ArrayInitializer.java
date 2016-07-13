@@ -28,7 +28,7 @@ public class ArrayInitializer extends Expression {
 
   private ChildList<Expression> expressions = ChildList.create(Expression.class, this);
 
-  ArrayInitializer() {}
+  public ArrayInitializer() {}
 
   public ArrayInitializer(ArrayInitializer other) {
     super(other);
@@ -50,7 +50,7 @@ public class ArrayInitializer extends Expression {
     return typeMirror;
   }
 
-  ArrayInitializer setTypeMirror(TypeMirror newTypeMirror) {
+  public ArrayInitializer setTypeMirror(TypeMirror newTypeMirror) {
     typeMirror = newTypeMirror;
     return this;
   }
@@ -59,7 +59,7 @@ public class ArrayInitializer extends Expression {
     return expressions;
   }
 
-  ArrayInitializer setExpressions(List<Expression> newExpressions) {
+  public ArrayInitializer setExpressions(List<Expression> newExpressions) {
     expressions.replaceAll(newExpressions);
     return this;
   }

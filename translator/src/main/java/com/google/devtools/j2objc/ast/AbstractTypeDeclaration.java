@@ -78,7 +78,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     return typeMirror;
   }
 
-  AbstractTypeDeclaration setTypeMirror(DeclaredType newTypeMirror) {
+  public AbstractTypeDeclaration setTypeMirror(DeclaredType newTypeMirror) {
     typeMirror = newTypeMirror;
     return this;
   }
@@ -96,7 +96,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     return bodyDeclarations;
   }
 
-  BodyDeclaration setBodyDeclarations(List<BodyDeclaration> newDeclarations) {
+  public BodyDeclaration setBodyDeclarations(List<BodyDeclaration> newDeclarations) {
     bodyDeclarations.replaceAll(newDeclarations);
     return this;
   }

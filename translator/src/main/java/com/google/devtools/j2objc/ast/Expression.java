@@ -53,7 +53,7 @@ public abstract class Expression extends TreeNode {
     return constantValue;
   }
 
-  Expression setConstantValue(Object value) {
+  public Expression setConstantValue(Object value) {
     constantValue = value;
     return this;
   }

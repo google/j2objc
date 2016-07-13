@@ -34,7 +34,7 @@ public class ArrayCreation extends Expression {
   private final ChildLink<ArrayInitializer> initializer =
       ChildLink.create(ArrayInitializer.class, this);
 
-  ArrayCreation() {}
+  public ArrayCreation() {}
 
   public ArrayCreation(ArrayCreation other) {
     super(other);
@@ -78,7 +78,7 @@ public class ArrayCreation extends Expression {
     return arrayType.get();
   }
 
-  ArrayCreation setType(ArrayType newType) {
+  public ArrayCreation setType(ArrayType newType) {
     arrayType.set(newType);
     return this;
   }
@@ -87,7 +87,7 @@ public class ArrayCreation extends Expression {
     return dimensions;
   }
 
-  ArrayCreation setDimensions(List<Expression> newDimensions) {
+  public ArrayCreation setDimensions(List<Expression> newDimensions) {
     dimensions.replaceAll(newDimensions);
     return this;
   }

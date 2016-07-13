@@ -27,11 +27,11 @@ public class SourcePosition {
    */
   public static final SourcePosition NO_POSITION = new SourcePosition(-1, 0, -1);
 
-  SourcePosition(int startPosition, int length) {
+  public SourcePosition(int startPosition, int length) {
     this(startPosition, length, -1);
   }
 
-  SourcePosition(int startPosition, int length, int lineNumber) {
+  public SourcePosition(int startPosition, int length, int lineNumber) {
     this.startPosition = startPosition;
     this.length = length;
     this.lineNumber = lineNumber;

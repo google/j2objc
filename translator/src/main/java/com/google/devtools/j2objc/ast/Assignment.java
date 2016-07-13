@@ -65,7 +65,7 @@ public final class Assignment extends Expression {
     }
 
     // TODO(tball): remove when javac is front-end.
-    static Operator fromJdtOperatorName(String jdtOperatorName) {
+    public static Operator fromJdtOperatorName(String jdtOperatorName) {
       Operator result = stringLookup.get(jdtOperatorName);
       assert result != null;
       return result;
@@ -76,7 +76,7 @@ public final class Assignment extends Expression {
   private ChildLink<Expression> leftHandSide = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> rightHandSide = ChildLink.create(Expression.class, this);
 
-  Assignment() {}
+  public Assignment() {}
 
   public Assignment(Assignment other) {
     super(other);
@@ -106,7 +106,7 @@ public final class Assignment extends Expression {
     return operator;
   }
 
-  Assignment setOperator(Operator newOperator) {
+  public Assignment setOperator(Operator newOperator) {
     operator = newOperator;
     return this;
   }
@@ -115,7 +115,7 @@ public final class Assignment extends Expression {
     return leftHandSide.get();
   }
 
-  Assignment setLeftHandSide(Expression newLeftHandSide) {
+  public Assignment setLeftHandSide(Expression newLeftHandSide) {
     leftHandSide.set(newLeftHandSide);
     return this;
   }

@@ -25,7 +25,7 @@ public class ArrayAccess extends Expression {
   private final ChildLink<Expression> array = ChildLink.create(Expression.class, this);
   private final ChildLink<Expression> index = ChildLink.create(Expression.class, this);
 
-  ArrayAccess() {}
+  public ArrayAccess() {}
 
   public ArrayAccess(ArrayAccess other) {
     super(other);
@@ -49,7 +49,7 @@ public class ArrayAccess extends Expression {
     return array.get();
   }
 
-  ArrayAccess setArray(Expression newArray) {
+  public ArrayAccess setArray(Expression newArray) {
     array.set(newArray);
     return this;
   }
