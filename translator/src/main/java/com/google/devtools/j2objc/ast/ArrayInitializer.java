@@ -15,12 +15,9 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
-
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Array initializer node type.
@@ -31,14 +28,7 @@ public class ArrayInitializer extends Expression {
 
   private ChildList<Expression> expressions = ChildList.create(Expression.class, this);
 
-  public ArrayInitializer(org.eclipse.jdt.core.dom.ArrayInitializer jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    for (Object expression : jdtNode.expressions()) {
-      expressions.add((Expression) TreeConverter.convert(expression));
-    }
-  }
+  ArrayInitializer() {}
 
   public ArrayInitializer(ArrayInitializer other) {
     super(other);
@@ -60,8 +50,18 @@ public class ArrayInitializer extends Expression {
     return typeMirror;
   }
 
+  ArrayInitializer setTypeMirror(TypeMirror newTypeMirror) {
+    typeMirror = newTypeMirror;
+    return this;
+  }
+
   public List<Expression> getExpressions() {
     return expressions;
+  }
+
+  ArrayInitializer setExpressions(List<Expression> newExpressions) {
+    expressions.replaceAll(newExpressions);
+    return this;
   }
 
   @Override

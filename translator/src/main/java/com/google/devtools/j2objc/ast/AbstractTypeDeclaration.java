@@ -16,26 +16,28 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.javac.BindingConverter;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
+import javax.lang.model.type.DeclaredType;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Superclass node for classes, enums and annotation declarations.
  */
 public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
-  private ITypeBinding typeBinding = null;
+  private DeclaredType typeMirror = null;
   protected final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   protected final ChildList<BodyDeclaration> bodyDeclarations =
       ChildList.create(BodyDeclaration.class, this);
   protected final ChildList<Statement> classInitStatements =
       ChildList.create(Statement.class, this);
 
-  public AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {
+  AbstractTypeDeclaration() {}
+
+  // TODO(tball): remove when all subclasses are converted.
+  AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {
     super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
+    typeMirror = (DeclaredType) BindingConverter.getType(jdtNode.resolveBinding());
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object bodyDecl : jdtNode.bodyDeclarations()) {
       bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
@@ -44,45 +46,74 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public AbstractTypeDeclaration(AbstractTypeDeclaration other) {
     super(other);
-    typeBinding = other.getTypeBinding();
+    typeMirror = other.getTypeMirror();
     name.copyFrom(other.getName());
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
   }
 
+  // TODO(tball): remove when all subclasses are converted.
   public AbstractTypeDeclaration(ITypeBinding typeBinding) {
     super(typeBinding);
-    this.typeBinding = typeBinding;
+    this.typeMirror = (DeclaredType) BindingConverter.getType(typeBinding);
     name.set(new SimpleName(typeBinding));
   }
 
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
+  public AbstractTypeDeclaration(DeclaredType typeMirror) {
+    super();
+    this.typeMirror = typeMirror;
+    name.set(new SimpleName(typeMirror.asElement()));
   }
 
+  // TODO(tball): remove when all subclasses are converted.
+  public ITypeBinding getTypeBinding() {
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeMirror);
+  }
+
+  // TODO(tball): remove when all subclasses are converted.
   public void setTypeBinding(ITypeBinding typeBinding) {
-    this.typeBinding = typeBinding;
+    this.typeMirror = (DeclaredType) BindingConverter.getType(typeBinding);
+  }
+
+  public DeclaredType getTypeMirror() {
+    return typeMirror;
+  }
+
+  AbstractTypeDeclaration setTypeMirror(DeclaredType newTypeMirror) {
+    typeMirror = newTypeMirror;
+    return this;
   }
 
   public SimpleName getName() {
     return name.get();
   }
 
-  public void setName(SimpleName newName) {
+  public AbstractTypeDeclaration setName(SimpleName newName) {
     name.set(newName);
+    return this;
   }
 
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
   }
 
+  BodyDeclaration setBodyDeclarations(List<BodyDeclaration> newDeclarations) {
+    bodyDeclarations.replaceAll(newDeclarations);
+    return this;
+  }
+
   public List<Statement> getClassInitStatements() {
     return classInitStatements;
+  }
+
+  AbstractTypeDeclaration setClassInitStatements(List<Statement> statements) {
+    classInitStatements.replaceAll(statements);
+    return this;
   }
 
   @Override
   public void validateInner() {
     super.validateInner();
-    Preconditions.checkNotNull(typeBinding);
+    Preconditions.checkNotNull(typeMirror);
     Preconditions.checkNotNull(name.get());
   }
 }

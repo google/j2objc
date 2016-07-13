@@ -14,12 +14,14 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.ASTNode;
-
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import org.eclipse.jdt.core.dom.ASTNode;
 
 /**
  * Converts a Java AST from the JDT data structure to our J2ObjC data structure.
@@ -61,26 +63,26 @@ public class TreeConverter {
   public static TreeNode convertInner(ASTNode jdtNode) {
     switch (jdtNode.getNodeType()) {
       case ASTNode.ANNOTATION_TYPE_DECLARATION:
-        return new AnnotationTypeDeclaration(
+        return convertAnnotationTypeDeclaration(
             (org.eclipse.jdt.core.dom.AnnotationTypeDeclaration) jdtNode);
       case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
-        return new AnnotationTypeMemberDeclaration(
+        return convertAnnotationTypeMemberDeclaration(
             (org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration) jdtNode);
       case ASTNode.ANONYMOUS_CLASS_DECLARATION:
-        return new AnonymousClassDeclaration(
+        return convertAnonymousClassDeclaration(
             (org.eclipse.jdt.core.dom.AnonymousClassDeclaration) jdtNode);
       case ASTNode.ARRAY_ACCESS:
         return convertArrayAccess((org.eclipse.jdt.core.dom.ArrayAccess) jdtNode);
       case ASTNode.ARRAY_CREATION:
         return convertArrayCreation((org.eclipse.jdt.core.dom.ArrayCreation) jdtNode);
       case ASTNode.ARRAY_INITIALIZER:
-        return new ArrayInitializer((org.eclipse.jdt.core.dom.ArrayInitializer) jdtNode);
+        return convertArrayInitializer((org.eclipse.jdt.core.dom.ArrayInitializer) jdtNode);
       case ASTNode.ARRAY_TYPE:
-        return new ArrayType((org.eclipse.jdt.core.dom.ArrayType) jdtNode);
+        return convertArrayType((org.eclipse.jdt.core.dom.ArrayType) jdtNode);
       case ASTNode.ASSERT_STATEMENT:
         return convertAssertStatement((org.eclipse.jdt.core.dom.AssertStatement) jdtNode);
       case ASTNode.ASSIGNMENT:
-        return new Assignment((org.eclipse.jdt.core.dom.Assignment) jdtNode);
+        return convertAssignment((org.eclipse.jdt.core.dom.Assignment) jdtNode);
       case ASTNode.BLOCK:
         return new Block((org.eclipse.jdt.core.dom.Block) jdtNode);
       case ASTNode.BLOCK_COMMENT:
@@ -256,6 +258,47 @@ public class TreeConverter {
     }
   }
 
+  private static TreeNode convertAbstractTypeDeclaration(
+      org.eclipse.jdt.core.dom.AbstractTypeDeclaration node, AbstractTypeDeclaration newNode) {
+    convertBodyDeclaration(node, newNode);
+    List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
+    for (Object bodyDecl : node.bodyDeclarations()) {
+      bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
+    }
+    return newNode
+        .setName((SimpleName) TreeConverter.convert(node.getName()))
+        .setTypeMirror((DeclaredType) BindingConverter.getType(node.resolveBinding()))
+        .setBodyDeclarations(bodyDeclarations);
+  }
+
+  private static TreeNode convertAnnotationTypeDeclaration(
+      org.eclipse.jdt.core.dom.AnnotationTypeDeclaration node) {
+    return convertAbstractTypeDeclaration(node, new AnnotationTypeDeclaration());
+  }
+
+  private static TreeNode convertAnnotationTypeMemberDeclaration(
+      org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration node) {
+    AnnotationTypeMemberDeclaration newNode = new AnnotationTypeMemberDeclaration();
+    convertBodyDeclaration(node, newNode);
+    return newNode
+        .setElement((ExecutableElement) BindingConverter.getElement(node.resolveBinding()))
+        .setName((SimpleName) TreeConverter.convert(node.getName()))
+        .setType((Type) TreeConverter.convert(node.getType()))
+        .setDefault((Expression) TreeConverter.convert(node.getDefault()));
+  }
+
+  private static TreeNode convertAnonymousClassDeclaration(
+      org.eclipse.jdt.core.dom.AnonymousClassDeclaration node) {
+    List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
+    for (Object bodyDecl : node.bodyDeclarations()) {
+      bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
+    }
+    return new AnonymousClassDeclaration()
+        .setElement((TypeElement) BindingConverter.getElement(node.resolveBinding()))
+        .setBodyDeclarations(bodyDeclarations)
+        .setPosition(getPosition(node));
+    }
+
   private static TreeNode convertArrayAccess(org.eclipse.jdt.core.dom.ArrayAccess node) {
     return new ArrayAccess()
         .setArray((Expression) convert(node.getArray()))
@@ -264,22 +307,83 @@ public class TreeConverter {
   }
 
   private static TreeNode convertArrayCreation(org.eclipse.jdt.core.dom.ArrayCreation node) {
+    ArrayCreation newNode = new ArrayCreation();
+    convertExpression(node, newNode);
     List<Expression> dimensions = new ArrayList<>();
     for (Object dimension : node.dimensions()) {
       dimensions.add((Expression) TreeConverter.convert(dimension));
     }
-    return new ArrayCreation()
+    return newNode
         .setType((ArrayType) convert(node.getType()))
         .setDimensions(dimensions)
-        .setInitializer((ArrayInitializer) convert(node.getInitializer()))
-        .setConstantValue(node.resolveConstantExpressionValue())
-        .setPosition(getPosition(node));
+        .setInitializer((ArrayInitializer) convert(node.getInitializer()));
+  }
+
+  private static TreeNode convertArrayInitializer(org.eclipse.jdt.core.dom.ArrayInitializer node) {
+    List<Expression> expressions = new ArrayList<>();
+    for (Object expression : node.expressions()) {
+      expressions.add((Expression) TreeConverter.convert(expression));
+    }
+    ArrayInitializer newNode = new ArrayInitializer();
+    convertExpression(node, newNode);
+    return newNode
+        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
+        .setExpressions(expressions);
+  }
+
+  private static TreeNode convertArrayType(org.eclipse.jdt.core.dom.ArrayType node) {
+    ArrayType newNode = new ArrayType();
+    convertType(node, newNode);
+
+    // This could also be implemented as an element type and dimensions for JLS8, but we mainly deal
+    // with ArrayTypes through the ArrayType(ITypeBinding) initializer, in the ArrayRewriter, for
+    // which we use ITypeBinding's componentType anyway.
+    Type componentType = (Type) Type.newType(node.resolveBinding().getComponentType());
+    return newNode.setComponentType(componentType);
   }
 
   private static TreeNode convertAssertStatement(org.eclipse.jdt.core.dom.AssertStatement node) {
     return new AssertStatement()
         .setExpression((Expression) convert(node.getExpression()))
         .setMessage((Expression) convert(node.getMessage()))
+        .setPosition(getPosition(node));
+  }
+
+  private static TreeNode convertAssignment(org.eclipse.jdt.core.dom.Assignment node) {
+    Assignment newNode = new Assignment();
+    convertExpression(node, newNode);
+    return newNode
+        .setOperator(Assignment.Operator.fromJdtOperatorName(node.getOperator().toString()))
+        .setLeftHandSide((Expression) TreeConverter.convert(node.getLeftHandSide()))
+        .setRightHandSide((Expression) TreeConverter.convert(node.getRightHandSide()));
+  }
+
+  private static TreeNode convertBodyDeclaration(
+      org.eclipse.jdt.core.dom.BodyDeclaration node, BodyDeclaration newNode) {
+    List<Annotation> annotations = new ArrayList<>();
+    for (Object modifier : node.modifiers()) {
+      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
+        annotations.add((Annotation) TreeConverter.convert(modifier));
+      }
+    }
+    return newNode
+        .setModifiers(node.getModifiers())
+        .setAnnotations(annotations)
+        .setJavadoc((Javadoc) TreeConverter.convert(node.getJavadoc()))
+        .setPosition(getPosition(node));
+  }
+
+  private static TreeNode convertExpression(
+      org.eclipse.jdt.core.dom.Expression node, Expression newNode) {
+    return newNode
+        .setConstantValue(node.resolveConstantExpressionValue())
+        .setPosition(getPosition(node));
+  }
+
+  private static TreeNode convertType(
+      org.eclipse.jdt.core.dom.Type node, Type newNode) {
+    return newNode
+        .setTypeMirror(BindingConverter.getType(node.resolveBinding()))
         .setPosition(getPosition(node));
   }
 }

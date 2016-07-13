@@ -16,12 +16,9 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
-
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for array creation.
@@ -37,9 +34,7 @@ public class ArrayCreation extends Expression {
   private final ChildLink<ArrayInitializer> initializer =
       ChildLink.create(ArrayInitializer.class, this);
 
-  ArrayCreation() {
-    super();
-  }
+  ArrayCreation() {}
 
   public ArrayCreation(ArrayCreation other) {
     super(other);

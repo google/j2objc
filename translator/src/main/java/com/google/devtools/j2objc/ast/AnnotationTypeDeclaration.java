@@ -19,9 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
 
-  public AnnotationTypeDeclaration(org.eclipse.jdt.core.dom.AnnotationTypeDeclaration jdtNode) {
-    super(jdtNode);
-  }
+  AnnotationTypeDeclaration() {}
 
   public AnnotationTypeDeclaration(AnnotationTypeDeclaration other) {
     super(other);

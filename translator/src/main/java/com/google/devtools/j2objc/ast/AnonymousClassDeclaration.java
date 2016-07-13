@@ -15,32 +15,25 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
+import javax.lang.model.element.TypeElement;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Anonymous class declaration node. Must be the child of a
  * ClassInstanceCreation node.
  */
-public class AnonymousClassDeclaration extends TreeNode {
+public final class AnonymousClassDeclaration extends TreeNode {
 
-  private ITypeBinding typeBinding = null;
+  private TypeElement element = null;
   private final ChildList<BodyDeclaration> bodyDeclarations =
       ChildList.create(BodyDeclaration.class, this);
 
-  public AnonymousClassDeclaration(org.eclipse.jdt.core.dom.AnonymousClassDeclaration jdtNode) {
-    super(jdtNode);
-    typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
-    for (Object bodyDecl : jdtNode.bodyDeclarations()) {
-      bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
-    }
-  }
+  public AnonymousClassDeclaration() {}
 
   public AnonymousClassDeclaration(AnonymousClassDeclaration other) {
     super(other);
-    typeBinding = other.getTypeBinding();
+    element = other.getElement();
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
   }
 
@@ -49,16 +42,27 @@ public class AnonymousClassDeclaration extends TreeNode {
     return Kind.ANONYMOUS_CLASS_DECLARATION;
   }
 
+  // TODO(tball): remove when all translators are converted.
   public ITypeBinding getTypeBinding() {
-    return typeBinding;
+    return (ITypeBinding) BindingConverter.unwrapElement(element);
   }
 
-  public void setTypeBinding(ITypeBinding newTypeBinding) {
-    typeBinding = newTypeBinding;
+  public TypeElement getElement() {
+    return element;
+  }
+
+  AnonymousClassDeclaration setElement(TypeElement newElement) {
+    element = newElement;
+    return this;
   }
 
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
+  }
+
+  AnonymousClassDeclaration setBodyDeclarations(List<BodyDeclaration> newBodyDeclarations) {
+    bodyDeclarations.replaceAll(newBodyDeclarations);
+    return this;
   }
 
   @Override

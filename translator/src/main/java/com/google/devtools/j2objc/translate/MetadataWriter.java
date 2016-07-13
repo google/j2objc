@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -180,7 +181,9 @@ public class MetadataWriter extends TreeVisitor {
         // Add property accessor and static default methods.
         for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
           String name = decl.getName().getIdentifier();
-          String returnType = getTypeName(decl.getMethodBinding().getReturnType());
+          IMethodBinding memberBinding = (IMethodBinding)
+              BindingConverter.unwrapElement(decl.getElement());
+          String returnType = getTypeName(memberBinding.getReturnType());
           String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1, -1, -1, -1 },\n",
               cStr(name), cStr(returnType),
               java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);

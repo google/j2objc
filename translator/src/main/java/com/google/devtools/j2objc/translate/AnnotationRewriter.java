@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -76,7 +77,8 @@ public class AnnotationRewriter extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     Map<IMethodBinding, IVariableBinding> fieldBindings = new HashMap<>();
     for (AnnotationTypeMemberDeclaration member : members) {
-      IMethodBinding memberBinding = member.getMethodBinding();
+      IMethodBinding memberBinding = (IMethodBinding)
+          BindingConverter.unwrapElement(member.getElement());
       ITypeBinding memberType = memberBinding.getReturnType();
       String propName = NameTable.getAnnotationPropertyName(memberBinding);
       GeneratedVariableBinding field = new GeneratedVariableBinding(
@@ -97,7 +99,8 @@ public class AnnotationRewriter extends TreeVisitor {
     StringBuilder propertyDecls = new StringBuilder();
     StringBuilder propertyImpls = new StringBuilder();
     for (AnnotationTypeMemberDeclaration member : members) {
-      IMethodBinding memberBinding = member.getMethodBinding();
+      IMethodBinding memberBinding = (IMethodBinding)
+          BindingConverter.unwrapElement(member.getElement());
       ITypeBinding memberType = memberBinding.getReturnType();
       String propName = NameTable.getAnnotationPropertyName(memberBinding);
       String memberTypeStr = nameTable.getObjCType(memberType);
@@ -125,7 +128,8 @@ public class AnnotationRewriter extends TreeVisitor {
         continue;
       }
 
-      IMethodBinding memberBinding = member.getMethodBinding();
+      IMethodBinding memberBinding = (IMethodBinding)
+          BindingConverter.unwrapElement(member.getElement());
       ITypeBinding memberType = memberBinding.getReturnType();
       String propName = NameTable.getAnnotationPropertyName(memberBinding);
 

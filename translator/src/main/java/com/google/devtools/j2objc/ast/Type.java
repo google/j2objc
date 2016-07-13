@@ -16,19 +16,20 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.javac.BindingConverter;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Base class for all type nodes.
  */
 public abstract class Type extends TreeNode {
 
-  protected final TypeMirror typeMirror;
+  protected TypeMirror typeMirror;
 
+  Type() {}
+
+  // TODO(tball): remove when all subclasses are converted.
   public Type(org.eclipse.jdt.core.dom.Type jdtNode) {
     super(jdtNode);
     ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
@@ -68,6 +69,11 @@ public abstract class Type extends TreeNode {
 
   public TypeMirror getTypeMirror() {
     return typeMirror;
+  }
+
+  Type setTypeMirror(TypeMirror newTypeMirror) {
+    typeMirror = newTypeMirror;
+    return this;
   }
 
   public boolean isPrimitiveType() {
