@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.gen.JavadocGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
-import com.google.devtools.j2objc.javac.TypeUtil;
+import com.google.devtools.j2objc.jdt.TypeUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 

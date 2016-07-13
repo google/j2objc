@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.devtools.j2objc.javac.BindingConverter;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;

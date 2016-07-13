@@ -184,37 +184,37 @@ JAVA_SOURCES = \
 	gen/TypeGenerator.java \
 	gen/TypeImplementationGenerator.java \
 	gen/TypePrivateDeclarationGenerator.java \
-	javac/BindingConverter.java \
-	javac/JdtAnnotationBinding.java \
-	javac/JdtAnnotationMirror.java \
-	javac/JdtAnnotationValue.java \
-	javac/JdtArrayType.java \
-	javac/JdtBinding.java \
-	javac/JdtDeclaredType.java \
-	javac/JdtElement.java \
-	javac/JdtExecutableElement.java \
-	javac/JdtExecutableType.java \
-	javac/JdtExtendedModifier.java \
-	javac/JdtIntersectionType.java \
-	javac/JdtMemberValuePairBinding.java \
-	javac/JdtMethodBinding.java \
-	javac/JdtNoType.java \
-	javac/JdtNativeType.java \
-	javac/JdtNullType.java \
-	javac/JdtPackageBinding.java \
-	javac/JdtPackageElement.java \
-	javac/JdtPrimitiveType.java \
-	javac/JdtTypeBinding.java \
-	javac/JdtTypeElement.java \
-	javac/JdtTypeMirror.java \
-	javac/JdtTypeParameterElement.java \
-	javac/JdtTypes.java \
-	javac/JdtTypeVariable.java \
-	javac/JdtVariableBinding.java \
-	javac/JdtVariableElement.java \
-	javac/JdtWildcardType.java \
-	javac/StringName.java \
-	javac/TypeUtil.java \
+	jdt/BindingConverter.java \
+	jdt/JdtAnnotationBinding.java \
+	jdt/JdtAnnotationMirror.java \
+	jdt/JdtAnnotationValue.java \
+	jdt/JdtArrayType.java \
+	jdt/JdtBinding.java \
+	jdt/JdtDeclaredType.java \
+	jdt/JdtElement.java \
+	jdt/JdtExecutableElement.java \
+	jdt/JdtExecutableType.java \
+	jdt/JdtExtendedModifier.java \
+	jdt/JdtIntersectionType.java \
+	jdt/JdtMemberValuePairBinding.java \
+	jdt/JdtMethodBinding.java \
+	jdt/JdtNoType.java \
+	jdt/JdtNativeType.java \
+	jdt/JdtNullType.java \
+	jdt/JdtPackageBinding.java \
+	jdt/JdtPackageElement.java \
+	jdt/JdtPrimitiveType.java \
+	jdt/JdtTypeBinding.java \
+	jdt/JdtTypeElement.java \
+	jdt/JdtTypeMirror.java \
+	jdt/JdtTypeParameterElement.java \
+	jdt/JdtTypes.java \
+	jdt/JdtTypeVariable.java \
+	jdt/JdtVariableBinding.java \
+	jdt/JdtVariableElement.java \
+	jdt/JdtWildcardType.java \
+	jdt/StringName.java \
+	jdt/TypeUtil.java \
 	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \

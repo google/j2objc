@@ -16,8 +16,7 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.javac.JdtPackageBinding;
-
+import com.google.devtools.j2objc.jdt.JdtPackageBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 
 /**

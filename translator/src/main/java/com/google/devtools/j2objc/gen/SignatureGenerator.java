@@ -14,8 +14,8 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.devtools.j2objc.javac.BindingConverter;
-import com.google.devtools.j2objc.javac.JdtElements;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtElements;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;

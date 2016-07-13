@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.javac.BindingConverter;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.type.DeclaredType;
 import org.eclipse.jdt.core.dom.ITypeBinding;

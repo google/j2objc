@@ -17,10 +17,10 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.javac.BindingConverter;
-import com.google.devtools.j2objc.javac.JdtMethodBinding;
-import com.google.devtools.j2objc.javac.JdtTypeBinding;
-import com.google.devtools.j2objc.javac.JdtVariableBinding;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtMethodBinding;
+import com.google.devtools.j2objc.jdt.JdtTypeBinding;
+import com.google.devtools.j2objc.jdt.JdtVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;

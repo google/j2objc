@@ -18,10 +18,10 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.javac.BindingConverter;
-import com.google.devtools.j2objc.javac.JdtAnnotationBinding;
-import com.google.devtools.j2objc.javac.JdtMethodBinding;
-import com.google.devtools.j2objc.javac.JdtTypeBinding;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtAnnotationBinding;
+import com.google.devtools.j2objc.jdt.JdtMethodBinding;
+import com.google.devtools.j2objc.jdt.JdtTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 

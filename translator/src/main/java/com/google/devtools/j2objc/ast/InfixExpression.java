@@ -16,8 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.javac.BindingConverter;
-
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;

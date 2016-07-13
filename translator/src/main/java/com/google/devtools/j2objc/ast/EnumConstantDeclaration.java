@@ -14,11 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.javac.BindingConverter;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 
 /**
