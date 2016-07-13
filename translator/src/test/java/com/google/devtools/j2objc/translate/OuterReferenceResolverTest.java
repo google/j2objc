@@ -27,13 +27,13 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.io.IOException;
 import java.util.List;
+import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Unit tests for {@link OuterReferenceResolver}.
@@ -64,10 +64,10 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     PostfixExpression increment =
         (PostfixExpression) nodesByType.get(Kind.POSTFIX_EXPRESSION).get(0);
-    List<IVariableBinding> path = outerResolver.getPath(increment.getOperand());
+    List<VariableElement> path = outerResolver.getPath(increment.getOperand());
     assertNotNull(path);
     assertEquals(2, path.size());
-    assertEquals("Test", path.get(0).getType().getName());
+    assertEquals("Test", path.get(0).asType().toString());
   }
 
   public void testInheritedOuterMethod() {
@@ -84,17 +84,18 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     // B will need an outer reference to Test so it can initialize its
     // superclass A.
-    List<IVariableBinding> bPath = outerResolver.getPath(bNode);
+    List<VariableElement> bPath = outerResolver.getPath(bNode);
     assertNotNull(bPath);
     assertEquals(1, bPath.size());
-    assertEquals(OuterReferenceResolver.OUTER_PARAMETER, bPath.get(0));
+    assertEquals(OuterReferenceResolver.OUTER_PARAMETER,
+        BindingConverter.unwrapElement(bPath.get(0)));
 
     // foo() call will need to get to B's scope to call the inherited method.
     MethodInvocation fooCall = (MethodInvocation) nodesByType.get(Kind.METHOD_INVOCATION).get(0);
-    List<IVariableBinding> fooPath = outerResolver.getPath(fooCall);
+    List<VariableElement> fooPath = outerResolver.getPath(fooCall);
     assertNotNull(fooPath);
     assertEquals(1, fooPath.size());
-    assertEquals("B", fooPath.get(0).getType().getName());
+    assertEquals("B", fooPath.get(0).asType().toString());
   }
 
   public void testCapturedLocalVariable() {
@@ -111,16 +112,16 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("val$i", innerFields.get(0).getName());
     ClassInstanceCreation creationNode =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(0);
-    List<List<IVariableBinding>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
+    List<List<VariableElement>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
     assertEquals(1, captureArgPaths.size());
     assertEquals(1, captureArgPaths.get(0).size());
-    assertEquals("i", captureArgPaths.get(0).get(0).getName());
+    assertEquals("i", captureArgPaths.get(0).get(0).getSimpleName().toString());
 
     InfixExpression addition = (InfixExpression) nodesByType.get(Kind.INFIX_EXPRESSION).get(0);
-    List<IVariableBinding> iPath = outerResolver.getPath(addition.getOperands().get(0));
+    List<VariableElement> iPath = outerResolver.getPath(addition.getOperands().get(0));
     assertNotNull(iPath);
     assertEquals(1, iPath.size());
-    assertEquals("val$i", iPath.get(0).getName());
+    assertEquals("val$i", iPath.get(0).getSimpleName().toString());
   }
 
   public void testCapturedWeakLocalVariable() {
@@ -161,10 +162,10 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("val$o", innerFields.get(0).getName());
     ClassInstanceCreation creationNode =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(1);
-    List<List<IVariableBinding>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
+    List<List<VariableElement>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
     assertEquals(1, captureArgPaths.size());
     assertEquals(1, captureArgPaths.get(0).size());
-    assertEquals("val$o", captureArgPaths.get(0).get(0).getName());
+    assertEquals("val$o", captureArgPaths.get(0).get(0).getSimpleName().toString());
   }
 
   private void resolveSource(String name, String source) {

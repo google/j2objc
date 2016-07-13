@@ -48,18 +48,18 @@ import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
+import java.util.List;
+import java.util.Set;
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Converts methods that don't need dynamic dispatch to C functions. This optimization
@@ -439,8 +439,8 @@ public class Functionizer extends TreeVisitor {
 
     @Override
     public void endVisit(SimpleName node) {
-      IVariableBinding var = TreeUtil.getVariableBinding(node);
-      if (var != null && var.isField()) {
+      VariableElement var = TreeUtil.getVariableElement(node);
+      if (var != null && ElementUtil.isField(var)) {
         // Convert name to self->name.
         node.replaceWith(new QualifiedName(var, new SimpleName(selfParam)));
       }

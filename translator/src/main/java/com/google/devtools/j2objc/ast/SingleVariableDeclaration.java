@@ -14,9 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.util.List;
+import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node type for a declaration of a single variable. Used in parameter lists
@@ -49,6 +49,11 @@ public class SingleVariableDeclaration extends VariableDeclaration {
   public SingleVariableDeclaration(IVariableBinding variableBinding) {
     super(variableBinding, null);
     type.set(Type.newType(variableBinding.getType()));
+  }
+
+  public SingleVariableDeclaration(VariableElement variableElement) {
+    super(variableElement, null);
+    type.set(Type.newType(variableElement.asType()));
   }
 
   @Override

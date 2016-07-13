@@ -15,15 +15,11 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
-import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Base node class for a name.
@@ -43,22 +39,18 @@ public abstract class Name extends Expression {
     element = other.getElement();
   }
 
-  public Name(IBinding binding) {
-    this.element = BindingConverter.getElement(binding);
-  }
-
   public Name(Element element) {
     this.element = element;
   }
 
-  public static Name newName(Name qualifier, IBinding binding) {
-    return qualifier == null ? new SimpleName(binding) : new QualifiedName(binding, qualifier);
+  public static Name newName(Name qualifier, Element element) {
+    return qualifier == null ? new SimpleName(element) : new QualifiedName(element, qualifier);
   }
 
-  public static Name newName(List<? extends IBinding> path) {
+  public static Name newName(List<? extends Element> path) {
     Name name = null;
-    for (IBinding binding : path) {
-      name = newName(name, binding);
+    for (Element element : path) {
+      name = newName(name, element);
     }
     return name;
   }
@@ -71,7 +63,7 @@ public abstract class Name extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return BindingUtil.toTypeBinding(BindingConverter.unwrapElement(element));
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(element.asType());
   }
 
   @Override

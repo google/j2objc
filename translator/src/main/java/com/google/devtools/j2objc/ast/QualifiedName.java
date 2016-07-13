@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IBinding;
+import javax.lang.model.element.Element;
 
 /**
  * Node for a qualified name. Defined recursively as a simple name preceded by a name.
@@ -36,10 +36,10 @@ public class QualifiedName extends Name {
     name.copyFrom(other.getName());
   }
 
-  public QualifiedName(IBinding binding, Name qualifier) {
-    super(binding);
+  public QualifiedName(Element element, Name qualifier) {
+    super(element);
     this.qualifier.set(qualifier);
-    name.set(new SimpleName(binding));
+    name.set(new SimpleName(element));
   }
 
   @Override
@@ -60,6 +60,7 @@ public class QualifiedName extends Name {
     return true;
   }
 
+  @Override
   public String getFullyQualifiedName() {
     return qualifier.get().getFullyQualifiedName() + "." + name.get().getIdentifier();
   }

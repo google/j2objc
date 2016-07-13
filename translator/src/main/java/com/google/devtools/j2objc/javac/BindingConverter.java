@@ -266,9 +266,6 @@ public final class BindingConverter {
   }
 
   public static JdtTypeMirror getTypeMirror(IBinding binding) {
-    if (binding == null) {
-      return null;
-    }
     JdtBinding wrappedBinding = wrapBinding(binding);
     return typeCache.get(wrappedBinding);
   }

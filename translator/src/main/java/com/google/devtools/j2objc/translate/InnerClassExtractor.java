@@ -38,19 +38,19 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.WeakOuter;
-
+import java.util.ArrayList;
+import java.util.List;
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Adds support for inner and anonymous classes, and extracts them to be
@@ -254,10 +254,10 @@ public class InnerClassExtractor extends TreeVisitor {
         new GeneratedMethodBinding(superCall.getMethodBinding().getMethodDeclaration());
     superCall.setMethodBinding(superCallBinding);
 
-    List<IVariableBinding> path = outerResolver.getPath(typeNode);
+    List<VariableElement> path = outerResolver.getPath(typeNode);
     assert path != null && path.size() > 0;
     path = Lists.newArrayList(path);
-    path.set(0, outerParamBinding);
+    path.set(0, (VariableElement) BindingConverter.getElement(outerParamBinding));
     Name superOuterArg = Name.newName(path);
 
     superCall.getArguments().add(0, superOuterArg);

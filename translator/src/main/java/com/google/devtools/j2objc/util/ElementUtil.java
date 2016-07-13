@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.javac.BindingConverter;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -21,6 +22,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Utility methods for working with elements.
@@ -193,5 +195,22 @@ public final class ElementUtil {
     return kind == ElementKind.FIELD || kind == ElementKind.LOCAL_VARIABLE
         || kind == ElementKind.PARAMETER || kind == ElementKind.EXCEPTION_PARAMETER
         || kind == ElementKind.RESOURCE_VARIABLE;
+  }
+
+  public static boolean isField(Element element) {
+    ElementKind kind = element.getKind();
+    return kind == ElementKind.FIELD || kind == ElementKind.ENUM_CONSTANT;
+  }
+
+  public static boolean isWeakReference(VariableElement varElement) {
+    IVariableBinding var = (IVariableBinding) BindingConverter.unwrapElement(varElement);
+    if (var.getName().startsWith("this$")
+        && BindingUtil.isWeakOuterAnonymousClass(var.getDeclaringClass())) {
+      return true;
+    }
+    return BindingUtil.hasNamedAnnotation(var, "Weak")
+        || BindingUtil.hasWeakPropertyAttribute(var)
+        || (var.getName().startsWith("this$")
+        && BindingUtil.hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
   }
 }

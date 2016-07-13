@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.javac.BindingConverter;
-
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -51,8 +51,19 @@ public abstract class VariableDeclaration extends TreeNode {
     this.initializer.set(initializer);
   }
 
+  public VariableDeclaration(VariableElement variableElement, Expression initializer) {
+    super();
+    this.variableBinding = (IVariableBinding) BindingConverter.unwrapElement(variableElement);
+    name.set(new SimpleName(variableElement));
+    this.initializer.set(initializer);
+  }
+
   public IVariableBinding getVariableBinding() {
     return variableBinding;
+  }
+
+  public VariableElement getVariableElement() {
+    return BindingConverter.getVariableElement(variableBinding);
   }
 
   public void setVariableBinding(IVariableBinding newVariableBinding) {

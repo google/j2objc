@@ -619,11 +619,11 @@ public final class BindingUtil {
     }
     return hasNamedAnnotation(var, "Weak")
         || hasWeakPropertyAttribute(var)
-        || var.getName().startsWith("this$")
-        && hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter");
+        || (var.getName().startsWith("this$")
+        && hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
   }
 
-  private static boolean hasWeakPropertyAttribute(IVariableBinding var) {
+  static boolean hasWeakPropertyAttribute(IVariableBinding var) {
     IAnnotationBinding propertyAnnotation = getAnnotation(var, Property.class);
     if (propertyAnnotation == null) {
       return false;

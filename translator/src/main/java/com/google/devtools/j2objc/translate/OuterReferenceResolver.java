@@ -37,15 +37,10 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.javac.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +48,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Visits a compilation unit and creates variable bindings for outer references
@@ -76,8 +76,8 @@ public class OuterReferenceResolver extends TreeVisitor {
   private Map<ITypeBinding, IVariableBinding> outerVars = new HashMap<>();
   private Set<ITypeBinding> usesOuterParam = new HashSet<>();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
-  private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = new HashMap<>();
-  private Map<TreeNode.Key, List<List<IVariableBinding>>> captureArgs = new HashMap<>();
+  private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
+  private Map<TreeNode.Key, List<List<VariableElement>>> captureArgs = new HashMap<>();
   private ArrayList<Scope> scopeStack = new ArrayList<>();
   private Map<ITypeBinding, VisitingState> visitingStates = new HashMap<>();
 
@@ -108,13 +108,13 @@ public class OuterReferenceResolver extends TreeVisitor {
     return innerFields;
   }
 
-  public List<IVariableBinding> getPath(TreeNode node) {
+  public List<VariableElement> getPath(TreeNode node) {
     return outerPaths.get(node.getKey());
   }
 
-  public List<List<IVariableBinding>> getCaptureArgPaths(TreeNode node) {
+  public List<List<VariableElement>> getCaptureArgPaths(TreeNode node) {
     assert node instanceof ClassInstanceCreation || node instanceof LambdaExpression;
-    List<List<IVariableBinding>> result = captureArgs.get(node.getKey());
+    List<List<VariableElement>> result = captureArgs.get(node.getKey());
     if (result != null) {
       return result;
     }
@@ -337,9 +337,17 @@ public class OuterReferenceResolver extends TreeVisitor {
     return path;
   }
 
+  private List<VariableElement> convertPath(List<IVariableBinding> path) {
+    List<VariableElement> newPath = new ArrayList<VariableElement>();
+    for (IVariableBinding b : path) {
+      newPath.add((VariableElement) BindingConverter.getElement(b));
+    }
+    return newPath;
+  }
+
   private void addPath(TreeNode node, List<IVariableBinding> path) {
     if (!path.isEmpty()) {
-      outerPaths.put(node.getKey(), path);
+      outerPaths.put(node.getKey(), convertPath(path));
     }
   }
 
@@ -424,13 +432,13 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
     ITypeBinding type = node.getLambdaTypeBinding();
     List<Capture> capturesForType = captures.get(type);
-    List<List<IVariableBinding>> capturePaths = new ArrayList<>(capturesForType.size());
+    List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
       List<IVariableBinding> path = getPathForLocalVar(capture.var);
       if (path.isEmpty()) {
         path = Collections.singletonList(capture.var);
       }
-      capturePaths.add(path);
+      capturePaths.add(convertPath(path));
     }
     captureArgs.put(node.getKey(), capturePaths);
   }
@@ -515,13 +523,13 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
     if (type.isLocal() && !revisitScope(type)) {
       List<Capture> capturesForType = captures.get(type);
-      List<List<IVariableBinding>> capturePaths = new ArrayList<>(capturesForType.size());
+      List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
       for (Capture capture : capturesForType) {
         List<IVariableBinding> path = getPathForLocalVar(capture.var);
         if (path.isEmpty()) {
           path = Collections.singletonList(capture.var);
         }
-        capturePaths.add(path);
+        capturePaths.add(convertPath(path));
       }
       captureArgs.put(node.getKey(), capturePaths);
     }

@@ -35,14 +35,14 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Rewrites Lambda nodes into Lambda_get calls.
@@ -326,7 +326,7 @@ public class LambdaRewriter extends TreeVisitor {
 
         funcGet.getParameters().add(new SingleVariableDeclaration(outerField));
 
-        List<IVariableBinding> pathToOuter = outerResolver.getPath(node);
+        List<VariableElement> pathToOuter = outerResolver.getPath(node);
         if (pathToOuter != null) {
           funcGetInvocation.getArguments().add(Name.newName(pathToOuter));
         } else {
@@ -335,13 +335,13 @@ public class LambdaRewriter extends TreeVisitor {
       }
 
       // Add the captured fields to the capture struct and its packing/unpacking.
-      List<List<IVariableBinding>> captureArgPaths = outerResolver.getCaptureArgPaths(node);
+      List<List<VariableElement>> captureArgPaths = outerResolver.getCaptureArgPaths(node);
 
       for (int i = 0; i < captureArgPaths.size(); i++) {
-        List<IVariableBinding> varPath = captureArgPaths.get(i);
-        IVariableBinding var = varPath.get(varPath.size() - 1);
+        List<VariableElement> varPath = captureArgPaths.get(i);
+        VariableElement var = varPath.get(varPath.size() - 1);
         String varName = getName(varPath);
-        if (var.isField()) {
+        if (ElementUtil.isField(var)) {
           varName += "_";
         }
 
@@ -350,8 +350,8 @@ public class LambdaRewriter extends TreeVisitor {
         // the capture = var to the get function, and the var = capture to the
         // function implementation. If it's not a primitve, we use JreStrongAssign for
         // capture = var and add a RELEASE_ call to the _dealloc function.
-        structContents += nameTable.getObjCType(var.getType()) + " " + varName + ";\n";
-        if (!var.getType().isPrimitive() && !BindingUtil.isWeakReference(var)) {
+        structContents += nameTable.getObjCType(var.asType()) + " " + varName + ";\n";
+        if (!var.asType().getKind().isPrimitive() && !ElementUtil.isWeakReference(var)) {
           statements.add(
               new NativeStatement(
                   "JreStrongAssign(&captures->" + varName + ", " + varName + ");"));
@@ -367,7 +367,7 @@ public class LambdaRewriter extends TreeVisitor {
         funcImplStatements.add(
             1,
             new NativeStatement(
-                nameTable.getObjCType(var.getType()) + " " + varName
+                nameTable.getObjCType(var.asType()) + " " + varName
                 + " = captures->" + varName + ";"));
         funcGet.getParameters().add(new SingleVariableDeclaration(var));
         funcGetInvocation.getArguments().add(Name.newName(varPath));
@@ -388,7 +388,7 @@ public class LambdaRewriter extends TreeVisitor {
       return funcGetInvocation;
     }
 
-    private String getName(List<IVariableBinding> varPath) {
+    private String getName(List<VariableElement> varPath) {
       Name n = Name.newName(varPath);
       if (n instanceof SimpleName) {
         return ((SimpleName) n).getIdentifier();

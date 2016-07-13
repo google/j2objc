@@ -14,13 +14,10 @@
 
 package com.google.devtools.j2objc.javac;
 
-import org.eclipse.jdt.core.dom.IPackageBinding;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -29,6 +26,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 
 class JdtPackageElement extends JdtElement implements PackageElement {
   private List<AnnotationMirror> annotations = new ArrayList<>();
@@ -59,7 +57,7 @@ class JdtPackageElement extends JdtElement implements PackageElement {
 
   @Override
   public TypeMirror asType() {
-    throw new AssertionError("not implemented");
+    return null;
   }
 
   @Override

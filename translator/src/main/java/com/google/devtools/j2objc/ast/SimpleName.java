@@ -15,10 +15,9 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-
-import org.eclipse.jdt.core.dom.IBinding;
-
+import com.google.devtools.j2objc.javac.BindingConverter;
 import javax.lang.model.element.Element;
+import org.eclipse.jdt.core.dom.IBinding;
 
 /**
  * Node for a simple (unqualified) name.
@@ -38,7 +37,7 @@ public class SimpleName extends Name {
   }
 
   public SimpleName(IBinding binding) {
-    super(binding);
+    super(BindingConverter.getElement(binding));
     identifier = binding.getName();
   }
 
@@ -48,7 +47,7 @@ public class SimpleName extends Name {
   }
 
   public SimpleName(String identifier) {
-    super((IBinding) null);
+    super((Element) null);
     this.identifier = identifier;
   }
 
