@@ -13,6 +13,8 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.jdt.TreeConverter;
+
 /**
  * Node for a name-qualified type (added in JLS8, section 6.5.5.2).
  */

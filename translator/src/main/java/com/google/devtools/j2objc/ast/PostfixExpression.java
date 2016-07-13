@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
-
+import com.google.devtools.j2objc.jdt.TreeConverter;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.Map;

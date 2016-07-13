@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 import javax.lang.model.type.TypeMirror;

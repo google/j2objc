@@ -12,17 +12,16 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.ast;
+package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
 import java.io.IOException;
 
 /**
  * Tests for {@link TreeConverter}.
  */
-public class TreeConvertTest extends GenerationTest {
+public class TreeConverterTest extends GenerationTest {
 
   // Issue 470: ClassCastException converting annotation with simple members.
   public void testAnnotationTypeMemberConversion() throws IOException {

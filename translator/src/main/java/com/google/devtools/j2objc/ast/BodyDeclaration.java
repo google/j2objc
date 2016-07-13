@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import org.eclipse.jdt.core.dom.IBinding;
 

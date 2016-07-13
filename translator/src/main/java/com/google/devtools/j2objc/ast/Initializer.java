@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-
+import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.lang.reflect.Modifier;
 
 /**

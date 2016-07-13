@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.jdt.TreeConverter;
+
 /**
  * Converts an Expression node into a statement node by wrapping it.
  */

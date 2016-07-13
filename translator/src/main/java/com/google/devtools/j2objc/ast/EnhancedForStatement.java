@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.jdt.TreeConverter;
+
 /**
  * Enhanced for statement node type. (e.g. "for (int i : listOfInts) {...}")
  */

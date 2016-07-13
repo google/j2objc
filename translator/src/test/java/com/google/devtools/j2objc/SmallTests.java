@@ -18,7 +18,6 @@ package com.google.devtools.j2objc;
 
 import com.google.devtools.j2objc.ast.LambdaExpressionTest;
 import com.google.devtools.j2objc.ast.MethodReferenceTest;
-import com.google.devtools.j2objc.ast.TreeConvertTest;
 import com.google.devtools.j2objc.ast.TreeUtilTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
@@ -34,6 +33,7 @@ import com.google.devtools.j2objc.gen.SignatureGeneratorTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeDeclarationGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
+import com.google.devtools.j2objc.jdt.TreeConverterTest;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripperTest;
 import com.google.devtools.j2objc.pipeline.TranslationProcessorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
@@ -143,7 +143,7 @@ public class SmallTests {
     StatementGeneratorTest.class,
     StaticVarRewriterTest.class,
     SuperMethodInvocationRewriterTest.class,
-    TreeConvertTest.class,
+    TreeConverterTest.class,
     TypeDeclarationGeneratorTest.class,
     TypeImplementationGeneratorTest.class,
     TranslationProcessorTest.class,

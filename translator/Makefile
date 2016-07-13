@@ -148,7 +148,6 @@ JAVA_SOURCES = \
 	ast/TextElement.java \
 	ast/ThisExpression.java \
 	ast/ThrowStatement.java \
-	ast/TreeConverter.java \
 	ast/TreeNode.java \
 	ast/TreeUtil.java \
 	ast/TreeVisitor.java \
@@ -214,6 +213,7 @@ JAVA_SOURCES = \
 	jdt/JdtVariableElement.java \
 	jdt/JdtWildcardType.java \
 	jdt/StringName.java \
+	jdt/TreeConverter.java \
 	jdt/TypeUtil.java \
 	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \

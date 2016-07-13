@@ -13,6 +13,8 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.jdt.TreeConverter;
+
 /**
  * Type method reference expression AST node type (added in JLS8, section 15.13).
  */
