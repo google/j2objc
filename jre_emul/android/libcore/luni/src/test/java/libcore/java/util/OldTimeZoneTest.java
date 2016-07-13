@@ -21,16 +21,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import junit.framework.TestCase;
-import tests.support.Support_Locale;
-
-/*-[
-#include "java/lang/System.h"
-#include <sys/utsname.h>
-]-*/
 
 public class OldTimeZoneTest extends TestCase {
 
-    class Mock_TimeZone extends TimeZone {
+    static class Mock_TimeZone extends TimeZone {
         @Override
         public int getOffset(int era, int year, int month, int day, int dayOfWeek, int milliseconds) {
             return 0;
@@ -96,34 +90,59 @@ public class OldTimeZoneTest extends TestCase {
 
     public void test_getDisplayNameLjava_util_Locale() {
         TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
-        assertEquals("Pacific Standard Time", tz.getDisplayName(new Locale("US")));
-        if (Support_Locale.isLocaleAvailable(Locale.FRANCE)) {
-            assertTrue(tz.getDisplayName(Locale.FRANCE).startsWith("heure normale du Pacifique"));
-        }
+        assertEquals("Pacific Standard Time", tz.getDisplayName(Locale.US));
+        assertEquals("heure normale du Pacifique nord-américain", tz.getDisplayName(Locale.FRANCE));
     }
 
     public void test_getDisplayNameZI() {
         Locale.setDefault(Locale.US);
         TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
-        assertEquals("PST",                   tz.getDisplayName(false, 0));
-        assertEquals("Pacific Daylight Time", tz.getDisplayName(true, 1));
-        assertEquals("Pacific Standard Time", tz.getDisplayName(false, 1));
+        assertEquals("PST",                   tz.getDisplayName(false, TimeZone.SHORT));
+        assertEquals("Pacific Daylight Time", tz.getDisplayName(true, TimeZone.LONG));
+        assertEquals("Pacific Standard Time", tz.getDisplayName(false, TimeZone.LONG));
     }
 
     public void test_getDisplayNameZILjava_util_Locale() {
         TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
-        assertEquals("PST",                   tz.getDisplayName(false, 0, Locale.US));
-        assertEquals("Pacific Daylight Time", tz.getDisplayName(true,  1, Locale.US));
-        if (Support_Locale.isLocaleAvailable(Locale.UK)) {
-            assertEquals("Pacific Standard Time", tz.getDisplayName(false, 1, Locale.UK));
-        }
-        if (Support_Locale.isLocaleAvailable(Locale.FRANCE)) {
-            assertEquals("UTC−8", tz.getDisplayName(false, 0, Locale.FRANCE));
-            String expected = preElCapitan()
-                ? "heure avancée du Pacifique" : "heure d’été du Pacifique";
-            assertEquals(expected, tz.getDisplayName(true,  1, Locale.FRANCE));
-            assertTrue(tz.getDisplayName(Locale.FRANCE).startsWith("heure normale du Pacifique"));
-        }
+        assertEquals("Pacific Daylight Time", tz.getDisplayName(true,  TimeZone.LONG, Locale.US));
+        assertEquals("Pacific Standard Time", tz.getDisplayName(false, TimeZone.LONG, Locale.UK));
+
+        // j2objc: edited; French time zone names change over different OS X/iOS versions, so we
+        // only test common substrings.
+        //
+        // assertEquals("heure d’été du Pacifique",
+        //         tz.getDisplayName(true,  TimeZone.LONG, Locale.FRANCE));
+        // assertEquals("heure normale du Pacifique nord-américain",
+        //         tz.getDisplayName(false, TimeZone.LONG, Locale.FRANCE));
+        final String ete = "été"; // French for "summer"
+        final String avancee = "avancée"; // French for "forward"
+        String frStdName = tz.getDisplayName(false, TimeZone.LONG, Locale.FRANCE);
+        String frDstName = tz.getDisplayName(true, TimeZone.LONG, Locale.FRANCE);
+        assertTrue(frStdName.contains("heure"));
+        assertTrue(frStdName.contains("normal"));
+        assertFalse(frStdName.contains(ete) || frStdName.contains(avancee));
+        assertTrue(frDstName.contains("heure"));
+        assertFalse(frDstName.contains("normal"));
+        assertTrue(frDstName.contains(ete) || frDstName.contains(avancee));
+
+        assertEquals("PDT", tz.getDisplayName(true, TimeZone.SHORT, Locale.US));
+        assertEquals("PST", tz.getDisplayName(false, TimeZone.SHORT, Locale.US));
+
+        // j2objc: disabled; the short time zone names for the following locales are not consistent
+        // across different platforms. NSTimeZone uses UTC-8/UTC-7 for the short names if the
+        // locale is "fr" but GMT-8/GMT-7 if it's "en-UK". But if you use "fr-CA" (Canadian French)
+        // the short names become HNP and HAP (heure normale du Pacifique and heure avencée du
+        // Pacifique).
+        /*
+        // RI fails on following lines. RI always returns short time zone name for
+        // "America/Los_Angeles" as "PST", Android only returns a string if ICU has a translation.
+        // There is no short time zone name for America/Los_Angeles in French or British English in
+        // ICU data so an offset is returned instead.
+        assertEquals("GMT-08:00", tz.getDisplayName(false, TimeZone.SHORT, Locale.FRANCE));
+        assertEquals("GMT-07:00", tz.getDisplayName(true, TimeZone.SHORT, Locale.FRANCE));
+        assertEquals("GMT-08:00", tz.getDisplayName(false, TimeZone.SHORT, Locale.UK));
+        assertEquals("GMT-07:00", tz.getDisplayName(true, TimeZone.SHORT, Locale.UK));
+        */
     }
 
     public void test_getID() {
@@ -154,16 +173,4 @@ public class OldTimeZoneTest extends TestCase {
         tz.setID("New ID for GMT-6");
         assertEquals("New ID for GMT-6", tz.getID());
     }
-
-    // Running on an OS X version less than 10.11?
-    private static native boolean preElCapitan() /*-[
-      if (![JavaLangSystem_getPropertyWithNSString_(@"os.name") isEqual:@"Mac OS X"]) {
-        return NO;
-      }
-      struct utsname uts;
-      if (uname(&uts) == 0) {
-        return atoi(uts.release) < 15;
-      }
-      return NO;
-    ]-*/;
 }

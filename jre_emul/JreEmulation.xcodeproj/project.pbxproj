@@ -641,6 +641,9 @@
 		514171471BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 514171461BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m */; };
 		514171491BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 514171481BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m */; };
 		6AC258CB1CB4CE1F00AF82C9 /* LinkedListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC258CA1CB4CDA200AF82C9 /* LinkedListTest.m */; };
+		6AF8A35D1D07763800B4CA82 /* NativeTimeZoneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF8A35C1D07761D00B4CA82 /* NativeTimeZoneTest.m */; };
+		6AF8A3621D0776D000B4CA82 /* StringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF8A3611D07769100B4CA82 /* StringTest.m */; };
+		6AF8A3631D0776D900B4CA82 /* RetainedWithTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF8A35F1D07769100B4CA82 /* RetainedWithTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4053,6 +4056,14 @@
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
 		6AC258CA1CB4CDA200AF82C9 /* LinkedListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedListTest.m; path = com/google/j2objc/LinkedListTest.m; sourceTree = "<group>"; };
+		6AF8A35B1D07761D00B4CA82 /* NativeTimeZoneTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZoneTest.h; path = com/google/j2objc/util/NativeTimeZoneTest.h; sourceTree = "<group>"; };
+		6AF8A35C1D07761D00B4CA82 /* NativeTimeZoneTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZoneTest.m; path = com/google/j2objc/util/NativeTimeZoneTest.m; sourceTree = "<group>"; };
+		6AF8A35E1D07769100B4CA82 /* RetainedWithTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RetainedWithTest.h; path = com/google/j2objc/RetainedWithTest.h; sourceTree = "<group>"; };
+		6AF8A35F1D07769100B4CA82 /* RetainedWithTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RetainedWithTest.m; path = com/google/j2objc/RetainedWithTest.m; sourceTree = "<group>"; };
+		6AF8A3601D07769100B4CA82 /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = com/google/j2objc/StringTest.h; sourceTree = "<group>"; };
+		6AF8A3611D07769100B4CA82 /* StringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringTest.m; path = com/google/j2objc/StringTest.m; sourceTree = "<group>"; };
+		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
+		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5537,6 +5548,8 @@
 				068677D3166C342C005A5AD7 /* NavigableMap.m */,
 				068677D4166C342C005A5AD7 /* NavigableSet.h */,
 				068677D5166C342C005A5AD7 /* NavigableSet.m */,
+				6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */,
+				6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */,
 				0649A69C1AE0780500DE2494 /* NClob.h */,
 				0649A69D1AE0780500DE2494 /* NClob.m */,
 				06721B4D1559CC0300645E1B /* NegativeArraySizeException.h */,
@@ -6733,6 +6746,8 @@
 				06574A301A8EB04A000A3616 /* MyMessageDigest1.m */,
 				06574A311A8EB04A000A3616 /* MySignature1.m */,
 				06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */,
+				6AF8A35B1D07761D00B4CA82 /* NativeTimeZoneTest.h */,
+				6AF8A35C1D07761D00B4CA82 /* NativeTimeZoneTest.m */,
 				06E4844E1C99EB1B00ABD06B /* NativeUtil.m */,
 				06FADA7C1B3B29B300A9579E /* NoPackageTest.h */,
 				06FADA7D1B3B29B300A9579E /* NoPackageTest.m */,
@@ -6783,6 +6798,8 @@
 				06C54AD71A40C897004B3ACD /* ReflectionTest.m */,
 				06DCD8C81CD7CAE100B855AF /* ReflectionTests.h */,
 				06DCD8C91CD7CAE100B855AF /* ReflectionTests.m */,
+				6AF8A35E1D07769100B4CA82 /* RetainedWithTest.h */,
+				6AF8A35F1D07769100B4CA82 /* RetainedWithTest.m */,
 				06574A761A8EB150000A3616 /* RSAKeyGenParameterSpecTest.m */,
 				06574A651A8EB150000A3616 /* RSAKeyTest.m */,
 				06574A771A8EB150000A3616 /* RSAMultiPrimePrivateCrtKeySpecTest.m */,
@@ -6822,6 +6839,8 @@
 				06C54ACA1A40C0D8004B3ACD /* StrictMathTest.m */,
 				06E685D71A2FC550006F8791 /* StringBuilderTest.h */,
 				06E685D81A2FC550006F8791 /* StringBuilderTest.m */,
+				6AF8A3601D07769100B4CA82 /* StringTest.h */,
+				6AF8A3611D07769100B4CA82 /* StringTest.m */,
 				0600C00E1B715CB4005FDEF9 /* SuperMethodReferenceTest.h */,
 				0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */,
 				06574A7E1A8EB150000A3616 /* Support_Configuration.m */,
@@ -8609,7 +8628,9 @@
 				06E4E7C5197F1D48005DDE69 /* NoSuchElementExceptionTest.m in Sources */,
 				061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */,
 				0615D3EE1BD83E7300132067 /* FakeFox01.m in Sources */,
+				6AF8A3631D0776D900B4CA82 /* RetainedWithTest.m in Sources */,
 				06574A621A8EB081000A3616 /* package-info.m in Sources */,
+				6AF8A3621D0776D000B4CA82 /* StringTest.m in Sources */,
 				0696811A1BA8E3D3007AFADF /* Third.m in Sources */,
 				0615D3E21BD83E7300132067 /* FeatureDescriptorTest.m in Sources */,
 				06E4E6FA197F1D47005DDE69 /* OldAndroidStreamTokenizerTest.m in Sources */,
@@ -8686,6 +8707,7 @@
 				06E4E73A197F1D47005DDE69 /* SmallTests.m in Sources */,
 				06E4E6E6197F1D47005DDE69 /* FileTest.m in Sources */,
 				06E4E715197F1D47005DDE69 /* OldObjectInputStreamGetFieldTest.m in Sources */,
+				6AF8A35D1D07763800B4CA82 /* NativeTimeZoneTest.m in Sources */,
 				06E4E75C197F1D47005DDE69 /* GZIPOutputStreamTest.m in Sources */,
 				06E4E6E9197F1D47005DDE69 /* OldAndroidBufferedInputStreamTest.m in Sources */,
 				06C54AE11A40CA75004B3ACD /* AttributedCharacterIteratorAttributeTest.m in Sources */,

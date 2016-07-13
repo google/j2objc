@@ -354,6 +354,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/LibraryNotLinkedError.java \
   com/google/j2objc/ReflectionStrippedError.java \
+  com/google/j2objc/util/NativeTimeZone.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
   java/beans/BeansFactory.java \
