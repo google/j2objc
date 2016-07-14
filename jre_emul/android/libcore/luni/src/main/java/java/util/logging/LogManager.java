@@ -17,20 +17,16 @@
 
 package java.util.logging;
 
-import java.beans.BeansFactory;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.ListResourceBundle;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import libcore.io.IoUtils;
@@ -122,6 +118,7 @@ import libcore.io.IoUtils;
  * This class is thread safe. It is an error to synchronize on a
  * {@code LogManager} while synchronized on a {@code Logger}.
  */
+@SuppressWarnings("deprecation")
 public class LogManager {
 
     /** The shared logging permission. */
@@ -150,9 +147,6 @@ public class LogManager {
 
     /** The configuration properties */
     private Properties props;
-
-    /** the property change listener */
-    private PropertyChangeSupport listeners;
 
     static {     // init LogManager singleton instance
         String className = System.getProperty("java.util.logging.manager");
@@ -195,7 +189,6 @@ public class LogManager {
     protected LogManager() {
         loggers = new Hashtable<String, Logger>();
         props = new Properties();
-        listeners = BeansFactory.newPropertyChangeSupportSafe(this);
         // add shutdown hook to ensure that the associated resource will be
         // freed when JVM exits
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -408,9 +401,6 @@ public class LogManager {
                 logger.setLevel(Level.parse(property));
             }
         }
-        if (listeners != null) {
-          listeners.firePropertyChange(null, null, null);
-        }
     }
 
     /**
@@ -462,14 +452,7 @@ public class LogManager {
      *            the {@code PropertyChangeListener} to be added.
      */
     public void addPropertyChangeListener(PropertyChangeListener l) {
-        if (l == null) {
-            throw new NullPointerException("l == null");
-        }
-        if (listeners == null) {
-            BeansFactory.throwNotLoadedError();
-        }
-        checkAccess();
-        listeners.addPropertyChangeListener(l);
+      throw new UnsupportedOperationException();
     }
 
     /**
@@ -480,11 +463,7 @@ public class LogManager {
      *            the {@code PropertyChangeListener} to be removed.
      */
     public void removePropertyChangeListener(PropertyChangeListener l) {
-        if (listeners == null) {
-            BeansFactory.throwNotLoadedError();
-        }
-        checkAccess();
-        listeners.removePropertyChangeListener(l);
+      throw new UnsupportedOperationException();
     }
 
     /**

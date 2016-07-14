@@ -574,62 +574,6 @@ public class LogManagerTest extends TestCase {
         assertEquals(0, logger.getHandlers().length);
     }
 
-	public void testAddRemovePropertyChangeListener() throws Exception {
-		MockPropertyChangeListener listener1 = new MockPropertyChangeListener();
-		MockPropertyChangeListener listener2 = new MockPropertyChangeListener();
-		// add same listener1 two times
-		mockManager.addPropertyChangeListener(listener1);
-		mockManager.addPropertyChangeListener(listener1);
-		mockManager.addPropertyChangeListener(listener2);
-
-		assertNull(listener1.getEvent());
-		assertNull(listener2.getEvent());
-		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
-		// if (!hasConfigClass) {
-		assertNotNull(listener1.getEvent());
-		assertNotNull(listener2.getEvent());
-		// }
-
-		listener1.reset();
-		listener2.reset();
-
-		// remove listener1, no effect
-		mockManager.removePropertyChangeListener(listener1);
-		mockManager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertNotNull(listener1.getEvent());
-		assertNotNull(listener2.getEvent());
-		listener1.reset();
-		listener2.reset();
-
-		// remove listener1 again and it works
-		mockManager.removePropertyChangeListener(listener1);
-		mockManager.readConfiguration(EnvironmentHelper
-				.PropertiesToInputStream(props));
-		assertNull(listener1.getEvent());
-		assertNotNull(listener2.getEvent());
-		listener2.reset();
-
-		// reset don't produce event
-		mockManager.reset();
-		assertNull(listener2.getEvent());
-
-		mockManager.removePropertyChangeListener(listener2);
-		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));
-		assertNull(listener1.getEvent());
-		assertNull(listener2.getEvent());
-	}
-
-	public void testAddRemovePropertyChangeListener_null() {
-		// seems nothing happened
-        try{
-            mockManager.addPropertyChangeListener(null);
-            fail("Should throw NPE");
-        }catch(NullPointerException e){
-        }
-		mockManager.removePropertyChangeListener(null);
-	}
-
 	public void testReset() throws SecurityException, IOException {
 		// mock LogManager
 		mockManager.readConfiguration(EnvironmentHelper.PropertiesToInputStream(props));

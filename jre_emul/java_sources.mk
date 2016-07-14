@@ -461,7 +461,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/util/NativeTimeZone.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
-  java/beans/BeansFactory.java \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
@@ -1407,7 +1406,7 @@ JAVA_PUBLIC_SOURCES_BEANS = \
   java/util/TooManyListenersException.java
 
 JAVA_PRIVATE_SOURCES_BEANS = \
-  java/beans/BeansFactoryImpl.java \
+  java/beans/ChangeListenerMap.java \
   java/beans/StandardBeanInfo.java \
   org/apache/harmony/beans/BeansUtils.java
 
