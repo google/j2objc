@@ -159,7 +159,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("ConstantBranchPruner");
 
     // Modify AST to be more compatible with Objective C
-    new Rewriter(outerResolver).run(unit);
+    new Rewriter().run(unit);
     ticker.tick("Rewriter");
 
     // Add abstract method stubs.
@@ -173,6 +173,10 @@ public class TranslationProcessor extends FileProcessor {
     new EnhancedForRewriter().run(unit);
     ticker.tick("EnhancedForRewriter");
 
+    // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
+    new LambdaRewriter(outerResolver).run(unit);
+    ticker.tick("LambdaRewriter");
+
     // Add auto-boxing conversions.
     new Autoboxer().run(unit);
     ticker.tick("Autoboxer");
@@ -180,9 +184,6 @@ public class TranslationProcessor extends FileProcessor {
     // Extract inner and anonymous classes
     new AnonymousClassConverter().run(unit);
     ticker.tick("AnonymousClassConverter");
-
-    new LambdaRewriter().run(unit);
-    ticker.tick("LambdaRewriter");
 
     new InnerClassExtractor(outerResolver, unit).run(unit);
     ticker.tick("InnerClassExtractor");

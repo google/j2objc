@@ -22,17 +22,14 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -56,7 +53,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -73,12 +69,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class Rewriter extends TreeVisitor {
 
   private Map<VariableElement, VariableElement> localRefs = new HashMap<>();
-  private final OuterReferenceResolver outerResolver;
-  private Map<ITypeBinding, Integer> lambdaCounts = new HashMap<>();
-
-  public Rewriter(OuterReferenceResolver outerResolver) {
-    this.outerResolver = outerResolver;
-  }
 
   @Override
   public boolean visit(MethodDeclaration node) {
@@ -337,29 +327,6 @@ public class Rewriter extends TreeVisitor {
       }
     }
     return newDeclarations;
-  }
-
-  @Override
-  public boolean visit(LambdaExpression node) {
-    if (!(node.getBody() instanceof Block)) {
-      // Add explicit blocks for lambdas with expression bodies.
-      Block block = new Block();
-      Statement statement;
-      Expression expression = (Expression) TreeUtil.remove(node.getBody());
-      if (BindingUtil.isVoid(
-          node.getTypeBinding().getFunctionalInterfaceMethod().getReturnType())) {
-        statement = new ExpressionStatement(expression);
-      } else {
-        statement = new ReturnStatement(expression);
-      }
-      block.addStatement(statement);
-      node.setBody(block);
-    }
-    // Resolve whether a lambda captures variables from the enclosing scope.
-    TypeElement uniqueLambdaType = node.getTypeElement();
-    node.setIsCapturing(outerResolver.getOuterField(uniqueLambdaType) != null
-        || outerResolver.getInnerFields(uniqueLambdaType).size() != 0);
-    return true;
   }
 
   /**

@@ -45,6 +45,10 @@ public final class TypeUtil {
     return getDeclaredTypeKind(t) == ElementKind.ENUM;
   }
 
+  public static boolean isVoid(TypeMirror t) {
+    return t.getKind() == TypeKind.VOID;
+  }
+
   // Ugly, but we can't have it actually implement IntersectionType or return TypeKind.INTERSECTION
   // until Java 8.
   public static boolean isIntersection(TypeMirror t) {

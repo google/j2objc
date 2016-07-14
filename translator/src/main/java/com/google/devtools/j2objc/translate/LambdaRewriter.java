@@ -17,10 +17,13 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -34,6 +37,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -47,6 +51,12 @@ import javax.lang.model.type.TypeMirror;
  * @author Nathan Braswell, Keith Stanger
  */
 public class LambdaRewriter extends TreeVisitor {
+
+  private final OuterReferenceResolver outerResolver;
+
+  public LambdaRewriter(OuterReferenceResolver outerResolver) {
+    this.outerResolver = outerResolver;
+  }
 
   @Override
   public void endVisit(LambdaExpression node) {
@@ -71,8 +81,7 @@ public class LambdaRewriter extends TreeVisitor {
     implBinding.setDeclaringClass(BindingConverter.unwrapTypeElement(lambdaType));
     implBinding.removeModifiers(java.lang.reflect.Modifier.ABSTRACT);
     MethodDeclaration implDecl = new MethodDeclaration(implBinding)
-        // Rewriter ensures that body is always a Block.
-        .setBody((Block) TreeUtil.remove(node.getBody()));
+        .setBody(getLambdaBody(node, fiMethod));
     for (VariableDeclaration decl : node.getParameters()) {
       implDecl.addParameter(new SingleVariableDeclaration(decl.getVariableElement()));
     }
@@ -86,7 +95,7 @@ public class LambdaRewriter extends TreeVisitor {
     creation.setKey(node.getKey());
 
     removeCastExpression(node);
-    if (node.isCapturing()) {
+    if (isCapturing(lambdaType)) {
       node.replaceWith(creation);
     } else {
       // For non-capturing lambdas, create a static final instance.
@@ -96,6 +105,25 @@ public class LambdaRewriter extends TreeVisitor {
       typeDecl.addBodyDeclaration(new FieldDeclaration(instanceVar, creation));
       node.replaceWith(new SimpleName(instanceVar));
     }
+  }
+
+  private boolean isCapturing(TypeElement type) {
+    return outerResolver.getOuterField(type) != null
+        || !outerResolver.getInnerFields(type).isEmpty();
+  }
+
+  private Block getLambdaBody(LambdaExpression node, ExecutableElement fiMethod) {
+    TreeNode body = TreeUtil.remove(node.getBody());
+    if (body instanceof Block) {
+      return (Block) body;
+    }
+    Block block = new Block();
+    if (TypeUtil.isVoid(fiMethod.getReturnType())) {
+      block.addStatement(new ExpressionStatement((Expression) body));
+    } else {
+      block.addStatement(new ReturnStatement((Expression) body));
+    }
+    return block;
   }
 
   private void removeCastExpression(FunctionalExpression node) {

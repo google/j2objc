@@ -26,7 +26,6 @@ public class LambdaExpression extends FunctionalExpression {
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
-  private boolean isCapturing = false;
 
   public LambdaExpression() {
   }
@@ -35,7 +34,6 @@ public class LambdaExpression extends FunctionalExpression {
     super(other);
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
-    isCapturing = other.isCapturing();
   }
 
   @Override
@@ -78,15 +76,6 @@ public class LambdaExpression extends FunctionalExpression {
   @Override
   public LambdaExpression copy() {
     return new LambdaExpression(this);
-  }
-
-  public boolean isCapturing() {
-    return isCapturing;
-  }
-
-  public LambdaExpression setIsCapturing(boolean isCapturing) {
-    this.isCapturing = isCapturing;
-    return this;
   }
 
   public LambdaExpression addParameter(VariableDeclaration param) {
