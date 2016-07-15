@@ -150,7 +150,7 @@ public class OperatorRewriter extends TreeVisitor {
     IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null && BindingUtil.isVolatile(var) && !TranslationUtil.isAssigned(node)) {
       TypeMirror type = node.getTypeMirror();
-      TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
+      TypeMirror idType = typeEnv.getIdTypeMirror();
       TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
       String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.toString());
       FunctionBinding binding = new FunctionBinding(funcName, declaredType, null);
@@ -409,7 +409,7 @@ public class OperatorRewriter extends TreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
-    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
+    TypeMirror idType = typeEnv.getIdTypeMirror();
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
     FunctionBinding binding = new FunctionBinding(funcName, idType, null);
     binding.addParameters(

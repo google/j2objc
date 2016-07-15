@@ -50,17 +50,15 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
-
+import java.util.Set;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.Set;
-
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * Collects the set of imports needed to resolve type references in an
@@ -93,6 +91,12 @@ public class ImplementationImportCollector extends TreeVisitor {
       }
     } else if (type != null) {
       addImports(type.getTypeMirror());
+    }
+  }
+
+  private void addImports(TypeElement type) {
+    if (type != null) {
+      addImports(type.asType());
     }
   }
 

@@ -117,7 +117,7 @@ public class CastResolver extends TreeVisitor {
 
   private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
     type = type.getErasure();
-    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
+    TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionInvocation invocation = null;
     if ((type.isInterface() && !type.isAnnotation())
         || (type.isArray() && !type.getComponentType().isPrimitive())) {

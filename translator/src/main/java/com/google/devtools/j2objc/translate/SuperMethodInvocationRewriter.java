@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -113,7 +114,8 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     // Handle default method invocation: SomeInterface.super.method(...)
     if (BindingUtil.isDefault(method)) {
       FunctionBinding binding = new FunctionBinding(
-              nameTable.getFullFunctionName(method), exprType, typeEnv.getIdTypeMirror());
+          nameTable.getFullFunctionName(method), exprType,
+          BindingConverter.getTypeElement(method.getDeclaringClass()));
       binding.addParameters(typeEnv.getIdTypeMirror());
       binding.addParameters(method.getParameterTypes());
       FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
@@ -140,7 +142,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     superMethods.add(superMethod);
 
     FunctionBinding binding = new FunctionBinding(
-        getSuperFunctionName(superMethod), exprType, qualifierType);
+        getSuperFunctionName(superMethod), exprType, TypeUtil.asTypeElement(qualifierType));
     binding.addParameters(qualifierType, typeEnv.getIdTypeMirror());
     binding.addParameters(method.getParameterTypes());
     FunctionInvocation invocation = new FunctionInvocation(binding, exprType);

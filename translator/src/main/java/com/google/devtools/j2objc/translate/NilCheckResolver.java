@@ -409,7 +409,7 @@ public class NilCheckResolver extends TreeVisitor {
     if (var != null) {
       addSafeVar(var);
     }
-    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
+    TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionBinding binding = new FunctionBinding("nil_chk", idType, null);
     binding.addParameters(idType);
     FunctionInvocation nilChkInvocation = new FunctionInvocation(binding, node.getTypeBinding());

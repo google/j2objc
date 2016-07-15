@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -32,14 +33,13 @@ public class FunctionBinding {
   // a retained result.
   private final String retainedResultName;
   private final TypeMirror returnType;
-  // TODO(kstanger): This should be and element.
-  private final TypeMirror declaringClass;
+  private final TypeElement declaringClass;
   private List<TypeMirror> parameterTypes = new ArrayList<>();
   private boolean isVarargs = false;
 
   public FunctionBinding(
       String name, String retainedResultName, TypeMirror returnType,
-      TypeMirror declaringClass) {
+      TypeElement declaringClass) {
     this.name = name;
     this.retainedResultName = retainedResultName;
     this.returnType = returnType;
@@ -49,15 +49,15 @@ public class FunctionBinding {
   public FunctionBinding(String name, String retainedResultName, ITypeBinding returnType,
       ITypeBinding declaringClass) {
     this(name, retainedResultName, BindingConverter.getType(returnType),
-        BindingConverter.getType(declaringClass));
+        BindingConverter.getTypeElement(declaringClass));
   }
 
   public FunctionBinding(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
     this(name, null, BindingConverter.getType(returnType),
-        BindingConverter.getType(declaringClass));
+        BindingConverter.getTypeElement(declaringClass));
   }
 
-  public FunctionBinding(String name, TypeMirror returnType, TypeMirror declaringClass) {
+  public FunctionBinding(String name, TypeMirror returnType, TypeElement declaringClass) {
     this(name, null, returnType, declaringClass);
   }
 
@@ -73,7 +73,7 @@ public class FunctionBinding {
     return returnType;
   }
 
-  public TypeMirror getDeclaringClass() {
+  public TypeElement getDeclaringClass() {
     return declaringClass;
   }
 

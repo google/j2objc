@@ -224,8 +224,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       // if required.
       TypeElement declaringClass = ElementUtil.getDeclaringClass(method.elem);
       String name = nameTable.getFullFunctionName(method.elem);
-      FunctionBinding fb = new FunctionBinding(
-          name, method.elem.getReturnType(), declaringClass.asType());
+      FunctionBinding fb = new FunctionBinding(name, method.elem.getReturnType(), declaringClass);
       fb.addParameters(declaringClass.asType());
       fb.addParameters(((ExecutableType) method.elem.asType()).getParameterTypes());
       FunctionInvocation invocation = new FunctionInvocation(fb, method.type.getReturnType());

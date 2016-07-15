@@ -251,10 +251,6 @@ public class Types {
     return iosBindingMap.get(name);
   }
 
-  public TypeMirror resolveIOSTypeMirror(String name) {
-    return BindingConverter.getType(iosBindingMap.get(name));
-  }
-
   public boolean isJavaObjectType(ITypeBinding type) {
     return javaObjectType.equals(type);
   }
@@ -280,10 +276,14 @@ public class Types {
     return arrayBinding != null ? arrayBinding : IOSObjectArray;
   }
 
-  public TypeMirror resolveArrayType(TypeMirror mirror) {
+  public TypeElement resolveArrayType(TypeMirror mirror) {
     IOSTypeBinding arrayBinding = arrayBindingMap.get(
         BindingConverter.unwrapTypeMirrorIntoBinding(mirror));
-    return BindingConverter.getType(arrayBinding != null ? arrayBinding : IOSObjectArray);
+    return BindingConverter.getTypeElement(arrayBinding != null ? arrayBinding : IOSObjectArray);
+  }
+
+  public TypeElement getObjectArrayElement() {
+    return BindingConverter.getTypeElement(IOSObjectArray);
   }
 
   public boolean isJavaVoidType(ITypeBinding type) {

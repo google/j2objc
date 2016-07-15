@@ -111,7 +111,7 @@ public class JavaCloneWriter extends TreeVisitor {
     if (Options.useARC()) {
       ITypeBinding voidType = typeEnv.resolveJavaType("void");
       FunctionBinding binding = new FunctionBinding("JreRelease", voidType, null);
-      binding.addParameters(typeEnv.resolveIOSTypeMirror("id"));
+      binding.addParameters(typeEnv.getIdTypeMirror());
       FunctionInvocation invocation = new FunctionInvocation(binding, voidType);
       invocation.addArgument(new SimpleName(var));
       return new ExpressionStatement(invocation);

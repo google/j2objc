@@ -50,6 +50,7 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -168,7 +169,7 @@ public class Autoboxer extends TreeVisitor {
     String funcName = "JreBoxed" + getAssignFunctionName(node.getOperator())
         + TranslationUtil.getOperatorFunctionModifier(lhs)
         + NameTable.capitalize(primitiveType.toString());
-    FunctionBinding binding = new FunctionBinding(funcName, type, type);
+    FunctionBinding binding = new FunctionBinding(funcName, type, TypeUtil.asTypeElement(type));
     binding.addParameters(pointerType, primitiveType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
     invocation.addArgument(new PrefixExpression(
@@ -390,7 +391,7 @@ public class Autoboxer extends TreeVisitor {
     TypeMirror pointerType = typeEnv.getPointerType(type);
     funcName = "JreBoxed" + funcName + TranslationUtil.getOperatorFunctionModifier(operand)
         + NameTable.capitalize(typeEnv.getPrimitiveType(type).toString());
-    FunctionBinding binding = new FunctionBinding(funcName, type, type);
+    FunctionBinding binding = new FunctionBinding(funcName, type, TypeUtil.asTypeElement(type));
     binding.addParameters(pointerType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
     invocation.addArgument(new PrefixExpression(

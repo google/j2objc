@@ -37,15 +37,15 @@ import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Rewrites array creation into a method invocation on an IOSArray class.
@@ -233,25 +233,25 @@ public class ArrayRewriter extends TreeVisitor {
   @Override
   public void endVisit(ArrayAccess node) {
     TypeMirror componentType = node.getTypeMirror();
-    TypeMirror iosArrayBinding = typeEnv.resolveArrayType(componentType);
+    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
 
     node.replaceWith(newArrayAccess(
-        node, componentType, iosArrayBinding, TranslationUtil.isAssigned(node)));
+        node, componentType, iosArrayElement, TranslationUtil.isAssigned(node)));
   }
 
   private Expression newArrayAccess(
-      ArrayAccess arrayAccessNode, TypeMirror componentType, TypeMirror iosArrayBinding,
+      ArrayAccess arrayAccessNode, TypeMirror componentType, TypeElement iosArrayElement,
       boolean assignable) {
-    String funcName = iosArrayBinding.toString() + "_Get";
+    String funcName = ElementUtil.getName(iosArrayElement) + "_Get";
     TypeMirror returnType = componentType;
     TypeMirror declaredReturnType =
-        componentType.getKind().isPrimitive() ? componentType : typeEnv.resolveIOSTypeMirror("id");
+        componentType.getKind().isPrimitive() ? componentType : typeEnv.getIdTypeMirror();
     if (assignable) {
       funcName += "Ref";
       returnType = declaredReturnType = typeEnv.getPointerType(componentType);
     }
-    FunctionBinding binding = new FunctionBinding(funcName, declaredReturnType, iosArrayBinding);
-    binding.addParameters(iosArrayBinding, typeEnv.resolveJavaTypeMirror("int"));
+    FunctionBinding binding = new FunctionBinding(funcName, declaredReturnType, iosArrayElement);
+    binding.addParameters(iosArrayElement.asType(), typeEnv.resolveJavaTypeMirror("int"));
     FunctionInvocation invocation = new FunctionInvocation(binding, returnType);
     invocation.addArgument(arrayAccessNode.getArray().copy());
     invocation.addArgument(arrayAccessNode.getIndex().copy());
@@ -274,10 +274,10 @@ public class ArrayRewriter extends TreeVisitor {
       funcName = "IOSObjectArray_SetAndConsume";
       value = retainedValue;
     }
-    TypeMirror objArrayType = typeEnv.resolveIOSTypeMirror("IOSObjectArray");
-    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
+    TypeElement objArrayType = typeEnv.getObjectArrayElement();
+    TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionBinding binding = new FunctionBinding(funcName, idType, objArrayType);
-    binding.addParameters(objArrayType, typeEnv.resolveJavaTypeMirror("int"), idType);
+    binding.addParameters(objArrayType.asType(), typeEnv.resolveJavaTypeMirror("int"), idType);
     FunctionInvocation invocation = new FunctionInvocation(binding, componentType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(arrayAccessNode.getArray()));
