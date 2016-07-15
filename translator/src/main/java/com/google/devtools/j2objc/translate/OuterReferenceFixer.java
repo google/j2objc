@@ -174,7 +174,7 @@ public class OuterReferenceFixer extends TreeVisitor {
     GeneratedMethodBinding binding =
         new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
     node.setMethodBinding(binding);
-    node.getArguments().add(0, outerExpression);
+    node.addArgument(0, outerExpression);
     binding.addParameter(0, outerExpressionType);
   }
 

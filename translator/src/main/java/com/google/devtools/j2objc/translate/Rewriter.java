@@ -103,7 +103,7 @@ public class Rewriter extends TreeVisitor {
     // It should not be possible to have multiple VariableDeclarationExpression
     // nodes in the initializers.
     if (node.getInitializers().size() == 1) {
-      Object initializer = node.getInitializers().get(0);
+      Object initializer = node.getInitializer(0);
       if (initializer instanceof VariableDeclarationExpression) {
         List<VariableDeclarationFragment> fragments =
             ((VariableDeclarationExpression) initializer).getFragments();
@@ -113,7 +113,7 @@ public class Rewriter extends TreeVisitor {
             if (!(loopBody instanceof Block)) {
               Block block = new Block();
               node.setBody(block);
-              block.getStatements().add(loopBody);
+              block.addStatement(loopBody);
             }
             ((Block) node.getBody()).setHasAutoreleasePool(true);
           }
@@ -175,9 +175,9 @@ public class Rewriter extends TreeVisitor {
     InfixExpression nonStringExpr =
         new InfixExpression(nonStringExprType, InfixExpression.Operator.PLUS);
     for (Expression operand : nonStringOperands) {
-      nonStringExpr.getOperands().add(TreeUtil.remove(operand));
+      nonStringExpr.addOperand(TreeUtil.remove(operand));
     }
-    node.getOperands().add(0, nonStringExpr);
+    node.addOperand(0, nonStringExpr);
   }
 
   private ITypeBinding getAdditionType(ITypeBinding aType, ITypeBinding bType) {
@@ -289,7 +289,7 @@ public class Rewriter extends TreeVisitor {
           }
           assert constructor != null : "failed finding ScopedLocalRef(var)";
           ClassInstanceCreation newInvocation = new ClassInstanceCreation(constructor);
-          newInvocation.getArguments().add(initializer.copy());
+          newInvocation.addArgument(initializer.copy());
           fragment.setInitializer(newInvocation);
           fragment.setVariableBinding(newVar);
         }
@@ -388,7 +388,7 @@ public class Rewriter extends TreeVisitor {
       } else {
         statement = new ReturnStatement(expression);
       }
-      block.getStatements().add(statement);
+      block.addStatement(statement);
       node.setBody(block);
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
@@ -418,7 +418,7 @@ public class Rewriter extends TreeVisitor {
   @Override
   public void endVisit(PropertyAnnotation node) {
     FieldDeclaration field = (FieldDeclaration) node.getParent();
-    VariableDeclarationFragment firstVarNode = field.getFragments().get(0);
+    VariableDeclarationFragment firstVarNode = field.getFragment(0);
     if (field.getType().getTypeBinding().getName().equals("String")) {
       node.addAttribute("copy");
     } else if (BindingUtil.hasAnnotation(firstVarNode.getVariableBinding(), Weak.class)) {
@@ -448,7 +448,7 @@ public class Rewriter extends TreeVisitor {
       }
     } else {
       // Check that specified accessors exist.
-      IVariableBinding var = field.getFragments().get(0).getVariableBinding();
+      IVariableBinding var = field.getFragment(0).getVariableBinding();
       if (getter != null) {
         if (BindingUtil.findDeclaredMethod(var.getType(), getter) == null) {
           ErrorUtil.error(field, "Non-existent getter specified: " + getter);

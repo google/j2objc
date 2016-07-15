@@ -414,7 +414,7 @@ public class NilCheckResolver extends TreeVisitor {
     binding.addParameter(idType);
     FunctionInvocation nilChkInvocation = new FunctionInvocation(binding, node.getTypeBinding());
     node.replaceWith(nilChkInvocation);
-    nilChkInvocation.getArguments().add(node);
+    nilChkInvocation.addArgument(node);
   }
 
   @Override
@@ -542,8 +542,8 @@ public class NilCheckResolver extends TreeVisitor {
     boolean equals = op == InfixExpression.Operator.EQUALS;
     boolean notEquals = op == InfixExpression.Operator.NOT_EQUALS;
     if (equals || notEquals) {
-      Expression lhs = node.getOperands().get(0);
-      Expression rhs = node.getOperands().get(1);
+      Expression lhs = node.getOperand(0);
+      Expression rhs = node.getOperand(1);
       IVariableBinding maybeNullVar = null;
       if (lhs instanceof NullLiteral) {
         maybeNullVar = TreeUtil.getVariableBinding(rhs);
@@ -772,7 +772,7 @@ public class NilCheckResolver extends TreeVisitor {
   @Override
   public void endVisit(FunctionInvocation node) {
     if (node.getName().equals("nil_chk")) {
-      IVariableBinding var = TreeUtil.getVariableBinding(node.getArguments().get(0));
+      IVariableBinding var = TreeUtil.getVariableBinding(node.getArgument(0));
       if (var != null) {
         addSafeVar(var);
       }

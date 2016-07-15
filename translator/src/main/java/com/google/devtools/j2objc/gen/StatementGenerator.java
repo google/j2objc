@@ -1128,7 +1128,7 @@ public class StatementGenerator extends TreeVisitor {
       List<VariableDeclarationExpression> resources) {
     VariableDeclarationExpression resource = resources.get(0);
     // Resource declaration can only have one fragment.
-    String resourceName = resource.getFragments().get(0).getName().getFullyQualifiedName();
+    String resourceName = resource.getFragment(0).getName().getFullyQualifiedName();
     String primaryExceptionName = UnicodeUtils.format("__primaryException%d", resources.size());
 
     buffer.append("{\n");

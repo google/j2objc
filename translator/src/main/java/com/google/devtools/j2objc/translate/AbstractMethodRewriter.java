@@ -89,7 +89,7 @@ public class AbstractMethodRewriter extends TreeVisitor {
     if (!BindingUtil.isVoid(node.getReturnType().getTypeBinding())) {
       bodyCode += "\nreturn 0;"; // Never executes, but avoids a gcc warning.
     }
-    body.getStatements().add(new NativeStatement(bodyCode));
+    body.addStatement(new NativeStatement(bodyCode));
     node.setBody(body);
     node.removeModifiers(Modifier.ABSTRACT);
   }
@@ -193,7 +193,7 @@ public class AbstractMethodRewriter extends TreeVisitor {
 
     boolean isInterface = type.isInterface();
     for (IMethodBinding method : newDeclarations.values()) {
-      node.getBodyDeclarations().add(newReturnTypeNarrowingDeclaration(method, isInterface));
+      node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(method, isInterface));
     }
   }
 
@@ -208,7 +208,7 @@ public class AbstractMethodRewriter extends TreeVisitor {
     }
     int argCount = 0;
     for (ITypeBinding paramType : method.getParameterTypes()) {
-      decl.getParameters().add(new SingleVariableDeclaration(new GeneratedVariableBinding(
+      decl.addParameter(new SingleVariableDeclaration(new GeneratedVariableBinding(
           "arg" + argCount++, 0, paramType, false, true, null, method)));
     }
     return decl;

@@ -447,8 +447,8 @@ public class TreeUtil {
         int nOtherParams = m2.getParameters().size();
         int max = Math.min(nParams, nOtherParams);
         for (int i = 0; i < max; i++) {
-          String paramType = m1.getParameters().get(i).getType().getTypeBinding().getName();
-          String otherParamType = m2.getParameters().get(i).getType().getTypeBinding().getName();
+          String paramType = m1.getParameter(i).getType().getTypeBinding().getName();
+          String otherParamType = m2.getParameter(i).getType().getTypeBinding().getName();
           if (!paramType.equals(otherParamType)) {
             return paramType.compareToIgnoreCase(otherParamType);
           }

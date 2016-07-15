@@ -86,4 +86,14 @@ public class SuperConstructorInvocation extends Statement {
   public SuperConstructorInvocation copy() {
     return new SuperConstructorInvocation(this);
   }
+
+  public SuperConstructorInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
+  }
+
+  public SuperConstructorInvocation addArgument(int index, Expression arg) {
+    arguments.add(index, arg);
+    return this;
+  }
 }

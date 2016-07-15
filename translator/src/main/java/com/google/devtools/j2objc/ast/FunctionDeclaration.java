@@ -70,6 +70,10 @@ public class FunctionDeclaration extends BodyDeclaration {
     return returnType.get();
   }
 
+  public SingleVariableDeclaration getParameter(int index) {
+    return parameters.get(index);
+  }
+
   public List<SingleVariableDeclaration> getParameters() {
     return parameters;
   }
@@ -109,5 +113,10 @@ public class FunctionDeclaration extends BodyDeclaration {
   @Override
   public FunctionDeclaration copy() {
     return new FunctionDeclaration(this);
+  }
+
+  public FunctionDeclaration addParameter(SingleVariableDeclaration param) {
+    parameters.add(param);
+    return this;
   }
 }

@@ -117,4 +117,19 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     Preconditions.checkNotNull(typeMirror);
     Preconditions.checkNotNull(name.get());
   }
+
+  public AbstractTypeDeclaration addBodyDeclaration(BodyDeclaration decl) {
+    bodyDeclarations.add(decl);
+    return this;
+  }
+
+  public AbstractTypeDeclaration addBodyDeclaration(int index, BodyDeclaration decl) {
+    bodyDeclarations.add(index, decl);
+    return this;
+  }
+
+  public AbstractTypeDeclaration addClassInitStatement(int index, Statement stmt) {
+    classInitStatements.add(index, stmt);
+    return this;
+  }
 }

@@ -136,7 +136,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       }
 
       for (String selector : nameTable.getAllSelectors(method)) {
-        node.getBodyDeclarations().add(createDefaultMethodShim(selector, method, type));
+        node.addBodyDeclaration(createDefaultMethodShim(selector, method, type));
       }
     }
   }
@@ -165,7 +165,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
     FunctionInvocation invocation = new FunctionInvocation(fb, method.getReturnType());
 
     // All default method implementations require self as the first function call argument.
-    invocation.getArguments().add(new ThisExpression(type));
+    invocation.addArgument(new ThisExpression(type));
 
     // For each parameter in the default method, assign a name, and use the name in both the
     // method declaration and the function invocation.
@@ -174,8 +174,8 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       String paramName = UnicodeUtils.format("arg%d", i);
       GeneratedVariableBinding varBinding = new GeneratedVariableBinding(paramName, 0, paramType,
           false, true, type, null);
-      methodDecl.getParameters().add(new SingleVariableDeclaration(varBinding));
-      invocation.getArguments().add(new SimpleName(varBinding));
+      methodDecl.addParameter(new SingleVariableDeclaration(varBinding));
+      invocation.addArgument(new SimpleName(varBinding));
     }
 
     Statement stmt = BindingUtil.isVoid(method.getReturnType())
@@ -183,7 +183,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
         : new ReturnStatement(invocation);
 
     Block block = new Block();
-    block.getStatements().add(stmt);
+    block.addStatement(stmt);
     methodDecl.setBody(block);
     return methodDecl;
   }

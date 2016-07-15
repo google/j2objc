@@ -111,6 +111,20 @@ public class ClassInstanceCreation extends Expression {
     type.set(newType);
   }
 
+  public ClassInstanceCreation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
+  }
+
+  public ClassInstanceCreation addArgument(int index, Expression arg) {
+    arguments.add(index, arg);
+    return this;
+  }
+
+  public Expression getArgument(int index) {
+    return arguments.get(index);
+  }
+
   public List<Expression> getArguments() {
     return arguments;
   }

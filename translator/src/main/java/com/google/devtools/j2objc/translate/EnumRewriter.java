@@ -127,10 +127,10 @@ public class EnumRewriter extends TreeVisitor {
       initBinding.addParameter(valueType);
       initBinding.addParameters(methodBinding.getParameterTypes());
       FunctionInvocation initFunc = new FunctionInvocation(initBinding, type);
-      initFunc.getArguments().add(new SimpleName(localEnum));
+      initFunc.addArgument(new SimpleName(localEnum));
       TreeUtil.copyList(constant.getArguments(), initFunc.getArguments());
-      initFunc.getArguments().add(new StringLiteral(varBinding.getName(), typeEnv));
-      initFunc.getArguments().add(new NumberLiteral(i++, typeEnv));
+      initFunc.addArgument(new StringLiteral(varBinding.getName(), typeEnv));
+      initFunc.addArgument(new NumberLiteral(i++, typeEnv));
       initStatements.add(new ExpressionStatement(initFunc));
     }
 
@@ -159,8 +159,8 @@ public class EnumRewriter extends TreeVisitor {
           addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
       ClassInstanceCreation creation = new ClassInstanceCreation(binding);
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      creation.getArguments().add(new StringLiteral(varBinding.getName(), typeEnv));
-      creation.getArguments().add(new NumberLiteral(i++, typeEnv));
+      creation.addArgument(new StringLiteral(varBinding.getName(), typeEnv));
+      creation.addArgument(new NumberLiteral(i++, typeEnv));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varBinding), creation)));
     }
@@ -184,8 +184,8 @@ public class EnumRewriter extends TreeVisitor {
         "__name", 0, typeEnv.resolveIOSType("NSString"), false, true, declaringClass, newBinding);
     ordinalVar = new GeneratedVariableBinding(
         "__ordinal", 0, typeEnv.resolveJavaType("int"), false, true, declaringClass, newBinding);
-    node.getParameters().add(new SingleVariableDeclaration(nameVar));
-    node.getParameters().add(new SingleVariableDeclaration(ordinalVar));
+    node.addParameter(new SingleVariableDeclaration(nameVar));
+    node.addParameter(new SingleVariableDeclaration(ordinalVar));
     return true;
   }
 
@@ -198,16 +198,16 @@ public class EnumRewriter extends TreeVisitor {
   public void endVisit(ConstructorInvocation node) {
     assert nameVar != null && ordinalVar != null;
     node.setMethodBinding(addEnumConstructorParams(node.getMethodBinding()));
-    node.getArguments().add(new SimpleName(nameVar));
-    node.getArguments().add(new SimpleName(ordinalVar));
+    node.addArgument(new SimpleName(nameVar));
+    node.addArgument(new SimpleName(ordinalVar));
   }
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
     assert nameVar != null && ordinalVar != null;
     node.setMethodBinding(addEnumConstructorParams(node.getMethodBinding()));
-    node.getArguments().add(new SimpleName(nameVar));
-    node.getArguments().add(new SimpleName(ordinalVar));
+    node.addArgument(new SimpleName(nameVar));
+    node.addArgument(new SimpleName(ordinalVar));
   }
 
   private void addValuesMethod(EnumDeclaration node) {
@@ -218,10 +218,10 @@ public class EnumRewriter extends TreeVisitor {
     MethodDeclaration methodDecl = new MethodDeclaration(method);
     Block body = new Block();
     methodDecl.setBody(body);
-    body.getStatements().add(new NativeStatement(UnicodeUtils.format(
+    body.addStatement(new NativeStatement(UnicodeUtils.format(
         "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];",
         typeName, node.getEnumConstants().size(), typeName)));
-    node.getBodyDeclarations().add(methodDecl);
+    node.addBodyDeclaration(methodDecl);
   }
 
   private void addValueOfMethod(EnumDeclaration node) {
@@ -234,7 +234,7 @@ public class EnumRewriter extends TreeVisitor {
     GeneratedVariableBinding nameParam = new GeneratedVariableBinding(
         "name", 0, method.getParameterTypes()[0], false, true, null, method);
     MethodDeclaration methodDecl = new MethodDeclaration(method);
-    methodDecl.getParameters().add(new SingleVariableDeclaration(nameParam));
+    methodDecl.addParameter(new SingleVariableDeclaration(nameParam));
     Block body = new Block();
     methodDecl.setBody(body);
 
@@ -252,8 +252,8 @@ public class EnumRewriter extends TreeVisitor {
         "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
         + "  return nil;");
 
-    body.getStatements().add(new NativeStatement(impl.toString()));
-    node.getBodyDeclarations().add(methodDecl);
+    body.addStatement(new NativeStatement(impl.toString()));
+    node.addBodyDeclaration(methodDecl);
   }
 
   private void addExtraNativeDecls(EnumDeclaration node) {
@@ -286,7 +286,7 @@ public class EnumRewriter extends TreeVisitor {
     // values are never deallocated.
     implementation.append("- (id)copyWithZone:(NSZone *)zone {\n  return self;\n}\n");
 
-    node.getBodyDeclarations().add(NativeDeclaration.newInnerDeclaration(
+    node.addBodyDeclaration(NativeDeclaration.newInnerDeclaration(
         header.toString(), implementation.toString()));
 
     StringBuilder outerHeader = new StringBuilder();
@@ -315,10 +315,10 @@ public class EnumRewriter extends TreeVisitor {
 
     NativeDeclaration outerDecl =
         NativeDeclaration.newOuterDeclaration(outerHeader.toString(), outerImpl.toString());
-    outerDecl.getImplementationImportTypes().add(
+    outerDecl.addImplementationImportType(
         GeneratedTypeBinding.newTypeBinding(
             "java.lang.IllegalArgumentException",
             typeEnv.resolveJavaType("java.lang.RuntimeException"), false));
-    node.getBodyDeclarations().add(outerDecl);
+    node.addBodyDeclaration(outerDecl);
   }
 }

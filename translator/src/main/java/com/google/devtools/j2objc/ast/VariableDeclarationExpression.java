@@ -60,6 +60,10 @@ public class VariableDeclarationExpression extends Expression {
     return type.get();
   }
 
+  public VariableDeclarationFragment getFragment(int index) {
+    return fragments.get(index);
+  }
+
   public List<VariableDeclarationFragment> getFragments() {
     return fragments;
   }

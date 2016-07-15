@@ -94,7 +94,7 @@ public class Autoboxer extends TreeVisitor {
         wrapperType, VALUEOF_METHOD, primitiveType.getName());
     assert wrapperMethod != null : "could not find valueOf method for " + wrapperType;
     MethodInvocation invocation = new MethodInvocation(wrapperMethod, new SimpleName(wrapperType));
-    invocation.getArguments().add(expr.copy());
+    invocation.addArgument(expr.copy());
     return invocation;
   }
 
@@ -170,9 +170,9 @@ public class Autoboxer extends TreeVisitor {
     FunctionBinding binding = new FunctionBinding(funcName, type, type);
     binding.addParameters(pointerType, primitiveType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
-    invocation.getArguments().add(new PrefixExpression(
+    invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
-    invocation.getArguments().add(unbox(rhs));
+    invocation.addArgument(unbox(rhs));
     node.replaceWith(invocation);
   }
 
@@ -392,7 +392,7 @@ public class Autoboxer extends TreeVisitor {
     FunctionBinding binding = new FunctionBinding(funcName, type, type);
     binding.addParameter(pointerType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
-    invocation.getArguments().add(new PrefixExpression(
+    invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));
     node.replaceWith(invocation);
   }

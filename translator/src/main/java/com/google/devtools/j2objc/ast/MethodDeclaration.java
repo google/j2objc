@@ -101,6 +101,10 @@ public class MethodDeclaration extends BodyDeclaration {
     name.set(newName);
   }
 
+  public SingleVariableDeclaration getParameter(int index) {
+    return parameters.get(index);
+  }
+
   public List<SingleVariableDeclaration> getParameters() {
     return parameters;
   }
@@ -129,5 +133,15 @@ public class MethodDeclaration extends BodyDeclaration {
   @Override
   public MethodDeclaration copy() {
     return new MethodDeclaration(this);
+  }
+
+  public MethodDeclaration addParameter(SingleVariableDeclaration param) {
+    parameters.add(param);
+    return this;
+  }
+
+  public MethodDeclaration addParameter(int index, SingleVariableDeclaration param) {
+    parameters.add(index, param);
+    return this;
   }
 }

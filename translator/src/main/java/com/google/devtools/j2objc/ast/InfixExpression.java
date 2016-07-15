@@ -170,6 +170,20 @@ public class InfixExpression extends Expression {
     return operator;
   }
 
+  public InfixExpression addOperand(Expression operand) {
+    operands.add(operand);
+    return this;
+  }
+
+  public InfixExpression addOperand(int index, Expression operand) {
+    operands.add(index, operand);
+    return this;
+  }
+
+  public Expression getOperand(int index) {
+    return operands.get(index);
+  }
+
   public List<Expression> getOperands() {
     return operands;
   }

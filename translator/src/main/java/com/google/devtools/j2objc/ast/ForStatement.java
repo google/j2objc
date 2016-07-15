@@ -52,6 +52,10 @@ public class ForStatement extends Statement {
     return Kind.FOR_STATEMENT;
   }
 
+  public Expression getInitializer(int index) {
+    return initializers.get(index);
+  }
+
   public List<Expression> getInitializers() {
     return initializers;
   }

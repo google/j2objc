@@ -85,7 +85,7 @@ public class AnonymousClassConverter extends TreeVisitor {
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
 
     for (BodyDeclaration decl : node.getBodyDeclarations()) {
-      typeDecl.getBodyDeclarations().add(decl.copy());
+      typeDecl.addBodyDeclaration(decl.copy());
     }
 
     // Add a default constructor.
@@ -94,7 +94,7 @@ public class AnonymousClassConverter extends TreeVisitor {
     if (newInvocation != null) {
       newInvocation.setMethodBinding(defaultConstructor);
       if (outerExpression != null) {
-        newInvocation.getArguments().add(0, outerExpression);
+        newInvocation.addArgument(0, outerExpression);
       }
     } else {
       enumConstant.setMethodBinding(defaultConstructor);
@@ -118,10 +118,10 @@ public class AnonymousClassConverter extends TreeVisitor {
     if (outerType.isAnonymous()) {
       AnonymousClassDeclaration outerDecl =
           TreeUtil.getNearestAncestorWithType(AnonymousClassDeclaration.class, parent);
-      outerDecl.getBodyDeclarations().add(typeDecl);
+      outerDecl.addBodyDeclaration(typeDecl);
     } else {
       AbstractTypeDeclaration outerDecl = TreeUtil.getOwningType(parent);
-      outerDecl.getBodyDeclarations().add(typeDecl);
+      outerDecl.addBodyDeclaration(typeDecl);
     }
     typeDecl.setKey(node.getKey());
     super.endVisit(node);
@@ -143,7 +143,7 @@ public class AnonymousClassConverter extends TreeVisitor {
       ITypeBinding outerExpressionType = outerExpression.getTypeBinding();
       GeneratedVariableBinding outerExpressionParam = new GeneratedVariableBinding(
           "superOuter$", Modifier.FINAL, outerExpressionType, false, true, clazz, binding);
-      constructor.getParameters().add(0, new SingleVariableDeclaration(outerExpressionParam));
+      constructor.addParameter(0, new SingleVariableDeclaration(outerExpressionParam));
       binding.addParameter(0, outerExpressionType);
       superCall.setExpression(new SimpleName(outerExpressionParam));
     }
@@ -154,16 +154,16 @@ public class AnonymousClassConverter extends TreeVisitor {
     for (ITypeBinding argType : constructorBinding.getParameterTypes()) {
       GeneratedVariableBinding argBinding = new GeneratedVariableBinding(
           "arg$" + argCount++, 0, argType, false, true, clazz, binding);
-      constructor.getParameters().add(new SingleVariableDeclaration(argBinding));
-      superCall.getArguments().add(new SimpleName(argBinding));
+      constructor.addParameter(new SingleVariableDeclaration(argBinding));
+      superCall.addArgument(new SimpleName(argBinding));
     }
     assert superCall.getArguments().size() == superCallBinding.getParameterTypes().length
         || superCallBinding.isVarargs()
             && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length - 1;
 
-    constructor.getBody().getStatements().add(superCall);
+    constructor.getBody().addStatement(superCall);
 
-    node.getBodyDeclarations().add(constructor);
+    node.addBodyDeclaration(constructor);
     assert constructor.getParameters().size() == binding.getParameterTypes().length;
 
     return binding;

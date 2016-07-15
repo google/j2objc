@@ -69,4 +69,14 @@ public class Block extends Statement {
   public Block copy() {
     return new Block(this);
   }
+
+  public Block addStatement(Statement s) {
+    statements.add(s);
+    return this;
+  }
+
+  public Block addStatement(int index, Statement s) {
+    statements.add(index, s);
+    return this;
+  }
 }

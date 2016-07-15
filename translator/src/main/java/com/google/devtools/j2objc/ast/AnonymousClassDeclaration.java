@@ -77,4 +77,9 @@ public final class AnonymousClassDeclaration extends TreeNode {
   public AnonymousClassDeclaration copy() {
     return new AnonymousClassDeclaration(this);
   }
+
+  public AnonymousClassDeclaration addBodyDeclaration(BodyDeclaration decl) {
+    bodyDeclarations.add(decl);
+    return this;
+  }
 }

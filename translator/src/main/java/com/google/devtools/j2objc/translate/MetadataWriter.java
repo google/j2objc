@@ -93,7 +93,7 @@ public class MetadataWriter extends TreeVisitor {
 
     new MetadataGenerator(node, body.getStatements()).generateClassMetadata();
 
-    node.getBodyDeclarations().add(metadataDecl);
+    node.addBodyDeclaration(metadataDecl);
   }
 
   /**

@@ -71,4 +71,9 @@ public class NativeExpression extends Expression {
   public NativeExpression copy() {
     return new NativeExpression(this);
   }
+
+  public NativeExpression addImportType(ITypeBinding type) {
+    importTypes.add(type);
+    return this;
+  }
 }

@@ -97,7 +97,7 @@ public class OcniExtractor extends TreeVisitor {
     for (Comment comment : blockComments.get(node)) {
       NativeDeclaration nativeDecl = extractNativeDeclaration(comment);
       if (nativeDecl != null) {
-        unit.getNativeBlocks().add(nativeDecl);
+        unit.addNativeBlock(nativeDecl);
       }
     }
   }
@@ -109,7 +109,7 @@ public class OcniExtractor extends TreeVisitor {
       NativeStatement nativeStmt = extractNativeStatement(node);
       if (nativeStmt != null) {
         Block body = new Block();
-        body.getStatements().add(nativeStmt);
+        body.addStatement(nativeStmt);
         node.setBody(body);
         node.removeModifiers(Modifier.NATIVE);
       }
@@ -121,7 +121,7 @@ public class OcniExtractor extends TreeVisitor {
           : new ThisExpression(declaringClass));
       syncStmt.setBody(TreeUtil.remove(node.getBody()));
       Block newBody = new Block();
-      newBody.getStatements().add(syncStmt);
+      newBody.addStatement(syncStmt);
       node.setBody(newBody);
       node.removeModifiers(Modifier.SYNCHRONIZED);
     }

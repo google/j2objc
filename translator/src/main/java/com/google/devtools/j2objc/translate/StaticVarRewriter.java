@@ -68,7 +68,7 @@ public class StaticVarRewriter extends TreeVisitor {
     code.append(nameTable.getVariableShortName(var));
     code.append(")");
     NativeExpression nativeExpr = new NativeExpression(code.toString(), exprType);
-    nativeExpr.getImportTypes().add(var.getDeclaringClass());
+    nativeExpr.addImportType(var.getDeclaringClass());
     Expression newNode = nativeExpr;
     if (assignable) {
       newNode = new PrefixExpression(
@@ -95,12 +95,12 @@ public class StaticVarRewriter extends TreeVisitor {
 
     CommaExpression commaExpr = new CommaExpression(expr);
     if (TranslationUtil.isAssigned(node)) {
-      commaExpr.getExpressions().add(new PrefixExpression(
+      commaExpr.addExpression(new PrefixExpression(
           typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF, varNode));
       node.replaceWith(new PrefixExpression(
           var.getType(), PrefixExpression.Operator.DEREFERENCE, commaExpr));
     } else {
-      commaExpr.getExpressions().add(varNode);
+      commaExpr.addExpression(varNode);
       node.replaceWith(commaExpr);
     }
     commaExpr.accept(this);

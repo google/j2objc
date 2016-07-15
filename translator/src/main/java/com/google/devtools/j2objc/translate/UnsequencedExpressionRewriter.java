@@ -429,7 +429,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
 
   private Expression getConditionChild(TreeNode conditional) {
     if (conditional instanceof InfixExpression) {
-      return ((InfixExpression) conditional).getOperands().get(0);
+      return ((InfixExpression) conditional).getOperand(0);
     } else if (conditional instanceof ConditionalExpression) {
       return ((ConditionalExpression) conditional).getExpression();
     } else {
@@ -605,7 +605,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
           VariableDeclarationStatement newDecl =
               new VariableDeclarationStatement(fragments.get(0).copy());
           for (int j = 1; j < i; j++) {
-            newDecl.getFragments().add(fragments.get(j).copy());
+            newDecl.addFragment(fragments.get(j).copy());
           }
           stmtList.add(newDecl);
           fragments.subList(0, i).clear();

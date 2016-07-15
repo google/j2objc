@@ -131,4 +131,9 @@ public class MethodInvocation extends Expression {
     Preconditions.checkNotNull(methodBinding);
     Preconditions.checkNotNull(name.get());
   }
+
+  public MethodInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
+  }
 }

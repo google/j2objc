@@ -101,4 +101,9 @@ public class SuperMethodInvocation extends Expression {
   public SuperMethodInvocation copy() {
     return new SuperMethodInvocation(this);
   }
+
+  public SuperMethodInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
+  }
 }

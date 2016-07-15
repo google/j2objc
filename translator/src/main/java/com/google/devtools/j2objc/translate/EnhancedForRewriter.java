@@ -111,7 +111,7 @@ public class EnhancedForRewriter extends TreeVisitor {
         new SimpleName(bufferVariable), new SimpleName(endVariable)));
     Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
     loop.setBody(newLoopBody);
-    newLoopBody.getStatements().add(0, new VariableDeclarationStatement(
+    newLoopBody.addStatement(0, new VariableDeclarationStatement(
         loopVariable, new PrefixExpression(
             componentType, PrefixExpression.Operator.DEREFERENCE, new PostfixExpression(
                 bufferVariable, PostfixExpression.Operator.INCREMENT))));
@@ -163,7 +163,7 @@ public class EnhancedForRewriter extends TreeVisitor {
         new MethodInvocation(nextMethod, new SimpleName(iteratorVariable));
 
     Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
-    newLoopBody.getStatements().add(
+    newLoopBody.addStatement(
         0, new VariableDeclarationStatement(loopVariable, nextInvocation));
 
     WhileStatement whileLoop = new WhileStatement();
@@ -199,7 +199,7 @@ public class EnhancedForRewriter extends TreeVisitor {
     IVariableBinding boxVariable = new GeneratedVariableBinding(
         "boxed__", 0, typeArgs[0], false, false, null, null);
     node.setParameter(new SingleVariableDeclaration(boxVariable));
-    makeBlock(node.getBody()).getStatements().add(
+    makeBlock(node.getBody()).addStatement(
         0, new VariableDeclarationStatement(loopVariable, new SimpleName(boxVariable)));
   }
 
@@ -211,7 +211,7 @@ public class EnhancedForRewriter extends TreeVisitor {
     if (stmt.getParent() != null) {
       stmt.replaceWith(block);
     }
-    block.getStatements().add(stmt);
+    block.addStatement(stmt);
     return block;
   }
 }

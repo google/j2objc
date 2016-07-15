@@ -214,4 +214,14 @@ public class CompilationUnit extends TreeNode {
     Preconditions.checkNotNull(source);
     Preconditions.checkNotNull(packageDeclaration);
   }
+
+  public CompilationUnit addNativeBlock(NativeDeclaration decl) {
+    nativeBlocks.add(decl);
+    return this;
+  }
+
+  public CompilationUnit addType(int index, AbstractTypeDeclaration type) {
+    types.add(index, type);
+    return this;
+  }
 }

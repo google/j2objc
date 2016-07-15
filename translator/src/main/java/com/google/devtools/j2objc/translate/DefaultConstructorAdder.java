@@ -62,6 +62,6 @@ public class DefaultConstructorAdder extends TreeVisitor {
   private void addDefaultConstructor(AbstractTypeDeclaration node, IMethodBinding methodBinding) {
     MethodDeclaration methodDecl = new MethodDeclaration(methodBinding);
     methodDecl.setBody(new Block());
-    node.getBodyDeclarations().add(methodDecl);
+    node.addBodyDeclaration(methodDecl);
   }
 }

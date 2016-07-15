@@ -85,7 +85,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
       assert !node.hasRetainedResult();
       if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {
         // Special case: replace new String(constant) to constant (avoid clang warning).
-        Expression arg = node.getArguments().get(0);
+        Expression arg = node.getArgument(0);
         if (arg instanceof StringLiteral) {
           node.replaceWith(arg.copy());
           return false;
@@ -131,7 +131,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
         "zone", 0, typeEnv.resolveIOSType("NSZone"), false, true, binding.getDeclaringClass(),
         binding);
     binding.addParameter(zoneBinding.getType());
-    cloneMethod.getParameters().add(new SingleVariableDeclaration(zoneBinding));
+    cloneMethod.addParameter(new SingleVariableDeclaration(zoneBinding));
 
     Block block = new Block();
     cloneMethod.setBody(block);
@@ -142,8 +142,8 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     if (Options.useReferenceCounting()) {
       invocation = new MethodInvocation(typeEnv.getRetainMethod(), invocation);
     }
-    block.getStatements().add(new ReturnStatement(invocation));
+    block.addStatement(new ReturnStatement(invocation));
 
-    node.getBodyDeclarations().add(cloneMethod);
+    node.addBodyDeclaration(cloneMethod);
   }
 }

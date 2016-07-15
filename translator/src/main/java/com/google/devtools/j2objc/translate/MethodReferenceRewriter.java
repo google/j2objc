@@ -143,7 +143,7 @@ public class MethodReferenceRewriter extends TreeVisitor {
     addParamsToInvocation(params, invocation.getArguments());
     node.replaceWith(callExpression);
   }
-  
+
   private void extractFieldInitializers(FieldDeclaration decl) {
     Initializer init = new Initializer(new Block(),
         Modifier.isStatic(decl.getModifiers()));
@@ -152,10 +152,10 @@ public class MethodReferenceRewriter extends TreeVisitor {
       IVariableBinding memberVar = memberDeclaration.getVariableBinding();
       Assignment assignment = new Assignment(new SimpleName(memberVar),
           TreeUtil.remove(memberDeclaration.getInitializer()));
-      init.getBody().getStatements().add(new ExpressionStatement(assignment));
+      init.getBody().addStatement(new ExpressionStatement(assignment));
     }
   }
-  
+
   private boolean isFinalExpression(Expression expr) {
     if (expr instanceof ThisExpression) {
       return true;
@@ -221,7 +221,7 @@ public class MethodReferenceRewriter extends TreeVisitor {
       GeneratedVariableBinding param = new GeneratedVariableBinding(
           getParamName(i), 0, paramTypes[i], false, true, null, null);
       params.add(param);
-      lambda.getParameters().add(new VariableDeclarationFragment(param, null));
+      lambda.addParameter(new VariableDeclarationFragment(param, null));
     }
     return params.iterator();
   }

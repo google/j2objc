@@ -107,7 +107,7 @@ public class CastResolver extends TreeVisitor {
     FunctionBinding binding = new FunctionBinding(funcName, funcReturnType, null);
     binding.addParameter(typeEnv.resolveJavaType("double"));
     FunctionInvocation invocation = new FunctionInvocation(binding, funcReturnType);
-    invocation.getArguments().add(TreeUtil.remove(expr));
+    invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
     if (!castType.isEqualTo(funcReturnType)) {
       newExpr = new CastExpression(castType, newExpr);
@@ -124,17 +124,17 @@ public class CastResolver extends TreeVisitor {
       FunctionBinding binding = new FunctionBinding("cast_check", idType, null);
       binding.addParameters(idType, typeEnv.getIOSClass());
       invocation = new FunctionInvocation(binding, idType);
-      invocation.getArguments().add(TreeUtil.remove(expr));
-      invocation.getArguments().add(new TypeLiteral(type, typeEnv));
+      invocation.addArgument(TreeUtil.remove(expr));
+      invocation.addArgument(new TypeLiteral(type, typeEnv));
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
       FunctionBinding binding = new FunctionBinding("cast_chk", idType, null);
       binding.addParameters(idType, idType);
       invocation = new FunctionInvocation(binding, idType);
-      invocation.getArguments().add(TreeUtil.remove(expr));
+      invocation.addArgument(TreeUtil.remove(expr));
       IOSMethodBinding classBinding = IOSMethodBinding.newMethod(
           "class", Modifier.STATIC, idType, type);
       MethodInvocation classInvocation = new MethodInvocation(classBinding, new SimpleName(type));
-      invocation.getArguments().add(classInvocation);
+      invocation.addArgument(classInvocation);
     }
     return invocation;
   }
@@ -397,11 +397,11 @@ public class CastResolver extends TreeVisitor {
       return;
     }
 
-    IVariableBinding param = node.getParameters().get(0).getVariableBinding();
+    IVariableBinding param = node.getParameter(0).getVariableBinding();
 
     FunctionInvocation castCheck = createCastCheck(typeArguments[0], new SimpleName(param));
     if (castCheck != null) {
-      node.getBody().getStatements().add(0, new ExpressionStatement(castCheck));
+      node.getBody().addStatement(0, new ExpressionStatement(castCheck));
     }
   }
 

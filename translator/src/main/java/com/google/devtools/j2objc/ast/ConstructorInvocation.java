@@ -74,4 +74,9 @@ public class ConstructorInvocation extends Statement {
   public ConstructorInvocation copy() {
     return new ConstructorInvocation(this);
   }
+
+  public ConstructorInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
+  }
 }

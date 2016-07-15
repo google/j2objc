@@ -62,6 +62,10 @@ public class FieldDeclaration extends BodyDeclaration {
     return type.get();
   }
 
+  public VariableDeclarationFragment getFragment(int index) {
+    return fragments.get(index);
+  }
+
   public List<VariableDeclarationFragment> getFragments() {
     return fragments;
   }

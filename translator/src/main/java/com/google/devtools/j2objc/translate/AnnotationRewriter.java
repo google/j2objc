@@ -83,7 +83,7 @@ public class AnnotationRewriter extends TreeVisitor {
       String propName = NameTable.getAnnotationPropertyName(memberBinding);
       GeneratedVariableBinding field = new GeneratedVariableBinding(
           propName, BindingUtil.ACC_SYNTHETIC, memberType, true, false, type, null);
-      node.getBodyDeclarations().add(new FieldDeclaration(field, null));
+      node.addBodyDeclaration(new FieldDeclaration(field, null));
       fieldBindings.put(memberBinding, field);
     }
     return fieldBindings;
@@ -114,7 +114,7 @@ public class AnnotationRewriter extends TreeVisitor {
       }
       propertyImpls.append(UnicodeUtils.format("@synthesize %s = %s;\n", propName, fieldName));
     }
-    node.getBodyDeclarations().add(NativeDeclaration.newInnerDeclaration(
+    node.addBodyDeclaration(NativeDeclaration.newInnerDeclaration(
         propertyDecls.toString(), propertyImpls.toString()));
   }
 
@@ -139,8 +139,8 @@ public class AnnotationRewriter extends TreeVisitor {
       defaultGetter.setHasDeclaration(false);
       Block defaultGetterBody = new Block();
       defaultGetter.setBody(defaultGetterBody);
-      defaultGetterBody.getStatements().add(new ReturnStatement(TreeUtil.remove(defaultExpr)));
-      node.getBodyDeclarations().add(defaultGetter);
+      defaultGetterBody.addStatement(new ReturnStatement(TreeUtil.remove(defaultExpr)));
+      node.addBodyDeclaration(defaultGetter);
     }
   }
 
@@ -163,13 +163,13 @@ public class AnnotationRewriter extends TreeVisitor {
 
       GeneratedVariableBinding param = new GeneratedVariableBinding(
           propName, 0, memberType, false, true, null, null);
-      constructorDecl.getParameters().add(new SingleVariableDeclaration(param));
+      constructorDecl.addParameter(new SingleVariableDeclaration(param));
       String rhs = memberType.isPrimitive() ? propName : "RETAIN_(" + propName + ")";
       stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
     }
 
     stmts.add(new NativeStatement("return self;"));
-    node.getBodyDeclarations().add(constructorDecl);
+    node.addBodyDeclaration(constructorDecl);
   }
 
   private MethodDeclaration createAnnotationTypeMethod(ITypeBinding type) {
@@ -179,7 +179,7 @@ public class AnnotationRewriter extends TreeVisitor {
     annotationTypeMethod.setHasDeclaration(false);
     Block annotationTypeBody = new Block();
     annotationTypeMethod.setBody(annotationTypeBody);
-    annotationTypeBody.getStatements().add(new ReturnStatement(new TypeLiteral(type, typeEnv)));
+    annotationTypeBody.addStatement(new ReturnStatement(new TypeLiteral(type, typeEnv)));
     return annotationTypeMethod;
   }
 
@@ -190,7 +190,7 @@ public class AnnotationRewriter extends TreeVisitor {
     descriptionMethod.setHasDeclaration(false);
     Block descriptionBody = new Block();
     descriptionMethod.setBody(descriptionBody);
-    descriptionBody.getStatements().add(new ReturnStatement(
+    descriptionBody.addStatement(new ReturnStatement(
         new StringLiteral("@" + type.getBinaryName() + "()", typeEnv)));
     return descriptionMethod;
   }

@@ -61,4 +61,9 @@ public class CommaExpression extends Expression {
   public CommaExpression copy() {
     return new CommaExpression(this);
   }
+
+  public CommaExpression addExpression(Expression e) {
+    expressions.add(e);
+    return this;
+  }
 }

@@ -95,7 +95,7 @@ public class DestructorGenerator extends TreeVisitor {
       stmts.add(new ExpressionStatement(new SuperMethodInvocation(typeEnv.getDeallocMethod())));
     }
 
-    node.getBodyDeclarations().add(deallocDecl);
+    node.addBodyDeclaration(deallocDecl);
   }
 
   private boolean hasFinalizeMethod(ITypeBinding type) {
@@ -146,7 +146,7 @@ public class DestructorGenerator extends TreeVisitor {
     FunctionInvocation releaseInvocation = new FunctionInvocation(binding, voidType);
     if (isRetainedWith) {
       binding.addParameter(idType);
-      releaseInvocation.getArguments().add(new ThisExpression(var.getDeclaringClass()));
+      releaseInvocation.addArgument(new ThisExpression(var.getDeclaringClass()));
     }
     binding.addParameter(isVolatile ? typeEnv.getPointerType(idType) : idType);
     Expression arg = new SimpleName(var);
@@ -154,7 +154,7 @@ public class DestructorGenerator extends TreeVisitor {
       arg = new PrefixExpression(
           typeEnv.getPointerType(varType), PrefixExpression.Operator.ADDRESS_OF, arg);
     }
-    releaseInvocation.getArguments().add(arg);
+    releaseInvocation.addArgument(arg);
     return new ExpressionStatement(releaseInvocation);
   }
 }

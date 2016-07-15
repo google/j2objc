@@ -82,6 +82,11 @@ public class VariableDeclarationStatement extends Statement {
     type.set(newType);
   }
 
+  public VariableDeclarationStatement addFragment(VariableDeclarationFragment fragment) {
+    fragments.add(fragment);
+    return this;
+  }
+
   public List<VariableDeclarationFragment> getFragments() {
     return fragments;
   }

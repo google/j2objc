@@ -72,6 +72,15 @@ public class FunctionInvocation extends Expression {
     this.hasRetainedResult = hasRetainedResult;
   }
 
+  public FunctionInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
+  }
+
+  public Expression getArgument(int index) {
+    return arguments.get(index);
+  }
+
   public List<Expression> getArguments() {
     return arguments;
   }

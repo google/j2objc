@@ -127,4 +127,9 @@ public class LambdaExpression extends Expression {
   public void setIsCapturing(boolean isCapturing) {
     this.isCapturing = isCapturing;
   }
+
+  public LambdaExpression addParameter(VariableDeclaration param) {
+    parameters.add(param);
+    return this;
+  }
 }

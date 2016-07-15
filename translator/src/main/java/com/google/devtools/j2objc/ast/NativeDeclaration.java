@@ -95,4 +95,9 @@ public class NativeDeclaration extends BodyDeclaration {
   public NativeDeclaration copy() {
     return new NativeDeclaration(this);
   }
+
+  public NativeDeclaration addImplementationImportType(ITypeBinding type) {
+    implementationImportTypes.add(type);
+    return this;
+  }
 }

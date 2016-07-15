@@ -122,8 +122,8 @@ class RuntimeAnnotationGenerator {
     decl.addModifiers(Modifier.PRIVATE);
     Block body = new Block();
     decl.setBody(body);
-    body.getStatements().add(new ReturnStatement(result));
-    typeNode.getBodyDeclarations().add(decl);
+    body.addStatement(new ReturnStatement(result));
+    typeNode.addBodyDeclaration(decl);
     return name;
   }
 
@@ -152,7 +152,7 @@ class RuntimeAnnotationGenerator {
     for (IMemberValuePairBinding valueBinding :
          BindingUtil.getSortedMemberValuePairs(annotationBinding)) {
       binding.addParameter(valueBinding.getMethodBinding().getReturnType());
-      invocation.getArguments().add(createAnnotationValue(valueBinding.getValue()));
+      invocation.addArgument(createAnnotationValue(valueBinding.getValue()));
     }
     return invocation;
   }

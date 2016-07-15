@@ -71,10 +71,10 @@ public class PackageInfoRewriter {
     TreeUtil.moveList(pkg.getAnnotations(), typeDecl.getAnnotations());
 
     if (prefix != null) {
-      typeDecl.getBodyDeclarations().add(createPrefixMethod(prefix, typeBinding));
+      typeDecl.addBodyDeclaration(createPrefixMethod(prefix, typeBinding));
     }
 
-    unit.getTypes().add(0, typeDecl);
+    unit.addType(0, typeDecl);
   }
 
   private static String getPackagePrefix(PackageDeclaration pkg) {
@@ -92,7 +92,7 @@ public class PackageInfoRewriter {
     method.setHasDeclaration(false);
     Block body = new Block();
     method.setBody(body);
-    body.getStatements().add(new ReturnStatement(new StringLiteral(prefix, typeEnv)));
+    body.addStatement(new ReturnStatement(new StringLiteral(prefix, typeEnv)));
     return method;
   }
 }

@@ -92,17 +92,17 @@ public class ArrayRewriter extends TreeVisitor {
     // Create the array initializer and add it as the first parameter.
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     for (Expression element : elements) {
-      arrayInit.getExpressions().add(element.copy());
+      arrayInit.addExpression(element.copy());
     }
-    invocation.getArguments().add(arrayInit);
+    invocation.addArgument(arrayInit);
 
     // Add the array size parameter.
-    invocation.getArguments().add(
+    invocation.addArgument(
         NumberLiteral.newIntLiteral(arrayInit.getExpressions().size(), typeEnv));
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
+      invocation.addArgument(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
@@ -154,11 +154,11 @@ public class ArrayRewriter extends TreeVisitor {
         new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
 
     // Add the array length argument.
-    invocation.getArguments().add(dimensionExpr.copy());
+    invocation.addArgument(dimensionExpr.copy());
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
+      invocation.addArgument(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
@@ -179,18 +179,18 @@ public class ArrayRewriter extends TreeVisitor {
         new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
 
     // Add the dimension count argument.
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions.size(), typeEnv));
+    invocation.addArgument(NumberLiteral.newIntLiteral(dimensions.size(), typeEnv));
 
     // Create the dimensions array.
     ArrayInitializer dimensionsArg = new ArrayInitializer(
         GeneratedTypeBinding.newArrayType(typeEnv.resolveJavaType("int")));
     for (Expression e : dimensions) {
-      dimensionsArg.getExpressions().add(e.copy());
+      dimensionsArg.addExpression(e.copy());
     }
-    invocation.getArguments().add(dimensionsArg);
+    invocation.addArgument(dimensionsArg);
 
     if (!componentType.isPrimitive()) {
-      invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
+      invocation.addArgument(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
@@ -250,8 +250,8 @@ public class ArrayRewriter extends TreeVisitor {
     FunctionBinding binding = new FunctionBinding(funcName, declaredReturnType, iosArrayBinding);
     binding.addParameters(iosArrayBinding, typeEnv.resolveJavaType("int"));
     FunctionInvocation invocation = new FunctionInvocation(binding, returnType);
-    invocation.getArguments().add(arrayAccessNode.getArray().copy());
-    invocation.getArguments().add(arrayAccessNode.getIndex().copy());
+    invocation.addArgument(arrayAccessNode.getArray().copy());
+    invocation.addArgument(arrayAccessNode.getIndex().copy());
     if (assignable) {
       return new PrefixExpression(componentType, PrefixExpression.Operator.DEREFERENCE, invocation);
     }
@@ -313,7 +313,7 @@ public class ArrayRewriter extends TreeVisitor {
         "isInstance", Modifier.PUBLIC, typeEnv.resolveJavaType("boolean"), typeEnv.getIOSClass());
     binding.addParameter(typeEnv.resolveIOSType("id"));
     MethodInvocation invocation = new MethodInvocation(binding, new TypeLiteral(type, typeEnv));
-    invocation.getArguments().add(TreeUtil.remove(node.getLeftOperand()));
+    invocation.addArgument(TreeUtil.remove(node.getLeftOperand()));
     node.replaceWith(invocation);
   }
 }

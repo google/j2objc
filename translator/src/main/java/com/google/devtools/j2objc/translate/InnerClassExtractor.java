@@ -146,7 +146,7 @@ public class InnerClassExtractor extends TreeVisitor {
 
     List<IVariableBinding> innerFields = outerResolver.getInnerFields(clazz);
     for (IVariableBinding field : innerFields) {
-      node.getBodyDeclarations().add(new FieldDeclaration(field, null));
+      node.addBodyDeclaration(new FieldDeclaration(field, null));
     }
   }
 
@@ -260,7 +260,7 @@ public class InnerClassExtractor extends TreeVisitor {
     path.set(0, (VariableElement) BindingConverter.getElement(outerParamBinding));
     Name superOuterArg = Name.newName(path);
 
-    superCall.getArguments().add(0, superOuterArg);
+    superCall.addArgument(0, superOuterArg);
     superCallBinding.addParameter(0, superType.getDeclaringClass());
   }
 }

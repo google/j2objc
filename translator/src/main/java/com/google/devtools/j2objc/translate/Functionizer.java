@@ -218,7 +218,7 @@ public class Functionizer extends TreeVisitor {
       Statement node, IMethodBinding binding, List<Expression> args) {
     FunctionInvocation invocation = new FunctionInvocation(
         newFunctionBinding(binding), binding.getReturnType());
-    invocation.getArguments().add(new ThisExpression(binding.getDeclaringClass()));
+    invocation.addArgument(new ThisExpression(binding.getDeclaringClass()));
     TreeUtil.moveList(args, invocation.getArguments());
     node.replaceWith(new ExpressionStatement(invocation));
   }
@@ -315,7 +315,7 @@ public class Functionizer extends TreeVisitor {
     if (!BindingUtil.isStatic(m)) {
       GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
           declaringClass, false, true, declaringClass, null);
-      function.getParameters().add(new SingleVariableDeclaration(var));
+      function.addParameter(new SingleVariableDeclaration(var));
     }
     TreeUtil.copyList(method.getParameters(), function.getParameters());
 
@@ -339,7 +339,7 @@ public class Functionizer extends TreeVisitor {
       ITypeBinding voidType = typeEnv.resolveJavaType("void");
       FunctionBinding initBinding = new FunctionBinding(initName, voidType, declaringClass);
       FunctionInvocation initCall = new FunctionInvocation(initBinding, voidType);
-      function.getBody().getStatements().add(0, new ExpressionStatement(initCall));
+      function.getBody().addStatement(0, new ExpressionStatement(initCall));
     }
 
     if (!BindingUtil.isStatic(m)) {
@@ -375,7 +375,7 @@ public class Functionizer extends TreeVisitor {
       sb.append(", ").append(nameTable.getVariableQualifiedName(param.getVariableBinding()));
     }
     sb.append(")");
-    body.getStatements().add(new NativeStatement(sb.toString()));
+    body.addStatement(new NativeStatement(sb.toString()));
 
     return function;
   }
@@ -417,7 +417,7 @@ public class Functionizer extends TreeVisitor {
     private final IVariableBinding selfParam;
 
     static void convert(FunctionDeclaration function) {
-      IVariableBinding selfParam = function.getParameters().get(0).getVariableBinding();
+      IVariableBinding selfParam = function.getParameter(0).getVariableBinding();
       function.accept(new FunctionConverter(selfParam));
     }
 

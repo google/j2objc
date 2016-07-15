@@ -70,8 +70,8 @@ public class JavaCloneWriter extends TreeVisitor {
 
     MethodDeclaration declaration = new MethodDeclaration(methodBinding);
     declaration.setHasDeclaration(false);
-    node.getBodyDeclarations().add(declaration);
-    declaration.getParameters().add(new SingleVariableDeclaration(originalVar));
+    node.addBodyDeclaration(declaration);
+    declaration.addParameter(new SingleVariableDeclaration(originalVar));
 
     Block body = new Block();
     declaration.setBody(body);
@@ -81,7 +81,7 @@ public class JavaCloneWriter extends TreeVisitor {
     IOSMethodBinding cloneMethod = IOSMethodBinding.newMethod(
         JAVA_CLONE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
     SuperMethodInvocation superCall = new SuperMethodInvocation(cloneMethod);
-    superCall.getArguments().add(new SimpleName(originalVar));
+    superCall.addArgument(new SimpleName(originalVar));
     statements.add(new ExpressionStatement(superCall));
 
     statements.addAll(adjustments);
@@ -111,7 +111,7 @@ public class JavaCloneWriter extends TreeVisitor {
       FunctionBinding binding = new FunctionBinding("JreRelease", voidType, null);
       binding.addParameter(typeEnv.resolveIOSType("id"));
       FunctionInvocation invocation = new FunctionInvocation(binding, voidType);
-      invocation.getArguments().add(new SimpleName(var));
+      invocation.addArgument(new SimpleName(var));
       return new ExpressionStatement(invocation);
     } else {
       return new ExpressionStatement(
@@ -127,9 +127,9 @@ public class JavaCloneWriter extends TreeVisitor {
     FunctionBinding binding = new FunctionBinding(funcName, voidType, null);
     binding.addParameters(pointerType, pointerType);
     FunctionInvocation invocation = new FunctionInvocation(binding, voidType);
-    invocation.getArguments().add(new PrefixExpression(
+    invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
-    invocation.getArguments().add(new PrefixExpression(
+    invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF,
         new FieldAccess(var, new SimpleName(originalVar))));
     return new ExpressionStatement(invocation);

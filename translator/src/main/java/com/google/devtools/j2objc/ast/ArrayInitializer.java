@@ -78,4 +78,9 @@ public class ArrayInitializer extends Expression {
   public ArrayInitializer copy() {
     return new ArrayInitializer(this);
   }
+
+  public ArrayInitializer addExpression(Expression e) {
+    expressions.add(e);
+    return this;
+  }
 }

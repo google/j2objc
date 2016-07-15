@@ -189,8 +189,8 @@ public class LambdaRewriter extends TreeVisitor {
       funcGet = new FunctionDeclaration(lambdaGetName, lambdaType, enclosingTypeBinding);
       funcGet.addModifiers(Modifier.PRIVATE);
       funcGet.setBody(new Block());
-      funcGet.getBody().getStatements().add(new NativeStatement("static dispatch_once_t token;"));
-      enclosingType.getBodyDeclarations().add(0, funcGet);
+      funcGet.getBody().addStatement(new NativeStatement("static dispatch_once_t token;"));
+      enclosingType.addBodyDeclaration(0, funcGet);
     }
 
     private void createFunctionGetInvocation() {
@@ -215,11 +215,11 @@ public class LambdaRewriter extends TreeVisitor {
                   new GeneratedVariableBinding("_cmd", 0, SELType, false, true, null, null)));
 
       for (VariableDeclaration d : node.getParameters()) {
-        funcImpl.getParameters().add(new SingleVariableDeclaration(d.getVariableBinding()));
+        funcImpl.addParameter(new SingleVariableDeclaration(d.getVariableBinding()));
       }
 
       funcImpl.setBody((Block) TreeUtil.remove(node.getBody()));
-      enclosingType.getBodyDeclarations().add(0, funcImpl);
+      enclosingType.addBodyDeclaration(0, funcImpl);
     }
 
     private void createFunctionDealloc() {
@@ -238,7 +238,7 @@ public class LambdaRewriter extends TreeVisitor {
               new SingleVariableDeclaration(
                   new GeneratedVariableBinding("_cmd", 0, SELType, false, true, null, null)));
 
-      enclosingType.getBodyDeclarations().add(0, funcDealloc);
+      enclosingType.addBodyDeclaration(0, funcDealloc);
     }
 
     private void addInternalNonCapturing() {
@@ -324,13 +324,13 @@ public class LambdaRewriter extends TreeVisitor {
                 nameTable.getObjCType(outerField.getType())
                 + " self = captures->" + outerField.getName() + ";"));
 
-        funcGet.getParameters().add(new SingleVariableDeclaration(outerField));
+        funcGet.addParameter(new SingleVariableDeclaration(outerField));
 
         List<VariableElement> pathToOuter = outerResolver.getPath(node);
         if (pathToOuter != null) {
-          funcGetInvocation.getArguments().add(Name.newName(pathToOuter));
+          funcGetInvocation.addArgument(Name.newName(pathToOuter));
         } else {
-          funcGetInvocation.getArguments().add(new ThisExpression(outerField.getType()));
+          funcGetInvocation.addArgument(new ThisExpression(outerField.getType()));
         }
       }
 
@@ -369,8 +369,8 @@ public class LambdaRewriter extends TreeVisitor {
             new NativeStatement(
                 nameTable.getObjCType(var.asType()) + " " + varName
                 + " = captures->" + varName + ";"));
-        funcGet.getParameters().add(new SingleVariableDeclaration(var));
-        funcGetInvocation.getArguments().add(Name.newName(varPath));
+        funcGet.addParameter(new SingleVariableDeclaration(var));
+        funcGetInvocation.addArgument(Name.newName(varPath));
       }
 
       statements.add(new NativeStatement("return [result autorelease];"));
@@ -381,7 +381,7 @@ public class LambdaRewriter extends TreeVisitor {
               "typedef struct " + lambdaCaptureStructName + " {\n"
                   + structContents
               + "} " + lambdaCaptureStructName + ";\n");
-      enclosingType.getBodyDeclarations().add(0, lambdaCaptureStruct);
+      enclosingType.addBodyDeclaration(0, lambdaCaptureStruct);
     }
 
     FunctionInvocation getFunctionGetInvocation() {

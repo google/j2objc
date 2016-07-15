@@ -158,7 +158,7 @@ public class OperatorRewriter extends TreeVisitor {
       binding.addParameter(typeEnv.getPointerType(idType));
       FunctionInvocation invocation = new FunctionInvocation(binding, type);
       node.replaceWith(invocation);
-      invocation.getArguments().add(new PrefixExpression(
+      invocation.addArgument(new PrefixExpression(
           typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, node));
     }
   }
@@ -219,7 +219,7 @@ public class OperatorRewriter extends TreeVisitor {
     CommaExpression commaExpr = new CommaExpression(
         new Assignment(new SimpleName(targetVar), target));
     node.replaceWith(commaExpr);
-    commaExpr.getExpressions().add(node);
+    commaExpr.addExpression(node);
     return new SimpleName(targetVar);
   }
 

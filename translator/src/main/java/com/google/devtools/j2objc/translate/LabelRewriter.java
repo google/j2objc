@@ -124,8 +124,8 @@ public class LabelRewriter extends TreeVisitor {
       // the scope of any variable initializations.
       Block newBlock = new Block();
       loopBody.replaceWith(newBlock);
-      newBlock.getStatements().add(loopBody);
-      newBlock.getStatements().add(newLabelStmt);
+      newBlock.addStatement(loopBody);
+      newBlock.addStatement(newLabelStmt);
     }
     if (hasBreak[0]) {
       LabeledStatement newLabelStmt = new LabeledStatement("break_" + labelIdentifier);
