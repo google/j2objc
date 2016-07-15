@@ -160,3 +160,7 @@ void Java_java_util_regex_Matcher_setInputImpl(
   Java_java_util_regex_Matcher_useAnchoringBoundsImpl(env, cls, addr, anchoringBounds);
   Java_java_util_regex_Matcher_useTransparentBoundsImpl(env, cls, addr, transparentBounds);
 }
+
+void Java_java_util_regex_Matcher_initICU(JNIEnv *env, jclass cls) {
+  J2ObjC_icu_init();
+}

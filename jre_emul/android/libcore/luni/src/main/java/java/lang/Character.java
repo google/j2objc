@@ -18,7 +18,6 @@
 package java.lang;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -3531,4 +3530,12 @@ public final class Character implements Serializable, Comparable<Character> {
       }
       return mid - (c < value ? 1 : 0);
     }
+
+    static {
+      initICU();
+    }
+
+    private static native void initICU() /*-[
+      J2ObjC_icu_init();
+    ]-*/;
 }

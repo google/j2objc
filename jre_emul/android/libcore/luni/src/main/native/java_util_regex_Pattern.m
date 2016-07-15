@@ -65,6 +65,8 @@ void Java_java_util_regex_Pattern_closeImpl(JNIEnv *env, jclass cls, jlong addr)
 
 jlong Java_java_util_regex_Pattern_compileImpl(
     JNIEnv *env, jclass cls, NSString *regex, jint flags) {
+  J2ObjC_icu_init();
+
   flags |= UREGEX_ERROR_ON_UNKNOWN_ESCAPES;
 
   UErrorCode status = U_ZERO_ERROR;
@@ -94,6 +96,8 @@ extern bool maybeThrowIcuException(const char* function, UErrorCode error);
 
 jboolean Java_java_util_regex_Pattern_matches(
     JNIEnv *env, jclass cls, NSString *regex, NSString *input) {
+  J2ObjC_icu_init();
+
   URegularExpression *pattern = (URegularExpression *)
       Java_java_util_regex_Pattern_compileImpl(env, cls, regex, 0);
   int32_t len = (int32_t)[input length];

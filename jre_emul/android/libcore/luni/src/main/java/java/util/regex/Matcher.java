@@ -593,6 +593,10 @@ public final class Matcher implements MatchResult {
         return matchOffsets[group * 2];
     }
 
+    static {
+      initICU();
+    }
+
     private static native void closeImpl(long addr);
     private static native boolean findImpl(long addr, int startIndex, int[] offsets);
     private static native boolean findNextImpl(long addr, int[] offsets);
@@ -606,4 +610,5 @@ public final class Matcher implements MatchResult {
         boolean anchoringBounds, boolean transparentBounds);
     private static native void useAnchoringBoundsImpl(long addr, boolean value);
     private static native void useTransparentBoundsImpl(long addr, boolean value);
+    private static native void initICU();
 }
