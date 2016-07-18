@@ -14,8 +14,9 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +85,22 @@ class JdtTypeElement extends JdtElement implements TypeElement {
     return decl.isTopLevel()
         ? BindingConverter.getElement(decl.getPackage())
         : BindingConverter.getElement(decl.getDeclaringClass());
+  }
+
+  @Override
+  public List<? extends Element> getEnclosedElements() {
+    ITypeBinding decl = (ITypeBinding) binding;
+    List<Element> toReturn = new ArrayList<>();
+    for (IVariableBinding i : decl.getDeclaredFields()) {
+      toReturn.add(BindingConverter.getElement(i));
+    }
+    for (IMethodBinding i : decl.getDeclaredMethods()) {
+      toReturn.add(BindingConverter.getElement(i));
+    }
+    for (ITypeBinding i : decl.getDeclaredTypes()) {
+      toReturn.add(BindingConverter.getElement(i));
+    }
+    return toReturn;
   }
 
   @Override

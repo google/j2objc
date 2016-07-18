@@ -46,6 +46,11 @@ public class FunctionInvocation extends Expression {
     this.typeMirror = BindingConverter.getType(typeBinding);
   }
 
+  public FunctionInvocation(FunctionBinding functionBinding, TypeMirror typeMirror) {
+    this.functionBinding = functionBinding;
+    this.typeMirror = typeMirror;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.FUNCTION_INVOCATION;

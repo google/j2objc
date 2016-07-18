@@ -56,7 +56,7 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
   @Override
   public TypeMirror getReturnType() {
-    return BindingConverter.getType(((JdtMethodBinding) binding).getDeclaringClass());
+    return BindingConverter.getType(((JdtMethodBinding) binding).getReturnType());
   }
 
   @Override

@@ -28,7 +28,7 @@ import javax.lang.model.type.TypeMirror;
 class JdtTypeParameterElement extends JdtElement implements TypeParameterElement {
 
   JdtTypeParameterElement(ITypeBinding binding) {
-    super(binding.getTypeDeclaration(), binding.getName(), 0);
+    super(binding, binding.getName(), 0);
   }
 
   @Override

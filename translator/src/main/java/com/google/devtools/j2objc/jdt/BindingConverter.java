@@ -292,8 +292,7 @@ public final class BindingConverter {
       element = new JdtPackageElement((JdtPackageBinding) binding);
     } else if (binding instanceof JdtTypeBinding) {
       JdtTypeBinding typeBinding = (JdtTypeBinding) binding;
-      element = typeBinding.isParameterizedType()
-          ? new JdtTypeParameterElement(typeBinding) : new JdtTypeElement(typeBinding);
+      element = new JdtTypeElement(typeBinding);
     } else if (binding instanceof JdtVariableBinding) {
       element = new JdtVariableElement((JdtVariableBinding) binding);
     } else {
@@ -322,11 +321,15 @@ public final class BindingConverter {
     return element != null ? ((JdtElement) element).binding : null;
   }
 
-  public static ITypeBinding unwrapTypeMirrorIntoTypeBinding(TypeMirror t) {
+  public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {
     if (t == null) {
       return null;
     }
-    IBinding b = ((JdtTypeMirror) t).binding;
+    return ((JdtTypeMirror) t).binding;
+  }
+
+  public static ITypeBinding unwrapTypeMirrorIntoTypeBinding(TypeMirror t) {
+    IBinding b = unwrapTypeMirrorIntoBinding(t);
     return b instanceof ITypeBinding ? (ITypeBinding) b : null;
   }
 

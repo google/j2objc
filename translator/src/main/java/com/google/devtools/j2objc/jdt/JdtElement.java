@@ -122,6 +122,17 @@ abstract class JdtElement implements Element {
       if ((modifiers & java.lang.reflect.Modifier.STRICT) > 0) {
         set.add(Modifier.STRICTFP);
       }
+      // Indirectly check whether Modifier.DEFAULT exists, since it was
+      // added in Java 8.
+      if ((modifiers & org.eclipse.jdt.core.dom.Modifier.DEFAULT) > 0) {
+        try {
+          Modifier m = Modifier.valueOf("DEFAULT");
+          set.add(m);
+        } catch (IllegalArgumentException e) {
+          // Can only add DEFAULT modifier in Java 8.
+        }
+      }
+
       modifierSets.put(modifiers, set);
     }
     return set;

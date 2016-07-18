@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.Element;
@@ -28,6 +29,8 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Utility methods for types. Methods not referenced by the
@@ -70,7 +73,15 @@ public class JdtTypes implements Types {
 
   @Override
   public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
-    throw new AssertionError("not implemented");
+    ITypeBinding binding = BindingConverter.unwrapTypeMirrorIntoTypeBinding(t);
+    List<TypeMirror> mirrors = new ArrayList<>();
+    if (binding.getSuperclass() != null) {
+      mirrors.add(BindingConverter.getType(binding.getSuperclass()));
+    }
+    for (ITypeBinding b : binding.getInterfaces()) {
+      mirrors.add(BindingConverter.getType(b));
+    }
+    return mirrors;
   }
 
   @Override
@@ -121,7 +132,8 @@ public class JdtTypes implements Types {
 
   @Override
   public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
-    throw new AssertionError("not implemented");
+    return ((IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(m1)).isSubsignature(
+        ((IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(m2)));
   }
 
   @Override

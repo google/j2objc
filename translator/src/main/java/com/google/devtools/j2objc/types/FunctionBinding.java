@@ -15,9 +15,10 @@
 package com.google.devtools.j2objc.types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
-
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * A binding type for functions.
@@ -46,6 +47,11 @@ public class FunctionBinding {
 
   public FunctionBinding(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
     this(name, null, returnType, declaringClass);
+  }
+
+  public FunctionBinding(String name, TypeMirror returnType, TypeMirror declaringClass) {
+    this(name, null, BindingConverter.unwrapTypeMirrorIntoTypeBinding(returnType),
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(declaringClass));
   }
 
   public String getName() {

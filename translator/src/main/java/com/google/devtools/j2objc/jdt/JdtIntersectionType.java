@@ -14,13 +14,19 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
-// When transitioned to Java 8, this should implement IntersectionType,
-// getKind() should return TypeKind.INTERSECTION, accept should visitIntersection,
-// and this should implement getBounds().
-class JdtIntersectionType extends JdtTypeMirror {
+/**
+ * When transitioned to Java 8, this should implement IntersectionType,
+ * getKind() should return TypeKind.INTERSECTION, accept should visitIntersection,
+ * and this should implement getBounds().
+ */
+public class JdtIntersectionType extends JdtTypeMirror {
 //class JdtIntersectionType extends JdtTypeMirror implements IntersectionType {
 
   JdtIntersectionType(JdtTypeBinding binding) {
@@ -40,11 +46,11 @@ class JdtIntersectionType extends JdtTypeMirror {
   }
 
 //  @Override
-//  public List<? extends TypeMirror> getBounds() {
-//    List<TypeMirror> bounds = new ArrayList<>();
-//    for (ITypeBinding bound : ((ITypeBinding) binding).getTypeBounds()) {
-//      bounds.add(BindingConverter.getType(bound));
-//    }
-//    return bounds;
-//  }
+  public List<? extends TypeMirror> getBounds() {
+    List<TypeMirror> bounds = new ArrayList<>();
+    for (ITypeBinding bound : ((ITypeBinding) binding).getInterfaces()) {
+      bounds.add(BindingConverter.getType(bound));
+    }
+    return bounds;
+  }
 }

@@ -15,6 +15,12 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtTypes;
+import com.google.devtools.j2objc.jdt.TypeUtil;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -22,6 +28,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -212,5 +220,56 @@ public final class ElementUtil {
         || BindingUtil.hasWeakPropertyAttribute(var)
         || (var.getName().startsWith("this$")
         && BindingUtil.hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
+  }
+
+  public static ExecutableElement getFunctionalInterface(TypeMirror type) {
+    List<Element> typeElements = getInheritedTypeElementsInclusive(type);
+    for (Element baseElement : typeElements) {
+      TypeElement element = (TypeElement) baseElement;
+      for (Element i : element.getEnclosedElements()) {
+        if (i.getKind() == ElementKind.METHOD && !ElementUtil.isDefault(i)
+            && !i.getModifiers().contains(Modifier.STATIC)) {
+          return (ExecutableElement) i;
+        }
+      }
+    }
+    return null;
+  }
+
+  public static List<Element> getInheritedTypeElementsInclusive(TypeMirror type) {
+    List<Element> typeElements = new ArrayList<>();
+    for (TypeMirror superType : getOrderedInheritedTypesInclusive(type)) {
+      if (!TypeUtil.isIntersection(superType)) {
+        typeElements.add(((DeclaredType) superType).asElement());
+      }
+    }
+    return typeElements;
+  }
+
+  public static LinkedHashSet<TypeMirror> getOrderedInheritedTypesInclusive(TypeMirror type) {
+    LinkedHashSet<TypeMirror> inheritedTypes = new LinkedHashSet<>();
+    collectInheritedTypesInclusive(type, inheritedTypes);
+    return inheritedTypes;
+  }
+
+  private static void collectInheritedTypesInclusive(
+      TypeMirror type, Set<TypeMirror> inheritedTypes) {
+    if (type == null) {
+      return;
+    }
+    inheritedTypes.add(type);
+    for (TypeMirror superType : JdtTypes.getInstance().directSupertypes(type)) {
+      collectInheritedTypesInclusive(superType, inheritedTypes);
+    }
+  }
+
+  public static List<ExecutableElement> getDeclaredMethods(Element e) {
+    List<ExecutableElement> methods = new ArrayList<>();
+    for (Element i : e.getEnclosedElements()) {
+      if (i.getKind() == ElementKind.METHOD) {
+        methods.add((ExecutableElement) i);
+      }
+    }
+    return methods;
   }
 }

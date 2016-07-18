@@ -30,18 +30,19 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
+import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.Set;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -85,14 +86,14 @@ public class LambdaRewriter extends TreeVisitor {
   class LambdaGenerator {
     LambdaExpression node = null;
     TypeDeclaration enclosingType = null;
-    ITypeBinding enclosingTypeBinding;
+    TypeMirror enclosingTypeMirror;
     String lambdaName;
     String lambdaGetName;
     String lambdaImplName;
     String lambdaDeallocName;
     String functionalTypeString;
-    ITypeBinding lambdaType;
-    IMethodBinding functionalInterface;
+    TypeMirror lambdaTypeMirror;
+    ExecutableElement functionalInterface;
     int numProtocols = 0;
     String protocols = "(Protocol *[]){ ";
     int numMethods = 0;
@@ -110,13 +111,13 @@ public class LambdaRewriter extends TreeVisitor {
       this.node = node;
       enclosingType =
           TreeUtil.getNearestAncestorWithType(TypeDeclaration.class, node);
-      enclosingTypeBinding = enclosingType.getTypeBinding();
+      enclosingTypeMirror = enclosingType.getTypeMirror();
       lambdaName = node.getUniqueName();
       lambdaGetName = lambdaName + "_get";
       lambdaImplName = lambdaName + "_impl";
       lambdaDeallocName = lambdaName + "_dealloc";
-      lambdaType = node.getTypeBinding();
-      functionalInterface = lambdaType.getFunctionalInterfaceMethod();
+      lambdaTypeMirror = node.getTypeMirror();
+      functionalInterface = ElementUtil.getFunctionalInterface(lambdaTypeMirror);
     }
 
     public void setupMethodStrings() {
@@ -124,22 +125,19 @@ public class LambdaRewriter extends TreeVisitor {
       // one for each method on our lambda object (the functional method and all
       // the default methods). These will be passed to the correct Create* function that will
       // make a class/object with these methods.
-      Set<ITypeBinding> allTypes = BindingUtil.getOrderedInheritedTypesInclusive(lambdaType);
-      if (BindingUtil.isIntersectionType(lambdaType)) {
-        allTypes.remove(lambdaType);
-      }
-      for (ITypeBinding i : allTypes) {
+      for (Element i : ElementUtil.getInheritedTypeElementsInclusive(lambdaTypeMirror)) {
         if (numProtocols > 0) {
           protocols += ", ";
         }
         numProtocols++;
-        String classNameWithId = nameTable.getObjCType(i);
+        String classNameWithId = nameTable.getObjCType(i.asType());
         String className = classNameWithId.substring(3, classNameWithId.length() - 1);
         String protocol = "@protocol(" + className + ")";
         protocols += protocol;
-        for (IMethodBinding m : i.getDeclaredMethods()) {
-          boolean willGrab = isDefault(m.getModifiers()) || Modifier.isStatic(m.getModifiers());
-          boolean isFunctional = functionalInterface.isSubsignature(m);
+        for (ExecutableElement m : ElementUtil.getDeclaredMethods(i)) {
+          boolean willGrab = ElementUtil.isDefault(m) || ElementUtil.isStatic(m);
+          boolean isFunctional = JdtTypes.getInstance().isSubsignature(
+              (ExecutableType) functionalInterface.asType(), (ExecutableType) m.asType());
           boolean willGenerate = willGrab || isFunctional;
           if (willGenerate) {
             if (numMethods > 0) {
@@ -182,11 +180,11 @@ public class LambdaRewriter extends TreeVisitor {
         signatures += "}";
       }
       protocols += "}";
-      functionalTypeString = nameTable.getObjCType(lambdaType);
+      functionalTypeString = nameTable.getObjCType(lambdaTypeMirror);
     }
 
     private void createFunctionGet() {
-      funcGet = new FunctionDeclaration(lambdaGetName, lambdaType, enclosingTypeBinding);
+      funcGet = new FunctionDeclaration(lambdaGetName, lambdaTypeMirror, enclosingTypeMirror);
       funcGet.addModifiers(Modifier.PRIVATE);
       funcGet.setBody(new Block());
       funcGet.getBody().addStatement(new NativeStatement("static dispatch_once_t token;"));
@@ -195,13 +193,13 @@ public class LambdaRewriter extends TreeVisitor {
 
     private void createFunctionGetInvocation() {
       funcGetInvocation = new FunctionInvocation(new FunctionBinding(
-          lambdaGetName, lambdaType, enclosingTypeBinding), lambdaType);
+          lambdaGetName, lambdaTypeMirror, enclosingTypeMirror), lambdaTypeMirror);
     }
 
     private void createFunctionImpl() {
-      ITypeBinding returnType = functionalInterface.getReturnType();
+      TypeMirror returnType = functionalInterface.getReturnType();
       funcImpl =
-          new FunctionDeclaration(lambdaImplName, returnType, enclosingTypeBinding);
+          new FunctionDeclaration(lambdaImplName, returnType, enclosingTypeMirror);
       funcImpl.addModifiers(Modifier.PRIVATE);
       funcImpl
           .getParameters()
@@ -224,7 +222,7 @@ public class LambdaRewriter extends TreeVisitor {
 
     private void createFunctionDealloc() {
       funcDealloc = new FunctionDeclaration(lambdaDeallocName,
-          typeEnv.resolveJavaType("void"), enclosingTypeBinding);
+          typeEnv.resolveJavaTypeMirror("void"), enclosingTypeMirror);
       funcDealloc.addModifiers(Modifier.PRIVATE);
       funcDealloc.setBody(new Block());
       funcDealloc

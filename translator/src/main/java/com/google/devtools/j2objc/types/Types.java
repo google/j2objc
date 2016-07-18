@@ -237,6 +237,10 @@ public class Types {
     return binding.isArray() || typeMap.containsKey(binding.getTypeDeclaration());
   }
 
+  public TypeMirror resolveJavaTypeMirror(String name) {
+    return BindingConverter.getType(resolveJavaType(name));
+  }
+
   public ITypeBinding resolveJavaType(String name) {
     ITypeBinding result = javaBindingMap.get(name);
     if (result == null) {

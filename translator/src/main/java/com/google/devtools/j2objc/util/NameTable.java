@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
@@ -561,6 +561,10 @@ public class NameTable {
       sb.append(keyword).append(delim);
     }
     return sb.toString();
+  }
+
+  public String getMethodSelector(ExecutableElement method) {
+    return getMethodSelector((IMethodBinding) BindingConverter.unwrapElement(method));
   }
 
   public String getMethodSelector(IMethodBinding method) {
