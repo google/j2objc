@@ -180,7 +180,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
         }
         continue;
       }
-      if (key.equals(entry.getKey())) {
+      if (entry.getKey() != null && key.equalsIgnoreCase(entry.getKey())) {
         return entry.getValue();
       }
     }
