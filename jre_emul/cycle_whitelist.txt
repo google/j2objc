@@ -26,8 +26,9 @@ FIELD android.os.AsyncTask.mWorker
 FIELD android.os.AsyncTask.SerialExecutor.mActive
 FIELD android.os.AsyncTask.SerialExecutor.mTasks
 
-# This thread field is cleared when the thread finishes, regardless of any exceptions.
+# These thread fields are cleared when the thread finishes, regardless of any exceptions.
 FIELD java.lang.Thread.interruptActions
+FIELD java.lang.Thread.uncaughtExceptionHandler
 
 # libcore.reflect false positives.
 FIELD libcore.reflect.ParameterizedTypeImpl.args

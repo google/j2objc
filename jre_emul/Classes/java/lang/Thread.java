@@ -25,35 +25,44 @@ import java.util.List;
 import java.util.Map;
 
 /*-[
-#import "java/lang/IllegalThreadStateException.h"
-#import "java/lang/InterruptedException.h"
-#import "java/lang/NullPointerException.h"
-#import "java/lang/Runnable.h"
+#import "java/lang/AssertionError.h"
 #import "objc-sync.h"
+#import <pthread.h>
+]-*/
+
+/*-[
+@interface NativeThread : NSObject {
+ @public
+  pthread_t t;
+}
+@end
+@implementation NativeThread
+@end
 ]-*/
 
 /**
  * Simplified iOS version of java.lang.Thread, based on Apache Harmony source
- * (both luni-kernel and vmcore).  This class has a native NSThread delegate,
- * and most instance data is stored in the NSThread's associated dictionary.
- * This allows threads to be fetched without the need for a global map, and
- * avoids issues synchronizing iOS thread attributes with this wrapper.
+ * (both luni-kernel and vmcore). This class uses pthread for thread creation
+ * and maintains a pthread handle for using other pthread functionality.
+ * pthread's thread local mechanism (pthread_setspecific) is used to associate
+ * this wrapper object with the current thread.
  *
- * @author Tom Ball
+ * @author Tom Ball, Keith Stanger
  */
 public class Thread implements Runnable {
   private static final int NANOS_PER_MILLI = 1000000;
 
-  /**
-   * The associated native NSThread instance.  Other instance data is stored
-   * in the thread dictionary to reduce property lookup overhead.
-   */
-  private Object nsThread;
   /** Android source declares this as the native VMThread class. */
-  private final Object vmThread = new Object();
+  private final Object nativeThread;
+  private Runnable target;
+  private final long threadId;
+  private String name;
+  private final long stackSize;
+  private volatile State state = State.NEW;
+  private int priority = NORM_PRIORITY;
+  private volatile UncaughtExceptionHandler uncaughtExceptionHandler;
   private boolean isDaemon;
   boolean interrupted;
-  private boolean running;
   private ClassLoader contextClassLoader;
   ThreadLocal.ThreadLocalMap threadLocals = null;
   ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
@@ -72,9 +81,6 @@ public class Thread implements Runnable {
 
   /** Callbacks to run on interruption. */
   private final List<Runnable> interruptActions = new ArrayList<Runnable>();
-
-  private static ThreadGroup systemThreadGroup;
-  private static ThreadGroup mainThreadGroup;
 
   /**
    * Counter used to generate thread's ID
@@ -127,13 +133,12 @@ public class Thread implements Runnable {
   public interface UncaughtExceptionHandler {
 
     void uncaughtException(Thread t, Throwable e);
-
   }
 
   /**
    * Holds the default handler for uncaught exceptions, in case there is one.
    */
-  private static UncaughtExceptionHandler defaultUncaughtHandler =
+  private static volatile UncaughtExceptionHandler defaultUncaughtHandler =
       new SystemUncaughtExceptionHandler();
 
   /**
@@ -162,19 +167,16 @@ public class Thread implements Runnable {
    */
   private static final String THREAD = "Thread-";
 
-  // Thread dictionary keys
-  private static final String KEY_PREFIX = "JreThread-";
-  private static final String JAVA_THREAD = "JreThread-JavaThread";
-  private static final String TARGET = "JreThread-TargetKey";
-  private static final String THREAD_ID = "JreThread-IdKey";
-  private static final String UNCAUGHT_HANDLER = "JreThread-UncaughtHandler";
-
   // Milliseconds between polls for testing thread completion.
   private static final int POLL_INTERVAL = 20;
 
   static {
     initializeThreadClass();
   }
+
+  private static native Object newNativeThread() /*-[
+    return [[[NativeThread alloc] init] autorelease];
+  ]-*/;
 
   /**
    * Constructs a new Thread with no runnable object and a newly generated
@@ -184,7 +186,7 @@ public class Thread implements Runnable {
    * @see java.lang.ThreadGroup
    */
   public Thread() {
-    create(null, null, THREAD, 0, true);
+    this(null, null, THREAD, 0, null);
   }
 
   /**
@@ -198,7 +200,7 @@ public class Thread implements Runnable {
    * @see java.lang.Runnable
    */
   public Thread(Runnable runnable) {
-    create(null, runnable, THREAD, 0, true);
+    this(null, runnable, THREAD, 0, null);
   }
 
   /**
@@ -213,7 +215,7 @@ public class Thread implements Runnable {
    * @see java.lang.Runnable
    */
   public Thread(Runnable runnable, String threadName) {
-    create(null, runnable, threadName, 0, true);
+    this(null, runnable, threadName, 0, null);
   }
 
   /**
@@ -226,7 +228,7 @@ public class Thread implements Runnable {
    * @see java.lang.Runnable
    */
   public Thread(String threadName) {
-    create(null, null, threadName, 0, true);
+    this(null, null, threadName, 0, null);
   }
 
   /**
@@ -246,7 +248,7 @@ public class Thread implements Runnable {
    * @see java.lang.SecurityManager
    */
   public Thread(ThreadGroup group, Runnable runnable) {
-    create(group, runnable, THREAD, 0, true);
+    this(group, runnable, THREAD, 0, null);
   }
 
   /**
@@ -268,7 +270,7 @@ public class Thread implements Runnable {
    * @see java.lang.SecurityManager
    */
   public Thread(ThreadGroup group, Runnable runnable, String threadName, long stack) {
-    create(group, runnable, threadName, stack, true);
+    this(group, runnable, threadName, stack, null);
   }
 
   /**
@@ -289,7 +291,7 @@ public class Thread implements Runnable {
    * @see java.lang.SecurityManager
    */
   public Thread(ThreadGroup group, Runnable runnable, String threadName) {
-    create(group, runnable, threadName, 0, true);
+    this(group, runnable, threadName, 0, null);
   }
 
   /**
@@ -307,192 +309,144 @@ public class Thread implements Runnable {
    * @see java.lang.SecurityManager
    */
   public Thread(ThreadGroup group, String threadName) {
-    create(group, null, threadName, 0, true);
+    this(group, null, threadName, 0, null);
   }
 
-  private Thread(ThreadGroup group, String threadName, boolean createThread) {
-    create(group, null, threadName, 0, createThread);
-  }
-
-  /**
-   * Shared native constructor code.
-   */
-  private native void create(ThreadGroup group, Runnable target, String name, long stack,
-          boolean createThread) /*-[
-    NSThread *currentThread = [NSThread currentThread];
-    NSMutableDictionary *currentThreadData = [currentThread threadDictionary];
-    if (!group) {
-      group = [[JavaLangThread currentThread] getThreadGroup];
+  private Thread(
+      ThreadGroup group, Runnable runnable, String name, long stack, Object nativeThread) {
+    this.target = runnable;
+    this.threadId = getNextThreadId();
+    if (name.equals(THREAD)) {
+      name += threadId;
     }
-    assert(group != nil);
-    self->threadGroup_ = RETAIN_(group);
-
-    NSThread *thread;
-    NSMutableDictionary *newThreadData;
-    if (createThread) {
-      if (!target) {
-        // If there isn't a Runnable, then this should be a subclass of Thread
-        // with run() overwritten (or it does nothing, like in Java).
-        target = self;
-      }
-      thread = [[NSThread alloc] initWithTarget:self
-                                       selector:@selector(run0WithId:)
-                                         object:nil];
-#if ! __has_feature(objc_arc)
-      [thread autorelease];
-#endif
-      newThreadData = [thread threadDictionary];
-
-      // Copy thread data from parent thread, except for data from this class.
-      for (id key in currentThreadData) {
-        if ([key isKindOfClass:[NSString class]] && ![key hasPrefix:JavaLangThread_KEY_PREFIX]) {
-          [newThreadData setObject:[currentThreadData objectForKey:key] forKey:key];
-        }
+    this.name = name;
+    this.stackSize = stack;
+    if (nativeThread == null) {
+      // Thread is not yet started.
+      Thread currentThread = currentThread();
+      nativeThread = newNativeThread();
+      this.priority = currentThread.getPriority();
+      if (group == null) {
+        group = currentThread.getThreadGroup();
       }
     } else {
-      thread = currentThread;
-      newThreadData = currentThreadData;
+      // Thread is already running.
+      state = State.RUNNABLE;
+      group.add(this);
     }
+    this.threadGroup = group;
+    this.nativeThread = nativeThread;
+  }
 
-    // Add data for this thread.
-    if (target != nil) {
-      [newThreadData setObject:target forKey:JavaLangThread_TARGET];
-    }
-    if (stack != 0L) {
-      [thread setStackSize:(NSUInteger) stack];
-    }
-    [thread setThreadPriority:[NSThread threadPriority]];
-    NSNumber *threadId = [NSNumber numberWithLongLong:JavaLangThread_getNextThreadId()];
-    [newThreadData setObject:threadId forKey:JavaLangThread_THREAD_ID];
+  /*-[
+  pthread_key_t java_thread_key;
 
-    if (!name) {
-      JavaLangNullPointerException *npe = [[JavaLangNullPointerException alloc] init];
-#if !__has_feature(objc_arc)
-      [npe autorelease];
-#endif
-      @throw npe;
-    }
-    if ([name isEqual:JavaLangThread_THREAD]) {
-      name = [name stringByAppendingFormat:@"%@", threadId];
-    }
-    [thread setName:name];
-    [self setNameWithNSString:name];
+  void javaThreadDestructor(void *javaThread) {
+    JavaLangThread *thread = (JavaLangThread *)javaThread;
+    [thread exit];
+    [thread release];
+  }
 
-    int priority = [currentThread isMainThread] ? 5 : [currentThread threadPriority] * 10;
-    [self setPriority0WithInt:priority];
+  void *start_routine(void *arg) {
+    JavaLangThread *thread = (JavaLangThread *)arg;
+    pthread_setspecific(java_thread_key, thread);
+    @autoreleasepool {
+      @try {
+        [thread run];
+      } @catch (NSException *t) {
+        [thread rethrowWithNSException:t];
+      } @catch (id error) {
+        [thread rethrowWithNSException:[NSException exceptionWithName:@"Unknown error"
+                                                               reason:[error description]
+                                                             userInfo:nil]];
+      }
+      return NULL;
+    }
+  }
+  ]-*/
 
-    [self->threadGroup_ addWithJavaLangThread:self];
-    self->nsThread_ = thread;
-#if !__has_feature(objc_arc)
-    [thread retain];
-#endif
-    [newThreadData setObject:self forKey:JavaLangThread_JAVA_THREAD];
-  ]-*/;
+  private static Thread createMainThread(Object nativeThread) {
+    return new Thread(ThreadGroup.mainThreadGroup, null, "main", 0, nativeThread);
+  }
 
   /**
    * Create a Thread wrapper around the main native thread.
    */
   private static native void initializeThreadClass() /*-[
-    NSThread *currentThread = [NSThread currentThread];
-    [currentThread setName:@"main"];
-    if (JavaLangThread_systemThreadGroup == nil) {
-      JavaLangThread_systemThreadGroup = [[JavaLangThreadGroup alloc] init];
-      JavaLangThread_mainThreadGroup =
-          [[JavaLangThreadGroup alloc]
-           initWithJavaLangThreadGroup:JavaLangThread_systemThreadGroup
-                          withNSString:@"main"];
-#if ! __has_feature(objc_arc)
-      [JavaLangThread_systemThreadGroup autorelease];
-      [JavaLangThread_mainThreadGroup autorelease];
-#endif
+    if (pthread_key_create(&java_thread_key, &javaThreadDestructor)) {
+      @throw create_JavaLangAssertionError_initWithId_(@"Failed to create pthread key.");
     }
-
-    // Now there is a main threadgroup,
-    (void) [[JavaLangThread alloc]
-            initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup
-                           withNSString:@"main"
-                            withBoolean:FALSE];
+    NativeThread *nt = [[[NativeThread alloc] init] autorelease];
+    nt->t = pthread_self();
+    JavaLangThread *mainThread = JavaLangThread_createMainThreadWithId_(nt);
+    pthread_setspecific(java_thread_key, [mainThread retain]);
   ]-*/;
 
+  private static Thread createCurrentThread(Object nativeThread) {
+    return new Thread(ThreadGroup.mainThreadGroup, null, THREAD, 0, nativeThread);
+  }
+
   public static native Thread currentThread() /*-[
-    NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
-    JavaLangThread *thread = [threadData objectForKey:JavaLangThread_JAVA_THREAD];
-    if (!thread) {
-      NSString *name = [[NSThread currentThread] name];
-      thread =
-          [[JavaLangThread alloc] initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup
-                                                 withNSString:name
-                                                  withBoolean:FALSE];
-#if !__has_feature(objc_arc)
-      [thread autorelease];
-#endif
+    JavaLangThread *thread = pthread_getspecific(java_thread_key);
+    if (thread) {
+      return thread;
     }
+    NativeThread *nt = [[[NativeThread alloc] init] autorelease];
+    nt->t = pthread_self();
+    thread = JavaLangThread_createCurrentThreadWithId_(nt);
+    pthread_setspecific(java_thread_key, [thread retain]);
     return thread;
   ]-*/;
 
-  public native void start() /*-[
-    NSThread *nativeThread = (NSThread *) nsThread_;
-    if ([nativeThread isExecuting]) {
-      JavaLangIllegalThreadStateException *e =
-          [[JavaLangIllegalThreadStateException alloc]
-           initWithNSString:@"This thread was already started!"];
-#if !__has_feature(objc_arc)
-      [e autorelease];
-#endif
-      @throw e;
+  public synchronized void start() {
+    if (state != State.NEW) {
+      throw new IllegalThreadStateException("This thread was already started!");
     }
-    running_ = true;
-    [(NSThread *) nativeThread start];
+    threadGroup.add(this);
+    start0();
+    if (priority != NORM_PRIORITY) {
+      nativeSetPriority(priority);
+    }
+    state = State.RUNNABLE;
+  }
+
+  private native void start0() /*-[
+    NativeThread *nt = (NativeThread *)self->nativeThread_;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    jlong stack = self->stackSize_;
+    if (stack != 0) {
+      pthread_attr_setstacksize(&attr, stack);
+    }
+    pthread_create(&nt->t, &attr, &start_routine, [self retain]);
   ]-*/;
 
-  public native void run() /*-[
-    NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
-    id<JavaLangRunnable> target =
-        (id<JavaLangRunnable>) [threadData objectForKey:JavaLangThread_TARGET];
-    if (target && target != self) {
-      @autoreleasepool {  // also needed by ARC
-        [target run];
-      }
+  private void exit() {
+    state = State.TERMINATED;
+    if (threadGroup != null) {
+      threadGroup.threadTerminated(this);
+      threadGroup = null;
     }
-  ]-*/;
+    target = null;
+    uncaughtExceptionHandler = null;
+    interruptActions.clear();
+  }
 
-  /*
-   * Thread entry, called by NSThread initWithTarget:selector:object:.
-   * The arg parameter isn't used, but NSThread requires a message that
-   * has an optional one.
-   */
-  private native void run0(Object arg) throws Throwable /*-[
-    @try {
-      [self run];
+  @Override
+  public void run() {
+    if (target != null) {
+      target.run();
     }
-    @catch (NSException *t) {
-      [self rethrowWithNSException:t];
-    }
-    @catch (id error) {
-      [self rethrowWithNSException:[NSException exceptionWithName:@"Unknown error"
-                                                           reason:[error description]
-                                                         userInfo:nil]];
-    }
-    @finally {
-      [interruptActions_ clear];
-      [self cancelNativeThread];
-    }
-  ]-*/;
+  }
 
-  private native void rethrow(Throwable t) /*-[
-    id<JavaLangThread_UncaughtExceptionHandler> ueh = [self getUncaughtExceptionHandler];
-    if (ueh != nil) {
-      [ueh uncaughtExceptionWithJavaLangThread:JavaLangThread_currentThread() withNSException:t];
+  private void rethrow(Throwable t) throws Throwable {
+    UncaughtExceptionHandler ueh = getUncaughtExceptionHandler();
+    if (ueh != null) {
+      ueh.uncaughtException(this, t);
+    } else {
+      throw t;
     }
-    else {
-      @throw (t);
-    }
-  ]-*/;
-
-  private native void cancelNativeThread() /*-[
-    // TODO(tball): replace with pthread_cancel (b/11536576)
-    [(NSThread *) self->nsThread_ cancel];
-  ]-*/;
+  }
 
   public static int activeCount() {
       return currentThread().getThreadGroup().activeCount();
@@ -521,55 +475,55 @@ public class Thread implements Runnable {
     return thread.getThreadGroup().enumerate(threads);
   }
 
-  public native long getId() /*-[
-    NSDictionary *threadData = [(NSThread *) self->nsThread_ threadDictionary];
-    NSNumber *threadId = [threadData objectForKey:JavaLangThread_THREAD_ID];
-    return [threadId longLongValue];
-  ]-*/;
-
-  public native String getName() /*-[
-    return [(NSThread *) self->nsThread_ name];
-  ]-*/;
-
-  public native void setName(String name) /*-[
-    if (!name) {
-      JavaLangNullPointerException *npe = [[JavaLangNullPointerException alloc] init];
-#if !__has_feature(objc_arc)
-      [npe autorelease];
-#endif
-      @throw npe;
-    }
-    [(NSThread *) self->nsThread_ setName:name];
-  ]-*/;
-
-  public native int getPriority() /*-[
-    double nativePriority = [(NSThread *) self->nsThread_ threadPriority];
-    return (int) (nativePriority * 10);
-  ]-*/;
-
-  public void setPriority(int priority) {
-    checkAccess();
-    if (priority > MAX_PRIORITY || priority < MIN_PRIORITY) {
-      throw new IllegalArgumentException("Wrong Thread priority value");
-    }
-    ThreadGroup threadGroup = getThreadGroup();
-    priority = (priority > threadGroup.getMaxPriority()) ? threadGroup.getMaxPriority() : priority;
-    setPriority0(priority);
+  public long getId() {
+    return threadId;
   }
 
-  private native void setPriority0(int priority) /*-[
-    [(NSThread *) self->nsThread_ setThreadPriority:priority / 10.0];
+  public final String getName() {
+    return name;
+  }
+
+  public final void setName(String name) {
+    checkAccess();
+    if (name == null) {
+      throw new NullPointerException("name == null");
+    }
+    this.name = name;
+  }
+
+  public final int getPriority() {
+    return priority;
+  }
+
+  public final void setPriority(int newPriority) {
+    ThreadGroup g;
+    checkAccess();
+    if (newPriority > MAX_PRIORITY || newPriority < MIN_PRIORITY) {
+      throw new IllegalArgumentException();
+    }
+    if ((g = getThreadGroup()) != null) {
+      if (newPriority > g.getMaxPriority()) {
+        newPriority = g.getMaxPriority();
+      }
+      synchronized (this) {
+        this.priority = newPriority;
+        if (isAlive()) {
+          nativeSetPriority(newPriority);
+        }
+      }
+    }
+  }
+
+  private native void nativeSetPriority(int priority) /*-[
+    struct sched_param param;
+    param.sched_priority = (priority * 64 / JavaLangThread_MAX_PRIORITY) - 1;
+    NativeThread *nt = (NativeThread *)self->nativeThread_;
+    pthread_setschedparam(nt->t, SCHED_OTHER, &param);
   ]-*/;
 
-  public native State getState() /*-[
-    if ([(NSThread *) self->nsThread_ isCancelled] || [(NSThread *) self->nsThread_ isFinished]) {
-      return JavaLangThread_State_get_TERMINATED();
-    }
-    if ([(NSThread *) self->nsThread_ isExecuting]) {
-      return JavaLangThread_State_get_RUNNABLE();
-    }
-    return JavaLangThread_State_get_NEW();
-  ]-*/;
+  public State getState() {
+    return state;
+  }
 
   public ThreadGroup getThreadGroup() {
     return threadGroup;
@@ -642,7 +596,7 @@ public class Thread implements Runnable {
    * @see Thread#isInterrupted
    */
   public void interrupt() {
-    synchronized(vmThread) {
+    synchronized(nativeThread) {
       synchronized (interruptActions) {
         for (int i = interruptActions.size() - 1; i >= 0; i--) {
           interruptActions.get(i).run();
@@ -671,12 +625,12 @@ public class Thread implements Runnable {
    * @see Thread#interrupt
    * @see Thread#isInterrupted
    */
-  public static native boolean interrupted() /*-[
-    JavaLangThread *currentThread = JavaLangThread_currentThread();
-    BOOL result = currentThread->interrupted_;
-    currentThread->interrupted_ = false;
+  public static boolean interrupted() {
+    Thread currentThread = currentThread();
+    boolean result = currentThread.interrupted;
+    currentThread.interrupted = false;
     return result;
-  ]-*/;
+  }
 
   /**
    * Returns a <code>boolean</code> indicating whether the receiver has a
@@ -705,9 +659,9 @@ public class Thread implements Runnable {
           return;
       }
 
-      synchronized (vmThread) {
+      synchronized (nativeThread) {
           while (isAlive()) {
-              vmThread.wait(POLL_INTERVAL);
+              nativeThread.wait(POLL_INTERVAL);
           }
       }
   }
@@ -756,7 +710,7 @@ public class Thread implements Runnable {
           return;
       }
 
-      synchronized (vmThread) {
+      synchronized (nativeThread) {
           if (!isAlive()) {
               return;
           }
@@ -768,9 +722,9 @@ public class Thread implements Runnable {
           long start = System.nanoTime();
           while (true) {
               if (millis > POLL_INTERVAL) {
-                vmThread.wait(POLL_INTERVAL);
+                nativeThread.wait(POLL_INTERVAL);
               } else {
-                vmThread.wait(millis, nanos);
+                nativeThread.wait(millis, nanos);
               }
               if (!isAlive()) {
                   break;
@@ -786,20 +740,10 @@ public class Thread implements Runnable {
       }
   }
 
-  public native boolean isAlive() /*-[
-    NSThread *nativeThread = (NSThread *) self->nsThread_;
-    BOOL alive = [nativeThread isExecuting] && ![nativeThread isCancelled];
-    if (!alive && running_) {
-      // Thread finished, clean up.
-      running_ = false;
-      if (self->threadGroup_) {
-        [threadGroup_ threadTerminatedWithJavaLangThread:self];
-        AUTORELEASE(self->threadGroup_);
-        self->threadGroup_ = nil;
-      }
-    }
-    return alive;
-  ]-*/;
+  public final boolean isAlive() {
+    State s = state;
+    return s != State.NEW && s != State.TERMINATED;
+  }
 
   public void checkAccess() {
     // Access checks not implemented on iOS.
@@ -830,7 +774,7 @@ public class Thread implements Runnable {
           return;
       }
 
-      Object lock = currentThread().vmThread;
+      Object lock = currentThread().nativeThread;
       synchronized(lock) {
           lock.wait(millis, nanos);
       }
@@ -840,16 +784,12 @@ public class Thread implements Runnable {
    * Causes the calling Thread to yield execution time to another Thread that
    * is ready to run. The actual scheduling is implementation-dependent.
    */
-  public static void yield() {
-      currentThread().yield0();
-  }
-
-  private native void yield0() /*-[
-    [NSThread sleepForTimeInterval:0];
+  public static native void yield() /*-[
+    pthread_yield_np();
   ]-*/;
 
   private static synchronized long getNextThreadId() {
-    return ++threadOrdinalNum;
+    return threadOrdinalNum++;
   }
 
   /**
@@ -899,7 +839,7 @@ public class Thread implements Runnable {
    * @hide for Unsafe
    */
   public void unpark() {
-    Object vmt = vmThread;
+    Object vmt = nativeThread;
 
     synchronized (vmt) {
       switch (parkState) {
@@ -947,7 +887,7 @@ public class Thread implements Runnable {
    * @hide for Unsafe
    */
   public void parkFor(long nanos) {
-    Object vmt = vmThread;
+    Object vmt = nativeThread;
 
     synchronized (vmt) {
       switch (parkState) {
@@ -1005,7 +945,7 @@ public class Thread implements Runnable {
    * @hide for Unsafe
    */
   public void parkUntil(long time) {
-    Object vmt = vmThread;
+    Object vmt = nativeThread;
 
     synchronized (vmt) {
       /*
@@ -1055,34 +995,37 @@ public class Thread implements Runnable {
   }
 
   /**
-   * Returns the thread's uncaught exception handler. If not explicitly set,
-   * then the ThreadGroup's handler is returned. If the thread is terminated,
-   * then <code>null</code> is returned.
-   *
-   * @return an {@link UncaughtExceptionHandler} instance or {@code null}.
+   * Returns the handler invoked when this thread abruptly terminates
+   * due to an uncaught exception. If this thread has not had an
+   * uncaught exception handler explicitly set then this thread's
+   * <tt>ThreadGroup</tt> object is returned, unless this thread
+   * has terminated, in which case <tt>null</tt> is returned.
+   * @since 1.5
    */
-  public native UncaughtExceptionHandler getUncaughtExceptionHandler() /*-[
-    NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
-    id<JavaLangThread_UncaughtExceptionHandler> uncaughtHandler =
-        [threadData objectForKey:JavaLangThread_UNCAUGHT_HANDLER];
-    if (uncaughtHandler) {
-      return uncaughtHandler;
-    }
-    JavaLangThread *thread = [threadData objectForKey:JavaLangThread_JAVA_THREAD];
-    if (thread) {
-      return thread->threadGroup_; // ThreadGroup is instance of UEH
-    }
-    return JavaLangThread_getDefaultUncaughtExceptionHandler();
-  ]-*/;
+  public UncaughtExceptionHandler getUncaughtExceptionHandler() {
+    UncaughtExceptionHandler h = uncaughtExceptionHandler;
+    return h != null ? h : threadGroup;
+  }
 
-  public native void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) /*-[
-    NSMutableDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
-    if (handler) {
-      [threadData setObject:handler forKey:JavaLangThread_UNCAUGHT_HANDLER];
-    } else {
-      [threadData removeObjectForKey:JavaLangThread_UNCAUGHT_HANDLER];
-    }
-  ]-*/;
+  /**
+   * Set the handler invoked when this thread abruptly terminates
+   * due to an uncaught exception.
+   * <p>A thread can take full control of how it responds to uncaught
+   * exceptions by having its uncaught exception handler explicitly set.
+   * If no such handler is set then the thread's <tt>ThreadGroup</tt>
+   * object acts as its handler.
+   * @param eh the object to use as this thread's uncaught exception
+   * handler. If <tt>null</tt> then this thread has no explicit handler.
+   * @throws  SecurityException  if the current thread is not allowed to
+   *          modify this thread.
+   * @see #setDefaultUncaughtExceptionHandler
+   * @see ThreadGroup#uncaughtException
+   * @since 1.5
+   */
+  public void setUncaughtExceptionHandler(UncaughtExceptionHandler eh) {
+    checkAccess();
+    uncaughtExceptionHandler = eh;
+  }
 
   private static class SystemUncaughtExceptionHandler implements UncaughtExceptionHandler {
     @Override
