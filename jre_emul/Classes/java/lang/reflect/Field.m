@@ -116,6 +116,9 @@ static void ReadRawValue(
       SEL getter = NSSelectorFromString([NSString stringWithFormat:@"__%@", [field getName]]);
       if (getter && [object respondsToSelector:getter]) {
         rawValue->asId = [object performSelector:getter];
+      } else {
+        // It's a final instance field, return its constant value.
+        *rawValue = field->metadata_->constantValue;
       }
     } else {
       if (![field->declaringClass_ isInstance:object]) {
