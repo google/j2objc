@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -32,6 +33,10 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 
   public VariableDeclarationFragment(IVariableBinding variableBinding, Expression initializer) {
     super(variableBinding, initializer);
+  }
+
+  public VariableDeclarationFragment(VariableElement variableElement, Expression initializer) {
+    super(variableElement, initializer);
   }
 
   @Override

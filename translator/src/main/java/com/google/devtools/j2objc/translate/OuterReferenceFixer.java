@@ -179,7 +179,7 @@ public class OuterReferenceFixer extends TreeVisitor {
   }
 
   private List<VariableElement> fixPath(List<VariableElement> path) {
-    if (BindingConverter.unwrapElement(path.get(0)) == OuterReferenceResolver.OUTER_PARAMETER) {
+    if (path.get(0) == OuterReferenceResolver.OUTER_PARAMETER) {
       assert outerParam != null;
       path = Lists.newArrayList(path);
       path.set(0, outerParam);

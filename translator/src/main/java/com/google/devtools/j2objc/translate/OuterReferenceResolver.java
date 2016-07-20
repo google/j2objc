@@ -41,6 +41,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,11 +70,12 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   // A placeholder variable binding that should be replaced with the outer
   // parameter in a constructor.
-  public static final IVariableBinding OUTER_PARAMETER = GeneratedVariableBinding.newPlaceholder();
+  public static final VariableElement OUTER_PARAMETER =
+      BindingConverter.getVariableElement(GeneratedVariableBinding.newPlaceholder());
 
   private enum VisitingState { NEEDS_REVISIT, VISITED }
 
-  private Map<ITypeBinding, IVariableBinding> outerVars = new HashMap<>();
+  private Map<ITypeBinding, VariableElement> outerVars = new HashMap<>();
   private Set<ITypeBinding> usesOuterParam = new HashSet<>();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
@@ -95,7 +97,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     return !type.isLocal() || outerVars.containsKey(type) || usesOuterParam.contains(type);
   }
 
-  public IVariableBinding getOuterField(ITypeBinding type) {
+  public VariableElement getOuterField(ITypeBinding type) {
     return outerVars.get(type);
   }
 
@@ -103,7 +105,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     List<Capture> capturesForType = captures.get(type);
     List<IVariableBinding> innerFields = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
-      innerFields.add(capture.field);
+      innerFields.add((IVariableBinding) BindingConverter.unwrapElement(capture.field));
     }
     return innerFields;
   }
@@ -123,10 +125,10 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private static class Capture {
 
-    private final IVariableBinding var;
-    private final IVariableBinding field;
+    private final VariableElement var;
+    private final VariableElement field;
 
-    private Capture(IVariableBinding var, IVariableBinding field) {
+    private Capture(VariableElement var, VariableElement field) {
       this.var = var;
       this.field = field;
     }
@@ -137,7 +139,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     private final ITypeBinding type;
     private final Set<ITypeBinding> inheritedScope;
     private boolean initializingContext;
-    private Set<IVariableBinding> declaredVars = new HashSet<>();
+    private Set<VariableElement> declaredVars = new HashSet<>();
 
     private Scope(ITypeBinding type, Types typeEnv) {
       this.type = type;
@@ -191,7 +193,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     return "this$" + suffix;
   }
 
-  private IVariableBinding getOrCreateOuterField(Scope scope) {
+  private VariableElement getOrCreateOuterField(Scope scope) {
     // Check that this isn't a lambda, since we'll always capture the field itself
     if (scope.initializingContext && scope == peekScope()) {
       usesOuterParam.add(scope.type);
@@ -199,18 +201,20 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
 
     ITypeBinding type = scope.type;
-    IVariableBinding outerField = outerVars.get(type);
+    VariableElement outerField = outerVars.get(type);
     if (outerField == null) {
-      outerField = new GeneratedVariableBinding(getOuterFieldName(type),
-          Modifier.PRIVATE | Modifier.FINAL, type.getDeclaringClass(), true, false, type, null);
+      outerField = (VariableElement) BindingConverter.getElement(
+          new GeneratedVariableBinding(getOuterFieldName(type),
+          Modifier.PRIVATE | Modifier.FINAL, type.getDeclaringClass(), true, false, type, null)
+          );
       outerVars.put(type, outerField);
     }
     return outerField;
   }
 
-  private IVariableBinding getOrCreateInnerField(IVariableBinding var, ITypeBinding declaringType) {
+  private VariableElement getOrCreateInnerField(VariableElement var, ITypeBinding declaringType) {
     List<Capture> capturesForType = captures.get(declaringType);
-    IVariableBinding innerField = null;
+    VariableElement innerField = null;
     for (Capture capture : capturesForType) {
       if (var.equals(capture.var)) {
         innerField = capture.field;
@@ -218,18 +222,19 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
     }
     if (innerField == null) {
-      GeneratedVariableBinding newField = new GeneratedVariableBinding("val$" + var.getName(),
-          Modifier.PRIVATE | Modifier.FINAL, var.getType(), true, false, declaringType, null);
+      GeneratedVariableBinding newField = new GeneratedVariableBinding("val$"
+          + var.getSimpleName().toString(), Modifier.PRIVATE | Modifier.FINAL,
+          var.asType(), true, false, declaringType, null);
       newField.addAnnotations(var);
-      innerField = newField;
+      innerField = BindingConverter.getVariableElement(newField);
       captures.put(declaringType, new Capture(var, innerField));
     }
     return innerField;
   }
 
-  private List<IVariableBinding> getOuterPath(ITypeBinding type) {
+  private List<VariableElement> getOuterPath(ITypeBinding type) {
     type = type.getTypeDeclaration();
-    List<IVariableBinding> path = new ArrayList<>();
+    List<VariableElement> path = new ArrayList<>();
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (type.equals(scope.type)) {
@@ -238,7 +243,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (!BindingUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
       } else {
-        IVariableBinding outerField = getOrCreateOuterField(scope);
+        VariableElement outerField = getOrCreateOuterField(scope);
         // A lambda should get added to the outer path only if it is the scope closest to the use.
         if (i == scopeStack.size() - 1) {
           path.add(outerField);
@@ -248,9 +253,9 @@ public class OuterReferenceResolver extends TreeVisitor {
     return path;
   }
 
-  private List<IVariableBinding> getOuterPathInherited(ITypeBinding type) {
+  private List<VariableElement> getOuterPathInherited(ITypeBinding type) {
     type = type.getTypeDeclaration();
-    List<IVariableBinding> path = new ArrayList<>();
+    List<VariableElement> path = new ArrayList<>();
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (scope.inheritedScope.contains(type)) {
@@ -259,7 +264,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (!BindingUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
       } else {
-        IVariableBinding outerField = getOrCreateOuterField(scope);
+        VariableElement outerField = getOrCreateOuterField(scope);
         // A lambda should get added to the outer path only if it is innermost
         if (i == scopeStack.size() - 1) {
           path.add(outerField);
@@ -269,17 +274,18 @@ public class OuterReferenceResolver extends TreeVisitor {
     return path;
   }
 
-  private List<IVariableBinding> getPathForField(IVariableBinding var) {
-    List<IVariableBinding> path = getOuterPathInherited(var.getDeclaringClass());
+  private List<VariableElement> getPathForField(VariableElement var) {
+    List<VariableElement> path = getOuterPathInherited(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(var.getEnclosingElement().asType()));
     if (!path.isEmpty()) {
       path.add(var);
     }
     return path;
   }
 
-  private List<IVariableBinding> getPathForLocalVar(IVariableBinding var) {
+  private List<VariableElement> getPathForLocalVar(VariableElement var) {
     boolean isConstant = var.getConstantValue() != null;
-    ArrayList<IVariableBinding> path = new ArrayList<>();
+    ArrayList<VariableElement> path = new ArrayList<>();
 
     int lastScopeIdx = -1;
     int lastNonLambdaScopeIdx = -1;
@@ -322,7 +328,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       } else {
         if (BindingUtil.isLambda(scope.type)) {
           if (i > lastNonLambdaScopeIdx && lastNonLambdaScopeIdx != -1) {
-            IVariableBinding outer = getOrCreateOuterField(scope);
+            VariableElement outer = getOrCreateOuterField(scope);
             if (i == scopeStackSize - 1) {
               path.add(outer);
             }
@@ -337,17 +343,9 @@ public class OuterReferenceResolver extends TreeVisitor {
     return path;
   }
 
-  private List<VariableElement> convertPath(List<IVariableBinding> path) {
-    List<VariableElement> newPath = new ArrayList<VariableElement>();
-    for (IVariableBinding b : path) {
-      newPath.add((VariableElement) BindingConverter.getElement(b));
-    }
-    return newPath;
-  }
-
-  private void addPath(TreeNode node, List<IVariableBinding> path) {
+  private void addPath(TreeNode node, List<VariableElement> path) {
     if (!path.isEmpty()) {
-      outerPaths.put(node.getKey(), convertPath(path));
+      outerPaths.put(node.getKey(), path);
     }
   }
 
@@ -426,19 +424,20 @@ public class OuterReferenceResolver extends TreeVisitor {
 
     // if we have an outer field, add the path to it so we can reference
     // it in the lambda_get function.
-    IVariableBinding outerField = getOuterField(node.getLambdaTypeBinding());
+    VariableElement outerField = getOuterField(node.getLambdaTypeBinding());
     if (outerField != null) {
-      addPath(node, getOuterPathInherited(outerField.getType()));
+      addPath(node, getOuterPathInherited(
+          BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerField.asType())));
     }
     ITypeBinding type = node.getLambdaTypeBinding();
     List<Capture> capturesForType = captures.get(type);
     List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
-      List<IVariableBinding> path = getPathForLocalVar(capture.var);
+      List<VariableElement> path = getPathForLocalVar(capture.var);
       if (path.isEmpty()) {
         path = Collections.singletonList(capture.var);
       }
-      capturePaths.add(convertPath(path));
+      capturePaths.add(path);
     }
     captureArgs.put(node.getKey(), capturePaths);
   }
@@ -457,11 +456,11 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(SimpleName node) {
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    VariableElement var = TreeUtil.getVariableElement(node);
     if (var != null) {
-      if (var.isField() && !Modifier.isStatic(var.getModifiers())) {
+      if (ElementUtil.isField(var) && !ElementUtil.isStatic(var)) {
         addPath(node, getPathForField(var));
-      } else if (!var.isField()) {
+      } else if (!ElementUtil.isField(var)) {
         addPath(node, getPathForLocalVar(var));
       }
     }
@@ -525,11 +524,11 @@ public class OuterReferenceResolver extends TreeVisitor {
       List<Capture> capturesForType = captures.get(type);
       List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
       for (Capture capture : capturesForType) {
-        List<IVariableBinding> path = getPathForLocalVar(capture.var);
+        List<VariableElement> path = getPathForLocalVar(capture.var);
         if (path.isEmpty()) {
           path = Collections.singletonList(capture.var);
         }
-        capturePaths.add(convertPath(path));
+        capturePaths.add(path);
       }
       captureArgs.put(node.getKey(), capturePaths);
     }
@@ -538,7 +537,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   private boolean visitVariableDeclaration(VariableDeclaration node) {
     assert scopeStack.size() > 0;
     Scope currentScope = scopeStack.get(scopeStack.size() - 1);
-    currentScope.declaredVars.add(node.getVariableBinding());
+    currentScope.declaredVars.add(node.getVariableElement());
     return true;
   }
 

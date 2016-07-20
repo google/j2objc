@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
 import javax.annotation.Nullable;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Binding class for variables and parameters created during translation.
@@ -60,6 +61,13 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
     this.isField = isField;
   }
 
+  public GeneratedVariableBinding(String name, int modifiers, TypeMirror type,
+      boolean isField, boolean isParameter, @Nullable ITypeBinding declaringClass,
+      @Nullable IMethodBinding declaringMethod) {
+    this(name, modifiers, BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), isField,
+        isParameter, declaringClass, declaringMethod);
+  }
+
   /**
    * For creating a mutable copy of an existing variable binding.
    */
@@ -70,7 +78,8 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
   }
 
   public static GeneratedVariableBinding newPlaceholder() {
-    return new GeneratedVariableBinding(PLACEHOLDER_NAME, 0, null, false, false, null, null);
+    return new GeneratedVariableBinding(PLACEHOLDER_NAME, 0, (TypeMirror) null,
+        false, false, null, null);
   }
 
   public static boolean isPlaceholder(IVariableBinding var) {

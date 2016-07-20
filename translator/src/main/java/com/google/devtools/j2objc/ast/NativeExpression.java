@@ -43,6 +43,11 @@ public class NativeExpression extends Expression {
     typeMirror = BindingConverter.getType(type);
   }
 
+  public NativeExpression(String code, TypeMirror type) {
+    this.code = code;
+    typeMirror = type;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.NATIVE_EXPRESSION;

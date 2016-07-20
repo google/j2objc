@@ -44,6 +44,10 @@ public class ThisExpression extends Expression {
     typeMirror = BindingConverter.getType(typeBinding);
   }
 
+  public ThisExpression(TypeMirror typeMirror) {
+    this.typeMirror = typeMirror;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.THIS_EXPRESSION;

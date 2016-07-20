@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Node for a field declaration.
@@ -51,6 +52,12 @@ public class FieldDeclaration extends BodyDeclaration {
     super(variableBinding);
     type.set(Type.newType(variableBinding.getType()));
     fragments.add(new VariableDeclarationFragment(variableBinding, initializer));
+  }
+
+  public FieldDeclaration(VariableElement variableElement, Expression initializer) {
+    super(variableElement);
+    type.set(Type.newType(variableElement.asType()));
+    fragments.add(new VariableDeclarationFragment(variableElement, initializer));
   }
 
   @Override

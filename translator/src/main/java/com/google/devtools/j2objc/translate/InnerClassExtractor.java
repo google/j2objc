@@ -139,9 +139,9 @@ public class InnerClassExtractor extends TreeVisitor {
     ITypeBinding clazz = node.getTypeBinding();
     assert clazz.getDeclaringClass() != null;
 
-    IVariableBinding outerFieldBinding = outerResolver.getOuterField(clazz);
-    if (outerFieldBinding != null) {
-      members.add(0, new FieldDeclaration(outerFieldBinding, null));
+    VariableElement outerFieldElement = outerResolver.getOuterField(clazz);
+    if (outerFieldElement != null) {
+      members.add(0, new FieldDeclaration(outerFieldElement, null));
     }
 
     List<IVariableBinding> innerFields = outerResolver.getInnerFields(clazz);
@@ -227,7 +227,7 @@ public class InnerClassExtractor extends TreeVisitor {
         statements.add(0, superCall);
       }
       passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);
-      IVariableBinding outerField = outerResolver.getOuterField(type);
+      VariableElement outerField = outerResolver.getOuterField(type);
       int idx = 0;
       if (outerField != null) {
         assert outerParamBinding != null;

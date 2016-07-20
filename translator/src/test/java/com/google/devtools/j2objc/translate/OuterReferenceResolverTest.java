@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -87,8 +86,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     List<VariableElement> bPath = outerResolver.getPath(bNode);
     assertNotNull(bPath);
     assertEquals(1, bPath.size());
-    assertEquals(OuterReferenceResolver.OUTER_PARAMETER,
-        BindingConverter.unwrapElement(bPath.get(0)));
+    assertEquals(OuterReferenceResolver.OUTER_PARAMETER, bPath.get(0));
 
     // foo() call will need to get to B's scope to call the inherited method.
     MethodInvocation fooCall = (MethodInvocation) nodesByType.get(Kind.METHOD_INVOCATION).get(0);

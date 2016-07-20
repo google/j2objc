@@ -14,30 +14,24 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IBinding;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
 
 abstract class JdtElement implements Element {
   protected Name name;
   protected int flags;
   protected JdtBinding binding;
-
-  private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
   protected JdtElement(IBinding binding, String name, int flags) {
     if (binding instanceof JdtBinding) {
@@ -58,7 +52,7 @@ abstract class JdtElement implements Element {
 
   @Override
   public Set<Modifier> getModifiers() {
-    return toModifierSet(flags);
+    return ElementUtil.toModifierSet(flags);
   }
 
   @Override
@@ -83,58 +77,5 @@ abstract class JdtElement implements Element {
   @Override
   public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
     throw new AssertionError("not implemented");
-  }
-
-  private static Set<Modifier> toModifierSet(int modifiers) {
-    Set<Modifier> set = modifierSets.get(modifiers);
-    if (set == null) {
-      set = EnumSet.noneOf(Modifier.class);
-      if ((modifiers & java.lang.reflect.Modifier.PUBLIC) > 0) {
-        set.add(Modifier.PUBLIC);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.PRIVATE) > 0) {
-        set.add(Modifier.PRIVATE);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.PROTECTED) > 0) {
-        set.add(Modifier.PROTECTED);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.STATIC) > 0) {
-        set.add(Modifier.STATIC);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.FINAL) > 0) {
-        set.add(Modifier.FINAL);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.SYNCHRONIZED) > 0) {
-        set.add(Modifier.SYNCHRONIZED);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.VOLATILE) > 0) {
-        set.add(Modifier.VOLATILE);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.TRANSIENT) > 0) {
-        set.add(Modifier.TRANSIENT);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.NATIVE) > 0) {
-        set.add(Modifier.NATIVE);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.ABSTRACT) > 0) {
-        set.add(Modifier.ABSTRACT);
-      }
-      if ((modifiers & java.lang.reflect.Modifier.STRICT) > 0) {
-        set.add(Modifier.STRICTFP);
-      }
-      // Indirectly check whether Modifier.DEFAULT exists, since it was
-      // added in Java 8.
-      if ((modifiers & org.eclipse.jdt.core.dom.Modifier.DEFAULT) > 0) {
-        try {
-          Modifier m = Modifier.valueOf("DEFAULT");
-          set.add(m);
-        } catch (IllegalArgumentException e) {
-          // Can only add DEFAULT modifier in Java 8.
-        }
-      }
-
-      modifierSets.put(modifiers, set);
-    }
-    return set;
   }
 }

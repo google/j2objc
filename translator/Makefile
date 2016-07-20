@@ -268,12 +268,14 @@ JAVA_SOURCES = \
 	types/GeneratedPackageBinding.java \
 	types/GeneratedTypeBinding.java \
 	types/GeneratedVariableBinding.java \
+	types/GeneratedVariableElement.java \
 	types/HeaderImportCollector.java \
 	types/IOSMethodBinding.java \
 	types/IOSTypeBinding.java \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
 	types/LambdaTypeBinding.java \
+	types/NativeType.java \
 	types/NativeTypeBinding.java \
 	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \

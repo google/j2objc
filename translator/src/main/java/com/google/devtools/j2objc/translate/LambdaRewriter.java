@@ -32,9 +32,9 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
-import com.google.devtools.j2objc.types.NativeTypeBinding;
+import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -43,7 +43,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Rewrites Lambda nodes into Lambda_get calls.
@@ -55,8 +54,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  */
 public class LambdaRewriter extends TreeVisitor {
 
-  private static final NativeTypeBinding SELType = new NativeTypeBinding("SEL");
-  private static final NativeTypeBinding LambdaBase = new NativeTypeBinding("LambdaBase *");
+  private static final NativeType SELType = new NativeType("SEL");
+  private static final NativeType LambdaBase = new NativeType("LambdaBase *");
   private final OuterReferenceResolver outerResolver;
 
   public LambdaRewriter(OuterReferenceResolver outerResolver) {
@@ -205,15 +204,15 @@ public class LambdaRewriter extends TreeVisitor {
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableBinding("self", 0, LambdaBase, false, true, null, null)));
+                  new GeneratedVariableElement("self", LambdaBase, false, true)));
       funcImpl
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableBinding("_cmd", 0, SELType, false, true, null, null)));
+                  new GeneratedVariableElement("_cmd", SELType, false, true)));
 
       for (VariableDeclaration d : node.getParameters()) {
-        funcImpl.addParameter(new SingleVariableDeclaration(d.getVariableBinding()));
+        funcImpl.addParameter(new SingleVariableDeclaration(d.getVariableElement()));
       }
 
       funcImpl.setBody((Block) TreeUtil.remove(node.getBody()));
@@ -225,16 +224,18 @@ public class LambdaRewriter extends TreeVisitor {
           typeEnv.resolveJavaTypeMirror("void"), enclosingTypeMirror);
       funcDealloc.addModifiers(Modifier.PRIVATE);
       funcDealloc.setBody(new Block());
+      //TODO(user): The element corresponding to the function should be the owner of the
+      //of the GeneratedVariableElement for this one and the ones following.
       funcDealloc
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableBinding("self", 0, LambdaBase, false, true, null, null)));
+                  new GeneratedVariableElement("self", LambdaBase, false, true)));
       funcDealloc
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableBinding("_cmd", 0, SELType, false, true, null, null)));
+                  new GeneratedVariableElement("_cmd", SELType, false, true)));
 
       enclosingType.addBodyDeclaration(0, funcDealloc);
     }
@@ -295,32 +296,34 @@ public class LambdaRewriter extends TreeVisitor {
       // Add an outerField to the capture struct (and init of the capture struct) if we have one.
       String structContents = "";
       LambdaTypeBinding uniqueLambdaType = node.getLambdaTypeBinding();
-      IVariableBinding outerField = outerResolver.getOuterField(uniqueLambdaType);
+      VariableElement outerField = outerResolver.getOuterField(uniqueLambdaType);
       if (outerField != null) {
         structContents +=
-            nameTable.getObjCType(outerField.getType()) + " " + outerField.getName() + ";\n";
+            nameTable.getObjCType(outerField.asType()) + " "
+            + outerField.getSimpleName().toString() + ";\n";
         statements.add(
             new NativeStatement(
-                "captures->" + outerField.getName()
-                + " = [" + outerField.getName() + "_ retain];"));
+                "captures->" + outerField.getSimpleName().toString()
+                + " = [" + outerField.getSimpleName().toString() + "_ retain];"));
         funcDeallocStatements.add(
             new NativeStatement(
-                "[captures->" + outerField.getName() + " release];"));
+                "[captures->" + outerField.getSimpleName().toString() + " release];"));
 
         // Note that the init of the captures struct is 0 in funcImplStatements.
         funcImplStatements.add(
             1,
             new NativeStatement(
-                nameTable.getObjCType(outerField.getType())
-                + " " + outerField.getName() + "_ = captures->" + outerField.getName() + ";"));
-        // TODO(user): This self local should be unnecessary, but SuperMethodInvocationRewriter
+                nameTable.getObjCType(outerField.asType())
+                + " " + outerField.getSimpleName().toString() + "_ = captures->"
+                + outerField.getSimpleName().toString() + ";"));
+        // TODO(user): This self should be unnecessary, but SuperMethodInvocationRewriter
         // adds a ThisExpression node after the OuterReferenceResolver has already run, so it
         // doesn't get the right path using the lambda and instead just becomes self.
         funcImplStatements.add(
             2,
             new NativeStatement(
-                nameTable.getObjCType(outerField.getType())
-                + " self = captures->" + outerField.getName() + ";"));
+                nameTable.getObjCType(outerField.asType())
+                + " self = captures->" + outerField.getSimpleName().toString() + ";"));
 
         funcGet.addParameter(new SingleVariableDeclaration(outerField));
 
@@ -328,7 +331,7 @@ public class LambdaRewriter extends TreeVisitor {
         if (pathToOuter != null) {
           funcGetInvocation.addArgument(Name.newName(pathToOuter));
         } else {
-          funcGetInvocation.addArgument(new ThisExpression(outerField.getType()));
+          funcGetInvocation.addArgument(new ThisExpression(outerField.asType()));
         }
       }
 

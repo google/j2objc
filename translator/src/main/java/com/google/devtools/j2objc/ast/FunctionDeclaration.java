@@ -30,6 +30,7 @@ public class FunctionDeclaration extends BodyDeclaration {
   private final ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
   private final ChildLink<Block> body = ChildLink.create(Block.class, this);
+  //TODO(user): declaringClass should more properly be an Element.
   private final TypeMirror declaringClass;
   private String jniSignature = null;
 

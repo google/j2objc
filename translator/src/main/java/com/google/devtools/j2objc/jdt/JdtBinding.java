@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.lang.model.element.Element;
 
 /**
  * Wrapper class around IBinding, allowing getKind() to be redefined by
@@ -49,6 +50,10 @@ public abstract class JdtBinding implements IBinding {
 
   public void addAnnotations(IBinding binding) {
     annotations.addAll(Arrays.asList(binding.getAnnotations()));
+  }
+
+  public void addAnnotations(Element element) {
+    annotations.addAll(Arrays.asList(BindingConverter.unwrapElement(element).getAnnotations()));
   }
 
   @Deprecated

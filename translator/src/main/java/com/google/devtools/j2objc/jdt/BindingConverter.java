@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -318,12 +322,20 @@ public final class BindingConverter {
   }
 
   public static IBinding unwrapElement(Element element) {
+    if (element instanceof GeneratedVariableElement) {
+      return new GeneratedVariableBinding(element.toString(), 0, element.asType(),
+          element.getKind() == ElementKind.FIELD, element.getKind() == ElementKind.PARAMETER,
+          null, null);
+    }
     return element != null ? ((JdtElement) element).binding : null;
   }
 
   public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {
     if (t == null) {
       return null;
+    }
+    if (t instanceof NativeType) {
+      return new NativeTypeBinding(((NativeType) t).toString());
     }
     return ((JdtTypeMirror) t).binding;
   }

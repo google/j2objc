@@ -18,8 +18,11 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.jdt.TypeUtil;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -50,6 +53,8 @@ public final class ElementUtil {
 
   // Class files can only use the lower 16 bits.
   public static final int ACC_FLAG_MASK = 0xFFFF;
+
+  private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
   public static boolean isStatic(Element element) {
     return hasModifier(element, Modifier.STATIC);
@@ -271,5 +276,105 @@ public final class ElementUtil {
       }
     }
     return methods;
+  }
+  public static Set<Modifier> toModifierSet(int modifiers) {
+    Set<Modifier> set = modifierSets.get(modifiers);
+    if (set == null) {
+      set = EnumSet.noneOf(Modifier.class);
+      if ((modifiers & java.lang.reflect.Modifier.PUBLIC) > 0) {
+        set.add(Modifier.PUBLIC);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.PRIVATE) > 0) {
+        set.add(Modifier.PRIVATE);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.PROTECTED) > 0) {
+        set.add(Modifier.PROTECTED);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.STATIC) > 0) {
+        set.add(Modifier.STATIC);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.FINAL) > 0) {
+        set.add(Modifier.FINAL);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.SYNCHRONIZED) > 0) {
+        set.add(Modifier.SYNCHRONIZED);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.VOLATILE) > 0) {
+        set.add(Modifier.VOLATILE);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.TRANSIENT) > 0) {
+        set.add(Modifier.TRANSIENT);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.NATIVE) > 0) {
+        set.add(Modifier.NATIVE);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.ABSTRACT) > 0) {
+        set.add(Modifier.ABSTRACT);
+      }
+      if ((modifiers & java.lang.reflect.Modifier.STRICT) > 0) {
+        set.add(Modifier.STRICTFP);
+      }
+      // Indirectly check whether Modifier.DEFAULT exists, since it was
+      // added in Java 8.
+      if ((modifiers & org.eclipse.jdt.core.dom.Modifier.DEFAULT) > 0) {
+        try {
+          Modifier m = Modifier.valueOf("DEFAULT");
+          set.add(m);
+        } catch (IllegalArgumentException e) {
+          // Can only add DEFAULT modifier in Java 8.
+        }
+      }
+
+      modifierSets.put(modifiers, set);
+    }
+    return set;
+  }
+
+  public static int fromModifierSet(Set<Modifier> set) {
+    int modifiers = 0;
+    if (set.contains(Modifier.PUBLIC)) {
+      modifiers |= java.lang.reflect.Modifier.PUBLIC;
+    }
+    if (set.contains(Modifier.PRIVATE)) {
+      modifiers |= java.lang.reflect.Modifier.PRIVATE;
+    }
+    if (set.contains(Modifier.PROTECTED)) {
+      modifiers |= java.lang.reflect.Modifier.PROTECTED;
+    }
+    if (set.contains(Modifier.STATIC)) {
+      modifiers |= java.lang.reflect.Modifier.STATIC;
+    }
+    if (set.contains(Modifier.FINAL)) {
+      modifiers |= java.lang.reflect.Modifier.FINAL;
+    }
+    if (set.contains(Modifier.SYNCHRONIZED)) {
+      modifiers |= java.lang.reflect.Modifier.SYNCHRONIZED;
+    }
+    if (set.contains(Modifier.VOLATILE)) {
+      modifiers |= java.lang.reflect.Modifier.VOLATILE;
+    }
+    if (set.contains(Modifier.TRANSIENT)) {
+      modifiers |= java.lang.reflect.Modifier.TRANSIENT;
+    }
+    if (set.contains(Modifier.NATIVE)) {
+      modifiers |= java.lang.reflect.Modifier.NATIVE;
+    }
+    if (set.contains(Modifier.ABSTRACT)) {
+      modifiers |= java.lang.reflect.Modifier.ABSTRACT;
+    }
+    if (set.contains(Modifier.STRICTFP)) {
+      modifiers |= java.lang.reflect.Modifier.STRICT;
+    }
+    // Indirectly check whether Modifier.DEFAULT exists, since it was
+    // added in Java 8.
+    try {
+      Modifier m = Modifier.valueOf("DEFAULT");
+      if (set.contains(m)) {
+        modifiers |= org.eclipse.jdt.core.dom.Modifier.DEFAULT;
+      }
+    } catch (IllegalArgumentException e) {
+      // Can only add DEFAULT modifier in Java 8.
+    }
+    return modifiers;
   }
 }
