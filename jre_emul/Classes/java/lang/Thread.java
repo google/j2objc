@@ -414,8 +414,8 @@ public class Thread implements Runnable {
     NativeThread *nt = (NativeThread *)self->nativeThread_;
     pthread_attr_t attr;
     pthread_attr_init(&attr);
-    jlong stack = self->stackSize_;
-    if (stack != 0) {
+    size_t stack = (size_t)self->stackSize_;
+    if (stack >= PTHREAD_STACK_MIN) {
       pthread_attr_setstacksize(&attr, stack);
     }
     pthread_create(&nt->t, &attr, &start_routine, [self retain]);
