@@ -180,7 +180,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
         }
         continue;
       }
-      if (key.equals(entry.getKey())) {
+      if (entry.getKey() != null && key.equalsIgnoreCase(entry.getKey())) {
         return entry.getValue();
       }
     }
@@ -598,7 +598,7 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
 
   private void setHeader(String k, String v) {
     for (HeaderEntry entry : headers) {
-      if (entry.key == k) {
+      if (entry.key == k || (entry.key != null && k != null && k.equalsIgnoreCase(entry.key))) {
         headers.remove(entry);
         break;
       }
