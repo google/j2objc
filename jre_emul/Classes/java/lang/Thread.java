@@ -526,7 +526,7 @@ public class Thread implements Runnable {
   }
 
   public ThreadGroup getThreadGroup() {
-    return threadGroup;
+    return state == State.TERMINATED ? null : threadGroup;
   }
 
   public StackTraceElement[] getStackTrace() {
