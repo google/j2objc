@@ -30,12 +30,17 @@
  * limitations under the License.
  */
 
-package java.lang.reflect;
+package com.google.j2objc;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -65,6 +70,10 @@ public class ReflectionTest extends TestCase {
 
   static class TestFields {
     public long longField;
+  }
+
+  static class TestStaticInit {
+    public static TestStaticInit instance = new TestStaticInit();
   }
 
   // Assert equals method can be found using reflection. Because it's a mapped
@@ -115,5 +124,13 @@ public class ReflectionTest extends TestCase {
     Field field = TestFields.class.getField("longField");
     field.set(o, 3000000000L);
     assertEquals(3000000000L, o.longField);
+  }
+
+  // Regression for issue 767.
+  public void testStaticInitialization() throws Exception {
+    Class<?> unsafeClass = Class.forName("com.google.j2objc.ReflectionTest$TestStaticInit");
+    Field field = unsafeClass.getDeclaredField("instance");
+    // Verify instance isn't null, indicating the class's +initialize method ran.
+    assertNotNull(field.get(null));
   }
 }

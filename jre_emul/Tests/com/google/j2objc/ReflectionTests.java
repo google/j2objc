@@ -25,9 +25,9 @@ public class ReflectionTests {
   private static final Class<?>[] reflectionTests = {
     com.google.j2objc.ArrayTest.class,
     com.google.j2objc.ClassTest.class,
+    com.google.j2objc.ReflectionTest.class,
     java.lang.reflect.MethodTest.class,
     java.lang.reflect.ProxyTest.class,
-    java.lang.reflect.ReflectionTest.class,
     libcore.java.lang.CharacterTest.class,
     libcore.java.lang.reflect.AnnotationsTest.class,
     libcore.java.lang.reflect.ArrayTest.class,

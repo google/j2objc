@@ -213,6 +213,7 @@ TEST_SOURCES := \
     com/google/j2objc/MemoryTest.java \
     com/google/j2objc/MethodTest.java \
     com/google/j2objc/PackageTest.java \
+    com/google/j2objc/ReflectionTest.java \
     com/google/j2objc/RetainedWithTest.java \
     com/google/j2objc/StringTest.java \
     com/google/j2objc/ThrowableTest.java \
@@ -226,7 +227,6 @@ TEST_SOURCES := \
     java/lang/ref/WeakReferenceTest.java \
     java/lang/reflect/MethodTest.java \
     java/lang/reflect/ProxyTest.java \
-    java/lang/reflect/ReflectionTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \

@@ -577,6 +577,7 @@ IOSClass *IOSClass_forName_(NSString *className) {
     }
   }
   if (iosClass) {
+    [iosClass.objcClass initialize];
     return iosClass;
   }
   @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
