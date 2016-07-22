@@ -16,6 +16,8 @@ package com.google.j2objc;
 
 import junit.framework.TestCase;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 
 /**
@@ -33,6 +35,17 @@ public class FieldTest extends TestCase {
 
   static class BoundedGenericClass<T extends Runnable> {
     T value;
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface Ascii {
+    int value();
+  }
+
+  enum Letter {
+    @Ascii(65) A,
+    @Ascii(66) B,
+    @Ascii(67) C
   }
 
   public FieldTest() {
@@ -71,5 +84,14 @@ public class FieldTest extends TestCase {
   public void testReadConstant() throws Exception {
     Field f = FieldTest.class.getDeclaredField("CONSTANT_FIELD");
     assertEquals(25, f.getLong(null));
+  }
+
+  public void testAnnotatedEnumValue() throws Exception {
+    Field f = Letter.class.getDeclaredField("A");
+    assertEquals(65, f.getAnnotation(Ascii.class).value());
+    f = Letter.class.getDeclaredField("B");
+    assertEquals(66, f.getAnnotation(Ascii.class).value());
+    f = Letter.class.getDeclaredField("C");
+    assertEquals(67, f.getAnnotation(Ascii.class).value());
   }
 }

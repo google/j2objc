@@ -224,7 +224,8 @@ public class MetadataWriter extends TreeVisitor {
       List<String> fieldMetadata = new ArrayList<>();
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          fieldMetadata.add(generateFieldMetadata(decl.getVariableBinding(), null));
+          String annotationsFunc = annotationGenerator.createFunction(decl);
+          fieldMetadata.add(generateFieldMetadata(decl.getVariableBinding(), annotationsFunc));
         }
       }
       for (FieldDeclaration decl : TreeUtil.getFieldDeclarations(typeNode)) {
