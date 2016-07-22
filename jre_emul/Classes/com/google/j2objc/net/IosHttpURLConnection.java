@@ -34,11 +34,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /*-[
 #include "NSDataInputStream.h"
@@ -73,6 +75,25 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
   private static final Map<Integer,String> RESPONSE_CODES = new HashMap<Integer,String>();
+
+  // A case-insensitive comparator that supports a null key, so headers with
+  // keys that only differ by case can be coalesced using a TreeMap.
+  private static final Comparator<String> HEADER_KEY_COMPARATOR =
+      new Comparator<String>() {
+        @Override
+        public int compare(String lhs, String rhs) {
+          if (lhs == null || rhs == null) {
+            if (rhs != null) {
+              return -1;
+            }
+            if (lhs != null) {
+              return 1;
+            }
+            return 0;
+          }
+          return String.CASE_INSENSITIVE_ORDER.compare(lhs, rhs);
+        }
+      };
 
   public IosHttpURLConnection(URL url) {
     this(url, null);
@@ -126,7 +147,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
   }
 
   private Map<String, List<String>> getHeaderFieldsDoNotForceResponse() {
-    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    Map<String, List<String>> map = new TreeMap<String, List<String>>(HEADER_KEY_COMPARATOR);
     for (HeaderEntry entry : headers) {
       String k = entry.getKey();
       String v = entry.getValue();
@@ -137,7 +158,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
       }
       values.add(v);
     }
-    return map;
+    return Collections.unmodifiableMap(map);
   }
 
   private List<HeaderEntry> getResponseHeaders() throws IOException {
