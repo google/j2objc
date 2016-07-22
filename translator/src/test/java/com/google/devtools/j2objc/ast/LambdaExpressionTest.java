@@ -147,6 +147,14 @@ public class LambdaExpressionTest extends GenerationTest {
     assertTranslatedSegments(translation, "Test$$Lambda$1_impl", "Test_Foo_Bar$$Lambda$1_impl");
   }
 
+  // Check that lambda captures respect reserved words.
+  public void testLambdaCloseOverReservedWord() throws IOException {
+    String translation = translateSourceFile(functionHeader
+        + "class Test { void f(int operator) { Function l = (a) -> operator; } }",
+        "Test", "Test.m");
+    assertTranslatedSegments(translation, "captures->operator_ =");
+  }
+
   public void testLargeArgumentCount() throws IOException {
     String interfaceHeader = "interface TooManyArgs<T> { T f(T a, T b, T c, T d, T e, T f, T g,"
         + " T h, T i, T j, T k, T l, T m, T n, T o, T p, T q, T r, T s, T t, T u, T v, T w, T x,"

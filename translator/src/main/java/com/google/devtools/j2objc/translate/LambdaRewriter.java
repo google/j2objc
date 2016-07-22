@@ -21,8 +21,6 @@ import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
-import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.ThisExpression;
@@ -341,10 +339,7 @@ public class LambdaRewriter extends TreeVisitor {
       for (int i = 0; i < captureArgPaths.size(); i++) {
         List<VariableElement> varPath = captureArgPaths.get(i);
         VariableElement var = varPath.get(varPath.size() - 1);
-        String varName = getName(varPath);
-        if (ElementUtil.isField(var)) {
-          varName += "_";
-        }
+        String varName = nameTable.getVariableQualifiedName(var);
 
         // For each captured field, we add it to the capture struct,
         // to the get function's parameters, to the get function's invocation,
@@ -387,14 +382,6 @@ public class LambdaRewriter extends TreeVisitor {
 
     FunctionInvocation getFunctionGetInvocation() {
       return funcGetInvocation;
-    }
-
-    private String getName(List<VariableElement> varPath) {
-      Name n = Name.newName(varPath);
-      if (n instanceof SimpleName) {
-        return ((SimpleName) n).getIdentifier();
-      }
-      return ((QualifiedName) n).getName().getIdentifier();
     }
   }
 }
