@@ -86,6 +86,7 @@ public final class URLConnectionTest extends TestCase {
         System.clearProperty("https.proxyHost");
         System.clearProperty("https.proxyPort");
         server.shutdown();
+        assertTrue("Server failed to shutdown.", server.awaitTermination(10, TimeUnit.SECONDS));
         server = null;
         super.tearDown();
     }

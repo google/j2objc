@@ -47,6 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -283,6 +284,13 @@ public final class MockWebServer {
         if (serverSocket != null) {
             serverSocket.close(); // should cause acceptConnections() to break out
         }
+    }
+
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+      if (acceptExecutor != null) {
+        return acceptExecutor.awaitTermination(timeout, unit);
+      }
+      return true;
     }
 
     private void serveConnection(final Socket raw) {
