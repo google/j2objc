@@ -36,6 +36,7 @@ import java.util.List;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Collection of utility methods for examining tree nodes.
@@ -143,15 +144,15 @@ public class TreeUtil {
    * the return type of a lambda or method binding, we need the return type of the functional
    * interface.
    */
-  public static ITypeBinding getOwningReturnType(TreeNode node) {
+  public static TypeMirror getOwningReturnType(TreeNode node) {
     while (node != null) {
       if (node instanceof MethodDeclaration) {
-        return ((MethodDeclaration) node).getMethodBinding().getReturnType();
+        return ((MethodDeclaration) node).getMethodElement().getReturnType();
       } else if (node instanceof LambdaExpression) {
-        return ((LambdaExpression) node).getTypeBinding().getFunctionalInterfaceMethod()
+        return ElementUtil.getFunctionalInterface(((LambdaExpression) node).getTypeMirror())
             .getReturnType();
       } else if (node instanceof MethodReference) {
-        return ((MethodReference) node).getTypeBinding().getFunctionalInterfaceMethod()
+        return ElementUtil.getFunctionalInterface(((MethodReference) node).getTypeMirror())
             .getReturnType();
       }
       node = node.getParent();

@@ -37,6 +37,7 @@ import java.util.Map;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -280,6 +281,10 @@ public final class BindingConverter {
 
   public static VariableElement getVariableElement(IVariableBinding binding) {
     return (VariableElement) getElement(binding);
+  }
+
+  public static ExecutableElement getExecutableElement(IMethodBinding binding) {
+    return (ExecutableElement) getElement(binding);
   }
 
   public static JdtElement getElement(JdtBinding binding) {

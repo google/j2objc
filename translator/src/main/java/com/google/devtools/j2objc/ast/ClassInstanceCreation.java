@@ -18,7 +18,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
-
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -26,7 +26,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class ClassInstanceCreation extends Expression {
 
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement method = null;
   // Indicates that this expression leaves the created object with a retain
   // count of 1. (i.e. does not call autorelease)
   private boolean hasRetainedResult = false;
@@ -38,7 +38,10 @@ public class ClassInstanceCreation extends Expression {
 
   public ClassInstanceCreation(org.eclipse.jdt.core.dom.ClassInstanceCreation jdtNode) {
     super(jdtNode);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
+    IMethodBinding methodBinding = BindingConverter.wrapBinding(
+        jdtNode.resolveConstructorBinding());
+    method = BindingConverter.getExecutableElement(methodBinding);
+
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
     for (Object argument : jdtNode.arguments()) {
@@ -50,7 +53,8 @@ public class ClassInstanceCreation extends Expression {
 
   public ClassInstanceCreation(ClassInstanceCreation other) {
     super(other);
-    methodBinding = other.getMethodBinding();
+    method = other.getExecutableElement();
+
     hasRetainedResult = other.hasRetainedResult();
     expression.copyFrom(other.getExpression());
     type.copyFrom(other.getType());
@@ -59,12 +63,12 @@ public class ClassInstanceCreation extends Expression {
   }
 
   public ClassInstanceCreation(IMethodBinding methodBinding, Type type) {
-    this.methodBinding = methodBinding;
+    method = BindingConverter.getExecutableElement(methodBinding);
     this.type.set(type);
   }
 
   public ClassInstanceCreation(IMethodBinding methodBinding) {
-    this.methodBinding = methodBinding;
+    method = BindingConverter.getExecutableElement(methodBinding);
     type.set(Type.newType(methodBinding.getDeclaringClass()));
   }
 
@@ -74,17 +78,21 @@ public class ClassInstanceCreation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
-  public void setMethodBinding(IMethodBinding newMethodBinding) {
-    methodBinding = newMethodBinding;
+  public void setMethodBinding(IMethodBinding methodBinding) {
+    method = BindingConverter.getExecutableElement(methodBinding);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method;
   }
 
   @Override
   public TypeMirror getTypeMirror() {
-    return methodBinding != null
-        ? BindingConverter.getType(methodBinding.getDeclaringClass()) : null;
+    return method != null
+        ? method.getEnclosingElement().asType() : null;
   }
 
   public boolean hasRetainedResult() {

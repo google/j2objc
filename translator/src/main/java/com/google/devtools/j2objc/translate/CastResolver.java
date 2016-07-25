@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -49,6 +50,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds cast checks to existing java cast expressions.
@@ -146,14 +148,15 @@ public class CastResolver extends TreeVisitor {
     castExpr.setExpression(expr);
   }
 
-  private void maybeAddCast(Expression expr, ITypeBinding expectedType, boolean shouldCastFromId) {
+  private void maybeAddCast(Expression expr, TypeMirror expectedType, boolean shouldCastFromId) {
     if (expr instanceof ConditionalExpression) {
       ConditionalExpression condExpr = (ConditionalExpression) expr;
       maybeAddCast(condExpr.getThenExpression(), expectedType, shouldCastFromId);
       maybeAddCast(condExpr.getElseExpression(), expectedType, shouldCastFromId);
       return;
     }
-    if (needsCast(expr, expectedType, shouldCastFromId)) {
+    if (needsCast(expr, BindingConverter.unwrapTypeMirrorIntoTypeBinding(expectedType),
+        shouldCastFromId)) {
       addCast(expr);
     }
   }
@@ -295,7 +298,7 @@ public class CastResolver extends TreeVisitor {
     // Possible varargs, don't cast vararg arguments.
     assert args.size() >= argTypes.size();
     for (int i = 0; i < argTypes.size(); i++) {
-      maybeAddCast(args.get(i), argTypes.get(i), false);
+      maybeAddCast(args.get(i), BindingConverter.getType(argTypes.get(i)), false);
     }
   }
 
@@ -364,14 +367,14 @@ public class CastResolver extends TreeVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    maybeAddCast(node.getRightHandSide(), node.getTypeBinding(), false);
+    maybeAddCast(node.getRightHandSide(), node.getTypeMirror(), false);
   }
 
   @Override
   public void endVisit(VariableDeclarationFragment node) {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
-      maybeAddCast(initializer, node.getVariableBinding().getType(), false);
+      maybeAddCast(initializer, node.getVariableElement().asType(), false);
     }
   }
 

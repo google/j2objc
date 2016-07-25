@@ -18,19 +18,22 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * Node for a super constructor invocation. (i.e. "super(...);")
  */
 public class SuperConstructorInvocation extends Statement {
 
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement method = null;
   private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperConstructorInvocation(org.eclipse.jdt.core.dom.SuperConstructorInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
+    IMethodBinding methodBinding = BindingConverter.wrapBinding(
+        jdtNode.resolveConstructorBinding());
+    method = BindingConverter.getExecutableElement(methodBinding);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
@@ -39,13 +42,13 @@ public class SuperConstructorInvocation extends Statement {
 
   public SuperConstructorInvocation(SuperConstructorInvocation other) {
     super(other);
-    methodBinding = other.getMethodBinding();
+    method = other.getExecutableElement();
     expression.copyFrom(other.getExpression());
     arguments.copyFrom(other.getArguments());
   }
 
   public SuperConstructorInvocation(IMethodBinding methodBinding) {
-    this.methodBinding = methodBinding;
+    method = BindingConverter.getExecutableElement(methodBinding);
   }
 
   @Override
@@ -54,11 +57,15 @@ public class SuperConstructorInvocation extends Statement {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
-    methodBinding = newMethodBinding;
+    method = BindingConverter.getExecutableElement(newMethodBinding);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method;
   }
 
   public Expression getExpression() {

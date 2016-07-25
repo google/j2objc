@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * Node for an enum constant.
@@ -26,7 +27,7 @@ import java.util.List;
 public class EnumConstantDeclaration extends BodyDeclaration {
 
   private IVariableBinding variableBinding = null;
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement method = null;
   private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
   private final ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
@@ -35,7 +36,9 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   public EnumConstantDeclaration(org.eclipse.jdt.core.dom.EnumConstantDeclaration jdtNode) {
     super(jdtNode);
     variableBinding = BindingConverter.wrapBinding(jdtNode.resolveVariable());
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
+    IMethodBinding methodBinding = BindingConverter.wrapBinding(
+        jdtNode.resolveConstructorBinding());
+    method = BindingConverter.getExecutableElement(methodBinding);
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
@@ -47,7 +50,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   public EnumConstantDeclaration(EnumConstantDeclaration other) {
     super(other);
     variableBinding = other.getVariableBinding();
-    methodBinding = other.getMethodBinding();
+    method = other.getExecutableElement();
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
@@ -63,11 +66,15 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
-    methodBinding = newMethodBinding;
+    method = BindingConverter.getExecutableElement(newMethodBinding);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method;
   }
 
   public SimpleName getName() {

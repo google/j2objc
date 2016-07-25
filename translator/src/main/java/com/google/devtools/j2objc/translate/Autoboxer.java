@@ -55,6 +55,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds support for boxing and unboxing numeric primitive values.
@@ -401,12 +402,12 @@ public class Autoboxer extends TreeVisitor {
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
     if (expr != null) {
-      ITypeBinding returnType = TreeUtil.getOwningReturnType(node);
+      TypeMirror returnType = TreeUtil.getOwningReturnType(node);
       ITypeBinding exprType = expr.getTypeBinding();
-      if (returnType.isPrimitive() && !exprType.isPrimitive()) {
+      if (returnType.getKind().isPrimitive() && !exprType.isPrimitive()) {
         node.setExpression(unbox(expr));
       }
-      if (!returnType.isPrimitive() && exprType.isPrimitive()) {
+      if (!returnType.getKind().isPrimitive() && exprType.isPrimitive()) {
         node.setExpression(box(expr));
       }
     }

@@ -81,7 +81,6 @@ public class OuterReferenceFixer extends TreeVisitor {
 
     GeneratedMethodBinding binding =
         new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
-    node.setMethodBinding(binding);
 
     List<Expression> captureArgs = node.getArguments().subList(0, 0);
     List<ITypeBinding> captureParams = binding.getParameters().subList(0, 0);
@@ -96,7 +95,7 @@ public class OuterReferenceFixer extends TreeVisitor {
       captureParams.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(
           captureArgPath.get(captureArgPath.size() - 1).asType()));
     }
-
+    node.setMethodBinding(binding);
     assert binding.isVarargs() || node.getArguments().size() == binding.getParameterTypes().length;
     return true;
   }

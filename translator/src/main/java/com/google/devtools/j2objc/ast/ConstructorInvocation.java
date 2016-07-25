@@ -18,13 +18,14 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * Node for a alternate constructor invocation. (i.e. "this(...);")
  */
 public class ConstructorInvocation extends Statement {
 
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement method = null;
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public ConstructorInvocation(IMethodBinding methodBinding) {
@@ -33,7 +34,9 @@ public class ConstructorInvocation extends Statement {
 
   public ConstructorInvocation(org.eclipse.jdt.core.dom.ConstructorInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveConstructorBinding());
+    IMethodBinding methodBinding = BindingConverter.wrapBinding(
+        jdtNode.resolveConstructorBinding());
+    method = BindingConverter.getExecutableElement(methodBinding);
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }
@@ -41,7 +44,7 @@ public class ConstructorInvocation extends Statement {
 
   public ConstructorInvocation(ConstructorInvocation other) {
     super(other);
-    methodBinding = other.getMethodBinding();
+    method = other.getExecutableElement();
     arguments.copyFrom(other.getArguments());
   }
 
@@ -51,11 +54,15 @@ public class ConstructorInvocation extends Statement {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
   public void setMethodBinding(IMethodBinding methodBinding) {
-    this.methodBinding = methodBinding;
+    method = BindingConverter.getExecutableElement(methodBinding);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method;
   }
 
   public List<Expression> getArguments() {

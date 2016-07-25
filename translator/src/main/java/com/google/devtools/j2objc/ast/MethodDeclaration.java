@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * Node type for a method declaration.
@@ -75,6 +76,10 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
     methodBinding = newMethodBinding;
+  }
+
+  public ExecutableElement getMethodElement() {
+    return BindingConverter.getExecutableElement(methodBinding);
   }
 
   public boolean isConstructor() {

@@ -21,7 +21,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
-
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -29,7 +29,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class MethodInvocation extends Expression {
 
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement method = null;
   // The context-specific known type of this expression.
   private TypeMirror typeMirror = null;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
@@ -38,7 +38,8 @@ public class MethodInvocation extends Expression {
 
   public MethodInvocation(org.eclipse.jdt.core.dom.MethodInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
+    IMethodBinding methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
+    method = BindingConverter.getExecutableElement(methodBinding);
     ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
     typeMirror = BindingConverter.getType(typeBinding);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
@@ -50,7 +51,7 @@ public class MethodInvocation extends Expression {
 
   public MethodInvocation(MethodInvocation other) {
     super(other);
-    methodBinding = other.getMethodBinding();
+    method = other.getExecutableElement();
     typeMirror = other.getTypeMirror();
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
@@ -58,7 +59,7 @@ public class MethodInvocation extends Expression {
   }
 
   public MethodInvocation(IMethodBinding binding, ITypeBinding typeBinding, Expression expression) {
-    methodBinding = binding;
+    method = BindingConverter.getExecutableElement(binding);
     typeMirror = BindingConverter.getType(typeBinding);
     this.expression.set(expression);
     name.set(new SimpleName(binding));
@@ -74,11 +75,15 @@ public class MethodInvocation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
-    methodBinding = newMethodBinding;
+    method = BindingConverter.getExecutableElement(newMethodBinding);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method;
   }
 
   @Override
@@ -128,7 +133,7 @@ public class MethodInvocation extends Expression {
   @Override
   public void validateInner() {
     super.validateInner();
-    Preconditions.checkNotNull(methodBinding);
+    Preconditions.checkNotNull(method);
     Preconditions.checkNotNull(name.get());
   }
 

@@ -14,26 +14,27 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
-
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for a method invocation on the super class. (e.g. "super.foo()")
  */
 public class SuperMethodInvocation extends Expression {
 
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement method = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperMethodInvocation(org.eclipse.jdt.core.dom.SuperMethodInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
+    IMethodBinding methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
+    method = BindingConverter.getExecutableElement(methodBinding);
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
@@ -43,14 +44,14 @@ public class SuperMethodInvocation extends Expression {
 
   public SuperMethodInvocation(SuperMethodInvocation other) {
     super(other);
-    methodBinding = other.getMethodBinding();
+    method = other.getExecutableElement();
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
   }
 
   public SuperMethodInvocation(IMethodBinding methodBinding) {
-    this.methodBinding = methodBinding;
+    method = BindingConverter.getExecutableElement(methodBinding);
     name.set(new SimpleName(methodBinding));
   }
 
@@ -60,16 +61,20 @@ public class SuperMethodInvocation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
-    methodBinding = newMethodBinding;
+    method = BindingConverter.getExecutableElement(newMethodBinding);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method;
   }
 
   @Override
   public TypeMirror getTypeMirror() {
-    return methodBinding != null ? BindingConverter.getType(methodBinding.getReturnType()) : null;
+    return method.getReturnType();
   }
 
   public Name getQualifier() {
