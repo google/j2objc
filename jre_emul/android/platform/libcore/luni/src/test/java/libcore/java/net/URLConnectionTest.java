@@ -69,9 +69,11 @@ public final class URLConnectionTest extends TestCase {
 
     private MockWebServer server;
     private String hostName;
+    private Object savedUrlCache;
 
     @Override protected void setUp() throws Exception {
         super.setUp();
+        savedUrlCache = setNewUrlCache();
         server = new MockWebServer();
         hostName = server.getHostName();
     }
@@ -86,10 +88,25 @@ public final class URLConnectionTest extends TestCase {
         System.clearProperty("https.proxyHost");
         System.clearProperty("https.proxyPort");
         server.shutdown();
-        assertTrue("Server failed to shutdown.", server.awaitTermination(10, TimeUnit.SECONDS));
+        restoreUrlCache(savedUrlCache);
         server = null;
         super.tearDown();
     }
+
+    // Make sure each test runs with a clean cache. Otherwise, a test may get a cache hit from the
+    // previous test.
+    private static native Object setNewUrlCache() /*-[
+      NSURLCache *oldCache = [NSURLCache sharedURLCache];
+      NSURLCache *newCache =
+          [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+      [NSURLCache setSharedURLCache:newCache];
+      [newCache release];
+      return oldCache;
+    ]-*/;
+
+    private static native void restoreUrlCache(Object savedCache) /*-[
+      [NSURLCache setSharedURLCache:savedCache];
+    ]-*/;
 
 //  JVM failure.
 //    public void testRequestHeaderValidation() throws Exception {
