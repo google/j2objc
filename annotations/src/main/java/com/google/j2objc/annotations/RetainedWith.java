@@ -29,17 +29,17 @@ import java.lang.annotation.Target;
  * the reference cycle between the pair of objects allowing both objects to be
  * deallocated once there are no external references to either object.
  *
- * @RetainedWith can be applied when a parent object pairs itself with a child
- * object and cannot fully manage the child's lifecycle, usually because the
- * child is returned to the caller. It can also be applied when the child has
- * the same class as the parent, for example on an inverse field of an
+ * {@literal @}RetainedWith can be applied when a parent object pairs itself
+ * with a child object and cannot fully manage the child's lifecycle, usually
+ * because the child is returned to the caller. It can also be applied when the
+ * child has the same class as the parent, for example on an inverse field of an
  * invertible collection type.
  *
- * @RetainedWith can only be applied where there is a two-object pair with a
- * cycle created by one reference from each object. Note: the two references can
- * be from the same declared field. When the references are from different
- * fields only one field should be given a @RetainedWith annotation, and the
- * @RetainedWith field should point from parent to child.
+ * {@literal @}RetainedWith can only be applied where there is a two-object pair
+ * with a cycle created by one reference from each object. Note: the two
+ * references can be from the same declared field. When the references are from
+ * different fields only one field should be given a @RetainedWith annotation,
+ * and the {@literal @}RetainedWith field should point from parent to child.
  *
  * When applied carefully in the right circumstance this annotation is very
  * useful in preventing leaks from certain Java collection types without needing
