@@ -47,6 +47,7 @@ MOCKITO_JAR = mockito-core-1.9.5.jar
 MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
 JARJAR = jarjar-1.3.jar
+JAVAC_JAR = tools.jar
 
 DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
