@@ -286,14 +286,6 @@ public class CompatibilityTest extends ProtobufTest {
         TypicalData.newBuilder().mergeFrom(new ByteArrayInputStream(rawData)).build(), false);
     checkMergeAndParse(TypicalData.parseFrom(new ByteArrayInputStream(rawData)), false);
 
-    // test using ExtensionRegistryLite
-    ExtensionRegistryLite registryLite = ExtensionRegistryLite.newInstance();
-    registryLite.add(Typical.myPrimitiveExtension);
-    checkMergeAndParse(
-        TypicalData.newBuilder().mergeFrom(new ByteArrayInputStream(rawData), registryLite).build(),
-        true);
-    checkMergeAndParse(
-        TypicalData.parseFrom(new ByteArrayInputStream(rawData), registryLite), true);
   }
 
   public void testMergeAndParseDelimitedFromInputStream() throws Exception {
