@@ -42,15 +42,13 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-
+import java.util.ArrayList;
+import java.util.List;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.Arrays;
-import java.util.List;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds cast checks to existing java cast expressions.
@@ -107,7 +105,7 @@ public class CastResolver extends TreeVisitor {
   private Expression rewriteFloatToIntegralCast(
       ITypeBinding castType, Expression expr, String funcName, ITypeBinding funcReturnType) {
     FunctionBinding binding = new FunctionBinding(funcName, funcReturnType, null);
-    binding.addParameter(typeEnv.resolveJavaType("double"));
+    binding.addParameters(typeEnv.resolveJavaTypeMirror("double"));
     FunctionInvocation invocation = new FunctionInvocation(binding, funcReturnType);
     invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
@@ -119,12 +117,12 @@ public class CastResolver extends TreeVisitor {
 
   private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
     type = type.getErasure();
-    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
     FunctionInvocation invocation = null;
     if ((type.isInterface() && !type.isAnnotation())
         || (type.isArray() && !type.getComponentType().isPrimitive())) {
       FunctionBinding binding = new FunctionBinding("cast_check", idType, null);
-      binding.addParameters(idType, typeEnv.getIOSClass());
+      binding.addParameters(idType, typeEnv.getIOSClassMirror());
       invocation = new FunctionInvocation(binding, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       invocation.addArgument(new TypeLiteral(type, typeEnv));
@@ -134,7 +132,7 @@ public class CastResolver extends TreeVisitor {
       invocation = new FunctionInvocation(binding, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       IOSMethodBinding classBinding = IOSMethodBinding.newMethod(
-          "class", Modifier.STATIC, idType, type);
+          "class", Modifier.STATIC, idType, BindingConverter.getType(type));
       MethodInvocation classInvocation = new MethodInvocation(classBinding, new SimpleName(type));
       invocation.addArgument(classInvocation);
     }
@@ -203,7 +201,8 @@ public class CastResolver extends TreeVisitor {
       case CLASS_INSTANCE_CREATION:
         return typeEnv.getIdType();
       case FUNCTION_INVOCATION:
-        return ((FunctionInvocation) expr).getFunctionBinding().getReturnType();
+        return BindingConverter.unwrapTypeMirrorIntoTypeBinding(
+            ((FunctionInvocation) expr).getFunctionBinding().getReturnType());
       case LAMBDA_EXPRESSION:
         // Lambda expressions are generated as function calls that return "id".
         return typeEnv.getIdType();
@@ -294,16 +293,20 @@ public class CastResolver extends TreeVisitor {
     return false;
   }
 
-  private void maybeCastArguments(List<Expression> args, List<ITypeBinding> argTypes) {
+  private void maybeCastArguments(List<Expression> args, List<TypeMirror> argTypes) {
     // Possible varargs, don't cast vararg arguments.
     assert args.size() >= argTypes.size();
     for (int i = 0; i < argTypes.size(); i++) {
-      maybeAddCast(args.get(i), BindingConverter.getType(argTypes.get(i)), false);
+      maybeAddCast(args.get(i), argTypes.get(i), false);
     }
   }
 
   private void maybeCastArguments(List<Expression> args, IMethodBinding method) {
-    maybeCastArguments(args, Arrays.asList(method.getParameterTypes()));
+    List<TypeMirror> paramTypes = new ArrayList<>();
+    for (ITypeBinding param : method.getParameterTypes()) {
+      paramTypes.add(BindingConverter.getType(param));
+    }
+    maybeCastArguments(args, paramTypes);
   }
 
   @Override

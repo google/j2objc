@@ -253,6 +253,10 @@ public class Types {
     return iosBindingMap.get(name);
   }
 
+  public TypeMirror resolveIOSTypeMirror(String name) {
+    return BindingConverter.getType(iosBindingMap.get(name));
+  }
+
   public boolean isJavaObjectType(ITypeBinding type) {
     return javaObjectType.equals(type);
   }
@@ -278,6 +282,12 @@ public class Types {
     return arrayBinding != null ? arrayBinding : IOSObjectArray;
   }
 
+  public TypeMirror resolveArrayType(TypeMirror mirror) {
+    IOSTypeBinding arrayBinding = arrayBindingMap.get(
+        BindingConverter.unwrapTypeMirrorIntoBinding(mirror));
+    return BindingConverter.getType(arrayBinding != null ? arrayBinding : IOSObjectArray);
+  }
+
   public boolean isJavaVoidType(ITypeBinding type) {
     return type.isEqualTo(javaVoidType);
   }
@@ -290,8 +300,18 @@ public class Types {
     return wrapperToPrimitiveTypes.get(wrapperType);
   }
 
+  public TypeMirror getPrimitiveType(TypeMirror wrapperType) {
+    return BindingConverter.getType(wrapperToPrimitiveTypes.get(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(wrapperType)));
+  }
+
   public boolean isBoxedPrimitive(ITypeBinding type) {
     return wrapperToPrimitiveTypes.containsKey(type);
+  }
+
+  public boolean isBoxedPrimitive(TypeMirror type) {
+    return wrapperToPrimitiveTypes.containsKey(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
   }
 
   public ITypeBinding getNSNumber() {
@@ -315,8 +335,16 @@ public class Types {
     return IOSClass;
   }
 
+  public TypeMirror getIOSClassMirror() {
+    return BindingConverter.getType(IOSClass);
+  }
+
   public ITypeBinding getIdType() {
     return idType;
+  }
+
+  public TypeMirror getIdTypeMirror() {
+    return BindingConverter.getType(idType);
   }
 
   public ITypeBinding getIOSObjectArray() {
@@ -330,6 +358,11 @@ public class Types {
       pointerTypeMap.put(type, result);
     }
     return result;
+  }
+
+  public TypeMirror getPointerType(TypeMirror type) {
+    return BindingConverter.getType(getPointerType(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(type)));
   }
 
   public ITypeBinding getLocalRefType() {

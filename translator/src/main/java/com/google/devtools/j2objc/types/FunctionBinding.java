@@ -31,27 +31,33 @@ public class FunctionBinding {
   // Some functions (eg. constructors) have an equivalent function that returns
   // a retained result.
   private final String retainedResultName;
-  private final ITypeBinding returnType;
-  private final ITypeBinding declaringClass;
-  private List<ITypeBinding> parameterTypes = new ArrayList<>();
+  private final TypeMirror returnType;
+  private final TypeMirror declaringClass;
+  private List<TypeMirror> parameterTypes = new ArrayList<>();
   private boolean isVarargs = false;
 
   public FunctionBinding(
-      String name, String retainedResultName, ITypeBinding returnType,
-      ITypeBinding declaringClass) {
+      String name, String retainedResultName, TypeMirror returnType,
+      TypeMirror declaringClass) {
     this.name = name;
     this.retainedResultName = retainedResultName;
     this.returnType = returnType;
     this.declaringClass = declaringClass;
   }
 
+  public FunctionBinding(String name, String retainedResultName, ITypeBinding returnType,
+      ITypeBinding declaringClass) {
+    this(name, retainedResultName, BindingConverter.getType(returnType),
+        BindingConverter.getType(declaringClass));
+  }
+
   public FunctionBinding(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
-    this(name, null, returnType, declaringClass);
+    this(name, null, BindingConverter.getType(returnType),
+        BindingConverter.getType(declaringClass));
   }
 
   public FunctionBinding(String name, TypeMirror returnType, TypeMirror declaringClass) {
-    this(name, null, BindingConverter.unwrapTypeMirrorIntoTypeBinding(returnType),
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(declaringClass));
+    this(name, null, returnType, declaringClass);
   }
 
   public String getName() {
@@ -62,24 +68,26 @@ public class FunctionBinding {
     return retainedResultName;
   }
 
-  public ITypeBinding getReturnType() {
+  public TypeMirror getReturnType() {
     return returnType;
   }
 
-  public ITypeBinding getDeclaringClass() {
+  public TypeMirror getDeclaringClass() {
     return declaringClass;
   }
 
-  public List<ITypeBinding> getParameterTypes() {
+  public List<TypeMirror> getParameterTypes() {
     return parameterTypes;
-  }
-
-  public void addParameter(ITypeBinding paramType) {
-    parameterTypes.add(paramType);
   }
 
   public void addParameters(ITypeBinding... paramTypes) {
     for (ITypeBinding paramType : paramTypes) {
+      parameterTypes.add(BindingConverter.getType(paramType));
+    }
+  }
+
+  public void addParameters(TypeMirror... paramTypes) {
+    for (TypeMirror paramType : paramTypes) {
       parameterTypes.add(paramType);
     }
   }
@@ -95,12 +103,12 @@ public class FunctionBinding {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append(returnType.getName() + " " + name + "(");
+    sb.append(returnType.toString() + " " + name + "(");
     for (int i = 0; i < parameterTypes.size(); i++) {
       if (i > 0) {
         sb.append(", ");
       }
-      sb.append(parameterTypes.get(i).getName());
+      sb.append(parameterTypes.get(i).toString());
     }
     sb.append(")");
     return sb.toString();

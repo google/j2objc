@@ -69,6 +69,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds nil_chk calls where required to maintain compatibility Java's
@@ -409,9 +410,9 @@ public class NilCheckResolver extends TreeVisitor {
     if (var != null) {
       addSafeVar(var);
     }
-    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
     FunctionBinding binding = new FunctionBinding("nil_chk", idType, null);
-    binding.addParameter(idType);
+    binding.addParameters(idType);
     FunctionInvocation nilChkInvocation = new FunctionInvocation(binding, node.getTypeBinding());
     node.replaceWith(nilChkInvocation);
     nilChkInvocation.addArgument(node);

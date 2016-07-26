@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -43,6 +44,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Some super method invocations cannot be translated directly as an ObjC super
@@ -109,13 +111,13 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
       return;
     }
     IMethodBinding method = node.getMethodBinding();
-    ITypeBinding exprType = node.getTypeBinding();
+    TypeMirror exprType = node.getTypeMirror();
 
     // Handle default method invocation: SomeInterface.super.method(...)
     if (BindingUtil.isDefault(method)) {
       FunctionBinding binding = new FunctionBinding(
-              nameTable.getFullFunctionName(method), exprType, typeEnv.getIdType());
-      binding.addParameters(typeEnv.getIdType());
+              nameTable.getFullFunctionName(method), exprType, typeEnv.getIdTypeMirror());
+      binding.addParameters(typeEnv.getIdTypeMirror());
       binding.addParameters(method.getParameterTypes());
       FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
       List<Expression> args = invocation.getArguments();
@@ -128,14 +130,14 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
 
     IVariableBinding var = TreeUtil.getVariableBinding(qualifier);
     assert var != null : "Expected qualifier to be a variable";
-    ITypeBinding qualifierType = var.getType();
+    TypeMirror qualifierType = BindingConverter.getType(var.getType());
 
     SuperMethodBindingPair superMethod = new SuperMethodBindingPair(qualifierType, method);
     superMethods.add(superMethod);
 
     FunctionBinding binding = new FunctionBinding(
         getSuperFunctionName(superMethod), exprType, qualifierType);
-    binding.addParameters(qualifierType, typeEnv.getIdType());
+    binding.addParameters(qualifierType, typeEnv.getIdTypeMirror());
     binding.addParameters(method.getParameterTypes());
     FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
     List<Expression> args = invocation.getArguments();
@@ -165,8 +167,8 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     private final ITypeBinding type;
     private final IMethodBinding method;
 
-    private SuperMethodBindingPair(ITypeBinding type, IMethodBinding method) {
-      this.type = type;
+    private SuperMethodBindingPair(TypeMirror type, IMethodBinding method) {
+      this.type = BindingConverter.unwrapTypeMirrorIntoTypeBinding(type);
       this.method = method;
     }
 

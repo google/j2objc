@@ -161,7 +161,7 @@ public class Functionizer extends TreeVisitor {
     FunctionBinding binding = new FunctionBinding(
         nameTable.getFullFunctionName(method), method.getReturnType(), declaringClass);
     if (method.isConstructor() || !BindingUtil.isStatic(method)) {
-      binding.addParameter(declaringClass);
+      binding.addParameters(declaringClass);
     }
     binding.addParameters(method.getParameterTypes());
     return binding;

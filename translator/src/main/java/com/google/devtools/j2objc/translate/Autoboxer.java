@@ -159,15 +159,15 @@ public class Autoboxer extends TreeVisitor {
   private void rewriteBoxedAssignment(Assignment node) {
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
-    ITypeBinding type = lhs.getTypeBinding();
+    TypeMirror type = lhs.getTypeMirror();
     if (!typeEnv.isBoxedPrimitive(type)) {
       return;
     }
-    ITypeBinding primitiveType = typeEnv.getPrimitiveType(type);
-    ITypeBinding pointerType = typeEnv.getPointerType(type);
+    TypeMirror primitiveType = typeEnv.getPrimitiveType(type);
+    TypeMirror pointerType = typeEnv.getPointerType(type);
     String funcName = "JreBoxed" + getAssignFunctionName(node.getOperator())
         + TranslationUtil.getOperatorFunctionModifier(lhs)
-        + NameTable.capitalize(primitiveType.getName());
+        + NameTable.capitalize(primitiveType.toString());
     FunctionBinding binding = new FunctionBinding(funcName, type, type);
     binding.addParameters(pointerType, primitiveType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
@@ -383,15 +383,15 @@ public class Autoboxer extends TreeVisitor {
   }
 
   private void rewriteBoxedPrefixOrPostfix(TreeNode node, Expression operand, String funcName) {
-    ITypeBinding type = operand.getTypeBinding();
+    TypeMirror type = operand.getTypeMirror();
     if (!typeEnv.isBoxedPrimitive(type)) {
       return;
     }
-    ITypeBinding pointerType = typeEnv.getPointerType(type);
+    TypeMirror pointerType = typeEnv.getPointerType(type);
     funcName = "JreBoxed" + funcName + TranslationUtil.getOperatorFunctionModifier(operand)
-        + NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
+        + NameTable.capitalize(typeEnv.getPrimitiveType(type).toString());
     FunctionBinding binding = new FunctionBinding(funcName, type, type);
-    binding.addParameter(pointerType);
+    binding.addParameters(pointerType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));

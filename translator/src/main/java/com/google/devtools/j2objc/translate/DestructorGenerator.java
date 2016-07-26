@@ -46,6 +46,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds release methods to Java classes, in preparation for translation
@@ -141,14 +142,14 @@ public class DestructorGenerator extends TreeVisitor {
       return null;
     }
     ITypeBinding voidType = typeEnv.resolveJavaType("void");
-    ITypeBinding idType = typeEnv.getIdType();
+    TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionBinding binding = new FunctionBinding(funcName, voidType, null);
     FunctionInvocation releaseInvocation = new FunctionInvocation(binding, voidType);
     if (isRetainedWith) {
-      binding.addParameter(idType);
+      binding.addParameters(idType);
       releaseInvocation.addArgument(new ThisExpression(var.getDeclaringClass()));
     }
-    binding.addParameter(isVolatile ? typeEnv.getPointerType(idType) : idType);
+    binding.addParameters(isVolatile ? typeEnv.getPointerType(idType) : idType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(

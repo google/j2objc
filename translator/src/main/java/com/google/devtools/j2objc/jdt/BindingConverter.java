@@ -233,6 +233,9 @@ public final class BindingConverter {
   }
 
   public static JdtTypeMirror getType(ITypeBinding binding) {
+    if (binding == null) {
+      return null;
+    }
     JdtTypeMirror type = getTypeMirror(binding);
     if (type != null) {
       return type;
@@ -270,7 +273,7 @@ public final class BindingConverter {
     return executableType;
   }
 
-  public static JdtTypeMirror getTypeMirror(IBinding binding) {
+  private static JdtTypeMirror getTypeMirror(IBinding binding) {
     JdtBinding wrappedBinding = wrapBinding(binding);
     return typeCache.get(wrappedBinding);
   }

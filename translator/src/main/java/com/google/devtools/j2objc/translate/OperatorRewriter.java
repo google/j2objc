@@ -50,6 +50,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites certain operators, such as object assignment, into appropriate
@@ -97,7 +98,7 @@ public class OperatorRewriter extends TreeVisitor {
         Expression rightOperand = operandIter.next();
         operandIter.remove();
         FunctionBinding binding = new FunctionBinding(funcName, nodeType, null);
-        binding.addParameters(leftOperand.getTypeBinding(), rightOperand.getTypeBinding());
+        binding.addParameters(leftOperand.getTypeMirror(), rightOperand.getTypeMirror());
         FunctionInvocation invocation = new FunctionInvocation(binding, nodeType);
         List<Expression> args = invocation.getArguments();
         args.add(leftOperand);
@@ -150,12 +151,12 @@ public class OperatorRewriter extends TreeVisitor {
   private void rewriteVolatileLoad(Expression node) {
     IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null && BindingUtil.isVolatile(var) && !TranslationUtil.isAssigned(node)) {
-      ITypeBinding type = node.getTypeBinding();
-      ITypeBinding idType = typeEnv.resolveIOSType("id");
-      ITypeBinding declaredType = type.isPrimitive() ? type : idType;
-      String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.getName());
+      TypeMirror type = node.getTypeMirror();
+      TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
+      TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
+      String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.toString());
       FunctionBinding binding = new FunctionBinding(funcName, declaredType, null);
-      binding.addParameter(typeEnv.getPointerType(idType));
+      binding.addParameters(typeEnv.getPointerType(idType));
       FunctionInvocation invocation = new FunctionInvocation(binding, type);
       node.replaceWith(invocation);
       invocation.addArgument(new PrefixExpression(
@@ -233,15 +234,15 @@ public class OperatorRewriter extends TreeVisitor {
     if (funcName == null) {
       return;
     }
-    ITypeBinding type = node.getTypeBinding();
-    ITypeBinding idType = typeEnv.getIdType();
-    ITypeBinding declaredType = type.isPrimitive() ? type : idType;
+    TypeMirror type = node.getTypeMirror();
+    TypeMirror idType = typeEnv.getIdTypeMirror();
+    TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
     FunctionBinding binding = new FunctionBinding(funcName, declaredType, null);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {
-      binding.addParameter(idType);
+      binding.addParameters(idType);
       args.add(getRetainedWithTarget(node, var));
     }
     binding.addParameters(typeEnv.getPointerType(idType), idType);
@@ -348,12 +349,12 @@ public class OperatorRewriter extends TreeVisitor {
     }
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
-    ITypeBinding lhsType = lhs.getTypeBinding();
-    ITypeBinding lhsPointerType = typeEnv.getPointerType(lhsType);
+    TypeMirror lhsType = lhs.getTypeMirror();
+    TypeMirror lhsPointerType = typeEnv.getPointerType(lhsType);
     String funcName = "Jre" + node.getOperator().getName() + (isVolatile(lhs) ? "Volatile" : "")
-        + NameTable.capitalize(lhsType.getName()) + getPromotionSuffix(node);
+        + NameTable.capitalize(lhsType.toString()) + getPromotionSuffix(node);
     FunctionBinding binding = new FunctionBinding(funcName, lhsType, null);
-    binding.addParameters(lhsPointerType, rhs.getTypeBinding());
+    binding.addParameters(lhsPointerType, rhs.getTypeMirror());
     FunctionInvocation invocation = new FunctionInvocation(binding, lhsType);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(
@@ -383,7 +384,7 @@ public class OperatorRewriter extends TreeVisitor {
 
     ITypeBinding stringType = typeEnv.resolveIOSType("NSString");
     FunctionBinding binding = new FunctionBinding("JreStrcat", stringType, null);
-    binding.addParameter(typeEnv.getPointerType(typeEnv.resolveJavaType("char")));
+    binding.addParameters(typeEnv.getPointerType(typeEnv.resolveJavaTypeMirror("char")));
     binding.setIsVarargs(true);
     FunctionInvocation invocation = new FunctionInvocation(binding, stringType);
     List<Expression> args = invocation.getArguments();
@@ -410,11 +411,12 @@ public class OperatorRewriter extends TreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     ITypeBinding lhsType = lhs.getTypeBinding();
-    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
     FunctionBinding binding = new FunctionBinding(funcName, idType, null);
     binding.addParameters(
-        typeEnv.getPointerType(idType), typeEnv.getPointerType(typeEnv.resolveJavaType("char")));
+        typeEnv.getPointerType(idType), typeEnv.getPointerType(
+        typeEnv.resolveJavaTypeMirror("char")));
     FunctionInvocation invocation = new FunctionInvocation(binding, lhsType);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(

@@ -124,7 +124,7 @@ public class EnumRewriter extends TreeVisitor {
           new NativeExpression("ptr += " + sizeName, voidType))));
       String initName = nameTable.getFullFunctionName(methodBinding);
       FunctionBinding initBinding = new FunctionBinding(initName, voidType, valueType);
-      initBinding.addParameter(valueType);
+      initBinding.addParameters(valueType);
       initBinding.addParameters(methodBinding.getParameterTypes());
       FunctionInvocation initFunc = new FunctionInvocation(initBinding, type);
       initFunc.addArgument(new SimpleName(localEnum));

@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -49,6 +51,13 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   public static IOSMethodBinding newMethod(
       String selector, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(selector, null, modifiers, returnType, null, declaringClass, false);
+  }
+
+  public static IOSMethodBinding newMethod(
+      String selector, int modifiers, TypeMirror returnType, TypeMirror declaringClass) {
+    return new IOSMethodBinding(selector, null, modifiers,
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(returnType), null,
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(declaringClass), false);
   }
 
   public static IOSMethodBinding newTypedInvocation(IOSMethodBinding m, ITypeBinding returnType) {

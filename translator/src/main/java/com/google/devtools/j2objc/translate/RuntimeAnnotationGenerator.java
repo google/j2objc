@@ -151,7 +151,7 @@ class RuntimeAnnotationGenerator {
     FunctionInvocation invocation = new FunctionInvocation(binding, annotationType);
     for (IMemberValuePairBinding valueBinding :
          BindingUtil.getSortedMemberValuePairs(annotationBinding)) {
-      binding.addParameter(valueBinding.getMethodBinding().getReturnType());
+      binding.addParameters(valueBinding.getMethodBinding().getReturnType());
       invocation.addArgument(createAnnotationValue(valueBinding.getValue()));
     }
     return invocation;

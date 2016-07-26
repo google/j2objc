@@ -86,10 +86,14 @@ public class PrefixExpression extends Expression {
     operand.copyFrom(other.getOperand());
   }
 
-  public PrefixExpression(ITypeBinding typeBinding, Operator operator, Expression operand) {
-    this.typeMirror = BindingConverter.getType(typeBinding);
+  public PrefixExpression(TypeMirror typeMirror, Operator operator, Expression operand) {
+    this.typeMirror = typeMirror;
     this.operator = operator;
     this.operand.set(operand);
+  }
+
+  public PrefixExpression(ITypeBinding typeBinding, Operator operator, Expression operand) {
+    this(BindingConverter.getType(typeBinding), operator, operand);
   }
 
   @Override

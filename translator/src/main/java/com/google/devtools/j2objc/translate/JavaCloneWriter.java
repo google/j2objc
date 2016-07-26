@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -41,6 +42,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Writes the __javaClone method in order to support correct Java clone()
@@ -109,7 +111,7 @@ public class JavaCloneWriter extends TreeVisitor {
     if (Options.useARC()) {
       ITypeBinding voidType = typeEnv.resolveJavaType("void");
       FunctionBinding binding = new FunctionBinding("JreRelease", voidType, null);
-      binding.addParameter(typeEnv.resolveIOSType("id"));
+      binding.addParameters(typeEnv.resolveIOSTypeMirror("id"));
       FunctionInvocation invocation = new FunctionInvocation(binding, voidType);
       invocation.addArgument(new SimpleName(var));
       return new ExpressionStatement(invocation);
@@ -121,8 +123,8 @@ public class JavaCloneWriter extends TreeVisitor {
 
   private Statement createVolatileCloneStatement(
       IVariableBinding var, IVariableBinding originalVar, boolean isWeak) {
-    ITypeBinding voidType = typeEnv.resolveJavaType("void");
-    ITypeBinding pointerType = typeEnv.getPointerType(var.getType());
+    TypeMirror voidType = typeEnv.resolveJavaTypeMirror("void");
+    TypeMirror pointerType = typeEnv.getPointerType(BindingConverter.getType(var.getType()));
     String funcName = "JreCloneVolatile" + (isWeak ? "" : "Strong");
     FunctionBinding binding = new FunctionBinding(funcName, voidType, null);
     binding.addParameters(pointerType, pointerType);
