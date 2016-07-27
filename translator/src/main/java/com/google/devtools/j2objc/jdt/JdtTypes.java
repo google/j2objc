@@ -53,7 +53,17 @@ public class JdtTypes implements Types {
 
   @Override
   public TypeMirror asMemberOf(DeclaredType containing, Element element) {
-    throw new AssertionError("not implemented");
+    ITypeBinding c = BindingConverter.unwrapTypeMirrorIntoTypeBinding(containing);
+    if (!(element instanceof JdtExecutableElement)) {
+      throw new AssertionError("not implemented for anything but methods");
+    }
+    IMethodBinding e = (IMethodBinding) BindingConverter.unwrapElement(element);
+    for (IMethodBinding m : c.getDeclaredMethods()) {
+      if (m.isSubsignature(e)) {
+        return BindingConverter.getType(m);
+      }
+    }
+    return null;
   }
 
   @Override

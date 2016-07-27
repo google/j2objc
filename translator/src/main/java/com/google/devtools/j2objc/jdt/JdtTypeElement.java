@@ -32,7 +32,8 @@ import javax.lang.model.type.TypeMirror;
 class JdtTypeElement extends JdtElement implements TypeElement {
 
   JdtTypeElement(ITypeBinding binding) {
-    super(binding, binding.getName(), binding.getModifiers());
+    super(binding.getTypeDeclaration(), binding.getTypeDeclaration().getName(),
+        binding.getTypeDeclaration().getModifiers());
   }
 
   @Override
@@ -72,7 +73,7 @@ class JdtTypeElement extends JdtElement implements TypeElement {
 
   @Override
   public TypeMirror getSuperclass() {
-    return null;
+    return BindingConverter.getType(((ITypeBinding) binding).getSuperclass());
   }
 
   @Override public TypeMirror asType() {

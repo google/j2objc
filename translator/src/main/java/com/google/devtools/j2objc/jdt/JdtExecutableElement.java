@@ -112,4 +112,8 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
     return v.visitExecutable(this, p);
   }
 
+  @Override
+  public String toString() {
+    return ((IMethodBinding) binding).toString();
+  }
 }

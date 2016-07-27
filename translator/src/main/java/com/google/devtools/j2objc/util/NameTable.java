@@ -358,12 +358,21 @@ public class NameTable {
     variableNames.put(var, name);
   }
 
+  public void setVariableName(VariableElement var, String name) {
+    setVariableName((IVariableBinding) BindingConverter.unwrapElement(var), name);
+  }
+
   /**
    * Gets the variable name without any qualifying class name or other prefix
    * or suffix attached.
    */
   public String getVariableBaseName(IVariableBinding var) {
     return getVarBaseName(var, BindingUtil.isGlobalVar(var));
+  }
+
+  public String getVariableBaseName(VariableElement var) {
+    return getVarBaseName((IVariableBinding) BindingConverter.unwrapElement(var),
+        ElementUtil.isGlobalVar(var));
   }
 
   /**
@@ -412,6 +421,14 @@ public class NameTable {
   public String getVariableShortName(IVariableBinding var) {
     String baseName = getVariableBaseName(var);
     if (var.isField() && !BindingUtil.isGlobalVar(var)) {
+      return baseName + '_';
+    }
+    return baseName;
+  }
+
+  public String getVariableShortName(VariableElement var) {
+    String baseName = getVariableBaseName(var);
+    if (ElementUtil.isField(var) && !ElementUtil.isGlobalVar(var)) {
       return baseName + '_';
     }
     return baseName;
@@ -696,6 +713,10 @@ public class NameTable {
     } else {
       return addParamNames(method, getMethodName(method), '_');
     }
+  }
+
+  public String getFunctionName(ExecutableElement method) {
+    return getFunctionName((IMethodBinding) BindingConverter.unwrapElement(method));
   }
 
   public static String getMethodNameFromAnnotation(IMethodBinding method) {

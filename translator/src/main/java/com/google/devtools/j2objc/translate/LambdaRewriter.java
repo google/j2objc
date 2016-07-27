@@ -36,9 +36,9 @@ import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
 import java.util.List;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 
@@ -90,6 +90,7 @@ public class LambdaRewriter extends TreeVisitor {
     String lambdaDeallocName;
     String functionalTypeString;
     TypeMirror lambdaTypeMirror;
+    DeclaredType functionalDeclaredType;
     ExecutableElement functionalInterface;
     int numProtocols = 0;
     String protocols = "(Protocol *[]){ ";
@@ -108,7 +109,7 @@ public class LambdaRewriter extends TreeVisitor {
       this.node = node;
       enclosingType =
           TreeUtil.getNearestAncestorWithType(TypeDeclaration.class, node);
-      enclosingTypeMirror = enclosingType.getTypeMirror();
+      enclosingTypeMirror = enclosingType.getElement().asType();
       lambdaName = node.getUniqueName();
       lambdaGetName = lambdaName + "_get";
       lambdaImplName = lambdaName + "_impl";
@@ -122,16 +123,16 @@ public class LambdaRewriter extends TreeVisitor {
       // one for each method on our lambda object (the functional method and all
       // the default methods). These will be passed to the correct Create* function that will
       // make a class/object with these methods.
-      for (Element i : ElementUtil.getInheritedTypeElementsInclusive(lambdaTypeMirror)) {
+      for (DeclaredType i : ElementUtil.getInheritedDeclaredTypesInclusive(lambdaTypeMirror)) {
         if (numProtocols > 0) {
           protocols += ", ";
         }
         numProtocols++;
-        String classNameWithId = nameTable.getObjCType(i.asType());
+        String classNameWithId = nameTable.getObjCType(i);
         String className = classNameWithId.substring(3, classNameWithId.length() - 1);
         String protocol = "@protocol(" + className + ")";
         protocols += protocol;
-        for (ExecutableElement m : ElementUtil.getDeclaredMethods(i)) {
+        for (ExecutableElement m : ElementUtil.getDeclaredMethods(i.asElement())) {
           boolean willGrab = ElementUtil.isDefault(m) || ElementUtil.isStatic(m);
           boolean isFunctional = JdtTypes.getInstance().isSubsignature(
               (ExecutableType) functionalInterface.asType(), (ExecutableType) m.asType());
@@ -153,6 +154,7 @@ public class LambdaRewriter extends TreeVisitor {
             imps += "method_getImplementation(method" + numMethods + ")";
             signatures += "method_getTypeEncoding(method" + numMethods + ")";
           } else if (isFunctional) {
+            functionalDeclaredType = i;
             String selector = "@selector(" + nameTable.getMethodSelector(functionalInterface) + ")";
             selectors += selector;
             imps += "(IMP)&" + lambdaImplName;
@@ -194,7 +196,8 @@ public class LambdaRewriter extends TreeVisitor {
     }
 
     private void createFunctionImpl() {
-      TypeMirror returnType = functionalInterface.getReturnType();
+      TypeMirror returnType = ((ExecutableType) JdtTypes.getInstance().asMemberOf(
+          functionalDeclaredType, functionalInterface)).getReturnType();
       funcImpl =
           new FunctionDeclaration(lambdaImplName, returnType, enclosingTypeMirror);
       funcImpl.addModifiers(Modifier.PRIVATE);

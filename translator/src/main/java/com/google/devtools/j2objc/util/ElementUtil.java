@@ -92,6 +92,11 @@ public final class ElementUtil {
     return enclosingElement instanceof TypeElement ? (TypeElement) enclosingElement : null;
   }
 
+  public static TypeElement getSuperclass(TypeElement element) {
+    DeclaredType superClass = (DeclaredType) element.getSuperclass();
+    return superClass != null ? (TypeElement) superClass.asElement() : null;
+  }
+
   public static ExecutableElement getDeclaringMethod(Element element) {
     Element enclosingElement = element.getEnclosingElement();
     return enclosingElement instanceof ExecutableElement
@@ -228,9 +233,9 @@ public final class ElementUtil {
   }
 
   public static ExecutableElement getFunctionalInterface(TypeMirror type) {
-    List<Element> typeElements = getInheritedTypeElementsInclusive(type);
-    for (Element baseElement : typeElements) {
-      TypeElement element = (TypeElement) baseElement;
+    List<DeclaredType> declaredTypes = getInheritedDeclaredTypesInclusive(type);
+    for (DeclaredType baseType : declaredTypes) {
+      TypeElement element = (TypeElement) baseType.asElement();
       for (Element i : element.getEnclosedElements()) {
         if (i.getKind() == ElementKind.METHOD && !ElementUtil.isDefault(i)
             && !i.getModifiers().contains(Modifier.STATIC)) {
@@ -241,11 +246,11 @@ public final class ElementUtil {
     return null;
   }
 
-  public static List<Element> getInheritedTypeElementsInclusive(TypeMirror type) {
-    List<Element> typeElements = new ArrayList<>();
+  public static List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type) {
+    List<DeclaredType> typeElements = new ArrayList<>();
     for (TypeMirror superType : getOrderedInheritedTypesInclusive(type)) {
       if (!TypeUtil.isIntersection(superType)) {
-        typeElements.add(((DeclaredType) superType).asElement());
+        typeElements.add((DeclaredType) superType);
       }
     }
     return typeElements;
@@ -271,12 +276,23 @@ public final class ElementUtil {
   public static List<ExecutableElement> getDeclaredMethods(Element e) {
     List<ExecutableElement> methods = new ArrayList<>();
     for (Element i : e.getEnclosedElements()) {
-      if (i.getKind() == ElementKind.METHOD) {
+      if (i.getKind() == ElementKind.METHOD || i.getKind() == ElementKind.CONSTRUCTOR) {
         methods.add((ExecutableElement) i);
       }
     }
     return methods;
   }
+
+  public static List<VariableElement> getDeclaredFields(Element e) {
+    List<VariableElement> fields = new ArrayList<>();
+    for (Element i : e.getEnclosedElements()) {
+      if (i.getKind() == ElementKind.FIELD) {
+        fields.add((VariableElement) i);
+      }
+    }
+    return fields;
+  }
+
   public static Set<Modifier> toModifierSet(int modifiers) {
     Set<Modifier> set = modifierSets.get(modifiers);
     if (set == null) {

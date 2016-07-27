@@ -39,6 +39,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -290,6 +291,10 @@ public final class BindingConverter {
     return (ExecutableElement) getElement(binding);
   }
 
+  public static TypeElement getTypeElement(ITypeBinding binding) {
+    return (TypeElement) getElement(binding);
+  }
+
   public static JdtElement getElement(JdtBinding binding) {
     if (binding == null) {
       return null;
@@ -336,6 +341,10 @@ public final class BindingConverter {
           null, null);
     }
     return element != null ? ((JdtElement) element).binding : null;
+  }
+
+  public static ITypeBinding unwrapTypeElement(TypeElement t) {
+    return (ITypeBinding) unwrapElement(t);
   }
 
   public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {

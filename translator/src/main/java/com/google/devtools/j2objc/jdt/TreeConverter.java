@@ -112,7 +112,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import org.eclipse.jdt.core.dom.ASTNode;
 
 /**
@@ -359,7 +358,7 @@ public class TreeConverter {
     }
     return newNode
         .setName((SimpleName) TreeConverter.convert(node.getName()))
-        .setTypeMirror((DeclaredType) BindingConverter.getType(node.resolveBinding()))
+        .setTypeElement(BindingConverter.getTypeElement(node.resolveBinding()))
         .setBodyDeclarations(bodyDeclarations);
   }
 

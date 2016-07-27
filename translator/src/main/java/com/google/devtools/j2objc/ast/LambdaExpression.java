@@ -20,7 +20,7 @@ import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
-
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -92,6 +92,10 @@ public class LambdaExpression extends Expression {
 
   public LambdaTypeBinding getLambdaTypeBinding() {
     return lambdaTypeBinding;
+  }
+
+  public TypeElement getLambdaType() {
+    return BindingConverter.getTypeElement(lambdaTypeBinding);
   }
 
   public List<VariableDeclaration> getParameters() {
