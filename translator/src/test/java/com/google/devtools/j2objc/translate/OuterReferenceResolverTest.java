@@ -57,7 +57,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     resolveSource("Test", "class Test { int i; class Inner { void test() { i++; } } }");
 
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
-    assertTrue(outerResolver.needsOuterReference(innerNode.getElement().asType()));
+    assertTrue(outerResolver.needsOuterReference(innerNode.getElement()));
 
     PostfixExpression increment =
         (PostfixExpression) nodesByType.get(Kind.POSTFIX_EXPRESSION).get(0);
@@ -75,9 +75,9 @@ public class OuterReferenceResolverTest extends GenerationTest {
     TypeDeclaration aNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
     TypeDeclaration bNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(2);
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(3);
-    assertFalse(outerResolver.needsOuterReference(aNode.getElement().asType()));
-    assertFalse(outerResolver.needsOuterReference(bNode.getElement().asType()));
-    assertTrue(outerResolver.needsOuterReference(innerNode.getElement().asType()));
+    assertFalse(outerResolver.needsOuterReference(aNode.getElement()));
+    assertFalse(outerResolver.needsOuterReference(bNode.getElement()));
+    assertTrue(outerResolver.needsOuterReference(innerNode.getElement()));
 
     // B will need an outer reference to Test so it can initialize its
     // superclass A.
@@ -101,7 +101,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    assertFalse(outerResolver.needsOuterReference(runnableNode.getElement().asType()));
+    assertFalse(outerResolver.needsOuterReference(runnableNode.getElement()));
     List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getElement());
     assertEquals(1, innerFields.size());
     assertEquals("val$i", innerFields.get(0).getSimpleName().toString());

@@ -53,8 +53,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -90,10 +88,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     super.run(node);
   }
 
-  //TODO(user): See if this can take in TypeElement instead.
-  public boolean needsOuterReference(TypeMirror type) {
-    return type.getKind() == TypeKind.DECLARED
-        && outerVars.containsKey((TypeElement) ((DeclaredType) type).asElement());
+  public boolean needsOuterReference(TypeElement type) {
+    return outerVars.containsKey(type);
   }
 
   public boolean needsOuterParam(TypeElement type) {
