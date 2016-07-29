@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -50,9 +51,11 @@ import java.util.Set;
 public class AbstractMethodRewriter extends TreeVisitor {
 
   private final CompilationUnit unit;
+  private final DeadCodeMap deadCodeMap;
 
-  public AbstractMethodRewriter(CompilationUnit unit) {
+  public AbstractMethodRewriter(CompilationUnit unit, DeadCodeMap deadCodeMap) {
     this.unit = unit;
+    this.deadCodeMap = deadCodeMap;
   }
 
   @Override
@@ -165,6 +168,12 @@ public class AbstractMethodRewriter extends TreeVisitor {
   // Adds declarations for any methods where the known return type is more
   // specific than what is already declared in inherited types.
   private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
+
+    // No need to run this if the entire class is dead.
+    if (deadCodeMap != null && deadCodeMap.isDeadClass(node)) {
+      return;
+    }
+
     ITypeBinding type = node.getTypeBinding();
     Map<String, IMethodBinding> newDeclarations = new HashMap<>();
     Map<String, ITypeBinding> declaredReturnTypes = new HashMap<>();
@@ -193,6 +202,10 @@ public class AbstractMethodRewriter extends TreeVisitor {
 
     boolean isInterface = type.isInterface();
     for (IMethodBinding method : newDeclarations.values()) {
+      if (deadCodeMap != null && deadCodeMap.isDeadMethod(method.getMethodDeclaration())) {
+        continue;
+      }
+
       node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(method, isInterface));
     }
   }

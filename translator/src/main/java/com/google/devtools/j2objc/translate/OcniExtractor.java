@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -57,10 +58,12 @@ public class OcniExtractor extends TreeVisitor {
 
   private final CompilationUnit unit;
   private final ListMultimap<TreeNode, Comment> blockComments;
+  private final DeadCodeMap deadCodeMap;
 
-  public OcniExtractor(CompilationUnit unit) {
+  public OcniExtractor(CompilationUnit unit, DeadCodeMap deadCodeMap) {
     this.unit = unit;
     blockComments = findBlockComments(unit);
+    this.deadCodeMap = deadCodeMap;
   }
 
   /**
@@ -166,9 +169,13 @@ public class OcniExtractor extends TreeVisitor {
 
     // If the type implements Iterable and there's no existing implementation
     // for NSFastEnumeration's protocol method, then add the default
-    // implementation.
+    // implementation. Don't emit this if the entire class is dead. There is
+    // no need to check if any Iterable methods are dead, since ProGuard is
+    // conservative -- if a class is live and implements Iterable, those
+    // methods are always live.
     if (BindingUtil.findInterface(node.getTypeBinding(), "java.lang.Iterable") != null
-        && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")) {
+        && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")
+        && (deadCodeMap == null || !deadCodeMap.isDeadClass(node))) {
       bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
           "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
           + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"

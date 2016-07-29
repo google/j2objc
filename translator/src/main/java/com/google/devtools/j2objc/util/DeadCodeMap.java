@@ -23,9 +23,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Table;
-
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Tracks dead classes and methods that can be ignored during translation.
@@ -95,9 +96,20 @@ public class DeadCodeMap {
     return deadClasses.contains(clazz);
   }
 
+  public boolean isDeadClass(AbstractTypeDeclaration node) {
+    return isDeadClass(node.getTypeBinding().getBinaryName());
+  }
+
   public boolean isDeadMethod(String clazz, String name, String signature) {
     return deadClasses.contains(clazz)
         || deadMethods.contains(clazz, name) && deadMethods.get(clazz, name).contains(signature);
+  }
+
+  public boolean isDeadMethod(IMethodBinding binding) {
+    String className = binding.getDeclaringClass().getBinaryName();
+    String methodName = binding.getName();
+    String methodSig = BindingUtil.getSignature(binding);
+    return isDeadMethod(className, methodName, methodSig);
   }
 
   public boolean isDeadField(String clazz, String field) {

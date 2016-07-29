@@ -163,7 +163,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("Rewriter");
 
     // Add abstract method stubs.
-    new AbstractMethodRewriter(unit).run(unit);
+    new AbstractMethodRewriter(unit, deadCodeMap).run(unit);
     ticker.tick("AbstractMethodRewriter");
 
     new VariableRenamer().run(unit);
@@ -222,7 +222,7 @@ public class TranslationProcessor extends FileProcessor {
     new JavaCloneWriter().run(unit);
     ticker.tick("JavaCloneWriter");
 
-    new OcniExtractor(unit).run(unit);
+    new OcniExtractor(unit, deadCodeMap).run(unit);
     ticker.tick("OcniExtractor");
 
     // After: NilCheckResolver - Don't add nil checks to our generated code,
