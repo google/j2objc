@@ -31,12 +31,14 @@ public final class Currency implements Serializable {
     private static final HashMap<String, Currency> codesToCurrencies = new HashMap<String, Currency>();
     private static final HashMap<Locale, Currency> localesToCurrencies = new HashMap<Locale, Currency>();
 
+    private static final LinkedHashSet<String> availableCurrencyCodes =
+        constructAvailableCurrencyCodes();
+
     private final String currencyCode;
 
     private Currency(String currencyCode) {
         this.currencyCode = currencyCode;
-        String symbol = ICU.getCurrencySymbol(Locale.US, currencyCode);
-        if (symbol == null) {
+        if (!availableCurrencyCodes.contains(currencyCode)) {
             throw new IllegalArgumentException("Unsupported ISO 4217 currency code: " +
                     currencyCode);
         }
@@ -72,14 +74,8 @@ public final class Currency implements Serializable {
             if (currency != null) {
                 return currency;
             }
-            String country = locale.getCountry();
-            String variant = locale.getVariant();
-            if (!variant.isEmpty() && (variant.equals("EURO") || variant.equals("HK") ||
-                    variant.equals("PREEURO"))) {
-                country = country + "_" + variant;
-            }
 
-            String currencyCode = ICU.getCurrencyCode(country);
+            String currencyCode = ICU.getCurrencyCode(locale);
             if (currencyCode == null) {
                 throw new IllegalArgumentException("Unsupported ISO 3166 country: " + locale);
             } else if (currencyCode.equals("XXX")) {
@@ -91,14 +87,21 @@ public final class Currency implements Serializable {
         }
     }
 
+    private static LinkedHashSet<String> constructAvailableCurrencyCodes() {
+        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        for (String code : ICU.getAvailableCurrencyCodes()) {
+          result.add(code);
+        }
+        return result;
+    }
+
     /**
      * Returns a set of all known currencies.
      * @since 1.7
      */
     public static Set<Currency> getAvailableCurrencies() {
         Set<Currency> result = new LinkedHashSet<Currency>();
-        String[] currencyCodes = ICU.getAvailableCurrencyCodes();
-        for (String currencyCode : currencyCodes) {
+        for (String currencyCode : availableCurrencyCodes) {
             result.add(Currency.getInstance(currencyCode));
         }
         return result;

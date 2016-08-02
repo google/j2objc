@@ -296,9 +296,8 @@ public final class ICU {
       return [nativeLocale displayNameForKey:NSLocaleCurrencyCode value:currencyCode];
     ]-*/;
 
-    public static native String getCurrencyCode(String localeId) /*-[
-      NSLocale *nativeLocale =
-          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
+    public static native String getCurrencyCode(Locale locale) /*-[
+      NSLocale *nativeLocale = [NSLocale localeWithLocaleIdentifier:[locale toLanguageTag]];
       NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
       [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
       [formatter setLocale:nativeLocale];
