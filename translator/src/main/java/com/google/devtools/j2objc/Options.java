@@ -94,6 +94,7 @@ public class Options {
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private boolean includeGeneratedSources = false;
+  private TimingLevel timingLevel = TimingLevel.NONE;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -124,6 +125,7 @@ public class Options {
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
+  private static final String TIMING_INFO_ARG = "--timing-info";
 
   static {
     // Load string resources.
@@ -307,6 +309,20 @@ public class Options {
   }
 
   /**
+   * What timing information should be printed, if any.
+   */
+  public enum TimingLevel {
+    // Don't print any timing information.
+    NONE,
+
+    // Print the total execution time at the end.
+    TOTAL,
+
+    // Print all timing information.
+    ALL
+  }
+
+  /**
    * Set all log handlers in this package with a common level.
    */
   private static void setLogLevel(Level level) {
@@ -438,8 +454,15 @@ public class Options {
         deprecatedDeclarations = true;
       } else if (arg.equals("-q") || arg.equals("--quiet")) {
         setLogLevel(Level.WARNING);
-      } else if (arg.equals("-t") || arg.equals("--timing-info")) {
-        setLogLevel(Level.FINE);
+      } else if (arg.equals("-t") || arg.equals(TIMING_INFO_ARG)) {
+        timingLevel = TimingLevel.ALL;
+      } else if (arg.startsWith(TIMING_INFO_ARG + ':')) {
+        String timingArg = arg.substring(TIMING_INFO_ARG.length() + 1);
+        try {
+          timingLevel = TimingLevel.valueOf(timingArg.toUpperCase());
+        } catch (IllegalArgumentException e) {
+          usage("invalid --timing-info argument");
+        }
       } else if (arg.equals("-v") || arg.equals("--verbose")) {
         setLogLevel(Level.FINEST);
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
@@ -984,5 +1007,9 @@ public class Options {
 
   public static boolean includeGeneratedSources() {
     return instance.includeGeneratedSources;
+  }
+
+  public static TimingLevel timingLevel() {
+    return instance.timingLevel;
   }
 }

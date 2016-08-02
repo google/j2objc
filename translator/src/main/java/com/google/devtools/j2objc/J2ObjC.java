@@ -19,6 +19,7 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.Options.TimingLevel;
 import com.google.devtools.j2objc.pipeline.AnnotationPreProcessor;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
@@ -30,7 +31,6 @@ import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -160,6 +160,8 @@ public class J2ObjC {
     if (args.length == 0) {
       Options.help(true);
     }
+    long startTime = System.currentTimeMillis();
+
     String[] files = null;
     try {
       files = Options.load(args);
@@ -173,6 +175,12 @@ public class J2ObjC {
 
     run(Arrays.asList(files));
 
+    TimingLevel timingLevel = Options.timingLevel();
+    if (timingLevel == TimingLevel.TOTAL || timingLevel == TimingLevel.ALL) {
+      System.out.printf("j2objc execution time: %d ms\n", System.currentTimeMillis() - startTime);
+    }
+
+    // Run last, since it calls System.exit() with the number of errors.
     checkErrors();
   }
 }

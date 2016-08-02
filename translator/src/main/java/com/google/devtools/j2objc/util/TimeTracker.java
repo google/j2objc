@@ -15,7 +15,8 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
-
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.TimingLevel;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,14 @@ import java.util.List;
  * @author Keith Stanger
  */
 public class TimeTracker {
+
+  public static TimeTracker getTicker(String name) {
+    if (Options.timingLevel() == TimingLevel.ALL) {
+      return TimeTracker.start(name);
+    } else {
+      return TimeTracker.noop();
+    }
+  }
 
   public static TimeTracker noop() {
     return new TimeTracker();
@@ -72,6 +81,7 @@ public class TimeTracker {
       lastTicks[currentLevel] = System.currentTimeMillis();
     }
 
+    @Override
     public void tick(String event) {
       long now = System.currentTimeMillis();
       long time = now - lastTicks[currentLevel];
@@ -79,15 +89,18 @@ public class TimeTracker {
       entries.add(String.format("%s%5d ms - %s", INDENTS[currentLevel], time, event));
     }
 
+    @Override
     public void push() {
       currentLevel++;
       lastTicks[currentLevel] = System.currentTimeMillis();
     }
 
+    @Override
     public void pop() {
       currentLevel--;
     }
 
+    @Override
     public void printResults(PrintStream out) {
       for (String entry : entries) {
         out.println(entry);

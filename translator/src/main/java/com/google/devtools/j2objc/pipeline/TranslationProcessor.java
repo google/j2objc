@@ -96,7 +96,7 @@ public class TranslationProcessor extends FileProcessor {
     if (logger.isLoggable(Level.INFO)) {
       System.out.println("translating " + unitName);
     }
-    TimeTracker ticker = getTicker(unitName);
+    TimeTracker ticker = TimeTracker.getTicker(unitName);
     applyMutations(unit, deadCodeMap, ticker);
     ticker.tick("Tree mutations");
     ticker.printResults(System.out);
@@ -311,7 +311,7 @@ public class TranslationProcessor extends FileProcessor {
   public static void generateObjectiveCSource(GenerationUnit unit) {
     assert unit.getOutputPath() != null;
     assert unit.isFullyParsed();
-    TimeTracker ticker = getTicker(unit.getOutputPath());
+    TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName());
     logger.fine("Generating " + unit.getOutputPath());
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
     ticker.push();
@@ -368,14 +368,6 @@ public class TranslationProcessor extends FileProcessor {
       if (qualifiedName != null) {
         closureQueue.addName(qualifiedName);
       }
-    }
-  }
-
-  private static TimeTracker getTicker(String name) {
-    if (logger.isLoggable(Level.FINEST)) {
-      return TimeTracker.start(name);
-    } else {
-      return TimeTracker.noop();
     }
   }
 }
