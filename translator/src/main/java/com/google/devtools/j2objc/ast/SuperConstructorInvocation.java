@@ -68,6 +68,10 @@ public class SuperConstructorInvocation extends Statement {
     return method;
   }
 
+  public void setExecutableElement(ExecutableElement element) {
+    method = element;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

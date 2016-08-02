@@ -14,12 +14,14 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -263,10 +265,10 @@ public final class BindingConverter {
     return type;
   }
 
-  public static JdtTypeMirror getType(IMethodBinding binding) {
+  public static JdtExecutableType getType(IMethodBinding binding) {
     JdtTypeMirror type = getTypeMirror(binding);
     if (type != null) {
-      return type;
+      return (JdtExecutableType) type;
     }
     JdtMethodBinding wrappedBinding = wrapBinding(binding);
     JdtExecutableType executableType = new JdtExecutableType(wrappedBinding);
@@ -339,6 +341,19 @@ public final class BindingConverter {
       return new GeneratedVariableBinding(element.toString(), 0, element.asType(),
           element.getKind() == ElementKind.FIELD, element.getKind() == ElementKind.PARAMETER,
           null, null);
+    }
+    if (element instanceof GeneratedExecutableElement) {
+      GeneratedExecutableElement gElement = (GeneratedExecutableElement) element;
+      GeneratedMethodBinding newOne = new GeneratedMethodBinding(
+          null, gElement.getSimpleName().toString(),
+          ElementUtil.fromModifierSet(gElement.getModifiers()),
+          BindingConverter.unwrapTypeMirrorIntoTypeBinding(gElement.getReturnType()), null,
+          BindingConverter.unwrapTypeElement((TypeElement) gElement.getEnclosingElement()),
+          element.getKind() == ElementKind.CONSTRUCTOR, gElement.isVarArgs());
+      for (VariableElement p : gElement.getParameters()) {
+        newOne.getParameters().add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(p.asType()));
+      }
+      return newOne;
     }
     return element != null ? ((JdtElement) element).binding : null;
   }

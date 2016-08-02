@@ -1183,6 +1183,12 @@ public class DebugASTPrinter extends TreeVisitor {
     }
   }
 
+  public static void printModifiers(int modifiers, StringBuilder builder) {
+    DebugASTPrinter temp = new DebugASTPrinter();
+    temp.printModifiers(modifiers);
+    builder.append(temp.sb.toString());
+  }
+
   private void printModifiers(int modifiers) {
     if (Modifier.isPublic(modifiers)) {
       sb.print("public ");

@@ -89,6 +89,10 @@ public class ClassInstanceCreation extends Expression {
     return method;
   }
 
+  public void setExecutableElement(ExecutableElement element) {
+    method = element;
+  }
+
   @Override
   public TypeMirror getTypeMirror() {
     return method != null

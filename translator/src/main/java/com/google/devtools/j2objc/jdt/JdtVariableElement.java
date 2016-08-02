@@ -75,7 +75,9 @@ class JdtVariableElement extends JdtElement implements VariableElement {
 
   @Override
   public TypeMirror asType() {
-    return BindingConverter.getType(((IVariableBinding) binding).getType());
+    return BindingConverter.getType(binding instanceof ITypeBinding
+        ? ((ITypeBinding) binding)
+        : ((IVariableBinding) binding).getType());
   }
 
   @Override

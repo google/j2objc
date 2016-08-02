@@ -28,13 +28,14 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
+import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Updates variable references outside an inner class to the new fields
@@ -53,8 +54,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = node.getMethodBinding();
-    if (binding.isConstructor()) {
+    if (node.getMethodElement().getKind() == ElementKind.CONSTRUCTOR) {
       List<SingleVariableDeclaration> params = node.getParameters();
       if (params.size() > 0) {
         VariableElement firstParam = params.get(0).getVariableElement();
@@ -73,34 +73,34 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    ITypeBinding newType = node.getTypeBinding().getTypeDeclaration();
-    ITypeBinding declaringClass = newType.getDeclaringClass();
-    if (Modifier.isStatic(newType.getModifiers()) || declaringClass == null) {
+    TypeElement newType = (TypeElement) node.getExecutableElement().getEnclosingElement();
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(newType);
+    if (newType.getModifiers().contains(javax.lang.model.element.Modifier.STATIC)
+        || declaringClass == null) {
       return true;
     }
-
-    GeneratedMethodBinding binding =
-        new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
+    List<TypeMirror> parameterTypes = new ArrayList<>();
+    GeneratedExecutableElement element =
+        new GeneratedExecutableElement(node.getExecutableElement());
 
     List<Expression> captureArgs = node.getArguments().subList(0, 0);
-    List<ITypeBinding> captureParams = binding.getParameters().subList(0, 0);
-    if (outerResolver.needsOuterParam(newType)) {
-      captureArgs.add(getOuterArg(node, declaringClass));
-      captureParams.add(declaringClass);
+    if (outerResolver.needsOuterParam(BindingConverter.unwrapTypeElement(newType))) {
+      captureArgs.add(getOuterArg(node, declaringClass.asType()));
+      parameterTypes.add(declaringClass.asType());
     }
 
     for (List<VariableElement> captureArgPath : outerResolver.getCaptureArgPaths(node)) {
       captureArgPath = fixPath(captureArgPath);
       captureArgs.add(Name.newName(captureArgPath));
-      captureParams.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-          captureArgPath.get(captureArgPath.size() - 1).asType()));
+      parameterTypes.add(captureArgPath.get(captureArgPath.size() - 1).asType());
     }
-    node.setMethodBinding(binding);
-    assert binding.isVarargs() || node.getArguments().size() == binding.getParameterTypes().length;
+    element.addParametersPlaceholderFront(parameterTypes);
+    node.setExecutableElement(element);
+    assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();
     return true;
   }
 
-  private Expression getOuterArg(ClassInstanceCreation node, ITypeBinding declaringClass) {
+  private Expression getOuterArg(ClassInstanceCreation node, TypeMirror declaringClass) {
     Expression outerExpr = node.getExpression();
     if (outerExpr != null) {
       node.setExpression(null);
@@ -125,7 +125,7 @@ public class OuterReferenceFixer extends TreeVisitor {
   @Override
   public void endVisit(SuperMethodInvocation node) {
     // Ignore default methods, they do not have outer paths.
-    if (BindingUtil.isDefault(node.getMethodBinding())) {
+    if (ElementUtil.isDefault(node.getExecutableElement())) {
       return;
     }
     List<VariableElement> path = outerResolver.getPath(node);
@@ -169,12 +169,12 @@ public class OuterReferenceFixer extends TreeVisitor {
       return;
     }
     node.setExpression(null);
-    ITypeBinding outerExpressionType = outerExpression.getTypeBinding();
-    GeneratedMethodBinding binding =
-        new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
-    node.setMethodBinding(binding);
+    TypeMirror outerExpressionType = outerExpression.getTypeMirror();
+    GeneratedExecutableElement element =
+        new GeneratedExecutableElement(node.getExecutableElement());
+    node.setExecutableElement(element);
     node.addArgument(0, outerExpression);
-    binding.addParameter(0, outerExpressionType);
+    element.addParameterPlaceholderFront(outerExpressionType);
   }
 
   private List<VariableElement> fixPath(List<VariableElement> path) {
