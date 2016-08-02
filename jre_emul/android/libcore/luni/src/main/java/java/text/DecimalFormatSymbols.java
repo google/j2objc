@@ -18,6 +18,9 @@
 package java.text;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.util.Currency;
 import java.util.Locale;
@@ -559,5 +562,87 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             throw new NullPointerException("value == null");
         }
         this.exponentSeparator = value;
+    }
+
+    private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("currencySymbol", String.class),
+        new ObjectStreamField("decimalSeparator", char.class),
+        new ObjectStreamField("digit", char.class),
+        new ObjectStreamField("exponential", char.class),
+        new ObjectStreamField("exponentialSeparator", String.class),
+        new ObjectStreamField("groupingSeparator", char.class),
+        new ObjectStreamField("infinity", String.class),
+        new ObjectStreamField("intlCurrencySymbol", String.class),
+        new ObjectStreamField("minusSign", char.class),
+        new ObjectStreamField("monetarySeparator", char.class),
+        new ObjectStreamField("NaN", String.class),
+        new ObjectStreamField("patternSeparator", char.class),
+        new ObjectStreamField("percent", char.class),
+        new ObjectStreamField("perMill", char.class),
+        new ObjectStreamField("serialVersionOnStream", int.class),
+        new ObjectStreamField("zeroDigit", char.class),
+        new ObjectStreamField("locale", Locale.class),
+    };
+
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        ObjectOutputStream.PutField fields = stream.putFields();
+        fields.put("currencySymbol", currencySymbol);
+        fields.put("decimalSeparator", getDecimalSeparator());
+        fields.put("digit", getDigit());
+        fields.put("exponential", exponentSeparator.charAt(0));
+        fields.put("exponentialSeparator", exponentSeparator);
+        fields.put("groupingSeparator", getGroupingSeparator());
+        fields.put("infinity", infinity);
+        fields.put("intlCurrencySymbol", intlCurrencySymbol);
+        fields.put("minusSign", getMinusSign());
+        fields.put("monetarySeparator", getMonetaryDecimalSeparator());
+        fields.put("NaN", NaN);
+        fields.put("patternSeparator", getPatternSeparator());
+        fields.put("percent", getPercent());
+        fields.put("perMill", getPerMill());
+        fields.put("serialVersionOnStream", 3);
+        fields.put("zeroDigit", getZeroDigit());
+        fields.put("locale", locale);
+        stream.writeFields();
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        ObjectInputStream.GetField fields = stream.readFields();
+        final int serialVersionOnStream = fields.get("serialVersionOnStream", 0);
+        currencySymbol = (String) fields.get("currencySymbol", "");
+        setDecimalSeparator(fields.get("decimalSeparator", '.'));
+        setDigit(fields.get("digit", '#'));
+        setGroupingSeparator(fields.get("groupingSeparator", ','));
+        infinity = (String) fields.get("infinity", "");
+        intlCurrencySymbol = (String) fields.get("intlCurrencySymbol", "");
+        setMinusSign(fields.get("minusSign", '-'));
+        NaN = (String) fields.get("NaN", "");
+        setPatternSeparator(fields.get("patternSeparator", ';'));
+        setPercent(fields.get("percent", '%'));
+        setPerMill(fields.get("perMill", '\u2030'));
+        setZeroDigit(fields.get("zeroDigit", '0'));
+        locale = (Locale) fields.get("locale", null);
+        if (serialVersionOnStream == 0) {
+            setMonetaryDecimalSeparator(getDecimalSeparator());
+        } else {
+            setMonetaryDecimalSeparator(fields.get("monetarySeparator", '.'));
+        }
+
+        if (serialVersionOnStream == 0) {
+            // Prior to Java 1.1.6, the exponent separator wasn't configurable.
+            exponentSeparator = "E";
+        } else if (serialVersionOnStream < 3) {
+            // In Javas 1.1.6 and 1.4, there was a character field "exponential".
+            setExponentSeparator(String.valueOf(fields.get("exponential", 'E')));
+        } else {
+            // In Java 6, there's a new "exponentialSeparator" field.
+            setExponentSeparator((String) fields.get("exponentialSeparator", "E"));
+        }
+
+        try {
+            currency = Currency.getInstance(intlCurrencySymbol);
+        } catch (IllegalArgumentException e) {
+            currency = null;
+        }
     }
 }

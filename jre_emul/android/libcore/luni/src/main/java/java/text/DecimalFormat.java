@@ -18,6 +18,9 @@
 package java.text;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -1103,6 +1106,121 @@ public class DecimalFormat extends NumberFormat {
      */
     public String toPattern() {
         return ndf.toPattern();
+    }
+
+    // the fields list to be serialized
+    private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("positivePrefix", String.class),
+        new ObjectStreamField("positiveSuffix", String.class),
+        new ObjectStreamField("negativePrefix", String.class),
+        new ObjectStreamField("negativeSuffix", String.class),
+        new ObjectStreamField("posPrefixPattern", String.class),
+        new ObjectStreamField("posSuffixPattern", String.class),
+        new ObjectStreamField("negPrefixPattern", String.class),
+        new ObjectStreamField("negSuffixPattern", String.class),
+        new ObjectStreamField("multiplier", int.class),
+        new ObjectStreamField("groupingSize", byte.class),
+        new ObjectStreamField("groupingUsed", boolean.class),
+        new ObjectStreamField("decimalSeparatorAlwaysShown", boolean.class),
+        new ObjectStreamField("parseBigDecimal", boolean.class),
+        new ObjectStreamField("roundingMode", RoundingMode.class),
+        new ObjectStreamField("symbols", DecimalFormatSymbols.class),
+        new ObjectStreamField("useExponentialNotation", boolean.class),
+        new ObjectStreamField("minExponentDigits", byte.class),
+        new ObjectStreamField("maximumIntegerDigits", int.class),
+        new ObjectStreamField("minimumIntegerDigits", int.class),
+        new ObjectStreamField("maximumFractionDigits", int.class),
+        new ObjectStreamField("minimumFractionDigits", int.class),
+        new ObjectStreamField("serialVersionOnStream", int.class),
+    };
+
+    /**
+     * Writes serialized fields following serialized forms specified by Java
+     * specification.
+     *
+     * @param stream
+     *            the output stream to write serialized bytes
+     * @throws IOException
+     *             if some I/O error occurs
+     * @throws ClassNotFoundException
+     */
+    private void writeObject(ObjectOutputStream stream) throws IOException, ClassNotFoundException {
+        ObjectOutputStream.PutField fields = stream.putFields();
+        fields.put("positivePrefix", ndf.getPositivePrefix());
+        fields.put("positiveSuffix", ndf.getPositiveSuffix());
+        fields.put("negativePrefix", ndf.getNegativePrefix());
+        fields.put("negativeSuffix", ndf.getNegativeSuffix());
+        fields.put("posPrefixPattern", (String) null);
+        fields.put("posSuffixPattern", (String) null);
+        fields.put("negPrefixPattern", (String) null);
+        fields.put("negSuffixPattern", (String) null);
+        fields.put("multiplier", ndf.getMultiplier());
+        fields.put("groupingSize", (byte) ndf.getGroupingSize());
+        fields.put("groupingUsed", ndf.isGroupingUsed());
+        fields.put("decimalSeparatorAlwaysShown", ndf.isDecimalSeparatorAlwaysShown());
+        fields.put("parseBigDecimal", ndf.isParseBigDecimal());
+        fields.put("roundingMode", roundingMode);
+        fields.put("symbols", symbols);
+        fields.put("useExponentialNotation", false);
+        fields.put("minExponentDigits", (byte) 0);
+        fields.put("maximumIntegerDigits", ndf.getMaximumIntegerDigits());
+        fields.put("minimumIntegerDigits", ndf.getMinimumIntegerDigits());
+        fields.put("maximumFractionDigits", ndf.getMaximumFractionDigits());
+        fields.put("minimumFractionDigits", ndf.getMinimumFractionDigits());
+        fields.put("serialVersionOnStream", 4);
+        stream.writeFields();
+    }
+
+    /**
+     * Reads serialized fields following serialized forms specified by Java
+     * specification.
+     *
+     * @param stream
+     *            the input stream to read serialized bytes
+     * @throws IOException
+     *             if some I/O error occurs
+     * @throws ClassNotFoundException
+     *             if some class of serialized objects or fields cannot be found
+     */
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        ObjectInputStream.GetField fields = stream.readFields();
+        this.symbols = (DecimalFormatSymbols) fields.get("symbols", null);
+
+        initNative("");
+        ndf.setPositivePrefix((String) fields.get("positivePrefix", ""));
+        ndf.setPositiveSuffix((String) fields.get("positiveSuffix", ""));
+        ndf.setNegativePrefix((String) fields.get("negativePrefix", "-"));
+        ndf.setNegativeSuffix((String) fields.get("negativeSuffix", ""));
+        ndf.setMultiplier(fields.get("multiplier", 1));
+        ndf.setGroupingSize(fields.get("groupingSize", (byte) 3));
+        ndf.setGroupingUsed(fields.get("groupingUsed", true));
+        ndf.setDecimalSeparatorAlwaysShown(fields.get("decimalSeparatorAlwaysShown", false));
+
+        setRoundingMode((RoundingMode) fields.get("roundingMode", RoundingMode.HALF_EVEN));
+
+        final int maximumIntegerDigits = fields.get("maximumIntegerDigits", 309);
+        final int minimumIntegerDigits = fields.get("minimumIntegerDigits", 309);
+        final int maximumFractionDigits = fields.get("maximumFractionDigits", 340);
+        final int minimumFractionDigits = fields.get("minimumFractionDigits", 340);
+        // Tell ICU what we want, then ask it what we can have, and then
+        // set that in our Java object. This isn't RI-compatible, but then very little of our
+        // behavior in this area is, and it's not obvious how we can second-guess ICU (or tell
+        // it to just do exactly what we ask). We only need to do this with maximumIntegerDigits
+        // because ICU doesn't seem to have its own ideas about the other options.
+        ndf.setMaximumIntegerDigits(maximumIntegerDigits);
+        super.setMaximumIntegerDigits(ndf.getMaximumIntegerDigits());
+
+        setMinimumIntegerDigits(minimumIntegerDigits);
+        setMinimumFractionDigits(minimumFractionDigits);
+        setMaximumFractionDigits(maximumFractionDigits);
+        setParseBigDecimal(fields.get("parseBigDecimal", false));
+
+        if (fields.get("serialVersionOnStream", 0) < 3) {
+            setMaximumIntegerDigits(super.getMaximumIntegerDigits());
+            setMinimumIntegerDigits(super.getMinimumIntegerDigits());
+            setMaximumFractionDigits(super.getMaximumFractionDigits());
+            setMinimumFractionDigits(super.getMinimumFractionDigits());
+        }
     }
 
     /**
