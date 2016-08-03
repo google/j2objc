@@ -19,20 +19,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.LintOption;
-
-import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.FileASTRequestor;
-
+import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.eclipse.jdt.core.compiler.IProblem;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FileASTRequestor;
 
 /**
  * Adapts JDT's ASTParser to a more convenient interface for parsing source
@@ -40,7 +42,7 @@ import java.util.logging.Logger;
  *
  * @author Tom Ball, Keith Stanger
  */
-public class JdtParser {
+public class JdtParser implements Parser {
 
   private static final Logger logger = Logger.getLogger(JdtParser.class.getName());
 
@@ -49,6 +51,7 @@ public class JdtParser {
   private List<String> sourcepathEntries = Lists.newArrayList();
   private String encoding = null;
   private boolean includeRunningVMBootclasspath = true;
+  private final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
   private static Map<String, String> initCompilerOptions(SourceVersion sourceVersion) {
     Map<String, String> compilerOptions = Maps.newHashMap();
@@ -76,6 +79,7 @@ public class JdtParser {
     }
   }
 
+  @Override
   public void addClasspathEntries(Iterable<String> entries) {
     for (String entry : entries) {
       addClasspathEntry(entry);
@@ -84,40 +88,48 @@ public class JdtParser {
 
   private static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
 
+  @Override
   public void addClasspathEntries(String entries) {
     addClasspathEntries(PATH_SPLITTER.split(entries));
   }
 
+  @Override
   public void addSourcepathEntry(String entry) {
     if (isValidPathEntry(entry)) {
       sourcepathEntries.add(entry);
     }
   }
 
+  @Override
   public void prependSourcepathEntry(String entry) {
     if (isValidPathEntry(entry)) {
       sourcepathEntries.add(0, entry);
     }
   }
 
+  @Override
   public void addSourcepathEntries(Iterable<String> entries) {
     for (String entry : entries) {
       addSourcepathEntry(entry);
     }
   }
 
+  @Override
   public void addSourcepathEntries(String entries) {
     addSourcepathEntries(PATH_SPLITTER.split(entries));
   }
 
+  @Override
   public void setEncoding(String encoding) {
     this.encoding = encoding;
   }
 
+  @Override
   public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {
     includeRunningVMBootclasspath = includeVMBootclasspath;
   }
 
+  @Override
   public void setEnableDocComments(boolean enable) {
     // BodyDeclaration.getJavadoc() always returns null without this option enabled,
     // so by default no doc comments are generated.
@@ -126,12 +138,37 @@ public class JdtParser {
         enable ? "enabled" : "disabled");
   }
 
+  @Override
   public CompilationUnit parseWithoutBindings(String unitName, String source) {
     return parse(unitName, source, false);
   }
 
-  public CompilationUnit parseWithBindings(String unitName, String source) {
-    return parse(unitName, source, true);
+  @Override
+  public com.google.devtools.j2objc.ast.CompilationUnit parse(InputFile file) {
+    String source = null;
+    try {
+      source = FileUtil.readFile(file);
+      return parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
+      return null;
+    }
+  }
+
+  @Override
+  public com.google.devtools.j2objc.ast.CompilationUnit parse(String mainTypeName,
+      String path, String source) {
+    int errors = ErrorUtil.errorCount();
+    org.eclipse.jdt.core.dom.CompilationUnit unit = parse(path, source, true);
+    if (ErrorUtil.errorCount() > errors) {
+      return null;
+    }
+    if (mainTypeName == null) {
+      RegularInputFile file = new RegularInputFile(path);
+      mainTypeName = FileUtil.getQualifiedMainTypeName(file, unit);
+    }
+    return TreeConverter.convertCompilationUnit(
+        unit, path, mainTypeName, source, NameTable.newFactory());
   }
 
   private CompilationUnit parse(String unitName, String source, boolean resolveBindings) {
@@ -146,14 +183,7 @@ public class JdtParser {
     }
   }
 
-  /**
-   * Handler to be provided when parsing multiple files. The provided
-   * implementation is called with the parsed units.
-   */
-  public interface Handler {
-    public void handleParsedUnit(String path, CompilationUnit unit);
-  }
-
+  @Override
   public void parseFiles(Collection<String> paths, final Handler handler,
       SourceVersion sourceVersion) {
     ASTParser parser = newASTParser(true, sourceVersion);
@@ -162,7 +192,16 @@ public class JdtParser {
       public void acceptAST(String sourceFilePath, CompilationUnit ast) {
         logger.fine("acceptAST: " + sourceFilePath);
         if (checkCompilationErrors(sourceFilePath, ast)) {
-          handler.handleParsedUnit(sourceFilePath, ast);
+          RegularInputFile file = new RegularInputFile(sourceFilePath);
+          try {
+            String source = FileUtil.readFile(file);
+            com.google.devtools.j2objc.ast.CompilationUnit unit =
+                TreeConverter.convertCompilationUnit(
+                    ast, sourceFilePath, FileUtil.getMainTypeName(file), source, nameTableFactory);
+            handler.handleParsedUnit(sourceFilePath, unit);
+          } catch (IOException e) {
+            ErrorUtil.error("Error reading file " + file.getPath() + ": " + e.getMessage());
+          }
         }
       }
     };

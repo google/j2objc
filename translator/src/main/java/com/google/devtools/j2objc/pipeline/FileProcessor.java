@@ -19,17 +19,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.CompilationUnit;
-
-import java.io.IOException;
+import com.google.devtools.j2objc.util.Parser;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,9 +40,8 @@ abstract class FileProcessor {
 
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
 
-  private final JdtParser parser;
+  private final Parser parser;
   protected final BuildClosureQueue closureQueue;
-  private final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
   private final int batchSize = Options.batchTranslateMaximum();
   private final Set<ProcessingContext> batchInputs =
@@ -54,7 +49,7 @@ abstract class FileProcessor {
 
   private final boolean doBatching = batchSize > 0;
 
-  public FileProcessor(JdtParser parser) {
+  public FileProcessor(Parser parser) {
     this.parser = Preconditions.checkNotNull(parser);
     if (Options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
@@ -101,21 +96,13 @@ abstract class FileProcessor {
 
     logger.finest("parsing " + file);
 
-    String source = null;
-    CompilationUnit compilationUnit = null;
-    try {
-      source = FileUtil.readFile(file);
-      compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
-    }
-
+    CompilationUnit compilationUnit = parser.parse(file);
     if (compilationUnit == null) {
       handleError(input);
       return;
     }
 
-    processCompiledSource(input, source, compilationUnit);
+    processCompiledSource(input, compilationUnit);
   }
 
   protected boolean isBatchable(InputFile file) {
@@ -136,17 +123,12 @@ abstract class FileProcessor {
       inputMap.put(path, input);
     }
 
-    JdtParser.Handler handler = new JdtParser.Handler() {
+    JdtParser.Handler handler = new Parser.Handler() {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
         ProcessingContext input = inputMap.get(path);
-        try {
-          String source = FileUtil.readFile(input.getFile());
-          processCompiledSource(input, source, unit);
-          batchInputs.remove(input);
-        } catch (IOException e) {
-          ErrorUtil.error(e.getMessage());
-        }
+        processCompiledSource(input, unit);
+        batchInputs.remove(input);
       }
     };
     logger.finest("Processing batch of size " + batchInputs.size());
@@ -160,17 +142,14 @@ abstract class FileProcessor {
     batchInputs.clear();
   }
 
-  private void processCompiledSource(ProcessingContext input, String source, CompilationUnit unit) {
+  private void processCompiledSource(ProcessingContext input,
+      com.google.devtools.j2objc.ast.CompilationUnit unit) {
     InputFile file = input.getFile();
     if (closureQueue != null) {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
     try {
-      com.google.devtools.j2objc.ast.CompilationUnit convertedUnit =
-          TreeConverter.convertCompilationUnit(
-              unit, input.getOriginalSourcePath(), FileUtil.getMainTypeName(file), source,
-              nameTableFactory);
-      processConvertedTree(input, convertedUnit);
+      processConvertedTree(input, unit);
     } catch (Throwable t) {
       // Report any uncaught exceptions.
       ErrorUtil.fatalError(t, input.getOriginalSourcePath());

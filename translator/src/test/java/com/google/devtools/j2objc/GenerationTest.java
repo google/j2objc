@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
@@ -36,10 +35,9 @@ import com.google.devtools.j2objc.pipeline.TranslationProcessor;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
-import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,7 +55,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import junit.framework.TestCase;
 
 /**
@@ -70,7 +67,7 @@ import junit.framework.TestCase;
 public class GenerationTest extends TestCase {
 
   protected File tempDir;
-  protected JdtParser parser;
+  protected Parser parser;
   private DeadCodeMap deadCodeMap = null;
 
   static {
@@ -107,8 +104,8 @@ public class GenerationTest extends TestCase {
     parser = initializeParser(tempDir);
   }
 
-  protected static JdtParser initializeParser(File tempDir) {
-    JdtParser parser = new JdtParser();
+  protected static Parser initializeParser(File tempDir) {
+    Parser parser = Options.newParser();
     parser.addClasspathEntries(getComGoogleDevtoolsJ2objcPath());
     parser.addSourcepathEntry(tempDir.getAbsolutePath());
     return parser;
@@ -170,15 +167,14 @@ public class GenerationTest extends TestCase {
     String path = name.replace('.', '/') + ".java";
     int errors = ErrorUtil.errorCount();
     parser.setEnableDocComments(Options.docCommentsEnabled());
-    org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parseWithBindings(path, source);
+    CompilationUnit unit = parser.parse(mainTypeName, path, source);
     if (ErrorUtil.errorCount() > errors) {
       int newErrorCount = ErrorUtil.errorCount() - errors;
       String info = String.format(
           "%d test compilation error%s", newErrorCount, (newErrorCount == 1 ? "" : "s"));
       failWithMessages(info, ErrorUtil.getErrorMessages().subList(errors, ErrorUtil.errorCount()));
     }
-    return TreeConverter.convertCompilationUnit(
-        unit, path, mainTypeName, source, NameTable.newFactory());
+    return unit;
   }
 
   protected static List<String> getComGoogleDevtoolsJ2objcPath() {

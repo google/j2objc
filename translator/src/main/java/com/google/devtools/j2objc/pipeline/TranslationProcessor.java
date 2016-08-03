@@ -64,7 +64,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import java.util.Set;
@@ -85,7 +85,7 @@ public class TranslationProcessor extends FileProcessor {
 
   private int processedCount = 0;
 
-  public TranslationProcessor(JdtParser parser, DeadCodeMap deadCodeMap) {
+  public TranslationProcessor(Parser parser, DeadCodeMap deadCodeMap) {
     super(parser);
     this.deadCodeMap = deadCodeMap;
   }

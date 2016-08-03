@@ -16,17 +16,15 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
-import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.Parser;
 import com.google.j2objc.annotations.ObjectiveCName;
-
-import org.eclipse.jdt.core.dom.Annotation;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -39,10 +37,10 @@ public class InputFilePreprocessor {
 
   private static final Logger logger = Logger.getLogger(InputFilePreprocessor.class.getName());
 
-  private final JdtParser parser;
+  private final Parser parser;
   private File strippedSourcesDir;
 
-  public InputFilePreprocessor(JdtParser parser) {
+  public InputFilePreprocessor(Parser parser) {
     this.parser = parser;
   }
 
@@ -84,9 +82,10 @@ public class InputFilePreprocessor {
       // No need to parse.
       return;
     }
-    CompilationUnit compilationUnit = parser.parseWithoutBindings(file.getUnitName(), source);
+    org.eclipse.jdt.core.dom.CompilationUnit compilationUnit =
+        parser.parseWithoutBindings(file.getUnitName(), source);
     if (compilationUnit == null) {
-      // An error occured, reported by the JdtParser.
+      // The parser found and reported one or more errors.
       return;
     }
     String qualifiedName = FileUtil.getQualifiedMainTypeName(file, compilationUnit);
@@ -107,7 +106,8 @@ public class InputFilePreprocessor {
   private void processPackageInfoSource(ProcessingContext input) throws IOException {
     InputFile file = input.getFile();
     String source = FileUtil.readFile(file);
-    CompilationUnit compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
+    CompilationUnit compilationUnit =
+        parser.parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
     if (compilationUnit != null) {
       extractPackagePrefix(file, compilationUnit);
     }
@@ -116,18 +116,16 @@ public class InputFilePreprocessor {
   private void extractPackagePrefix(InputFile file, CompilationUnit unit) {
     // We should only reach here if it's a package-info.java file.
     assert file.getUnitName().endsWith("package-info.java");
-    @SuppressWarnings("unchecked")
-    List<Annotation> annotations = (List<Annotation>) unit.getPackage().annotations();
+    List<Annotation> annotations = (List<Annotation>) unit.getPackage().getAnnotations();
     for (Annotation annotation : annotations) {
       // getFullyQualifiedName() might not actually return a fully qualified name.
       String name = annotation.getTypeName().getFullyQualifiedName();
       if (name.endsWith("ObjectiveCName")) {
         // Per Eclipse docs, binding resolution can be a resource hog.
-        if (annotation.resolveAnnotationBinding().getAnnotationType().getQualifiedName().equals(
+        if (annotation.getAnnotationBinding().getAnnotationType().getQualifiedName().equals(
             ObjectiveCName.class.getCanonicalName())) {
           String key = unit.getPackage().getName().getFullyQualifiedName();
-          String val = (String) ((SingleMemberAnnotation) annotation).getValue()
-              .resolveConstantExpressionValue();
+          String val = (String) ((SingleMemberAnnotation) annotation).getValue().getConstantValue();
           Options.addPackagePrefix(key, val);
         }
       }

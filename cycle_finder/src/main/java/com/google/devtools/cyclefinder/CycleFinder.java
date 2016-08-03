@@ -18,13 +18,12 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripper;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-
+import com.google.devtools.j2objc.util.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -57,8 +56,8 @@ public class CycleFinder {
     });
   }
 
-  private static JdtParser createParser(Options options) {
-    JdtParser parser = new JdtParser();
+  private static Parser createParser(Options options) {
+    Parser parser = new JdtParser();
     parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
@@ -95,7 +94,7 @@ public class CycleFinder {
   }
 
   private File stripIncompatible(
-      List<String> sourceFileNames, JdtParser parser) throws IOException {
+      List<String> sourceFileNames, Parser parser) throws IOException {
     File strippedDir = null;
     for (int i = 0; i < sourceFileNames.size(); i++) {
       String fileName = sourceFileNames.get(i);
@@ -122,24 +121,15 @@ public class CycleFinder {
 
   public List<List<Edge>> findCycles() throws IOException {
     final TypeCollector typeCollector = new TypeCollector();
-    JdtParser parser = createParser(options);
+    Parser parser = createParser(options);
     final OuterReferenceResolver outerResolver = new OuterReferenceResolver();
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
 
-    JdtParser.Handler handler = new JdtParser.Handler() {
+    Parser.Handler handler = new Parser.Handler() {
       @Override
-      public void handleParsedUnit(String path, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit) {
-        String source = "";
-        RegularInputFile file = new RegularInputFile(path);
-        try {
-          source = FileUtil.readFile(file);
-        } catch (IOException e) {
-          ErrorUtil.error("Error reading file " + path + ": " + e.getMessage());
-        }
-        CompilationUnit unit = TreeConverter.convertCompilationUnit(
-            jdtUnit, path, FileUtil.getMainTypeName(file), source, null);
+      public void handleParsedUnit(String path, CompilationUnit unit) {
         typeCollector.visitAST(unit);
         outerResolver.run(unit);
       }

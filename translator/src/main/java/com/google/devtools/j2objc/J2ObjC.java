@@ -28,7 +28,7 @@ import com.google.devtools.j2objc.pipeline.TranslationProcessor;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
-import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.File;
@@ -71,8 +71,8 @@ public class J2ObjC {
   }
 
   @VisibleForTesting
-  public static JdtParser createParser() {
-    JdtParser parser = new JdtParser();
+  public static Parser createParser() {
+    Parser parser = Options.newParser();
     parser.addClasspathEntries(Options.getClassPathEntries());
     parser.addClasspathEntries(Options.getBootClasspath());
     parser.addSourcepathEntries(Options.getSourcePathEntries());
@@ -102,7 +102,7 @@ public class J2ObjC {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
     try {
-      JdtParser parser = createParser();
+      Parser parser = createParser();
 
       List<ProcessingContext> inputs = Lists.newArrayList();
       GenerationBatch batch = new GenerationBatch();

@@ -83,6 +83,9 @@ public class TranslationProcessorTest extends GenerationTest {
 
   public void testDuplicateSourceFileOnSourcepath() throws IOException {
     Options.setBuildClosure(true);
+
+    // Have src/main/java precede tmp dir in source path.
+    Options.insertSourcePath(0, getTempDir() + "/src/main/java");
     Options.appendSourcePath(getTempDir());
 
     addSourceFile("class Test { Foo f; }", "Test.java");

@@ -16,12 +16,12 @@ package com.google.devtools.j2objc.util;
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +50,18 @@ public class FileUtil {
       basename = basename.substring(0, end);
     }
     return basename;
+  }
+
+  // TODO(tball): remove when Parser extraction is complete.
+  public static String getQualifiedMainTypeName(InputFile file,
+      org.eclipse.jdt.core.dom.CompilationUnit unit) {
+    String qualifiedName = getMainTypeName(file);
+    org.eclipse.jdt.core.dom.PackageDeclaration packageDecl = unit.getPackage();
+    if (packageDecl != null) {
+      String packageName = packageDecl.getName().getFullyQualifiedName();
+      qualifiedName = packageName + "." + qualifiedName;
+    }
+    return qualifiedName;
   }
 
   public static String getQualifiedMainTypeName(InputFile file, CompilationUnit unit) {

@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.PackagePrefixes;
+import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 
@@ -95,6 +96,9 @@ public class Options {
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private boolean includeGeneratedSources = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
+
+  // TODO(tball): remove after front-end conversion is complete.
+  private FrontEnd javaFrontEnd = FrontEnd.JDT;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -193,6 +197,11 @@ public class Options {
     public String suffix() {
       return suffix;
     }
+  }
+
+  // TODO(tball): remove after front-end conversion is complete.
+  private static enum FrontEnd {
+    JDT, JAVAC
   }
 
   /**
@@ -514,6 +523,10 @@ public class Options {
         nullability = true;
       } else if (arg.startsWith("-Xlint")) {
         lintOptions = LintOption.parse(arg);
+      } else if (arg.equals("-Xuse-jdt")) {
+        javaFrontEnd = FrontEnd.JDT;
+      } else if (arg.equals("-Xuse-javac")) {
+        javaFrontEnd = FrontEnd.JAVAC;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -1011,5 +1024,13 @@ public class Options {
 
   public static TimingLevel timingLevel() {
     return instance.timingLevel;
+  }
+
+  // TODO(tball): remove after front-end conversion is complete.
+  public static Parser newParser() {
+    if (instance.javaFrontEnd == FrontEnd.JDT) {
+        return new com.google.devtools.j2objc.util.JdtParser();
+    }
+    throw new AssertionError("javac front-end not implemented");
   }
 }
