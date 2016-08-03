@@ -23,6 +23,7 @@
 #import "IOSObjectArray.h"
 #import "J2ObjC_source.h"
 #import "NSException+JavaThrowable.h"
+#import "java/io/ObjectInputStream.h"
 #import "java/io/PrintStream.h"
 #import "java/io/PrintWriter.h"
 #import "java/lang/AssertionError.h"
@@ -357,6 +358,11 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
   }
 }
 
+- (void)readObjectWithJavaIoObjectInputStream:(JavaIoObjectInputStream *)ois {
+  NSException_initWithNSString_withNSException_(self, nil, nil);
+  [ois defaultReadObject];
+}
+
 - (BOOL)isEqual:(id)object {
   // java.lang.Throwable doesn't define equals(), so use object equivalence.
   return self == object;
@@ -428,23 +434,24 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     { "addSuppressedWithNSException:", "V", 0x11, 10, 2, -1, -1, -1, -1 },
     { "getSuppressed", "[LNSException;", 0x11, -1, -1, -1, -1, -1, -1 },
     { "description", "LNSString;", 0x1, 11, -1, -1, -1, -1, -1 },
+    { "readObjectWithJavaIoObjectInputStream:", "V", 0x2, 12, 13, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "detailMessage_", "LNSString;", .constantValue.asLong = 0, 0x2, -1, -1, -1, -1 },
     { "cause_", "LNSException;", .constantValue.asLong = 0, 0x2, -1, -1, -1, -1 },
     { "stackTrace_", "[LJavaLangStackTraceElement;", .constantValue.asLong = 0, 0x2, -1, -1, -1, -1
     },
-    { "suppressedExceptions_", "LJavaUtilList;", .constantValue.asLong = 0, 0x2, -1, -1, 12, -1 },
+    { "suppressedExceptions_", "LJavaUtilList;", .constantValue.asLong = 0, 0x2, -1, -1, 14, -1 },
     { "serialVersionUID", "J", .constantValue.asLong = NSException_serialVersionUID, 0x1a, -1, -1,
       -1, -1 },
   };
   static const void *ptrTable[] = {
     "LNSString;", "LNSString;LNSException;", "LNSException;", "LNSString;LNSException;ZZ",
     "initCause", "printStackTrace", "LJavaIoPrintWriter;", "LJavaIoPrintStream;", "setStackTrace",
-    "[LJavaLangStackTraceElement;", "addSuppressed", "toString",
-    "Ljava/util/List<Ljava/lang/Throwable;>;" };
+    "[LJavaLangStackTraceElement;", "addSuppressed", "toString", "readObject",
+    "LJavaIoObjectInputStream;", "Ljava/util/List<Ljava/lang/Throwable;>;" };
   static const J2ObjcClassInfo _NSException = {
-    "Throwable", "java.lang", ptrTable, methods, fields, 7, 0x1, 18, 5, -1, -1, -1, -1, -1 };
+    "Throwable", "java.lang", ptrTable, methods, fields, 7, 0x1, 19, 5, -1, -1, -1, -1, -1 };
   return &_NSException;
 }
 

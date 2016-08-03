@@ -84,6 +84,7 @@
 
 // Internal methods.
 - (IOSObjectArray *)getParameterTypesInternal;
+- (SEL)getSelector;
 
 @end
 

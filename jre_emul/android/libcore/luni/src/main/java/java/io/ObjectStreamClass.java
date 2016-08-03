@@ -148,6 +148,7 @@ public class ObjectStreamClass implements Serializable {
     private transient Class<?> resolvedClass;
 
     private transient Class<?> resolvedConstructorClass;
+    private transient Constructor<?> resolvedConstructor;
 
     // Serial version UID of the class the descriptor represents
     private transient long svUID;
@@ -660,9 +661,104 @@ public class ObjectStreamClass implements Serializable {
      * The returned instance may have uninitialized fields, including final fields.
      */
     native Object newInstance(Class<?> instantiationClass) /*-[
-      // All iOS classes have a default constructor, whether declared in Java or not.
-      return [instantiationClass newInstance];
+      // Allocate an object with the instantiationClass but invoke the constructor of the first
+      // non-serializable class up the hierarchy.
+      Class cls = [self resolveConstructorClassWithIOSClass:instantiationClass].objcClass;
+      SEL sel = [resolvedConstructor_ getSelector];
+      IMP imp = class_getMethodImplementation(cls, sel);
+      id newInstance = [[instantiationClass.objcClass alloc] autorelease];
+      return imp(newInstance, sel);
     ]-*/;
+
+    private Class<?> resolveConstructorClass(Class<?> objectClass) throws InvalidClassException {
+        if (resolvedConstructorClass != null) {
+            return resolvedConstructorClass;
+        }
+
+        // The class of the instance may not be the same as the class of the
+        // constructor to run
+        // This is the constructor to run if Externalizable
+        Class<?> constructorClass = objectClass;
+
+        // WARNING - What if the object is serializable and externalizable ?
+        // Is that possible ?
+        boolean wasSerializable = (flags & ObjectStreamConstants.SC_SERIALIZABLE) != 0;
+        if (wasSerializable) {
+            // Now we must run the constructor of the class just above the
+            // one that implements Serializable so that slots that were not
+            // dumped can be initialized properly
+            while (constructorClass != null && ObjectStreamClass.isSerializable(constructorClass)) {
+                constructorClass = constructorClass.getSuperclass();
+            }
+        }
+
+        // Fetch the empty constructor, or null if none.
+        Constructor<?> constructor = null;
+        if (constructorClass != null) {
+            try {
+                constructor = constructorClass.getDeclaredConstructor(EmptyArray.CLASS);
+            } catch (NoSuchMethodException ignored) {
+            }
+        }
+
+        // Has to have an empty constructor
+        if (constructor == null) {
+            String className = constructorClass != null ? constructorClass.getName() : null;
+            throw new InvalidClassException(className, "IllegalAccessException");
+        }
+
+        int constructorModifiers = constructor.getModifiers();
+        boolean isPublic = Modifier.isPublic(constructorModifiers);
+        boolean isProtected = Modifier.isProtected(constructorModifiers);
+        boolean isPrivate = Modifier.isPrivate(constructorModifiers);
+
+        // Now we must check if the empty constructor is visible to the
+        // instantiation class
+        boolean wasExternalizable = (flags & ObjectStreamConstants.SC_EXTERNALIZABLE) != 0;
+        if (isPrivate || (wasExternalizable && !isPublic)) {
+            throw new InvalidClassException(constructorClass.getName(), "IllegalAccessException");
+        }
+
+        // We know we are testing from a subclass, so the only other case
+        // where the visibility is not allowed is when the constructor has
+        // default visibility and the instantiation class is in a different
+        // package than the constructor class
+        if (!isPublic && !isProtected) {
+            // Not public, not private and not protected...means default
+            // visibility. Check if same package
+            if (!inSamePackage(constructorClass, objectClass)) {
+                throw new InvalidClassException(constructorClass.getName(), "IllegalAccessException");
+            }
+        }
+
+        resolvedConstructorClass = constructorClass;
+        resolvedConstructor = constructor;
+        return constructorClass;
+    }
+
+    /**
+     * Checks if two classes belong to the same package.
+     *
+     * @param c1
+     *            one of the classes to test.
+     * @param c2
+     *            the other class to test.
+     * @return {@code true} if the two classes belong to the same package,
+     *         {@code false} otherwise.
+     */
+    private boolean inSamePackage(Class<?> c1, Class<?> c2) {
+        String nameC1 = c1.getName();
+        String nameC2 = c2.getName();
+        int indexDotC1 = nameC1.lastIndexOf('.');
+        int indexDotC2 = nameC2.lastIndexOf('.');
+        if (indexDotC1 != indexDotC2) {
+            return false; // cannot be in the same package if indices are not the same
+        }
+        if (indexDotC1 == -1) {
+            return true; // both of them are in default package
+        }
+        return nameC1.regionMatches(0, nameC2, 0, indexDotC1);
+    }
 
     private static native String getSignature(Class<?> cls) /*-[
       return [cls binaryName];

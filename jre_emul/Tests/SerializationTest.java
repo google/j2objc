@@ -40,6 +40,11 @@ public class SerializationTest extends TestCase {
     private String name;
     private transient int n;
 
+    // A default constructor. This should not be called during deserialization.
+    public Greeting() {
+      n = 1;
+    }
+
     public Greeting(String greeting, String name, int n) {
       this.greeting = greeting;
       this.name = name;

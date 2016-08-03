@@ -209,6 +209,10 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return false;
 }
 
+- (SEL)getSelector {
+  return JreMethodSelector(metadata_);
+}
+
 // isEqual and hash are uniquely identified by their class and selectors.
 - (BOOL)isEqual:(id)anObject {
   if (![anObject isKindOfClass:[ExecutableMember class]]) {

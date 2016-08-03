@@ -17,6 +17,7 @@
 
 package java.lang;
 
+import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -110,4 +111,6 @@ public class Throwable implements Serializable {
   public String toString() {
     return null;
   }
+
+  private void readObject(ObjectInputStream in) {}
 }
