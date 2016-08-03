@@ -38,7 +38,18 @@
   LibcoreIcuLocaleData_set_amPm_(result, amPm);
 
   NSArray *symbols = [dateFormatter eraSymbols];
-  IOSObjectArray *eras = [IOSObjectArray arrayWithNSArray:symbols type:stringClass];
+  IOSObjectArray *eras;
+  if (!symbols || symbols.count == 0) {
+    // Calendar doesn't have eras, so use blanks.
+    eras = [IOSObjectArray arrayWithObjects:(id[]){ @"", @"" } count:2 type:NSString_class_()];
+  } else if (symbols.count == 1) {
+    // Calendar doesn't have "BC" style era, so substitute blank.
+    eras = [IOSObjectArray arrayWithObjects:(id[]){ @"", symbols.firstObject }
+                                      count:2
+                                       type:NSString_class_()];
+  } else {
+      eras = [IOSObjectArray arrayWithNSArray:symbols type:stringClass];
+  }
   LibcoreIcuLocaleData_set_eras_(result, eras);
 
   // Month symbols

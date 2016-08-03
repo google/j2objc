@@ -179,6 +179,7 @@ TEST_SOURCES := \
     CopyOnWriteArraySetTest.java \
     CountDownLatchTest.java \
     CyclicBarrierTest.java \
+    DateFormatTest.java \
     DelayQueueTest.java \
     ExchangerTest.java \
     ExecutorCompletionServiceTest.java \
