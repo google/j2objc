@@ -468,3 +468,4 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
 FOUNDATION_EXPORT void JreRelease(id obj) {
   [obj release];
 }
+

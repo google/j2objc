@@ -274,4 +274,5 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
   - (oneway void)release {} \
   - (id)autorelease { return self; }
 
+
 #endif // _J2OBJC_COMMON_H_
