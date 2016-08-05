@@ -27,12 +27,14 @@ public class MemoryTest extends TestCase {
 
   private static Object staticObjectField;
 
+  private static class ConstructionException extends RuntimeException {}
+
   private static class ConstructorThrowsType {
 
     static int dealloced = 0;
 
     ConstructorThrowsType() {
-      throw new RuntimeException();
+      throw new ConstructionException();
     }
 
     protected void finalize() {
@@ -51,7 +53,7 @@ public class MemoryTest extends TestCase {
       try {
         new ConstructorThrowsType();
         fail("Constructor was expected to throw.");
-      } catch (Throwable t) {
+      } catch (ConstructionException t) {
         // Expected
       }
     }
@@ -64,7 +66,7 @@ public class MemoryTest extends TestCase {
         // Assigning directly to a field will translate to the retaining constructor.
         staticObjectField = new ConstructorThrowsType();
         fail("Constructor was expected to throw.");
-      } catch (Throwable t) {
+      } catch (ConstructionException t) {
         // Expected
       }
     }
