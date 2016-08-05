@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 
 /**
@@ -54,6 +55,12 @@ public abstract class JdtBinding implements IBinding {
 
   public void addAnnotations(Element element) {
     annotations.addAll(Arrays.asList(BindingConverter.unwrapElement(element).getAnnotations()));
+  }
+
+  public void addAnnotations(List<? extends AnnotationMirror> annotationsIn) {
+    for (AnnotationMirror a : annotationsIn) {
+      annotations.add(BindingConverter.unwrapAnnotationMirror(a));
+    }
   }
 
   @Deprecated

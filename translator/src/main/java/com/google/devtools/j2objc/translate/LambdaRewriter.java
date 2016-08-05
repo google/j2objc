@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
@@ -296,8 +295,7 @@ public class LambdaRewriter extends TreeVisitor {
 
       // Add an outerField to the capture struct (and init of the capture struct) if we have one.
       String structContents = "";
-      LambdaTypeBinding uniqueLambdaType = node.getLambdaTypeBinding();
-      VariableElement outerField = outerResolver.getOuterField(uniqueLambdaType);
+      VariableElement outerField = outerResolver.getOuterField(node.getLambdaType());
       if (outerField != null) {
         structContents +=
             nameTable.getObjCType(outerField.asType()) + " "

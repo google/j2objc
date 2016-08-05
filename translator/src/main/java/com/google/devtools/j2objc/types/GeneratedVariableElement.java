@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.JdtElements;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -42,20 +43,58 @@ public class GeneratedVariableElement implements VariableElement {
   private final boolean isField;
   private Element owner = null;
   private Set<Modifier> modifiers;
+  private final List<AnnotationMirror> annotationMirrors;
+
+  public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
 
   public GeneratedVariableElement(String name, TypeMirror type,
-      boolean isField, boolean isParameter, Set<Modifier> modifiers) {
+      boolean isField, boolean isParameter, Set<Modifier> modifiers, Element owner) {
     Preconditions.checkNotNull(name);
     this.name = name;
     this.type = type;
     this.isField = isField;
     this.isParameter = isParameter;
     this.modifiers = modifiers;
+    this.owner = owner;
+    annotationMirrors = new ArrayList<>();
   }
 
   public GeneratedVariableElement(String name, TypeMirror type,
       boolean isField, boolean isParameter) {
-    this(name, type, isField, isParameter, Collections.<Modifier>emptySet());
+    this(name, type, isField, isParameter, Collections.<Modifier>emptySet(), null);
+  }
+
+  public static GeneratedVariableElement newPlaceholder() {
+    return new GeneratedVariableElement(PLACEHOLDER_NAME, null, false, false);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((annotationMirrors == null) ? 0 : annotationMirrors.hashCode());
+    result = prime * result + (isField ? 1231 : 1237);
+    result = prime * result + (isParameter ? 1231 : 1237);
+    result = prime * result + ((modifiers == null) ? 0 : modifiers.hashCode());
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    } else if (!(obj instanceof GeneratedVariableElement)) {
+      return false;
+    }
+    GeneratedVariableElement other = (GeneratedVariableElement) obj;
+    return name.equals(other.name)
+        && (type == null ? other.type == null : type.equals(other.type))
+        && isParameter == other.isParameter && isField == other.isField
+        && (owner == null ? other.owner == null : owner.equals(other.owner))
+        && modifiers.equals(other.modifiers) && annotationMirrors.equals(other.annotationMirrors);
   }
 
   public void setOwner(Element e) {
@@ -64,7 +103,7 @@ public class GeneratedVariableElement implements VariableElement {
 
   @Override
   public List<? extends AnnotationMirror> getAnnotationMirrors() {
-    return Collections.emptyList();
+    return annotationMirrors;
   }
 
   @Override
@@ -126,5 +165,9 @@ public class GeneratedVariableElement implements VariableElement {
   @Override
   public Element getEnclosingElement() {
     return owner;
+  }
+
+  public void addAnnotations(VariableElement var) {
+    annotationMirrors.addAll(var.getAnnotationMirrors());
   }
 }

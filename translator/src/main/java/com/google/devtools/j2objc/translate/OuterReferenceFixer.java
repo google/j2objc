@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class OuterReferenceFixer extends TreeVisitor {
         new GeneratedExecutableElement(node.getExecutableElement());
 
     List<Expression> captureArgs = node.getArguments().subList(0, 0);
-    if (outerResolver.needsOuterParam(BindingConverter.unwrapTypeElement(newType))) {
+    if (outerResolver.needsOuterParam(newType)) {
       captureArgs.add(getOuterArg(node, declaringClass.asType()));
       parameterTypes.add(declaringClass.asType());
     }

@@ -62,10 +62,11 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
   }
 
   public GeneratedVariableBinding(String name, int modifiers, TypeMirror type,
-      boolean isField, boolean isParameter, @Nullable ITypeBinding declaringClass,
+      boolean isField, boolean isParameter, @Nullable TypeMirror declaringClass,
       @Nullable IMethodBinding declaringMethod) {
     this(name, modifiers, BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), isField,
-        isParameter, declaringClass, declaringMethod);
+        isParameter, BindingConverter.unwrapTypeMirrorIntoTypeBinding(declaringClass),
+        declaringMethod);
   }
 
   /**

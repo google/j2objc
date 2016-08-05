@@ -98,6 +98,10 @@ public class LambdaExpression extends Expression {
     return BindingConverter.getTypeElement(lambdaTypeBinding);
   }
 
+  public TypeMirror getLambdaTypeMirror() {
+    return BindingConverter.getType(lambdaTypeBinding);
+  }
+
   public List<VariableDeclaration> getParameters() {
     return parameters;
   }

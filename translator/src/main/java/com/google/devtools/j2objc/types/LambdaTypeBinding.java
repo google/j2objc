@@ -37,6 +37,11 @@ public class LambdaTypeBinding extends AbstractTypeBinding {
   }
 
   @Override
+  public boolean isTopLevel() {
+    return false;
+  }
+
+  @Override
   public boolean isEqualTo(IBinding binding) {
     return binding == this;
   }

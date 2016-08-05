@@ -78,4 +78,20 @@ abstract class JdtElement implements Element {
   public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
     throw new AssertionError("not implemented");
   }
+
+  @Override
+  public int hashCode() {
+    return binding.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    } else if (obj instanceof JdtElement) {
+      JdtElement other = (JdtElement) obj;
+      return binding == other.binding || binding.equals(other.binding);
+    }
+    return false;
+  }
 }

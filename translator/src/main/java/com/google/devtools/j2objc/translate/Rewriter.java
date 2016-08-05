@@ -46,25 +46,22 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.Weak;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Rewrites the Java AST to replace difficult to translate code with methods
@@ -392,7 +389,7 @@ public class Rewriter extends TreeVisitor {
       node.setBody(block);
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
-    LambdaTypeBinding uniqueLambdaType = node.getLambdaTypeBinding();
+    TypeElement uniqueLambdaType = node.getLambdaType();
     node.setIsCapturing(outerResolver.getOuterField(uniqueLambdaType) != null
         || outerResolver.getInnerFields(uniqueLambdaType).size() != 0);
     // Assign a unique name to the lambda.

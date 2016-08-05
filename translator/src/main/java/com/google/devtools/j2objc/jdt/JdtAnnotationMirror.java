@@ -26,7 +26,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.DeclaredType;
 
 class JdtAnnotationMirror implements AnnotationMirror {
-  private JdtAnnotationBinding binding;
+  final JdtAnnotationBinding binding;
 
   JdtAnnotationMirror(IAnnotationBinding binding) {
     this.binding = BindingConverter.wrapBinding(binding);

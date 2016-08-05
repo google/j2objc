@@ -37,10 +37,8 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,17 +47,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
- * Visits a compilation unit and creates variable bindings for outer references
+ * Visits a compilation unit and creates variable elements for outer references
  * and captured local variables where required. Also generates an outer
  * reference path for any nodes where an outer reference is required. The
- * generated paths are lists of variable bindings for the outer fields that can
+ * generated paths are lists of variable elements for the outer fields that can
  * be used to reconstruct the given expression.
  *
  * OuterReferenceResolver should be run prior to any AST mutations.
@@ -68,20 +69,19 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class OuterReferenceResolver extends TreeVisitor {
 
-  // A placeholder variable binding that should be replaced with the outer
+  // A placeholder variable element that should be replaced with the outer
   // parameter in a constructor.
-  public static final VariableElement OUTER_PARAMETER =
-      BindingConverter.getVariableElement(GeneratedVariableBinding.newPlaceholder());
+  public static final VariableElement OUTER_PARAMETER = GeneratedVariableElement.newPlaceholder();
 
   private enum VisitingState { NEEDS_REVISIT, VISITED }
 
-  private Map<ITypeBinding, VariableElement> outerVars = new HashMap<>();
-  private Set<ITypeBinding> usesOuterParam = new HashSet<>();
-  private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
+  private Map<TypeElement, VariableElement> outerVars = new HashMap<>();
+  private Set<TypeElement> usesOuterParam = new HashSet<>();
+  private ListMultimap<TypeElement, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
   private Map<TreeNode.Key, List<List<VariableElement>>> captureArgs = new HashMap<>();
   private ArrayList<Scope> scopeStack = new ArrayList<>();
-  private Map<ITypeBinding, VisitingState> visitingStates = new HashMap<>();
+  private Map<TypeElement, VisitingState> visitingStates = new HashMap<>();
 
   @Override
   public void run(TreeNode node) {
@@ -89,23 +89,26 @@ public class OuterReferenceResolver extends TreeVisitor {
     super.run(node);
   }
 
-  public boolean needsOuterReference(ITypeBinding type) {
-    return outerVars.containsKey(type);
+  //TODO(user): See if this can take in TypeElement instead.
+  public boolean needsOuterReference(TypeMirror type) {
+    return type.getKind() == TypeKind.DECLARED
+        && outerVars.containsKey((TypeElement) ((DeclaredType) type).asElement());
   }
 
-  public boolean needsOuterParam(ITypeBinding type) {
-    return !type.isLocal() || outerVars.containsKey(type) || usesOuterParam.contains(type);
+  public boolean needsOuterParam(TypeElement type) {
+    return !ElementUtil.isLocal(type) || outerVars.containsKey(type)
+        || usesOuterParam.contains(type);
   }
 
-  public VariableElement getOuterField(ITypeBinding type) {
+  public VariableElement getOuterField(TypeElement type) {
     return outerVars.get(type);
   }
 
-  public List<IVariableBinding> getInnerFields(ITypeBinding type) {
+  public List<VariableElement> getInnerFields(TypeElement type) {
     List<Capture> capturesForType = captures.get(type);
-    List<IVariableBinding> innerFields = new ArrayList<>(capturesForType.size());
+    List<VariableElement> innerFields = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
-      innerFields.add((IVariableBinding) BindingConverter.unwrapElement(capture.field));
+      innerFields.add(capture.field);
     }
     return innerFields;
   }
@@ -136,27 +139,28 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private static class Scope {
 
-    private final ITypeBinding type;
-    private final Set<ITypeBinding> inheritedScope;
+    private final TypeElement type;
+    private final Set<Element> inheritedScope;
     private boolean initializingContext;
     private Set<VariableElement> declaredVars = new HashSet<>();
 
-    private Scope(ITypeBinding type, Types typeEnv) {
+    private Scope(TypeElement type, Types typeEnv) {
       this.type = type;
-      ImmutableSet.Builder<ITypeBinding> inheritedScopeBuilder = ImmutableSet.builder();
-      for (ITypeBinding inheritedType : BindingUtil.getInheritedTypesInclusive(type)) {
-        inheritedScopeBuilder.add(inheritedType.getTypeDeclaration());
+      ImmutableSet.Builder<Element> inheritedScopeBuilder = ImmutableSet.builder();
+      for (DeclaredType inheritedType :
+        ElementUtil.getInheritedDeclaredTypesInclusive(type.asType())) {
+        inheritedScopeBuilder.add(inheritedType.asElement());
       }
 
       // If type is an interface, type.getSuperClass() returns null even though all interfaces
       // "inherit" from Object. Therefore we add this manually to make the set complete. This is
       // needed because Java 8 default methods can call methods in Object.
-      if (type.isInterface()) {
-        inheritedScopeBuilder.add(typeEnv.getJavaObject());
+      if (ElementUtil.isInterface(type)) {
+        inheritedScopeBuilder.add(typeEnv.getJavaObjectElement());
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();
-      this.initializingContext = !BindingUtil.isLambda(type);
+      this.initializingContext = !ElementUtil.isLambda(this.type);
     }
   }
 
@@ -167,7 +171,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   // Marks the given type to be revisited. Returns true if the type has been maked for a revisit,
   // false if the type has already been visited.
-  private boolean revisitScope(ITypeBinding type) {
+  private boolean revisitScope(TypeElement type) {
     VisitingState state = visitingStates.get(type);
     if (state == null) {
       visitingStates.put(type, VisitingState.NEEDS_REVISIT);
@@ -180,15 +184,15 @@ public class OuterReferenceResolver extends TreeVisitor {
     throw new AssertionError("Invalid state");
   }
 
-  private String getOuterFieldName(ITypeBinding type) {
+  private String getOuterFieldName(TypeElement type) {
     // Ensure that the new outer field does not conflict with a field in a superclass.
-    type = type.getSuperclass();
+    TypeElement typeElement = ElementUtil.getSuperclass(type);
     int suffix = 0;
-    while (type != null) {
-      if (BindingUtil.hasOuterContext(type)) {
+    while (typeElement != null) {
+      if (ElementUtil.hasOuterContext(typeElement)) {
         suffix++;
       }
-      type = type.getSuperclass();
+      typeElement = ElementUtil.getSuperclass(typeElement);
     }
     return "this$" + suffix;
   }
@@ -200,19 +204,18 @@ public class OuterReferenceResolver extends TreeVisitor {
       return OUTER_PARAMETER;
     }
 
-    ITypeBinding type = scope.type;
-    VariableElement outerField = outerVars.get(type);
+    VariableElement outerField = outerVars.get(scope.type);
     if (outerField == null) {
-      outerField = (VariableElement) BindingConverter.getElement(
-          new GeneratedVariableBinding(getOuterFieldName(type),
-          Modifier.PRIVATE | Modifier.FINAL, type.getDeclaringClass(), true, false, type, null)
-          );
-      outerVars.put(type, outerField);
+      Element possibleDeclaringClass = ElementUtil.getDeclaringClass(scope.type);
+      outerField = new GeneratedVariableElement(getOuterFieldName(scope.type),
+          possibleDeclaringClass != null ? possibleDeclaringClass.asType() : null, true, false,
+          ElementUtil.toModifierSet(Modifier.PRIVATE | Modifier.FINAL), scope.type);
+      outerVars.put(scope.type, outerField);
     }
     return outerField;
   }
 
-  private VariableElement getOrCreateInnerField(VariableElement var, ITypeBinding declaringType) {
+  private VariableElement getOrCreateInnerField(VariableElement var, TypeElement declaringType) {
     List<Capture> capturesForType = captures.get(declaringType);
     VariableElement innerField = null;
     for (Capture capture : capturesForType) {
@@ -222,25 +225,25 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
     }
     if (innerField == null) {
-      GeneratedVariableBinding newField = new GeneratedVariableBinding("val$"
-          + var.getSimpleName().toString(), Modifier.PRIVATE | Modifier.FINAL,
-          var.asType(), true, false, declaringType, null);
+      GeneratedVariableElement newField = new GeneratedVariableElement("val$"
+          + var.getSimpleName().toString(), var.asType(), true, false,
+          ElementUtil.toModifierSet(Modifier.PRIVATE | Modifier.FINAL),
+          declaringType);
       newField.addAnnotations(var);
-      innerField = BindingConverter.getVariableElement(newField);
+      innerField = newField;
       captures.put(declaringType, new Capture(var, innerField));
     }
     return innerField;
   }
 
-  private List<VariableElement> getOuterPath(ITypeBinding type) {
-    type = type.getTypeDeclaration();
+  private List<VariableElement> getOuterPath(TypeElement type) {
     List<VariableElement> path = new ArrayList<>();
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (type.equals(scope.type)) {
         break;
       }
-      if (!BindingUtil.isLambda(scope.type)) {
+      if (!ElementUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
       } else {
         VariableElement outerField = getOrCreateOuterField(scope);
@@ -253,15 +256,14 @@ public class OuterReferenceResolver extends TreeVisitor {
     return path;
   }
 
-  private List<VariableElement> getOuterPathInherited(ITypeBinding type) {
-    type = type.getTypeDeclaration();
+  private List<VariableElement> getOuterPathInherited(TypeElement type) {
     List<VariableElement> path = new ArrayList<>();
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (scope.inheritedScope.contains(type)) {
         break;
       }
-      if (!BindingUtil.isLambda(scope.type)) {
+      if (!ElementUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
       } else {
         VariableElement outerField = getOrCreateOuterField(scope);
@@ -275,8 +277,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private List<VariableElement> getPathForField(VariableElement var) {
-    List<VariableElement> path = getOuterPathInherited(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(var.getEnclosingElement().asType()));
+    List<VariableElement> path = getOuterPathInherited((TypeElement) var.getEnclosingElement());
     if (!path.isEmpty()) {
       path.add(var);
     }
@@ -298,7 +299,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
 
       lastScopeIdx = i;
-      if (!BindingUtil.isLambda(scope.type)) {
+      if (!ElementUtil.isLambda(scope.type)) {
         lastNonLambdaScopeIdx = i;
       }
     }
@@ -326,7 +327,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (i == lastNonLambdaScopeIdx) {
         path.add(getOrCreateInnerField(var, scope.type));
       } else {
-        if (BindingUtil.isLambda(scope.type)) {
+        if (ElementUtil.isLambda(scope.type)) {
           if (i > lastNonLambdaScopeIdx && lastNonLambdaScopeIdx != -1) {
             VariableElement outer = getOrCreateOuterField(scope);
             if (i == scopeStackSize - 1) {
@@ -349,12 +350,12 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
-  private void pushType(TreeNode node, ITypeBinding type) {
+  private void pushType(TreeNode node, TypeElement type) {
     scopeStack.add(new Scope(type, typeEnv));
 
-    ITypeBinding superclass = type.getSuperclass();
-    if (superclass != null && BindingUtil.hasOuterContext(superclass)) {
-      addPath(node, getOuterPathInherited(superclass.getDeclaringClass()));
+    TypeElement superclass = ElementUtil.getSuperclass(type);
+    if (superclass != null && ElementUtil.hasOuterContext(superclass)) {
+      addPath(node, getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
     }
   }
 
@@ -370,7 +371,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    pushType(node, node.getTypeBinding());
+    pushType(node, node.getElement());
     return true;
   }
 
@@ -381,7 +382,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node, node.getTypeBinding());
+    pushType(node, node.getElement());
     return true;
   }
 
@@ -392,7 +393,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    pushType(node, node.getTypeBinding());
+    pushType(node, node.getElement());
     return true;
   }
 
@@ -403,7 +404,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    pushType(node, node.getTypeBinding());
+    pushType(node, node.getElement());
     return true;
   }
 
@@ -414,7 +415,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    pushType(node, node.getLambdaTypeBinding());
+    pushType(node, node.getLambdaType());
     return true;
   }
 
@@ -424,13 +425,14 @@ public class OuterReferenceResolver extends TreeVisitor {
 
     // if we have an outer field, add the path to it so we can reference
     // it in the lambda_get function.
-    VariableElement outerField = getOuterField(node.getLambdaTypeBinding());
+    VariableElement outerField = getOuterField(node.getLambdaType());
     if (outerField != null) {
+      // The enclosing element of outerField is the lambda's type element, go one more up to
+      // get the type enclosing the lambda.
       addPath(node, getOuterPathInherited(
-          BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerField.asType())));
+          (TypeElement) outerField.getEnclosingElement().getEnclosingElement()));
     }
-    ITypeBinding type = node.getLambdaTypeBinding();
-    List<Capture> capturesForType = captures.get(type);
+    List<Capture> capturesForType = captures.get(node.getLambdaType());
     List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
       List<VariableElement> path = getPathForLocalVar(capture.var);
@@ -471,12 +473,12 @@ public class OuterReferenceResolver extends TreeVisitor {
   public boolean visit(ThisExpression node) {
     Name qualifier = node.getQualifier();
     if (qualifier != null) {
-      addPath(node, getOuterPath(qualifier.getTypeBinding()));
+      addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
     } else {
       assert scopeStack.size() > 0;
       Scope currentScope = scopeStack.get(scopeStack.size() - 1);
-      if (BindingUtil.isLambda(currentScope.type)) {
-          addPath(node, getOuterPath(currentScope.type.getDeclaringClass()));
+      if (ElementUtil.isLambda(currentScope.type)) {
+          addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
       }
     }
     return true;
@@ -484,44 +486,45 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    IMethodBinding method = node.getMethodBinding();
-    if (node.getExpression() == null && !Modifier.isStatic(method.getModifiers())) {
-      addPath(node, getOuterPathInherited(method.getDeclaringClass()));
+    ExecutableElement method = node.getExecutableElement();
+    if (node.getExpression() == null && !ElementUtil.isStatic(method)) {
+      addPath(node, getOuterPathInherited((TypeElement) method.getEnclosingElement()));
     }
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    if (BindingUtil.isDefault(node.getMethodBinding())) {
+    if (ElementUtil.isDefault(node.getExecutableElement())) {
       // Default methods can be invoked with a SuperMethodInvocation. In this
       // case the qualifier is not an enclosing class, but the interface that
       // implements the default method. Since the default method is an instance
       // method it captures self.
       Scope currentScope = scopeStack.get(scopeStack.size() - 1);
-      if (BindingUtil.isLambda(currentScope.type)) {
-        addPath(node, getOuterPath(currentScope.type.getDeclaringClass()));
+      if (ElementUtil.isLambda(currentScope.type)) {
+        addPath(node, getOuterPath(currentScope.type));
       }
       return;
     }
     Name qualifier = node.getQualifier();
     if (qualifier != null) {
-      addPath(node, getOuterPath(qualifier.getTypeBinding()));
+      addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
     } else {
       Scope currentScope = scopeStack.get(scopeStack.size() - 1);
-      if (BindingUtil.isLambda(currentScope.type)) {
-        addPath(node, getOuterPath(currentScope.type.getDeclaringClass()));
+      if (ElementUtil.isLambda(currentScope.type)) {
+        addPath(node, getOuterPath(currentScope.type));
       }
     }
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    ITypeBinding type = node.getTypeBinding().getTypeDeclaration();
-    if (node.getExpression() == null && BindingUtil.hasOuterContext(type)) {
-      addPath(node, getOuterPathInherited(type.getDeclaringClass()));
+    TypeElement typeElement = (TypeElement) node.getExecutableElement().getEnclosingElement();
+    if (node.getExpression() == null && ElementUtil.hasOuterContext(typeElement)) {
+      TypeElement enclosingTypeElement = ElementUtil.getDeclaringClass(typeElement);
+      addPath(node, getOuterPathInherited(enclosingTypeElement));
     }
-    if (type.isLocal() && !revisitScope(type)) {
-      List<Capture> capturesForType = captures.get(type);
+    if (ElementUtil.isLocal(typeElement) && !revisitScope(typeElement)) {
+      List<Capture> capturesForType = captures.get(typeElement);
       List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
       for (Capture capture : capturesForType) {
         List<VariableElement> path = getPathForLocalVar(capture.var);
@@ -553,9 +556,8 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = node.getMethodBinding();
     // Assume all code except for non-constructor methods is initializer code.
-    if (!binding.isConstructor()) {
+    if (!ElementUtil.isConstructor(node.getMethodElement())) {
       peekScope().initializingContext = false;
     }
     return true;
@@ -563,8 +565,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    IMethodBinding binding = node.getMethodBinding();
-    if (!binding.isConstructor()) {
+    if (!ElementUtil.isConstructor(node.getMethodElement())) {
       peekScope().initializingContext = true;
     }
   }

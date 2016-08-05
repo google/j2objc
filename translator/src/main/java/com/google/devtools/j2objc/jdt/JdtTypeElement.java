@@ -14,20 +14,22 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 class JdtTypeElement extends JdtElement implements TypeElement {
 
@@ -83,9 +85,23 @@ class JdtTypeElement extends JdtElement implements TypeElement {
   @Override
   public Element getEnclosingElement() {
     ITypeBinding decl = (ITypeBinding) binding;
-    return decl.isTopLevel()
-        ? BindingConverter.getElement(decl.getPackage())
-        : BindingConverter.getElement(decl.getDeclaringClass());
+    // We check to make sure that we only return the declaring method as the enclosing element
+    // if it's inside the declaring class, otherwise the declaring class must be inside
+    // the method and thus is the true enclosing element.
+    if (decl.getDeclaringMethod() != null
+        && decl.getDeclaringMethod().getDeclaringClass() == decl.getDeclaringClass()) {
+      return BindingConverter.getElement(decl.getDeclaringMethod());
+    } else if (decl.isTopLevel()) {
+      return BindingConverter.getElement(decl.getPackage());
+    } else if (decl.isLocal()) {
+      // This comes up when an anonymous class is initializing a member outside of a constructor.
+      // The enclosing element should be the field it's being assigned to, but the binding doesn't
+      // give us this information, so we have to fake it.
+      return new GeneratedVariableElement("fake_field", this.asType(), true, false,
+          Collections.<Modifier>emptySet(), BindingConverter.getElement(decl.getDeclaringClass()));
+    } else {
+      return BindingConverter.getElement(decl.getDeclaringClass());
+    }
   }
 
   @Override

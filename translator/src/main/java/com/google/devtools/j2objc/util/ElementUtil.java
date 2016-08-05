@@ -87,9 +87,20 @@ public final class ElementUtil {
     return hasModifier(element, Modifier.VOLATILE);
   }
 
+  public static boolean isLambda(TypeElement type) {
+    return BindingUtil.isLambda(BindingConverter.unwrapTypeElement(type));
+  }
+
+  public static boolean isInterface(Element type) {
+    return type.getKind() == ElementKind.INTERFACE;
+  }
+
   public static TypeElement getDeclaringClass(Element element) {
     Element enclosingElement = element.getEnclosingElement();
-    return enclosingElement instanceof TypeElement ? (TypeElement) enclosingElement : null;
+    while (enclosingElement != null && !(enclosingElement instanceof TypeElement)) {
+      enclosingElement = enclosingElement.getEnclosingElement();
+    }
+    return (TypeElement) enclosingElement;
   }
 
   public static TypeElement getSuperclass(TypeElement element) {
@@ -220,6 +231,10 @@ public final class ElementUtil {
     return kind == ElementKind.FIELD || kind == ElementKind.ENUM_CONSTANT;
   }
 
+  public static boolean isConstructor(ExecutableElement element) {
+    return element.getKind() == ElementKind.CONSTRUCTOR;
+  }
+
   public static boolean isWeakReference(VariableElement varElement) {
     IVariableBinding var = (IVariableBinding) BindingConverter.unwrapElement(varElement);
     if (var.getName().startsWith("this$")
@@ -230,6 +245,12 @@ public final class ElementUtil {
         || BindingUtil.hasWeakPropertyAttribute(var)
         || (var.getName().startsWith("this$")
         && BindingUtil.hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
+  }
+
+  public static boolean isLocal(TypeElement type) {
+    ElementKind kind = type.getEnclosingElement().getKind();
+    return kind != ElementKind.CLASS && kind != ElementKind.INTERFACE
+        && kind != ElementKind.PACKAGE && kind != ElementKind.ENUM;
   }
 
   public static ExecutableElement getFunctionalInterface(TypeMirror type) {

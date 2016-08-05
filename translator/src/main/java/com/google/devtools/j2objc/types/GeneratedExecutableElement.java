@@ -106,6 +106,20 @@ public class GeneratedExecutableElement implements ExecutableElement {
   }
 
   @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((enclosingElement == null) ? 0 : enclosingElement.hashCode());
+    result = prime * result + (isConstructor ? 1231 : 1237);
+    result = prime * result + ((modifiers == null) ? 0 : modifiers.hashCode());
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+    result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
+    result = prime * result + (varargs ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     DebugASTPrinter.printModifiers(ElementUtil.fromModifierSet(modifiers), sb);

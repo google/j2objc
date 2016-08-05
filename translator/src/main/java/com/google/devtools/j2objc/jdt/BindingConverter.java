@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -338,9 +338,13 @@ public final class BindingConverter {
 
   public static IBinding unwrapElement(Element element) {
     if (element instanceof GeneratedVariableElement) {
-      return new GeneratedVariableBinding(element.toString(), 0, element.asType(),
-          element.getKind() == ElementKind.FIELD, element.getKind() == ElementKind.PARAMETER,
-          null, null);
+      Element possibleEnclosing = element.getEnclosingElement();
+      GeneratedVariableBinding newBinding = new GeneratedVariableBinding(element.toString(), 0,
+          element.asType(), element.getKind() == ElementKind.FIELD,
+          element.getKind() == ElementKind.PARAMETER,
+          possibleEnclosing != null ? possibleEnclosing.asType() : null, null);
+      newBinding.addAnnotations(element.getAnnotationMirrors());
+      return newBinding;
     }
     if (element instanceof GeneratedExecutableElement) {
       GeneratedExecutableElement gElement = (GeneratedExecutableElement) element;
@@ -351,7 +355,8 @@ public final class BindingConverter {
           BindingConverter.unwrapTypeElement((TypeElement) gElement.getEnclosingElement()),
           element.getKind() == ElementKind.CONSTRUCTOR, gElement.isVarArgs());
       for (VariableElement p : gElement.getParameters()) {
-        newOne.getParameters().add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(p.asType()));
+        newOne.getParameters().add(
+            BindingConverter.unwrapTypeMirrorIntoTypeBinding(p.asType()));
       }
       return newOne;
     }
@@ -375,6 +380,10 @@ public final class BindingConverter {
   public static ITypeBinding unwrapTypeMirrorIntoTypeBinding(TypeMirror t) {
     IBinding b = unwrapTypeMirrorIntoBinding(t);
     return b instanceof ITypeBinding ? (ITypeBinding) b : null;
+  }
+
+  public static IAnnotationBinding unwrapAnnotationMirror(AnnotationMirror a) {
+    return ((JdtAnnotationMirror) a).binding;
   }
 
   public static void reset() {

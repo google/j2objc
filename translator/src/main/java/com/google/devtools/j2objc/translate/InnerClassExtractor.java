@@ -47,6 +47,7 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.WeakOuter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -136,16 +137,15 @@ public class InnerClassExtractor extends TreeVisitor {
 
   private void addOuterFields(AbstractTypeDeclaration node) {
     List<BodyDeclaration> members = node.getBodyDeclarations();
-    ITypeBinding clazz = node.getTypeBinding();
-    assert clazz.getDeclaringClass() != null;
+    TypeElement clazz = node.getElement();
 
     VariableElement outerFieldElement = outerResolver.getOuterField(clazz);
     if (outerFieldElement != null) {
       members.add(0, new FieldDeclaration(outerFieldElement, null));
     }
 
-    List<IVariableBinding> innerFields = outerResolver.getInnerFields(clazz);
-    for (IVariableBinding field : innerFields) {
+    List<VariableElement> innerFields = outerResolver.getInnerFields(clazz);
+    for (VariableElement field : innerFields) {
       node.addBodyDeclaration(new FieldDeclaration(field, null));
     }
   }
@@ -162,6 +162,7 @@ public class InnerClassExtractor extends TreeVisitor {
   protected void addOuterParameters(
       AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
     ITypeBinding type = typeNode.getTypeBinding();
+    TypeElement typeE = (TypeElement) typeNode.getElement();
     ITypeBinding outerType = type.getDeclaringClass();
     IVariableBinding outerParamBinding = null;
 
@@ -172,22 +173,24 @@ public class InnerClassExtractor extends TreeVisitor {
     // Adds the outer and captured parameters to the declaration.
     List<SingleVariableDeclaration> captureDecls = constructor.getParameters().subList(0, 0);
     List<ITypeBinding> captureTypes = constructorBinding.getParameters().subList(0, 0);
-    if (outerResolver.needsOuterParam(type)) {
+    if (outerResolver.needsOuterParam(typeE)) {
       GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
           "outer$", Modifier.FINAL, outerType, false, true, type, constructorBinding);
       captureDecls.add(new SingleVariableDeclaration(paramBinding));
       captureTypes.add(outerType);
       outerParamBinding = paramBinding;
     }
-    List<IVariableBinding> innerFields = outerResolver.getInnerFields(type);
+    List<VariableElement> innerFields = outerResolver.getInnerFields(typeE);
     List<IVariableBinding> captureParams = Lists.newArrayListWithCapacity(innerFields.size());
     int captureCount = 0;
-    for (IVariableBinding innerField : innerFields) {
+    for (VariableElement innerField : innerFields) {
+      ITypeBinding innerFieldType =
+          BindingConverter.unwrapTypeMirrorIntoTypeBinding(innerField.asType());
       GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
-          "capture$" + captureCount++, Modifier.FINAL, innerField.getType(), false, true, type,
+          "capture$" + captureCount++, Modifier.FINAL, innerFieldType, false, true, type,
           constructorBinding);
       captureDecls.add(new SingleVariableDeclaration(paramBinding));
-      captureTypes.add(innerField.getType());
+      captureTypes.add(innerFieldType);
       captureParams.add(paramBinding);
     }
 
@@ -227,7 +230,7 @@ public class InnerClassExtractor extends TreeVisitor {
         statements.add(0, superCall);
       }
       passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);
-      VariableElement outerField = outerResolver.getOuterField(type);
+      VariableElement outerField = outerResolver.getOuterField(typeE);
       int idx = 0;
       if (outerField != null) {
         assert outerParamBinding != null;

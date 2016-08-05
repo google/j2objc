@@ -28,7 +28,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -325,6 +325,10 @@ public class Types {
   // Used by SignatureGenerator. Other classes should use getNSObject().
   public ITypeBinding getJavaObject() {
     return javaObjectType;
+  }
+
+  public TypeElement getJavaObjectElement() {
+    return BindingConverter.getTypeElement(javaObjectType);
   }
 
   public ITypeBinding getNSString() {
