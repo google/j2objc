@@ -350,7 +350,7 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertEquals("Failed to set locale", "fr_CA_WIN32", x.toString());
 
 		// iOS doesn't have Turkish case tables by default, use German
-		// since it has a case where "ง".toUpper() is "SS", and 
+		// since it has a case where "ยง".toUpper() is "SS", and 
 		// "SS".toLower() is "ss".
 		Locale.setDefault(new Locale("de", ""));
 		String res1 = "\u00DF".toUpperCase();
