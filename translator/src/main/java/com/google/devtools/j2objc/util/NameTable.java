@@ -29,6 +29,13 @@ import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,11 +52,6 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -330,8 +332,8 @@ public class NameTable {
       }
     }
 
-    public NameTable newNameTable(ParserEnvironment env) {
-      return new NameTable(env, prefixMap, methodMappings);
+    public NameTable newNameTable(Types typeEnv) {
+      return new NameTable(typeEnv, prefixMap, methodMappings);
     }
   }
 
@@ -340,8 +342,8 @@ public class NameTable {
   }
 
   private NameTable(
-      ParserEnvironment env, PackagePrefixes prefixMap, Map<String, String> methodMappings) {
-    this.typeEnv = env.types();
+      Types typeEnv, PackagePrefixes prefixMap, Map<String, String> methodMappings) {
+    this.typeEnv = typeEnv;
     this.prefixMap = prefixMap;
     this.methodMappings = methodMappings;
   }
@@ -923,8 +925,7 @@ public class NameTable {
    * name is "JavaUtilArrayList_ListItr".
    */
   public String getFullName(ITypeBinding binding) {
-    // Make sure type variables aren't included.
-    binding = typeEnv.mapType(binding.getErasure());
+    binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
 
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.

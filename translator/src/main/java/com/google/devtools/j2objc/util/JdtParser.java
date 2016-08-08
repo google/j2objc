@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.LintOption;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.lang.model.element.Element;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -169,9 +167,8 @@ public class JdtParser implements Parser {
       RegularInputFile file = new RegularInputFile(path);
       mainTypeName = FileUtil.getQualifiedMainTypeName(file, unit);
     }
-    ParserEnvironment env =
-        new JdtParserEnvironment(unit.getAST(), nameTableFactory);
-    return TreeConverter.convertCompilationUnit(env, unit, path, mainTypeName, source);
+    return TreeConverter.convertCompilationUnit(
+        unit, path, mainTypeName, source, NameTable.newFactory());
   }
 
   private CompilationUnit parse(String unitName, String source, boolean resolveBindings) {
@@ -198,11 +195,9 @@ public class JdtParser implements Parser {
           RegularInputFile file = new RegularInputFile(sourceFilePath);
           try {
             String source = FileUtil.readFile(file);
-            ParserEnvironment env =
-                new JdtParserEnvironment(ast.getAST(), nameTableFactory);
             com.google.devtools.j2objc.ast.CompilationUnit unit =
                 TreeConverter.convertCompilationUnit(
-                    env, ast, sourceFilePath, FileUtil.getMainTypeName(file), source);
+                    ast, sourceFilePath, FileUtil.getMainTypeName(file), source, nameTableFactory);
             handler.handleParsedUnit(sourceFilePath, unit);
           } catch (IOException e) {
             ErrorUtil.error("Error reading file " + file.getPath() + ": " + e.getMessage());
@@ -268,29 +263,5 @@ public class JdtParser implements Parser {
       }
     }
     return !hasErrors;
-  }
-
-  private static class JdtParserEnvironment extends ParserEnvironment {
-    private final AST ast;
-
-    JdtParserEnvironment(AST ast, NameTable.Factory nameTableFactory) {
-      super(nameTableFactory);
-      this.ast = ast;
-    }
-
-    @Override
-    public Element resolve(String name) {
-      return BindingConverter.getElement(ast.resolveWellKnownType(name));
-    }
-
-    @Override
-    public javax.lang.model.util.Elements elementUtilities() {
-      throw new AssertionError("not implemented");
-    }
-
-    @Override
-    public javax.lang.model.util.Types typeUtilities() {
-      throw new AssertionError("not implemented");
-    }
   }
 }
