@@ -21,15 +21,13 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import com.google.devtools.j2objc.util.ParserEnvironment;
 import java.util.HashMap;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Types is a singleton service class for type-related operations.
@@ -38,7 +36,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class Types {
 
-  private final AST ast;
+  private final ParserEnvironment environment;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
       new HashMap<ITypeBinding, ITypeBinding>();
@@ -86,8 +84,8 @@ public class Types {
   private final IOSMethodBinding allocMethod;
   private final IOSMethodBinding deallocMethod;
 
-  public Types(AST ast) {
-    this.ast = ast;
+  public Types(ParserEnvironment env) {
+    this.environment = env;
 
     // Find core java types.
     javaObjectType = resolveWellKnownType("java.lang.Object");
@@ -190,7 +188,7 @@ public class Types {
   }
 
   private JdtTypeBinding resolveWellKnownType(String name) {
-    return BindingConverter.wrapBinding(ast.resolveWellKnownType(name));
+    return (JdtTypeBinding) BindingConverter.unwrapElement(environment.resolve(name));
   }
 
   private void loadPrimitiveAndWrapperTypes(String primitiveName, String wrapperName) {
