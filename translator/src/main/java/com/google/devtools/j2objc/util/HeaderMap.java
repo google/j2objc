@@ -102,7 +102,13 @@ public class HeaderMap {
     if (Options.usePackageDirectories() || isPlatformClass(qualifiedName)) {
       return qualifiedName.replace('.', '/') + ".h";
     } else {
-      return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1) + ".h";
+        // Do we need to prefix the filenames with the package name? E.g. the class foo.bar.Hello would create
+        // a filename FooBarHello.h
+        if (Options.generatePackagePrefixedFilenames()) {
+          return NameTable.camelCaseQualifiedName(qualifiedName)+".h";
+        } else {
+          return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1) + ".h";
+        }
     }
   }
 

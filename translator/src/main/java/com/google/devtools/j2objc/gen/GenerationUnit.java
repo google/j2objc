@@ -1,15 +1,13 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.google.devtools.j2objc.gen;
 
@@ -24,6 +22,7 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.File;
 import java.util.Collection;
@@ -34,8 +33,8 @@ import javax.annotation.Nullable;
 /**
  * A single unit of generated code, to be turned into a single pair of .h and .m files.
  * <p/>
- * Some attributes, like the name and output path, might not be known before parsing.
- * These are set by a {@link com.google.devtools.j2objc.FileProcessor}.
+ * Some attributes, like the name and output path, might not be known before parsing. These are set
+ * by a {@link com.google.devtools.j2objc.FileProcessor}.
  *
  * @author Mike Thvedt
  */
@@ -206,9 +205,9 @@ public class GenerationUnit {
   }
 
   /**
-   * Gets the output path if there isn't one already.
-   * For example, foo/bar/Mumble.java translates to $(OUTPUT_DIR)/foo/bar/Mumble.
-   * If --no-package-directories is specified, though, the output file is $(OUTPUT_DIR)/Mumble.
+   * Gets the output path if there isn't one already. For example, foo/bar/Mumble.java translates to
+   * $(OUTPUT_DIR)/foo/bar/Mumble. If --no-package-directories is specified, though, the output file
+   * is $(OUTPUT_DIR)/Mumble.
    */
   private static String getDefaultOutputPath(CompilationUnit unit) {
     String path = unit.getMainTypeName();
@@ -216,6 +215,9 @@ public class GenerationUnit {
     if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
       path = pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
           + File.separatorChar + path;
+    } else if (Options.generatePackagePrefixedFilenames()) {
+      // Prepend the package in camelcase to the class
+      path = NameTable.camelCaseQualifiedName(pkg.getName().getFullyQualifiedName()) + path;
     }
     return path;
   }

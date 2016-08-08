@@ -94,6 +94,7 @@ public class Options {
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private boolean includeGeneratedSources = false;
+  private boolean packagePrefixedFilenames = false;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -428,6 +429,8 @@ public class Options {
         outputStyle = OutputStyleOption.SOURCE_COMBINED;
       } else if (arg.equals("-XincludeGeneratedSources")) {
         includeGeneratedSources = true;
+      } else if (arg.equals("--package-prefixed-filenames")) {
+        packagePrefixedFilenames = true;
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
@@ -531,8 +534,8 @@ public class Options {
     }
 
     if (shouldMapHeaders() && buildClosure) {
-      ErrorUtil.error(
-          "--build-closure is not supported with -XcombineJars or --preserve-full-paths");
+      ErrorUtil
+          .error("--build-closure is not supported with -XcombineJars or --preserve-full-paths");
     }
 
     if (memoryManagementOption == null) {
@@ -544,16 +547,22 @@ public class Options {
       nullability = true;
     }
 
+    if (packagePrefixedFilenames && (outputStyle != OutputStyleOption.NONE)) {
+      ErrorUtil.error(
+          "--package-prefixed-filenames is only supported in combination with --no-package-directories");
+    }
+
     // Pull source version from system properties if it is not passed with -source flag.
     if (sourceVersion == null) {
       sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
     }
 
     // Java 6 had a 1G max heap limit, removed in Java 7.
-    if (batchTranslateMaximum == -1) {  // Not set by flag.
+    if (batchTranslateMaximum == -1) { // Not set by flag.
       batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
     }
 
+    // Package prefixed filenames is only supported in combination with
     int nFiles = args.length - nArg;
     String[] files = new String[nFiles];
     for (int i = 0; i < nFiles; i++) {
@@ -713,17 +722,19 @@ public class Options {
     return instance.outputDirectory;
   }
 
+  public static boolean generatePackagePrefixedFilenames() {
+    return instance.packagePrefixedFilenames;
+  }
+
   /**
-   * If true, put output files in sub-directories defined by
-   * package declaration (like javac does).
+   * If true, put output files in sub-directories defined by package declaration (like javac does).
    */
   public static boolean usePackageDirectories() {
     return instance.outputStyle == OutputStyleOption.PACKAGE;
   }
 
   /**
-   * If true, put output files in the same directories from
-   * which the input files were read.
+   * If true, put output files in the same directories from which the input files were read.
    */
   public static boolean useSourceDirectories() {
     return instance.outputStyle == OutputStyleOption.SOURCE
