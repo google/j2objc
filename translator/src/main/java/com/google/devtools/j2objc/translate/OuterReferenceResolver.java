@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.jdt.TypeUtil;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -427,10 +428,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     // it in the lambda_get function.
     VariableElement outerField = getOuterField(node.getLambdaType());
     if (outerField != null) {
-      // The enclosing element of outerField is the lambda's type element, go one more up to
-      // get the type enclosing the lambda.
-      addPath(node, getOuterPathInherited(
-          (TypeElement) outerField.getEnclosingElement().getEnclosingElement()));
+      addPath(node, getOuterPathInherited(TypeUtil.getTypeElement(outerField.asType())));
     }
     List<Capture> capturesForType = captures.get(node.getLambdaType());
     List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
@@ -501,7 +499,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       // method it captures self.
       Scope currentScope = scopeStack.get(scopeStack.size() - 1);
       if (ElementUtil.isLambda(currentScope.type)) {
-        addPath(node, getOuterPath(currentScope.type));
+        addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
       }
       return;
     }
@@ -511,7 +509,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     } else {
       Scope currentScope = scopeStack.get(scopeStack.size() - 1);
       if (ElementUtil.isLambda(currentScope.type)) {
-        addPath(node, getOuterPath(currentScope.type));
+        addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
       }
     }
   }

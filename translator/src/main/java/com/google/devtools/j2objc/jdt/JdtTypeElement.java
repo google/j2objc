@@ -39,6 +39,11 @@ class JdtTypeElement extends JdtElement implements TypeElement {
   }
 
   @Override
+  public String toString() {
+    return ((ITypeBinding) binding).getKey();
+  }
+
+  @Override
   public ElementKind getKind() {
     ITypeBinding type = (ITypeBinding) binding;
     if (type.isAnnotation()) {

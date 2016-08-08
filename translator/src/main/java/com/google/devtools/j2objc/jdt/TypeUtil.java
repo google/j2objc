@@ -14,7 +14,9 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -52,6 +54,22 @@ public final class TypeUtil {
   // until Java 8.
   public static boolean isIntersection(TypeMirror t) {
     return t instanceof JdtIntersectionType;
+  }
+
+  public static TypeElement getTypeElement(TypeMirror t) {
+    if (t.getKind() != TypeKind.DECLARED) {
+      return null;
+    }
+    Element e = ((DeclaredType) t).asElement();
+    switch (e.getKind()) {
+      case ANNOTATION_TYPE:
+      case CLASS:
+      case ENUM:
+      case INTERFACE:
+        return (TypeElement) e;
+      default:
+        return null;
+    }
   }
 
   public static int getDimensions(ArrayType arrayType) {
