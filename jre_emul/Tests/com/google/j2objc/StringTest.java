@@ -52,8 +52,8 @@ public class StringTest extends TestCase {
     assertEquals("𐀀", s);
     char[] chars = s.toCharArray();
     assertEquals(2, chars.length);
-    assertEquals(55296, chars[0]);
-    assertEquals(56320, chars[1]);
+    assertEquals(0xD800, chars[0]);
+    assertEquals(0xDC00, chars[1]);
 
     try {
       int[] ints = null;
@@ -67,6 +67,13 @@ public class StringTest extends TestCase {
       new String(new int[1], 0, 2);
       fail("Expected IndexOutOfBoundsException");
     } catch (IndexOutOfBoundsException e) {
+      // expected.
+    }
+
+    try {
+      new String(new int[] { Integer.MAX_VALUE }, 0, 1);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
       // expected.
     }
   }

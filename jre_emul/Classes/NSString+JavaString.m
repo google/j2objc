@@ -599,16 +599,14 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_withInt_withInt_(
         ncps, offset, count);
   }
-  IOSCharArray *value = [IOSCharArray newArrayWithLength:count * 2];
+  IOSCharArray *value = [IOSCharArray arrayWithLength:count * 2];
   jint end = offset + count;
   jint length = 0;
   for (jint i = offset; i < end; i++) {
     length += JavaLangCharacter_toCharsWithInt_withCharArray_withInt_(
         codePoints->buffer_[i], value, length);
   }
-  NSString *result = [NSString stringWithCharacters:value->buffer_ length:length];
-  [value release];
-  return result;
+  return [NSString stringWithCharacters:value->buffer_ length:length];
 }
 
 - (IOSByteArray *)getBytes  {
