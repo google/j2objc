@@ -214,7 +214,6 @@ JAVA_SOURCES = \
 	jdt/JdtWildcardType.java \
 	jdt/StringName.java \
 	jdt/TreeConverter.java \
-	jdt/TypeUtil.java \
 	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \
@@ -295,6 +294,7 @@ JAVA_SOURCES = \
 	util/SourceVersion.java \
 	util/TimeTracker.java \
 	util/TranslationUtil.java \
+	util/TypeUtil.java \
 	util/UnicodeUtils.java \
 	util/Version.java
 

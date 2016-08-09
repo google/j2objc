@@ -16,17 +16,15 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.gen.JavadocGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
-import com.google.devtools.j2objc.jdt.TypeUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
+import java.util.Iterator;
+import java.util.List;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Simple AST printer, suitable for node toString() results. This printer is based on

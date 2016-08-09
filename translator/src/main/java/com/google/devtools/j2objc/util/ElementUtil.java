@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtTypes;
-import com.google.devtools.j2objc.jdt.TypeUtil;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;

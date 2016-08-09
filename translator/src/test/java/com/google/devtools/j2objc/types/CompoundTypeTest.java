@@ -22,9 +22,9 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
-import com.google.devtools.j2objc.jdt.TypeUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.SourceVersion;
+import com.google.devtools.j2objc.util.TypeUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 

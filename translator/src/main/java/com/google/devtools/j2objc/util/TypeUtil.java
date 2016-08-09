@@ -12,8 +12,10 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.jdt;
+package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtIntersectionType;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
