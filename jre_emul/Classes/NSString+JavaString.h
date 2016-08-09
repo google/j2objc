@@ -48,7 +48,7 @@
 + (NSString *)valueOfBool:(jboolean)value;
 
 // String.valueOf(char)
-+ (NSString *)valueOfChar:(unichar)value;
++ (NSString *)valueOfChar:(jchar)value;
 
 // String.valueOf(char[])
 + (NSString *)valueOfChars:(IOSCharArray *)data;
@@ -134,7 +134,7 @@ destinationBegin:(int)dstBegin;
 // String(int[], int, int)
 + (NSString *)stringWithInts:(IOSIntArray *)codePoints
                       offset:(int)offset
-                      length:(int)length;
+                      length:(int)count;
 
 // String(StringBuffer)
 + (NSString *)stringWithJavaLangStringBuffer:(JavaLangStringBuffer *)sb;
@@ -183,7 +183,7 @@ destinationBegin:(int)dstBegin;
 - (jint)compareToWithId:(id)another;
 
 // CharSequence.charAt(int)
-- (unichar)charAtWithInt:(int)index;
+- (jchar)charAtWithInt:(jint)index;
 
 // CharSequence.subSequence(int, int)
 - (id<JavaLangCharSequence>)subSequenceFrom:(int)start
@@ -193,7 +193,7 @@ destinationBegin:(int)dstBegin;
 - (jint)compareToIgnoreCase:(NSString *)another;
 
 // String.replace(char, char)
-- (NSString *)replace:(unichar)oldchar withChar:(unichar)newchar;
+- (NSString *)replace:(jchar)oldchar withChar:(jchar)newchar;
 
 // String.replace(CharSequence, CharSequence)
 - (NSString *)replace:(id<JavaLangCharSequence>)oldSequence

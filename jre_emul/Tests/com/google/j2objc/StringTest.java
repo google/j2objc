@@ -46,4 +46,28 @@ public class StringTest extends TestCase {
     assertNotNull(c);
     assertEquals("bar", c.newInstance(new char[] { 'f', 'o', 'o', 'b', 'a', 'r' }, 3, 3));
   }
+
+  public void testConstructionFromCodePoints() throws Exception {
+    String s = new String(new int[] { 0x10000 }, 0, 1);
+    assertEquals("𐀀", s);
+    char[] chars = s.toCharArray();
+    assertEquals(2, chars.length);
+    assertEquals(55296, chars[0]);
+    assertEquals(56320, chars[1]);
+
+    try {
+      int[] ints = null;
+      new String(ints, 0, 1);
+      fail("Expected NullPointerException");
+    } catch (NullPointerException e) {
+      // expected.
+    }
+
+    try {
+      new String(new int[1], 0, 2);
+      fail("Expected IndexOutOfBoundsException");
+    } catch (IndexOutOfBoundsException e) {
+      // expected.
+    }
+  }
 }

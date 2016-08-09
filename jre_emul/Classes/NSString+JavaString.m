@@ -75,11 +75,11 @@ NSString *NSString_valueOfBool_(jboolean value) {
   return value ? @"true" : @"false";
 }
 
-+ (NSString *)valueOfChar:(unichar)value {
++ (NSString *)valueOfChar:(jchar)value {
   return NSString_valueOfChar_(value);
 }
 
-NSString *NSString_valueOfChar_(unichar value) {
+NSString *NSString_valueOfChar_(jchar value) {
   return [NSString stringWithCharacters:&value length:1];
 }
 
@@ -409,8 +409,8 @@ destinationBegin:(int)destinationBegin {
   return [IOSCharArray arrayWithNSString:self];
 }
 
-- (unichar)charAtWithInt:(int)index {
-  if (index < 0 || index >= (int) [self length]) {
+- (jchar)charAtWithInt:(jint)index {
+  if (index < 0 || index >= (jint) [self length]) {
     @throw makeException([JavaLangStringIndexOutOfBoundsException class]);
   }
   return [self characterAtIndex:(NSUInteger)index];
@@ -432,7 +432,7 @@ destinationBegin:(int)destinationBegin {
   return (id<JavaLangCharSequence>) subString;
 }
 
-- (NSString *)replace:(unichar)oldchar withChar:(unichar)newchar {
+- (NSString *)replace:(jchar)oldchar withChar:(jchar)newchar {
   CFStringRef this = (__bridge CFStringRef)self;
   CFIndex length = CFStringGetLength(this);
   unichar *chars = malloc(length * sizeof(unichar));
@@ -590,18 +590,25 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
 + (NSString *)stringWithInts:(IOSIntArray *)codePoints
                       offset:(int)offset
-                      length:(int)length {
-  jint ncps = codePoints->size_;
-  jint *ints = (jint *)malloc(ncps * sizeof(jint));
-  [codePoints getInts:ints length:ncps];
-  unichar *chars = (unichar *)malloc(length);
-  for (int i = 0; i < length; i++) {
-    chars[i] = ints[i + offset];
+                      length:(int)count {
+  if (!codePoints) {
+    @throw create_JavaLangNullPointerException_initWithNSString_(@"codePoints == null");
   }
-  NSString *s = [NSString stringWithCharacters:chars length:length];
-  free(chars);
-  free(ints);
-  return s;
+  jint ncps = codePoints->size_;
+  if ((offset | count) < 0 || count > ncps - offset) {
+    @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_withInt_withInt_(
+        ncps, offset, count);
+  }
+  IOSCharArray *value = [IOSCharArray newArrayWithLength:count * 2];
+  jint end = offset + count;
+  jint length = 0;
+  for (jint i = offset; i < end; i++) {
+    length += JavaLangCharacter_toCharsWithInt_withCharArray_withInt_(
+        codePoints->buffer_[i], value, length);
+  }
+  NSString *result = [NSString stringWithCharacters:value->buffer_ length:length];
+  [value release];
+  return result;
 }
 
 - (IOSByteArray *)getBytes  {
