@@ -397,64 +397,6 @@ public class StatementGenerator extends TreeVisitor {
     throw new AssertionError("CreationReference nodes are rewritten by MethodReferenceRewriter.");
   }
 
-  private void printGenericArguments(IMethodBinding methodBinding) {
-    printGenericArgumentsInner(methodBinding, false);
-  }
-
-
-  private void printGenericArgumentsInner(IMethodBinding methodBinding, boolean withTypes) {
-    char[] var = NameTable.incrementVariable(null);
-    if (!withTypes && methodBinding.isVarargs()) {
-      boolean delimiterFlag = false;
-      for (int i = 0; i < methodBinding.getParameterTypes().length - 1; i++) {
-        ITypeBinding t = methodBinding.getParameterTypes()[i];
-        if (delimiterFlag) {
-          buffer.append(", ");
-        } else {
-          delimiterFlag = true;
-        }
-        if (withTypes) {
-          buffer.append(nameTable.getObjCType(t));
-          buffer.append(' ');
-        }
-        buffer.append(var);
-        var = NameTable.incrementVariable(var);
-      }
-    } else {
-      boolean delimiterFlag = false;
-      for (ITypeBinding t : methodBinding.getParameterTypes()) {
-        if (delimiterFlag) {
-          buffer.append(", ");
-        } else {
-          delimiterFlag = true;
-        }
-        if (withTypes) {
-          buffer.append(nameTable.getObjCType(t));
-          buffer.append(' ');
-        }
-        buffer.append(var);
-        var = NameTable.incrementVariable(var);
-      }
-    }
-  }
-
-  /**
-   * Prints a block declaration up to first expression within a block.
-   */
-  private void printBlockPreExpression(IMethodBinding functionalInterface,
-      ITypeBinding returnType) {
-    buffer.append('^');
-    buffer.append(nameTable.getObjCType(returnType));
-    // Required argument for imp_implementationWithBlock.
-    buffer.append("(id _self");
-    if (functionalInterface.getParameterTypes().length > 0) {
-      buffer.append(", ");
-      boolean withTypes = true;
-      printGenericArgumentsInner(functionalInterface, withTypes);
-    }
-    buffer.append(") {\n");
-  }
-
   @Override
   public boolean visit(Dimension node) {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.

@@ -27,7 +27,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -94,12 +93,21 @@ public final class ElementUtil {
     return type.getKind() == ElementKind.INTERFACE;
   }
 
+  public static boolean isTypeElement(Element e) {
+    ElementKind kind = e.getKind();
+    return kind.isClass() || kind.isInterface();
+  }
+
+  public static boolean isExecutableElement(Element e) {
+    ElementKind kind = e.getKind();
+    return kind == ElementKind.CONSTRUCTOR || kind == ElementKind.METHOD;
+  }
+
   public static TypeElement getDeclaringClass(Element element) {
-    Element enclosingElement = element.getEnclosingElement();
-    while (enclosingElement != null && !(enclosingElement instanceof TypeElement)) {
-      enclosingElement = enclosingElement.getEnclosingElement();
-    }
-    return (TypeElement) enclosingElement;
+    do {
+      element = element.getEnclosingElement();
+    } while (element != null && !isTypeElement(element));
+    return (TypeElement) element;
   }
 
   public static TypeElement getSuperclass(TypeElement element) {
@@ -107,17 +115,11 @@ public final class ElementUtil {
     return superClass != null ? (TypeElement) superClass.asElement() : null;
   }
 
-  public static ExecutableElement getDeclaringMethod(Element element) {
-    Element enclosingElement = element.getEnclosingElement();
-    return enclosingElement instanceof ExecutableElement
-        ? (ExecutableElement) enclosingElement : null;
-  }
-
   public static boolean isPrimitiveConstant(VariableElement element) {
     return isFinal(element) && element.asType().getKind().isPrimitive()
         && element.getConstantValue() != null
         // Exclude local variables declared final.
-        && getDeclaringClass(element) != null;
+        && element.getKind().isField();
   }
 
   public static boolean isStringConstant(VariableElement element) {
@@ -165,46 +167,32 @@ public final class ElementUtil {
    * within a private type is considered private.
    */
   public static boolean isPrivateInnerType(TypeElement type) {
-    if (isPrivate(type)) {
-      return true;
+    switch (type.getNestingKind()) {
+      case ANONYMOUS:
+      case LOCAL:
+        return true;
+      case MEMBER:
+        return isPrivate(type) || isPrivateInnerType((TypeElement) type.getEnclosingElement());
+      case TOP_LEVEL:
+        return isPrivate(type);
     }
-    NestingKind nestingKind = type.getNestingKind();
-    if (nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL) {
-      return true;
-    }
-    TypeElement declaringClass = getDeclaringClass(type);
-    if (declaringClass != null) {
-      return isPrivateInnerType(declaringClass);
-    }
-    return false;
+    throw new AssertionError("Unknown NestingKind");
   }
 
   /**
    * Determines if a type element can access fields and methods from an outer class.
    */
   public static boolean hasOuterContext(TypeElement type) {
-    if (getDeclaringClass(type) == null) {
-      return false;
+    switch (type.getNestingKind()) {
+      case ANONYMOUS:
+      case LOCAL:
+        return !isStatic(type.getEnclosingElement());
+      case MEMBER:
+        return !isStatic(type);
+      case TOP_LEVEL:
+        return false;
     }
-    // Local types can't be declared static, but if the declaring method is
-    // static then the local type is effectively static.
-    ExecutableElement declaringMethod = getDeclaringMethod(type);
-    if (declaringMethod != null) {
-      return !ElementUtil.isStatic(declaringMethod);
-    }
-    return !ElementUtil.isStatic(type);
-  }
-
-  /**
-   * Returns the inner type with the specified name.
-   */
-  public static TypeElement findDeclaredType(TypeElement type, String name) {
-    for (Element child : type.getEnclosedElements()) {
-      if (child instanceof TypeElement && child.getSimpleName().toString().equals(name)) {
-        return (TypeElement) child;
-      }
-    }
-    return null;
+    throw new AssertionError("Unknown NestingKind");
   }
 
   private static boolean hasModifier(Element element, Modifier modifier) {

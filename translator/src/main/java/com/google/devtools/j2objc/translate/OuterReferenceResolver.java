@@ -428,7 +428,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     // it in the lambda_get function.
     VariableElement outerField = getOuterField(node.getLambdaType());
     if (outerField != null) {
-      addPath(node, getOuterPathInherited(TypeUtil.getTypeElement(outerField.asType())));
+      addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(outerField.asType())));
     }
     List<Capture> capturesForType = captures.get(node.getLambdaType());
     List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());

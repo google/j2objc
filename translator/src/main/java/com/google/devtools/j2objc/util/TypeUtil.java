@@ -31,18 +31,16 @@ import javax.lang.model.type.TypeMirror;
  */
 public final class TypeUtil {
 
+  public static ElementKind getDeclaredTypeKind(TypeMirror t) {
+    return t.getKind() == TypeKind.DECLARED ? ((DeclaredType) t).asElement().getKind() : null;
+  }
+
   public static boolean isInterface(TypeMirror t) {
-    if (!t.getKind().equals(TypeKind.DECLARED)) {
-      return false;
-    }
-    return ((DeclaredType) t).asElement().getKind().equals(ElementKind.INTERFACE);
+    return getDeclaredTypeKind(t) == ElementKind.INTERFACE;
   }
 
   public static boolean isEnum(TypeMirror t) {
-    if (!t.getKind().equals(TypeKind.DECLARED)) {
-      return false;
-    }
-    return ((DeclaredType) t).asElement().getKind().equals(ElementKind.ENUM);
+    return getDeclaredTypeKind(t) == ElementKind.ENUM;
   }
 
   // Ugly, but we can't have it actually implement IntersectionType or return TypeKind.INTERSECTION
@@ -51,7 +49,7 @@ public final class TypeUtil {
     return t instanceof JdtIntersectionType;
   }
 
-  public static TypeElement getTypeElement(TypeMirror t) {
+  public static TypeElement asTypeElement(TypeMirror t) {
     if (t.getKind() != TypeKind.DECLARED) {
       return null;
     }
