@@ -102,7 +102,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -367,40 +366,11 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ConditionalExpression node) {
-    boolean castNeeded = false;
-    TypeMirror thenType = node.getThenExpression().getTypeMirror();
-    TypeMirror elseType = node.getElseExpression().getTypeMirror();
-
-    if (!JdtTypes.getInstance().isSameType(thenType, elseType)
-        && !(node.getThenExpression() instanceof NullLiteral)
-        && !(node.getElseExpression() instanceof NullLiteral)) {
-      // gcc fails to compile a conditional expression where the two clauses of
-      // the expression have different type. So cast any interface type down to
-      // "id" to make the compiler happy. Concrete object types all have a
-      // common ancestor of NSObject, so they don't need a cast.
-      castNeeded = true;
-    }
-
     node.getExpression().accept(this);
-
     buffer.append(" ? ");
-    if (castNeeded && (TypeUtil.isInterface(thenType) || TypeUtil.isTypeParameter(thenType))) {
-      buffer.append("((id) (");
-    }
     node.getThenExpression().accept(this);
-    if (castNeeded && (TypeUtil.isInterface(thenType) || TypeUtil.isTypeParameter(thenType))) {
-      buffer.append("))");
-    }
-
     buffer.append(" : ");
-    if (castNeeded && (TypeUtil.isInterface(elseType) || TypeUtil.isTypeParameter(elseType))) {
-      buffer.append("((id) (");
-    }
     node.getElseExpression().accept(this);
-    if (castNeeded && (TypeUtil.isInterface(elseType) || TypeUtil.isTypeParameter(elseType))) {
-      buffer.append("))");
-    }
-
     return false;
   }
 

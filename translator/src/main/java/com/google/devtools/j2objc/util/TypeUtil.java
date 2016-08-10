@@ -31,13 +31,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public final class TypeUtil {
 
-  public static boolean isTypeParameter(TypeMirror t) {
-    if (!t.getKind().equals(TypeKind.DECLARED)) {
-      return false;
-    }
-    return ((DeclaredType) t).asElement().getKind().equals(ElementKind.TYPE_PARAMETER);
-  }
-
   public static boolean isInterface(TypeMirror t) {
     if (!t.getKind().equals(TypeKind.DECLARED)) {
       return false;

@@ -1406,7 +1406,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { String test(Runnable r) { return \"foo\" + (r != null ? r : \"bar\"); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "(r != nil ? ((id) (r)) : @\"bar\")");
+    assertTranslation(translation, "(r != nil ? r : (id) @\"bar\")");
   }
 
   // Verify that when a method invocation returns an object that is ignored,

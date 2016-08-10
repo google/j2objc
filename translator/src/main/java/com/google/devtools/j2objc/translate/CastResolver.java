@@ -422,17 +422,27 @@ public class CastResolver extends TreeVisitor {
     if (operator == InfixExpression.Operator.EQUALS
         || operator == InfixExpression.Operator.NOT_EQUALS) {
       List<Expression> operands = node.getOperands();
-      if (needsIdCast(operands.get(0), operands.get(1))) {
+      if (incompatibleTypes(operands.get(0), operands.get(1))) {
         // Add (id) cast to right-hand operand(s).
         operands.add(1, new CastExpression(typeEnv.getIdType(), operands.remove(1)));
       }
     }
   }
 
-  private boolean needsIdCast(Expression lhs, Expression rhs) {
-    ITypeBinding lhsType = lhs.getTypeBinding();
-    ITypeBinding rhsType = rhs.getTypeBinding();
-    return !lhsType.isPrimitive() && !rhsType.isPrimitive()
-        && !lhsType.isAssignmentCompatible(rhsType) && !rhsType.isAssignmentCompatible(lhsType);
+  @Override
+  public void endVisit(ConditionalExpression node) {
+    Expression thenExpr = node.getThenExpression();
+    Expression elseExpr = node.getElseExpression();
+    if (incompatibleTypes(thenExpr, elseExpr)) {
+      // Add (id) cast to else expression.
+      node.setElseExpression(new CastExpression(typeEnv.getIdType(), TreeUtil.remove(elseExpr)));
+    }
+  }
+
+  private boolean incompatibleTypes(Expression a, Expression b) {
+    ITypeBinding aType = a.getTypeBinding();
+    ITypeBinding bType = b.getTypeBinding();
+    return !(aType.isPrimitive() || bType.isPrimitive()
+        || aType.isAssignmentCompatible(bType) || bType.isAssignmentCompatible(aType));
   }
 }
