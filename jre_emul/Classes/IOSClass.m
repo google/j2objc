@@ -472,6 +472,13 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
   return ClassForIosName(iosName);
 }
 
+static NSString *JavaToIosName(NSString *javaName) {
+  if ([javaName isEqualToString:@"package-info"]) {
+    return @"package_info";
+  }
+  return [javaName stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+}
+
 static IOSClass *ClassForJavaName(NSString *name) {
   // First check if this is a mapped name.
   NSString *mappedName = [IOSClass_mappedClasses objectForKey:name];
@@ -490,8 +497,7 @@ static IOSClass *ClassForJavaName(NSString *name) {
     NSString *prefix = [name substringToIndex:lastDollar];
     NSString *mappedName = [IOSClass_mappedClasses objectForKey:prefix];
     if (mappedName) {
-      NSString *suffix = [name substringFromIndex:lastDollar];
-      suffix = [suffix stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+      NSString *suffix = JavaToIosName([name substringFromIndex:lastDollar]);
       return ClassForIosName([mappedName stringByAppendingString:suffix]);
     }
   }
@@ -500,11 +506,10 @@ static IOSClass *ClassForJavaName(NSString *name) {
   NSUInteger lastDot = [name rangeOfString:@"." options:NSBackwardsSearch].location;
   if (lastDot == NSNotFound) {
     // Empty package.
-    return ClassForIosName([name stringByReplacingOccurrencesOfString:@"$" withString:@"_"]);
+    return ClassForIosName(JavaToIosName(name));
   }
   NSString *package = [name substringToIndex:lastDot];
-  NSString *suffix = [[name substringFromIndex:lastDot + 1]
-      stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+  NSString *suffix = JavaToIosName([name substringFromIndex:lastDot + 1]);
   // First check if the class can be found with the default camel case package. This avoids the
   // expensive FindRenamedPackagePrefix if possible.
   IOSClass *cls = ClassForIosName([CamelCasePackage(package) stringByAppendingString:suffix]);

@@ -32,4 +32,9 @@ public class PackageTest extends TestCase {
     assertEquals(1, annotations.length);
     assertTrue(annotations[0] instanceof TestAnnotation);
   }
+
+  public void testLookupPackageInfoClass() throws Exception {
+    Class<?> cls = Class.forName("com.google.j2objc.package-info");
+    assertEquals("com.google.j2objc.package-info", cls.getName());
+  }
 }
