@@ -97,8 +97,8 @@ public class JavacParser extends Parser {
     Charset charset = encoding != null ? Charset.forName(encoding) : Options.getCharset();
     JavacFileManager fileManager = (JavacFileManager)
         compiler.getStandardFileManager(diagnostics, null, charset);
-    addPaths(StandardLocation.CLASS_PATH, Options.getClassPathEntries(), fileManager);
-    addPaths(StandardLocation.SOURCE_PATH, Options.getSourcePathEntries(), fileManager);
+    addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
+    addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
         Lists.newArrayList(Options.getOutputDirectory()));
     fileManager.setLocation(StandardLocation.SOURCE_OUTPUT,
