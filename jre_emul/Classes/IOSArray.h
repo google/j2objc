@@ -59,8 +59,8 @@
 @end
 
 CF_EXTERN_C_BEGIN
-void IOSArray_throwOutOfBounds();
 void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
+void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length);
 CF_EXTERN_C_END
 
 /** Implements the IOSArray |checkIndex| method as a C function. This
@@ -83,7 +83,7 @@ __attribute__((always_inline)) inline void IOSArray_checkRange(
     jint size, jint offset, jint length) {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (__builtin_expect(length < 0 || offset < 0 || offset + length > size, 0)) {
-    IOSArray_throwOutOfBounds();
+    IOSArray_throwRangeOutOfBounds(size, offset, length);
   }
 #endif
 }
