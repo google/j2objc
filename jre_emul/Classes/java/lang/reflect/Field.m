@@ -111,7 +111,12 @@ static void ReadRawValue(
     }
   } else {
     nil_chk(object);
-    if (field->ivar_ == NULL) {
+    if (![field->declaringClass_ isInstance:object]) {
+      @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
+    }
+    if (field->ivar_) {
+      [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
+    } else {
       // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
       SEL getter = NSSelectorFromString([NSString stringWithFormat:@"__%@", [field getName]]);
       if (getter && [object respondsToSelector:getter]) {
@@ -120,17 +125,10 @@ static void ReadRawValue(
         // It's a final instance field, return its constant value.
         *rawValue = field->metadata_->constantValue;
       }
-    } else {
-      if (![field->declaringClass_ isInstance:object]) {
-        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
-                            initWithNSString:@"field type mismatch"]);
-      }
-      [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
     }
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
-                        initWithNSString:@"field type mismatch"]);
+    @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
   }
 }
 
@@ -142,30 +140,29 @@ static void SetWithRawValue(
     type = fromType;
   }
   if (![fromType __convertRawValue:rawValue toType:type]) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-        @"field type mismatch"]);
+    @throw create_JavaLangIllegalArgumentException_initWithNSString_(@"field type mismatch");
   }
   if (IsStatic(field)) {
     if (IsFinal(field) && !field->accessible_) {
-      @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
-          @"Cannot set static final field"]);
+      @throw create_JavaLangIllegalAccessException_initWithNSString_(
+          @"Cannot set static final field");
     }
     [type __writeRawValue:rawValue toAddress:field->ptrTable_[field->metadata_->staticRefIdx]];
   } else {
     nil_chk(object);
     if (IsFinal(field) && !field->accessible_) {
-      @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
-                          @"Cannot set final field"]);
+      @throw create_JavaLangIllegalAccessException_initWithNSString_(@"Cannot set final field");
     }
-    if (field->ivar_ == NULL) {
+    if (field->ivar_) {
+      [type __writeRawValue:rawValue toAddress:((char *)object) + ivar_getOffset(field->ivar_)];
+    } else {
       // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
       SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%@:", [field getName]]);
       if (setter && [object respondsToSelector:setter]) {
         [object performSelector:setter withObject:rawValue->asId];
-        return;
       }
+      // else: It's a final instance field, return without any side effects.
     }
-    [type __writeRawValue:rawValue toAddress:((char *)object) + ivar_getOffset(field->ivar_)];
   }
 }
 

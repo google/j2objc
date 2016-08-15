@@ -60,6 +60,30 @@ public class FieldTest extends TestCase {
   public void testReadFinalField() throws Exception {
     Field f = FieldTest.class.getDeclaredField("finalField");
     assertEquals(5, f.getLong(this));
+
+    try {
+      f.getLong(new Object());
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // expected
+    }
+  }
+
+  public void testSetFinalField() throws Exception {
+    Field f = FieldTest.class.getDeclaredField("finalField");
+    try {
+      f.setLong(this, 10);
+      fail("Expected IllegalAccessException");
+    } catch (IllegalAccessException e) {
+      // expected
+    }
+    f.setAccessible(true);
+    f.setLong(this, 10);
+    // The Java compiler will inline access of the field so the change is not visible from normal
+    // access. However, in Java the change is visible through a reflective read of the field. We
+    // don't test that here because J2ObjC doesn't support it. The final fields are translated to
+    // constants and not ivars so the reflective set has no side effect.
+    assertEquals(5, finalField);
   }
 
   public void testReadUnsetFinalField() throws Exception {
