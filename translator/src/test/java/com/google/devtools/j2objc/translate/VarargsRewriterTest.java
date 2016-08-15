@@ -92,4 +92,12 @@ public class VarargsRewriterTest extends GenerationTest {
     assertTranslation(translation,
         "[self varargsWithNSString:@\"objects\" withNSObjectArray:[objs clone]];");
   }
+
+  public void testGenericSuperMethodInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { class A<E> { void test(E... objs) {} } class B<E> extends A<E> { "
+        + "void test(E... objs) { super.test(objs); } } }", "Test", "Test.m");
+    // Must pass the objs parameter as a direct argument, not wrap in a varargs array.
+    assertTranslation(translation, "[super testWithNSObjectArray:objs];");
+  }
 }

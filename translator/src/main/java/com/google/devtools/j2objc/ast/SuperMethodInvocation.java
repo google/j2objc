@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
@@ -27,6 +28,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 public class SuperMethodInvocation extends Expression {
 
   private ExecutableElement method = null;
+  private ExecutableType methodType = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -35,6 +37,7 @@ public class SuperMethodInvocation extends Expression {
     super(jdtNode);
     IMethodBinding methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
     method = BindingConverter.getExecutableElement(methodBinding);
+    methodType = BindingConverter.getType(methodBinding);
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
@@ -45,6 +48,7 @@ public class SuperMethodInvocation extends Expression {
   public SuperMethodInvocation(SuperMethodInvocation other) {
     super(other);
     method = other.getExecutableElement();
+    methodType = other.getExecutableType();
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
@@ -52,6 +56,7 @@ public class SuperMethodInvocation extends Expression {
 
   public SuperMethodInvocation(IMethodBinding methodBinding) {
     method = BindingConverter.getExecutableElement(methodBinding);
+    methodType = BindingConverter.getType(methodBinding);
     name.set(new SimpleName(methodBinding));
   }
 
@@ -61,20 +66,25 @@ public class SuperMethodInvocation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(method);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(methodType);
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
     method = BindingConverter.getExecutableElement(newMethodBinding);
+    methodType = BindingConverter.getType(newMethodBinding);
   }
 
   public ExecutableElement getExecutableElement() {
     return method;
   }
 
+  public ExecutableType getExecutableType() {
+    return methodType;
+  }
+
   @Override
   public TypeMirror getTypeMirror() {
-    return method.getReturnType();
+    return methodType.getReturnType();
   }
 
   public Name getQualifier() {
