@@ -547,6 +547,7 @@ public class Options {
       nullability = true;
     }
 
+    // Package prefixed filenames is only supported in combination with
     if (packagePrefixedFilenames && (outputStyle != OutputStyleOption.NONE)) {
       ErrorUtil.error(
           "--package-prefixed-filenames is only supported in combination with --no-package-directories");
@@ -562,7 +563,6 @@ public class Options {
       batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
     }
 
-    // Package prefixed filenames is only supported in combination with
     int nFiles = args.length - nArg;
     String[] files = new String[nFiles];
     for (int i = 0; i < nFiles; i++) {
