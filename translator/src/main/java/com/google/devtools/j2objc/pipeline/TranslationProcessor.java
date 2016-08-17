@@ -56,6 +56,7 @@ import com.google.devtools.j2objc.translate.PrivateDeclarationResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriter;
+import com.google.devtools.j2objc.translate.SwitchRewriter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.translate.VarargsRewriter;
 import com.google.devtools.j2objc.translate.VariableRenamer;
@@ -284,6 +285,9 @@ public class TranslationProcessor extends FileProcessor {
     //   hasRetainedResult on ArrayCreation nodes.
     new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");
+
+    new SwitchRewriter().run(unit);
+    ticker.tick("SwitchRewriter");
 
     // Breaks up deeply nested expressions such as chained method calls.
     // Should be one of the last translations because other mutations will

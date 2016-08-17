@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
-import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
@@ -37,7 +36,6 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
@@ -197,40 +195,6 @@ public class Rewriter extends TreeVisitor {
       return longType;
     }
     return typeEnv.resolveJavaType("int");
-  }
-
-  /**
-   * Moves all variable declarations above the first case statement.
-   */
-  @Override
-  public void endVisit(SwitchStatement node) {
-    List<Statement> statements = node.getStatements();
-    int insertIdx = 0;
-    Block block = new Block();
-    List<Statement> blockStmts = block.getStatements();
-    for (int i = 0; i < statements.size(); i++) {
-      Statement stmt = statements.get(i);
-      if (stmt instanceof VariableDeclarationStatement) {
-        VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
-        statements.remove(i--);
-        List<VariableDeclarationFragment> fragments = declStmt.getFragments();
-        for (VariableDeclarationFragment decl : fragments) {
-          Expression initializer = decl.getInitializer();
-          if (initializer != null) {
-            Assignment assignment = new Assignment(decl.getName().copy(), initializer.copy());
-            statements.add(++i, new ExpressionStatement(assignment));
-            decl.setInitializer(null);
-          }
-        }
-        blockStmts.add(insertIdx++, declStmt.copy());
-      }
-    }
-    if (blockStmts.size() > 0) {
-      // There is at least one variable declaration, so copy this switch
-      // statement into the new block and replace it in the parent list.
-      node.replaceWith(block);
-      blockStmts.add(node);
-    }
   }
 
   @Override

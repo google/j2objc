@@ -253,6 +253,15 @@ id CreateNonCapturing(
       protocols, numMethods, selectors, impls, signatures), 0, nil);
 };
 
+jint JreIndexOfStr(NSString *str, NSString **values, jint size) {
+  for (int i = 0; i < size; i++) {
+    if ([str isEqualToString:values[i]]) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 // Counts the number of object types in a string concatenation.
 static NSUInteger CountObjectArgs(const char *types) {
   NSUInteger numObjs = 0;

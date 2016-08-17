@@ -301,6 +301,32 @@ public final class ElementUtil {
     return fields;
   }
 
+  private static boolean paramsMatch(ExecutableElement method, String[] paramTypes) {
+    List<? extends VariableElement> params = method.getParameters();
+    int size = params.size();
+    if (size != paramTypes.length) {
+      return false;
+    }
+    for (int i = 0; i < size; i++) {
+      if (!TypeUtil.getQualifiedName(params.get(i).asType()).equals(paramTypes[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static ExecutableElement findMethod(TypeElement type, String name, String... paramTypes) {
+    for (Element e : type.getEnclosedElements()) {
+      if (e.getKind() == ElementKind.METHOD && e.getSimpleName().toString().equals(name)) {
+        ExecutableElement method = (ExecutableElement) e;
+        if (paramsMatch(method, paramTypes)) {
+          return method;
+        }
+      }
+    }
+    return null;
+  }
+
   public static Set<Modifier> toModifierSet(int modifiers) {
     Set<Modifier> set = modifierSets.get(modifiers);
     if (set == null) {

@@ -51,16 +51,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "[((id<JavaUtilList>) nil_chk(two)) getClass]");
   }
 
-  public void testEnumConstantsInSwitchStatement() throws IOException {
-    String translation = translateSourceFile(
-        "public class A { static enum EnumType { ONE, TWO }"
-        + "public static void doSomething(EnumType e) {"
-        + " switch (e) { case ONE: break; case TWO: break; }}}",
-        "A", "A.m");
-    assertTranslation(translation, "switch ([e ordinal]) {");
-    assertTranslation(translation, "case A_EnumType_Enum_ONE:");
-  }
-
   public void testEnumConstantReferences() throws IOException {
     String translation = translateSourceFile(
         "public class A { static enum B { ONE, TWO; "
@@ -643,18 +633,6 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  A() { myString = \"Foo\"; myString += \"Bar\"; }}",
         "A", "A.m");
     assertTranslation(translation, "JreStrAppendStrong(&self->myString_, \"$\", @\"Bar\");");
-  }
-
-  public void testPrimitiveConstantInSwitchCase() throws IOException {
-    String translation = translateSourceFile(
-        "public class A { public static final char PREFIX = 'p';"
-        + "public boolean doSomething(char c) { switch (c) { "
-        + "case PREFIX: return true; "
-        + "default: return false; }}}",
-        "A", "A.h");
-    assertTranslation(translation, "#define A_PREFIX 'p'");
-    translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "case A_PREFIX:");
   }
 
   public void testInterfaceStaticVarReference() throws IOException {
@@ -1421,31 +1399,6 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
     assertTranslation(translation, "(void) new_NSException_init();");
-  }
-
-  // Verify Java 7's switch statements with strings.
-  public void testStringSwitchStatement() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { "
-        + "static final String constant = \"mumble\";"
-        + "int test(String s) { "
-        + "  switch(s) {"
-        + "    case \"foo\": return 42;"
-        + "    case \"bar\": return 666;"
-        + "    case constant: return -1;"
-        + "    default: return -1;"
-        + "  }}}",
-        "Test", "Test.m");
-    assertTranslation(translation, "case 0:\n      return 42;");
-    assertTranslation(translation, "case 1:\n      return 666;");
-    assertTranslation(translation, "case 2:\n      return -1;");
-    assertTranslation(translation, "default:\n      return -1;");
-    assertTranslation(translation,
-        "NSArray *__caseValues = "
-        + "[NSArray arrayWithObjects:@\"foo\", @\"bar\", @\"mumble\", nil];");
-    assertTranslation(translation,
-        "NSUInteger __index = [__caseValues indexOfObject:s];");
-    assertTranslation(translation, "switch (__index)");
   }
 
   // Verify minimal try-with-resources translation.

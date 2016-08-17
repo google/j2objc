@@ -18,17 +18,11 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.LabeledStatement;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SwitchStatement;
-import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 
 import java.io.IOException;
 import java.util.List;
@@ -215,59 +209,6 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { String s = 1 + 2.3f + \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation, "NSString *s = JreStrcat(\"F$\", 1 + 2.3f, @\"foo\");");
-  }
-
-  public void testVariableDeclarationsInSwitchStatement() throws IOException {
-    String translation = translateSourceFile(
-      "public class A { public void doSomething(int i) { switch (i) { "
-      + "case 1: int j = i * 2; log(j); break; "
-      + "case 2: log(i); break; "
-      + "case 3: log(i); int k = i, l = 42; break; }}"
-      + "private void log(int i) {}}",
-      "A", "A.m");
-    assertTranslation(translation, "int j;");
-    assertTranslation(translation, "int k, l;");
-    assertTranslation(translation, "case 1:");
-    assertTrue(translation.indexOf("int j;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("int k, l;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("int j;") < translation.indexOf("int k, l;"));
-    assertTranslation(translation, "j = i * 2;");
-    assertTranslation(translation, "k = i;");
-    assertTranslation(translation, "l = 42;");
-    assertTrue(translation.indexOf("k = i") < translation.indexOf("l = 42"));
-  }
-
-  public void testVariableDeclarationsInSwitchStatement2() throws IOException {
-    CompilationUnit unit = translateType("A",
-        "public class A { public void doSomething(int i) { switch (i) { "
-        + "case 1: int j = i * 2; log(j); break; "
-        + "case 2: log(i); break; "
-        + "case 3: log(i); int k = i, l = 42; break; }}"
-        + "private void log(int i) {}}");
-    TypeDeclaration testType = (TypeDeclaration) unit.getTypes().get(0);
-    MethodDeclaration method = TreeUtil.getMethodDeclarationsList(testType).get(0);
-    List<Statement> stmts = method.getBody().getStatements();
-    assertEquals(1, stmts.size());
-    Block block = (Block) stmts.get(0);
-    stmts = block.getStatements();
-    assertEquals(3, stmts.size());
-    assertTrue(stmts.get(0) instanceof VariableDeclarationStatement);
-    assertTrue(stmts.get(1) instanceof VariableDeclarationStatement);
-    assertTrue(stmts.get(2) instanceof SwitchStatement);
-  }
-
-  public void testMultipleSwitchVariables() throws IOException {
-    String translation = translateSourceFile(
-      "public class A { public void doSomething(int n) { switch (n) { "
-      + "case 1: int i; int j = 2; }}"
-      + "private void log(int i) {}}",
-      "A", "A.m");
-    int index = translation.indexOf("int i;");
-    assertTrue(index >= 0 && index < translation.indexOf("switch"));
-    index = translation.indexOf("int j;");
-    assertTrue(index >= 0 && index < translation.indexOf("switch"));
-    assertOccurrences(translation, "int i;", 1);
-    assertFalse(translation.contains("int j = 2;"));
   }
 
   public void testMethodCollisionWithSuperclassField() throws IOException {

@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Annotation;
@@ -106,7 +105,6 @@ import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
@@ -866,19 +864,7 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append("  default:\n");
     } else {
       buffer.append("  case ");
-      Expression expr = node.getExpression();
-      boolean isEnumConstant = TypeUtil.isEnum(expr.getTypeMirror());
-      if (isEnumConstant) {
-        String enumName = NameTable.getNativeEnumName(nameTable.getFullName(expr.getTypeMirror()));
-        buffer.append(enumName).append("_");
-      }
-      if (isEnumConstant && expr instanceof SimpleName) {
-        buffer.append(((SimpleName) expr).getIdentifier());
-      } else if (isEnumConstant && expr instanceof QualifiedName) {
-        buffer.append(((QualifiedName) expr).getName().getIdentifier());
-      } else {
-        expr.accept(this);
-      }
+      node.getExpression().accept(this);
       buffer.append(":\n");
     }
     return false;
@@ -888,18 +874,8 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(SwitchStatement node) {
     Expression expr = node.getExpression();
     TypeMirror exprType = expr.getTypeMirror();
-    if (typeEnv.isJavaStringType(exprType)) {
-      printStringSwitchStatement(node);
-      return false;
-    }
     buffer.append("switch (");
-    if (TypeUtil.isEnum(exprType)) {
-      buffer.append('[');
-    }
     expr.accept(this);
-    if (TypeUtil.isEnum(exprType)) {
-      buffer.append(" ordinal]");
-    }
     buffer.append(") ");
     buffer.append("{\n");
     List<Statement> stmts = node.getStatements();
@@ -913,57 +889,6 @@ public class StatementGenerator extends TreeVisitor {
     }
     buffer.append("}\n");
     return false;
-  }
-
-  private void printStringSwitchStatement(SwitchStatement node) {
-    buffer.append("{\n");
-
-    // Define an array of all the string constant case values.
-    List<String> caseValues = Lists.newArrayList();
-    List<Statement> stmts = node.getStatements();
-    for (Statement stmt : stmts) {
-      if (stmt instanceof SwitchCase) {
-        SwitchCase caseStmt = (SwitchCase) stmt;
-        if (!caseStmt.isDefault()) {
-          caseValues.add(getStringConstant(caseStmt.getExpression()));
-        }
-      }
-    }
-    buffer.append("NSArray *__caseValues = [NSArray arrayWithObjects:");
-    for (String value : caseValues) {
-      buffer.append("@\"" + UnicodeUtils.escapeStringLiteral(value) + "\", ");
-    }
-    buffer.append("nil];\n");
-    buffer.append("NSUInteger __index = [__caseValues indexOfObject:");
-    node.getExpression().accept(this);
-    buffer.append("];\n");
-    buffer.append("switch (__index) {\n");
-    for (Statement stmt : stmts) {
-      if (stmt instanceof SwitchCase) {
-        SwitchCase caseStmt = (SwitchCase) stmt;
-        if (caseStmt.isDefault()) {
-          stmt.accept(this);
-        } else {
-          int i = caseValues.indexOf(getStringConstant(caseStmt.getExpression()));
-          assert i >= 0;
-          buffer.append("case ");
-          buffer.append(i);
-          buffer.append(":\n");
-        }
-      } else {
-        stmt.accept(this);
-      }
-    }
-    buffer.append("}\n}\n");
-  }
-
-  private static String getStringConstant(Expression expr) {
-    Object constantValue = expr.getConstantValue();
-    if (constantValue == null) {
-      constantValue = TreeUtil.getVariableBinding(expr).getConstantValue();
-    }
-    assert constantValue != null && constantValue instanceof String;
-    return (String) constantValue;
   }
 
   @Override

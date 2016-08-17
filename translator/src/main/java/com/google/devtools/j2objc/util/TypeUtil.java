@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtIntersectionType;
+import com.google.devtools.j2objc.jdt.JdtTypes;
+import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -65,6 +67,18 @@ public final class TypeUtil {
     }
   }
 
+  public static DeclaredType getSuperclass(TypeMirror t) {
+    List<? extends TypeMirror> supertypes = JdtTypes.getInstance().directSupertypes(t);
+    if (supertypes.isEmpty()) {
+      return null;
+    }
+    TypeMirror first = supertypes.get(0);
+    if (getDeclaredTypeKind(first).isClass()) {
+      return (DeclaredType) first;
+    }
+    return null;
+  }
+
   public static int getDimensions(ArrayType arrayType) {
     int dimCount = 0;
     TypeMirror t = arrayType;
@@ -78,5 +92,34 @@ public final class TypeUtil {
   public static int getModifiers(TypeMirror t) {
     // the public modifier api doesn't expose synthetic
     return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t).getModifiers();
+  }
+
+  public static String getQualifiedName(TypeMirror t) {
+    switch (t.getKind()) {
+      case ARRAY:
+        return "[" + getQualifiedName(((ArrayType) t).getComponentType());
+      case DECLARED:
+        return ((TypeElement) ((DeclaredType) t).asElement()).getQualifiedName().toString();
+      case BOOLEAN:
+        return "boolean";
+      case BYTE:
+        return "byte";
+      case CHAR:
+        return "char";
+      case DOUBLE:
+        return "double";
+      case FLOAT:
+        return "float";
+      case INT:
+        return "int";
+      case LONG:
+        return "long";
+      case SHORT:
+        return "short";
+      case VOID:
+        return "void";
+      default:
+        throw new AssertionError("Cannot resolve qualified name for type: " + t);
+    }
   }
 }

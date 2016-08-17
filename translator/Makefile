@@ -258,6 +258,7 @@ JAVA_SOURCES = \
 	translate/RuntimeAnnotationGenerator.java \
 	translate/StaticVarRewriter.java \
 	translate/SuperMethodInvocationRewriter.java \
+	translate/SwitchRewriter.java \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \

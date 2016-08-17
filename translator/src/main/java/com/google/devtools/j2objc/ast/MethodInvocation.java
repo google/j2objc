@@ -74,6 +74,15 @@ public class MethodInvocation extends Expression {
     this(binding, binding.getReturnType(), expression);
   }
 
+  public MethodInvocation(
+      ExecutableElement method, ExecutableType methodType, Expression expression) {
+    this.method = method;
+    this.methodType = methodType;
+    typeMirror = methodType.getReturnType();
+    this.expression.set(expression);
+    name.set(new SimpleName(BindingConverter.unwrapElement(method)));
+  }
+
   @Override
   public Kind getKind() {
     return Kind.METHOD_INVOCATION;

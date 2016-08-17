@@ -14,9 +14,9 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -158,6 +158,7 @@ public class JdtTypes implements Types {
 
   @Override
   public ArrayType getArrayType(TypeMirror componentType) {
-    throw new AssertionError("not implemented");
+    return (ArrayType) BindingConverter.getType(GeneratedTypeBinding.newArrayType(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(componentType)));
   }
 }
