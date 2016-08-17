@@ -730,11 +730,10 @@ public class NameTable {
   }
 
   /**
-   * Finds all the original overridden method bindings. If the the method is
+   * Finds all the original overridden method bindings. If the method is
    * overridden multiple times in the hierarchy, only the original is included.
-   * Multiple results are still possible if the the given method overrides
-   * methods from multiple interfaces or classes that do not share the same
-   * hierarchy.
+   * Multiple results are still possible if the given method overrides methods
+   * from multiple interfaces or classes that do not share the same hierarchy.
    */
   private List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
     method = method.getMethodDeclaration();
