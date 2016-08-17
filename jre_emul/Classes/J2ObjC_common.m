@@ -228,32 +228,6 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
   [*(id *)pVar release];
 }
 
-// Block flag position for copy dispose, (1 << 25).
-#define COPY_DISPOSE_FLAG 0x02000000
-
-// Modified from clang block implementation http://clang.llvm.org/docs/Block-ABI-Apple.html
-typedef struct Block_literal_1 {
-  void *isa;
-  int flags;
-  int reserved;
-  void (*invoke)(void *, ...);
-  struct Block_descriptor_1 {
-    unsigned long int reserved;
-    unsigned long int size;
-    // There will be 2 function pointers at the beginning of the signature if the copy_dispose flag
-    // is set.
-    void *signature[1];
-  } *descriptor;
-} Block_literal;
-
-// Returns a type string from a block.
-const char *blockTypeSignature(id block) {
-  Block_literal *blockLiteral = (__bridge void *) block;
-  // Offset for optional function pointers.
-  int i = (blockLiteral->flags & COPY_DISPOSE_FLAG) ? 2 : 0;
-  return (const char *) blockLiteral->descriptor->signature[i];
-}
-
 // empty implementation base class for lambdas
 @implementation LambdaBase
 @end
