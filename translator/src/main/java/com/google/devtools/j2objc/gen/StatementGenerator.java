@@ -878,14 +878,8 @@ public class StatementGenerator extends TreeVisitor {
     expr.accept(this);
     buffer.append(") ");
     buffer.append("{\n");
-    List<Statement> stmts = node.getStatements();
-    for (Statement stmt : stmts) {
+    for (Statement stmt : node.getStatements()) {
       stmt.accept(this);
-    }
-    if (!stmts.isEmpty() && stmts.get(stmts.size() - 1) instanceof SwitchCase) {
-      // Last switch case doesn't have an associated statement, so add
-      // an empty one.
-      buffer.append(";\n");
     }
     buffer.append("}\n");
     return false;

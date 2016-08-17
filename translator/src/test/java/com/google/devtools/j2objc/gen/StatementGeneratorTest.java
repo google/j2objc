@@ -1038,20 +1038,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "Test_TEST = @\"\\\"\";");
   }
 
-  /**
-   * Verify that when a the last switch case is empty (no statement),
-   * an empty statement is added.  Java doesn't require an empty statement
-   * here, while C does.
-   */
-  public void testEmptyLastCaseStatement() throws IOException {
-    String translation = translateSourceFile(
-        "public class A {"
-        + "  int test(int i) { "
-        + "    switch (i) { case 1: return 1; case 2: return 2; default: } return i; }}",
-        "A", "A.m");
-    assertTranslation(translation, "default:\n    ;\n  }");
-  }
-
   // Verify that return statements in constructors return self.
   public void testConstructorReturn() throws IOException {
     String translation = translateSourceFile(

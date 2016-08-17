@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
@@ -36,6 +37,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -55,6 +57,12 @@ public class SwitchRewriter extends TreeVisitor {
     fixVariableDeclarations(node);
     fixStringValue(node);
     fixEnumValue(node);
+
+    List<Statement> stmts = node.getStatements();
+    if (!stmts.isEmpty() && stmts.get(stmts.size() - 1) instanceof SwitchCase) {
+      // Last switch case doesn't have an associated statement, so add an empty one.
+      stmts.add(new EmptyStatement());
+    }
   }
 
   @Override
@@ -69,6 +77,11 @@ public class SwitchRewriter extends TreeVisitor {
       String enumValue = NameTable.getNativeEnumName(nameTable.getFullName(type)) + "_"
           + nameTable.getVariableBaseName(var);
       node.setExpression(new NativeExpression(enumValue, typeEnv.resolveJavaTypeMirror("int")));
+    } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
+      Object value = var.getConstantValue();
+      if (value != null) {
+        node.setExpression(TreeUtil.newLiteral(value, typeEnv));
+      }
     }
   }
 
@@ -77,7 +90,6 @@ public class SwitchRewriter extends TreeVisitor {
    */
   private void fixVariableDeclarations(SwitchStatement node) {
     List<Statement> statements = node.getStatements();
-    int insertIdx = 0;
     Block block = new Block();
     List<Statement> blockStmts = block.getStatements();
     for (int i = 0; i < statements.size(); i++) {
@@ -89,12 +101,12 @@ public class SwitchRewriter extends TreeVisitor {
         for (VariableDeclarationFragment decl : fragments) {
           Expression initializer = decl.getInitializer();
           if (initializer != null) {
-            Assignment assignment = new Assignment(decl.getName().copy(), initializer.copy());
+            Assignment assignment = new Assignment(
+                decl.getName().copy(), TreeUtil.remove(initializer));
             statements.add(++i, new ExpressionStatement(assignment));
-            decl.setInitializer(null);
           }
         }
-        blockStmts.add(insertIdx++, declStmt.copy());
+        blockStmts.add(declStmt);
       }
     }
     if (blockStmts.size() > 0) {
