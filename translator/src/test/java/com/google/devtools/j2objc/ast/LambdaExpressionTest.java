@@ -152,7 +152,7 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(functionHeader
         + "class Test { void f(int operator) { Function l = (a) -> operator; } }",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "captures->operator_ =");
+    assertTranslatedSegments(translation, "captures__->operator_ =");
   }
 
   public void testLargeArgumentCount() throws IOException {

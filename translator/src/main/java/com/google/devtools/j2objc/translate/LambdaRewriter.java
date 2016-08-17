@@ -276,21 +276,21 @@ public class LambdaRewriter extends TreeVisitor {
       String lambdaCaptureStructName = lambdaName + "_captures";
       statements.add(
           new NativeStatement(
-              "LambdaBase<" + funcWithoutID + "> *result = NSAllocateObject(cls, sizeof("
+              "LambdaBase<" + funcWithoutID + "> *result__ = NSAllocateObject(cls, sizeof("
               + lambdaCaptureStructName + "), nil);"));
       statements.add(
           new NativeStatement(
-              lambdaCaptureStructName + " *captures = (" + lambdaCaptureStructName
-              + " *) &result->captures_;"));
+              lambdaCaptureStructName + " *captures__ = (" + lambdaCaptureStructName
+              + " *) &result__->captures_;"));
       funcImplStatements.add(
           0,
           new NativeStatement(
-              lambdaCaptureStructName + " *captures = (" + lambdaCaptureStructName
+              lambdaCaptureStructName + " *captures__ = (" + lambdaCaptureStructName
               + " *) &self_->captures_;"));
       funcDeallocStatements.add(
           0,
           new NativeStatement(
-              lambdaCaptureStructName + " *captures = (" + lambdaCaptureStructName
+              lambdaCaptureStructName + " *captures__ = (" + lambdaCaptureStructName
               + " *) &self_->captures_;"));
 
       // Add an outerField to the capture struct (and init of the capture struct) if we have one.
@@ -302,18 +302,18 @@ public class LambdaRewriter extends TreeVisitor {
             + outerField.getSimpleName().toString() + ";\n";
         statements.add(
             new NativeStatement(
-                "captures->" + outerField.getSimpleName().toString()
+                "captures__->" + outerField.getSimpleName().toString()
                 + " = [" + outerField.getSimpleName().toString() + "_ retain];"));
         funcDeallocStatements.add(
             new NativeStatement(
-                "[captures->" + outerField.getSimpleName().toString() + " release];"));
+                "[captures__->" + outerField.getSimpleName().toString() + " release];"));
 
         // Note that the init of the captures struct is 0 in funcImplStatements.
         funcImplStatements.add(
             1,
             new NativeStatement(
                 nameTable.getObjCType(outerField.asType())
-                + " " + outerField.getSimpleName().toString() + "_ = captures->"
+                + " " + outerField.getSimpleName().toString() + "_ = captures__->"
                 + outerField.getSimpleName().toString() + ";"));
         // TODO(user): This self should be unnecessary, but SuperMethodInvocationRewriter
         // adds a ThisExpression node after the OuterReferenceResolver has already run, so it
@@ -322,7 +322,7 @@ public class LambdaRewriter extends TreeVisitor {
             2,
             new NativeStatement(
                 nameTable.getObjCType(outerField.asType())
-                + " self = captures->" + outerField.getSimpleName().toString() + ";"));
+                + " self = captures__->" + outerField.getSimpleName().toString() + ";"));
 
         funcGet.addParameter(new SingleVariableDeclaration(outerField));
 
@@ -351,26 +351,26 @@ public class LambdaRewriter extends TreeVisitor {
         if (!var.asType().getKind().isPrimitive() && !ElementUtil.isWeakReference(var)) {
           statements.add(
               new NativeStatement(
-                  "JreStrongAssign(&captures->" + varName + ", " + varName + ");"));
+                  "JreStrongAssign(&captures__->" + varName + ", " + varName + ");"));
           funcDeallocStatements.add(
               1,
               new NativeStatement(
-                  "RELEASE_(captures->" + varName + ");"));
+                  "RELEASE_(captures__->" + varName + ");"));
         } else {
           statements.add(
               new NativeStatement(
-                  "captures->" + varName + " = " + varName + ";"));
+                  "captures__->" + varName + " = " + varName + ";"));
         }
         funcImplStatements.add(
             1,
             new NativeStatement(
                 nameTable.getObjCType(var.asType()) + " " + varName
-                + " = captures->" + varName + ";"));
+                + " = captures__->" + varName + ";"));
         funcGet.addParameter(new SingleVariableDeclaration(var));
         funcGetInvocation.addArgument(Name.newName(varPath));
       }
 
-      statements.add(new NativeStatement("return [result autorelease];"));
+      statements.add(new NativeStatement("return [result__ autorelease];"));
 
       // Make the closure struct.
       NativeDeclaration lambdaCaptureStruct =
