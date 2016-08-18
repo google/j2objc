@@ -55,6 +55,7 @@ import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.LabeledStatement;
@@ -374,6 +375,10 @@ public class TreeConverter {
       Object member = convert(bodyDecl);
       if (member instanceof BodyDeclaration) {  // Not true for enum constants.
         bodyDeclarations.add((BodyDeclaration) member);
+      } else if (member instanceof Block) {
+        JCTree.JCBlock javacBlock = (JCTree.JCBlock) bodyDecl;
+        Block block = (Block) member;
+        bodyDeclarations.add(new Initializer(block, javacBlock.isStatic()));
       }
     }
     return newNode
@@ -546,7 +551,8 @@ public class TreeConverter {
   }
 
   private TreeNode convertBooleanLiteral(JCTree.JCLiteral node) {
-    return new BooleanLiteral((Boolean) node.getValue(), node.type);
+    BooleanLiteral newNode = new BooleanLiteral((Boolean) node.getValue(), node.type);
+    return convertExpression(node, newNode);
   }
 
   private TreeNode convertBreakStatement(JCTree.JCBreak node) {
@@ -749,10 +755,17 @@ public class TreeConverter {
     ForStatement newNode = new ForStatement()
         .setExpression((Expression) convert(node.getCondition()))
         .setBody((Statement) convert(node.getStatement()));
+    VariableDeclarationExpression lastVar = null;
     for (JCTree.JCStatement initializer : node.getInitializer()) {
       if (initializer.getKind() == Kind.VARIABLE) {
         JCTree.JCVariableDecl var = (JCTree.JCVariableDecl) initializer;
-        newNode.addInitializer((Expression) convertVariableExpression(var));
+        VariableDeclarationExpression newVar = convertVariableExpression(var);
+        if (lastVar == null) {
+          newNode.addInitializer(newVar);
+          lastVar = newVar;
+        } else {
+          lastVar.addFragment(TreeUtil.remove(newVar.getFragment(0)));
+        }
       } else {
         assert initializer.getKind() == Kind.EXPRESSION_STATEMENT;
         newNode.addInitializer((Expression)
@@ -1003,8 +1016,9 @@ public class TreeConverter {
   }
 
   private TreeNode convertNumberLiteral(JCTree.JCLiteral node) {
-    return new NumberLiteral((Number) node.getValue(), node.type)
+    NumberLiteral newNode = new NumberLiteral((Number) node.getValue(), node.type)
         .setToken(getTreeSource(node));
+    return convertExpression(node, newNode);
   }
 
   private PackageDeclaration convertPackage(PackageElement pkg, SourcePosition namePos) {
@@ -1042,7 +1056,8 @@ public class TreeConverter {
   }
 
   private TreeNode convertStringLiteral(JCTree.JCLiteral node) {
-    return new StringLiteral((String) node.getValue(), node.type);
+    StringLiteral newNode = new StringLiteral((String) node.getValue(), node.type);
+    return convertExpression(node, newNode);
   }
 
   private TreeNode convertSwitch(JCTree.JCSwitch node) {

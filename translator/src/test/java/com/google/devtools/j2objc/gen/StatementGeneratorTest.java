@@ -205,9 +205,17 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testMultipleVariableDeclarations() throws IOException {
     String source = "String one, two;";
     List<Statement> stmts = translateStatements(source);
-    assertEquals(1, stmts.size());
-    String result = generateStatement(stmts.get(0));
-    assertEquals("NSString *one, *two;", result);
+    if (Options.isJDT()) {
+      // TODO(tball): remove test and this JDT block when javac conversion is complete.
+      String result = generateStatement(stmts.get(0));
+      assertEquals("NSString *one, *two;", result);
+    } else {
+      assertEquals(2, stmts.size());
+      String result = generateStatement(stmts.get(0));
+      assertEquals("NSString *one;", result);
+      result = generateStatement(stmts.get(1));
+      assertEquals("NSString *two;", result);
+    }
   }
 
   public void testObjectDeclaration() throws IOException {
