@@ -106,12 +106,32 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
+     * A static class is used for lazy-initialization of available time zone IDs.
+     */
+    static class AvailableIDsGetter {
+        static final String[] IDS = getAllIds();
+
+        static String[] getAllIds() {
+            String[] allIds = NativeTimeZone.getAvailableNativeTimeZoneNames();
+            for (String id : allIds) {
+                if (id.equals("UTC")) {
+                    return allIds;
+                }
+            }
+            int len = allIds.length;
+            String[] newIds = Arrays.copyOf(allIds, len + 1);
+            newIds[len] = "UTC";
+            return newIds;
+        }
+    }
+
+    /**
      * Returns the system's installed time zone IDs. Any of these IDs can be
      * passed to {@link #getTimeZone} to lookup the corresponding time zone
      * instance.
      */
     public static synchronized String[] getAvailableIDs() {
-        return NativeTimeZone.getAvailableNativeTimeZoneNames();
+        return AvailableIDsGetter.IDS;
     }
 
     /**

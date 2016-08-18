@@ -447,4 +447,109 @@ public class NativeTimeZoneTest extends TestCase {
     assertEquals(-5 * 3600000, tz.getRawOffset());
     assertEquals(0, tz.getDSTSavings());
   }
+
+  /**
+   * PDT is an abbreviation that all three platforms (JVM, Android, and iOS) agree that it's not
+   * supported. On iOS it's not available via +[NSTimeZone timeZoneWithName:] though one can still
+   * get it from +[NSTimeZone timeZoneWithAbbreviation:].
+   *
+   * PST is a whole different matter. It's usable both as a name and as an abbreviation on iOS.
+   * It's available on JVM, but not on Android.
+   */
+  public void testNonAvailabilityOfPDT() {
+    TimeZone tz = TimeZone.getTimeZone("PDT");
+    assertFalse(tz.getID().equals("PDT"));
+    assertFalse(tz.getID().equals("America/Los_Angeles"));
+    assertFalse(tz.getID().equals("US/Pacific"));
+    assertFalse(tz.getRawOffset() == -5 * 3600000);
+    assertFalse(tz.getRawOffset() == -4 * 3600000);
+  }
+
+  public void testUTCAndGMT() {
+    TimeZone utc = TimeZone.getTimeZone("UTC");
+    TimeZone gmt = TimeZone.getTimeZone("GMT");
+
+    assertEquals("UTC", utc.getID());
+    assertEquals("GMT", gmt.getID());
+
+    // Same rules, but not equal.
+    assertTrue(utc.hasSameRules(gmt));
+    assertFalse(utc.equals(gmt));
+
+    assertEquals(utc.getDSTSavings(), gmt.getDSTSavings());
+    assertEquals(utc.getRawOffset(), gmt.getRawOffset());
+    assertEquals(utc.useDaylightTime(), gmt.useDaylightTime());
+    assertEquals(0, utc.getRawOffset());
+    assertEquals(0, utc.getDSTSavings());
+    assertFalse(utc.useDaylightTime());
+
+    List<String> ids = Arrays.asList(TimeZone.getAvailableIDs());
+    assertTrue(ids.contains(gmt.getID()));
+    assertTrue(ids.contains(utc.getID()));
+  }
+
+  /**
+   * Different time zone libraries treat these two UTC alias differently. On OS X and iOS,
+   * Etc/UTC and Etc/GMT are treated as two different time zones, even if their offset and other
+   * fields are exactly the same as those in UTC. Therefore we don't even attempt to compare their
+   * rules.
+   */
+  public void testEtcUTCAndEtcGMT() {
+    TimeZone utc = TimeZone.getTimeZone("UTC");
+    TimeZone etcUtc = TimeZone.getTimeZone("Etc/UTC");
+    TimeZone etcGmt = TimeZone.getTimeZone("Etc/GMT");
+    assertEquals("Etc/UTC", etcUtc.getID());
+    assertEquals("Etc/GMT", etcGmt.getID());
+
+    assertEquals(utc.getDSTSavings(), etcGmt.getDSTSavings());
+    assertEquals(utc.getRawOffset(), etcGmt.getRawOffset());
+    assertEquals(utc.useDaylightTime(), etcGmt.useDaylightTime());
+    assertEquals(utc.getDSTSavings(), etcUtc.getDSTSavings());
+    assertEquals(utc.getRawOffset(), etcUtc.getRawOffset());
+    assertEquals(utc.useDaylightTime(), etcUtc.useDaylightTime());
+    assertEquals(0, utc.getRawOffset());
+    assertEquals(0, utc.getDSTSavings());
+    assertFalse(utc.useDaylightTime());
+
+    List<String> ids = Arrays.asList(TimeZone.getAvailableIDs());
+    String vmName = System.getProperty("java.vendor");
+    if (vmName != null && vmName.startsWith("J2ObjC")) {
+      // It's ok for Etc/UTC and Etc/GMT not to be part of TimeZone.getAvailableIDs().
+    } else {
+      assertTrue(ids.contains(etcGmt.getID()));
+      assertTrue(ids.contains(etcUtc.getID()));
+    }
+  }
+
+  /**
+   * US/Pacific is an alias to America/Los_Angeles, but the former is not part of the "known names"
+   * reported by NSTimeZone.
+   */
+  public void testAmericaLosAngelesAndUSPacific() {
+    TimeZone la = TimeZone.getTimeZone("America/Los_Angeles");
+    TimeZone pacific = TimeZone.getTimeZone("US/Pacific");
+    assertEquals("America/Los_Angeles", la.getID());
+    assertEquals("US/Pacific", pacific.getID());
+
+    // Same rules, but not equal.
+    assertTrue(pacific.hasSameRules(la));
+    assertFalse(pacific.equals(la));
+
+    assertEquals(la.getDSTSavings(), pacific.getDSTSavings());
+    assertEquals(la.getRawOffset(), pacific.getRawOffset());
+    assertEquals(la.useDaylightTime(), pacific.useDaylightTime());
+    assertEquals(-8 * 3600000L, la.getRawOffset());
+    assertEquals(3600000L, la.getDSTSavings());
+    assertTrue(la.useDaylightTime());
+
+    List<String> ids = Arrays.asList(TimeZone.getAvailableIDs());
+    assertTrue(ids.contains(la.getID()));
+
+    String vmName = System.getProperty("java.vendor");
+    if (vmName != null && vmName.startsWith("J2ObjC")) {
+      // It's ok for US/Pacific not to be part of TimeZone.getAvailableIDs().
+    } else {
+      assertTrue(ids.contains(pacific.getID()));
+    }
+  }
 }
