@@ -1,4 +1,5 @@
-#import "third_party/java_src/j2objc/testing/junit-ext/src/java/com/google/j2objc/testing/JUnitTestRunner.h"
+
+#import "com/google/j2objc/testing/JUnitTestRunner.h"
 
 #include <errno.h>
 #include <execinfo.h>
