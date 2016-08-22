@@ -108,7 +108,9 @@ RELATIVE_TESTS_DIR = $(BUILD_DIR_NAME)/tests
 STUBS_DIR = stub_classes
 ANDROID_NATIVE_DIR = $(LIBCORE_BASE)/luni/src/main/native
 ANDROID_NATIVE_TEST_DIR = $(LIBCORE_BASE)/luni/src/test/native
-INVOKE_STUBS_DIR = $(NEW_LIBCORE_BASE)/ojluni/src/lambda/java
+
+# TODO(tball): reenable on Java 8 branch.
+# INVOKE_STUBS_DIR = $(NEW_LIBCORE_BASE)/ojluni/src/lambda/java
 
 ifndef TRANSLATED_SOURCE_DIR
 TRANSLATED_SOURCE_DIR = $(CLASS_DIR)
