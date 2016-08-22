@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
-
+import com.google.devtools.j2objc.util.ParserEnvironment;
 import org.eclipse.jdt.core.dom.ASTNode;
 
 import java.util.List;
@@ -29,8 +29,7 @@ import java.util.List;
  */
 public class CompilationUnit extends TreeNode {
 
-  private final Types typeEnv;
-  private final NameTable nameTable;
+  private final ParserEnvironment env;
   private final String sourceFilePath;
   private final String mainTypeName;
   private final String source;
@@ -46,11 +45,10 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(AbstractTypeDeclaration.class, this);
 
   public CompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String sourceFilePath,
-      String mainTypeName, String source, NameTable.Factory nameTableFactory) {
+      ParserEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtNode,
+      String sourceFilePath, String mainTypeName, String source) {
     super(jdtNode);
-    typeEnv = new Types(jdtNode.getAST());
-    nameTable = nameTableFactory == null ? null : nameTableFactory.newNameTable(typeEnv);
+    this.env = env;
     this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
     this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
     this.source = Preconditions.checkNotNull(source);
@@ -80,8 +78,7 @@ public class CompilationUnit extends TreeNode {
 
   public CompilationUnit(CompilationUnit other) {
     super(other);
-    typeEnv = other.getTypeEnv();
-    nameTable = other.getNameTable();
+    this.env = other.env;
     sourceFilePath = other.getSourceFilePath();
     mainTypeName = other.getMainTypeName();
     source = other.getSource();
@@ -99,11 +96,11 @@ public class CompilationUnit extends TreeNode {
   }
 
   public Types getTypeEnv() {
-    return typeEnv;
+    return env.types();
   }
 
   public NameTable getNameTable() {
-    return nameTable;
+    return env.nameTable();
   }
 
   public String getSourceFilePath() {

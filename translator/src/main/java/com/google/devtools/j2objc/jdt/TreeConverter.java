@@ -107,7 +107,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.ParserEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
@@ -120,9 +120,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, String sourceFilePath, String mainTypeName,
-      String source, NameTable.Factory nameTableFactory) {
-    return new CompilationUnit(jdtUnit, sourceFilePath, mainTypeName, source, nameTableFactory);
+      ParserEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit,
+      String sourceFilePath, String mainTypeName, String source) {
+    return new CompilationUnit(env, jdtUnit, sourceFilePath, mainTypeName, source);
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {
