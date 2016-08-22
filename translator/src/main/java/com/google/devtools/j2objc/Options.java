@@ -1029,7 +1029,7 @@ public class Options {
   // TODO(tball): remove after front-end conversion is complete.
   public static Parser newParser() {
     if (instance.javaFrontEnd == FrontEnd.JDT) {
-        return new com.google.devtools.j2objc.util.JdtParser();
+        return new com.google.devtools.j2objc.jdt.JdtParser();
     }
     throw new AssertionError("javac front-end not implemented");
   }

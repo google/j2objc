@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.NameTable.Factory;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
@@ -93,5 +94,11 @@ class JavacEnvironment extends ParserEnvironment {
   @Override
   public Types typeUtilities() {
     return javacTypes;
+  }
+
+  @Override
+  public TreeNode convert(Object tree) {
+    // TODO(tball): replace with call to javac tree converter.
+    return null;
   }
 }

@@ -12,17 +12,22 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.util;
+package com.google.devtools.j2objc.jdt;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.LintOption;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
+import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -291,6 +296,11 @@ public class JdtParser implements Parser {
     @Override
     public javax.lang.model.util.Types typeUtilities() {
       throw new AssertionError("not implemented");
+    }
+
+    @Override
+    public TreeNode convert(Object tree) {
+      return TreeConverter.convert(tree);
     }
   }
 }

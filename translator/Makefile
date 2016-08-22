@@ -202,6 +202,7 @@ JAVA_SOURCES = \
 	jdt/JdtNullType.java \
 	jdt/JdtPackageBinding.java \
 	jdt/JdtPackageElement.java \
+	jdt/JdtParser.java \
 	jdt/JdtPrimitiveType.java \
 	jdt/JdtTypeBinding.java \
 	jdt/JdtTypeElement.java \
@@ -287,7 +288,6 @@ JAVA_SOURCES = \
 	util/ErrorUtil.java \
 	util/FileUtil.java \
 	util/HeaderMap.java \
-	util/JdtParser.java \
 	util/NameTable.java \
 	util/PackagePrefixes.java \
 	util/Parser.java \

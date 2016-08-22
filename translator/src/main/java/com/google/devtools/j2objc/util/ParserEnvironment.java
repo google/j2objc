@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.types.Types;
 import javax.lang.model.element.Element;
 
@@ -51,6 +52,15 @@ public abstract class ParserEnvironment {
    * specified name.
    */
   public abstract Element resolve(String name);
+
+  /**
+   * Converts a tree provided by the compiler front-end to one
+   * from the com.google.devtools.j2objc.ast package.
+   *
+   * @throws IllegalArgumentException if the tree argument was
+   *     not created by the compiler front-end.
+   */
+  public abstract TreeNode convert(Object tree);
 
   // TODO(tball): return an instance that merges j.l.m.u.Elements and ElementUtil.
   public abstract javax.lang.model.util.Elements elementUtilities();
