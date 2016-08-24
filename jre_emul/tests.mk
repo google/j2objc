@@ -42,13 +42,7 @@ TEST_OBJS = \
     $(ALL_SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o) \
     $(TESTS_DIR)/$(ALL_TESTS_CLASS).o
 
-TEST_RESOURCES = \
-    $(TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
-    $(ANDROID_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
-    $(HARMONY_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
-    $(LOGGING_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
-    $(ZIP_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
-    $(BEANS_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%)
+TEST_RESOURCES = $(TEST_RESOURCES_RELATIVE:%=$(RESOURCES_DEST_DIR)/%)
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
@@ -135,25 +129,13 @@ link: build $(TEST_BIN)
 resources: $(TEST_RESOURCES)
 	@:
 
-$(RESOURCES_DEST_DIR)/%: $(TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
+define resource_copy_rule
+$(RESOURCES_DEST_DIR)/%: $(1)/%
+	@mkdir -p `dirname $$@`
+	@cp $$< $$@
+endef
 
-$(RESOURCES_DEST_DIR)/%: $(ANDROID_TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
-
-$(RESOURCES_DEST_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
-
-$(RESOURCES_DEST_DIR)/%: $(BEANS_TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
-
-$(RESOURCES_DEST_DIR)/%: $(HARMONY_TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
+$(foreach root,$(TEST_RESOURCE_ROOTS),$(eval $(call resource_copy_rule,$(root))))
 
 # A bug in make 3.81 causes subprocesses to inherit a generous amount of stack.
 # This distorts the fact that the default stack size is 8 MB for a 64-bit OS X
