@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Node type for a catch clause.
  */
@@ -25,12 +23,8 @@ public class CatchClause extends TreeNode {
       ChildLink.create(SingleVariableDeclaration.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
-  public CatchClause(org.eclipse.jdt.core.dom.CatchClause jdtNode) {
-    super(jdtNode);
-    exception.set((SingleVariableDeclaration) TreeConverter.convert(jdtNode.getException()));
-    body.set((Block) TreeConverter.convert(jdtNode.getBody()));
-  }
-
+  public CatchClause() {}
+  
   public CatchClause(CatchClause other) {
     super(other);
     exception.copyFrom(other.getException());
@@ -45,9 +39,19 @@ public class CatchClause extends TreeNode {
   public SingleVariableDeclaration getException() {
     return exception.get();
   }
+  
+  public CatchClause setException(SingleVariableDeclaration e) {
+    exception.set(e);
+    return this;
+  }
 
   public Block getBody() {
     return body.get();
+  }
+  
+  public CatchClause setBody(Block newBody) {
+    body.set(newBody);
+    return this;
   }
 
   @Override

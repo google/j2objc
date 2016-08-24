@@ -14,9 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -29,15 +26,8 @@ public class ConditionalExpression extends Expression {
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> thenExpression = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> elseExpression = ChildLink.create(Expression.class, this);
-
-  public ConditionalExpression(org.eclipse.jdt.core.dom.ConditionalExpression jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    thenExpression.set((Expression) TreeConverter.convert(jdtNode.getThenExpression()));
-    elseExpression.set((Expression) TreeConverter.convert(jdtNode.getElseExpression()));
-  }
+  
+  public ConditionalExpression() {}
 
   public ConditionalExpression(ConditionalExpression other) {
     super(other);
@@ -56,29 +46,37 @@ public class ConditionalExpression extends Expression {
   public TypeMirror getTypeMirror() {
     return typeMirror;
   }
+  
+  public ConditionalExpression setTypeMirror(TypeMirror newType) {
+    typeMirror = newType;
+    return this;
+  }
 
   public Expression getExpression() {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public ConditionalExpression setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public Expression getThenExpression() {
     return thenExpression.get();
   }
 
-  public void setThenExpression(Expression newThenExpression) {
+  public ConditionalExpression setThenExpression(Expression newThenExpression) {
     thenExpression.set(newThenExpression);
+    return this;
   }
 
   public Expression getElseExpression() {
     return elseExpression.get();
   }
 
-  public void setElseExpression(Expression newElseExpression) {
+  public ConditionalExpression setElseExpression(Expression newElseExpression) {
     elseExpression.set(newElseExpression);
+    return this;
   }
 
   @Override

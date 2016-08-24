@@ -40,6 +40,11 @@ public class CreationReference extends MethodReference {
   public Type getType() {
     return type.get();
   }
+  
+  public CreationReference setType(Type newType) {
+    type.set(newType);
+    return this;
+  }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {

@@ -14,11 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node for a alternate constructor invocation. (i.e. "this(...);")
@@ -28,19 +27,7 @@ public class ConstructorInvocation extends Statement {
   private ExecutableElement method = null;
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
-  public ConstructorInvocation(IMethodBinding methodBinding) {
-    setMethodBinding(methodBinding);
-  }
-
-  public ConstructorInvocation(org.eclipse.jdt.core.dom.ConstructorInvocation jdtNode) {
-    super(jdtNode);
-    IMethodBinding methodBinding = BindingConverter.wrapBinding(
-        jdtNode.resolveConstructorBinding());
-    method = BindingConverter.getExecutableElement(methodBinding);
-    for (Object argument : jdtNode.arguments()) {
-      arguments.add((Expression) TreeConverter.convert(argument));
-    }
-  }
+  public ConstructorInvocation() {}
 
   public ConstructorInvocation(ConstructorInvocation other) {
     super(other);
@@ -64,9 +51,19 @@ public class ConstructorInvocation extends Statement {
   public ExecutableElement getExecutableElement() {
     return method;
   }
+  
+  public ConstructorInvocation setExecutableElement(ExecutableElement newMethod) {
+    method = newMethod;
+    return this;
+  }
 
   public List<Expression> getArguments() {
     return arguments;
+  }
+
+  public ConstructorInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
   }
 
   @Override
@@ -80,10 +77,5 @@ public class ConstructorInvocation extends Statement {
   @Override
   public ConstructorInvocation copy() {
     return new ConstructorInvocation(this);
-  }
-
-  public ConstructorInvocation addArgument(Expression arg) {
-    arguments.add(arg);
-    return this;
   }
 }

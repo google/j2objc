@@ -16,12 +16,10 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Lambda expression AST node type (added in JLS8, section 15.27).
@@ -86,8 +84,8 @@ public class LambdaExpression extends Expression {
     return typeMirror;
   }
 
-  public void setTypeBinding(ITypeBinding t) {
-    typeMirror = BindingConverter.getType(t);
+  public void setTypeMirror(TypeMirror t) {
+    typeMirror = t;
   }
 
   public LambdaTypeBinding getLambdaTypeBinding() {

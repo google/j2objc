@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -26,28 +24,18 @@ public class CastExpression extends Expression {
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
-  public CastExpression(org.eclipse.jdt.core.dom.CastExpression jdtNode) {
-    super(jdtNode);
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    // If we are casting a LambdaExpression, we set its type, as the JDT can
-    // resolve to the wrong type for lambdas under certain circumstances
-    // (casting to an intersection of two interfaces with a parameter-less lambda).
-    if (expression.get() instanceof LambdaExpression) {
-      ((LambdaExpression) expression.get()).setTypeBinding(type.get().getTypeBinding());
-    }
-  }
-
   public CastExpression(CastExpression other) {
     super(other);
     type.copyFrom(other.getType());
     expression.copyFrom(other.getExpression());
   }
 
-  public CastExpression(ITypeBinding typeBinding, Expression expression) {
-    type.set(Type.newType(typeBinding));
+  public CastExpression(TypeMirror typeMirror, Expression expression) {
+    type.set(Type.newType(typeMirror));
     this.expression.set(expression);
   }
+  
+  public CastExpression() {}
 
   @Override
   public Kind getKind() {
@@ -64,16 +52,18 @@ public class CastExpression extends Expression {
     return type.get();
   }
 
-  public void setType(Type newType) {
+  public CastExpression setType(Type newType) {
     type.set(newType);
+    return this;
   }
 
   public Expression getExpression() {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public CastExpression setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   @Override

@@ -298,7 +298,7 @@ public class Rewriter extends TreeVisitor {
     if (localRef != null) {
       FieldAccess access = new FieldAccess(
           typeEnv.getLocalRefType().getDeclaredFields()[0], new SimpleName(localRef));
-      CastExpression newCast = new CastExpression(node.getTypeBinding(), access);
+      CastExpression newCast = new CastExpression(node.getTypeMirror(), access);
       ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
       node.replaceWith(newParens);
     }

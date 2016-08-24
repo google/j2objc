@@ -110,7 +110,7 @@ public class CastResolver extends TreeVisitor {
     invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
     if (!castType.isEqualTo(funcReturnType)) {
-      newExpr = new CastExpression(castType, newExpr);
+      newExpr = new CastExpression(BindingConverter.getType(castType), newExpr);
     }
     return newExpr;
   }
@@ -141,7 +141,7 @@ public class CastResolver extends TreeVisitor {
 
   private void addCast(Expression expr) {
     ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding());
-    CastExpression castExpr = new CastExpression(exprType, null);
+    CastExpression castExpr = new CastExpression(BindingConverter.getType(exprType), null);
     expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
     castExpr.setExpression(expr);
   }
@@ -424,7 +424,7 @@ public class CastResolver extends TreeVisitor {
       List<Expression> operands = node.getOperands();
       if (incompatibleTypes(operands.get(0), operands.get(1))) {
         // Add (id) cast to right-hand operand(s).
-        operands.add(1, new CastExpression(typeEnv.getIdType(), operands.remove(1)));
+        operands.add(1, new CastExpression(typeEnv.getIdTypeMirror(), operands.remove(1)));
       }
     }
   }
@@ -435,7 +435,8 @@ public class CastResolver extends TreeVisitor {
     Expression elseExpr = node.getElseExpression();
     if (incompatibleTypes(thenExpr, elseExpr)) {
       // Add (id) cast to else expression.
-      node.setElseExpression(new CastExpression(typeEnv.getIdType(), TreeUtil.remove(elseExpr)));
+      node.setElseExpression(
+          new CastExpression(typeEnv.getIdTypeMirror(), TreeUtil.remove(elseExpr)));
     }
   }
 

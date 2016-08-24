@@ -227,7 +227,8 @@ public class ConstantBranchPruner extends TreeVisitor {
       return null;
     }
     return new ExpressionStatement(new CastExpression(
-        typeEnv.resolveJavaType("void"), ParenthesizedExpression.parenthesize(sideEffectsExpr)));
+        typeEnv.resolveJavaTypeMirror("void"), 
+        ParenthesizedExpression.parenthesize(sideEffectsExpr)));
   }
 
   /**
