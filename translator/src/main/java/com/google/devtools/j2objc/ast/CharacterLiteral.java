@@ -14,11 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -29,13 +25,6 @@ public class CharacterLiteral extends Expression {
   private char charValue = '\0';
   private final TypeMirror typeMirror;
 
-  public CharacterLiteral(org.eclipse.jdt.core.dom.CharacterLiteral jdtNode) {
-    super(jdtNode);
-    charValue = jdtNode.charValue();
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-  }
-
   public CharacterLiteral(CharacterLiteral other) {
     super(other);
     charValue = other.charValue();
@@ -43,8 +32,12 @@ public class CharacterLiteral extends Expression {
   }
 
   public CharacterLiteral(char charValue, Types typeEnv) {
+    this(charValue, typeEnv.resolveJavaTypeMirror("char"));
+  }
+
+  public CharacterLiteral(char charValue, TypeMirror typeMirror) {
     this.charValue = charValue;
-    typeMirror = BindingConverter.getType(typeEnv.resolveJavaType("char"));
+    this.typeMirror = typeMirror;
   }
 
   @Override

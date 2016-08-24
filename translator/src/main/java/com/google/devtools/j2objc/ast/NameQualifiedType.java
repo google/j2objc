@@ -13,7 +13,7 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node for a name-qualified type (added in JLS8, section 6.5.5.2).
@@ -23,10 +23,8 @@ public class NameQualifiedType extends AnnotatableType {
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
 
-  public NameQualifiedType(org.eclipse.jdt.core.dom.NameQualifiedType jdtNode) {
-    super(jdtNode);
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
+  public NameQualifiedType(TypeMirror typeMirror) {
+    super(typeMirror);
   }
 
   public NameQualifiedType(NameQualifiedType other) {
@@ -43,9 +41,19 @@ public class NameQualifiedType extends AnnotatableType {
   public SimpleName getName() {
     return name.get();
   }
+  
+  public NameQualifiedType setName(SimpleName name) {
+    this.name.set(name);
+    return this;
+  }
 
   public Name getQualifier() {
     return qualifier.get();
+  }
+  
+  public NameQualifiedType setQualifier(Name qualifier) {
+    this.qualifier.set(qualifier);
+    return this;
   }
 
   @Override

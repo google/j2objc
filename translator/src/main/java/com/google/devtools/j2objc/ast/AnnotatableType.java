@@ -13,8 +13,6 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 import javax.lang.model.type.TypeMirror;
@@ -27,15 +25,6 @@ public abstract class AnnotatableType extends Type {
 
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
-  public AnnotatableType(org.eclipse.jdt.core.dom.AnnotatableType jdtNode) {
-    super(jdtNode);
-    if (Options.isJava8Translator()) {
-      for (Object x : jdtNode.annotations()) {
-        annotations.add((Annotation) TreeConverter.convert(x));
-      }
-    }
-  }
-
   public AnnotatableType(AnnotatableType other) {
     super(other);
     annotations.copyFrom(other.annotations());
@@ -47,6 +36,11 @@ public abstract class AnnotatableType extends Type {
 
   public List<Annotation> annotations() {
     return annotations;
+  }
+  
+  public AnnotatableType addAnnotation(Annotation a) {
+    annotations.add(a);
+    return this;
   }
 
   @Override

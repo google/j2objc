@@ -22,10 +22,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public class NullLiteral extends Expression {
 
-  public NullLiteral(org.eclipse.jdt.core.dom.NullLiteral jdtNode) {
-    super(jdtNode);
-  }
-
   public NullLiteral(NullLiteral other) {
     super(other);
   }

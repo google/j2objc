@@ -19,9 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class BlockComment extends Comment {
 
-  public BlockComment(org.eclipse.jdt.core.dom.BlockComment jdtNode) {
-    super(jdtNode);
-  }
+  public BlockComment() {}
 
   public BlockComment(BlockComment other) {
     super(other);

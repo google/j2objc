@@ -14,9 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for a class or interface declaration.
@@ -27,14 +26,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   private ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
   private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
 
-  public TypeDeclaration(org.eclipse.jdt.core.dom.TypeDeclaration jdtNode) {
-    super(jdtNode);
-    superclassType.set((Type) TreeConverter.convert(jdtNode.getSuperclassType()));
-    isInterface = jdtNode.isInterface();
-    for (Object superInterface : jdtNode.superInterfaceTypes()) {
-      superInterfaceTypes.add((Type) TreeConverter.convert(superInterface));
-    }
-  }
+  public TypeDeclaration() {}
 
   public TypeDeclaration(TypeDeclaration other) {
     super(other);
@@ -64,16 +56,27 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     return isInterface;
   }
 
+  public TypeDeclaration setInterface(boolean b) {
+    isInterface = b;
+    return this;
+  }
+
   public Type getSuperclassType() {
     return superclassType.get();
   }
 
-  public void setSuperclassType(Type newSuperclassType) {
+  public TypeDeclaration setSuperclassType(Type newSuperclassType) {
     superclassType.set(newSuperclassType);
+    return this;
   }
 
   public List<Type> getSuperInterfaceTypes() {
     return superInterfaceTypes;
+  }
+
+  public TypeDeclaration addSuperInterfaceType(Type type) {
+    superInterfaceTypes.add(type);
+    return this;
   }
 
   @Override

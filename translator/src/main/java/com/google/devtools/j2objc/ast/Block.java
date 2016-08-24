@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -24,13 +23,6 @@ public class Block extends Statement {
 
   private ChildList<Statement> statements = ChildList.create(Statement.class, this);
   private boolean hasAutoreleasePool = false;
-
-  public Block(org.eclipse.jdt.core.dom.Block jdtNode) {
-    super(jdtNode);
-    for (Object statement : jdtNode.statements()) {
-      statements.add((Statement) TreeConverter.convert(statement));
-    }
-  }
 
   public Block(Block other) {
     super(other);

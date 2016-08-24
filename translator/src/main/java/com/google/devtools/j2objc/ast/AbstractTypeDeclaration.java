@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -34,16 +33,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
       ChildList.create(Statement.class, this);
 
   AbstractTypeDeclaration() {}
-
-  // TODO(tball): remove when all subclasses are converted.
-  AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {
-    super(jdtNode);
-    typeElement = BindingConverter.getTypeElement(jdtNode.resolveBinding());
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    for (Object bodyDecl : jdtNode.bodyDeclarations()) {
-      bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
-    }
-  }
 
   public AbstractTypeDeclaration(AbstractTypeDeclaration other) {
     super(other);

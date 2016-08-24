@@ -14,17 +14,19 @@
 
 package com.google.devtools.j2objc.ast;
 
+import javax.lang.model.type.TypeMirror;
+
 /**
  * Node type for a qualified type.
  */
 public class QualifiedType extends AnnotatableType {
 
-  public QualifiedType(org.eclipse.jdt.core.dom.QualifiedType jdtNode) {
-    super(jdtNode);
-  }
-
   public QualifiedType(QualifiedType other) {
     super(other);
+  }
+  
+  public QualifiedType(TypeMirror mirror) {
+    super(mirror);
   }
 
   @Override

@@ -19,9 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public abstract class Comment extends TreeNode {
 
-  protected Comment(org.eclipse.jdt.core.dom.Comment jdtNode) {
-    super(jdtNode);
-  }
+  protected Comment() {}
 
   protected Comment(Comment other) {
     super(other);

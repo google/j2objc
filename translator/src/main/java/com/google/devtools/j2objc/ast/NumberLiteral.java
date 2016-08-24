@@ -15,11 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -31,16 +27,6 @@ public class NumberLiteral extends Expression {
   private Number value = null;
   private final TypeMirror typeMirror;
 
-  public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
-    super(jdtNode);
-    token = jdtNode.getToken();
-    Object constantValue = jdtNode.resolveConstantExpressionValue();
-    assert constantValue instanceof Number;
-    value = (Number) constantValue;
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-  }
-
   public NumberLiteral(NumberLiteral other) {
     super(other);
     token = other.getToken();
@@ -49,8 +35,12 @@ public class NumberLiteral extends Expression {
   }
 
   public NumberLiteral(Number value, Types typeEnv) {
+    this(value, typeForNumber(value, typeEnv));
+  }
+
+  public NumberLiteral(Number value, TypeMirror typeMirror) {
     this.value = value;
-    this.typeMirror = BindingConverter.getType(typeForNumber(value, typeEnv));
+    this.typeMirror = typeMirror;
   }
 
   public static NumberLiteral newIntLiteral(Integer i, Types typeEnv) {
@@ -71,8 +61,18 @@ public class NumberLiteral extends Expression {
     return token;
   }
 
+  public NumberLiteral setToken(String token) {
+    this.token = token;
+    return this;
+  }
+
   public Number getValue() {
     return value;
+  }
+
+  public NumberLiteral setValue(Number newValue) {
+    value = newValue;
+    return this;
   }
 
   @Override
@@ -92,19 +92,19 @@ public class NumberLiteral extends Expression {
     Preconditions.checkNotNull(value);
   }
 
-  private static ITypeBinding typeForNumber(Number value, Types typeEnv) {
+  private static TypeMirror typeForNumber(Number value, Types typeEnv) {
     if (value instanceof Byte) {
-      return typeEnv.resolveJavaType("byte");
+      return typeEnv.resolveJavaTypeMirror("byte");
     } else if (value instanceof Short) {
-      return typeEnv.resolveJavaType("short");
+      return typeEnv.resolveJavaTypeMirror("short");
     } else if (value instanceof Integer) {
-      return typeEnv.resolveJavaType("int");
+      return typeEnv.resolveJavaTypeMirror("int");
     } else if (value instanceof Long) {
-      return typeEnv.resolveJavaType("long");
+      return typeEnv.resolveJavaTypeMirror("long");
     } else if (value instanceof Float) {
-      return typeEnv.resolveJavaType("float");
+      return typeEnv.resolveJavaTypeMirror("float");
     } else if (value instanceof Double) {
-      return typeEnv.resolveJavaType("double");
+      return typeEnv.resolveJavaTypeMirror("double");
     } else {
       throw new AssertionError("Invalid number literal type: " + value.getClass().getName());
     }

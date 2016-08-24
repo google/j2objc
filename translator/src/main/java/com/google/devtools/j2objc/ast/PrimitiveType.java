@@ -21,10 +21,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public class PrimitiveType extends AnnotatableType {
 
-  public PrimitiveType(org.eclipse.jdt.core.dom.PrimitiveType jdtNode) {
-    super(jdtNode);
-  }
-
   public PrimitiveType(PrimitiveType other) {
     super(other);
   }

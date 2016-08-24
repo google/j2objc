@@ -13,8 +13,8 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Type node for an intersection type in a cast expression (added in JLS8, section 4.9).
@@ -23,11 +23,8 @@ public class IntersectionType extends Type {
 
   private ChildList<Type> types = ChildList.create(Type.class, this);
 
-  public IntersectionType(org.eclipse.jdt.core.dom.IntersectionType jdtNode) {
-    super(jdtNode);
-    for (Object x : jdtNode.types()) {
-      types.add((Type) TreeConverter.convert(x));
-    }
+  public IntersectionType(TypeMirror typeMirror) {
+    super(typeMirror);
   }
 
   public IntersectionType(IntersectionType other) {
@@ -42,6 +39,11 @@ public class IntersectionType extends Type {
 
   public List<Type> types() {
     return types;
+  }
+
+  public IntersectionType addType(Type type) {
+    types.add(type);
+    return this;
   }
 
   @Override

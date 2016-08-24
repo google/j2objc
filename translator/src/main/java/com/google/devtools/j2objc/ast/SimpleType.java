@@ -21,10 +21,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public class SimpleType extends AnnotatableType {
 
-  public SimpleType(org.eclipse.jdt.core.dom.SimpleType jdtNode) {
-    super(jdtNode);
-  }
-
   public SimpleType(SimpleType other) {
     super(other);
   }

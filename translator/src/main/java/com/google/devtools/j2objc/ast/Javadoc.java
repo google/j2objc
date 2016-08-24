@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -24,12 +23,7 @@ public class Javadoc extends Comment {
 
   private ChildList<TagElement> tags = ChildList.create(TagElement.class, this);
 
-  public Javadoc(org.eclipse.jdt.core.dom.Javadoc jdtNode) {
-    super(jdtNode);
-    for (Object tag : jdtNode.tags()) {
-      tags.add((TagElement) TreeConverter.convert(tag));
-    }
-  }
+  public Javadoc() {}
 
   public Javadoc(Javadoc other) {
     super(other);
@@ -43,6 +37,11 @@ public class Javadoc extends Comment {
 
   public List<TagElement> getTags() {
     return tags;
+  }
+  
+  public Javadoc addTag(TagElement tag) {
+    tags.add(tag);
+    return this;
   }
 
   @Override

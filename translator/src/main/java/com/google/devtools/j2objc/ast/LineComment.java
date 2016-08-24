@@ -19,9 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class LineComment extends Comment {
 
-  public LineComment(org.eclipse.jdt.core.dom.LineComment jdtNode) {
-    super(jdtNode);
-  }
+  public LineComment() {}
 
   public LineComment(LineComment other) {
     super(other);
