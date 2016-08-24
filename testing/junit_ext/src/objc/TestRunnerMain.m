@@ -6,6 +6,8 @@
 #include <signal.h>
 #include <stdio.h>
 
+#import <UIKit/UIKit.h>
+
 static void signalHandler(int sig) {
   // Ensure this looks like a GTM_UNIT_TESTING failure.
   printf("[  FAILED  ]\n");
@@ -31,7 +33,23 @@ void installSignalHandler() {
   signal(SIGPIPE, signalHandler);
 }
 
+@interface TestRunnerAppDelegate : UIResponder <UIApplicationDelegate>
+@end
+
+@implementation TestRunnerAppDelegate
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application {
+  [self performSelector:@selector(runTestsAndExit) withObject:nil afterDelay:0];
+}
+
+- (void)runTestsAndExit {
+  jint exitStatus = [ComGoogleJ2objcTestingJUnitTestRunner mainWithNSStringArray:nil];
+  exit(exitStatus);
+}
+
+@end
+
 int main(int argc, char *argv[]) {
   installSignalHandler();
-  return [ComGoogleJ2objcTestingJUnitTestRunner mainWithNSStringArray:nil];
+  UIApplicationMain(argc, argv, nil, @"TestRunnerAppDelegate");
 }
