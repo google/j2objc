@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -43,6 +44,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -297,9 +299,9 @@ public class ArrayRewriter extends TreeVisitor {
   private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {
     ITypeBinding exprType = expr.getTypeBinding();
     if (name.getIdentifier().equals("length") && exprType.isArray()) {
-      GeneratedVariableBinding sizeField = new GeneratedVariableBinding(
+      VariableElement sizeField = BindingConverter.getVariableElement(new GeneratedVariableBinding(
           "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false,
-          typeEnv.mapType(exprType), null);
+          typeEnv.mapType(exprType), null));
       node.replaceWith(new FieldAccess(sizeField, TreeUtil.remove(expr)));
     }
   }

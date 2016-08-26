@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -130,7 +131,9 @@ class RuntimeAnnotationGenerator {
   private Expression createAnnotations(List<Annotation> annotations) {
     List<Expression> expressions = new ArrayList<>();
     for (Annotation annotation : annotations) {
-      expressions.add(createAnnotation(annotation.getAnnotationBinding()));
+      IAnnotationBinding annotationBinding =
+          BindingConverter.unwrapAnnotationMirror(annotation.getAnnotationMirror());
+      expressions.add(createAnnotation(annotationBinding));
     }
     return createObjectArray(expressions, ANNOTATION_TYPE);
   }

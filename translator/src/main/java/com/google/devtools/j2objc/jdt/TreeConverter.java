@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotatableType;
@@ -55,6 +56,7 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.IntersectionType;
@@ -77,6 +79,7 @@ import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.PrimitiveType;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.QualifiedType;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -110,12 +113,16 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -206,15 +213,15 @@ public class TreeConverter {
       case ASTNode.CREATION_REFERENCE:
         return new CreationReference((org.eclipse.jdt.core.dom.CreationReference) jdtNode);
       case ASTNode.DIMENSION:
-        return new Dimension((org.eclipse.jdt.core.dom.Dimension) jdtNode);
+        return convertDimension((org.eclipse.jdt.core.dom.Dimension) jdtNode);
       case ASTNode.DO_STATEMENT:
-        return new DoStatement((org.eclipse.jdt.core.dom.DoStatement) jdtNode);
+        return convertDoStatement((org.eclipse.jdt.core.dom.DoStatement) jdtNode);
       case ASTNode.EMPTY_STATEMENT:
-        return new EmptyStatement((org.eclipse.jdt.core.dom.EmptyStatement) jdtNode);
+        return new EmptyStatement();
       case ASTNode.ENHANCED_FOR_STATEMENT:
-        return new EnhancedForStatement((org.eclipse.jdt.core.dom.EnhancedForStatement) jdtNode);
+        return convertEnhancedForStatement((org.eclipse.jdt.core.dom.EnhancedForStatement) jdtNode);
       case ASTNode.ENUM_CONSTANT_DECLARATION:
-        return new EnumConstantDeclaration(
+        return convertEnumConstantDeclaration(
             (org.eclipse.jdt.core.dom.EnumConstantDeclaration) jdtNode);
       case ASTNode.ENUM_DECLARATION:
         return convertEnumDeclaration((org.eclipse.jdt.core.dom.EnumDeclaration) jdtNode);
@@ -222,36 +229,35 @@ public class TreeConverter {
         return new ExpressionMethodReference(
             (org.eclipse.jdt.core.dom.ExpressionMethodReference) jdtNode);
       case ASTNode.EXPRESSION_STATEMENT:
-        return new ExpressionStatement((org.eclipse.jdt.core.dom.ExpressionStatement) jdtNode);
+        return convertExpressionStatement((org.eclipse.jdt.core.dom.ExpressionStatement) jdtNode);
       case ASTNode.FIELD_ACCESS:
-        return new FieldAccess((org.eclipse.jdt.core.dom.FieldAccess) jdtNode);
+        return convertFieldAccess((org.eclipse.jdt.core.dom.FieldAccess) jdtNode);
       case ASTNode.FIELD_DECLARATION:
-        return new FieldDeclaration((org.eclipse.jdt.core.dom.FieldDeclaration) jdtNode);
+        return convertFieldDeclaration((org.eclipse.jdt.core.dom.FieldDeclaration) jdtNode);
       case ASTNode.FOR_STATEMENT:
-        return new ForStatement((org.eclipse.jdt.core.dom.ForStatement) jdtNode);
+        return convertForStatement((org.eclipse.jdt.core.dom.ForStatement) jdtNode);
       case ASTNode.IF_STATEMENT:
-        return new IfStatement((org.eclipse.jdt.core.dom.IfStatement) jdtNode);
+        return convertIfStatement((org.eclipse.jdt.core.dom.IfStatement) jdtNode);
       case ASTNode.INFIX_EXPRESSION:
-        return new InfixExpression((org.eclipse.jdt.core.dom.InfixExpression) jdtNode);
+        return convertInfixExpression((org.eclipse.jdt.core.dom.InfixExpression) jdtNode);
       case ASTNode.INTERSECTION_TYPE:
         return convertIntersectionType((org.eclipse.jdt.core.dom.IntersectionType) jdtNode);
       case ASTNode.INITIALIZER:
-        return new Initializer((org.eclipse.jdt.core.dom.Initializer) jdtNode);
+        return convertInitializer((org.eclipse.jdt.core.dom.Initializer) jdtNode);
       case ASTNode.INSTANCEOF_EXPRESSION:
-        return new InstanceofExpression((org.eclipse.jdt.core.dom.InstanceofExpression) jdtNode);
+        return convertInstanceofExpression((org.eclipse.jdt.core.dom.InstanceofExpression) jdtNode);
       case ASTNode.JAVADOC:
         return convertJavadoc((org.eclipse.jdt.core.dom.Javadoc) jdtNode);
       case ASTNode.LABELED_STATEMENT:
-        return new LabeledStatement((org.eclipse.jdt.core.dom.LabeledStatement) jdtNode);
+        return convertLabeledStatement((org.eclipse.jdt.core.dom.LabeledStatement) jdtNode);
       case ASTNode.LAMBDA_EXPRESSION:
         return new LambdaExpression((org.eclipse.jdt.core.dom.LambdaExpression) jdtNode);
       case ASTNode.LINE_COMMENT:
         return new LineComment();
       case ASTNode.MARKER_ANNOTATION:
-        return MarkerAnnotation.convert(
-            (org.eclipse.jdt.core.dom.MarkerAnnotation) jdtNode);
+        return convertMarkerAnnotation((org.eclipse.jdt.core.dom.MarkerAnnotation) jdtNode);
       case ASTNode.MEMBER_VALUE_PAIR:
-        return new MemberValuePair((org.eclipse.jdt.core.dom.MemberValuePair) jdtNode);
+        return convertMemberValuePair((org.eclipse.jdt.core.dom.MemberValuePair) jdtNode);
       case ASTNode.METHOD_DECLARATION:
         return new MethodDeclaration((org.eclipse.jdt.core.dom.MethodDeclaration) jdtNode);
       case ASTNode.METHOD_INVOCATION:
@@ -259,13 +265,13 @@ public class TreeConverter {
       case ASTNode.NAME_QUALIFIED_TYPE:
         return convertNameQualifiedType((org.eclipse.jdt.core.dom.NameQualifiedType) jdtNode);
       case ASTNode.NORMAL_ANNOTATION:
-        return new NormalAnnotation((org.eclipse.jdt.core.dom.NormalAnnotation) jdtNode);
+        return convertNormalAnnotation((org.eclipse.jdt.core.dom.NormalAnnotation) jdtNode);
       case ASTNode.NULL_LITERAL:
         return new NullLiteral();
       case ASTNode.NUMBER_LITERAL:
         return convertNumberLiteral((org.eclipse.jdt.core.dom.NumberLiteral) jdtNode);
       case ASTNode.PACKAGE_DECLARATION:
-        return new PackageDeclaration((org.eclipse.jdt.core.dom.PackageDeclaration) jdtNode);
+        return convertPackageDeclaration((org.eclipse.jdt.core.dom.PackageDeclaration) jdtNode);
       case ASTNode.PARAMETERIZED_TYPE:
         return new ParameterizedType((org.eclipse.jdt.core.dom.ParameterizedType) jdtNode);
       case ASTNode.PARENTHESIZED_EXPRESSION:
@@ -288,7 +294,7 @@ public class TreeConverter {
       case ASTNode.SIMPLE_TYPE:
         return convertSimpleType((org.eclipse.jdt.core.dom.SimpleType) jdtNode);
       case ASTNode.SINGLE_MEMBER_ANNOTATION:
-        return SingleMemberAnnotation.convert(
+        return convertSingleMemberAnnotation(
             (org.eclipse.jdt.core.dom.SingleMemberAnnotation) jdtNode);
       case ASTNode.SINGLE_VARIABLE_DECLARATION:
         return new SingleVariableDeclaration(
@@ -299,7 +305,7 @@ public class TreeConverter {
         return new SuperConstructorInvocation(
             (org.eclipse.jdt.core.dom.SuperConstructorInvocation) jdtNode);
       case ASTNode.SUPER_FIELD_ACCESS:
-        return new SuperFieldAccess((org.eclipse.jdt.core.dom.SuperFieldAccess) jdtNode);
+        return convertSuperFieldAccess((org.eclipse.jdt.core.dom.SuperFieldAccess) jdtNode);
       case ASTNode.SUPER_METHOD_INVOCATION:
         return new SuperMethodInvocation((org.eclipse.jdt.core.dom.SuperMethodInvocation) jdtNode);
       case ASTNode.SUPER_METHOD_REFERENCE:
@@ -341,7 +347,7 @@ public class TreeConverter {
         return new VariableDeclarationStatement(
             (org.eclipse.jdt.core.dom.VariableDeclarationStatement) jdtNode);
       case ASTNode.WHILE_STATEMENT:
-        return new WhileStatement((org.eclipse.jdt.core.dom.WhileStatement) jdtNode);
+        return convertWhileStatement((org.eclipse.jdt.core.dom.WhileStatement) jdtNode);
       // These nodes only appear in comments and J2ObjC doens't need any
       // information from their subtree so we just convert them to TextElement.
       case ASTNode.MEMBER_REF:
@@ -494,7 +500,7 @@ public class TreeConverter {
     return new BreakStatement()
         .setLabel((SimpleName) convert(node.getLabel()));
   }
-  
+
   private static TreeNode convertCastExpression(org.eclipse.jdt.core.dom.CastExpression node) {
     Type type = (Type) convert(node.getType());
     Expression expr = (Expression) convert(node.getExpression());
@@ -510,7 +516,7 @@ public class TreeConverter {
     }
     return newNode;
   }
-  
+
   private static TreeNode convertCatchClause(org.eclipse.jdt.core.dom.CatchClause node) {
     return new CatchClause()
         .setBody((Block) convert(node.getBody()))
@@ -521,7 +527,7 @@ public class TreeConverter {
     return convertExpression(node, new CharacterLiteral(node.charValue(),
         BindingConverter.getType(node.resolveTypeBinding())));
   }
-  
+
   private static TreeNode convertConditionalExpression(
       org.eclipse.jdt.core.dom.ConditionalExpression node) {
     return new ConditionalExpression()
@@ -530,7 +536,7 @@ public class TreeConverter {
         .setThenExpression((Expression) convert(node.getThenExpression()))
         .setElseExpression((Expression) convert(node.getElseExpression()));
   }
-  
+
   private static TreeNode convertConstructorInvocation(
       org.eclipse.jdt.core.dom.ConstructorInvocation node) {
     ExecutableElement method =
@@ -547,6 +553,43 @@ public class TreeConverter {
       org.eclipse.jdt.core.dom.ContinueStatement node) {
     return new ContinueStatement()
         .setLabel((SimpleName) convert(node.getLabel()));
+  }
+
+  private static TreeNode convertDimension(org.eclipse.jdt.core.dom.Dimension node) {
+    Dimension newNode = new Dimension();
+    for (Object x : node.annotations()) {
+      newNode.addAnnotation((Annotation) convert(x));
+    }
+    return newNode;
+  }
+
+  private static TreeNode convertDoStatement(org.eclipse.jdt.core.dom.DoStatement node) {
+    return new DoStatement()
+        .setExpression((Expression) convert(node.getExpression()))
+        .setBody((Statement) convert(node.getBody()));
+  }
+
+  private static TreeNode convertEnhancedForStatement(
+      org.eclipse.jdt.core.dom.EnhancedForStatement node) {
+    return new EnhancedForStatement()
+        .setParameter((SingleVariableDeclaration) convert(node.getParameter()))
+        .setExpression((Expression) convert(node.getExpression()))
+        .setBody((Statement) convert(node.getBody()));
+  }
+
+  private static TreeNode convertEnumConstantDeclaration(
+      org.eclipse.jdt.core.dom.EnumConstantDeclaration node) {
+    EnumConstantDeclaration newNode = new EnumConstantDeclaration()
+        .setVariableBinding(BindingConverter.wrapBinding(node.resolveVariable()))
+        .setExecutableElement(
+            BindingConverter.getExecutableElement(node.resolveConstructorBinding()))
+        .setName((SimpleName) convert(node.getName()))
+        .setAnonymousClassDeclaration(
+            (AnonymousClassDeclaration) convert(node.getAnonymousClassDeclaration()));
+    for (Object argument : node.arguments()) {
+      newNode.addArgument((Expression) convert(argument));
+    }
+    return newNode;
   }
 
   private static TreeNode convertEnumDeclaration(org.eclipse.jdt.core.dom.EnumDeclaration node) {
@@ -566,6 +609,98 @@ public class TreeConverter {
     return newNode.setConstantValue(node.resolveConstantExpressionValue());
   }
 
+  private static TreeNode convertExpressionStatement(
+      org.eclipse.jdt.core.dom.ExpressionStatement node) {
+    return new ExpressionStatement()
+        .setExpression((Expression) convert(node.getExpression()));
+  }
+
+  private static TreeNode convertFieldAccess(org.eclipse.jdt.core.dom.FieldAccess node) {
+    return new FieldAccess()
+        .setVariableElement(BindingConverter.getVariableElement(node.resolveFieldBinding()))
+        .setExpression((Expression) convert(node.getExpression()))
+        .setName((SimpleName) convert(node.getName()));
+  }
+
+  private static TreeNode convertFieldDeclaration(org.eclipse.jdt.core.dom.FieldDeclaration node) {
+    FieldDeclaration newNode = new FieldDeclaration();
+    convertBodyDeclaration(node, newNode);
+    for (Object fragment : node.fragments()) {
+      newNode.addFragment((VariableDeclarationFragment) convert(fragment));
+    }
+    return newNode
+        .setType((Type) convert(node.getType()));
+  }
+
+  private static TreeNode convertForStatement(org.eclipse.jdt.core.dom.ForStatement node) {
+    ForStatement newNode = new ForStatement();
+    for (Object initializer : node.initializers()) {
+      newNode.addInitializer((Expression) convert(initializer));
+    }
+    for (Object updater : node.updaters()) {
+      newNode.addUpdater((Expression) convert(updater));
+    }
+    return newNode
+        .setExpression((Expression) convert(node.getExpression()))
+        .setBody((Statement) convert(node.getBody()));
+  }
+
+  private static TreeNode convertIfStatement(org.eclipse.jdt.core.dom.IfStatement node) {
+    return new IfStatement()
+        .setExpression((Expression) convert(node.getExpression()))
+        .setThenStatement((Statement) convert(node.getThenStatement()))
+        .setElseStatement((Statement) convert(node.getElseStatement()));
+  }
+
+  private static TreeNode convertInfixExpression(org.eclipse.jdt.core.dom.InfixExpression node) {
+    InfixExpression newNode = new InfixExpression();
+    convertExpression(node, newNode);
+    newNode
+        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
+        .setOperator(Operator.parse(node.getOperator().toString()));
+
+    // The JDT parser apparently does not always take advantage of extended
+    // operands, resulting in potentially very deep trees that can overflow the
+    // stack. This code traverses the subtree non-recursively and merges all
+    // children that have the same operator into this node using extended
+    // operands.
+    List<StackState> stack = Lists.newArrayList();
+    stack.add(new StackState(node));
+    while (!stack.isEmpty()) {
+      StackState currentState = stack.get(stack.size() - 1);
+      org.eclipse.jdt.core.dom.Expression child = currentState.nextChild();
+      if (child == null) {
+        stack.remove(stack.size() - 1);
+        continue;
+      }
+      if (child instanceof org.eclipse.jdt.core.dom.InfixExpression) {
+        org.eclipse.jdt.core.dom.InfixExpression infixChild =
+            (org.eclipse.jdt.core.dom.InfixExpression) child;
+        if (infixChild.getOperator().equals(node.getOperator())) {
+          stack.add(new StackState(infixChild));
+          continue;
+        }
+      }
+      newNode.addOperand((Expression) TreeConverter.convert(child));
+    }
+    return newNode;
+  }
+
+  private static TreeNode convertInitializer(org.eclipse.jdt.core.dom.Initializer node) {
+    Initializer newNode = new Initializer();
+    convertBodyDeclaration(node, newNode);
+    return newNode
+        .setBody((Block) convert(node.getBody()));
+  }
+
+  private static TreeNode convertInstanceofExpression(
+      org.eclipse.jdt.core.dom.InstanceofExpression node) {
+    return new InstanceofExpression()
+        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
+        .setLeftOperand((Expression) convert(node.getLeftOperand()))
+        .setRightOperand((Type) convert(node.getRightOperand()));
+  }
+
   private static TreeNode convertIntersectionType(org.eclipse.jdt.core.dom.IntersectionType node) {
     JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
     IntersectionType newNode = new IntersectionType(type);
@@ -583,12 +718,54 @@ public class TreeConverter {
     return newNode;
   }
 
+  private static TreeNode convertLabeledStatement(org.eclipse.jdt.core.dom.LabeledStatement node) {
+    return new LabeledStatement()
+        .setLabel((SimpleName) convert(node.getLabel()))
+        .setBody((Statement) convert(node.getBody()));
+  }
+
+  private static TreeNode convertAnnotation(org.eclipse.jdt.core.dom.Annotation node,
+      Annotation newNode) {
+    convertExpression(node, newNode);
+    IAnnotationBinding binding = BindingConverter.wrapBinding(node.resolveAnnotationBinding());
+    return newNode
+        .setAnnotationMirror(new JdtAnnotationMirror(binding))
+        .setTypeName((Name) convert(node.getTypeName()));
+  }
+
+  private static TreeNode convertMarkerAnnotation(org.eclipse.jdt.core.dom.MarkerAnnotation node) {
+    Annotation newNode = null;
+    if (node.getTypeName().getFullyQualifiedName().equals(Property.class.getSimpleName())) {
+      newNode = new PropertyAnnotation();
+      for (String attr : BindingUtil.parseAttributeString(node.resolveAnnotationBinding())) {
+        ((PropertyAnnotation) newNode).addAttribute(attr);
+      }
+    } else {
+      newNode = new MarkerAnnotation();
+    }
+    return convertAnnotation(node, newNode);
+  }
+
+  private static TreeNode convertMemberValuePair(org.eclipse.jdt.core.dom.MemberValuePair node) {
+    return new MemberValuePair()
+        .setName((SimpleName) convert(node.getName()))
+        .setValue((Expression) convert(node.getValue()));
+  }
+
   private static TreeNode convertNameQualifiedType(
       org.eclipse.jdt.core.dom.NameQualifiedType node) {
     JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
     return ((NameQualifiedType) convertAnnotatableType(node, new NameQualifiedType(type)))
         .setName((SimpleName) convert(node.getName()))
         .setQualifier((Name) convert(node.getQualifier()));
+  }
+
+  private static TreeNode convertNormalAnnotation(org.eclipse.jdt.core.dom.NormalAnnotation node) {
+    NormalAnnotation newNode = new NormalAnnotation();
+    for (Object value : node.values()) {
+      newNode.addValue((MemberValuePair) convert(value));
+    }
+    return convertAnnotation(node, newNode);
   }
 
   private static TreeNode convertNumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral node) {
@@ -598,6 +775,18 @@ public class TreeConverter {
     ITypeBinding typeBinding = BindingConverter.wrapBinding(node.resolveTypeBinding());
     return convertExpression(node, new NumberLiteral(value, BindingConverter.getType(typeBinding))
         .setToken(node.getToken()));
+  }
+
+  private static TreeNode convertPackageDeclaration(
+      org.eclipse.jdt.core.dom.PackageDeclaration node) {
+    PackageDeclaration newNode = new PackageDeclaration()
+        .setName((Name) convert(node.getName()))
+        .setPackageElement((PackageElement) BindingConverter.getPackageElement(node))
+        .setJavadoc((Javadoc) convert(node.getJavadoc()));
+    for (Object modifier : node.annotations()) {
+      newNode.addAnnotation((Annotation) TreeConverter.convert(modifier));
+    }
+    return newNode;
   }
 
   private static TreeNode convertPrimitiveType(org.eclipse.jdt.core.dom.PrimitiveType node) {
@@ -615,6 +804,28 @@ public class TreeConverter {
     return convertAnnotatableType(node, new SimpleType(type));
   }
 
+  private static TreeNode convertSingleMemberAnnotation(
+      org.eclipse.jdt.core.dom.SingleMemberAnnotation node) {
+    Annotation newNode = null;
+    if (node.getTypeName().getFullyQualifiedName().equals(Property.class.getSimpleName())) {
+      newNode = new PropertyAnnotation();
+      for (String attr : BindingUtil.parseAttributeString(node.resolveAnnotationBinding())) {
+        ((PropertyAnnotation) newNode).addAttribute(attr);
+      }
+    } else {
+      newNode = new SingleMemberAnnotation()
+          .setValue((Expression) convert(node.getValue()));
+    }
+    return convertAnnotation(node, newNode);
+  }
+
+  private static TreeNode convertSuperFieldAccess(org.eclipse.jdt.core.dom.SuperFieldAccess node) {
+    return new SuperFieldAccess()
+        .setVariableElement(BindingConverter.getVariableElement(node.resolveFieldBinding()))
+        .setQualifier((Name) convert(node.getQualifier()))
+        .setName((SimpleName) convert(node.getName()));
+  }
+
   private static TreeNode convertType(
       org.eclipse.jdt.core.dom.Type node, Type newNode) {
     return newNode.setTypeMirror(BindingConverter.getType(node.resolveBinding()));
@@ -629,5 +840,34 @@ public class TreeConverter {
       newNode.addSuperInterfaceType((Type) convert(superInterface));
     }
     return newNode;
+  }
+
+  private static TreeNode convertWhileStatement(org.eclipse.jdt.core.dom.WhileStatement node) {
+    return new WhileStatement()
+        .setExpression((Expression) convert(node.getExpression()))
+        .setBody((Statement) convert(node.getBody()));
+  }
+
+  // Helper class for convertInfixExpression().
+  private static class StackState {
+    private final org.eclipse.jdt.core.dom.InfixExpression expression;
+    private int nextChild = -2;
+
+    private StackState(org.eclipse.jdt.core.dom.InfixExpression expr) {
+      expression = expr;
+    }
+
+    private org.eclipse.jdt.core.dom.Expression nextChild() {
+      int childIdx = nextChild++;
+      if (childIdx == -2) {
+        return expression.getLeftOperand();
+      } else if (childIdx == -1) {
+        return expression.getRightOperand();
+      } else if (childIdx < expression.extendedOperands().size()) {
+        return (org.eclipse.jdt.core.dom.Expression) expression.extendedOperands().get(childIdx);
+      } else {
+        return null;
+      }
+    }
   }
 }

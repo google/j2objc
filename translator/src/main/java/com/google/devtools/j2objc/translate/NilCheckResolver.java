@@ -58,11 +58,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +66,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Adds nil_chk calls where required to maintain compatibility Java's
@@ -426,7 +425,7 @@ public class NilCheckResolver extends TreeVisitor {
   @Override
   public void endVisit(FieldAccess node) {
     // Static fields lookups don't dereference the object expression.
-    if (!BindingUtil.isStatic(node.getVariableBinding())) {
+    if (!ElementUtil.isStatic(node.getVariableElement())) {
       addNilCheck(node.getExpression());
     }
   }

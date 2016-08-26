@@ -61,6 +61,11 @@ public class ClassInstanceCreation extends Expression {
     arguments.copyFrom(other.getArguments());
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
+  
+  public ClassInstanceCreation(ExecutableElement method, Type type) {
+    this.method = method;
+    this.type.set(type);
+  }
 
   public ClassInstanceCreation(IMethodBinding methodBinding, Type type) {
     method = BindingConverter.getExecutableElement(methodBinding);

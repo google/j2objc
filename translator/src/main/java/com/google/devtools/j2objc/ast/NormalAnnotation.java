@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -24,12 +23,7 @@ public class NormalAnnotation extends Annotation {
 
   private ChildList<MemberValuePair> values = ChildList.create(MemberValuePair.class, this);
 
-  public NormalAnnotation(org.eclipse.jdt.core.dom.NormalAnnotation jdtNode) {
-    super(jdtNode);
-    for (Object value : jdtNode.values()) {
-      values.add((MemberValuePair) TreeConverter.convert(value));
-    }
-  }
+  public NormalAnnotation() {}
 
   public NormalAnnotation(NormalAnnotation other) {
     super(other);
@@ -43,6 +37,10 @@ public class NormalAnnotation extends Annotation {
 
   public List<MemberValuePair> getValues() {
     return values;
+  }
+
+  public void addValue(MemberValuePair value) {
+    values.add(value);
   }
 
   @Override

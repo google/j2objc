@@ -14,12 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node for an enum constant.
@@ -33,19 +32,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   private final ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
       ChildLink.create(AnonymousClassDeclaration.class, this);
 
-  public EnumConstantDeclaration(org.eclipse.jdt.core.dom.EnumConstantDeclaration jdtNode) {
-    super(jdtNode);
-    variableBinding = BindingConverter.wrapBinding(jdtNode.resolveVariable());
-    IMethodBinding methodBinding = BindingConverter.wrapBinding(
-        jdtNode.resolveConstructorBinding());
-    method = BindingConverter.getExecutableElement(methodBinding);
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    for (Object argument : jdtNode.arguments()) {
-      arguments.add((Expression) TreeConverter.convert(argument));
-    }
-    anonymousClassDeclaration.set((AnonymousClassDeclaration)
-        TreeConverter.convert(jdtNode.getAnonymousClassDeclaration()));
-  }
+  public EnumConstantDeclaration() {}
 
   public EnumConstantDeclaration(EnumConstantDeclaration other) {
     super(other);
@@ -65,32 +52,50 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     return variableBinding;
   }
 
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(method);
+  public EnumConstantDeclaration setVariableBinding(IVariableBinding binding) {
+    this.variableBinding = binding;
+    return this;
   }
 
-  public void setMethodBinding(IMethodBinding newMethodBinding) {
-    method = BindingConverter.getExecutableElement(newMethodBinding);
+  // TODO(tball): remove when javac migration is complete.
+  public IMethodBinding getMethodBinding() {
+    return (IMethodBinding) BindingConverter.unwrapElement(method);
   }
 
   public ExecutableElement getExecutableElement() {
     return method;
   }
 
+  public EnumConstantDeclaration setExecutableElement(ExecutableElement newMethod) {
+    method = newMethod;
+    return this;
+  }
+
   public SimpleName getName() {
     return name.get();
+  }
+
+  public EnumConstantDeclaration setName(SimpleName newName) {
+    name.set(newName);
+    return this;
   }
 
   public List<Expression> getArguments() {
     return arguments;
   }
 
+  public void addArgument(Expression arg) {
+    arguments.add(arg);
+  }
+
   public AnonymousClassDeclaration getAnonymousClassDeclaration() {
     return anonymousClassDeclaration.get();
   }
 
-  public void setAnonymousClassDeclaration(AnonymousClassDeclaration newAnonymousClassDeclaration) {
+  public EnumConstantDeclaration setAnonymousClassDeclaration(
+      AnonymousClassDeclaration newAnonymousClassDeclaration) {
     anonymousClassDeclaration.set(newAnonymousClassDeclaration);
+    return this;
   }
 
   @Override

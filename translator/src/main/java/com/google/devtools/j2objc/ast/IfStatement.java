@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * If statement node type.
  */
@@ -25,12 +23,7 @@ public class IfStatement extends Statement {
   private ChildLink<Statement> thenStatement = ChildLink.create(Statement.class, this);
   private ChildLink<Statement> elseStatement = ChildLink.create(Statement.class, this);
 
-  public IfStatement(org.eclipse.jdt.core.dom.IfStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    thenStatement.set((Statement) TreeConverter.convert(jdtNode.getThenStatement()));
-    elseStatement.set((Statement) TreeConverter.convert(jdtNode.getElseStatement()));
-  }
+  public IfStatement() {}
 
   public IfStatement(IfStatement other) {
     super(other);
@@ -38,8 +31,6 @@ public class IfStatement extends Statement {
     thenStatement.copyFrom(other.getThenStatement());
     elseStatement.copyFrom(other.getElseStatement());
   }
-
-  public IfStatement() {}
 
   @Override
   public Kind getKind() {
@@ -50,24 +41,27 @@ public class IfStatement extends Statement {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public IfStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public Statement getThenStatement() {
     return thenStatement.get();
   }
 
-  public void setThenStatement(Statement newThenStatement) {
+  public IfStatement setThenStatement(Statement newThenStatement) {
     thenStatement.set(newThenStatement);
+    return this;
   }
 
   public Statement getElseStatement() {
     return elseStatement.get();
   }
 
-  public void setElseStatement(Statement newElseStatement) {
+  public IfStatement setElseStatement(Statement newElseStatement) {
     elseStatement.set(newElseStatement);
+    return this;
   }
 
   @Override

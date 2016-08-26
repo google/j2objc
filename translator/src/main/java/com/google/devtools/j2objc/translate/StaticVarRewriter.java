@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
@@ -79,7 +80,7 @@ public class StaticVarRewriter extends TreeVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    IVariableBinding var = node.getVariableBinding();
+    IVariableBinding var = BindingConverter.unwrapVariableElement(node.getVariableElement());
     if (BindingUtil.isInstanceVar(var)) {
       node.getExpression().accept(this);
       return false;

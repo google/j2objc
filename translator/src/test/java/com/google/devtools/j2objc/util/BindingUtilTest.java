@@ -38,13 +38,13 @@ public class BindingUtilTest extends GenerationTest {
     CompilationUnit unit = translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     Annotation annotation = decl.getAnnotations().get(0);
-    assertFalse(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding()));
+    assertFalse(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
 
     // Deprecated is a runtime annotation..
     unit = translateType("Example", "@Deprecated class Example {}");
     decl = unit.getTypes().get(0);
     annotation = decl.getAnnotations().get(0);
-    assertTrue(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding()));
+    assertTrue(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
   }
 
   public void testGetDefaultMethodSignature() throws Exception {

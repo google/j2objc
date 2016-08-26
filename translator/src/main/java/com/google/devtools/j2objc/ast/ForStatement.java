@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -27,17 +26,7 @@ public class ForStatement extends Statement {
   private ChildList<Expression> updaters = ChildList.create(Expression.class, this);
   private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
-  public ForStatement(org.eclipse.jdt.core.dom.ForStatement jdtNode) {
-    super(jdtNode);
-    for (Object initializer : jdtNode.initializers()) {
-      initializers.add((Expression) TreeConverter.convert(initializer));
-    }
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    for (Object updater : jdtNode.updaters()) {
-      updaters.add((Expression) TreeConverter.convert(updater));
-    }
-    body.set((Statement) TreeConverter.convert(jdtNode.getBody()));
-  }
+  public ForStatement() {}
 
   public ForStatement(ForStatement other) {
     super(other);
@@ -60,24 +49,36 @@ public class ForStatement extends Statement {
     return initializers;
   }
 
+  public ForStatement addInitializer(Expression newInitializer) {
+    initializers.add(newInitializer);
+    return this;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public ForStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public List<Expression> getUpdaters() {
     return updaters;
   }
 
+  public ForStatement addUpdater(Expression newUpdater) {
+    updaters.add(newUpdater);
+    return this;
+  }
+
   public Statement getBody() {
     return body.get();
   }
 
-  public void setBody(Statement newBody) {
+  public ForStatement setBody(Statement newBody) {
     body.set(newBody);
+    return this;
   }
 
   @Override

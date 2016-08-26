@@ -19,15 +19,11 @@ package com.google.devtools.j2objc.ast;
  */
 public class EmptyStatement extends Statement {
 
-  public EmptyStatement(org.eclipse.jdt.core.dom.EmptyStatement jdtNode) {
-    super(jdtNode);
-  }
+  public EmptyStatement() {}
 
   public EmptyStatement(EmptyStatement other) {
     super(other);
   }
-
-  public EmptyStatement() {}
 
   @Override
   public Kind getKind() {

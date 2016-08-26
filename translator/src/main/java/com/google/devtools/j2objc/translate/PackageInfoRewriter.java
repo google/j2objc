@@ -80,7 +80,7 @@ public class PackageInfoRewriter {
   private static String getPackagePrefix(PackageDeclaration pkg) {
     Annotation objcName = TreeUtil.getAnnotation(ObjectiveCName.class, pkg.getAnnotations());
     if (objcName != null) {
-      return (String) BindingUtil.getAnnotationValue(objcName.getAnnotationBinding(), "value");
+      return (String) BindingUtil.getAnnotationValue(objcName.getAnnotationMirror(), "value");
     }
     return null;
   }

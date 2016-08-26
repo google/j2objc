@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Converts an Expression node into a statement node by wrapping it.
  */
@@ -23,10 +21,7 @@ public class ExpressionStatement extends Statement {
 
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
-  public ExpressionStatement(org.eclipse.jdt.core.dom.ExpressionStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-  }
+  public ExpressionStatement() {}
 
   public ExpressionStatement(ExpressionStatement other) {
     super(other);
@@ -46,8 +41,9 @@ public class ExpressionStatement extends Statement {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public ExpressionStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   @Override

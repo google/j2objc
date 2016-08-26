@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 
@@ -97,7 +98,7 @@ public class AnonymousClassConverter extends TreeVisitor {
         newInvocation.addArgument(0, outerExpression);
       }
     } else {
-      enumConstant.setMethodBinding(defaultConstructor);
+      enumConstant.setExecutableElement(BindingConverter.getExecutableElement(defaultConstructor));
     }
 
     // If invocation, replace anonymous class invocation with the new constructor.

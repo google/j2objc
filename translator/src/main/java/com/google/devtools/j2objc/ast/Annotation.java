@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -24,27 +22,33 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class Annotation extends Expression {
 
-  private IAnnotationBinding annotationBinding = null;
+  private AnnotationMirror annotationMirror = null;
   protected ChildLink<Name> typeName = ChildLink.create(Name.class, this);
 
-  protected Annotation(org.eclipse.jdt.core.dom.Annotation jdtNode) {
-    super(jdtNode);
-    annotationBinding = BindingConverter.wrapBinding(jdtNode.resolveAnnotationBinding());
-    typeName.set((Name) TreeConverter.convert(jdtNode.getTypeName()));
-  }
+  protected Annotation() {}
 
   protected Annotation(Annotation other) {
     super(other);
-    annotationBinding = other.getAnnotationBinding();
+    annotationMirror = other.getAnnotationMirror();
     typeName.copyFrom(other.getTypeName());
   }
 
-  public IAnnotationBinding getAnnotationBinding() {
-    return annotationBinding;
+  public AnnotationMirror getAnnotationMirror() {
+    return annotationMirror;
+  }
+
+  public Annotation setAnnotationMirror(AnnotationMirror mirror) {
+    annotationMirror = mirror;
+    return this;
   }
 
   public Name getTypeName() {
     return typeName.get();
+  }
+
+  public Annotation setTypeName(Name newName) {
+    typeName.set(newName);
+    return this;
   }
 
   public boolean isSingleMemberAnnotation() {
@@ -53,6 +57,6 @@ public abstract class Annotation extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    return BindingConverter.getType(annotationBinding.getAnnotationType());
+    return annotationMirror.getAnnotationType();
   }
 }

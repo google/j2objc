@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * While statement node type.
  */
@@ -24,19 +22,13 @@ public class WhileStatement extends Statement {
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
-  public WhileStatement(org.eclipse.jdt.core.dom.WhileStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    body.set((Statement) TreeConverter.convert(jdtNode.getBody()));
-  }
+  public WhileStatement() {}
 
   public WhileStatement(WhileStatement other) {
     super(other);
     expression.copyFrom(other.getExpression());
     body.copyFrom(other.getBody());
   }
-
-  public WhileStatement() {}
 
   @Override
   public Kind getKind() {
@@ -47,16 +39,18 @@ public class WhileStatement extends Statement {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public WhileStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public Statement getBody() {
     return body.get();
   }
 
-  public void setBody(Statement newBody) {
+  public WhileStatement setBody(Statement newBody) {
     body.set(newBody);
+    return this;
   }
 
   @Override

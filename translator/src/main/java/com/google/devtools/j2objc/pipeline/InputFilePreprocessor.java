@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +123,7 @@ public class InputFilePreprocessor {
       String name = annotation.getTypeName().getFullyQualifiedName();
       if (name.endsWith("ObjectiveCName")) {
         // Per Eclipse docs, binding resolution can be a resource hog.
-        if (annotation.getAnnotationBinding().getAnnotationType().getQualifiedName().equals(
+        if (TypeUtil.getQualifiedName(annotation.getAnnotationMirror().getAnnotationType()).equals(
             ObjectiveCName.class.getCanonicalName())) {
           String key = unit.getPackage().getName().getFullyQualifiedName();
           String val = (String) ((SingleMemberAnnotation) annotation).getValue().getConstantValue();

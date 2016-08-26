@@ -327,11 +327,14 @@ public final class BindingConverter {
    */
   public static JdtPackageElement getPackageElement(
       org.eclipse.jdt.core.dom.PackageDeclaration pkg) {
-    JdtPackageElement pkgElement = (JdtPackageElement) getElement(pkg.resolveBinding());
-    for (Object modifier : pkg.annotations()) {
-      IAnnotationBinding annotation =
-          ((org.eclipse.jdt.core.dom.Annotation) modifier).resolveAnnotationBinding();
-      pkgElement.addAnnotation(new JdtAnnotationMirror(annotation));
+    JdtPackageBinding binding = wrapBinding(pkg.resolveBinding());
+    JdtPackageElement pkgElement = (JdtPackageElement) getElement(binding);
+    if (pkgElement.getAnnotationMirrors().isEmpty() && pkg.annotations().size() > 0) {
+      for (Object modifier : pkg.annotations()) {
+        IAnnotationBinding annotation =
+            ((org.eclipse.jdt.core.dom.Annotation) modifier).resolveAnnotationBinding();
+        pkgElement.addAnnotation(new JdtAnnotationMirror(annotation));
+      }
     }
     return pkgElement;
   }
@@ -365,6 +368,10 @@ public final class BindingConverter {
 
   public static ITypeBinding unwrapTypeElement(TypeElement t) {
     return (ITypeBinding) unwrapElement(t);
+  }
+
+  public static IVariableBinding unwrapVariableElement(VariableElement v) {
+    return (IVariableBinding) unwrapElement(v);
   }
 
   public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {

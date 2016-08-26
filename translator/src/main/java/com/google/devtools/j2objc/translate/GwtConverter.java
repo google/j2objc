@@ -35,7 +35,7 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.util.BindingUtil;
-
+import com.google.devtools.j2objc.util.TypeUtil;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 import java.util.List;
@@ -159,7 +159,7 @@ public class GwtConverter extends TreeVisitor {
     // Annotation bindings don't have the annotation's package.
     for (Annotation annotationNode : annotations) {
       String annotationName =
-          annotationNode.getAnnotationBinding().getAnnotationType().getQualifiedName();
+          TypeUtil.getQualifiedName(annotationNode.getAnnotationMirror().getAnnotationType());
       if (!annotationName.equals(GwtIncompatible.class.getName())) {
         continue;
       }

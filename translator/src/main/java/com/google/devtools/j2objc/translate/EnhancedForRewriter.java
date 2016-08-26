@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -44,6 +45,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Rewrites Java enhanced for loops into appropriate C constructs.
@@ -90,10 +92,10 @@ public class EnhancedForRewriter extends TreeVisitor {
     GeneratedVariableBinding endVariable = new GeneratedVariableBinding(
         "e__", 0, bufferType, false, false, null, null);
     endVariable.setTypeQualifiers("const*");
-    IVariableBinding bufferField = new GeneratedVariableBinding(
-        "buffer", Modifier.PUBLIC, bufferType, true, false, iosArrayType, null);
-    IVariableBinding sizeField = new GeneratedVariableBinding(
-        "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false, iosArrayType, null);
+    VariableElement bufferField = BindingConverter.getVariableElement(new GeneratedVariableBinding(
+        "buffer", Modifier.PUBLIC, bufferType, true, false, iosArrayType, null));
+    VariableElement sizeField = BindingConverter.getVariableElement(new GeneratedVariableBinding(
+        "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false, iosArrayType, null));
 
     VariableDeclarationStatement arrayDecl =
         new VariableDeclarationStatement(arrayVariable, TreeUtil.remove(expression));

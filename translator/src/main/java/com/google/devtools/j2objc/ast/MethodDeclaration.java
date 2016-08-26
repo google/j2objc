@@ -64,6 +64,10 @@ public class MethodDeclaration extends BodyDeclaration {
     returnType.set(Type.newType(methodBinding.getReturnType()));
     name.set(new SimpleName(methodBinding));
   }
+  
+  public MethodDeclaration(ExecutableElement method) {
+    this((IMethodBinding) BindingConverter.unwrapElement(method));
+  }
 
   @Override
   public Kind getKind() {

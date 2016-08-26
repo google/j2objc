@@ -133,7 +133,7 @@ public class JavaCloneWriter extends TreeVisitor {
         pointerType, PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF,
-        new FieldAccess(var, new SimpleName(originalVar))));
+        new FieldAccess(BindingConverter.getVariableElement(var), new SimpleName(originalVar))));
     return new ExpressionStatement(invocation);
   }
 }

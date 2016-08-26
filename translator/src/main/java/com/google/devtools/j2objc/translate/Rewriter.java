@@ -45,6 +45,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
@@ -279,9 +280,9 @@ public class Rewriter extends TreeVisitor {
 
   @Override
   public boolean visit(QualifiedName node) {
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    VariableElement var = TreeUtil.getVariableElement(node);
     Expression qualifier = node.getQualifier();
-    if (var != null && var.isField() && TreeUtil.getVariableBinding(qualifier) != null) {
+    if (var != null && ElementUtil.isField(var) && TreeUtil.getVariableBinding(qualifier) != null) {
       // FieldAccess nodes are more easily mutated than QualifiedName.
       FieldAccess fieldAccess = new FieldAccess(var, TreeUtil.remove(qualifier));
       node.replaceWith(fieldAccess);
@@ -296,8 +297,10 @@ public class Rewriter extends TreeVisitor {
     // Check for ScopedLocalRefs.
     Element localRef = localRefs.get(node.getElement());
     if (localRef != null) {
+      VariableElement var =
+          BindingConverter.getVariableElement(typeEnv.getLocalRefType().getDeclaredFields()[0]);
       FieldAccess access = new FieldAccess(
-          typeEnv.getLocalRefType().getDeclaredFields()[0], new SimpleName(localRef));
+          var, new SimpleName(localRef));
       CastExpression newCast = new CastExpression(node.getTypeMirror(), access);
       ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
       node.replaceWith(newParens);

@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Wrapper for another statement node adding a label.
  */
@@ -24,11 +22,7 @@ public class LabeledStatement extends Statement {
   private ChildLink<SimpleName> label = ChildLink.create(SimpleName.class, this);
   private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
-  public LabeledStatement(org.eclipse.jdt.core.dom.LabeledStatement jdtNode) {
-    super(jdtNode);
-    label.set((SimpleName) TreeConverter.convert(jdtNode.getLabel()));
-    body.set((Statement) TreeConverter.convert(jdtNode.getBody()));
-  }
+  public LabeledStatement() {}
 
   public LabeledStatement(LabeledStatement other) {
     super(other);
@@ -49,16 +43,18 @@ public class LabeledStatement extends Statement {
     return label.get();
   }
 
-  public void setLabel(SimpleName newLabel) {
+  public LabeledStatement setLabel(SimpleName newLabel) {
     label.set(newLabel);
+    return this;
   }
 
   public Statement getBody() {
     return body.get();
   }
 
-  public void setBody(Statement newBody) {
+  public LabeledStatement setBody(Statement newBody) {
     body.set(newBody);
+    return this;
   }
 
   @Override

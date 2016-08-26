@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -24,20 +22,15 @@ import javax.lang.model.type.TypeMirror;
  */
 public class SuperFieldAccess extends Expression {
 
-  private IVariableBinding variableBinding = null;
+  private VariableElement variableElement = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
-  public SuperFieldAccess(org.eclipse.jdt.core.dom.SuperFieldAccess jdtNode) {
-    super(jdtNode);
-    variableBinding = BindingConverter.wrapBinding(jdtNode.resolveFieldBinding());
-    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-  }
+  public SuperFieldAccess() {}
 
   public SuperFieldAccess(SuperFieldAccess other) {
     super(other);
-    variableBinding = other.getVariableBinding();
+    variableElement = other.getVariableElement();
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
   }
@@ -47,21 +40,36 @@ public class SuperFieldAccess extends Expression {
     return Kind.SUPER_FIELD_ACCESS;
   }
 
-  public IVariableBinding getVariableBinding() {
-    return variableBinding;
+  public VariableElement getVariableElement() {
+    return variableElement;
+  }
+
+  public SuperFieldAccess setVariableElement(VariableElement var) {
+    variableElement = var;
+    return this;
   }
 
   @Override
   public TypeMirror getTypeMirror() {
-    return variableBinding != null ? BindingConverter.getType(variableBinding.getType()) : null;
+    return variableElement != null ? variableElement.asType() : null;
   }
 
   public Name getQualifier() {
     return qualifier.get();
   }
 
+  public SuperFieldAccess setQualifier(Name newQualifier) {
+    qualifier.set(newQualifier);
+    return this;
+  }
+
   public SimpleName getName() {
     return name.get();
+  }
+
+  public SuperFieldAccess setName(SimpleName newName) {
+    name.set(newName);
+    return this;
   }
 
   @Override

@@ -450,7 +450,7 @@ public class Functionizer extends TreeVisitor {
     public boolean visit(SuperFieldAccess node) {
       // Change super.field expression to self.field.
       SimpleName qualifier = new SimpleName(selfParam);
-      FieldAccess newAccess = new FieldAccess(node.getVariableBinding(), qualifier);
+      FieldAccess newAccess = new FieldAccess(node.getVariableElement(), qualifier);
       node.replaceWith(newAccess);
       return false;
     }

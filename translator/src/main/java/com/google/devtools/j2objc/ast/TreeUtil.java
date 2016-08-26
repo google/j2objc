@@ -22,7 +22,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
-
+import com.google.devtools.j2objc.util.TypeUtil;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -79,7 +79,8 @@ public class TreeUtil {
   private static final Predicate<Annotation> IS_RUNTIME_PREDICATE = new Predicate<Annotation>() {
     @Override
     public boolean apply(Annotation annotation) {
-      return BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding());
+      return BindingUtil.isRuntimeAnnotation(
+          BindingConverter.unwrapAnnotationMirror(annotation.getAnnotationMirror()));
     }
   };
 
@@ -97,8 +98,8 @@ public class TreeUtil {
 
   public static Annotation getAnnotation(Class<?> annotationClass, List<Annotation> annotations) {
     for (Annotation annotation : annotations) {
-      ITypeBinding annotationType = annotation.getAnnotationBinding().getAnnotationType();
-      if (annotationType.getQualifiedName().equals(annotationClass.getName())) {
+      TypeMirror annotationType = annotation.getAnnotationMirror().getAnnotationType();
+      if (TypeUtil.getQualifiedName(annotationType).equals(annotationClass.getName())) {
         return annotation;
       }
     }
@@ -261,28 +262,33 @@ public class TreeUtil {
    * represents a variable. Returns null otherwise.
    */
   public static IVariableBinding getVariableBinding(Expression node) {
-    node = trimParentheses(node);
-    switch (node.getKind()) {
-      case FIELD_ACCESS:
-        return ((FieldAccess) node).getVariableBinding();
-      case SUPER_FIELD_ACCESS:
-        return ((SuperFieldAccess) node).getVariableBinding();
-      case QUALIFIED_NAME:
-      case SIMPLE_NAME:
-        return getVariableBinding((Name) node);
-      default:
-        return null;
-    }
+    return BindingConverter.unwrapVariableElement(getVariableElement(node));
   }
 
   public static VariableElement getVariableElement(Expression node) {
-    return (VariableElement) BindingConverter.getElement(getVariableBinding(node));
+    node = trimParentheses(node);
+    switch (node.getKind()) {
+      case FIELD_ACCESS:
+        return ((FieldAccess) node).getVariableElement();
+      case SUPER_FIELD_ACCESS:
+        return ((SuperFieldAccess) node).getVariableElement();
+      case QUALIFIED_NAME:
+      case SIMPLE_NAME:
+        return getVariableElement((Name) node);
+      default:
+        return null;
+    }
   }
 
   public static IVariableBinding getVariableBinding(Name node) {
     Element element = node.getElement();
     return element != null && ElementUtil.isVariable(element)
         ? (IVariableBinding) BindingConverter.unwrapElement(element) : null;
+  }
+
+  public static VariableElement getVariableElement(Name node) {
+    Element element = node.getElement();
+    return element instanceof VariableElement ? (VariableElement) element : null;
   }
 
   public static IMethodBinding getMethodBinding(Expression node) {

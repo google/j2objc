@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -24,28 +22,23 @@ import javax.lang.model.type.TypeMirror;
  */
 public class FieldAccess extends Expression {
 
-  private IVariableBinding variableBinding = null;
+  private VariableElement variableElement = null;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
-  public FieldAccess(org.eclipse.jdt.core.dom.FieldAccess jdtNode) {
-    super(jdtNode);
-    variableBinding = BindingConverter.wrapBinding(jdtNode.resolveFieldBinding());
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-  }
+  public FieldAccess() {}
 
   public FieldAccess(FieldAccess other) {
     super(other);
-    variableBinding = other.getVariableBinding();
+    variableElement = other.getVariableElement();
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
   }
 
-  public FieldAccess(IVariableBinding variableBinding, Expression expression) {
-    this.variableBinding = variableBinding;
+  public FieldAccess(VariableElement variableElement, Expression expression) {
+    this.variableElement = variableElement;
     this.expression.set(expression);
-    name.set(new SimpleName(variableBinding));
+    name.set(new SimpleName(variableElement));
   }
 
   @Override
@@ -55,23 +48,34 @@ public class FieldAccess extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    return BindingConverter.getType(variableBinding.getType());
+    return variableElement.asType();
   }
 
-  public IVariableBinding getVariableBinding() {
-    return variableBinding;
+  public VariableElement getVariableElement() {
+    return variableElement;
+  }
+
+  public FieldAccess setVariableElement(VariableElement newVariable) {
+    variableElement = newVariable;
+    return this;
   }
 
   public Expression getExpression() {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public FieldAccess setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public SimpleName getName() {
     return name.get();
+  }
+
+  public FieldAccess setName(SimpleName newName) {
+    name.set(newName);
+    return this;
   }
 
   @Override

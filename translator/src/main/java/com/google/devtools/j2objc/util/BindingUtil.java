@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
@@ -641,6 +642,10 @@ public final class BindingUtil {
    */
   public static boolean isRuntimeAnnotation(IAnnotationBinding binding) {
     return isRuntimeAnnotation(binding.getAnnotationType());
+  }
+
+  public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
+    return isRuntimeAnnotation(BindingConverter.unwrapAnnotationMirror(mirror).getAnnotationType());
   }
 
   /**

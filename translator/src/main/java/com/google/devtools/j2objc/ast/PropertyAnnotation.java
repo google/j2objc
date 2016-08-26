@@ -18,11 +18,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for a com.google.j2objc.annotations.Property annotation.
@@ -54,13 +51,7 @@ public class PropertyAnnotation extends Annotation {
     }
   };
 
-  public PropertyAnnotation(org.eclipse.jdt.core.dom.SingleMemberAnnotation jdtNode) {
-    super(jdtNode);
-    this.attributes = BindingUtil.parseAttributeString(jdtNode.resolveAnnotationBinding());
-  }
-
-  public PropertyAnnotation(org.eclipse.jdt.core.dom.MarkerAnnotation jdtNode) {
-    super(jdtNode);
+  public PropertyAnnotation() {
     this.attributes = Sets.newHashSet();
   }
 

@@ -13,7 +13,6 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -25,12 +24,7 @@ public class Dimension extends TreeNode {
 
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
-  public Dimension(org.eclipse.jdt.core.dom.Dimension jdtNode) {
-    super(jdtNode);
-    for (Object x : jdtNode.annotations()) {
-      annotations.add((Annotation) TreeConverter.convert(x));
-    }
-  }
+  public Dimension() {}
 
   public Dimension(Dimension other) {
     super(other);
@@ -44,6 +38,11 @@ public class Dimension extends TreeNode {
 
   public List<Annotation> annotations() {
     return annotations;
+  }
+
+  public Dimension addAnnotation(Annotation a) {
+    annotations.add(a);
+    return this;
   }
 
   @Override

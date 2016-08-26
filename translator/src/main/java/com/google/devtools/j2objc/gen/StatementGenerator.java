@@ -101,6 +101,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -641,7 +642,8 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   private void printAnnotationCreation(Annotation node) {
-    IAnnotationBinding annotation = node.getAnnotationBinding();
+    IAnnotationBinding annotation =
+        BindingConverter.unwrapAnnotationMirror(node.getAnnotationMirror());
     buffer.append(useReferenceCounting ? "[[[" : "[[");
     buffer.append(nameTable.getFullName(annotation.getAnnotationType()));
     buffer.append(" alloc] init");
@@ -836,7 +838,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SuperFieldAccess node) {
-    buffer.append(nameTable.getVariableQualifiedName(node.getVariableBinding()));
+    buffer.append(nameTable.getVariableQualifiedName(node.getVariableElement()));
     return false;
   }
 
@@ -873,7 +875,6 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(SwitchStatement node) {
     Expression expr = node.getExpression();
-    TypeMirror exprType = expr.getTypeMirror();
     buffer.append("switch (");
     expr.accept(this);
     buffer.append(") ");

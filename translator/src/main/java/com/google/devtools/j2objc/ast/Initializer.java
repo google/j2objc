@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.lang.reflect.Modifier;
 
 /**
@@ -25,10 +24,7 @@ public class Initializer extends BodyDeclaration {
 
   private final ChildLink<Block> body = ChildLink.create(Block.class, this);
 
-  public Initializer(org.eclipse.jdt.core.dom.Initializer jdtNode) {
-    super(jdtNode);
-    body.set((Block) TreeConverter.convert(jdtNode.getBody()));
-  }
+  public Initializer() {}
 
   public Initializer(Initializer other) {
     super(other);
@@ -42,6 +38,15 @@ public class Initializer extends BodyDeclaration {
     }
   }
 
+  public Initializer setStatic(boolean isStatic) {
+    if (isStatic) {
+      addModifiers(Modifier.STATIC);
+    } else {
+      removeModifiers(Modifier.STATIC);
+    }
+    return this;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.INITIALIZER;
@@ -49,6 +54,11 @@ public class Initializer extends BodyDeclaration {
 
   public Block getBody() {
     return body.get();
+  }
+
+  public Initializer setBody(Block newBody) {
+    body.set(newBody);
+    return this;
   }
 
   @Override
