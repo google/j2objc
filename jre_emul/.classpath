@@ -20,6 +20,7 @@
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni/src/test/api/common"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/nio_char/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/text/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/support/src/test/java"/>
 	<classpathentry kind="src" path="Classes"/>

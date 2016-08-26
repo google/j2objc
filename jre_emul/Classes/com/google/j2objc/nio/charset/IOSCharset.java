@@ -15,13 +15,14 @@
  *  limitations under the License.
  */
 
-package java.nio.charset;
+package com.google.j2objc.nio.charset;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /*-[
 #import "java/io/UnsupportedEncodingException.h"
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author Tom Ball
  */
-class IOSCharset extends Charset {
+public class IOSCharset extends Charset {
 
   // The NSStringEncoding enum value for this charset.
   private long nsEncoding;
@@ -43,6 +44,8 @@ class IOSCharset extends Charset {
   private float charBytes;
 
   private static Map<String, IOSCharset> encodings = new HashMap<String, IOSCharset>();
+
+  public static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
 
   private IOSCharset(long nsEncoding, String canonicalName, String[] aliases, float charBytes) {
     super(canonicalName, aliases);
@@ -69,11 +72,11 @@ class IOSCharset extends Charset {
     return new IOSCharsetDecoder(this);
   }
 
-  static Set<String> getAvailableCharsetNames() {
+  public static Set<String> getAvailableCharsetNames() {
     return getEncodings().keySet();
   }
 
-  static Charset charsetForName(String charsetName) {
+  public static Charset charsetForName(String charsetName) {
     // See if an encoding was requested by name.
     Map<String, IOSCharset> encodings = getEncodings();
     IOSCharset result = encodings.get(charsetName.toUpperCase());
@@ -165,16 +168,16 @@ class IOSCharset extends Charset {
   };
   static const int numIosCharsets = sizeof(iosCharsets) / sizeof(CharsetInfo);
 
-  static JavaNioCharsetIOSCharset *addEncoding(CharsetInfo info) {
+  static ComGoogleJ2objcNioCharsetIOSCharset *addEncoding(CharsetInfo info) {
     IOSObjectArray *aliases = [IOSObjectArray arrayWithObjects:info.aliases
                                                          count:info.aliasCount
                                                           type:NSString_class_()];
-    JavaNioCharsetIOSCharset *cs = [[[JavaNioCharsetIOSCharset alloc]
-                                     initWithLong:info.encoding
-                                     withNSString:info.name
-                                withNSStringArray:aliases
-                                        withFloat:info.charBytes] autorelease];
-    [JavaNioCharsetIOSCharset_encodings putWithId:info.name withId:cs];
+    ComGoogleJ2objcNioCharsetIOSCharset *cs = [[[ComGoogleJ2objcNioCharsetIOSCharset alloc]
+                                                initWithLong:info.encoding
+                                                withNSString:info.name
+                                           withNSStringArray:aliases
+                                                   withFloat:info.charBytes] autorelease];
+    [ComGoogleJ2objcNioCharsetIOSCharset_encodings putWithId:info.name withId:cs];
     return cs;
   }
   ]-*/
@@ -183,7 +186,7 @@ class IOSCharset extends Charset {
     NSString *fileEncoding = JavaLangSystem_getPropertyWithNSString_(@"file.encoding");
     if (fileEncoding) {
       @try {
-        return (JavaNioCharsetIOSCharset *)
+        return (ComGoogleJ2objcNioCharsetIOSCharset *)
             JavaNioCharsetCharset_forNameUEEWithNSString_(fileEncoding);
       }
       @catch (JavaIoUnsupportedEncodingException *e) {
@@ -194,8 +197,6 @@ class IOSCharset extends Charset {
     return addEncoding(iosCharsets[0]);
   ]-*/;
 
-  static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
-
   private static native Map<String, IOSCharset> getEncodings() /*-[
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -203,6 +204,6 @@ class IOSCharset extends Charset {
         addEncoding(iosCharsets[i]);
       }
     });
-    return JavaNioCharsetIOSCharset_encodings;
+    return ComGoogleJ2objcNioCharsetIOSCharset_encodings;
   ]-*/;
 }

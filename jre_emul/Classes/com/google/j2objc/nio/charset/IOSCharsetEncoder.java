@@ -15,10 +15,14 @@
  *  limitations under the License.
  */
 
-package java.nio.charset;
+package com.google.j2objc.nio.charset;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * iOS native charset encoder.
@@ -32,11 +36,6 @@ public class IOSCharsetEncoder extends CharsetEncoder {
 
   protected IOSCharsetEncoder(Charset charset, float maxBytesPerChar) {
     super(charset, maxBytesPerChar, maxBytesPerChar, new byte[] { (byte) '?' });
-  }
-
-  @Override
-  public ByteBuffer encode(CharBuffer in) throws CharacterCodingException {
-    return ByteBuffer.wrap(encodeImpl(in));
   }
 
   @Override

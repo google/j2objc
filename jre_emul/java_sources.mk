@@ -218,6 +218,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/StandardCharsets.java \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
+  java/nio/charset/spi/CharsetProvider.java \
   java/security/AllPermission.java \
   java/security/AllPermissionCollection.java \
   java/security/BasicPermission.java \
@@ -354,6 +355,9 @@ JAVA_PUBLIC_SOURCES_CORE = \
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/LibraryNotLinkedError.java \
   com/google/j2objc/ReflectionStrippedError.java \
+  com/google/j2objc/nio/charset/IOSCharset.java \
+  com/google/j2objc/nio/charset/IOSCharsetDecoder.java \
+  com/google/j2objc/nio/charset/IOSCharsetEncoder.java \
   com/google/j2objc/util/NativeTimeZone.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
@@ -390,9 +394,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/LongArrayBuffer.java \
   java/nio/MemoryBlock.java \
   java/nio/ShortArrayBuffer.java \
-  java/nio/charset/IOSCharset.java \
-  java/nio/charset/IOSCharsetDecoder.java \
-  java/nio/charset/IOSCharsetEncoder.java \
   java/nio/charset/Charsets.java \
   java/nio/charset/ModifiedUtf8.java \
   java/util/DualPivotQuicksort.java \

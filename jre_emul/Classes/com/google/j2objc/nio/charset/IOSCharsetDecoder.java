@@ -15,10 +15,14 @@
  *  limitations under the License.
  */
 
-package java.nio.charset;
+package com.google.j2objc.nio.charset;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * iOS native charset decoder.
@@ -57,12 +61,6 @@ public class IOSCharsetDecoder extends CharsetDecoder {
       }
     }
     return CoderResult.UNDERFLOW;  // All input data was decoded.
-  }
-
-  @Override
-  public CharBuffer decode(ByteBuffer in) throws CharacterCodingException {
-    String s = decodeImpl(in);
-    return CharBuffer.wrap(s);
   }
 
   private String decodeImpl(ByteBuffer in) {

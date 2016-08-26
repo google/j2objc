@@ -23,6 +23,7 @@
 
 #import "IOSClass.h"
 #import "J2ObjC_source.h"
+#import "com/google/j2objc/nio/charset/IOSCharset.h"
 #import "java/io/ObjectStreamField.h"
 #import "java/io/Serializable.h"
 #import "java/io/UnsupportedEncodingException.h"
@@ -35,7 +36,6 @@
 #import "java/lang/StringBuilder.h"
 #import "java/lang/StringIndexOutOfBoundsException.h"
 #import "java/nio/charset/Charset.h"
-#import "java/nio/charset/IOSCharset.h"
 #import "java/nio/charset/UnsupportedCharsetException.h"
 #import "java/util/Comparator.h"
 #import "java/util/Formatter.h"
@@ -498,7 +498,7 @@ destinationBegin:(int)destinationBegin {
 
 NSStringEncoding parseCharsetName(NSString *charset) {
   JavaNioCharsetCharset *cs = JavaNioCharsetCharset_forNameUEEWithNSString_(charset);
-  return (NSStringEncoding)[(JavaNioCharsetIOSCharset *)cs nsEncoding];
+  return (NSStringEncoding)[(ComGoogleJ2objcNioCharsetIOSCharset *)cs nsEncoding];
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
@@ -534,11 +534,11 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                        offset:(int)offset
                        length:(int)count
                       charset:(JavaNioCharsetCharset *)charset {
-  if (![charset isKindOfClass:[JavaNioCharsetIOSCharset class]]) {
+  if (![charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     @throw AUTORELEASE([[JavaNioCharsetUnsupportedCharsetException alloc]
                         initWithNSString:[charset description]]);
   }
-  JavaNioCharsetIOSCharset *iosCharset = (JavaNioCharsetIOSCharset *) charset;
+  ComGoogleJ2objcNioCharsetIOSCharset *iosCharset = (ComGoogleJ2objcNioCharsetIOSCharset *) charset;
   NSStringEncoding encoding = (NSStringEncoding) [iosCharset nsEncoding];
   return [NSString stringWithBytes:value
                             offset:offset
@@ -611,7 +611,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
 - (IOSByteArray *)getBytes  {
   JavaNioCharsetCharset *charset = JavaNioCharsetCharset_defaultCharset();
-  NSStringEncoding encoding = (NSStringEncoding)[(JavaNioCharsetIOSCharset *)charset nsEncoding];
+  NSStringEncoding encoding =
+      (NSStringEncoding)[(ComGoogleJ2objcNioCharsetIOSCharset *)charset nsEncoding];
   return [self getBytesWithEncoding:encoding];
 }
 
@@ -625,11 +626,11 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
 - (IOSByteArray *)getBytesWithCharset:(JavaNioCharsetCharset *)charset {
   nil_chk(charset);
-  if (![charset isKindOfClass:[JavaNioCharsetIOSCharset class]]) {
+  if (![charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     @throw AUTORELEASE([[JavaNioCharsetUnsupportedCharsetException alloc]
                         initWithNSString:[charset description]]);
   }
-  JavaNioCharsetIOSCharset *iosCharset = (JavaNioCharsetIOSCharset *) charset;
+  ComGoogleJ2objcNioCharsetIOSCharset *iosCharset = (ComGoogleJ2objcNioCharsetIOSCharset *) charset;
   NSStringEncoding encoding = (NSStringEncoding) [iosCharset nsEncoding];
   return [self getBytesWithEncoding:encoding];
 }

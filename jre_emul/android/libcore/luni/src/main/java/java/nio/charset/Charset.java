@@ -17,6 +17,7 @@
 
 package java.nio.charset;
 
+import com.google.j2objc.nio.charset.IOSCharset;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
