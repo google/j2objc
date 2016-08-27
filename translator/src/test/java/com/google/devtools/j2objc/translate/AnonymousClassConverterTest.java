@@ -24,8 +24,8 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -88,7 +88,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertEquals(2, types.size());
 
     TypeDeclaration type = types.get(1);
-    assertEquals("Test$1", type.getTypeBinding().getBinaryName());
+    ElementUtil elementUtil = TreeUtil.getCompilationUnit(type).getEnv().elementUtil();
+    assertEquals("Test$1", elementUtil.getBinaryName(type.getTypeElement()));
   }
 
   /**
@@ -236,7 +237,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     NameTable nameTable = unit.getEnv().nameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
-    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeElement()));
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
         fail("found field that shouldn't be declared");
@@ -245,7 +246,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Method var in r1.run() becomes a field in r2.
     AbstractTypeDeclaration r2 = types.get(2);
-    assertEquals("Test_$1_$1", nameTable.getFullName(r2.getTypeBinding()));
+    assertEquals("Test_$1_$1", nameTable.getFullName(r2.getTypeElement()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r2)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -274,7 +275,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     NameTable nameTable = unit.getEnv().nameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
-    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeElement()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -303,7 +304,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     NameTable nameTable = unit.getEnv().nameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(2);
-    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeElement()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {

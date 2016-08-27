@@ -72,7 +72,7 @@ public class PackagePrefixesTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeElement()));
   }
 
   // Verify inner class name with prefix.
@@ -82,7 +82,7 @@ public class PackagePrefixesTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FBSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FBSomeClass_Inner", nameTable.getFullName(decl.getTypeElement()));
   }
 
   public void testPackageWildcards() throws IOException {
@@ -91,7 +91,7 @@ public class PackagePrefixesTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeElement()));
   }
 
   public void testWildcardToRegex() throws IOException {

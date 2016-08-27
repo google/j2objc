@@ -22,11 +22,9 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.io.IOException;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Unit tests for {@link NameTable}.
@@ -41,7 +39,7 @@ public class NameTableTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    assertEquals("SomeClass", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("SomeClass", nameTable.getFullName(decl.getTypeElement()));
   }
 
   // Verify class name with package is camel-cased.
@@ -50,7 +48,7 @@ public class NameTableTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    assertEquals("FooBarSomeClass", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass", nameTable.getFullName(decl.getTypeElement()));
   }
 
   // Verify inner class name with package is camel-cased.
@@ -59,7 +57,7 @@ public class NameTableTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeElement()));
   }
 
   // Verify the name of an inner class of an enum.
@@ -70,10 +68,10 @@ public class NameTableTest extends GenerationTest {
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     // Outer type should not have "Enum" added to name.
-    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeElement()));
     // Inner enum should have "Enum" added to name.
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass_Inner2", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner2", nameTable.getFullName(decl.getTypeElement()));
   }
 
   // Verify local class name.
@@ -85,26 +83,26 @@ public class NameTableTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FooBarSomeClass_1Foo", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_1Foo", nameTable.getFullName(decl.getTypeElement()));
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass_2Foo", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_2Foo", nameTable.getFullName(decl.getTypeElement()));
   }
 
   public void testTypeVariableWithTypeVariableBounds() {
     String source = "class A<T> { <E extends T> void foo(E e) {} }";
     CompilationUnit unit = translateType("A", source);
     NameTable nameTable = unit.getEnv().nameTable();
-    final IMethodBinding[] methodBinding = new IMethodBinding[1];
+    final ExecutableElement[] methodElement = new ExecutableElement[1];
     unit.accept(new TreeVisitor() {
       @Override public void endVisit(MethodDeclaration node) {
-        IMethodBinding binding = node.getMethodBinding();
-        if (binding.getName().equals("foo")) {
-          methodBinding[0] = binding;
+        ExecutableElement element = node.getExecutableElement();
+        if (ElementUtil.getName(element).equals("foo")) {
+          methodElement[0] = element;
         }
       }
     });
-    assertNotNull(methodBinding[0]);
-    ITypeBinding paramType = methodBinding[0].getParameterTypes()[0];
+    assertNotNull(methodElement[0]);
+    TypeMirror paramType = methodElement[0].getParameters().get(0).asType();
     assertEquals("id", nameTable.getObjCType(paramType));
   }
 
