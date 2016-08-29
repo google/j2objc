@@ -86,11 +86,13 @@ public class JUnitTestRunner {
    * Specifies whether a pattern includes or excludes test classes.
    */
   public enum TestInclusion {
-    INCLUDE,  // Includes test classes matching the pattern
-    EXCLUDE   // Excludes test classes matching the pattern
+    RUN_TEST,  // Includes tests that exactly match the pattern
+    INCLUDE,   // Includes test classes matching the pattern
+    EXCLUDE    // Excludes test classes matching the pattern
   }
 
   private final PrintStream out;
+  private final Set<String> testsToRun = new HashSet<>();
   private final Set<String> includePatterns = new HashSet<>();
   private final Set<String> excludePatterns = new HashSet<>();
   private final Map<String, String> nameMappings = new HashMap<>();
@@ -161,6 +163,7 @@ public class JUnitTestRunner {
    */
   public void sortClasses(Class[] classes, final SortOrder sortOrder) {
     Arrays.sort(classes, new Comparator<Class>() {
+      @Override
       public int compare(Class class1, Class class2) {
         String name1 = getSortKey(class1, sortOrder);
         String name2 = getSortKey(class2, sortOrder);
@@ -288,37 +291,45 @@ public class JUnitTestRunner {
    * Returns the set of test classes that match settings in {@link #PROPERTIES_FILE_NAME}.
    */
   private Set<Class> getTestClasses() {
-    Set<Class> allTestClasses = getAllTestClasses();
-    Set<Class> includedClasses = new HashSet<>();
+    Set<Class> testClasses = new HashSet<>();
 
-    if (includePatterns.isEmpty()) {
-      // Include all tests if no include patterns specified.
-      includedClasses = allTestClasses;
-    } else {
-      // Search all tests for tests to include.
-      for (Class testClass : allTestClasses) {
+    for (String testName : testsToRun) {
+      try {
+        testClasses.add(Class.forName(testName));
+      } catch (ClassNotFoundException e) {
+        throw new AssertionError(e);
+      }
+    }
+
+    if (!includePatterns.isEmpty()) {
+      for (Class testClass : getAllTestClasses()) {
         for (String includePattern : includePatterns) {
           if (matchesPattern(testClass, includePattern)) {
-            includedClasses.add(testClass);
+            testClasses.add(testClass);
             break;
           }
         }
       }
     }
 
+    if (testsToRun.isEmpty() && includePatterns.isEmpty()) {
+      // Include all tests if no include patterns specified.
+      testClasses.addAll(getAllTestClasses());
+    }
+
     // Search included tests for tests to exclude.
-    Iterator<Class> includedClassesIterator = includedClasses.iterator();
-    while (includedClassesIterator.hasNext()) {
-      Class testClass = includedClassesIterator.next();
+    Iterator<Class> testClassesIterator = testClasses.iterator();
+    while (testClassesIterator.hasNext()) {
+      Class testClass = testClassesIterator.next();
       for (String excludePattern : excludePatterns) {
         if (matchesPattern(testClass, excludePattern)) {
-          includedClassesIterator.remove();
+          testClassesIterator.remove();
           break;
         }
       }
     }
 
-    return includedClasses;
+    return testClasses;
   }
 
   private boolean matchesPattern(Class testClass, String pattern) {
@@ -340,6 +351,8 @@ public class JUnitTestRunner {
           outputFormat = OutputFormat.valueOf(value);
         } else if (key.equals("sortOrder")) {
           sortOrder = SortOrder.valueOf(value);
+        } else if (value.equals(TestInclusion.RUN_TEST.name())) {
+          testsToRun.add(key);
         } else if (value.equals(TestInclusion.INCLUDE.name())) {
           includePatterns.add(key);
         } else if (value.equals(TestInclusion.EXCLUDE.name())) {
