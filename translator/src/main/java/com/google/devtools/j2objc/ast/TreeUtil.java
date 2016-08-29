@@ -284,7 +284,7 @@ public class TreeUtil {
 
   public static VariableElement getVariableElement(Name node) {
     Element element = node.getElement();
-    return element instanceof VariableElement ? (VariableElement) element : null;
+    return element != null && ElementUtil.isVariable(element) ? (VariableElement) element : null;
   }
 
   public static IMethodBinding getMethodBinding(Expression node) {

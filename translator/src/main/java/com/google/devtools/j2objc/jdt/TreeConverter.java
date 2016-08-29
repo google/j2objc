@@ -579,7 +579,9 @@ public class TreeConverter {
 
   private static TreeNode convertEnumConstantDeclaration(
       org.eclipse.jdt.core.dom.EnumConstantDeclaration node) {
-    EnumConstantDeclaration newNode = new EnumConstantDeclaration()
+    EnumConstantDeclaration newNode = new EnumConstantDeclaration();
+    convertBodyDeclaration(node, newNode);
+    newNode
         .setVariableBinding(BindingConverter.wrapBinding(node.resolveVariable()))
         .setExecutableElement(
             BindingConverter.getExecutableElement(node.resolveConstructorBinding()))
