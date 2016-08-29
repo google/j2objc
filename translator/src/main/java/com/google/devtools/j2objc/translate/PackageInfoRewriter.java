@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -80,7 +81,7 @@ public class PackageInfoRewriter {
   private static String getPackagePrefix(PackageDeclaration pkg) {
     Annotation objcName = TreeUtil.getAnnotation(ObjectiveCName.class, pkg.getAnnotations());
     if (objcName != null) {
-      return (String) BindingUtil.getAnnotationValue(objcName.getAnnotationMirror(), "value");
+      return (String) ElementUtil.getAnnotationValue(objcName.getAnnotationMirror(), "value");
     }
     return null;
   }

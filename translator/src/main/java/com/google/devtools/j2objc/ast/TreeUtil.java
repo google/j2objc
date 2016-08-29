@@ -20,23 +20,20 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.io.File;
 import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Collection of utility methods for examining tree nodes.
@@ -79,8 +76,7 @@ public class TreeUtil {
   private static final Predicate<Annotation> IS_RUNTIME_PREDICATE = new Predicate<Annotation>() {
     @Override
     public boolean apply(Annotation annotation) {
-      return BindingUtil.isRuntimeAnnotation(
-          BindingConverter.unwrapAnnotationMirror(annotation.getAnnotationMirror()));
+      return ElementUtil.isRuntimeAnnotation(annotation.getAnnotationMirror());
     }
   };
 

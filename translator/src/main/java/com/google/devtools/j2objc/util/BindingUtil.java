@@ -14,19 +14,9 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
-
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,13 +27,15 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.ExecutableElement;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Utility methods for working with binding types.
@@ -580,16 +572,6 @@ public final class BindingUtil {
     return null;
   }
 
-  public static Object getAnnotationValue(AnnotationMirror annotation, String name) {
-    for (Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
-        : annotation.getElementValues().entrySet()) {
-      if (entry.getKey().getSimpleName().toString().equals(name)) {
-        return entry.getValue().getValue();
-      }
-    }
-    return null;
-  }
-
   /**
    * Checks to see if this is an anonymous class annotated with @WeakOuter.
    * Because this is an anonymous class, we can't annotate its declaration
@@ -634,18 +616,6 @@ public final class BindingUtil {
 
   public static boolean isRetainedWithField(IVariableBinding var) {
     return hasAnnotation(var, RetainedWith.class);
-  }
-
-  /**
-   * Returns true if the specified binding is of an annotation that has
-   * a runtime retention policy.
-   */
-  public static boolean isRuntimeAnnotation(IAnnotationBinding binding) {
-    return isRuntimeAnnotation(binding.getAnnotationType());
-  }
-
-  public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
-    return isRuntimeAnnotation(BindingConverter.unwrapAnnotationMirror(mirror).getAnnotationType());
   }
 
   /**

@@ -53,6 +53,7 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
 /**
  * General collection of utility methods.
@@ -127,9 +128,10 @@ public final class TranslationUtil {
     if (reflectionSupport == null) {
       return null;
     }
-    Object level = BindingUtil.getAnnotationValue(reflectionSupport, "value");
+    VariableElement level = (VariableElement)
+        ElementUtil.getAnnotationValue(reflectionSupport, "value");
     return level != null
-        ? ReflectionSupport.Level.valueOf(((IVariableBinding) level).getName()) : null;
+        ? ReflectionSupport.Level.valueOf(level.getSimpleName().toString()) : null;
   }
 
   private static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {

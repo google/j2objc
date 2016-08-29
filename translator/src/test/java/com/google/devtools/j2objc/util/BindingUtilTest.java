@@ -17,14 +17,10 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
-
-import java.io.IOException;
 
 /**
  * UnitTests for the {@link BindingUtil} class.
@@ -32,20 +28,6 @@ import java.io.IOException;
  * @author Keith Stanger
  */
 public class BindingUtilTest extends GenerationTest {
-
-  public void testIsRuntimeAnnotation() throws IOException {
-    // SuppressWarnings is a source-level annotation.
-    CompilationUnit unit = translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
-    AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    Annotation annotation = decl.getAnnotations().get(0);
-    assertFalse(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
-
-    // Deprecated is a runtime annotation..
-    unit = translateType("Example", "@Deprecated class Example {}");
-    decl = unit.getTypes().get(0);
-    annotation = decl.getAnnotations().get(0);
-    assertTrue(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
-  }
 
   public void testGetDefaultMethodSignature() throws Exception {
     Options.setSourceVersion(SourceVersion.JAVA_8);

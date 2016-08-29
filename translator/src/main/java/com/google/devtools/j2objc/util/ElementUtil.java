@@ -22,7 +22,10 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -426,5 +429,29 @@ public final class ElementUtil {
       // Can only add DEFAULT modifier in Java 8.
     }
     return modifiers;
+  }
+
+  public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
+    for (AnnotationMirror ann : mirror.getAnnotationType().asElement().getAnnotationMirrors()) {
+      String annotationName = ann.getAnnotationType().asElement().getSimpleName().toString();
+      if (annotationName.equals("Retention")) {
+        for (AnnotationValue value : ann.getElementValues().values()) {
+          // Retention's value is a RetentionPolicy enum constant.
+          VariableElement v = (VariableElement) value.getValue();
+          return v.getSimpleName().toString().equals("RUNTIME");
+        }
+      }
+    }
+    return false;
+  }
+
+  public static Object getAnnotationValue(AnnotationMirror annotation, String name) {
+    for (Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
+        : annotation.getElementValues().entrySet()) {
+      if (entry.getKey().getSimpleName().toString().equals(name)) {
+        return entry.getValue().getValue();
+      }
+    }
+    return null;
   }
 }

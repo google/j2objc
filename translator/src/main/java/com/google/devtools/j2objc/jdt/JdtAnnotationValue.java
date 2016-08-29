@@ -14,14 +14,34 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.AnnotationValueVisitor;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 class JdtAnnotationValue implements AnnotationValue {
   private final Object value;
 
   public JdtAnnotationValue(Object value) {
-    this.value = value;
+    if (value instanceof IVariableBinding) {
+      this.value = BindingConverter.getElement((IVariableBinding) value);
+    } else if (value instanceof ITypeBinding) {
+      this.value = BindingConverter.getType((ITypeBinding) value);
+    } else if (value instanceof IAnnotationBinding) {
+      this.value = new JdtAnnotationMirror((IAnnotationBinding) value);
+    } else if (value instanceof List) {
+      List<AnnotationValue> newValues = new ArrayList<AnnotationValue>();
+      for (Object o : ((List<?>) value)) {
+        newValues.add(new JdtAnnotationValue(o));
+      }
+      this.value = newValues;
+    } else {
+      // It's a string or a wrapped primitive type, like Integer.
+      this.value = value;
+    }
   }
 
   @Override
