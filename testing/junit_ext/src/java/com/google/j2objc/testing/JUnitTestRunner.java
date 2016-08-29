@@ -120,11 +120,11 @@ public class JUnitTestRunner {
    * Runs the test classes given in {@param classes}.
    * @returns Zero if all tests pass, non-zero otherwise.
    */
-  public static int run(Class[] classes, RunListener listener) {
+  public static int run(Class<?>[] classes, RunListener listener) {
     JUnitCore junitCore = new JUnitCore();
     junitCore.addListener(listener);
     boolean hasError = false;
-    for (@AutoreleasePool Class c : classes) {
+    for (@AutoreleasePool Class<?> c : classes) {
       Result result = junitCore.run(c);
       hasError = hasError || !result.wasSuccessful();
     }
@@ -136,8 +136,8 @@ public class JUnitTestRunner {
    * @returns Zero if all tests pass, non-zero otherwise.
    */
   public int run() {
-    Set<Class> classesSet = getTestClasses();
-    Class[] classes = classesSet.toArray(new Class[classesSet.size()]);
+    Set<Class<?>> classesSet = getTestClasses();
+    Class<?>[] classes = classesSet.toArray(new Class<?>[classesSet.size()]);
     sortClasses(classes, sortOrder);
     RunListener listener = newRunListener(outputFormat);
     return run(classes, listener);
@@ -161,10 +161,10 @@ public class JUnitTestRunner {
   /**
    * Sorts the classes given in {@param classes} according to {@param sortOrder}.
    */
-  public void sortClasses(Class[] classes, final SortOrder sortOrder) {
-    Arrays.sort(classes, new Comparator<Class>() {
+  public void sortClasses(Class<?>[] classes, final SortOrder sortOrder) {
+    Arrays.sort(classes, new Comparator<Class<?>>() {
       @Override
-      public int compare(Class class1, Class class2) {
+      public int compare(Class<?> class1, Class<?> class2) {
         String name1 = getSortKey(class1, sortOrder);
         String name2 = getSortKey(class2, sortOrder);
         return name1.compareTo(name2);
@@ -181,7 +181,7 @@ public class JUnitTestRunner {
     return value;
   }
 
-  private String getSortKey(Class cls, SortOrder sortOrder) {
+  private String getSortKey(Class<?> cls, SortOrder sortOrder) {
     String className = cls.getName();
     switch (sortOrder) {
       case ALPHABETICAL:
@@ -215,7 +215,7 @@ public class JUnitTestRunner {
   /**
    * Returns the set of all loaded JUnit test classes.
    */
-  private native Set<Class> getAllTestClasses() /*-[
+  private native Set<Class<?>> getAllTestClasses() /*-[
     int classCount = objc_getClassList(NULL, 0);
     Class *classes = (Class *)malloc(classCount * sizeof(Class));
     objc_getClassList(classes, classCount);
@@ -241,7 +241,7 @@ public class JUnitTestRunner {
   /**
    * @return true if {@param cls} is either a JUnit 3 or JUnit 4 test.
    */
-  protected boolean isJUnitTestClass(Class cls) {
+  protected boolean isJUnitTestClass(Class<?> cls) {
     return isJUnit3TestClass(cls) || isJUnit4TestClass(cls);
   }
 
@@ -249,7 +249,7 @@ public class JUnitTestRunner {
    * @return true if {@param cls} derives from {@link Test} and is not part of the
    * {@link junit.framework} package.
    */
-  protected boolean isJUnit3TestClass(Class cls) {
+  protected boolean isJUnit3TestClass(Class<?> cls) {
     if (Test.class.isAssignableFrom(cls)) {
       String packageName = getPackageName(cls);
       return !packageName.startsWith("junit.framework")
@@ -261,7 +261,7 @@ public class JUnitTestRunner {
   /**
    * @return true if {@param cls} is {@link JUnit4} annotated.
    */
-  protected boolean isJUnit4TestClass(Class cls) {
+  protected boolean isJUnit4TestClass(Class<?> cls) {
     // Need to find test classes, otherwise crashes with b/11790448.
     if (!cls.getName().endsWith("Test")) {
       return false;
@@ -282,7 +282,7 @@ public class JUnitTestRunner {
    * Returns the name of a class's package or "" for the default package
    * or (for Foundation classes) no package object.
    */
-  private String getPackageName(Class cls) {
+  private String getPackageName(Class<?> cls) {
     Package pkg = cls.getPackage();
     return pkg != null ? pkg.getName() : "";
   }
@@ -290,8 +290,8 @@ public class JUnitTestRunner {
   /**
    * Returns the set of test classes that match settings in {@link #PROPERTIES_FILE_NAME}.
    */
-  private Set<Class> getTestClasses() {
-    Set<Class> testClasses = new HashSet<>();
+  private Set<Class<?>> getTestClasses() {
+    Set<Class<?>> testClasses = new HashSet<>();
 
     for (String testName : testsToRun) {
       try {
@@ -302,7 +302,7 @@ public class JUnitTestRunner {
     }
 
     if (!includePatterns.isEmpty()) {
-      for (Class testClass : getAllTestClasses()) {
+      for (Class<?> testClass : getAllTestClasses()) {
         for (String includePattern : includePatterns) {
           if (matchesPattern(testClass, includePattern)) {
             testClasses.add(testClass);
@@ -318,9 +318,9 @@ public class JUnitTestRunner {
     }
 
     // Search included tests for tests to exclude.
-    Iterator<Class> testClassesIterator = testClasses.iterator();
+    Iterator<Class<?>> testClassesIterator = testClasses.iterator();
     while (testClassesIterator.hasNext()) {
-      Class testClass = testClassesIterator.next();
+      Class<?> testClass = testClassesIterator.next();
       for (String excludePattern : excludePatterns) {
         if (matchesPattern(testClass, excludePattern)) {
           testClassesIterator.remove();
@@ -332,7 +332,7 @@ public class JUnitTestRunner {
     return testClasses;
   }
 
-  private boolean matchesPattern(Class testClass, String pattern) {
+  private boolean matchesPattern(Class<?> testClass, String pattern) {
     return testClass.getCanonicalName().contains(pattern);
   }
 
