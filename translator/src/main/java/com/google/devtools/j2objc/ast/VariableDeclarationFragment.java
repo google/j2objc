@@ -23,14 +23,13 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  */
 public class VariableDeclarationFragment extends VariableDeclaration {
 
-  public VariableDeclarationFragment(org.eclipse.jdt.core.dom.VariableDeclarationFragment jdtNode) {
-    super(jdtNode);
-  }
+  public VariableDeclarationFragment() {}
 
   public VariableDeclarationFragment(VariableDeclarationFragment other) {
     super(other);
   }
 
+  // TODO(tball): remove when javac migration is complete.
   public VariableDeclarationFragment(IVariableBinding variableBinding, Expression initializer) {
     super(variableBinding, initializer);
   }

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -41,10 +42,9 @@ public class FieldDeclaration extends BodyDeclaration {
     fragments.add(fragment);
   }
 
+  // TODO(tball): remove when javac migration is complete.
   public FieldDeclaration(IVariableBinding variableBinding, Expression initializer) {
-    super(variableBinding);
-    type.set(Type.newType(variableBinding.getType()));
-    fragments.add(new VariableDeclarationFragment(variableBinding, initializer));
+    this((VariableElement) BindingConverter.getElement(variableBinding), initializer);
   }
 
   public FieldDeclaration(VariableElement variableElement, Expression initializer) {

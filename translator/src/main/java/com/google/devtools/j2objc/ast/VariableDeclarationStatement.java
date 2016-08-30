@@ -14,9 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
+import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node type for a local variable declaration.
@@ -29,19 +31,7 @@ public class VariableDeclarationStatement extends Statement {
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);
 
-  public VariableDeclarationStatement(
-      org.eclipse.jdt.core.dom.VariableDeclarationStatement jdtNode) {
-    super(jdtNode);
-    for (Object modifier : jdtNode.modifiers()) {
-      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
-        annotations.add((Annotation) TreeConverter.convert(modifier));
-      }
-    }
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
-    for (Object fragment : jdtNode.fragments()) {
-      fragments.add((VariableDeclarationFragment) TreeConverter.convert(fragment));
-    }
-  }
+  public VariableDeclarationStatement() {}
 
   public VariableDeclarationStatement(VariableDeclarationStatement other) {
     super(other);
@@ -51,14 +41,19 @@ public class VariableDeclarationStatement extends Statement {
   }
 
   public VariableDeclarationStatement(VariableDeclarationFragment fragment) {
-    IVariableBinding variableBinding = fragment.getVariableBinding();
-    modifiers = variableBinding.getModifiers();
-    type.set(Type.newType(variableBinding.getType()));
+    VariableElement variableElement = fragment.getVariableElement();
+    modifiers = ElementUtil.fromModifierSet(variableElement.getModifiers());
+    type.set(Type.newType(variableElement.asType()));
     fragments.add(fragment);
   }
 
+  public VariableDeclarationStatement(VariableElement variableElement, Expression initializer) {
+    this(new VariableDeclarationFragment(variableElement, initializer));
+  }
+
+  // TODO(tball): remove when javac migration is complete.
   public VariableDeclarationStatement(IVariableBinding variableBinding, Expression initializer) {
-    this(new VariableDeclarationFragment(variableBinding, initializer));
+    this((VariableElement) BindingConverter.getElement(variableBinding), initializer);
   }
 
   @Override
@@ -70,25 +65,36 @@ public class VariableDeclarationStatement extends Statement {
     return modifiers;
   }
 
+  public VariableDeclarationStatement setModifiers(int newMods) {
+    modifiers = newMods;
+    return this;
+  }
+
   public List<Annotation> getAnnotations() {
     return annotations;
+  }
+
+  public VariableDeclarationStatement addAnnotation(Annotation ann) {
+    annotations.add(ann);
+    return this;
   }
 
   public Type getType() {
     return type.get();
   }
 
-  public void setType(Type newType) {
+  public VariableDeclarationStatement setType(Type newType) {
     type.set(newType);
-  }
-
-  public VariableDeclarationStatement addFragment(VariableDeclarationFragment fragment) {
-    fragments.add(fragment);
     return this;
   }
 
   public List<VariableDeclarationFragment> getFragments() {
     return fragments;
+  }
+
+  public VariableDeclarationStatement addFragment(VariableDeclarationFragment fragment) {
+    fragments.add(fragment);
+    return this;
   }
 
   @Override

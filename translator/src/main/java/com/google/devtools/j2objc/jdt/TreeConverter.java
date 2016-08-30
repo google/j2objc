@@ -109,6 +109,7 @@ import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnionType;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -299,7 +300,7 @@ public class TreeConverter {
         return convertSingleMemberAnnotation(
             (org.eclipse.jdt.core.dom.SingleMemberAnnotation) jdtNode);
       case ASTNode.SINGLE_VARIABLE_DECLARATION:
-        return new SingleVariableDeclaration(
+        return convertSingleVariableDeclaration(
             (org.eclipse.jdt.core.dom.SingleVariableDeclaration) jdtNode);
       case ASTNode.STRING_LITERAL:
         return new StringLiteral((org.eclipse.jdt.core.dom.StringLiteral) jdtNode);
@@ -341,13 +342,13 @@ public class TreeConverter {
       case ASTNode.UNION_TYPE:
         return new UnionType((org.eclipse.jdt.core.dom.UnionType) jdtNode);
       case ASTNode.VARIABLE_DECLARATION_EXPRESSION:
-        return new VariableDeclarationExpression(
+        return convertVariableDeclarationExpression(
             (org.eclipse.jdt.core.dom.VariableDeclarationExpression) jdtNode);
       case ASTNode.VARIABLE_DECLARATION_FRAGMENT:
-        return new VariableDeclarationFragment(
+        return convertVariableDeclarationFragment(
             (org.eclipse.jdt.core.dom.VariableDeclarationFragment) jdtNode);
       case ASTNode.VARIABLE_DECLARATION_STATEMENT:
-        return new VariableDeclarationStatement(
+        return convertVariableDeclarationStatement(
             (org.eclipse.jdt.core.dom.VariableDeclarationStatement) jdtNode);
       case ASTNode.WHILE_STATEMENT:
         return convertWhileStatement((org.eclipse.jdt.core.dom.WhileStatement) jdtNode);
@@ -889,6 +890,20 @@ public class TreeConverter {
     return convertAnnotation(node, newNode);
   }
 
+  private static TreeNode convertSingleVariableDeclaration(
+      org.eclipse.jdt.core.dom.SingleVariableDeclaration node) {
+    SingleVariableDeclaration newNode = new SingleVariableDeclaration();
+    convertVariableDeclaration(node, newNode);
+    for (Object modifier : node.modifiers()) {
+      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
+        newNode.addAnnotation((Annotation) TreeConverter.convert(modifier));
+      }
+    }
+    return newNode
+        .setType((Type) TreeConverter.convert(node.getType()))
+        .setIsVarargs(node.isVarargs());
+  }
+
   private static TreeNode convertSuperConstructorInvocation(
       org.eclipse.jdt.core.dom.SuperConstructorInvocation node) {
     ExecutableElement method =
@@ -938,6 +953,46 @@ public class TreeConverter {
       newNode.addSuperInterfaceType((Type) convert(superInterface));
     }
     return newNode;
+  }
+
+  private static TreeNode convertVariableDeclaration(
+      org.eclipse.jdt.core.dom.VariableDeclaration node, VariableDeclaration newNode) {
+    return newNode
+        .setName((SimpleName) TreeConverter.convert(node.getName()))
+        .setVariableElement(BindingConverter.getVariableElement(node.resolveBinding()))
+        .setExtraDimensions(node.getExtraDimensions())
+        .setInitializer((Expression) TreeConverter.convert(node.getInitializer()));
+  }
+
+  private static TreeNode convertVariableDeclarationExpression(
+      org.eclipse.jdt.core.dom.VariableDeclarationExpression node) {
+    VariableDeclarationExpression newNode = new VariableDeclarationExpression();
+    convertExpression(node, newNode);
+    for (Object fragment : node.fragments()) {
+      newNode.addFragment((VariableDeclarationFragment) TreeConverter.convert(fragment));
+    }
+    return newNode
+        .setType((Type) TreeConverter.convert(node.getType()));
+  }
+
+  private static TreeNode convertVariableDeclarationFragment(
+      org.eclipse.jdt.core.dom.VariableDeclarationFragment node) {
+    return convertVariableDeclaration(node, new VariableDeclarationFragment());
+  }
+
+  private static TreeNode convertVariableDeclarationStatement(
+      org.eclipse.jdt.core.dom.VariableDeclarationStatement node) {
+    VariableDeclarationStatement newNode = new VariableDeclarationStatement();
+    for (Object modifier : node.modifiers()) {
+      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
+        newNode.addAnnotation((Annotation) TreeConverter.convert(modifier));
+      }
+    }
+    for (Object fragment : node.fragments()) {
+      newNode.addFragment((VariableDeclarationFragment) TreeConverter.convert(fragment));
+    }
+    return newNode
+        .setType((Type) TreeConverter.convert(node.getType()));
   }
 
   private static TreeNode convertWhileStatement(org.eclipse.jdt.core.dom.WhileStatement node) {

@@ -15,9 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
-
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -30,14 +28,7 @@ public class VariableDeclarationExpression extends Expression {
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);
 
-  public VariableDeclarationExpression(
-      org.eclipse.jdt.core.dom.VariableDeclarationExpression jdtNode) {
-    super(jdtNode);
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
-    for (Object fragment : jdtNode.fragments()) {
-      fragments.add((VariableDeclarationFragment) TreeConverter.convert(fragment));
-    }
-  }
+  public VariableDeclarationExpression() {}
 
   public VariableDeclarationExpression(VariableDeclarationExpression other) {
     super(other);
@@ -60,12 +51,22 @@ public class VariableDeclarationExpression extends Expression {
     return type.get();
   }
 
+  public VariableDeclarationExpression setType(Type newType) {
+    type.set(newType);
+    return this;
+  }
+
   public VariableDeclarationFragment getFragment(int index) {
     return fragments.get(index);
   }
 
   public List<VariableDeclarationFragment> getFragments() {
     return fragments;
+  }
+
+  public VariableDeclarationExpression addFragment(VariableDeclarationFragment fragment) {
+    fragments.add(fragment);
+    return this;
   }
 
   @Override

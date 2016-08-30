@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -29,14 +28,7 @@ public abstract class VariableDeclaration extends TreeNode {
   protected ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   protected ChildLink<Expression> initializer = ChildLink.create(Expression.class, this);
 
-  public VariableDeclaration(org.eclipse.jdt.core.dom.VariableDeclaration jdtNode) {
-    super(jdtNode);
-    IVariableBinding variableBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
-    variableElement = (VariableElement) BindingConverter.getElement(variableBinding);
-    extraDimensions = jdtNode.getExtraDimensions();
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    initializer.set((Expression) TreeConverter.convert(jdtNode.getInitializer()));
-  }
+  public VariableDeclaration() {}
 
   public VariableDeclaration(VariableDeclaration other) {
     super(other);
@@ -46,11 +38,9 @@ public abstract class VariableDeclaration extends TreeNode {
     initializer.copyFrom(other.getInitializer());
   }
 
+  // TODO(tball): remove when javac migration is complete.
   public VariableDeclaration(IVariableBinding variableBinding, Expression initializer) {
-    super();
-    variableElement = (VariableElement) BindingConverter.getElement(variableBinding);
-    name.set(new SimpleName(variableBinding));
-    this.initializer.set(initializer);
+    this((VariableElement) BindingConverter.getElement(variableBinding), initializer);
   }
 
   public VariableDeclaration(VariableElement variableElement, Expression initializer) {
@@ -68,6 +58,11 @@ public abstract class VariableDeclaration extends TreeNode {
     return variableElement;
   }
 
+  public VariableDeclaration setVariableElement(VariableElement newElement) {
+    variableElement = newElement;
+    return this;
+  }
+
   public void setVariableBinding(IVariableBinding newVariableBinding) {
     variableElement = (VariableElement) BindingConverter.getElement(newVariableBinding);
   }
@@ -76,19 +71,26 @@ public abstract class VariableDeclaration extends TreeNode {
     return extraDimensions;
   }
 
-  public void setExtraDimensions(int newExtraDimensions) {
+  public VariableDeclaration setExtraDimensions(int newExtraDimensions) {
     extraDimensions = newExtraDimensions;
+    return this;
   }
 
   public SimpleName getName() {
     return name.get();
   }
 
+  public VariableDeclaration setName(SimpleName newName) {
+    name.set(newName);
+    return this;
+  }
+
   public Expression getInitializer() {
     return initializer.get();
   }
 
-  public void setInitializer(Expression newInitializer) {
+  public VariableDeclaration setInitializer(Expression newInitializer) {
     initializer.set(newInitializer);
+    return this;
   }
 }

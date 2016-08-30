@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -29,16 +29,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
   private final ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
   private final ChildLink<Type> type = ChildLink.create(Type.class, this);
 
-  public SingleVariableDeclaration(org.eclipse.jdt.core.dom.SingleVariableDeclaration jdtNode) {
-    super(jdtNode);
-    isVarargs = jdtNode.isVarargs();
-    for (Object modifier : jdtNode.modifiers()) {
-      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
-        annotations.add((Annotation) TreeConverter.convert(modifier));
-      }
-    }
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
-  }
+  public SingleVariableDeclaration() {}
 
   public SingleVariableDeclaration(SingleVariableDeclaration other) {
     super(other);
@@ -47,9 +38,9 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     type.copyFrom(other.getType());
   }
 
+  // TODO(tball): remove when javac migration is complete.
   public SingleVariableDeclaration(IVariableBinding variableBinding) {
-    super(variableBinding, null);
-    type.set(Type.newType(variableBinding.getType()));
+    this((VariableElement) BindingConverter.getElement(variableBinding));
   }
 
   public SingleVariableDeclaration(VariableElement variableElement) {
@@ -66,16 +57,27 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     return isVarargs;
   }
 
+  public SingleVariableDeclaration setIsVarargs(boolean value) {
+    isVarargs = value;
+    return this;
+  }
+
   public List<Annotation> getAnnotations() {
     return annotations;
+  }
+
+  public SingleVariableDeclaration addAnnotation(Annotation ann) {
+    annotations.add(ann);
+    return this;
   }
 
   public Type getType() {
     return type.get();
   }
 
-  public void setType(Type newType) {
+  public SingleVariableDeclaration setType(Type newType) {
     type.set(newType);
+    return this;
   }
 
   @Override

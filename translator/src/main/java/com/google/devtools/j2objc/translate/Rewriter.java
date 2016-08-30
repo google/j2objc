@@ -329,7 +329,7 @@ public class Rewriter extends TreeVisitor {
           newDeclarations = LinkedListMultimap.create();
         }
         VariableDeclarationFragment newFrag = new VariableDeclarationFragment(
-            frag.getVariableBinding(), TreeUtil.remove(frag.getInitializer()));
+            frag.getVariableElement(), TreeUtil.remove(frag.getInitializer()));
         newDeclarations.put(dimensions, newFrag);
         iter.remove();
       } else {
