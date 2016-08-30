@@ -282,7 +282,7 @@ public final class BindingConverter {
   }
 
   public static Element getElement(IBinding binding) {
-      return getElement(wrapBinding(binding));
+    return getElement(wrapBinding(binding));
   }
 
   public static VariableElement getVariableElement(IVariableBinding binding) {
@@ -311,7 +311,8 @@ public final class BindingConverter {
       element = new JdtPackageElement((JdtPackageBinding) binding);
     } else if (binding instanceof JdtTypeBinding) {
       JdtTypeBinding typeBinding = (JdtTypeBinding) binding;
-      element = new JdtTypeElement(typeBinding);
+      element = typeBinding.isTypeVariable()
+          ? new JdtTypeParameterElement(typeBinding) : new JdtTypeElement(typeBinding);
     } else if (binding instanceof JdtVariableBinding) {
       element = new JdtVariableElement((JdtVariableBinding) binding);
     } else {

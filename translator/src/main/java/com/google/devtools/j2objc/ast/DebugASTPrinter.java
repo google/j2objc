@@ -19,12 +19,13 @@ import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Simple AST printer, suitable for node toString() results. This printer is based on
@@ -229,7 +230,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print('.');
     }
     sb.print("new ");
-    printTypeParameters(node.getMethodBinding().getTypeParameters());
+    printTypeParameters(node.getExecutableElement().getTypeParameters());
     node.getType().accept(this);
     sb.print("(");
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
@@ -284,7 +285,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(ConstructorInvocation node) {
     sb.printIndent();
-    printTypeParameters(node.getMethodBinding().getTypeParameters());
+    printTypeParameters(node.getExecutableElement().getTypeParameters());
     sb.print("this(");
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
       it.next().accept(this);
@@ -609,15 +610,15 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.print("(");
     boolean delimiterFlag = false;
     for (VariableDeclaration x : node.getParameters()) {
-      IVariableBinding variableBinding = x.getVariableBinding();
+      VariableElement variableElement = x.getVariableElement();
       if (delimiterFlag) {
         sb.print(", ");
       } else {
         delimiterFlag = true;
       }
-      sb.print(variableBinding.getType().getName());
+      sb.print(variableElement.asType().toString());
       sb.print(" ");
-      sb.print(variableBinding.getName());
+      sb.print(variableElement.getSimpleName().toString());
     }
     sb.print(") -> ");
     node.getBody().accept(this);
@@ -644,7 +645,7 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.printIndent();
     printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
-    IMethodBinding meth = node.getMethodBinding();
+    ExecutableElement meth = node.getMethodElement();
     printTypeParameters(meth.getTypeParameters());
     if (!node.isConstructor()) {
       if (node.getReturnType() != null) {
@@ -661,12 +662,12 @@ public class DebugASTPrinter extends TreeVisitor {
       }
     }
     sb.print(")");
-    ITypeBinding[] exceptions = meth.getExceptionTypes();
-    if (exceptions.length > 0) {
+    List<? extends TypeMirror> exceptions = meth.getThrownTypes();
+    if (exceptions.size() > 0) {
       sb.print(" throws ");
-      for (int i = 0; i < exceptions.length; ) {
-        sb.print(exceptions[i].getName());
-        if (++i < exceptions.length){
+      for (int i = 0; i < exceptions.size(); ) {
+        sb.print(exceptions.get(i).toString());
+        if (++i < exceptions.size()){
           sb.print(',');
         }
       }
@@ -686,7 +687,7 @@ public class DebugASTPrinter extends TreeVisitor {
       node.getExpression().accept(this);
       sb.print(".");
     }
-    printTypeParameters(node.getMethodBinding().getTypeParameters());
+    printTypeParameters(node.getExecutableElement().getTypeParameters());
     node.getName().accept(this);
     sb.print('(');
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
@@ -773,7 +774,6 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(ParameterizedType node) {
     node.getType().accept(this);
-    printTypeParameters(node.getTypeBinding().getTypeParameters());
     return false;
   }
 
@@ -893,7 +893,7 @@ public class DebugASTPrinter extends TreeVisitor {
       node.getExpression().accept(this);
       sb.print(".");
     }
-    printTypeParameters(node.getMethodBinding().getTypeParameters());
+    printTypeParameters(node.getExecutableElement().getTypeParameters());
     sb.print("super(");
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
       it.next().accept(this);
@@ -923,7 +923,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print(".");
     }
     sb.print("super.");
-    printTypeParameters(node.getMethodBinding().getTypeParameters());
+    printTypeParameters(node.getExecutableElement().getTypeParameters());
     node.getName().accept(this);
     sb.print("(");
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
@@ -1051,7 +1051,7 @@ public class DebugASTPrinter extends TreeVisitor {
     printModifiers(node.getModifiers());
     sb.print(node.isInterface() ? "interface " : "class ");
     node.getName().accept(this);
-    printTypeParameters(node.getTypeBinding().getTypeParameters());
+    printTypeParameters(node.getElement().getTypeParameters());
     sb.print(' ');
     if (node.getSuperclassType() != null) {
       sb.print("extends ");
@@ -1215,7 +1215,7 @@ public class DebugASTPrinter extends TreeVisitor {
     if (Modifier.isNative(modifiers)) {
       sb.print("native ");
     }
-    if (Modifier.isStrictfp(modifiers)) {
+    if (Modifier.isStrict(modifiers)) {
       sb.print("strictfp ");
     }
     if (Modifier.isTransient(modifiers)) {
@@ -1226,12 +1226,12 @@ public class DebugASTPrinter extends TreeVisitor {
     }
   }
 
-  private void printTypeParameters(ITypeBinding[] typeParams) {
-    if (typeParams.length > 0) {
+  private void printTypeParameters(List<? extends TypeParameterElement> typeParams) {
+    if (!typeParams.isEmpty()) {
       sb.print('<');
-      for (int i = 0; i < typeParams.length; ) {
-        sb.print(typeParams[i].getName());
-        if (++i < typeParams.length){
+      for (int i = 0; i < typeParams.size(); ) {
+        sb.print(typeParams.get(i).getSimpleName().toString());
+        if (++i < typeParams.size()){
           sb.print(',');
         }
       }
