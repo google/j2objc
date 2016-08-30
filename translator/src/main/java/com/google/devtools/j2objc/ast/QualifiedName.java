@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import javax.lang.model.element.Element;
 
 /**
@@ -25,11 +24,7 @@ public class QualifiedName extends Name {
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
-  public QualifiedName(org.eclipse.jdt.core.dom.QualifiedName jdtNode) {
-    super(jdtNode);
-    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-  }
+  public QualifiedName() {}
 
   public QualifiedName(QualifiedName other) {
     super(other);
@@ -52,8 +47,18 @@ public class QualifiedName extends Name {
     return qualifier.get();
   }
 
+  public QualifiedName setQualifier(Name newQualifier) {
+    qualifier.set(newQualifier);
+    return this;
+  }
+
   public SimpleName getName() {
     return name.get();
+  }
+
+  public QualifiedName setName(SimpleName newName) {
+    name.set(newName);
+    return this;
   }
 
   @Override

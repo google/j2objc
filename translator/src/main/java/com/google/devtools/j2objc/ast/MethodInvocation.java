@@ -16,14 +16,12 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Method invocation node type.
@@ -38,19 +36,7 @@ public class MethodInvocation extends Expression {
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
-  public MethodInvocation(org.eclipse.jdt.core.dom.MethodInvocation jdtNode) {
-    super(jdtNode);
-    IMethodBinding methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
-    method = BindingConverter.getExecutableElement(methodBinding);
-    methodType = BindingConverter.getType(methodBinding);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    for (Object argument : jdtNode.arguments()) {
-      arguments.add((Expression) TreeConverter.convert(argument));
-    }
-  }
+  public MethodInvocation() {}
 
   public MethodInvocation(MethodInvocation other) {
     super(other);
@@ -101,8 +87,18 @@ public class MethodInvocation extends Expression {
     return method;
   }
 
+  public MethodInvocation setExecutableElement(ExecutableElement newElement) {
+    method = newElement;
+    return this;
+  }
+
   public ExecutableType getExecutableType() {
     return methodType;
+  }
+
+  public MethodInvocation setExecutableType(ExecutableType newType) {
+    methodType = newType;
+    return this;
   }
 
   @Override
@@ -110,28 +106,36 @@ public class MethodInvocation extends Expression {
     return typeMirror;
   }
 
-  public void setTypeBinding(ITypeBinding newTypeBinding) {
-    typeMirror = BindingConverter.getType(newTypeBinding);
+  public MethodInvocation setTypeMirror(TypeMirror newMirror) {
+    typeMirror = newMirror;
+    return this;
   }
 
   public Expression getExpression() {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public MethodInvocation setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public SimpleName getName() {
     return name.get();
   }
 
-  public void setName(SimpleName newName) {
+  public MethodInvocation setName(SimpleName newName) {
     name.set(newName);
+    return this;
   }
 
   public List<Expression> getArguments() {
     return arguments;
+  }
+
+  public MethodInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
   }
 
   @Override
@@ -154,10 +158,5 @@ public class MethodInvocation extends Expression {
     super.validateInner();
     Preconditions.checkNotNull(method);
     Preconditions.checkNotNull(name.get());
-  }
-
-  public MethodInvocation addArgument(Expression arg) {
-    arguments.add(arg);
-    return this;
   }
 }

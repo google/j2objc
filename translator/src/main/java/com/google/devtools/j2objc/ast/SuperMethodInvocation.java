@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
@@ -33,17 +32,7 @@ public class SuperMethodInvocation extends Expression {
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
-  public SuperMethodInvocation(org.eclipse.jdt.core.dom.SuperMethodInvocation jdtNode) {
-    super(jdtNode);
-    IMethodBinding methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
-    method = BindingConverter.getExecutableElement(methodBinding);
-    methodType = BindingConverter.getType(methodBinding);
-    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    for (Object argument : jdtNode.arguments()) {
-      arguments.add((Expression) TreeConverter.convert(argument));
-    }
-  }
+  public SuperMethodInvocation() {}
 
   public SuperMethodInvocation(SuperMethodInvocation other) {
     super(other);
@@ -66,41 +55,57 @@ public class SuperMethodInvocation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(methodType);
-  }
-
-  public void setMethodBinding(IMethodBinding newMethodBinding) {
-    method = BindingConverter.getExecutableElement(newMethodBinding);
-    methodType = BindingConverter.getType(newMethodBinding);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(getExecutableType());
   }
 
   public ExecutableElement getExecutableElement() {
     return method;
   }
 
+  public SuperMethodInvocation setExecutableElement(ExecutableElement newElement) {
+    method = newElement;
+    return this;
+  }
+
   public ExecutableType getExecutableType() {
     return methodType;
   }
 
+  public SuperMethodInvocation setExecutableType(ExecutableType newType) {
+    methodType = newType;
+    return this;
+  }
+
   @Override
   public TypeMirror getTypeMirror() {
-    return methodType.getReturnType();
+    return getExecutableType().getReturnType();
   }
 
   public Name getQualifier() {
     return qualifier.get();
   }
 
-  public void setQualifier(Name newQualifier) {
+  public SuperMethodInvocation setQualifier(Name newQualifier) {
     qualifier.set(newQualifier);
+    return this;
   }
 
   public SimpleName getName() {
     return name.get();
   }
 
+  public SuperMethodInvocation setName(SimpleName newName) {
+    name.set(newName);
+    return this;
+  }
+
   public List<Expression> getArguments() {
     return arguments;
+  }
+
+  public SuperMethodInvocation addArgument(Expression arg) {
+    arguments.add(arg);
+    return this;
   }
 
   @Override
@@ -115,10 +120,5 @@ public class SuperMethodInvocation extends Expression {
   @Override
   public SuperMethodInvocation copy() {
     return new SuperMethodInvocation(this);
-  }
-
-  public SuperMethodInvocation addArgument(Expression arg) {
-    arguments.add(arg);
-    return this;
   }
 }

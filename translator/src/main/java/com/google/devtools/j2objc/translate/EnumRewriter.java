@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
@@ -175,7 +176,7 @@ public class EnumRewriter extends TreeVisitor {
       return false;
     }
     GeneratedMethodBinding newBinding = addEnumConstructorParams(node.getMethodBinding());
-    node.setMethodBinding(newBinding);
+    node.setMethodElement(BindingConverter.getExecutableElement(newBinding));
     node.removeModifiers(Modifier.PUBLIC | Modifier.PROTECTED);
     node.addModifiers(Modifier.PRIVATE);
     newBinding.setModifiers((newBinding.getModifiers() & ~(Modifier.PUBLIC | Modifier.PROTECTED))

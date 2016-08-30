@@ -14,12 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for constructing a new instance. (e.g. "new Foo()")
@@ -36,20 +35,7 @@ public class ClassInstanceCreation extends Expression {
   private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
       ChildLink.create(AnonymousClassDeclaration.class, this);
 
-  public ClassInstanceCreation(org.eclipse.jdt.core.dom.ClassInstanceCreation jdtNode) {
-    super(jdtNode);
-    IMethodBinding methodBinding = BindingConverter.wrapBinding(
-        jdtNode.resolveConstructorBinding());
-    method = BindingConverter.getExecutableElement(methodBinding);
-
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
-    for (Object argument : jdtNode.arguments()) {
-      arguments.add((Expression) TreeConverter.convert(argument));
-    }
-    anonymousClassDeclaration.set(
-        (AnonymousClassDeclaration) TreeConverter.convert(jdtNode.getAnonymousClassDeclaration()));
-  }
+  public ClassInstanceCreation() {}
 
   public ClassInstanceCreation(ClassInstanceCreation other) {
     super(other);
@@ -61,7 +47,7 @@ public class ClassInstanceCreation extends Expression {
     arguments.copyFrom(other.getArguments());
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
-  
+
   public ClassInstanceCreation(ExecutableElement method, Type type) {
     this.method = method;
     this.type.set(type);
@@ -94,8 +80,9 @@ public class ClassInstanceCreation extends Expression {
     return method;
   }
 
-  public void setExecutableElement(ExecutableElement element) {
+  public ClassInstanceCreation setExecutableElement(ExecutableElement element) {
     method = element;
+    return this;
   }
 
   @Override
@@ -116,16 +103,18 @@ public class ClassInstanceCreation extends Expression {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public ClassInstanceCreation setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public Type getType() {
     return type.get();
   }
 
-  public void setType(Type newType) {
+  public ClassInstanceCreation setType(Type newType) {
     type.set(newType);
+    return this;
   }
 
   public ClassInstanceCreation addArgument(Expression arg) {
@@ -150,8 +139,10 @@ public class ClassInstanceCreation extends Expression {
     return anonymousClassDeclaration.get();
   }
 
-  public void setAnonymousClassDeclaration(AnonymousClassDeclaration newAnonymousClassDeclaration) {
+  public ClassInstanceCreation setAnonymousClassDeclaration(
+      AnonymousClassDeclaration newAnonymousClassDeclaration) {
     anonymousClassDeclaration.set(newAnonymousClassDeclaration);
+    return this;
   }
 
   @Override

@@ -18,7 +18,6 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -28,11 +27,7 @@ public abstract class Name extends Expression {
 
   private Element element;
 
-  public Name(org.eclipse.jdt.core.dom.Name jdtNode) {
-    super(jdtNode);
-    IBinding binding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
-    element = BindingConverter.getElement(binding);
-  }
+  public Name() {}
 
   public Name(Name other) {
     super(other);
@@ -59,6 +54,11 @@ public abstract class Name extends Expression {
 
   public Element getElement() {
     return element;
+  }
+
+  public Name setElement(Element newElement) {
+    element = newElement;
+    return this;
   }
 
   @Override

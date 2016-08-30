@@ -26,10 +26,7 @@ public class SimpleName extends Name {
 
   private String identifier;
 
-  public SimpleName(org.eclipse.jdt.core.dom.SimpleName jdtNode) {
-    super(jdtNode);
-    identifier = jdtNode.getIdentifier();
-  }
+  public SimpleName() {}
 
   public SimpleName(SimpleName other) {
     super(other);
@@ -60,8 +57,9 @@ public class SimpleName extends Name {
     return identifier;
   }
 
-  public void setIdentifier(String identifier) {
+  public SimpleName setIdentifier(String identifier) {
     this.identifier = identifier;
+    return this;
   }
 
   @Override

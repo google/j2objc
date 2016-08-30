@@ -14,11 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for a method declaration.
@@ -34,17 +33,7 @@ public class MethodDeclaration extends BodyDeclaration {
       ChildList.create(SingleVariableDeclaration.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
-  public MethodDeclaration(org.eclipse.jdt.core.dom.MethodDeclaration jdtNode) {
-    super(jdtNode);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
-    isConstructor = jdtNode.isConstructor();
-    returnType.set((Type) TreeConverter.convert(jdtNode.getReturnType2()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    for (Object param : jdtNode.parameters()) {
-      parameters.add((SingleVariableDeclaration) TreeConverter.convert(param));
-    }
-    body.set((Block) TreeConverter.convert(jdtNode.getBody()));
-  }
+  public MethodDeclaration() {}
 
   public MethodDeclaration(MethodDeclaration other) {
     super(other);
@@ -64,7 +53,7 @@ public class MethodDeclaration extends BodyDeclaration {
     returnType.set(Type.newType(methodBinding.getReturnType()));
     name.set(new SimpleName(methodBinding));
   }
-  
+
   public MethodDeclaration(ExecutableElement method) {
     this((IMethodBinding) BindingConverter.unwrapElement(method));
   }
@@ -78,36 +67,53 @@ public class MethodDeclaration extends BodyDeclaration {
     return methodBinding;
   }
 
+  public ExecutableElement getMethodElement() {
+    return BindingConverter.getExecutableElement(methodBinding);
+  }
+
   public void setMethodBinding(IMethodBinding newMethodBinding) {
     methodBinding = newMethodBinding;
   }
 
-  public ExecutableElement getMethodElement() {
-    return BindingConverter.getExecutableElement(methodBinding);
+  public MethodDeclaration setMethodElement(ExecutableElement newMethodElement) {
+    methodBinding = (IMethodBinding) BindingConverter.unwrapElement(newMethodElement);
+    return this;
   }
 
   public boolean isConstructor() {
     return isConstructor;
   }
 
+  public MethodDeclaration setIsConstructor(boolean value) {
+    isConstructor = value;
+    return this;
+  }
+
   public boolean hasDeclaration() {
     return hasDeclaration;
   }
 
-  public void setHasDeclaration(boolean value) {
+  public MethodDeclaration setHasDeclaration(boolean value) {
     hasDeclaration = value;
+    return this;
   }
 
   public Type getReturnType() {
     return returnType.get();
   }
 
+  public MethodDeclaration setReturnType(Type newType) {
+    returnType.set(newType);
+    return this;
+  }
+
   public SimpleName getName() {
     return name.get();
   }
 
-  public void setName(SimpleName newName) {
+  public MethodDeclaration setName(SimpleName newName) {
     name.set(newName);
+    return this;
   }
 
   public SingleVariableDeclaration getParameter(int index) {
@@ -122,8 +128,9 @@ public class MethodDeclaration extends BodyDeclaration {
     return body.get();
   }
 
-  public void setBody(Block newBody) {
+  public MethodDeclaration setBody(Block newBody) {
     body.set(newBody);
+    return this;
   }
 
   @Override

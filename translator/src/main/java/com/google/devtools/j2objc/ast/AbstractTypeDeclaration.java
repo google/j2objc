@@ -45,7 +45,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
   public AbstractTypeDeclaration(ITypeBinding typeBinding) {
     super(typeBinding);
     this.typeElement = BindingConverter.getTypeElement(typeBinding);
-    name.set(new SimpleName(typeBinding));
+    name.set(new SimpleName(typeElement));
   }
 
   public AbstractTypeDeclaration(TypeElement typeElement) {
