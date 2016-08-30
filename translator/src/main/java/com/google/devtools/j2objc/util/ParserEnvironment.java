@@ -28,9 +28,12 @@ public interface ParserEnvironment {
    * Null is returned if there is no associated element for the
    * specified name.
    */
-  public Element resolve(String name);
+  Element resolve(String name);
 
-  public Elements elementUtilities();
+  Elements elementUtilities();
 
-  public Types typeUtilities();
+  Types typeUtilities();
+
+  // TODO(tball): remove when javac front-end update is complete.
+  default void reset() {}
 }

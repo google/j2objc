@@ -27,6 +27,7 @@ public class TranslationEnvironment {
   private final NameTable nameTable;
   private final SignatureGenerator signatureGenerator;
   private final TranslationUtil translationUtil;
+  private final Runnable resetMethod;
 
   public TranslationEnvironment(ParserEnvironment parserEnv) {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
@@ -35,6 +36,7 @@ public class TranslationEnvironment {
     nameTable = new NameTable(typeUtil, captureInfo);
     signatureGenerator = new SignatureGenerator(typeUtil);
     translationUtil = new TranslationUtil(typeUtil, nameTable);
+    resetMethod = () -> parserEnv.reset();
   }
 
   public ElementUtil elementUtil() {
@@ -59,5 +61,10 @@ public class TranslationEnvironment {
 
   public TranslationUtil translationUtil() {
     return translationUtil;
+  }
+
+  // TODO(tball): remove when javac front-end update is complete.
+  public void reset() {
+    resetMethod.run();
   }
 }

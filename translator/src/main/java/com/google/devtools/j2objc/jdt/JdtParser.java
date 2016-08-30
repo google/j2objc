@@ -266,5 +266,10 @@ public class JdtParser extends Parser {
     public Types typeUtilities() {
       return types;
     }
+
+    @Override
+    public void reset() {
+      BindingConverter.reset();
+    }
   }
 }
