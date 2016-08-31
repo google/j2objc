@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -242,7 +243,8 @@ public class JUnitTestRunner {
    * @return true if {@param cls} is either a JUnit 3 or JUnit 4 test.
    */
   protected boolean isJUnitTestClass(Class<?> cls) {
-    return isJUnit3TestClass(cls) || isJUnit4TestClass(cls);
+    return !Modifier.isAbstract(cls.getModifiers())
+            && (isJUnit3TestClass(cls) || isJUnit4TestClass(cls));
   }
 
   /**
