@@ -56,6 +56,12 @@ public final class NativeTimeZone extends TimeZone {
   private final int dstSavings;
   private final boolean useDaylightTime;
 
+  static {
+    // Observe the native NSSystemTimeZoneDidChangeNotification so that we can flush TimeZone's
+    // cached default time zone upon system time zone change.
+    setUpTimeZoneDidChangeNotificationHandler();
+  }
+
   public static native String[] getAvailableNativeTimeZoneNames() /*-[
     NSArray *timeZones = [NSTimeZone knownTimeZoneNames];
     return [IOSObjectArray arrayWithNSArray:timeZones type:NSString_class_()];
@@ -111,6 +117,17 @@ public final class NativeTimeZone extends TimeZone {
       create_ComGoogleJ2objcUtilNativeTimeZone_initWithId_withNSString_withInt_withInt_withBoolean_(
         nativeTimeZone, tz.name, rawOffset, dstSavings, useDaylightTime);
   ]-*/;
+
+  private static native void setUpTimeZoneDidChangeNotificationHandler() /*-[
+    [[NSNotificationCenter defaultCenter] addObserver:[ComGoogleJ2objcUtilNativeTimeZone class]
+                                             selector:@selector(handleTimeZoneChangeWithId:)
+                                                 name:NSSystemTimeZoneDidChangeNotification
+                                               object:nil];
+  ]-*/;
+
+  private static void handleTimeZoneChange(Object notification) {
+    TimeZone.setDefault(null);
+  }
 
   /**
    * Create an NSTimeZone-backed TimeZone instance.

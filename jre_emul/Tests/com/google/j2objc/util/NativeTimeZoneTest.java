@@ -552,4 +552,28 @@ public class NativeTimeZoneTest extends TestCase {
       assertTrue(ids.contains(pacific.getID()));
     }
   }
+
+  private static native void postNSSystemTimeZoneDidChangeNotification() /*-[
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSSystemTimeZoneDidChangeNotification
+                                                        object:nil];
+  ]-*/;
+
+  public void testResetDefaultTimeZone() {
+    TimeZone defaultTz = TimeZone.getDefault();
+    if (defaultTz.getID().equals("Etc/UTC")) {
+      // We assume that the test is never run with the environment TZ=Etc/UTC, but just to be safe.
+      return;
+    }
+
+    TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
+    assertEquals("Etc/UTC", TimeZone.getDefault().getID());
+
+    // Manually post NSSystemTimeZoneDidChangeNotification, which is dispatched immediately to all
+    // observers.
+    postNSSystemTimeZoneDidChangeNotification();
+
+    // The default time zone should be updated.
+    assertNotNull(TimeZone.getDefault());
+    assertFalse(TimeZone.getDefault().getID().equals("Etc/UTC"));
+  }
 }
