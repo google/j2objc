@@ -43,14 +43,12 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Rewrites certain operators, such as object assignment, into appropriate
@@ -247,7 +245,7 @@ public class OperatorRewriter extends TreeVisitor {
     }
     binding.addParameters(typeEnv.getPointerType(idType), idType);
     args.add(new PrefixExpression(
-        typeEnv.getPointerType(lhs.getTypeBinding()), PrefixExpression.Operator.ADDRESS_OF,
+        typeEnv.getPointerType(lhs.getTypeMirror()), PrefixExpression.Operator.ADDRESS_OF,
         TreeUtil.remove(lhs)));
     args.add(TreeUtil.remove(node.getRightHandSide()));
     node.replaceWith(invocation);
@@ -410,7 +408,7 @@ public class OperatorRewriter extends TreeVisitor {
   private void rewriteStringAppend(Assignment node) {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
-    ITypeBinding lhsType = lhs.getTypeBinding();
+    TypeMirror lhsType = lhs.getTypeMirror();
     TypeMirror idType = typeEnv.resolveIOSTypeMirror("id");
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
     FunctionBinding binding = new FunctionBinding(funcName, idType, null);

@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -28,17 +27,7 @@ public class TryStatement extends Statement {
   private ChildList<CatchClause> catchClauses = ChildList.create(CatchClause.class, this);
   private ChildLink<Block> finallyBlock = ChildLink.create(Block.class, this);
 
-  public TryStatement(org.eclipse.jdt.core.dom.TryStatement jdtNode) {
-    super(jdtNode);
-    for (Object resource : jdtNode.resources()) {
-      resources.add((VariableDeclarationExpression) TreeConverter.convert(resource));
-    }
-    body.set((Block) TreeConverter.convert(jdtNode.getBody()));
-    for (Object catchClause : jdtNode.catchClauses()) {
-      catchClauses.add((CatchClause) TreeConverter.convert(catchClause));
-    }
-    finallyBlock.set((Block) TreeConverter.convert(jdtNode.getFinally()));
-  }
+  public TryStatement() {}
 
   public TryStatement(TryStatement other) {
     super(other);
@@ -57,16 +46,36 @@ public class TryStatement extends Statement {
     return resources;
   }
 
+  public TryStatement addResource(VariableDeclarationExpression resource) {
+    resources.add(resource);
+    return this;
+  }
+
   public Block getBody() {
     return body.get();
+  }
+
+  public TryStatement setBody(Block newBody) {
+    body.set(newBody);
+    return this;
   }
 
   public List<CatchClause> getCatchClauses() {
     return catchClauses;
   }
 
+  public TryStatement addCatchClause(CatchClause newClause) {
+    catchClauses.add(newClause);
+    return this;
+  }
+
   public Block getFinally() {
     return finallyBlock.get();
+  }
+
+  public TryStatement setFinally(Block newFinally) {
+    finallyBlock.set(newFinally);
+    return this;
   }
 
   @Override

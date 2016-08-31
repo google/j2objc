@@ -50,6 +50,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
@@ -83,7 +84,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
    * Metadata for a given read or write access of a variable within an
    * expression.
    */
-  private class VariableAccess {
+  private static class VariableAccess {
 
     private final IVariableBinding variable;
     private final Expression expression;
@@ -309,7 +310,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
             new SimpleName(conditionalVar), conditionalFromSubBranches(subBranches, op));
         if (op == InfixExpression.Operator.CONDITIONAL_OR) {
           ifExpr = new PrefixExpression(
-              boolType, PrefixExpression.Operator.NOT,
+              BindingConverter.getType(boolType), PrefixExpression.Operator.NOT,
               ParenthesizedExpression.parenthesize(ifExpr));
         }
         newIf.setExpression(ifExpr);
@@ -550,7 +551,8 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
   private IfStatement createLoopTermination(Expression loopCondition) {
     IfStatement newIf = new IfStatement();
     newIf.setExpression(new PrefixExpression(
-        typeEnv.resolveJavaType("boolean"), PrefixExpression.Operator.NOT,
+        BindingConverter.getType(typeEnv.resolveJavaType("boolean")),
+        PrefixExpression.Operator.NOT,
         ParenthesizedExpression.parenthesize(loopCondition.copy())));
     newIf.setThenStatement(new BreakStatement());
     return newIf;

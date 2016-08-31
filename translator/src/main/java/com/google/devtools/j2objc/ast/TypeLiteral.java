@@ -15,12 +15,9 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.types.Types;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Type literal node type.
@@ -30,11 +27,8 @@ public class TypeLiteral extends Expression {
   private final TypeMirror typeMirror;
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
-  public TypeLiteral(org.eclipse.jdt.core.dom.TypeLiteral jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
+  public TypeLiteral(TypeMirror typeMirror) {
+    this.typeMirror = typeMirror;
   }
 
   public TypeLiteral(TypeLiteral other) {
@@ -60,6 +54,11 @@ public class TypeLiteral extends Expression {
 
   public Type getType() {
     return type.get();
+  }
+
+  public TypeLiteral setType(Type newType) {
+    type.set(newType);
+    return this;
   }
 
   @Override

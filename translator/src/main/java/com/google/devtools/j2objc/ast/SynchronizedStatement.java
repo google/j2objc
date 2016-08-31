@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Synchronized statement node type.
  */
@@ -24,11 +22,7 @@ public class SynchronizedStatement extends Statement {
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
-  public SynchronizedStatement(org.eclipse.jdt.core.dom.SynchronizedStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    body.set((Block) TreeConverter.convert(jdtNode.getBody()));
-  }
+  public SynchronizedStatement() {}
 
   public SynchronizedStatement(SynchronizedStatement other) {
     super(other);
@@ -49,16 +43,18 @@ public class SynchronizedStatement extends Statement {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public SynchronizedStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public Block getBody() {
     return body.get();
   }
 
-  public void setBody(Block newBody) {
+  public SynchronizedStatement setBody(Block newBody) {
     body.set(newBody);
+    return this;
   }
 
   @Override

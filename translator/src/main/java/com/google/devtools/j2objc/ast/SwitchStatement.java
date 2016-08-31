@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -25,13 +24,7 @@ public class SwitchStatement extends Statement {
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildList<Statement> statements = ChildList.create(Statement.class, this);
 
-  public SwitchStatement(org.eclipse.jdt.core.dom.SwitchStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-    for (Object statement : jdtNode.statements()) {
-      statements.add((Statement) TreeConverter.convert(statement));
-    }
-  }
+  public SwitchStatement() {}
 
   public SwitchStatement(SwitchStatement other) {
     super(other);
@@ -48,12 +41,18 @@ public class SwitchStatement extends Statement {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public SwitchStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   public List<Statement> getStatements() {
     return statements;
+  }
+
+  public SwitchStatement addStatement(Statement stmt) {
+    statements.add(stmt);
+    return this;
   }
 
   @Override

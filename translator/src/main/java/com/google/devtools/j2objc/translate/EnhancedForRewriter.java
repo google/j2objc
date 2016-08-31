@@ -115,8 +115,11 @@ public class EnhancedForRewriter extends TreeVisitor {
     loop.setBody(newLoopBody);
     newLoopBody.addStatement(0, new VariableDeclarationStatement(
         loopVariable, new PrefixExpression(
-            componentType, PrefixExpression.Operator.DEREFERENCE, new PostfixExpression(
-                bufferVariable, PostfixExpression.Operator.INCREMENT))));
+            BindingConverter.getType(componentType),
+            PrefixExpression.Operator.DEREFERENCE,
+            new PostfixExpression(
+                BindingConverter.getVariableElement(bufferVariable),
+                PostfixExpression.Operator.INCREMENT))));
 
     Block block = new Block();
     List<Statement> stmts = block.getStatements();

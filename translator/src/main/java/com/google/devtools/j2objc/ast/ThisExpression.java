@@ -14,10 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for "this".
@@ -27,12 +26,7 @@ public class ThisExpression extends Expression {
   private TypeMirror typeMirror = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
 
-  public ThisExpression(org.eclipse.jdt.core.dom.ThisExpression jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
-  }
+  public ThisExpression() {}
 
   public ThisExpression(ThisExpression other) {
     super(other);
@@ -58,12 +52,18 @@ public class ThisExpression extends Expression {
     return typeMirror;
   }
 
+  public ThisExpression setTypeMirror(TypeMirror newType) {
+    typeMirror = newType;
+    return this;
+  }
+
   public Name getQualifier() {
     return qualifier.get();
   }
 
-  public void setQualifier(Name newQualifier) {
+  public ThisExpression setQualifier(Name newQualifier) {
     qualifier.set(newQualifier);
+    return this;
   }
 
   @Override

@@ -29,14 +29,6 @@ public abstract class Type extends TreeNode {
 
   Type() {}
 
-  // TODO(tball): remove when all subclasses are converted.
-  public Type(org.eclipse.jdt.core.dom.Type jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    Preconditions.checkNotNull(typeMirror);
-  }
-
   public Type(Type other) {
     super(other);
     typeMirror = other.getTypeMirror();

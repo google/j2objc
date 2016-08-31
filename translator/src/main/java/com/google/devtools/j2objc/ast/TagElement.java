@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -39,13 +38,7 @@ public class TagElement extends TreeNode {
   private String tagName;
   private ChildList<TreeNode> fragments = ChildList.create(TreeNode.class, this);
 
-  public TagElement(org.eclipse.jdt.core.dom.TagElement jdtNode) {
-    super(jdtNode);
-    tagName = jdtNode.getTagName();
-    for (Object fragment : jdtNode.fragments()) {
-      fragments.add(TreeConverter.convert(fragment));
-    }
-  }
+  public TagElement() {}
 
   public TagElement(TagElement other) {
     super(other);
@@ -62,12 +55,18 @@ public class TagElement extends TreeNode {
     return tagName;
   }
 
-  public void setTagName(String tagName) {
+  public TagElement setTagName(String tagName) {
     this.tagName = tagName;
+    return this;
   }
 
   public List<TreeNode> getFragments() {
     return fragments;
+  }
+
+  public TagElement addFragment(TreeNode fragment) {
+    fragments.add(fragment);
+    return this;
   }
 
   @Override

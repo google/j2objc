@@ -13,8 +13,6 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Creation reference expression AST node type (added in JLS8, section 15.13).
  */
@@ -22,10 +20,7 @@ public class CreationReference extends MethodReference {
 
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
-  public CreationReference(org.eclipse.jdt.core.dom.CreationReference jdtNode) {
-    super(jdtNode);
-    type.set((Type) TreeConverter.convert(jdtNode.getType()));
-  }
+  public CreationReference() {}
 
   public CreationReference(CreationReference other) {
     super(other);
@@ -40,7 +35,7 @@ public class CreationReference extends MethodReference {
   public Type getType() {
     return type.get();
   }
-  
+
   public CreationReference setType(Type newType) {
     type.set(newType);
     return this;

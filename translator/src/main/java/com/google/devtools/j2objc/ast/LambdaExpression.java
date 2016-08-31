@@ -14,7 +14,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
@@ -36,15 +35,7 @@ public class LambdaExpression extends Expression {
   private String uniqueName = null;
   private boolean isCapturing = false;
 
-  public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    for (Object x : jdtNode.parameters()) {
-      parameters.add((VariableDeclaration) TreeConverter.convert(x));
-    }
-    // Lambda bodies can either be a block or an expression, which forces a common root of TreeNode.
-    body.set(TreeConverter.convert(jdtNode.getBody()));
+  public LambdaExpression() {
     // Generate a type binding which is unique to the lambda, as resolveTypeBinding gives us a
     // generic raw type of the implemented class.
     lambdaTypeBinding = new LambdaTypeBinding("LambdaExpression:" + this.getLineNumber());
@@ -74,9 +65,10 @@ public class LambdaExpression extends Expression {
     return uniqueName;
   }
 
-  public void setUniqueName(String newUniqueName) {
+  public LambdaExpression setUniqueName(String newUniqueName) {
     lambdaTypeBinding.setName(newUniqueName);
     uniqueName = newUniqueName;
+    return this;
   }
 
   @Override
@@ -84,8 +76,9 @@ public class LambdaExpression extends Expression {
     return typeMirror;
   }
 
-  public void setTypeMirror(TypeMirror t) {
+  public LambdaExpression setTypeMirror(TypeMirror t) {
     typeMirror = t;
+    return this;
   }
 
   public LambdaTypeBinding getLambdaTypeBinding() {
@@ -108,8 +101,9 @@ public class LambdaExpression extends Expression {
     return body.get();
   }
 
-  public void setBody(TreeNode newBody) {
+  public LambdaExpression setBody(TreeNode newBody) {
     body.set(newBody);
+    return this;
   }
 
   @Override
@@ -130,8 +124,9 @@ public class LambdaExpression extends Expression {
     return isCapturing;
   }
 
-  public void setIsCapturing(boolean isCapturing) {
+  public LambdaExpression setIsCapturing(boolean isCapturing) {
     this.isCapturing = isCapturing;
+    return this;
   }
 
   public LambdaExpression addParameter(VariableDeclaration param) {

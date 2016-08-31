@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
 
 /**
@@ -24,12 +23,7 @@ public class UnionType extends Type {
 
   private ChildList<Type> types = ChildList.create(Type.class, this);
 
-  public UnionType(org.eclipse.jdt.core.dom.UnionType jdtNode) {
-    super(jdtNode);
-    for (Object type : jdtNode.types()) {
-      types.add((Type) TreeConverter.convert(type));
-    }
-  }
+  public UnionType() {}
 
   public UnionType(UnionType other) {
     super(other);
@@ -43,6 +37,11 @@ public class UnionType extends Type {
 
   public List<Type> getTypes() {
     return types;
+  }
+
+  public UnionType addType(Type t) {
+    types.add(t);
+    return this;
   }
 
   @Override

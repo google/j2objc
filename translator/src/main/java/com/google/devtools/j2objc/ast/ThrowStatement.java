@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Throw statement node type.
  */
@@ -23,10 +21,7 @@ public class ThrowStatement extends Statement {
 
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
-  public ThrowStatement(org.eclipse.jdt.core.dom.ThrowStatement jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-  }
+  public ThrowStatement() {}
 
   public ThrowStatement(ThrowStatement other) {
     super(other);
@@ -44,6 +39,11 @@ public class ThrowStatement extends Statement {
 
   public Expression getExpression() {
     return expression.get();
+  }
+
+  public ThrowStatement setExpression(Expression newExpression) {
+    expression.set(newExpression);
+    return this;
   }
 
   @Override

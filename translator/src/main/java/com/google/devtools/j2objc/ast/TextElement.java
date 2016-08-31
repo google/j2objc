@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-
 /**
  * Node for text within a doc comment.
  */
@@ -23,15 +21,7 @@ public class TextElement extends TreeNode {
 
   private String text;
 
-  public TextElement(org.eclipse.jdt.core.dom.TextElement jdtNode) {
-    super(jdtNode);
-    text = jdtNode.getText();
-  }
-
-  public TextElement(ASTNode jdtNode) {
-    super(jdtNode);
-    text = jdtNode.toString();
-  }
+  public TextElement() {}
 
   public TextElement(TextElement other) {
     super(other);
@@ -45,6 +35,11 @@ public class TextElement extends TreeNode {
 
   public String getText() {
     return text;
+  }
+
+  public TextElement setText(String newText) {
+    text = newText;
+    return this;
   }
 
   @Override

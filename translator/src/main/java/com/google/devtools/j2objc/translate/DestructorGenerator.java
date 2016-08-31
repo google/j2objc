@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -153,7 +154,8 @@ public class DestructorGenerator extends TreeVisitor {
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(
-          typeEnv.getPointerType(varType), PrefixExpression.Operator.ADDRESS_OF, arg);
+          typeEnv.getPointerType(BindingConverter.getType(varType)),
+          PrefixExpression.Operator.ADDRESS_OF, arg);
     }
     releaseInvocation.addArgument(arg);
     return new ExpressionStatement(releaseInvocation);

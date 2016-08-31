@@ -13,13 +13,11 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import java.util.List;
-
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Abstract base class of all AST node types that represent a method reference expression (added in
@@ -36,25 +34,17 @@ import javax.lang.model.type.TypeMirror;
 public abstract class MethodReference extends Expression {
 
   protected TypeMirror typeMirror;
-  protected IMethodBinding methodBinding;
+  protected ExecutableElement methodElement;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
   // We generate an invocation to properly resolve translations with normal visitors.
   protected ChildLink<Statement> invocation = ChildLink.create(Statement.class, this);
 
-  public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    methodBinding = BindingConverter.wrapBinding(jdtNode.resolveMethodBinding());
-    for (Object x : jdtNode.typeArguments()) {
-      typeArguments.add((Type) TreeConverter.convert(x));
-    }
-  }
+  public MethodReference() {}
 
   public MethodReference(MethodReference other) {
     super(other);
     typeMirror = other.getTypeMirror();
-    methodBinding = other.getMethodBinding();
+    methodElement = other.getExecutableElement();
     typeArguments.copyFrom(other.getTypeArguments());
     invocation.copyFrom(other.getInvocation());
   }
@@ -64,20 +54,40 @@ public abstract class MethodReference extends Expression {
     return typeMirror;
   }
 
+  public MethodReference setTypeMirror(TypeMirror newType) {
+    typeMirror = newType;
+    return this;
+  }
+
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return (IMethodBinding) BindingConverter.unwrapElement(methodElement);
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return methodElement;
+  }
+
+  public MethodReference setExecutableElement(ExecutableElement newElement) {
+    methodElement = newElement;
+    return this;
   }
 
   public List<Type> getTypeArguments() {
     return typeArguments;
   }
 
+  public MethodReference addTypeArgument(Type typeArg) {
+    typeArguments.add(typeArg);
+    return this;
+  }
+
   public Statement getInvocation() {
     return invocation.get();
   }
 
-  public void setInvocation(Statement invocation) {
+  public MethodReference setInvocation(Statement invocation) {
     this.invocation.set(invocation);
+    return this;
   }
 
   @Override

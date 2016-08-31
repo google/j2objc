@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -24,10 +23,7 @@ public class ParenthesizedExpression extends Expression {
 
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
-  public ParenthesizedExpression(org.eclipse.jdt.core.dom.ParenthesizedExpression jdtNode) {
-    super(jdtNode);
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-  }
+  public ParenthesizedExpression() {}
 
   public ParenthesizedExpression(ParenthesizedExpression other) {
     super(other);
@@ -37,8 +33,6 @@ public class ParenthesizedExpression extends Expression {
   public ParenthesizedExpression(Expression expression) {
     this.expression.set(expression);
   }
-
-  public ParenthesizedExpression() {}
 
   // Static factory avoids conflict with the copy constructor
   public static ParenthesizedExpression parenthesize(Expression expression) {
@@ -71,8 +65,9 @@ public class ParenthesizedExpression extends Expression {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public ParenthesizedExpression setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   @Override

@@ -13,8 +13,6 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Super method reference AST node type (added in JLS8, section 15.13).
  */
@@ -23,11 +21,7 @@ public class SuperMethodReference extends MethodReference {
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
-  public SuperMethodReference(org.eclipse.jdt.core.dom.SuperMethodReference jdtNode) {
-    super(jdtNode);
-    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-  }
+  public SuperMethodReference() {}
 
   public SuperMethodReference(SuperMethodReference other) {
     super(other);
@@ -44,8 +38,18 @@ public class SuperMethodReference extends MethodReference {
     return name.get();
   }
 
+  public SuperMethodReference setName(SimpleName newName) {
+    name.set(newName);
+    return this;
+  }
+
   public Name getQualifier() {
     return qualifier.get();
+  }
+
+  public SuperMethodReference setQualifier(Name newQualifier) {
+    qualifier.set(newQualifier);
+    return this;
   }
 
   @Override

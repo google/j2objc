@@ -15,12 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.TreeConverter;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.Map;
-
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -59,9 +54,8 @@ public class PrefixExpression extends Expression {
       return opString;
     }
 
-    public static Operator fromJdtOperator(
-        org.eclipse.jdt.core.dom.PrefixExpression.Operator jdtOperator) {
-      Operator result = stringLookup.get(jdtOperator.toString());
+    public static Operator parse(String newOp) {
+      Operator result = stringLookup.get(newOp);
       assert result != null;
       return result;
     }
@@ -71,13 +65,7 @@ public class PrefixExpression extends Expression {
   private Operator operator = null;
   private ChildLink<Expression> operand = ChildLink.create(Expression.class, this);
 
-  public PrefixExpression(org.eclipse.jdt.core.dom.PrefixExpression jdtNode) {
-    super(jdtNode);
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(jdtNode.resolveTypeBinding());
-    typeMirror = BindingConverter.getType(typeBinding);
-    operator = Operator.fromJdtOperator(jdtNode.getOperator());
-    operand.set((Expression) TreeConverter.convert(jdtNode.getOperand()));
-  }
+  public PrefixExpression() {}
 
   public PrefixExpression(PrefixExpression other) {
     super(other);
@@ -92,10 +80,6 @@ public class PrefixExpression extends Expression {
     this.operand.set(operand);
   }
 
-  public PrefixExpression(ITypeBinding typeBinding, Operator operator, Expression operand) {
-    this(BindingConverter.getType(typeBinding), operator, operand);
-  }
-
   @Override
   public Kind getKind() {
     return Kind.PREFIX_EXPRESSION;
@@ -106,16 +90,27 @@ public class PrefixExpression extends Expression {
     return typeMirror;
   }
 
+  public PrefixExpression setTypeMirror(TypeMirror newMirror) {
+    typeMirror = newMirror;
+    return this;
+  }
+
   public Operator getOperator() {
     return operator;
+  }
+
+  public PrefixExpression setOperator(Operator newOp) {
+    operator = newOp;
+    return this;
   }
 
   public Expression getOperand() {
     return operand.get();
   }
 
-  public void setOperand(Expression newOperand) {
+  public PrefixExpression setOperand(Expression newOperand) {
     operand.set(newOperand);
+    return this;
   }
 
   @Override

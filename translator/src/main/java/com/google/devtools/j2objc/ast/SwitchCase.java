@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
-
 /**
  * Node type for a switch case statement.
  */
@@ -24,11 +22,7 @@ public class SwitchCase extends Statement {
   private boolean isDefault = false;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
-  public SwitchCase(org.eclipse.jdt.core.dom.SwitchCase jdtNode) {
-    super(jdtNode);
-    isDefault = jdtNode.isDefault();
-    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
-  }
+  public SwitchCase() {}
 
   public SwitchCase(SwitchCase other) {
     super(other);
@@ -45,12 +39,18 @@ public class SwitchCase extends Statement {
     return isDefault;
   }
 
+  public SwitchCase setIsDefault(boolean value) {
+    isDefault = value;
+    return this;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }
 
-  public void setExpression(Expression newExpression) {
+  public SwitchCase setExpression(Expression newExpression) {
     expression.set(newExpression);
+    return this;
   }
 
   @Override
