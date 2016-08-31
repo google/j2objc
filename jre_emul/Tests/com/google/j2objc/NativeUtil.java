@@ -22,6 +22,6 @@ package com.google.j2objc;
 public class NativeUtil {
 
   public static native int getRetainCount(Object o) /*-[
-    return ((NSObject *)o).retainCount;
+    return (jint) ((NSObject *)o).retainCount;
   ]-*/;
 }
