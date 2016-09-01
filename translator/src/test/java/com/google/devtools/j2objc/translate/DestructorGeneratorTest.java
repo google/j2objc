@@ -32,10 +32,10 @@ public class DestructorGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { public void finalize() { "
         + "  try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
-    assertTranslation(translation, "- (void)javaFinalize;");
+    assertTranslation(translation, "- (void)java_finalize;");
     assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)javaFinalize {");
+    assertTranslation(translation, "- (void)java_finalize {");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
         "  JreCheckFinalize(self, [Test class]);",
@@ -49,10 +49,10 @@ public class DestructorGeneratorTest extends GenerationTest {
         + "  private Object o = new Object();"
         + "  public void finalize() { "
         + "    try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
-    assertTranslation(translation, "- (void)javaFinalize;");
+    assertTranslation(translation, "- (void)java_finalize;");
     assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)javaFinalize {");
+    assertTranslation(translation, "- (void)java_finalize {");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
         "  JreCheckFinalize(self, [Test class]);",
@@ -104,7 +104,7 @@ public class DestructorGeneratorTest extends GenerationTest {
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)javaFinalize {",
+        "- (void)java_finalize {",
         "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
           + "printlnWithId:self];",
         "}");
@@ -126,7 +126,7 @@ public class DestructorGeneratorTest extends GenerationTest {
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)javaFinalize {",
+        "- (void)java_finalize {",
         "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
           + "printlnWithId:self];",
         "}");

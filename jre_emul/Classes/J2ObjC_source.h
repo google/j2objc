@@ -73,9 +73,9 @@ FOUNDATION_EXPORT void JreRelease(id obj);
 FOUNDATION_EXPORT void JreFinalize(id self);
 
 __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) {
-  // Use [self getClass].objcClass instead of [self class] in case the object
+  // Use [self java_getClass].objcClass instead of [self class] in case the object
   // has it's class swizzled.
-  if ([self getClass].objcClass == cls) {
+  if ([self java_getClass].objcClass == cls) {
     JreFinalize(self);
   }
 }

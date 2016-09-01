@@ -104,7 +104,7 @@ public class MethodReferenceTest extends GenerationTest {
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (id)copy__WithIntArray:(IOSIntArray *)a {",
-        "  return [((IOSIntArray *) nil_chk(a)) clone];",
+        "  return [((IOSIntArray *) nil_chk(a)) java_clone];",
         "}");
   }
 
@@ -113,7 +113,7 @@ public class MethodReferenceTest extends GenerationTest {
         + "class Test { void f() { Comparator<String> s = String::compareTo; } }";
 
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "return [((NSString *) nil_chk(a)) compareToWithId:b];");
+    assertTranslation(impl, "return [((NSString *) nil_chk(a)) java_compareTo:b];");
   }
 
   public void testReferenceToInstanceMethodOfGenericType() throws IOException {

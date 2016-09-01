@@ -141,7 +141,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   } else {
     [invocation setTarget:object];
     if ((metadata_->modifiers & JavaLangReflectModifier_PRIVATE) > 0 &&
-        class_ != [object getClass]) {
+        class_ != [object java_getClass]) {
       // Private methods do not have virtual invocation. If an overriding class "overrides" this
       // private method then the NSInvocation would incorrectly call the overriding method.
       // To work around this we add a new method to the declaring class with a uniquified name.

@@ -201,7 +201,7 @@ public class RewriterTest extends GenerationTest {
         "class Test implements Comparable<Test> { int i; "
         + "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (jint)compareToWithId:(Test *)t {",
+        "- (jint)java_compareTo:(Test *)t {",
         "cast_chk(t, [Test class]);");
   }
 

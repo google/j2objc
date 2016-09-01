@@ -30,24 +30,24 @@
 @protocol JavaObject <NSObject>
 
 // Returns a copy of the object, if it implements java.lang.Cloneable.
-- (id)clone;
+- (id)java_clone;
 
 // Returns the IOSClass of the receiver.
-- (IOSClass *)getClass;
+- (IOSClass *)java_getClass;
 
 // Wakes up a waiting thread (if any).
-- (void)notify;
+- (void)java_notify;
 
 // Wakes up all waiting threads (if any).
-- (void)notifyAll;
+- (void)java_notifyAll;
 
 // Waits until another thread wakes it, or times out.
-- (void)wait;
-- (void)waitWithLong:(long long)timeout;
-- (void)waitWithLong:(long long)timeout withInt:(int)nanos;
+- (void)java_wait;
+- (void)java_waitWithTimeout:(long long)timeout;
+- (void)java_waitWithTimeout:(long long)timeout nanos:(int)nanos;
 
 // Called upon deallocation of the object.
-- (void)javaFinalize;
+- (void)java_finalize;
 
 @end
 

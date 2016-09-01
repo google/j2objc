@@ -271,7 +271,7 @@ destinationBegin:(int)destinationBegin {
   return [sb description];
 }
 
-- (jint)compareToWithId:(id)another {
+- (jint)java_compareTo:(id)another {
   if (!another) {
     @throw makeException([JavaLangNullPointerException class]);
   }
