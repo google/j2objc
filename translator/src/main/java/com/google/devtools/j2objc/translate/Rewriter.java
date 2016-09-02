@@ -365,7 +365,7 @@ public class Rewriter extends TreeVisitor {
   }
 
   private String getLambdaUniqueName(LambdaExpression node) {
-    ITypeBinding owningType = TreeUtil.getOwningType(node).getTypeBinding();
+    ITypeBinding owningType = TreeUtil.getEnclosingTypeBinding(node);
     Integer count = lambdaCounts.get(owningType);
     if (count == null) {
       count = 0;

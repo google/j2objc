@@ -230,7 +230,7 @@ public class CastResolver extends TreeVisitor {
           }
         }
         return getDeclaredReturnType(
-            method, TreeUtil.getOwningType(invocation).getTypeBinding().getSuperclass());
+            method, TreeUtil.getEnclosingTypeBinding(invocation).getSuperclass());
       }
       default:
         return null;

@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -46,8 +45,8 @@ public class StaticVarRewriter extends TreeVisitor {
         || BindingUtil.isStringConstant(var)) {
       return false;
     }
-    AbstractTypeDeclaration owningType = TreeUtil.getOwningType(currentNode);
-    return owningType == null || !owningType.getTypeBinding().getTypeDeclaration().isEqualTo(
+    ITypeBinding enclosingType = TreeUtil.getEnclosingTypeBinding(currentNode);
+    return enclosingType == null || !enclosingType.getTypeDeclaration().isEqualTo(
         var.getDeclaringClass().getTypeDeclaration());
   }
 

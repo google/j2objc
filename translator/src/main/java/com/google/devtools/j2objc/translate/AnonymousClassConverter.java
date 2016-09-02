@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -62,7 +61,6 @@ public class AnonymousClassConverter extends TreeVisitor {
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
     ITypeBinding typeBinding = node.getTypeBinding();
-    ITypeBinding outerType = typeBinding.getDeclaringClass();
     TreeNode parent = node.getParent();
     ClassInstanceCreation newInvocation = null;
     EnumConstantDeclaration enumConstant = null;
@@ -116,14 +114,7 @@ public class AnonymousClassConverter extends TreeVisitor {
     }
 
     // Add type declaration to enclosing type.
-    if (outerType.isAnonymous()) {
-      AnonymousClassDeclaration outerDecl =
-          TreeUtil.getNearestAncestorWithType(AnonymousClassDeclaration.class, parent);
-      outerDecl.addBodyDeclaration(typeDecl);
-    } else {
-      AbstractTypeDeclaration outerDecl = TreeUtil.getOwningType(parent);
-      outerDecl.addBodyDeclaration(typeDecl);
-    }
+    TreeUtil.getEnclosingTypeBodyDeclarations(parent).add(typeDecl);
     typeDecl.setKey(node.getKey());
     super.endVisit(node);
   }
@@ -158,9 +149,9 @@ public class AnonymousClassConverter extends TreeVisitor {
       constructor.addParameter(new SingleVariableDeclaration(argBinding));
       superCall.addArgument(new SimpleName(argBinding));
     }
-    assert superCall.getArguments().size() == superCallBinding.getParameterTypes().length
-        || superCallBinding.isVarargs()
-            && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length - 1;
+    assert (superCall.getArguments().size() == superCallBinding.getParameterTypes().length)
+        || (superCallBinding.isVarargs()
+            && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length - 1);
 
     constructor.getBody().addStatement(superCall);
 

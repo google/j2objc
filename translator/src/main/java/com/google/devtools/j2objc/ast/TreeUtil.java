@@ -159,13 +159,6 @@ public class TreeUtil {
   }
 
   /**
-   * Returns the type declaration which the specified node is part of.
-   */
-  public static AbstractTypeDeclaration getOwningType(TreeNode node) {
-    return getNearestAncestorWithType(AbstractTypeDeclaration.class, node);
-  }
-
-  /**
    * Returns the statement which is the parent of the specified node.
    */
   public static Statement getOwningStatement(TreeNode node) {
@@ -314,6 +307,17 @@ public class TreeUtil {
       return ((AbstractTypeDeclaration) enclosingType).getTypeBinding();
     } else if (enclosingType instanceof AnonymousClassDeclaration) {
       return ((AnonymousClassDeclaration) enclosingType).getTypeBinding();
+    } else {
+      return null;
+    }
+  }
+
+  public static List<BodyDeclaration> getEnclosingTypeBodyDeclarations(TreeNode node) {
+    TreeNode enclosingType = getEnclosingType(node);
+    if (enclosingType instanceof AbstractTypeDeclaration) {
+      return ((AbstractTypeDeclaration) enclosingType).getBodyDeclarations();
+    } else if (enclosingType instanceof AnonymousClassDeclaration) {
+      return ((AnonymousClassDeclaration) enclosingType).getBodyDeclarations();
     } else {
       return null;
     }

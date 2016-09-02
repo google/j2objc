@@ -191,8 +191,7 @@ public class Functionizer extends TreeVisitor {
     if (!BindingUtil.isStatic(binding)) {
       Expression expr = node.getExpression();
       if (expr == null) {
-        ITypeBinding thisClass = TreeUtil.getOwningType(node).getTypeBinding();
-        expr = new ThisExpression(thisClass);
+        expr = new ThisExpression(TreeUtil.getEnclosingTypeBinding(node));
       }
       args.add(0, TreeUtil.remove(expr));
     }
