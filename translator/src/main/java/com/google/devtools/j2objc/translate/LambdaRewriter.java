@@ -315,14 +315,6 @@ public class LambdaRewriter extends TreeVisitor {
                 nameTable.getObjCType(outerField.asType())
                 + " " + outerField.getSimpleName().toString() + "_ = captures__->"
                 + outerField.getSimpleName().toString() + ";"));
-        // TODO(user): This self should be unnecessary, but SuperMethodInvocationRewriter
-        // adds a ThisExpression node after the OuterReferenceResolver has already run, so it
-        // doesn't get the right path using the lambda and instead just becomes self.
-        funcImplStatements.add(
-            2,
-            new NativeStatement(
-                nameTable.getObjCType(outerField.asType())
-                + " self = captures__->" + outerField.getSimpleName().toString() + ";"));
 
         funcGet.addParameter(new SingleVariableDeclaration(outerField));
 

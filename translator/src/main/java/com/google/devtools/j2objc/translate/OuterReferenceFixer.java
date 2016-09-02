@@ -123,10 +123,6 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    // Ignore default methods, they do not have outer paths.
-    if (ElementUtil.isDefault(node.getExecutableElement())) {
-      return;
-    }
     List<VariableElement> path = outerResolver.getPath(node);
     if (path != null) {
       // We substitute the qualifying type name with the outer variable name.

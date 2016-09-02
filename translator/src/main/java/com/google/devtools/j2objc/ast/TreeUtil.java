@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
@@ -300,10 +301,22 @@ public class TreeUtil {
     }
   }
 
+  private static final List<Class<? extends TreeNode>> TYPE_NODE_BASE_CLASSES =
+      ImmutableList.of(AbstractTypeDeclaration.class, AnonymousClassDeclaration.class);
+
+  public static TreeNode getEnclosingType(TreeNode node) {
+    return TreeUtil.getNearestAncestorWithTypeOneOf(TYPE_NODE_BASE_CLASSES, node);
+  }
+
   public static ITypeBinding getEnclosingTypeBinding(TreeNode node) {
-    TypeDeclaration enclosingType = TreeUtil.getNearestAncestorWithType(TypeDeclaration.class,
-        node);
-    return enclosingType == null ? null : enclosingType.getTypeBinding();
+    TreeNode enclosingType = getEnclosingType(node);
+    if (enclosingType instanceof AbstractTypeDeclaration) {
+      return ((AbstractTypeDeclaration) enclosingType).getTypeBinding();
+    } else if (enclosingType instanceof AnonymousClassDeclaration) {
+      return ((AnonymousClassDeclaration) enclosingType).getTypeBinding();
+    } else {
+      return null;
+    }
   }
 
   public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {

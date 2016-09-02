@@ -107,9 +107,6 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
   @Override
   public void endVisit(SuperMethodInvocation node) {
     Name qualifier = node.getQualifier();
-    if (qualifier == null) {
-      return;
-    }
     IMethodBinding method = node.getMethodBinding();
     TypeMirror exprType = node.getTypeMirror();
 
@@ -121,13 +118,20 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
       binding.addParameters(method.getParameterTypes());
       FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
       List<Expression> args = invocation.getArguments();
-      ITypeBinding thisClass = TreeUtil.getOwningType(node).getTypeBinding();
-      args.add(new ThisExpression(thisClass));
+      if (qualifier == null) {
+        args.add(new ThisExpression(TreeUtil.getEnclosingTypeBinding(node)));
+      } else {
+        // OuterReferenceFixer has provided an outer path.
+        args.add(TreeUtil.remove(qualifier));
+      }
       TreeUtil.copyList(node.getArguments(), args);
       node.replaceWith(invocation);
       return;
     }
 
+    if (qualifier == null) {
+      return;
+    }
     IVariableBinding var = TreeUtil.getVariableBinding(qualifier);
     assert var != null : "Expected qualifier to be a variable";
     TypeMirror qualifierType = BindingConverter.getType(var.getType());
