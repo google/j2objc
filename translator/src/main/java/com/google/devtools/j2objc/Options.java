@@ -1031,6 +1031,6 @@ public class Options {
     if (instance.javaFrontEnd == FrontEnd.JDT) {
         return new com.google.devtools.j2objc.jdt.JdtParser();
     }
-    throw new AssertionError("javac front-end not implemented");
+    return new com.google.devtools.j2objc.javac.JavacParser();
   }
 }

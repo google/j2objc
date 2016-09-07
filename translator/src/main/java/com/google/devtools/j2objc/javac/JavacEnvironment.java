@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.javac;
 
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.NameTable.Factory;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
@@ -32,6 +31,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 class JavacEnvironment extends ParserEnvironment {
+  private final Context context;
   private final ClassReader classReader;
   private final Names javacNames;
   private final Symtab symbolTable;
@@ -40,6 +40,7 @@ class JavacEnvironment extends ParserEnvironment {
 
   protected JavacEnvironment(Factory nameTableFactory, Context context) {
     super(nameTableFactory);
+    this.context = context;
     classReader = ClassReader.instance(context);
     javacNames = Names.instance(context);
     symbolTable = Symtab.instance(context);
@@ -86,6 +87,10 @@ class JavacEnvironment extends ParserEnvironment {
     }
   }
 
+  public Context getContext() {
+    return context;
+  }
+
   @Override
   public Elements elementUtilities() {
     return javacElements;
@@ -94,11 +99,5 @@ class JavacEnvironment extends ParserEnvironment {
   @Override
   public Types typeUtilities() {
     return javacTypes;
-  }
-
-  @Override
-  public TreeNode convert(Object tree) {
-    // TODO(tball): replace with call to javac tree converter.
-    return null;
   }
 }

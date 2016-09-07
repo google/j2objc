@@ -14,12 +14,9 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.LintOption;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -49,16 +46,11 @@ import org.eclipse.jdt.core.dom.FileASTRequestor;
  *
  * @author Tom Ball, Keith Stanger
  */
-public class JdtParser implements Parser {
+public class JdtParser extends Parser {
 
   private static final Logger logger = Logger.getLogger(JdtParser.class.getName());
 
   private Map<String, String> compilerOptions = initCompilerOptions(Options.getSourceVersion());
-  private List<String> classpathEntries = Lists.newArrayList();
-  private List<String> sourcepathEntries = Lists.newArrayList();
-  private String encoding = null;
-  private boolean includeRunningVMBootclasspath = true;
-  private final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
   private static Map<String, String> initCompilerOptions(SourceVersion sourceVersion) {
     Map<String, String> compilerOptions = Maps.newHashMap();
@@ -80,24 +72,11 @@ public class JdtParser implements Parser {
     return compilerOptions;
   }
 
+  @Override
   public void addClasspathEntry(String entry) {
     if (isValidPathEntry(entry)) {
       classpathEntries.add(entry);
     }
-  }
-
-  @Override
-  public void addClasspathEntries(Iterable<String> entries) {
-    for (String entry : entries) {
-      addClasspathEntry(entry);
-    }
-  }
-
-  private static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
-
-  @Override
-  public void addClasspathEntries(String entries) {
-    addClasspathEntries(PATH_SPLITTER.split(entries));
   }
 
   @Override
@@ -112,28 +91,6 @@ public class JdtParser implements Parser {
     if (isValidPathEntry(entry)) {
       sourcepathEntries.add(0, entry);
     }
-  }
-
-  @Override
-  public void addSourcepathEntries(Iterable<String> entries) {
-    for (String entry : entries) {
-      addSourcepathEntry(entry);
-    }
-  }
-
-  @Override
-  public void addSourcepathEntries(String entries) {
-    addSourcepathEntries(PATH_SPLITTER.split(entries));
-  }
-
-  @Override
-  public void setEncoding(String encoding) {
-    this.encoding = encoding;
-  }
-
-  @Override
-  public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {
-    includeRunningVMBootclasspath = includeVMBootclasspath;
   }
 
   @Override
@@ -296,11 +253,6 @@ public class JdtParser implements Parser {
     @Override
     public javax.lang.model.util.Types typeUtilities() {
       throw new AssertionError("not implemented");
-    }
-
-    @Override
-    public TreeNode convert(Object tree) {
-      return TreeConverter.convert(tree);
     }
   }
 }

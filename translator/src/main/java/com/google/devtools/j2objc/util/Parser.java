@@ -14,14 +14,25 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface for interacting with the Java compiler front-end.
  */
-public interface Parser {
+public abstract class Parser {
+
+  protected List<String> classpathEntries = Lists.newArrayList();
+  protected List<String> sourcepathEntries = Lists.newArrayList();
+  protected String encoding = null;
+  protected boolean includeRunningVMBootclasspath = true;
+  protected final NameTable.Factory nameTableFactory = NameTable.newFactory();
+
+  protected static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
 
   /**
    * Handler to be provided when parsing multiple files. The provided
@@ -32,64 +43,93 @@ public interface Parser {
   }
 
   /**
+   * Adds a single path to the classpath for the next compilation.
+   */
+  public void addClasspathEntry(String entry) {
+    classpathEntries.add(entry);
+  }
+
+  /**
    * Add paths to the classpath for the next compilation.
    */
-  void addClasspathEntries(Iterable<String> entries);
+  public void addClasspathEntries(Iterable<String> entries) {
+    for (String entry : entries) {
+      addClasspathEntry(entry);
+    }
+  }
 
   /**
    * Split a Java path string and add its entries to the classpath for the
    * next compilation.
    */
-  void addClasspathEntries(String entries);
-
-  /**
-   * Add paths to the sourcepath for the next compilation.
-   */
-  void addSourcepathEntries(Iterable<String> entries);
-
-  /**
-   * Split a Java path string and add its entries to the classpath for the
-   * next compilation.
-   */
-  void addSourcepathEntries(String entries);
-
-  /**
-   * Add a path to the beginning of the source path.
-   */
-  void prependSourcepathEntry(String entry);
+  public void addClasspathEntries(String entries) {
+    addClasspathEntries(PATH_SPLITTER.split(entries));
+  }
 
   /**
    * Add a path to the end of the source path.
    */
-  void addSourcepathEntry(String entry);
+  public void addSourcepathEntry(String entry) {
+    sourcepathEntries.add(entry);
+  }
+
+  /**
+   * Add paths to the sourcepath for the next compilation.
+   */
+  public void addSourcepathEntries(Iterable<String> entries) {
+    for (String entry : entries) {
+      addSourcepathEntry(entry);
+    }
+  }
+
+  /**
+   * Split a Java path string and add its entries to the classpath for the
+   * next compilation.
+   */
+  public void addSourcepathEntries(String entries) {
+    addSourcepathEntries(PATH_SPLITTER.split(entries));
+  }
+
+  /**
+   * Add a path to the beginning of the source path.
+   */
+  public void prependSourcepathEntry(String entry) {
+    sourcepathEntries.add(0, entry);
+  }
 
   /**
    * Sets the source file encoding, equivalent to javac's -encoding flag.
    */
-  void setEncoding(String encoding);
+  public void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
 
-  void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath);
+  public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {
+    includeRunningVMBootclasspath = includeVMBootclasspath;
+  }
 
   /**
    * Set whether to include doc comment AST nodes.
    */
-  void setEnableDocComments(boolean enable);
+  public abstract void setEnableDocComments(boolean enable);
 
   /**
    * Parse Java source into an AST with bindings.
    */
-  CompilationUnit parse(InputFile file);
+  public abstract CompilationUnit parse(InputFile file);
 
   /**
    * Parse Java source into an AST with bindings.
    */
-  CompilationUnit parse(String mainType, String path, String source);
+  public abstract CompilationUnit parse(String mainType, String path, String source);
 
   /**
    * Parse one or more source files, calling a handler with a compilation unit.
    */
-  void parseFiles(Collection<String> paths, Parser.Handler handler, SourceVersion sourceVersion);
+  public abstract void parseFiles(
+      Collection<String> paths, Parser.Handler handler, SourceVersion sourceVersion);
 
   // Convert to return j2objc AST trees instead of JDT.
-  org.eclipse.jdt.core.dom.CompilationUnit parseWithoutBindings(String unitName, String source);
+  public abstract org.eclipse.jdt.core.dom.CompilationUnit parseWithoutBindings(
+      String unitName, String source);
 }

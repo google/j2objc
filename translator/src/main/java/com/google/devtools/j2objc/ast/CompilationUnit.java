@@ -20,9 +20,8 @@ import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.ParserEnvironment;
-import org.eclipse.jdt.core.dom.ASTNode;
-
 import java.util.List;
+import org.eclipse.jdt.core.dom.ASTNode;
 
 /**
  * Tree node for a Java compilation unit.
@@ -74,6 +73,16 @@ public class CompilationUnit extends TreeNode {
     for (Object type : jdtNode.types()) {
       types.add((AbstractTypeDeclaration) TreeConverter.convert(type));
     }
+  }
+
+  public CompilationUnit(ParserEnvironment env, String sourceFilePath, String mainTypeName,
+      String source) {
+    super();
+    this.env = env;
+    this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
+    this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
+    this.source = Preconditions.checkNotNull(source);
+    newlines = findNewlines(source);
   }
 
   public CompilationUnit(CompilationUnit other) {
@@ -214,6 +223,11 @@ public class CompilationUnit extends TreeNode {
 
   public CompilationUnit addNativeBlock(NativeDeclaration decl) {
     nativeBlocks.add(decl);
+    return this;
+  }
+
+  public CompilationUnit addType(AbstractTypeDeclaration type) {
+    types.add(type);
     return this;
   }
 

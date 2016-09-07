@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtParser;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -123,7 +122,7 @@ abstract class FileProcessor {
       inputMap.put(path, input);
     }
 
-    JdtParser.Handler handler = new Parser.Handler() {
+    Parser.Handler handler = new Parser.Handler() {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
         ProcessingContext input = inputMap.get(path);
