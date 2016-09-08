@@ -117,7 +117,7 @@ public class JdtTypes implements Types {
 
   @Override
   public NullType getNullType() {
-    throw new AssertionError("not implemented");
+    return new JdtNullType();
   }
 
   @Override

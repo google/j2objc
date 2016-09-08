@@ -247,12 +247,12 @@ public class JdtParser extends Parser {
 
     @Override
     public javax.lang.model.util.Elements elementUtilities() {
-      throw new AssertionError("not implemented");
+      return JdtElements.getInstance();
     }
 
     @Override
     public javax.lang.model.util.Types typeUtilities() {
-      throw new AssertionError("not implemented");
+      return JdtTypes.getInstance();
     }
   }
 }

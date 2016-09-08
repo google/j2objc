@@ -14,8 +14,7 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import com.google.devtools.j2objc.types.NullTypeBinding;
-
+import com.google.devtools.j2objc.types.AbstractTypeBinding;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +23,8 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.NullType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtNullType extends JdtTypeMirror implements NullType {
 
@@ -55,6 +56,45 @@ class JdtNullType extends JdtTypeMirror implements NullType {
   @SuppressWarnings("unchecked")
   public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
     return (A[]) new Annotation[0];
+  }
+
+  static class NullTypeBinding extends AbstractTypeBinding {
+
+    private static final NullTypeBinding INSTANCE = new NullTypeBinding();
+
+    public static NullTypeBinding getInstance() {
+      return INSTANCE;
+    }
+
+    @Override
+    public boolean isNullType() {
+      return true;
+    }
+
+    @Override
+    public String getName() {
+      return "null";
+    }
+
+    @Override
+    public String getQualifiedName() {
+      return getName();
+    }
+
+    @Override
+    public String getKey() {
+      return "N";
+    }
+
+    @Override
+    public boolean isAssignmentCompatible(ITypeBinding variableType) {
+      return !variableType.isPrimitive();
+    }
+
+    @Override
+    public boolean isEqualTo(IBinding binding) {
+      return binding instanceof ITypeBinding && ((ITypeBinding) binding).isNullType();
+    }
   }
 
 }
