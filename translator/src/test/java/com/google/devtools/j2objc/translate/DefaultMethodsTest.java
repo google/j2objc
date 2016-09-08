@@ -154,7 +154,7 @@ public class DefaultMethodsTest extends GenerationTest {
 
     // Make sure we base the non-capturing lambda on interface A's companion class that has the
     // default method shim.
-    assertTranslatedSegments(impl, "id<A, Unrelated> B$$Lambda$2_get() {",
+    assertTranslatedSegments(impl, "id<A, Unrelated> B_$Lambda$2_get() {",
         "Method method", "= class_getInstanceMethod([Unrelated class], @selector(unrelated));",
         "Method method", "= class_getInstanceMethod([A class], "
             + "@selector(underscorePrefixWithNSString:));",

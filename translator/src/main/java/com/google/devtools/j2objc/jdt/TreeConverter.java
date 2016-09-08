@@ -54,6 +54,7 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.Initializer;
@@ -507,19 +508,11 @@ public class TreeConverter {
   }
 
   private static TreeNode convertCastExpression(org.eclipse.jdt.core.dom.CastExpression node) {
-    Type type = (Type) convert(node.getType());
-    Expression expr = (Expression) convert(node.getExpression());
-    CastExpression newNode = ((CastExpression) convertExpression(node, new CastExpression()))
-        .setType(type)
-        .setExpression(expr);
-
-    // If we are casting a LambdaExpression, we set its type, as the JDT can
-    // resolve to the wrong type for lambdas under certain circumstances
-    // (casting to an intersection of two interfaces with a parameter-less lambda).
-    if (expr instanceof LambdaExpression) {
-      ((LambdaExpression) expr).setTypeMirror(type.getTypeMirror());
-    }
-    return newNode;
+    CastExpression newNode = new CastExpression();
+    convertExpression(node, newNode);
+    return newNode
+        .setType((Type) convert(node.getType()))
+        .setExpression((Expression) convert(node.getExpression()));
   }
 
   private static TreeNode convertCatchClause(org.eclipse.jdt.core.dom.CatchClause node) {
@@ -685,6 +678,27 @@ public class TreeConverter {
         .setBody((Statement) convert(node.getBody()));
   }
 
+  private static TreeNode convertFunctionalExpression(
+      org.eclipse.jdt.core.dom.Expression node, FunctionalExpression newNode) {
+    convertExpression(node, newNode);
+    ITypeBinding typeBinding = node.resolveTypeBinding();
+    newNode.setTypeMirror(BindingConverter.getType(typeBinding));
+    ASTNode parent = node.getParent();
+    // When a lambda or method reference is cast to an intersection type, the JDT does not provide
+    // all of the target types in the node's type binding, so we check for a parent CastExpression.
+    if (parent instanceof org.eclipse.jdt.core.dom.CastExpression) {
+      typeBinding = ((org.eclipse.jdt.core.dom.CastExpression) parent).resolveTypeBinding();
+    }
+    if (BindingUtil.isIntersectionType(typeBinding)) {
+      for (ITypeBinding i : typeBinding.getInterfaces()) {
+        newNode.addTargetType(BindingConverter.getType(i));
+      }
+    } else {
+      newNode.addTargetType(BindingConverter.getType(typeBinding));
+    }
+    return newNode;
+  }
+
   private static TreeNode convertIfStatement(org.eclipse.jdt.core.dom.IfStatement node) {
     return new IfStatement()
         .setExpression((Expression) convert(node.getExpression()))
@@ -766,13 +780,11 @@ public class TreeConverter {
 
   private static TreeNode convertLambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression node) {
     LambdaExpression newNode = new LambdaExpression();
-    convertExpression(node, newNode);
+    convertFunctionalExpression(node, newNode);
     for (Object x : node.parameters()) {
       newNode.addParameter((VariableDeclaration) TreeConverter.convert(x));
     }
-    return newNode
-        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
-        .setBody(TreeConverter.convert(node.getBody()));
+    return newNode.setBody(TreeConverter.convert(node.getBody()));
   }
 
   private static TreeNode convertAnnotation(org.eclipse.jdt.core.dom.Annotation node,
@@ -835,13 +847,12 @@ public class TreeConverter {
 
   private static TreeNode convertMethodReference(
       org.eclipse.jdt.core.dom.MethodReference node, MethodReference newNode) {
-    convertExpression(node, newNode);
+    convertFunctionalExpression(node, newNode);
     for (Object x : node.typeArguments()) {
       newNode.addTypeArgument((Type) TreeConverter.convert(x));
     }
     return newNode
-        .setExecutableElement(BindingConverter.getExecutableElement(node.resolveMethodBinding()))
-        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()));
+        .setExecutableElement(BindingConverter.getExecutableElement(node.resolveMethodBinding()));
   }
 
   private static TreeNode convertName(org.eclipse.jdt.core.dom.Name node, Name newNode) {

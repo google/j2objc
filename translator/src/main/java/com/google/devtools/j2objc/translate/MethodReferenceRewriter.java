@@ -60,7 +60,6 @@ public class MethodReferenceRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(CreationReference node) {
-    ITypeBinding exprBinding = node.getTypeBinding();
     ITypeBinding creationType = node.getType().getTypeBinding();
     Expression invocation;
     List<Expression> invocationArguments;
@@ -74,9 +73,10 @@ public class MethodReferenceRewriter extends TreeVisitor {
       invocation = classCreation;
       invocationArguments = classCreation.getArguments();
     }
-    LambdaExpression lambda = new LambdaExpression(
-        "CreationReference:" + node.getLineNumber(), exprBinding);
-    lambda.setBody(invocation);
+    LambdaExpression lambda = new LambdaExpression()
+        .setTypeElement(node.getTypeElement())
+        .setTypeMirror(node.getTypeMirror())
+        .setBody(invocation);
     addParamsToInvocation(createParameters(lambda), invocationArguments);
     node.replaceWith(lambda);
   }
@@ -85,10 +85,10 @@ public class MethodReferenceRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(ExpressionMethodReference node) {
-    ITypeBinding exprBinding = node.getTypeBinding();
     IMethodBinding methodBinding = node.getMethodBinding();
-    LambdaExpression lambda = new LambdaExpression(
-        "ExpressionMethodReference:" + node.getLineNumber(), exprBinding);
+    LambdaExpression lambda = new LambdaExpression()
+        .setTypeElement(node.getTypeElement())
+        .setTypeMirror(node.getTypeMirror());
     Iterator<IVariableBinding> params = createParameters(lambda);
     Expression target = TreeUtil.remove(node.getExpression());
 
@@ -169,10 +169,10 @@ public class MethodReferenceRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(TypeMethodReference node) {
-    ITypeBinding exprBinding = node.getTypeBinding();
     IMethodBinding methodBinding = getMethodBinding(node);
-    LambdaExpression lambda = new LambdaExpression(
-        "TypeMethodReference:" + node.getLineNumber(), exprBinding);
+    LambdaExpression lambda = new LambdaExpression()
+        .setTypeElement(node.getTypeElement())
+        .setTypeMirror(node.getTypeMirror());
     Iterator<IVariableBinding> params = createParameters(lambda);
     Expression target = null;
     if (!BindingUtil.isStatic(methodBinding)) {
@@ -203,9 +203,9 @@ public class MethodReferenceRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(SuperMethodReference node) {
-    ITypeBinding exprBinding = node.getTypeBinding();
-    LambdaExpression lambda = new LambdaExpression(
-        "SuperMethodReference:" + node.getLineNumber(), exprBinding);
+    LambdaExpression lambda = new LambdaExpression()
+        .setTypeElement(node.getTypeElement())
+        .setTypeMirror(node.getTypeMirror());
     SuperMethodInvocation invocation = new SuperMethodInvocation(node.getMethodBinding());
     invocation.setQualifier(TreeUtil.remove(node.getQualifier()));
     lambda.setBody(invocation);

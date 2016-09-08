@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -298,29 +299,26 @@ public class TreeUtil {
       ImmutableList.of(AbstractTypeDeclaration.class, AnonymousClassDeclaration.class);
 
   public static TreeNode getEnclosingType(TreeNode node) {
-    return TreeUtil.getNearestAncestorWithTypeOneOf(TYPE_NODE_BASE_CLASSES, node);
+    return getNearestAncestorWithTypeOneOf(TYPE_NODE_BASE_CLASSES, node);
   }
 
   public static ITypeBinding getEnclosingTypeBinding(TreeNode node) {
+    return BindingConverter.unwrapTypeElement(getEnclosingTypeElement(node));
+  }
+
+  public static TypeElement getEnclosingTypeElement(TreeNode node) {
     TreeNode enclosingType = getEnclosingType(node);
     if (enclosingType instanceof AbstractTypeDeclaration) {
-      return ((AbstractTypeDeclaration) enclosingType).getTypeBinding();
+      return ((AbstractTypeDeclaration) enclosingType).getElement();
     } else if (enclosingType instanceof AnonymousClassDeclaration) {
-      return ((AnonymousClassDeclaration) enclosingType).getTypeBinding();
+      return ((AnonymousClassDeclaration) enclosingType).getElement();
     } else {
       return null;
     }
   }
 
   public static List<BodyDeclaration> getEnclosingTypeBodyDeclarations(TreeNode node) {
-    TreeNode enclosingType = getEnclosingType(node);
-    if (enclosingType instanceof AbstractTypeDeclaration) {
-      return ((AbstractTypeDeclaration) enclosingType).getBodyDeclarations();
-    } else if (enclosingType instanceof AnonymousClassDeclaration) {
-      return ((AnonymousClassDeclaration) enclosingType).getBodyDeclarations();
-    } else {
-      return null;
-    }
+    return getBodyDeclarations(getEnclosingType(node));
   }
 
   public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {

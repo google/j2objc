@@ -43,7 +43,7 @@ import com.google.devtools.j2objc.translate.JavaCloneWriter;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.LabelRewriter;
 import com.google.devtools.j2objc.translate.LambdaRewriter;
-import com.google.devtools.j2objc.translate.LambdaTypeBindingFixer;
+import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.MethodReferenceRewriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
@@ -128,6 +128,10 @@ public class TranslationProcessor extends FileProcessor {
       CompilationUnit unit, DeadCodeMap deadCodeMap, TimeTracker ticker) {
     ticker.push();
 
+    // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
+    new LambdaTypeElementAdder().run(unit);
+    ticker.tick("LambdaTypeElementAdder");
+
     // Adds implicit default constructors, like javac does.
     new DefaultConstructorAdder().run(unit);
     ticker.tick("DefaultConstructorAdder");
@@ -139,11 +143,6 @@ public class TranslationProcessor extends FileProcessor {
 
     new MethodReferenceRewriter().run(unit);
     ticker.tick("MethodReferenceRewriter");
-
-    // After: MethodReferencereWriter - MethodReferenceRewriter adds new lambdas.
-    // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
-    new LambdaTypeBindingFixer().run(unit);
-    ticker.tick("LambdaTypeBindingFixer");
 
     OuterReferenceResolver outerResolver = new OuterReferenceResolver();
     outerResolver.run(unit);

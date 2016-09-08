@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtTypes;
+import com.google.devtools.j2objc.types.LambdaTypeElement;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public final class ElementUtil {
   }
 
   public static boolean isLambda(TypeElement type) {
-    return BindingUtil.isLambda(BindingConverter.unwrapTypeElement(type));
+    return type instanceof LambdaTypeElement;
   }
 
   public static boolean isInterface(Element type) {

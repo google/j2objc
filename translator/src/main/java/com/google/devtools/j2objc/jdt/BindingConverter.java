@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
@@ -282,6 +283,9 @@ public final class BindingConverter {
   }
 
   public static Element getElement(IBinding binding) {
+    if (binding instanceof GeneratedTypeElement.Binding) {
+      return ((GeneratedTypeElement.Binding) binding).asElement();
+    }
     return getElement(wrapBinding(binding));
   }
 
@@ -364,6 +368,9 @@ public final class BindingConverter {
       }
       return newOne;
     }
+    if (element instanceof GeneratedTypeElement) {
+      return ((GeneratedTypeElement) element).asTypeBinding();
+    }
     return element != null ? ((JdtElement) element).binding : null;
   }
 
@@ -378,9 +385,10 @@ public final class BindingConverter {
   public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {
     if (t == null) {
       return null;
-    }
-    if (t instanceof NativeType) {
+    } else if (t instanceof NativeType) {
       return new NativeTypeBinding(((NativeType) t).toString());
+    } else if (t instanceof GeneratedTypeElement.Mirror) {
+      return ((GeneratedTypeElement.Mirror) t).asTypeBinding();
     }
     return ((JdtTypeMirror) t).binding;
   }

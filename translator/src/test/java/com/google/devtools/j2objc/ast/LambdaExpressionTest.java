@@ -66,20 +66,20 @@ public class LambdaExpressionTest extends GenerationTest {
   public void testObjectSelfAddition() throws IOException {
     String translation = translateSourceFile(callableHeader + "class Test { Callable f = () -> 1;}",
         "Test", "Test.m");
-    assertTranslation(translation, "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {");
+    assertTranslation(translation, "id Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {");
   }
 
   public void testTypeInference() throws IOException {
     String quadObjectTranslation = translateSourceFile(
         fourToOneHeader + "class Test { FourToOne f = (a, b, c, d) -> 1;}", "Test", "Test.m");
     assertTranslatedSegments(quadObjectTranslation,
-        "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, id a, id b, id c, id d) {",
+        "id Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd, id a, id b, id c, id d) {",
         "@selector(applyWithId:withId:withId:withId:)");
     String mixedObjectTranslation = translateSourceFile(fourToOneHeader
         + "class Test { FourToOne<String, Double, Integer, Boolean, String> f = "
         + "(a, b, c, d) -> \"1\";}", "Test", "Test.m");
     assertTranslation(mixedObjectTranslation,
-        "NSString *Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *a, "
+        "NSString *Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *a, "
         + "JavaLangDouble *b, JavaLangInteger *c, JavaLangBoolean *d)");
   }
 
@@ -87,14 +87,14 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(
         functionHeader + "class Test { Function outerF = (x) -> x;}", "Test", "Test.m");
     assertTranslatedSegments(translation, "instance = CreateNonCapturing(",
-        "JreStrongAssign(&self->outerF_, Test$$Lambda$1_get());");
+        "JreStrongAssign(&self->outerF_, Test_$Lambda$1_get());");
   }
 
   public void testStaticFunctions() throws IOException {
     String translation = translateSourceFile(
         functionHeader + "class Test { static Function staticF = (x) -> x;}", "Test", "Test.m");
     assertTranslatedSegments(translation, "id<Function> Test_staticF;",
-        "if (self == [Test class]) {", "JreStrongAssign(&Test_staticF, Test$$Lambda$1_get()",
+        "if (self == [Test class]) {", "JreStrongAssign(&Test_staticF, Test_$Lambda$1_get()",
         "instance = CreateNonCapturing");
   }
 
@@ -103,23 +103,23 @@ public class LambdaExpressionTest extends GenerationTest {
         + "class Test { Function<String, Function<String, String>> f = x -> y -> x;}", "Test",
         "Test.m");
     assertTranslatedSegments(outerCapture,
-        "id<Function> Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *x) {",
-        "return Test$$Lambda$2_get(x);",
+        "id<Function> Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *x) {",
+        "return Test_$Lambda$2_get(x);",
         "instance = CreateNonCapturing(",
-        "NSString *Test$$Lambda$2_impl(LambdaBase *self_, SEL _cmd, NSString *y) {",
+        "NSString *Test_$Lambda$2_impl(LambdaBase *self_, SEL _cmd, NSString *y) {",
         "return x;",
-        "id<Function> Test$$Lambda$2_get(NSString *x) {",
+        "id<Function> Test_$Lambda$2_get(NSString *x) {",
         "cls = CreatePossiblyCapturingClass("
         );
     String noCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> y;}", "Test",
         "Test.m");
     assertTranslatedSegments(noCapture,
-        "id<Function> Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *x) {",
-        "return Test$$Lambda$2_get();",
-        "id<Function> Test$$Lambda$1_get() {",
+        "id<Function> Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd, NSString *x) {",
+        "return Test_$Lambda$2_get();",
+        "id<Function> Test_$Lambda$1_get() {",
         "instance = CreateNonCapturing(",
-        "id<Function> Test$$Lambda$2_get() {",
+        "id<Function> Test_$Lambda$2_get() {",
         "instance = CreateNonCapturing("
         );
   }
@@ -144,7 +144,7 @@ public class LambdaExpressionTest extends GenerationTest {
         + "class Test { class Foo{ class Bar { Function f = x -> x; }}\n"
         + "Function f = x -> x;}",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "Test$$Lambda$1_impl", "Test_Foo_Bar$$Lambda$1_impl");
+    assertTranslatedSegments(translation, "Test_$Lambda$1_impl", "Test_Foo_Bar_$Lambda$1_impl");
   }
 
   // Check that lambda captures respect reserved words.
@@ -170,7 +170,7 @@ public class LambdaExpressionTest extends GenerationTest {
         + " bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, bar) -> foo;}}",
         "Test", "Test.m");
     assertTranslatedSegments(translation,
-        "id Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd, id a, id b, id c, id d, id e, id f",
+        "id Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd, id a, id b, id c, id d, id e, id f",
         " id bs, id bt, id bu, id bv, id bw, id bx, id by, id bz, id bar) {"
         );
   }
@@ -180,7 +180,7 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(
         header + "class Test { int f = 1234; " + "  void foo() { I i = () -> f; } }", "Test",
         "Test.m");
-    assertTranslatedSegments(translation, "jint Test$$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
+    assertTranslatedSegments(translation, "jint Test_$Lambda$1_impl(LambdaBase *self_, SEL _cmd) {",
         "return this$0_->f_;");
   }
 

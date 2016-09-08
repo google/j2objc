@@ -144,9 +144,13 @@ public class OuterReferenceResolver extends TreeVisitor {
     private Scope(TypeElement type, Types typeEnv) {
       this.type = type;
       ImmutableSet.Builder<Element> inheritedScopeBuilder = ImmutableSet.builder();
-      for (DeclaredType inheritedType :
-        ElementUtil.getInheritedDeclaredTypesInclusive(type.asType())) {
-        inheritedScopeBuilder.add(inheritedType.asElement());
+
+      // Lambdas are ignored when resolving implicit outer scope.
+      if (!ElementUtil.isLambda(type)) {
+        for (DeclaredType inheritedType :
+          ElementUtil.getInheritedDeclaredTypesInclusive(type.asType())) {
+          inheritedScopeBuilder.add(inheritedType.asElement());
+        }
       }
 
       // If type is an interface, type.getSuperClass() returns null even though all interfaces
@@ -157,7 +161,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();
-      this.initializingContext = !ElementUtil.isLambda(this.type);
+      this.initializingContext = !ElementUtil.isLambda(type);
     }
   }
 
@@ -412,7 +416,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    pushType(node, node.getLambdaType());
+    pushType(node, node.getTypeElement());
     return true;
   }
 
@@ -422,11 +426,12 @@ public class OuterReferenceResolver extends TreeVisitor {
 
     // if we have an outer field, add the path to it so we can reference
     // it in the lambda_get function.
-    VariableElement outerField = getOuterField(node.getLambdaType());
+    TypeElement typeElement = node.getTypeElement();
+    VariableElement outerField = getOuterField(typeElement);
     if (outerField != null) {
       addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(outerField.asType())));
     }
-    List<Capture> capturesForType = captures.get(node.getLambdaType());
+    List<Capture> capturesForType = captures.get(typeElement);
     List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
       List<VariableElement> path = getPathForLocalVar(capture.var);

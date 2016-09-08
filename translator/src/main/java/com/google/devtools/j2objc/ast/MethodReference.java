@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
@@ -31,9 +30,8 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  *    TypeMethodReference
  * </pre>
  */
-public abstract class MethodReference extends Expression {
+public abstract class MethodReference extends FunctionalExpression {
 
-  protected TypeMirror typeMirror;
   protected ExecutableElement methodElement;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
   // We generate an invocation to properly resolve translations with normal visitors.
@@ -43,20 +41,9 @@ public abstract class MethodReference extends Expression {
 
   public MethodReference(MethodReference other) {
     super(other);
-    typeMirror = other.getTypeMirror();
     methodElement = other.getExecutableElement();
     typeArguments.copyFrom(other.getTypeArguments());
     invocation.copyFrom(other.getInvocation());
-  }
-
-  @Override
-  public TypeMirror getTypeMirror() {
-    return typeMirror;
-  }
-
-  public MethodReference setTypeMirror(TypeMirror newType) {
-    typeMirror = newType;
-    return this;
   }
 
   public IMethodBinding getMethodBinding() {

@@ -33,9 +33,11 @@ import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -88,6 +90,7 @@ public class LambdaRewriter extends TreeVisitor {
     String lambdaImplName;
     String lambdaDeallocName;
     String functionalTypeString;
+    TypeElement lambdaElement;
     TypeMirror lambdaTypeMirror;
     DeclaredType functionalDeclaredType;
     ExecutableElement functionalInterface;
@@ -109,7 +112,8 @@ public class LambdaRewriter extends TreeVisitor {
       enclosingType =
           TreeUtil.getNearestAncestorWithType(TypeDeclaration.class, node);
       enclosingTypeMirror = enclosingType.getElement().asType();
-      lambdaName = node.getUniqueName();
+      lambdaElement = node.getTypeElement();
+      lambdaName = nameTable.getFullName(lambdaElement.asType());
       lambdaGetName = lambdaName + "_get";
       lambdaImplName = lambdaName + "_impl";
       lambdaDeallocName = lambdaName + "_dealloc";
@@ -122,7 +126,11 @@ public class LambdaRewriter extends TreeVisitor {
       // one for each method on our lambda object (the functional method and all
       // the default methods). These will be passed to the correct Create* function that will
       // make a class/object with these methods.
-      for (DeclaredType i : ElementUtil.getInheritedDeclaredTypesInclusive(lambdaTypeMirror)) {
+      for (DeclaredType i :
+           ElementUtil.getInheritedDeclaredTypesInclusive(lambdaElement.asType())) {
+        if (!TypeUtil.isInterface(i)) {
+          continue;
+        }
         if (numProtocols > 0) {
           protocols += ", ";
         }
@@ -295,7 +303,7 @@ public class LambdaRewriter extends TreeVisitor {
 
       // Add an outerField to the capture struct (and init of the capture struct) if we have one.
       String structContents = "";
-      VariableElement outerField = outerResolver.getOuterField(node.getLambdaType());
+      VariableElement outerField = outerResolver.getOuterField(lambdaElement);
       if (outerField != null) {
         structContents +=
             nameTable.getObjCType(outerField.asType()) + " "

@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.devtools.j2objc.types.LambdaTypeBinding;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import java.lang.annotation.RetentionPolicy;
@@ -163,7 +163,8 @@ public final class BindingUtil {
   }
 
   public static boolean isLambda(ITypeBinding type) {
-    return type instanceof LambdaTypeBinding;
+    return type instanceof GeneratedTypeElement.Binding
+        && ElementUtil.isLambda(((GeneratedTypeElement.Binding) type).asElement());
   }
 
   public static boolean isPackageInfo(ITypeBinding type) {

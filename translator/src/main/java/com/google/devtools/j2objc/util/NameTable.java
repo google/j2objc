@@ -955,6 +955,8 @@ public class NameTable {
         --innerClassIndex;
       }
       return binaryName.substring(innerClassIndex);
+    } else if (BindingUtil.isLambda(binding)) {
+      return binding.getName();
     }
     return binding.getName().replace('$', '_');
   }

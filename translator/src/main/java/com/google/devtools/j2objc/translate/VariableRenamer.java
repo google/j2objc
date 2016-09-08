@@ -165,7 +165,7 @@ public class VariableRenamer extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    pushType(node.getLambdaType());
+    pushType(node.getTypeElement());
     return true;
   }
 

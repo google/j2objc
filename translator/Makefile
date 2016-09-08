@@ -99,6 +99,7 @@ JAVA_SOURCES = \
 	ast/ForStatement.java \
 	ast/FunctionDeclaration.java \
 	ast/FunctionInvocation.java \
+	ast/FunctionalExpression.java \
 	ast/IfStatement.java \
 	ast/InfixExpression.java \
 	ast/Initializer.java \
@@ -249,7 +250,7 @@ JAVA_SOURCES = \
 	translate/LabelRewriter.java \
 	translate/MetadataWriter.java \
 	translate/MethodReferenceRewriter.java \
-	translate/LambdaTypeBindingFixer.java \
+	translate/LambdaTypeElementAdder.java \
 	translate/LambdaRewriter.java \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \
@@ -268,10 +269,12 @@ JAVA_SOURCES = \
 	translate/VariableRenamer.java \
 	types/AbstractTypeBinding.java \
 	types/FunctionBinding.java \
+	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \
 	types/GeneratedMethodBinding.java \
 	types/GeneratedPackageBinding.java \
 	types/GeneratedTypeBinding.java \
+	types/GeneratedTypeElement.java \
 	types/GeneratedVariableBinding.java \
 	types/GeneratedVariableElement.java \
 	types/HeaderImportCollector.java \
@@ -279,7 +282,7 @@ JAVA_SOURCES = \
 	types/IOSTypeBinding.java \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
-	types/LambdaTypeBinding.java \
+	types/LambdaTypeElement.java \
 	types/NativeType.java \
 	types/NativeTypeBinding.java \
 	types/PointerTypeBinding.java \

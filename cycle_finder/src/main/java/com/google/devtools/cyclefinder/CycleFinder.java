@@ -20,7 +20,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.jdt.JdtParser;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripper;
-import com.google.devtools.j2objc.translate.LambdaTypeBindingFixer;
+import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -131,7 +131,7 @@ public class CycleFinder {
     Parser.Handler handler = new Parser.Handler() {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
-        new LambdaTypeBindingFixer().run(unit);
+        new LambdaTypeElementAdder().run(unit);
         typeCollector.visitAST(unit);
         outerResolver.run(unit);
       }

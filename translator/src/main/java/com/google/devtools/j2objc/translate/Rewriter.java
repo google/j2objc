@@ -356,22 +356,10 @@ public class Rewriter extends TreeVisitor {
       node.setBody(block);
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
-    TypeElement uniqueLambdaType = node.getLambdaType();
+    TypeElement uniqueLambdaType = node.getTypeElement();
     node.setIsCapturing(outerResolver.getOuterField(uniqueLambdaType) != null
         || outerResolver.getInnerFields(uniqueLambdaType).size() != 0);
-    // Assign a unique name to the lambda.
-    node.setUniqueName(getLambdaUniqueName(node));
     return true;
-  }
-
-  private String getLambdaUniqueName(LambdaExpression node) {
-    ITypeBinding owningType = TreeUtil.getEnclosingTypeBinding(node);
-    Integer count = lambdaCounts.get(owningType);
-    if (count == null) {
-      count = 0;
-    }
-    lambdaCounts.put(owningType, ++count);
-    return nameTable.getFullName(owningType) + "$$Lambda$" + count;
   }
 
   /**
