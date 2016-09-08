@@ -101,6 +101,12 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         Node(E x) { item = x; }
     }
 
+    private static final Node<Object> SENTINEL = new Node<>(null);
+
+    private Node<E> sentinel() {
+      return (Node<E>) SENTINEL;
+    }
+
     /** The capacity bound, or Integer.MAX_VALUE if none */
     private final int capacity;
 
@@ -179,7 +185,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         // assert head.item == null;
         Node<E> h = head;
         Node<E> first = h.next;
-        h.next = h; // help GC
+        h.next = sentinel(); // help GC
         head = first;
         E x = first.item;
         first.item = null;
@@ -662,7 +668,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         fullyLock();
         try {
             for (Node<E> p, h = head; (p = h.next) != null; h = p) {
-                h.next = h;
+                h.next = sentinel();
                 p.item = null;
             }
             head = last;
@@ -710,7 +716,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
                     Node<E> p = h.next;
                     c.add(p.item);
                     p.item = null;
-                    h.next = h;
+                    h.next = sentinel();
                     h = p;
                     ++i;
                 }
@@ -783,7 +789,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         private Node<E> nextNode(Node<E> p) {
             for (;;) {
                 Node<E> s = p.next;
-                if (s == p)
+                if (s == sentinel())
                     return head.next;
                 if (s == null || s.item != null)
                     return s;
