@@ -387,6 +387,18 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
+  public void testSimpleLambdaWithCycle() throws Exception {
+    if (!isRunningJava8()) {
+      return;
+    }
+    addSourceFile("I.java", "interface I { int foo(); }");
+    addSourceFile("A.java", "class A { int j = 1; I i = () -> j; }");
+    findCycles(true);
+    // TODO(kstanger): Right now this makes sure that cycle_finder doesn't crash on lambdas, but it
+    // should be finding a cycle here.
+    assertNoCycles();
+  }
+
   private void assertContains(String substr, String str) {
     assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
   }
