@@ -185,10 +185,8 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("InnerClassExtractor");
 
     // Generate method shims for classes implementing interfaces that have default methods
-    if (Options.isJava8Translator()) {
-      new DefaultMethodShimGenerator().run(unit);
-      ticker.tick("DefaultMethodShimGenerator");
-    }
+    new DefaultMethodShimGenerator().run(unit);
+    ticker.tick("DefaultMethodShimGenerator");
 
     // Normalize init statements
     new InitializationNormalizer().run(unit);
