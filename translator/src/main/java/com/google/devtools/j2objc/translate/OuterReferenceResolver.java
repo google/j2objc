@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.LambdaExpression;
@@ -29,6 +30,7 @@ import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -140,6 +142,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     private final Set<Element> inheritedScope;
     private boolean initializingContext;
     private Set<VariableElement> declaredVars = new HashSet<>();
+    private int constructorCount = 0;
+    private int constructorsNotNeedingSuperOuterScope = 0;
 
     private Scope(TypeElement type, Types typeEnv) {
       this.type = type;
@@ -207,9 +211,10 @@ public class OuterReferenceResolver extends TreeVisitor {
 
     VariableElement outerField = outerVars.get(scope.type);
     if (outerField == null) {
-      Element possibleDeclaringClass = ElementUtil.getDeclaringClass(scope.type);
-      outerField = new GeneratedVariableElement(getOuterFieldName(scope.type),
-          possibleDeclaringClass != null ? possibleDeclaringClass.asType() : null, true, false,
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(scope.type);
+      assert declaringClass != null : "Cannot find declaring class for " + scope.type;
+      outerField = new GeneratedVariableElement(
+          getOuterFieldName(scope.type), declaringClass.asType(), true, false,
           ElementUtil.toModifierSet(Modifier.PRIVATE | Modifier.FINAL), scope.type);
       outerVars.put(scope.type, outerField);
     }
@@ -226,8 +231,8 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
     }
     if (innerField == null) {
-      GeneratedVariableElement newField = new GeneratedVariableElement("val$"
-          + var.getSimpleName().toString(), var.asType(), true, false,
+      GeneratedVariableElement newField = new GeneratedVariableElement(
+          "val$" + var.getSimpleName().toString(), var.asType(), true, false,
           ElementUtil.toModifierSet(Modifier.PRIVATE | Modifier.FINAL),
           declaringType);
       newField.addAnnotations(var);
@@ -351,13 +356,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
-  private void pushType(TreeNode node, TypeElement type) {
+  private void pushType(TypeElement type) {
     scopeStack.add(new Scope(type, typeEnv));
-
-    TypeElement superclass = ElementUtil.getSuperclass(type);
-    if (superclass != null && ElementUtil.hasOuterContext(superclass)) {
-      addPath(node, getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
-    }
   }
 
   private void popType(TreeNode node) {
@@ -370,31 +370,53 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
+  // Resolve the path for the outer scope to a SuperConstructorInvocation. This path goes on the
+  // type node because there may be implicit super invocations.
+  private void addSuperOuterPath(TreeNode node, TypeElement type) {
+    TypeElement superclass = ElementUtil.getSuperclass(type);
+    if (superclass != null && ElementUtil.hasOuterContext(superclass)) {
+      addPath(node, getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
+    }
+  }
+
   @Override
   public boolean visit(TypeDeclaration node) {
-    pushType(node, node.getElement());
+    pushType(node.getElement());
     return true;
   }
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    Scope currentScope = peekScope();
+    if (currentScope.constructorCount == 0) {
+      // Implicit default constructor.
+      currentScope.constructorCount++;
+    }
+    if (currentScope.constructorCount > currentScope.constructorsNotNeedingSuperOuterScope) {
+      addSuperOuterPath(node, node.getElement());
+    }
     popType(node);
   }
 
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node, node.getElement());
+    pushType(node.getElement());
     return true;
   }
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
+    TreeNode parent = node.getParent();
+    if (!(parent instanceof ClassInstanceCreation)
+        || ((ClassInstanceCreation) parent).getExpression() == null) {
+      addSuperOuterPath(node, node.getElement());
+    }
     popType(node);
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    pushType(node, node.getElement());
+    pushType(node.getElement());
     return true;
   }
 
@@ -405,7 +427,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    pushType(node, node.getElement());
+    pushType(node.getElement());
     return true;
   }
 
@@ -416,7 +438,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    pushType(node, node.getTypeElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -556,7 +578,9 @@ public class OuterReferenceResolver extends TreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     // Assume all code except for non-constructor methods is initializer code.
-    if (!ElementUtil.isConstructor(node.getMethodElement())) {
+    if (ElementUtil.isConstructor(node.getMethodElement())) {
+      peekScope().constructorCount++;
+    } else {
       peekScope().initializingContext = false;
     }
     return true;
@@ -566,6 +590,18 @@ public class OuterReferenceResolver extends TreeVisitor {
   public void endVisit(MethodDeclaration node) {
     if (!ElementUtil.isConstructor(node.getMethodElement())) {
       peekScope().initializingContext = true;
+    }
+  }
+
+  @Override
+  public void endVisit(ConstructorInvocation node) {
+    peekScope().constructorsNotNeedingSuperOuterScope++;
+  }
+
+  @Override
+  public void endVisit(SuperConstructorInvocation node) {
+    if (node.getExpression() != null) {
+      peekScope().constructorsNotNeedingSuperOuterScope++;
     }
   }
 }

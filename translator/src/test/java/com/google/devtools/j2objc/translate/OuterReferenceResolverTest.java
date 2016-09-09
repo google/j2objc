@@ -160,6 +160,17 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("val$o", captureArgPaths.get(0).get(0).getSimpleName().toString());
   }
 
+  public void testNoOuterFieldWhenSuperConstructorIsQualified() {
+    resolveSource("Test",
+        "class Test { class B { class Inner {} } class A { class Inner extends B.Inner { "
+        + " Inner(B b) { b.super(); } } } }");
+    List<TreeNode> typeNodes = nodesByType.get(Kind.TYPE_DECLARATION);
+    assertEquals(5, typeNodes.size());
+    for (TreeNode typeNode : typeNodes) {
+      assertNull(outerResolver.getOuterField(((TypeDeclaration) typeNode).getElement()));
+    }
+  }
+
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
     outerResolver.run(unit);
