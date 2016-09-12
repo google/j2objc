@@ -15,8 +15,14 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.jdt.JdtElements;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -27,12 +33,13 @@ import javax.lang.model.element.Name;
  *
  * @author Keith Stanger
  */
-public abstract class GeneratedElement implements Element {
+abstract class GeneratedElement implements Element {
 
   private final String name;
   private final ElementKind kind;
   private Set<Modifier> modifiers = new HashSet<>();
   private final Element enclosingElement;
+  private final List<AnnotationMirror> annotationMirrors = new ArrayList<>();
 
   protected GeneratedElement(String name, ElementKind kind, Element enclosingElement) {
     this.name = name;
@@ -59,8 +66,52 @@ public abstract class GeneratedElement implements Element {
     return modifiers;
   }
 
+  public GeneratedElement addModifiers(Modifier... newModifiers) {
+    for (Modifier m : newModifiers) {
+      modifiers.add(m);
+    }
+    return this;
+  }
+
+  public GeneratedElement addModifiers(Collection<? extends Modifier> newModifiers) {
+    modifiers.addAll(newModifiers);
+    return this;
+  }
+
   @Override
   public Element getEnclosingElement() {
     return enclosingElement;
+  }
+
+  @Override
+  public List<? extends Element> getEnclosedElements() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<? extends AnnotationMirror> getAnnotationMirrors() {
+    return annotationMirrors;
+  }
+
+  public GeneratedElement addAnnotationMirrors(
+      Collection<? extends AnnotationMirror> newAnnotations) {
+    annotationMirrors.addAll(newAnnotations);
+    return this;
+  }
+
+  @Override
+  public String toString() {
+    return name;
+  }
+
+  @Override
+  public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+    return null;
+  }
+
+  // TODO(kstanger): enable this Override when Java 8 is minimum version.
+  //@Override
+  public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+    throw new AssertionError("not implemented");
   }
 }

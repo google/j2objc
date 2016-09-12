@@ -15,18 +15,12 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.JdtElements;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -35,116 +29,26 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Nathan Braswell
  */
-public class GeneratedVariableElement implements VariableElement {
+public class GeneratedVariableElement extends GeneratedElement implements VariableElement {
 
-  private final String name;
   private final TypeMirror type;
-  private final boolean isParameter;
-  private final boolean isField;
-  private Element owner = null;
-  private Set<Modifier> modifiers;
-  private final List<AnnotationMirror> annotationMirrors;
 
-  public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
-
-  public GeneratedVariableElement(String name, TypeMirror type,
-      boolean isField, boolean isParameter, Set<Modifier> modifiers, Element owner) {
-    Preconditions.checkNotNull(name);
-    this.name = name;
+  public GeneratedVariableElement(
+      String name, TypeMirror type, ElementKind kind, Element enclosingElement) {
+    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement);
     this.type = type;
-    this.isField = isField;
-    this.isParameter = isParameter;
-    this.modifiers = modifiers;
-    this.owner = owner;
-    annotationMirrors = new ArrayList<>();
   }
 
-  public GeneratedVariableElement(String name, TypeMirror type,
-      boolean isField, boolean isParameter) {
-    this(name, type, isField, isParameter, Collections.<Modifier>emptySet(), null);
-  }
-
-  public static GeneratedVariableElement newPlaceholder() {
-    return new GeneratedVariableElement(PLACEHOLDER_NAME, null, false, false);
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((annotationMirrors == null) ? 0 : annotationMirrors.hashCode());
-    result = prime * result + (isField ? 1231 : 1237);
-    result = prime * result + (isParameter ? 1231 : 1237);
-    result = prime * result + ((modifiers == null) ? 0 : modifiers.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-    result = prime * result + ((type == null) ? 0 : type.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    } else if (!(obj instanceof GeneratedVariableElement)) {
-      return false;
-    }
-    GeneratedVariableElement other = (GeneratedVariableElement) obj;
-    return name.equals(other.name)
-        && (type == null ? other.type == null : type.equals(other.type))
-        && isParameter == other.isParameter && isField == other.isField
-        && (owner == null ? other.owner == null : owner.equals(other.owner))
-        && modifiers.equals(other.modifiers) && annotationMirrors.equals(other.annotationMirrors);
-  }
-
-  public void setOwner(Element e) {
-    owner = e;
-  }
-
-  @Override
-  public List<? extends AnnotationMirror> getAnnotationMirrors() {
-    return annotationMirrors;
-  }
-
-  @Override
-  public String toString() {
-    return name;
-  }
-
-  @Override
-  public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-    throw new AssertionError("not implemented");
-  }
-
-  // TODO(user): enable this Override when Java 8 is minimum version.
-  //@Override
-  public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
-    throw new AssertionError("not implemented");
+  private static ElementKind checkElementKind(ElementKind kind) {
+    Preconditions.checkArgument(
+        kind == ElementKind.FIELD || kind == ElementKind.LOCAL_VARIABLE
+        || kind == ElementKind.PARAMETER);
+    return kind;
   }
 
   @Override
   public TypeMirror asType() {
     return type;
-  }
-
-  @Override
-  public ElementKind getKind() {
-    if (isParameter) {
-      return ElementKind.PARAMETER;
-    } else if (isField) {
-      return ElementKind.FIELD;
-    }
-    return ElementKind.LOCAL_VARIABLE;
-  }
-
-  @Override
-  public Set<Modifier> getModifiers() {
-    return modifiers;
-  }
-
-  @Override
-  public List<? extends Element> getEnclosedElements() {
-    return Collections.emptyList();
   }
 
   @Override
@@ -158,16 +62,13 @@ public class GeneratedVariableElement implements VariableElement {
   }
 
   @Override
-  public Name getSimpleName() {
-    return JdtElements.getInstance().getName(name);
+  public GeneratedVariableElement addAnnotationMirrors(
+      Collection<? extends AnnotationMirror> newAnnotations) {
+    return (GeneratedVariableElement) super.addAnnotationMirrors(newAnnotations);
   }
 
   @Override
-  public Element getEnclosingElement() {
-    return owner;
-  }
-
-  public void addAnnotations(VariableElement var) {
-    annotationMirrors.addAll(var.getAnnotationMirrors());
+  public GeneratedVariableElement addModifiers(Modifier... modifiers) {
+    return (GeneratedVariableElement) super.addModifiers(modifiers);
   }
 }

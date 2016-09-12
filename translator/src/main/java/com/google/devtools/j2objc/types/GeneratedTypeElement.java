@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.annotation.Annotation;
@@ -52,9 +53,14 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   public GeneratedTypeElement(
       String name, ElementKind kind, Element enclosingElement, TypeMirror superclass,
       NestingKind nestingKind) {
-    super(name, kind, enclosingElement);
+    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement);
     this.superclass = superclass;
     this.nestingKind = nestingKind;
+  }
+
+  private static ElementKind checkElementKind(ElementKind kind) {
+    Preconditions.checkArgument(kind.isClass() || kind.isInterface());
+    return kind;
   }
 
   @Override
@@ -91,29 +97,8 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   }
 
   @Override
-  public List<? extends Element> getEnclosedElements() {
-    return Collections.emptyList();
-  }
-
-  @Override
   public List<? extends TypeParameterElement> getTypeParameters() {
     return Collections.emptyList();
-  }
-
-  @Override
-  public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-    return null;
-  }
-
-  @Override
-  public List<? extends AnnotationMirror> getAnnotationMirrors() {
-    return Collections.emptyList();
-  }
-
-  // TODO(kstanger): enable this Override when Java 8 is minimum version.
-  //@Override
-  public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
-    throw new AssertionError("not implemented");
   }
 
   @Override
@@ -253,11 +238,6 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     @Override
     public IPackageBinding getPackage() {
       return packageBinding;
-    }
-
-    @Override
-    public String toString() {
-      return getName();
     }
 
     @Override

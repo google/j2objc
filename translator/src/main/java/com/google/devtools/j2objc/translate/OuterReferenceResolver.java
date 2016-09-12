@@ -51,11 +51,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Visits a compilation unit and creates variable elements for outer references
@@ -72,7 +73,8 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   // A placeholder variable element that should be replaced with the outer
   // parameter in a constructor.
-  public static final VariableElement OUTER_PARAMETER = GeneratedVariableElement.newPlaceholder();
+  public static final VariableElement OUTER_PARAMETER = new GeneratedVariableElement(
+      "<placeholder-variable>", null, ElementKind.PARAMETER, null);
 
   private enum VisitingState { NEEDS_REVISIT, VISITED }
 
@@ -214,8 +216,8 @@ public class OuterReferenceResolver extends TreeVisitor {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(scope.type);
       assert declaringClass != null : "Cannot find declaring class for " + scope.type;
       outerField = new GeneratedVariableElement(
-          getOuterFieldName(scope.type), declaringClass.asType(), true, false,
-          ElementUtil.toModifierSet(Modifier.PRIVATE | Modifier.FINAL), scope.type);
+          getOuterFieldName(scope.type), declaringClass.asType(), ElementKind.FIELD, scope.type)
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
       outerVars.put(scope.type, outerField);
     }
     return outerField;
@@ -231,12 +233,10 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
     }
     if (innerField == null) {
-      GeneratedVariableElement newField = new GeneratedVariableElement(
-          "val$" + var.getSimpleName().toString(), var.asType(), true, false,
-          ElementUtil.toModifierSet(Modifier.PRIVATE | Modifier.FINAL),
-          declaringType);
-      newField.addAnnotations(var);
-      innerField = newField;
+      innerField = new GeneratedVariableElement(
+          "val$" + var.getSimpleName().toString(), var.asType(), ElementKind.FIELD, declaringType)
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .addAnnotationMirrors(var.getAnnotationMirrors());
       captures.put(declaringType, new Capture(var, innerField));
     }
     return innerField;

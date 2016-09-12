@@ -16,12 +16,10 @@ package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
@@ -102,8 +100,9 @@ class JdtTypeElement extends JdtElement implements TypeElement {
       // This comes up when an anonymous class is initializing a member outside of a constructor.
       // The enclosing element should be the field it's being assigned to, but the binding doesn't
       // give us this information, so we have to fake it.
-      return new GeneratedVariableElement("fake_field", this.asType(), true, false,
-          Collections.<Modifier>emptySet(), BindingConverter.getElement(decl.getDeclaringClass()));
+      return new GeneratedVariableElement(
+          "fake_field", this.asType(), ElementKind.FIELD,
+          BindingConverter.getElement(decl.getDeclaringClass()));
     } else {
       return BindingConverter.getElement(decl.getDeclaringClass());
     }

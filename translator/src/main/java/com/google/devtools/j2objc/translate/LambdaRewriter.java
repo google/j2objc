@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -212,12 +213,12 @@ public class LambdaRewriter extends TreeVisitor {
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableElement("self", LambdaBase, false, true)));
+                  new GeneratedVariableElement("self", LambdaBase, ElementKind.PARAMETER, null)));
       funcImpl
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableElement("_cmd", SELType, false, true)));
+                  new GeneratedVariableElement("_cmd", SELType, ElementKind.PARAMETER, null)));
 
       for (VariableDeclaration d : node.getParameters()) {
         funcImpl.addParameter(new SingleVariableDeclaration(d.getVariableElement()));
@@ -238,12 +239,12 @@ public class LambdaRewriter extends TreeVisitor {
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableElement("self", LambdaBase, false, true)));
+                  new GeneratedVariableElement("self", LambdaBase, ElementKind.PARAMETER, null)));
       funcDealloc
           .getParameters()
           .add(
               new SingleVariableDeclaration(
-                  new GeneratedVariableElement("_cmd", SELType, false, true)));
+                  new GeneratedVariableElement("_cmd", SELType, ElementKind.PARAMETER, null)));
 
       enclosingType.addBodyDeclaration(0, funcDealloc);
     }

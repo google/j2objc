@@ -17,19 +17,13 @@ package com.google.devtools.j2objc.types;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.DebugASTPrinter;
-import com.google.devtools.j2objc.jdt.JdtElements;
 import com.google.devtools.j2objc.util.ElementUtil;
-import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Set;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -39,25 +33,17 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Nathan Braswell
  */
-public class GeneratedExecutableElement implements ExecutableElement {
+public class GeneratedExecutableElement extends GeneratedElement implements ExecutableElement {
 
-  private final String name;
-  private Set<Modifier> modifiers;
   private final List<VariableElement> parameters = Lists.newArrayList();
   private final TypeMirror returnType;
-  private Element enclosingElement;
   private final boolean varargs;
-  private final boolean isConstructor;
 
   public GeneratedExecutableElement(
-      String name, Set<Modifier> modifiers, TypeMirror returnType,
-      Element enclosingElement,
-      boolean isConstructor, boolean varargs) {
-    this.name = Preconditions.checkNotNull(name);
-    this.modifiers = modifiers;
+      String name, ElementKind kind, TypeMirror returnType, Element enclosingElement,
+      boolean varargs) {
+    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement);
     this.returnType = returnType;
-    this.enclosingElement = enclosingElement;
-    this.isConstructor = isConstructor;
     this.varargs = varargs;
   }
 
@@ -65,11 +51,15 @@ public class GeneratedExecutableElement implements ExecutableElement {
    * Clone a method binding, so parameters can be added to it.
    */
   public GeneratedExecutableElement(ExecutableElement m) {
-    this(m.getSimpleName().toString(), m.getModifiers(),
-        m.getReturnType(),
-        m.getEnclosingElement(),
-        m.getKind() == ElementKind.CONSTRUCTOR, m.isVarArgs());
+    this(m.getSimpleName().toString(), m.getKind(), m.getReturnType(),  m.getEnclosingElement(),
+         m.isVarArgs());
+    addModifiers(m.getModifiers());
     parameters.addAll(m.getParameters());
+  }
+
+  private static ElementKind checkElementKind(ElementKind kind) {
+    Preconditions.checkArgument(kind == ElementKind.METHOD || kind == ElementKind.CONSTRUCTOR);
+    return kind;
   }
 
   public void addParametersPlaceholderFront(List<TypeMirror> types) {
@@ -79,53 +69,17 @@ public class GeneratedExecutableElement implements ExecutableElement {
   }
 
   public void addParameterPlaceholderFront(TypeMirror type) {
-    parameters.add(0, new GeneratedVariableElement("placeholder", type, true, false));
-  }
-
-  public void addParameterPlaceholderBack(TypeMirror t) {
-    parameters.add(parameters.size(), new GeneratedVariableElement("placeholder", t, true, false));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof GeneratedExecutableElement)) {
-      return false;
-    }
-    GeneratedExecutableElement other = (GeneratedExecutableElement) obj;
-    return name.equals(other.name)
-        && modifiers.equals(other.modifiers)
-        && varargs == other.varargs
-        // The returnType is null for constructors, so test equality first.
-        && (returnType == null ? other.returnType == null : returnType.equals(other.returnType))
-        && enclosingElement.equals(other.enclosingElement)
-        && parameters.equals(other.parameters)
-        && isConstructor == other.isConstructor;
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((enclosingElement == null) ? 0 : enclosingElement.hashCode());
-    result = prime * result + (isConstructor ? 1231 : 1237);
-    result = prime * result + ((modifiers == null) ? 0 : modifiers.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-    result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
-    result = prime * result + (varargs ? 1231 : 1237);
-    return result;
+    parameters.add(0, new GeneratedVariableElement(
+        "placeholder", type, ElementKind.PARAMETER, null));
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    DebugASTPrinter.printModifiers(ElementUtil.fromModifierSet(modifiers), sb);
+    DebugASTPrinter.printModifiers(ElementUtil.fromModifierSet(getModifiers()), sb);
     sb.append(returnType != null ? returnType.toString() : "<no type>");
     sb.append(' ');
-    sb.append((name != null) ? name : "<no name>");
+    sb.append(getName());
     sb.append('(');
     boolean notFirst = false;
     for (VariableElement p : getParameters()) {
@@ -145,44 +99,8 @@ public class GeneratedExecutableElement implements ExecutableElement {
   }
 
   @Override
-  public ElementKind getKind() {
-    return isConstructor ? ElementKind.CONSTRUCTOR : ElementKind.METHOD;
-  }
-
-  @Override
-  public Set<Modifier> getModifiers() {
-    return modifiers;
-  }
-
-  @Override
-  public Element getEnclosingElement() {
-    return enclosingElement;
-  }
-
-  @Override
-  public List<? extends Element> getEnclosedElements() {
-    throw new AssertionError("not implemented");
-  }
-
-  @Override
-  public List<? extends AnnotationMirror> getAnnotationMirrors() {
-    throw new AssertionError("not implemented");
-  }
-
-  @Override
-  public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-    throw new AssertionError("not implemented");
-  }
-
-  @Override
   public <R, P> R accept(ElementVisitor<R, P> v, P p) {
-    throw new AssertionError("not implemented");
-  }
-
-  //TODO(user): Uncomment Overrides after Java 8 transition.
-  //@Override
-  public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
-    throw new AssertionError("not implemented");
+    return v.visitExecutable(this, p);
   }
 
   @Override
@@ -223,10 +141,5 @@ public class GeneratedExecutableElement implements ExecutableElement {
   @Override
   public AnnotationValue getDefaultValue() {
     throw new AssertionError("not implemented");
-  }
-
-  @Override
-  public Name getSimpleName() {
-    return JdtElements.getInstance().getName(name);
   }
 }
