@@ -57,7 +57,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     resolveSource("Test", "class Test { int i; class Inner { void test() { i++; } } }");
 
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
-    assertTrue(outerResolver.needsOuterReference(innerNode.getElement()));
+    assertTrue(outerResolver.needsOuterReference(innerNode.getTypeElement()));
 
     PostfixExpression increment =
         (PostfixExpression) nodesByType.get(Kind.POSTFIX_EXPRESSION).get(0);
@@ -75,9 +75,9 @@ public class OuterReferenceResolverTest extends GenerationTest {
     TypeDeclaration aNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
     TypeDeclaration bNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(2);
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(3);
-    assertFalse(outerResolver.needsOuterReference(aNode.getElement()));
-    assertFalse(outerResolver.needsOuterReference(bNode.getElement()));
-    assertTrue(outerResolver.needsOuterReference(innerNode.getElement()));
+    assertFalse(outerResolver.needsOuterReference(aNode.getTypeElement()));
+    assertFalse(outerResolver.needsOuterReference(bNode.getTypeElement()));
+    assertTrue(outerResolver.needsOuterReference(innerNode.getTypeElement()));
 
     // B will need an outer reference to Test so it can initialize its
     // superclass A.
@@ -101,8 +101,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    assertFalse(outerResolver.needsOuterReference(runnableNode.getElement()));
-    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getElement());
+    assertFalse(outerResolver.needsOuterReference(runnableNode.getTypeElement()));
+    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getTypeElement());
     assertEquals(1, innerFields.size());
     assertEquals("val$i", innerFields.get(0).getSimpleName().toString());
     ClassInstanceCreation creationNode =
@@ -127,7 +127,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getElement());
+    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getTypeElement());
     assertEquals(1, innerFields.size());
     assertTrue(ElementUtil.isWeakReference(innerFields.get(0)));
   }
@@ -138,7 +138,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration decl =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    assertFalse(outerResolver.needsOuterParam(decl.getElement()));
+    assertFalse(outerResolver.needsOuterParam(decl.getTypeElement()));
   }
 
   public void testAnonymousClassCreatesLocalClassWithCaptures() {
@@ -149,7 +149,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getElement());
+    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getTypeElement());
     assertEquals(1, innerFields.size());
     assertEquals("val$o", innerFields.get(0).getSimpleName().toString());
     ClassInstanceCreation creationNode =
@@ -167,7 +167,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     List<TreeNode> typeNodes = nodesByType.get(Kind.TYPE_DECLARATION);
     assertEquals(5, typeNodes.size());
     for (TreeNode typeNode : typeNodes) {
-      assertNull(outerResolver.getOuterField(((TypeDeclaration) typeNode).getElement()));
+      assertNull(outerResolver.getOuterField(((TypeDeclaration) typeNode).getTypeElement()));
     }
   }
 

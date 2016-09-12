@@ -137,7 +137,7 @@ public class InnerClassExtractor extends TreeVisitor {
 
   private void addOuterFields(AbstractTypeDeclaration node) {
     List<BodyDeclaration> members = node.getBodyDeclarations();
-    TypeElement clazz = node.getElement();
+    TypeElement clazz = node.getTypeElement();
 
     VariableElement outerFieldElement = outerResolver.getOuterField(clazz);
     if (outerFieldElement != null) {
@@ -162,7 +162,7 @@ public class InnerClassExtractor extends TreeVisitor {
   protected void addOuterParameters(
       AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
     ITypeBinding type = typeNode.getTypeBinding();
-    TypeElement typeE = (TypeElement) typeNode.getElement();
+    TypeElement typeE = typeNode.getTypeElement();
     ITypeBinding outerType = type.getDeclaringClass();
     IVariableBinding outerParamBinding = null;
 

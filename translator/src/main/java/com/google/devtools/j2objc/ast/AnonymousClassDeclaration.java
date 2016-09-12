@@ -33,7 +33,7 @@ public final class AnonymousClassDeclaration extends TreeNode {
 
   public AnonymousClassDeclaration(AnonymousClassDeclaration other) {
     super(other);
-    element = other.getElement();
+    element = other.getTypeElement();
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
   }
 
@@ -47,11 +47,11 @@ public final class AnonymousClassDeclaration extends TreeNode {
     return (ITypeBinding) BindingConverter.unwrapElement(element);
   }
 
-  public TypeElement getElement() {
+  public TypeElement getTypeElement() {
     return element;
   }
 
-  public AnonymousClassDeclaration setElement(TypeElement newElement) {
+  public AnonymousClassDeclaration setTypeElement(TypeElement newElement) {
     element = newElement;
     return this;
   }

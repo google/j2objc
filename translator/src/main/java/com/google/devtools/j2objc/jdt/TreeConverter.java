@@ -414,7 +414,7 @@ public class TreeConverter {
       bodyDeclarations.add((BodyDeclaration) convert(bodyDecl));
     }
     return new AnonymousClassDeclaration()
-        .setElement((TypeElement) BindingConverter.getElement(node.resolveBinding()))
+        .setTypeElement((TypeElement) BindingConverter.getElement(node.resolveBinding()))
         .setBodyDeclarations(bodyDeclarations);
   }
 
@@ -826,7 +826,7 @@ public class TreeConverter {
         .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setIsConstructor(node.isConstructor())
         .setReturnType((Type) TreeConverter.convert(node.getReturnType2()))
-        .setMethodElement(BindingConverter.getExecutableElement(node.resolveBinding()))
+        .setExecutableElement(BindingConverter.getExecutableElement(node.resolveBinding()))
         .setBody((Block) TreeConverter.convert(node.getBody()));
   }
 

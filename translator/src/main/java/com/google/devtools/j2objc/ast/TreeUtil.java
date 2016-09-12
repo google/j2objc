@@ -146,7 +146,7 @@ public class TreeUtil {
   public static TypeMirror getOwningReturnType(TreeNode node) {
     while (node != null) {
       if (node instanceof MethodDeclaration) {
-        return ((MethodDeclaration) node).getMethodElement().getReturnType();
+        return ((MethodDeclaration) node).getExecutableElement().getReturnType();
       } else if (node instanceof LambdaExpression) {
         return ElementUtil.getFunctionalInterface(((LambdaExpression) node).getTypeMirror())
             .getReturnType();
@@ -249,6 +249,22 @@ public class TreeUtil {
   }
 
   /**
+   * Gets the element that is declared by this node.
+   */
+  public static Element getDeclaredElement(TreeNode node) {
+    if (node instanceof AnonymousClassDeclaration) {
+      return ((AnonymousClassDeclaration) node).getTypeElement();
+    } else if (node instanceof AbstractTypeDeclaration) {
+      return ((AbstractTypeDeclaration) node).getTypeElement();
+    } else if (node instanceof MethodDeclaration) {
+      return ((MethodDeclaration) node).getExecutableElement();
+    } else if (node instanceof VariableDeclaration) {
+      return ((VariableDeclaration) node).getVariableElement();
+    }
+    return null;
+  }
+
+  /**
    * Gets a variable binding for the given expression if the expression
    * represents a variable. Returns null otherwise.
    */
@@ -309,9 +325,9 @@ public class TreeUtil {
   public static TypeElement getEnclosingTypeElement(TreeNode node) {
     TreeNode enclosingType = getEnclosingType(node);
     if (enclosingType instanceof AbstractTypeDeclaration) {
-      return ((AbstractTypeDeclaration) enclosingType).getElement();
+      return ((AbstractTypeDeclaration) enclosingType).getTypeElement();
     } else if (enclosingType instanceof AnonymousClassDeclaration) {
-      return ((AnonymousClassDeclaration) enclosingType).getElement();
+      return ((AnonymousClassDeclaration) enclosingType).getTypeElement();
     } else {
       return null;
     }
@@ -322,9 +338,16 @@ public class TreeUtil {
   }
 
   public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {
-    MethodDeclaration enclosingMethod = TreeUtil.getNearestAncestorWithType(
-        MethodDeclaration.class, node);
+    MethodDeclaration enclosingMethod = getNearestAncestorWithType(MethodDeclaration.class, node);
     return enclosingMethod == null ? null : enclosingMethod.getMethodBinding();
+  }
+
+  private static final List<Class<? extends TreeNode>> NODE_TYPES_WITH_ELEMENTS = ImmutableList.of(
+      AbstractTypeDeclaration.class, AnonymousClassDeclaration.class, MethodDeclaration.class,
+      VariableDeclaration.class);
+
+  public static Element getEnclosingElement(TreeNode node) {
+    return getDeclaredElement(getNearestAncestorWithTypeOneOf(NODE_TYPES_WITH_ELEMENTS, node));
   }
 
   /**

@@ -381,7 +381,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -393,14 +393,14 @@ public class OuterReferenceResolver extends TreeVisitor {
       currentScope.constructorCount++;
     }
     if (currentScope.constructorCount > currentScope.constructorsNotNeedingSuperOuterScope) {
-      addSuperOuterPath(node, node.getElement());
+      addSuperOuterPath(node, node.getTypeElement());
     }
     popType(node);
   }
 
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -409,14 +409,14 @@ public class OuterReferenceResolver extends TreeVisitor {
     TreeNode parent = node.getParent();
     if (!(parent instanceof ClassInstanceCreation)
         || ((ClassInstanceCreation) parent).getExpression() == null) {
-      addSuperOuterPath(node, node.getElement());
+      addSuperOuterPath(node, node.getTypeElement());
     }
     popType(node);
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -427,7 +427,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -497,7 +497,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
     } else {
       assert scopeStack.size() > 0;
-      Scope currentScope = scopeStack.get(scopeStack.size() - 1);
+      Scope currentScope = peekScope();
       if (ElementUtil.isLambda(currentScope.type)) {
           addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
       }
@@ -520,7 +520,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       // case the qualifier is not an enclosing class, but the interface that
       // implements the default method. Since the default method is an instance
       // method it captures self.
-      Scope currentScope = scopeStack.get(scopeStack.size() - 1);
+      Scope currentScope = peekScope();
       if (ElementUtil.isLambda(currentScope.type)) {
         addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
       }
@@ -530,7 +530,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (qualifier != null) {
       addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
     } else {
-      Scope currentScope = scopeStack.get(scopeStack.size() - 1);
+      Scope currentScope = peekScope();
       if (ElementUtil.isLambda(currentScope.type)) {
         addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
       }
@@ -559,9 +559,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private boolean visitVariableDeclaration(VariableDeclaration node) {
-    assert scopeStack.size() > 0;
-    Scope currentScope = scopeStack.get(scopeStack.size() - 1);
-    currentScope.declaredVars.add(node.getVariableElement());
+    peekScope().declaredVars.add(node.getVariableElement());
     return true;
   }
 
@@ -578,7 +576,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     // Assume all code except for non-constructor methods is initializer code.
-    if (ElementUtil.isConstructor(node.getMethodElement())) {
+    if (ElementUtil.isConstructor(node.getExecutableElement())) {
       peekScope().constructorCount++;
     } else {
       peekScope().initializingContext = false;
@@ -588,7 +586,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    if (!ElementUtil.isConstructor(node.getMethodElement())) {
+    if (!ElementUtil.isConstructor(node.getExecutableElement())) {
       peekScope().initializingContext = true;
     }
   }

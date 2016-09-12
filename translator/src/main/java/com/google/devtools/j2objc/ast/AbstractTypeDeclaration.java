@@ -36,7 +36,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public AbstractTypeDeclaration(AbstractTypeDeclaration other) {
     super(other);
-    typeElement = other.getElement();
+    typeElement = other.getTypeElement();
     name.copyFrom(other.getName());
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
   }
@@ -64,7 +64,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     this.typeElement = BindingConverter.getTypeElement(typeBinding);
   }
 
-  public TypeElement getElement() {
+  public TypeElement getTypeElement() {
     return typeElement;
   }
 

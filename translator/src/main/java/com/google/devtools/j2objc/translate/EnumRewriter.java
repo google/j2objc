@@ -176,7 +176,7 @@ public class EnumRewriter extends TreeVisitor {
       return false;
     }
     GeneratedMethodBinding newBinding = addEnumConstructorParams(node.getMethodBinding());
-    node.setMethodElement(BindingConverter.getExecutableElement(newBinding));
+    node.setExecutableElement(BindingConverter.getExecutableElement(newBinding));
     node.removeModifiers(Modifier.PUBLIC | Modifier.PROTECTED);
     node.addModifiers(Modifier.PRIVATE);
     newBinding.setModifiers((newBinding.getModifiers() & ~(Modifier.PUBLIC | Modifier.PROTECTED))

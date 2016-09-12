@@ -111,7 +111,7 @@ public class LambdaRewriter extends TreeVisitor {
       this.node = node;
       enclosingType =
           TreeUtil.getNearestAncestorWithType(TypeDeclaration.class, node);
-      enclosingTypeMirror = enclosingType.getElement().asType();
+      enclosingTypeMirror = enclosingType.getTypeElement().asType();
       lambdaElement = node.getTypeElement();
       lambdaName = nameTable.getFullName(lambdaElement.asType());
       lambdaGetName = lambdaName + "_get";

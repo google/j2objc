@@ -31,6 +31,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -239,9 +240,8 @@ public final class ElementUtil {
   }
 
   public static boolean isLocal(TypeElement type) {
-    ElementKind kind = type.getEnclosingElement().getKind();
-    return kind != ElementKind.CLASS && kind != ElementKind.INTERFACE
-        && kind != ElementKind.PACKAGE && kind != ElementKind.ENUM;
+    NestingKind nestingKind = type.getNestingKind();
+    return nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL;
   }
 
   public static ExecutableElement getFunctionalInterface(TypeMirror type) {

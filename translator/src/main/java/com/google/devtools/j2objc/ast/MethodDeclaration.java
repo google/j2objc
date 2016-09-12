@@ -67,7 +67,7 @@ public class MethodDeclaration extends BodyDeclaration {
     return methodBinding;
   }
 
-  public ExecutableElement getMethodElement() {
+  public ExecutableElement getExecutableElement() {
     return BindingConverter.getExecutableElement(methodBinding);
   }
 
@@ -75,8 +75,8 @@ public class MethodDeclaration extends BodyDeclaration {
     methodBinding = newMethodBinding;
   }
 
-  public MethodDeclaration setMethodElement(ExecutableElement newMethodElement) {
-    methodBinding = (IMethodBinding) BindingConverter.unwrapElement(newMethodElement);
+  public MethodDeclaration setExecutableElement(ExecutableElement newElement) {
+    methodBinding = (IMethodBinding) BindingConverter.unwrapElement(newElement);
     return this;
   }
 

@@ -53,7 +53,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (node.getMethodElement().getKind() == ElementKind.CONSTRUCTOR) {
+    if (node.getExecutableElement().getKind() == ElementKind.CONSTRUCTOR) {
       List<SingleVariableDeclaration> params = node.getParameters();
       if (params.size() > 0) {
         VariableElement firstParam = params.get(0).getVariableElement();

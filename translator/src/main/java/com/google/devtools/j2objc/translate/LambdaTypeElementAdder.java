@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.CreationReference;
-import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
@@ -37,7 +36,7 @@ public class LambdaTypeElementAdder extends TreeVisitor {
 
   private Map<TypeElement, Integer> lambdaCounts = new HashMap<>();
 
-  private String getLambdaUniqueName(Expression node) {
+  private String getLambdaUniqueName(FunctionalExpression node) {
     TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(node);
     Integer count = lambdaCounts.get(enclosingType);
     if (count == null) {
@@ -49,7 +48,7 @@ public class LambdaTypeElementAdder extends TreeVisitor {
 
   private boolean handleFunctionalExpression(FunctionalExpression node) {
     LambdaTypeElement elem = new LambdaTypeElement(
-        getLambdaUniqueName(node), TreeUtil.getEnclosingTypeElement(node),
+        getLambdaUniqueName(node), TreeUtil.getEnclosingElement(node),
         typeEnv.getJavaObjectElement().asType());
     elem.addInterfaces(node.getTargetTypes());
     node.setTypeElement(elem);

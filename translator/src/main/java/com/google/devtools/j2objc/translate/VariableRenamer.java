@@ -121,7 +121,7 @@ public class VariableRenamer extends TreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -132,7 +132,7 @@ public class VariableRenamer extends TreeVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -143,7 +143,7 @@ public class VariableRenamer extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 
@@ -154,7 +154,7 @@ public class VariableRenamer extends TreeVisitor {
 
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node.getElement());
+    pushType(node.getTypeElement());
     return true;
   }
 

@@ -645,7 +645,7 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.printIndent();
     printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
-    ExecutableElement meth = node.getMethodElement();
+    ExecutableElement meth = node.getExecutableElement();
     printTypeParameters(meth.getTypeParameters());
     if (!node.isConstructor()) {
       if (node.getReturnType() != null) {
@@ -1051,7 +1051,7 @@ public class DebugASTPrinter extends TreeVisitor {
     printModifiers(node.getModifiers());
     sb.print(node.isInterface() ? "interface " : "class ");
     node.getName().accept(this);
-    printTypeParameters(node.getElement().getTypeParameters());
+    printTypeParameters(node.getTypeElement().getTypeParameters());
     sb.print(' ');
     if (node.getSuperclassType() != null) {
       sb.print("extends ");
