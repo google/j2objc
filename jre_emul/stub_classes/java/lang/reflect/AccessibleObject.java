@@ -33,7 +33,7 @@ public class AccessibleObject implements AnnotatedElement {
   }
 
   public void setAccessible(boolean b) {}
-  
+
   public static void setAccessible(AccessibleObject[] objects, boolean b) {}
 
   public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {

@@ -51,8 +51,7 @@ import libcore.util.EmptyArray;
  * @see String#format
  * @since 1.5
  */
-public final class StringBuilder extends AbstractStringBuilder implements
-        Appendable, CharSequence, Serializable {
+public final class StringBuilder extends AbstractStringBuilder implements Serializable {
 
     private static final long serialVersionUID = 4383685877147921099L;
 

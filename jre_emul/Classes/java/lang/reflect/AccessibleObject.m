@@ -95,6 +95,19 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   return nil;
 }
 
+// Default methods in java.lang.reflect.AnnotatedElement.
+- (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)arg0 {
+  return JavaLangReflectAnnotatedElement_getAnnotationsByTypeWithIOSClass_(self, arg0);
+}
+
+- (id<JavaLangAnnotationAnnotation>)getDeclaredAnnotationWithIOSClass:(IOSClass *)arg0 {
+  return JavaLangReflectAnnotatedElement_getDeclaredAnnotationWithIOSClass_(self, arg0);
+}
+
+- (IOSObjectArray *)getDeclaredAnnotationsByTypeWithIOSClass:(IOSClass *)arg0 {
+  return JavaLangReflectAnnotatedElement_getDeclaredAnnotationsByTypeWithIOSClass_(self, arg0);
+}
+
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "isAccessible", "Z", 0x1, -1, -1, -1, -1, -1, -1 },

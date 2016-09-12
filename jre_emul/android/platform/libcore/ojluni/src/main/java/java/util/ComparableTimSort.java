@@ -87,9 +87,13 @@ class ComparableTimSort {
     private static final int INITIAL_TMP_STORAGE_LENGTH = 256;
 
     /**
-     * Temp storage for merges.
+     * Temp storage for merges. A workspace array may optionally be
+     * provided in constructor, and if so will be used as long as it
+     * is big enough.
      */
     private Object[] tmp;
+    private int tmpBase; // base of tmp array slice
+    private int tmpLen;  // length of tmp array slice
 
     /**
      * A stack of pending runs yet to be merged.  Run i starts at
@@ -109,16 +113,27 @@ class ComparableTimSort {
      * Creates a TimSort instance to maintain the state of an ongoing sort.
      *
      * @param a the array to be sorted
+     * @param work a workspace array (slice)
+     * @param workBase origin of usable space in work array
+     * @param workLen usable size of work array
      */
-    private ComparableTimSort(Object[] a) {
+    private ComparableTimSort(Object[] a, Object[] work, int workBase, int workLen) {
         this.a = a;
 
         // Allocate temp storage (which may be increased later if necessary)
         int len = a.length;
-        @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-        Object[] newArray = new Object[len < 2 * INITIAL_TMP_STORAGE_LENGTH ?
-                                       len >>> 1 : INITIAL_TMP_STORAGE_LENGTH];
-        tmp = newArray;
+        int tlen = (len < 2 * INITIAL_TMP_STORAGE_LENGTH) ?
+            len >>> 1 : INITIAL_TMP_STORAGE_LENGTH;
+        if (work == null || workLen < tlen || workBase + tlen > work.length) {
+            tmp = new Object[tlen];
+            tmpBase = 0;
+            tmpLen = tlen;
+        }
+        else {
+            tmp = work;
+            tmpBase = workBase;
+            tmpLen = workLen;
+        }
 
         /*
          * Allocate runs-to-be-merged stack (which cannot be expanded).  The
@@ -129,26 +144,41 @@ class ComparableTimSort {
          * large) stack lengths for smaller arrays.  The "magic numbers" in the
          * computation below must be changed if MIN_MERGE is decreased.  See
          * the MIN_MERGE declaration above for more information.
+         * The maximum value of 49 allows for an array up to length
+         * Integer.MAX_VALUE-4, if array is filled by the worst case stack size
+         * increasing scenario. More explanations are given in section 4 of:
+         * http://envisage-project.eu/wp-content/uploads/2015/02/sorting.pdf
          */
         int stackLen = (len <    120  ?  5 :
                         len <   1542  ? 10 :
-                        len < 119151  ? 24 : 40);
+                        len < 119151  ? 24 : 49);
         runBase = new int[stackLen];
         runLen = new int[stackLen];
     }
 
     /*
-     * The next two methods (which are package private and static) constitute
-     * the entire API of this class.  Each of these methods obeys the contract
-     * of the public method with the same signature in java.util.Arrays.
+     * The next method (package private and static) constitutes the
+     * entire API of this class.
      */
 
-    static void sort(Object[] a) {
-          sort(a, 0, a.length);
-    }
+    /**
+     * Sorts the given range, using the given workspace array slice
+     * for temp storage when possible. This method is designed to be
+     * invoked from public methods (in class Arrays) after performing
+     * any necessary array bounds checks and expanding parameters into
+     * the required forms.
+     *
+     * @param a the array to be sorted
+     * @param lo the index of the first element, inclusive, to be sorted
+     * @param hi the index of the last element, exclusive, to be sorted
+     * @param work a workspace array (slice)
+     * @param workBase origin of usable space in work array
+     * @param workLen usable size of work array
+     * @since 1.8
+     */
+    static void sort(Object[] a, int lo, int hi, Object[] work, int workBase, int workLen) {
+        assert a != null && lo >= 0 && lo <= hi && hi <= a.length;
 
-    static void sort(Object[] a, int lo, int hi) {
-        rangeCheck(a.length, lo, hi);
         int nRemaining  = hi - lo;
         if (nRemaining < 2)
             return;  // Arrays of size 0 and 1 are always sorted
@@ -165,7 +195,7 @@ class ComparableTimSort {
          * extending short natural runs to minRun elements, and merging runs
          * to maintain stack invariant.
          */
-        ComparableTimSort ts = new ComparableTimSort(a);
+        ComparableTimSort ts = new ComparableTimSort(a, work, workBase, workLen);
         int minRun = minRunLength(nRemaining);
         do {
             // Identify next run
@@ -210,14 +240,13 @@ class ComparableTimSort {
      * @param start the index of the first element in the range that is
      *        not already known to be sorted ({@code lo <= start <= hi})
      */
-    @SuppressWarnings("fallthrough")
+    @SuppressWarnings({"fallthrough", "rawtypes", "unchecked"})
     private static void binarySort(Object[] a, int lo, int hi, int start) {
         assert lo <= start && start <= hi;
         if (start == lo)
             start++;
         for ( ; start < hi; start++) {
-            @SuppressWarnings("unchecked")
-            Comparable<Object> pivot = (Comparable) a[start];
+            Comparable pivot = (Comparable) a[start];
 
             // Set left (and right) to the index where a[start] (pivot) belongs
             int left = lo;
@@ -280,7 +309,7 @@ class ComparableTimSort {
      * @return  the length of the run beginning at the specified position in
      *          the specified array
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static int countRunAndMakeAscending(Object[] a, int lo, int hi) {
         assert lo < hi;
         int runHi = lo + 1;
@@ -615,18 +644,18 @@ class ComparableTimSort {
      *        (must be aBase + aLen)
      * @param len2  length of second run to be merged (must be > 0)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void mergeLo(int base1, int len1, int base2, int len2) {
         assert len1 > 0 && len2 > 0 && base1 + len1 == base2;
 
         // Copy first run into temp array
         Object[] a = this.a; // For performance
         Object[] tmp = ensureCapacity(len1);
-        System.arraycopy(a, base1, tmp, 0, len1);
 
-        int cursor1 = 0;       // Indexes into tmp array
+        int cursor1 = tmpBase; // Indexes into tmp array
         int cursor2 = base2;   // Indexes int a
         int dest = base1;      // Indexes int a
+        System.arraycopy(a, base1, tmp, cursor1, len1);
 
         // Move first element of second run and deal with degenerate cases
         a[dest++] = a[cursor2++];
@@ -732,23 +761,24 @@ class ComparableTimSort {
      *        (must be aBase + aLen)
      * @param len2  length of second run to be merged (must be > 0)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void mergeHi(int base1, int len1, int base2, int len2) {
         assert len1 > 0 && len2 > 0 && base1 + len1 == base2;
 
         // Copy second run into temp array
         Object[] a = this.a; // For performance
         Object[] tmp = ensureCapacity(len2);
-        System.arraycopy(a, base2, tmp, 0, len2);
+        int tmpBase = this.tmpBase;
+        System.arraycopy(a, base2, tmp, tmpBase, len2);
 
         int cursor1 = base1 + len1 - 1;  // Indexes into a
-        int cursor2 = len2 - 1;          // Indexes into tmp array
+        int cursor2 = tmpBase + len2 - 1; // Indexes into tmp array
         int dest = base2 + len2 - 1;     // Indexes into a
 
         // Move last element of first run and deal with degenerate cases
         a[dest--] = a[cursor1--];
         if (--len1 == 0) {
-            System.arraycopy(tmp, 0, a, dest - (len2 - 1), len2);
+            System.arraycopy(tmp, tmpBase, a, dest - (len2 - 1), len2);
             return;
         }
         if (len2 == 1) {
@@ -806,7 +836,7 @@ class ComparableTimSort {
                 if (--len2 == 1)
                     break outer;
 
-                count2 = len2 - gallopLeft((Comparable) a[cursor1], tmp, 0, len2, len2 - 1);
+                count2 = len2 - gallopLeft((Comparable) a[cursor1], tmp, tmpBase, len2, len2 - 1);
                 if (count2 != 0) {
                     dest -= count2;
                     cursor2 -= count2;
@@ -838,7 +868,7 @@ class ComparableTimSort {
         } else {
             assert len1 == 0;
             assert len2 > 0;
-            System.arraycopy(tmp, 0, a, dest - (len2 - 1), len2);
+            System.arraycopy(tmp, tmpBase, a, dest - (len2 - 1), len2);
         }
     }
 
@@ -851,7 +881,7 @@ class ComparableTimSort {
      * @return tmp, whether or not it grew
      */
     private Object[]  ensureCapacity(int minCapacity) {
-        if (tmp.length < minCapacity) {
+        if (tmpLen < minCapacity) {
             // Compute smallest power of 2 > minCapacity
             int newSize = minCapacity;
             newSize |= newSize >> 1;
@@ -869,28 +899,10 @@ class ComparableTimSort {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
             Object[] newArray = new Object[newSize];
             tmp = newArray;
+            tmpLen = newSize;
+            tmpBase = 0;
         }
         return tmp;
     }
 
-    /**
-     * Checks that fromIndex and toIndex are in range, and throws an
-     * appropriate exception if they aren't.
-     *
-     * @param arrayLen the length of the array
-     * @param fromIndex the index of the first element of the range
-     * @param toIndex the index after the last element of the range
-     * @throws IllegalArgumentException if fromIndex > toIndex
-     * @throws ArrayIndexOutOfBoundsException if fromIndex < 0
-     *         or toIndex > arrayLen
-     */
-    private static void rangeCheck(int arrayLen, int fromIndex, int toIndex) {
-        if (fromIndex > toIndex)
-            throw new IllegalArgumentException("fromIndex(" + fromIndex +
-                       ") > toIndex(" + toIndex+")");
-        if (fromIndex < 0)
-            throw new ArrayIndexOutOfBoundsException(fromIndex);
-        if (toIndex > arrayLen)
-            throw new ArrayIndexOutOfBoundsException(toIndex);
-    }
 }

@@ -102,14 +102,9 @@ public class Options {
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
-  // TODO(kirbs): Uncomment following lines and lines in OptionsTest when we enable automatic
-  // version detection. Currently this is breaking pulse builds using 64 bit Java 8, and upgrading
-  // to Eclipse 4.5 is gated by bytecode errors in compiling junit. I won't have time to do a
-  // more in depth root cause analysis on this.
-  private SourceVersion sourceVersion = SourceVersion.JAVA_7;
-  // // The default source version number if not passed with -source is determined from the system
-  // // properties of the running java version after parsing the argument list.
-  // private String sourceVersion = null;
+  // The default source version number if not passed with -source is determined from the system
+  // properties of the running java version after parsing the argument list.
+  private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
 

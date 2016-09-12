@@ -59,7 +59,10 @@ class Options {
   private List<String> blacklistFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
-  private SourceVersion sourceVersion = SourceVersion.JAVA_7;
+
+  // The default source version number if not passed with -source is determined from the system
+  // properties of the running java version after parsing the argument list.
+  private SourceVersion sourceVersion = null;
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -119,6 +122,10 @@ class Options {
   }
 
   public SourceVersion sourceVersion() {
+    if (sourceVersion == null) {
+      // Pull source version from system properties if it is not passed with -source flag.
+      sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
+    }
     return sourceVersion;
   }
 

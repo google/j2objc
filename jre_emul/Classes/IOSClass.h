@@ -91,9 +91,6 @@
 // Class.getModifiers()
 - (jint)getModifiers;
 
-// Class.getAccessFlags()
-- (jint)getAccessFlags;
-
 // Class.getDeclaredConstructors()
 - (IOSObjectArray *)getDeclaredConstructors;
 

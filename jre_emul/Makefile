@@ -55,8 +55,11 @@ IOS_PRIVATE_OBJS = \
 	IOSReflection.o \
 	J2ObjC_icu.o \
 	JavaToIOSInputStreamAdapter.o \
+	java_lang_Character.o \
 	java_lang_IntegralToString.o \
+	java_lang_Math.o \
 	java_lang_RealToString.o \
+	java_lang_StrictMath.o \
 	java_lang_StringToReal.o \
 	java_util_regex_Matcher.o \
 	java_util_regex_Pattern.o \
@@ -86,7 +89,7 @@ MAIN_OBJ = J2ObjCMain.o
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 
 STUB_JAVA_SOURCES := $(shell find $(STUBS_DIR) -name *.java)
-INVOKE_JAVA_SOURCES := $(shell find $(INVOKE_STUBS_DIR) -name *.java)
+LAMBDA_SOURCES := $(shell find $(LAMBDA_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(JAR_ONLY_SOURCES)
 JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
 EMULATION_HEADERS := $(shell find $(EMULATION_CLASS_DIR) -name *.h)
@@ -269,20 +272,20 @@ $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(INVOKE_JAVA_SOURCES) \
+$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(LAMBDA_SOURCES) \
   $(SOURCE_RETENTION_ANNOTATIONS) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@stage_dir=`mktemp -d -t j2objc-jre_emul`; \
     ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
-      -bootclasspath $(STUBS_DIR):$(INVOKE_STUBS_DIR) \
+      -bootclasspath $(STUBS_DIR):$(LAMBDA_DIR) \
 	    -classpath $(ANNOTATIONS_JAR) \
 	    -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
 
-$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(INVOKE_JAVA_SOURCES) | $(BUILD_DIR)
+$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(LAMBDA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul-src.jar"
-	@../scripts/gen_java_source_jar.py -sourcepath $(JRE_SRC):$(STUBS_DIR):$(INVOKE_STUBS_DIR) \
+	@../scripts/gen_java_source_jar.py -sourcepath $(JRE_SRC):$(STUBS_DIR):$(LAMBDA_DIR) \
 	  -o $(EMULATION_SRC_JAR) $^
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)

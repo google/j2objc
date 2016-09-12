@@ -40,9 +40,14 @@
 #import "java/util/Comparator.h"
 #import "java/util/Formatter.h"
 #import "java/util/Locale.h"
+#import "java/util/function/Function.h"
+#import "java/util/function/ToDoubleFunction.h"
+#import "java/util/function/ToIntFunction.h"
+#import "java/util/function/ToLongFunction.h"
 #import "java/util/regex/Matcher.h"
 #import "java/util/regex/Pattern.h"
 #import "java/util/regex/PatternSyntaxException.h"
+#import "java/util/stream/IntStream.h"
 #import "java_lang_IntegralToString.h"
 #import "java_lang_RealToString.h"
 
@@ -938,6 +943,15 @@ jint javaStringHashCode(NSString *string) {
   return hash;
 }
 
+// Java 8 default methods from CharSequence.
+- (id<JavaUtilStreamIntStream>)chars {
+  return JavaLangCharSequence_chars(self);
+}
+
+- (id<JavaUtilStreamIntStream>)codePoints {
+  return JavaLangCharSequence_codePoints(self);
+}
+
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "string", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
@@ -1019,14 +1033,21 @@ jint javaStringHashCode(NSString *string) {
     { "trim", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { "contentEqualsCharSequence:", "Z", 0x1, 66, 37, -1, -1, -1, -1 },
     { "contentEqualsStringBuffer:", "Z", 0x1, 66, 14, -1, -1, -1, -1 },
+    { "indexOfWithNSString:withNSString:withInt:", "I", 0x8, 45, 67, -1, -1, -1, -1 },
+    { "indexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:", "I", 0x8, 45,
+      68, -1, -1, -1, -1 },
+    { "lastIndexOfWithNSString:withNSString:withInt:", "I", 0x8, 47, 67, -1, -1, -1, -1 },
+    { "lastIndexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:", "I", 0x8,
+      47, 68, -1, -1, -1, -1 },
+    { "hash32", "I", 0x0, -1, -1, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 67, 68,
+    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 69, 70,
       -1 },
     { "serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },
     { "serialPersistentFields", "[LJavaIoObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
-      69, -1, -1 },
+      71, -1, -1 },
   };
   static const void *ptrTable[] = {
     "[B", "[BI", "[BII", "[BIII", "[BIILNSString;", "LJavaIoUnsupportedEncodingException;",
@@ -1040,13 +1061,13 @@ jint javaStringHashCode(NSString *string) {
     "lastIndexOf", "matches", "offsetByCodePoints", "regionMatches", "ZILNSString;II",
     "ILNSString;II", "replace", "CC", "LJavaLangCharSequence;LJavaLangCharSequence;", "replaceAll",
     "LNSString;LNSString;", "replaceFirst", "split", "startsWith", "subSequence", "substring",
-    "toLowerCase", "LJavaUtilLocale;", "toUpperCase", "contentEquals",
-    &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
+    "toLowerCase", "LJavaUtilLocale;", "toUpperCase", "contentEquals", "LNSString;LNSString;I",
+    "[CII[CIII", &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
     &NSString_serialPersistentFields, "LNSString_CaseInsensitiveComparator;",
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 78, 3, -1, 70, -1, 71, -1 };
+    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 83, 3, -1, 72, -1, 73, -1 };
   return &_NSString;
 }
 
@@ -1066,6 +1087,41 @@ jint javaStringHashCode(NSString *string) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   return [o1 compareToIgnoreCase:o2];
+}
+
+// Java 8 default methods from Comparator.
+- (id<JavaUtilComparator>)reversed {
+  return JavaUtilComparator_reversed(self);
+}
+
+- (id<JavaUtilComparator>)thenComparingWithJavaUtilComparator:(id<JavaUtilComparator>)arg0 {
+  return JavaUtilComparator_thenComparingWithJavaUtilComparator_(self, arg0);
+}
+
+- (id<JavaUtilComparator>)thenComparingWithJavaUtilFunctionFunction:
+    (id<JavaUtilFunctionFunction>)arg0 {
+  return JavaUtilComparator_thenComparingWithJavaUtilFunctionFunction_(self, arg0);
+}
+
+- (id<JavaUtilComparator>)thenComparingWithJavaUtilFunctionFunction:
+    (id<JavaUtilFunctionFunction>)arg0 withJavaUtilComparator:(id<JavaUtilComparator>)arg1 {
+  return JavaUtilComparator_thenComparingWithJavaUtilFunctionFunction_withJavaUtilComparator_(
+      self, arg0, arg1);
+}
+
+- (id<JavaUtilComparator>)thenComparingDoubleWithJavaUtilFunctionToDoubleFunction:
+    (id<JavaUtilFunctionToDoubleFunction>)arg0 {
+  return JavaUtilComparator_thenComparingDoubleWithJavaUtilFunctionToDoubleFunction_(self, arg0);
+}
+
+- (id<JavaUtilComparator>)thenComparingIntWithJavaUtilFunctionToIntFunction:
+    (id<JavaUtilFunctionToIntFunction>)arg0 {
+  return JavaUtilComparator_thenComparingIntWithJavaUtilFunctionToIntFunction_(self, arg0);
+}
+
+- (id<JavaUtilComparator>)thenComparingLongWithJavaUtilFunctionToLongFunction:
+    (id<JavaUtilFunctionToLongFunction>)arg0 {
+  return JavaUtilComparator_thenComparingLongWithJavaUtilFunctionToLongFunction_(self, arg0);
 }
 
 + (const J2ObjcClassInfo *)__metadata {

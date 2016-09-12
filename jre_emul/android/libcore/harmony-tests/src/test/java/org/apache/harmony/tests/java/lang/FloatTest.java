@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -255,9 +255,25 @@ public class FloatTest extends TestCase {
      */
     public void test_isInfiniteF() {
         // Test for method boolean java.lang.Float.isInfinite(float)
+        assertTrue(Float.isInfinite(Float.POSITIVE_INFINITY));
+        assertTrue(Float.isInfinite(Float.NEGATIVE_INFINITY));
+        assertFalse(Float.isInfinite(Float.MAX_VALUE));
+        assertFalse(Float.isInfinite(Float.MIN_VALUE));
+        assertFalse(Float.isInfinite(Float.NaN));
+        assertFalse(Float.isInfinite(1.0f));
+    }
 
-        assertTrue("Infinity check failed", Float.isInfinite(Float.POSITIVE_INFINITY)
-                && (Float.isInfinite(Float.NEGATIVE_INFINITY)) && !(Float.isInfinite(1.0f)));
+    /**
+     * java.lang.Float#isFinite(float)
+     */
+    public void test_isFiniteF() {
+        // Test for method boolean java.lang.Float.isInfinite(float)
+        assertFalse(Float.isFinite(Float.POSITIVE_INFINITY));
+        assertFalse(Float.isFinite(Float.NEGATIVE_INFINITY));
+        assertTrue(Float.isFinite(Float.MAX_VALUE));
+        assertTrue(Float.isFinite(Float.MIN_VALUE));
+        assertFalse(Float.isFinite(Float.NaN));
+        assertTrue(Float.isFinite(1.0f));
     }
 
     /**
@@ -793,9 +809,13 @@ public class FloatTest extends TestCase {
      * java.lang.Float#parseFloat(java.lang.String)
      */
     public void test_parseFloat_LString_Harmony6261() {
-        // Regression test for HARMONY-6261
+        // The specification adhering result should have one less sigificant digit, as that is
+        // enough to uniquely identify this floating from its neighbors. We accept the extra
+        // resolution here for now.
+        // http://b/26140673
         float f = new Float("2147483648");
-        assertEquals("2.1474836E9", Float.toString(f));
+        //assertEquals("2.1474836E9", Float.toString(f));
+        assertTrue(Float.toString(f).matches("2.14748365?E9"));
 
         doTestCompareRawBits("123456790528.000000000000000f", 0x51e5f4c9, "1.2345679E11");
         doTestCompareRawBits("8589934592", 0x50000000, "8.5899346E9");

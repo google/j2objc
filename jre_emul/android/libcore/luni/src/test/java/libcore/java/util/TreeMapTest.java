@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 import junit.framework.TestCase;
 import libcore.util.SerializationTester;
 
@@ -292,9 +293,10 @@ public class TreeMapTest extends TestCase {
     }
 
     public void testSubMapSerialization() {
+        // Updated golden value since we have a different serialVersionUID in OpenJDK.
         String s = "aced0005737200216a6176612e7574696c2e547265654d617024417363656e646"
                 + "96e675375624d61700cab946d1f0fab1c020000787200216a6176612e7574696c2"
-                + "e547265654d6170244e6176696761626c655375624d6170e2d0a70e64210e08020"
+                + "e547265654d6170244e6176696761626c655375624d617026617d4eacdd5933020"
                 + "0075a000966726f6d53746172745a000b6869496e636c75736976655a000b6c6f4"
                 + "96e636c75736976655a0005746f456e644c000268697400124c6a6176612f6c616"
                 + "e672f4f626a6563743b4c00026c6f71007e00024c00016d7400134c6a6176612f7"
@@ -324,9 +326,10 @@ public class TreeMapTest extends TestCase {
     }
 
     public void testNavigableSubMapSerialization() {
+        // Updated golden value since we have a different serialVersionUID in OpenJDK.
         String s = "aced0005737200216a6176612e7574696c2e547265654d617024417363656e646"
                 + "96e675375624d61700cab946d1f0fab1c020000787200216a6176612e7574696c2"
-                + "e547265654d6170244e6176696761626c655375624d6170e2d0a70e64210e08020"
+                + "e547265654d6170244e6176696761626c655375624d617026617d4eacdd5933020"
                 + "0075a000966726f6d53746172745a000b6869496e636c75736976655a000b6c6f4"
                 + "96e636c75736976655a0005746f456e644c000268697400124c6a6176612f6c616"
                 + "e672f4f626a6563743b4c00026c6f71007e00024c00016d7400134c6a6176612f7"
@@ -356,11 +359,12 @@ public class TreeMapTest extends TestCase {
     }
 
     public void testDescendingMapSerialization() {
+        // Updated golden value since we have a different serialVersionUID in OpenJDK.
         String s = "aced0005737200226a6176612e7574696c2e547265654d61702444657363656e6"
                 + "4696e675375624d61700cab946d1f0f9d0c0200014c001172657665727365436f6"
                 + "d70617261746f727400164c6a6176612f7574696c2f436f6d70617261746f723b7"
                 + "87200216a6176612e7574696c2e547265654d6170244e6176696761626c6553756"
-                + "24d6170e2d0a70e64210e080200075a000966726f6d53746172745a000b6869496"
+                + "24d617026617d4eacdd59330200075a000966726f6d53746172745a000b6869496"
                 + "e636c75736976655a000b6c6f496e636c75736976655a0005746f456e644c00026"
                 + "8697400124c6a6176612f6c616e672f4f626a6563743b4c00026c6f71007e00034"
                 + "c00016d7400134c6a6176612f7574696c2f547265654d61703b787001010101707"

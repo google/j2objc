@@ -17,12 +17,13 @@
 package java.lang;
 
 import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 /**
- * Instances of classes that implement this interface can be used with
- * the enhanced for loop.
+ * Stub implementation of java.lang.Iterable.
  *
- * @since 1.5
+ * @see java.lang.Object
  */
 public interface Iterable<T> {
 
@@ -32,4 +33,10 @@ public interface Iterable<T> {
      * @return An {@code Iterator} instance.
      */
     Iterator<T> iterator();
+
+    default void forEach(Consumer<? super T> action) {}
+
+    default Spliterator<T> spliterator() {
+        return null;
+    }
 }

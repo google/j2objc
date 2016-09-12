@@ -14,10 +14,10 @@
 #define _JavaLangAbstractStringBuilder_H_
 
 #import "J2ObjC_header.h"
+#import "java/lang/Appendable.h"
+#import "java/lang/CharSequence.h"
 
 @class IOSCharArray;
-
-@protocol JavaLangCharSequence;
 
 // Defines a string builder struct so that J2ObjC string concatenation does not
 // need to allocate a new ObjC string builder object.
@@ -27,7 +27,7 @@ typedef struct JreStringBuilder {
   jint count_;
 } JreStringBuilder;
 
-@interface JavaLangAbstractStringBuilder : NSObject {
+@interface JavaLangAbstractStringBuilder : NSObject < JavaLangAppendable, JavaLangCharSequence > {
  @package
   JreStringBuilder delegate_;
 }
@@ -92,6 +92,14 @@ typedef struct JreStringBuilder {
 
 - (jint)offsetByCodePointsWithInt:(jint)index
                           withInt:(jint)codePointOffset;
+
+- (JavaLangAbstractStringBuilder *)appendWithChar:(jchar)c;
+
+- (JavaLangAbstractStringBuilder *)appendWithCharArray:(IOSCharArray *)str
+                                               withInt:(jint)offset
+                                               withInt:(jint)len;
+
+- (JavaLangAbstractStringBuilder *)appendWithNSString:(NSString *)str;
 
 @end
 

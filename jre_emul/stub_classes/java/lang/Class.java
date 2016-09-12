@@ -294,9 +294,4 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
     return null;
   }
-
-  // Android-specific
-  public int getAccessFlags() {
-    return 0;
-  }
 }

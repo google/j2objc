@@ -22,14 +22,27 @@
 
 @protocol JavaUtilIterator;
 
-#import "J2ObjC_header.h"
+#include "J2ObjC_header.h"
+
+@protocol JavaUtilFunctionConsumer;
+@protocol JavaUtilIterator;
+@protocol JavaUtilSpliterator;
 
 /**
  * Instances of classes that implement this interface can be used with
  * the enhanced for loop.
  */
 @protocol JavaLangIterable <NSFastEnumeration, JavaObject>
+
 - (id<JavaUtilIterator>)iterator;
+
+- (void)forEachWithJavaUtilFunctionConsumer:(id<JavaUtilFunctionConsumer>)action;
+
+- (id<JavaUtilSpliterator>)spliterator;
+
+@end
+
+@interface JavaLangIterable : NSObject < JavaLangIterable >
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(JavaLangIterable)
@@ -39,5 +52,9 @@ J2OBJC_TYPE_LITERAL_HEADER(JavaLangIterable)
 FOUNDATION_EXPORT NSUInteger JreDefaultFastEnumeration(
     id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf,
     NSUInteger len);
+
+FOUNDATION_EXPORT void JavaLangIterable_forEachWithJavaUtilFunctionConsumer_(id<JavaLangIterable> self, id<JavaUtilFunctionConsumer> action);
+
+FOUNDATION_EXPORT id<JavaUtilSpliterator> JavaLangIterable_spliterator(id<JavaLangIterable> self);
 
 #endif // _JavaLangIterable_H_

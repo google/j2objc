@@ -98,10 +98,12 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Deprecated.java \
   java/lang/Double.java \
   java/lang/Enum.java \
+  java/lang/EnumConstantNotPresentException.java \
   java/lang/Error.java \
   java/lang/Exception.java \
   java/lang/ExceptionInInitializerError.java \
   java/lang/Float.java \
+  java/lang/FunctionalInterface.java \
   java/lang/IllegalAccessError.java \
   java/lang/IllegalAccessException.java \
   java/lang/IllegalArgumentException.java \
@@ -111,6 +113,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/IncompatibleClassChangeError.java \
   java/lang/IndexOutOfBoundsException.java \
   java/lang/InheritableThreadLocal.java \
+  java/lang/InstantiationError.java \
   java/lang/InstantiationException.java \
   java/lang/Integer.java \
   java/lang/IntegralToString.java \
@@ -165,6 +168,14 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/annotation/Retention.java \
   java/lang/annotation/RetentionPolicy.java \
   java/lang/annotation/Target.java \
+  java/lang/invoke/CallSite.java \
+  java/lang/invoke/LambdaConversionException.java \
+  java/lang/invoke/LambdaMetafactory.java \
+  java/lang/invoke/MethodHandle.java \
+  java/lang/invoke/MethodHandleInfo.java \
+  java/lang/invoke/MethodHandles.java \
+  java/lang/invoke/MethodType.java \
+  java/lang/invoke/SerializedLambda.java \
   java/lang/ref/PhantomReference.java \
   java/lang/ref/Reference.java \
   java/lang/ref/ReferenceQueue.java \
@@ -251,8 +262,10 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/AbstractQueue.java \
   java/util/AbstractSequentialList.java \
   java/util/AbstractSet.java \
+  java/util/ArrayDeque.java \
   java/util/ArrayList.java \
   java/util/Arrays.java \
+  java/util/BitSet.java \
   java/util/Calendar.java \
   java/util/Collection.java \
   java/util/Collections.java \
@@ -263,9 +276,12 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/Date.java \
   java/util/Deque.java \
   java/util/Dictionary.java \
+  java/util/DoubleSummaryStatistics.java \
   java/util/DuplicateFormatFlagsException.java \
   java/util/EmptyStackException.java \
   java/util/Enumeration.java \
+  java/util/EnumMap.java \
+  java/util/EnumSet.java \
   java/util/FormatFlagsConversionMismatchException.java \
   java/util/Formattable.java \
   java/util/FormattableFlags.java \
@@ -282,6 +298,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/IllegalFormatPrecisionException.java \
   java/util/IllegalFormatWidthException.java \
   java/util/IllformedLocaleException.java \
+  java/util/IntSummaryStatistics.java \
   java/util/InvalidPropertiesFormatException.java \
   java/util/Iterator.java \
   java/util/LinkedHashMap.java \
@@ -291,8 +308,8 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/ListIterator.java \
   java/util/ListResourceBundle.java \
   java/util/Locale.java \
+  java/util/LongSummaryStatistics.java \
   java/util/Map.java \
-  java/util/MapEntry.java \
   java/util/MissingFormatArgumentException.java \
   java/util/MissingFormatWidthException.java \
   java/util/MissingResourceException.java \
@@ -300,6 +317,11 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/NavigableSet.java \
   java/util/NoSuchElementException.java \
   java/util/Objects.java \
+  java/util/Optional.java \
+  java/util/OptionalDouble.java \
+  java/util/OptionalInt.java \
+  java/util/OptionalLong.java \
+  java/util/PrimitiveIterator.java \
   java/util/Properties.java \
   java/util/PropertyResourceBundle.java \
   java/util/Queue.java \
@@ -310,6 +332,9 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/SimpleTimeZone.java \
   java/util/SortedMap.java \
   java/util/SortedSet.java \
+  java/util/Spliterator.java \
+  java/util/Spliterators.java \
+  java/util/StringJoiner.java \
   java/util/StringTokenizer.java \
   java/util/TimSort.java \
   java/util/TimeZone.java \
@@ -319,16 +344,82 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/UnsafeArrayList.java \
   java/util/Vector.java \
   java/util/WeakHashMap.java \
+  java/util/concurrent/AbstractExecutorService.java \
+  java/util/concurrent/CancellationException.java \
+  java/util/concurrent/ConcurrentHashMap.java \
   java/util/concurrent/CopyOnWriteArrayList.java \
   java/util/concurrent/CountDownLatch.java \
+  java/util/concurrent/CountedCompleter.java \
+  java/util/concurrent/Delayed.java \
+  java/util/concurrent/ExecutionException.java \
+  java/util/concurrent/ExecutorCompletionService.java \
+  java/util/concurrent/Executors.java \
+  java/util/concurrent/ForkJoinPool.java \
+  java/util/concurrent/ForkJoinTask.java \
+  java/util/concurrent/ForkJoinWorkerThread.java \
+  java/util/concurrent/Future.java \
+  java/util/concurrent/FutureTask.java \
+  java/util/concurrent/LinkedBlockingQueue.java \
+  java/util/concurrent/RejectedExecutionException.java \
+  java/util/concurrent/RunnableScheduledFuture.java \
+  java/util/concurrent/ScheduledThreadPoolExecutor.java \
+  java/util/concurrent/SynchronousQueue.java \
+  java/util/concurrent/ThreadLocalRandom.java \
+  java/util/concurrent/ThreadPoolExecutor.java \
+  java/util/concurrent/TimeoutException.java \
   java/util/concurrent/TimeUnit.java \
   java/util/concurrent/atomic/AtomicBoolean.java \
   java/util/concurrent/atomic/AtomicInteger.java \
+  java/util/concurrent/atomic/AtomicLong.java \
   java/util/concurrent/atomic/AtomicReference.java \
   java/util/concurrent/locks/AbstractOwnableSynchronizer.java \
   java/util/concurrent/locks/AbstractQueuedSynchronizer.java \
   java/util/concurrent/locks/Condition.java \
   java/util/concurrent/locks/LockSupport.java \
+  java/util/concurrent/locks/ReentrantLock.java \
+  java/util/function/BiConsumer.java \
+  java/util/function/BiFunction.java \
+  java/util/function/BiPredicate.java \
+  java/util/function/BinaryOperator.java \
+  java/util/function/BooleanSupplier.java \
+  java/util/function/Consumer.java \
+  java/util/function/DoubleBinaryOperator.java \
+  java/util/function/DoubleConsumer.java \
+  java/util/function/DoubleFunction.java \
+  java/util/function/DoublePredicate.java \
+  java/util/function/DoubleSupplier.java \
+  java/util/function/DoubleToIntFunction.java \
+  java/util/function/DoubleToLongFunction.java \
+  java/util/function/DoubleUnaryOperator.java \
+  java/util/function/Function.java \
+  java/util/function/IntBinaryOperator.java \
+  java/util/function/IntConsumer.java \
+  java/util/function/IntFunction.java \
+  java/util/function/IntPredicate.java \
+  java/util/function/IntSupplier.java \
+  java/util/function/IntToDoubleFunction.java \
+  java/util/function/IntToLongFunction.java \
+  java/util/function/IntUnaryOperator.java \
+  java/util/function/LongBinaryOperator.java \
+  java/util/function/LongConsumer.java \
+  java/util/function/LongFunction.java \
+  java/util/function/LongPredicate.java \
+  java/util/function/LongSupplier.java \
+  java/util/function/LongToDoubleFunction.java \
+  java/util/function/LongToIntFunction.java \
+  java/util/function/LongUnaryOperator.java \
+  java/util/function/ObjDoubleConsumer.java \
+  java/util/function/ObjIntConsumer.java \
+  java/util/function/ObjLongConsumer.java \
+  java/util/function/Predicate.java \
+  java/util/function/Supplier.java \
+  java/util/function/ToDoubleBiFunction.java \
+  java/util/function/ToDoubleFunction.java \
+  java/util/function/ToIntBiFunction.java \
+  java/util/function/ToIntFunction.java \
+  java/util/function/ToLongBiFunction.java \
+  java/util/function/ToLongFunction.java \
+  java/util/function/UnaryOperator.java \
   java/util/logging/ErrorManager.java \
   java/util/logging/Filter.java \
   java/util/logging/Formatter.java \
@@ -346,6 +437,14 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/regex/Pattern.java \
   java/util/regex/PatternSyntaxException.java \
   java/util/regex/Splitter.java \
+  java/util/stream/BaseStream.java \
+  java/util/stream/Collector.java \
+  java/util/stream/Collectors.java \
+  java/util/stream/DoubleStream.java \
+  java/util/stream/IntStream.java \
+  java/util/stream/LongStream.java \
+  java/util/stream/Streams.java \
+  java/util/stream/StreamSupport.java \
   javax/annotation/PostConstruct.java \
   javax/annotation/PreDestroy.java \
   javax/annotation/Resource.java \
@@ -365,7 +464,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
+  java/lang/FloatingDecimal.java \
   java/lang/HexStringParser.java \
+  java/lang/JavaLangAccess.java \
   java/lang/RealToString.java \
   java/lang/StringToReal.java \
   java/math/BitLevel.java \
@@ -396,8 +497,38 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/ShortArrayBuffer.java \
   java/nio/charset/Charsets.java \
   java/nio/charset/ModifiedUtf8.java \
+  java/util/ArrayPrefixHelpers.java \
+  java/util/ArraysParallelSortHelpers.java \
+  java/util/Comparators.java \
   java/util/DualPivotQuicksort.java \
   java/util/Grego.java \
+  java/util/JumboEnumSet.java \
+  java/util/RegularEnumSet.java \
+  java/util/logging/LoggingProxyImpl.java \
+  java/util/stream/AbstractPipeline.java \
+  java/util/stream/AbstractShortCircuitTask.java \
+  java/util/stream/AbstractSpinedBuffer.java \
+  java/util/stream/AbstractTask.java \
+  java/util/stream/DistinctOps.java \
+  java/util/stream/DoublePipeline.java \
+  java/util/stream/FindOps.java \
+  java/util/stream/ForEachOps.java \
+  java/util/stream/IntPipeline.java \
+  java/util/stream/LongPipeline.java \
+  java/util/stream/MatchOps.java \
+  java/util/stream/Node.java \
+  java/util/stream/Nodes.java \
+  java/util/stream/PipelineHelper.java \
+  java/util/stream/ReduceOps.java \
+  java/util/stream/ReferencePipeline.java \
+  java/util/stream/Sink.java \
+  java/util/stream/SliceOps.java \
+  java/util/stream/SortedOps.java \
+  java/util/stream/SpinedBuffer.java \
+  java/util/stream/StreamOpFlag.java \
+  java/util/stream/StreamShape.java \
+  java/util/stream/StreamSpliterators.java \
+  java/util/stream/TerminalOp.java \
   libcore/icu/ICU.java \
   libcore/icu/LocaleData.java \
   libcore/icu/NativeDecimalFormat.java \
@@ -439,7 +570,20 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/MutableInt.java \
   libcore/util/MutableLong.java \
   libcore/util/Objects.java \
-  libcore/util/SneakyThrow.java
+  libcore/util/SneakyThrow.java \
+  sun/misc/CompoundEnumeration.java \
+  sun/misc/DoubleConsts.java \
+  sun/misc/FDBigInt.java \
+  sun/misc/FloatConsts.java \
+  sun/misc/FpUtils.java \
+  sun/misc/Hashing.java \
+  sun/reflect/Reflection.java \
+  sun/reflect/annotation/AnnotationSupport.java \
+  sun/reflect/annotation/AnnotationType.java \
+  sun/reflect/misc/ReflectUtil.java \
+  sun/util/logging/LoggingProxy.java \
+  sun/util/logging/LoggingSupport.java \
+  sun/util/logging/PlatformLogger.java
 
 JAVA_PUBLIC_SOURCES_IO = \
   java/io/CharArrayReader.java \
@@ -493,6 +637,7 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/InterfaceAddress.java \
   java/net/MalformedURLException.java \
   java/net/MulticastSocket.java \
+  java/net/NetPermission.java \
   java/net/NetworkInterface.java \
   java/net/NoRouteToHostException.java \
   java/net/PasswordAuthentication.java \
@@ -568,16 +713,10 @@ JAVA_PRIVATE_SOURCES_NET = \
   okio/Util.java
 
 JAVA_PUBLIC_SOURCES_UTIL = \
-  java/util/ArrayDeque.java \
-  java/util/BitSet.java \
-  java/util/EnumMap.java \
-  java/util/EnumSet.java \
   java/util/EventListener.java \
   java/util/EventListenerProxy.java \
   java/util/EventObject.java \
-  java/util/HugeEnumSet.java \
   java/util/IdentityHashMap.java \
-  java/util/MiniEnumSet.java \
   java/util/Observable.java \
   java/util/Observer.java \
   java/util/PriorityQueue.java \
@@ -592,20 +731,19 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/logging/MemoryHandler.java \
   java/util/logging/SimpleFormatter.java \
   java/util/logging/StreamHandler.java \
-  java/util/logging/XMLFormatter.java
+  java/util/logging/XMLFormatter.java \
+  java/util/stream/Stream.java
 
-JAVA_PRIVATE_SOURCES_UTIL =
+JAVA_PRIVATE_SOURCES_UTIL = \
+  java/util/stream/TerminalSink.java
 
 JAVA_PUBLIC_SOURCES_CONCURRENT = \
-  java/util/concurrent/AbstractExecutorService.java \
   java/util/concurrent/ArrayBlockingQueue.java \
   java/util/concurrent/BlockingDeque.java \
   java/util/concurrent/BlockingQueue.java \
   java/util/concurrent/BrokenBarrierException.java \
   java/util/concurrent/Callable.java \
-  java/util/concurrent/CancellationException.java \
   java/util/concurrent/CompletionService.java \
-  java/util/concurrent/ConcurrentHashMap.java \
   java/util/concurrent/ConcurrentLinkedDeque.java \
   java/util/concurrent/ConcurrentLinkedQueue.java \
   java/util/concurrent/ConcurrentMap.java \
@@ -613,45 +751,26 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/ConcurrentSkipListMap.java \
   java/util/concurrent/ConcurrentSkipListSet.java \
   java/util/concurrent/CopyOnWriteArraySet.java \
-  java/util/concurrent/CountedCompleter.java \
   java/util/concurrent/CyclicBarrier.java \
   java/util/concurrent/DelayQueue.java \
-  java/util/concurrent/Delayed.java \
   java/util/concurrent/Exchanger.java \
-  java/util/concurrent/ExecutionException.java \
   java/util/concurrent/Executor.java \
-  java/util/concurrent/ExecutorCompletionService.java \
   java/util/concurrent/ExecutorService.java \
-  java/util/concurrent/Executors.java \
-  java/util/concurrent/ForkJoinPool.java \
-  java/util/concurrent/ForkJoinTask.java \
-  java/util/concurrent/ForkJoinWorkerThread.java \
-  java/util/concurrent/Future.java \
-  java/util/concurrent/FutureTask.java \
   java/util/concurrent/LinkedBlockingDeque.java \
-  java/util/concurrent/LinkedBlockingQueue.java \
   java/util/concurrent/LinkedTransferQueue.java \
   java/util/concurrent/Phaser.java \
   java/util/concurrent/PriorityBlockingQueue.java \
   java/util/concurrent/RecursiveAction.java \
   java/util/concurrent/RecursiveTask.java \
-  java/util/concurrent/RejectedExecutionException.java \
   java/util/concurrent/RejectedExecutionHandler.java \
   java/util/concurrent/RunnableFuture.java \
-  java/util/concurrent/RunnableScheduledFuture.java \
   java/util/concurrent/ScheduledExecutorService.java \
   java/util/concurrent/ScheduledFuture.java \
-  java/util/concurrent/ScheduledThreadPoolExecutor.java \
   java/util/concurrent/Semaphore.java \
-  java/util/concurrent/SynchronousQueue.java \
   java/util/concurrent/ThreadFactory.java \
-  java/util/concurrent/ThreadLocalRandom.java \
-  java/util/concurrent/ThreadPoolExecutor.java \
-  java/util/concurrent/TimeoutException.java \
   java/util/concurrent/TransferQueue.java \
   java/util/concurrent/atomic/AtomicIntegerArray.java \
   java/util/concurrent/atomic/AtomicIntegerFieldUpdater.java \
-  java/util/concurrent/atomic/AtomicLong.java \
   java/util/concurrent/atomic/AtomicLongArray.java \
   java/util/concurrent/atomic/AtomicLongFieldUpdater.java \
   java/util/concurrent/atomic/AtomicMarkableReference.java \
@@ -662,7 +781,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/ReadWriteLock.java \
-  java/util/concurrent/locks/ReentrantLock.java \
   java/util/concurrent/locks/ReentrantReadWriteLock.java
 
 JAVA_PRIVATE_SOURCES_CONCURRENT =
@@ -1295,7 +1413,6 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 # in a testing environment. The other classes are errors only thrown by a JVM.
 JAVA_PUBLIC_SOURCES_OTHER = \
   java/lang/ClassCircularityError.java \
-  java/lang/InstantiationError.java \
   java/lang/UnsatisfiedLinkError.java \
   java/lang/UnsupportedClassVersionError.java \
   javax/lang/model/element/Modifier.java

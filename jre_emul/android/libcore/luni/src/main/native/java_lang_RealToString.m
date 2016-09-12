@@ -54,6 +54,19 @@ static void longDigitGenerator(
     long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, char digits[],
     int *digitCount);
 
+// Constant definitions from Harmony versions of java.lang.Double and java.lang.Float.
+#define JavaLangDouble_EXPONENT_BIAS 1023
+#define JavaLangDouble_EXPONENT_MASK 9218868437227405312LL
+#define JavaLangDouble_MANTISSA_BITS 52
+#define JavaLangDouble_MANTISSA_MASK 4503599627370495LL
+#define JavaLangDouble_SIGN_MASK ((jlong) 0x8000000000000000LL)
+
+#define JavaLangFloat_EXPONENT_BIAS 127
+#define JavaLangFloat_EXPONENT_MASK 2139095040
+#define JavaLangFloat_MANTISSA_BITS 23
+#define JavaLangFloat_MANTISSA_MASK 8388607
+#define JavaLangFloat_SIGN_MASK ((jint) 0x80000000)
+
 /**
  * An array with powers of ten that fit in the type <code>long</code>
  * (<code>10^0,10^1,...,10^18</code>).

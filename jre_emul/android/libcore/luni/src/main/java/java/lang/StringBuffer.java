@@ -42,8 +42,7 @@ import java.io.Serializable;
  * @see String#format
  * @since 1.0
  */
-public final class StringBuffer extends AbstractStringBuilder implements
-        Appendable, Serializable, CharSequence {
+public final class StringBuffer extends AbstractStringBuilder implements Serializable {
 
     private static final long serialVersionUID = 3388685877147921107L;
 

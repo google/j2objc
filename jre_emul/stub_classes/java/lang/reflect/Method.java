@@ -26,16 +26,16 @@ import java.lang.annotation.Annotation;
  *
  * @see Object
  */
-public class Method extends AccessibleObject implements GenericDeclaration, Member {
+public class Method extends Executable {
 
   public String getName() {
     return null;
   }
-  
+
   public int getModifiers() {
     return 0;
   }
-  
+
   public Class getReturnType() {
     return null;
   }
@@ -43,11 +43,11 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   public Type getGenericReturnType() {
     return null;
   }
-  
+
   public Class<?> getDeclaringClass() {
     return null;
   }
-  
+
   public Class<?>[] getParameterTypes() {
     return null;
   }
@@ -60,7 +60,7 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
       throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
     return null;
   }
-  
+
   public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
     return null;
   }
@@ -68,15 +68,15 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   public Annotation[] getDeclaredAnnotations() {
     return null;
   }
-  
+
   public Annotation[][] getParameterAnnotations() {
     return null;
   }
-  
+
   public TypeVariable<Method>[] getTypeParameters() {
     return null;
   }
-  
+
   public boolean isSynthetic() {
     return false;
   }
@@ -102,6 +102,14 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   }
 
   public Object getDefaultValue() {
+    return null;
+  }
+
+  public boolean isDefault() {
+    return false;
+  }
+
+  public AnnotatedType getAnnotatedReturnType() {
     return null;
   }
 }

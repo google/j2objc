@@ -244,11 +244,6 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
   }
 }
 
-// Same as getModifiers, but returns all modifiers bits defined by the class.
-- (jint)getAccessFlags {
-  return metadata_ ? metadata_->modifiers : JavaLangReflectModifier_PUBLIC;
-}
-
 static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods, bool publicOnly) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   if (metadata->methodCount == 0) {
@@ -1269,7 +1264,6 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
       -1, -1 },
     { "getDeclaredAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 42, 7, -1, 43,
       -1, -1 },
-    { "getAccessFlags", "I", 0x1, -1, -1, -1, -1, -1, -1 },
     { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
@@ -1298,7 +1292,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 63, 1, -1, -1, -1, 44, -1 };
+    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 62, 1, -1, -1, -1, 44, -1 };
   return &_IOSClass;
 }
 

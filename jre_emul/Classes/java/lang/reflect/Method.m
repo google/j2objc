@@ -256,6 +256,8 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     { "isBridge", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { "isVarArgs", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { "getDefaultValue", "LNSObject;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "isDefault", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "getAnnotatedReturnType", "LJavaLangReflectAnnotatedType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
@@ -264,7 +266,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     "LJavaLangReflectInvocationTargetException;", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
-    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 20, 0, -1, -1, -1, -1, -1 };
+    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 22, 0, -1, -1, -1, -1, -1 };
   return &_JavaLangReflectMethod;
 }
 

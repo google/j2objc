@@ -22,6 +22,7 @@
 #include "java/lang/OutOfMemoryError.h"
 #include "java/lang/StringIndexOutOfBoundsException.h"
 #include "java/util/Arrays.h"
+#include "java/util/stream/IntStream.h"
 #include "libcore/util/EmptyArray.h"
 
 // Full name as expected by generated metadata.
@@ -650,6 +651,46 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
       delegate_.buffer_, 0, delegate_.count_, index, codePointOffset);
 }
 
+- (JavaLangAbstractStringBuilder *)appendWithChar:(jchar)c{
+  JreStringBuilder_appendChar(&self->delegate_, c);
+  return self;
+}
+
+- (JavaLangAbstractStringBuilder *)appendWithCharArray:(IOSCharArray *)str
+                                               withInt:(jint)offset
+                                               withInt:(jint)len{
+  JreStringBuilder_appendCharArraySubset(&self->delegate_, str, offset, len);
+  return self;
+}
+
+- (JavaLangAbstractStringBuilder *)appendWithNSString:(NSString *)str {
+  JreStringBuilder_appendString(&self->delegate_, str);
+  return self;
+}
+
+// Default methods in java.lang.CharSequence.
+- (id<JavaUtilStreamIntStream>)chars {
+  return JavaLangCharSequence_chars(self);
+}
+
+- (id<JavaUtilStreamIntStream>)codePoints {
+  return JavaLangCharSequence_codePoints(self);
+}
+
+- (id<JavaLangAppendable>)appendWithJavaLangCharSequence:(id<JavaLangCharSequence>)cs {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
+}
+
+- (id<JavaLangAppendable>)appendWithJavaLangCharSequence:(id<JavaLangCharSequence>)cs
+                                                 withInt:(jint)start
+                                                 withInt:(jint)end {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
+}
+
 - (void)dealloc {
   free(delegate_.buffer_);
   [super dealloc];
@@ -657,64 +698,90 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getValue", "[C", 0x10, -1, -1, -1, -1, -1, -1 },
-    { "shareValue", "[C", 0x10, -1, -1, -1, -1, -1, -1 },
-    { "setWithCharArray:withInt:", "V", 0x10, 0, 1, 2, -1, -1, -1 },
     { "init", NULL, 0x0, -1, -1, -1, -1, -1, -1 },
-    { "initWithInt:", NULL, 0x0, -1, 3, -1, -1, -1, -1 },
-    { "initWithNSString:", NULL, 0x0, -1, 4, -1, -1, -1, -1 },
-    { "appendNull", "V", 0x10, -1, -1, -1, -1, -1, -1 },
-    { "append0WithCharArray:", "V", 0x10, 5, 6, -1, -1, -1, -1 },
-    { "append0WithCharArray:withInt:withInt:", "V", 0x10, 5, 7, -1, -1, -1, -1 },
-    { "append0WithChar:", "V", 0x10, 5, 8, -1, -1, -1, -1 },
-    { "append0WithNSString:", "V", 0x10, 5, 4, -1, -1, -1, -1 },
-    { "append0WithJavaLangCharSequence:withInt:withInt:", "V", 0x10, 5, 9, -1, -1, -1, -1 },
-    { "capacity", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "charAtWithInt:", "C", 0x1, 10, 3, -1, -1, -1, -1 },
-    { "delete0WithInt:withInt:", "V", 0x10, 11, 12, -1, -1, -1, -1 },
-    { "deleteCharAt0WithInt:", "V", 0x10, 13, 3, -1, -1, -1, -1 },
-    { "ensureCapacityWithInt:", "V", 0x1, 14, 3, -1, -1, -1, -1 },
-    { "getCharsWithInt:withInt:withCharArray:withInt:", "V", 0x1, 15, 16, -1, -1, -1, -1 },
-    { "insert0WithInt:withCharArray:", "V", 0x10, 17, 18, -1, -1, -1, -1 },
-    { "insert0WithInt:withCharArray:withInt:withInt:", "V", 0x10, 17, 19, -1, -1, -1, -1 },
-    { "insert0WithInt:withChar:", "V", 0x10, 17, 20, -1, -1, -1, -1 },
-    { "insert0WithInt:withNSString:", "V", 0x10, 17, 21, -1, -1, -1, -1 },
-    { "insert0WithInt:withJavaLangCharSequence:withInt:withInt:", "V", 0x10, 17, 22, -1, -1, -1, -1
-    },
+    { "initWithInt:", NULL, 0x0, -1, 0, -1, -1, -1, -1 },
     { "length", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "replace0WithInt:withInt:withNSString:", "V", 0x10, 23, 24, -1, -1, -1, -1 },
-    { "reverse0", "V", 0x10, -1, -1, -1, -1, -1, -1 },
-    { "setCharAtWithInt:withChar:", "V", 0x1, 25, 20, -1, -1, -1, -1 },
-    { "setLengthWithInt:", "V", 0x1, 26, 3, -1, -1, -1, -1 },
-    { "substringWithInt:", "LNSString;", 0x1, 27, 3, -1, -1, -1, -1 },
-    { "substringWithInt:withInt:", "LNSString;", 0x1, 27, 12, -1, -1, -1, -1 },
-    { "description", "LNSString;", 0x1, 28, -1, -1, -1, -1, -1 },
-    { "toString0", "LNSString;", 0x4, -1, -1, -1, -1, -1, -1 },
-    { "subSequenceFrom:to:", "LJavaLangCharSequence;", 0x1, 29, 12, -1, -1, -1, -1 },
-    { "indexOfWithNSString:", "I", 0x1, 30, 4, -1, -1, -1, -1 },
-    { "indexOfWithNSString:withInt:", "I", 0x1, 30, 31, -1, -1, -1, -1 },
-    { "lastIndexOfWithNSString:", "I", 0x1, 32, 4, -1, -1, -1, -1 },
-    { "lastIndexOfWithNSString:withInt:", "I", 0x1, 32, 31, -1, -1, -1, -1 },
+    { "capacity", "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "ensureCapacityWithInt:", "V", 0x1, 1, 0, -1, -1, -1, -1 },
+    { "expandCapacityWithInt:", "V", 0x0, 2, 0, -1, -1, -1, -1 },
     { "trimToSize", "V", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "codePointAtWithInt:", "I", 0x1, 33, 3, -1, -1, -1, -1 },
-    { "codePointBeforeWithInt:", "I", 0x1, 34, 3, -1, -1, -1, -1 },
-    { "codePointCountWithInt:withInt:", "I", 0x1, 35, 12, -1, -1, -1, -1 },
-    { "offsetByCodePointsWithInt:withInt:", "I", 0x1, 36, 12, -1, -1, -1, -1 },
+    { "setLengthWithInt:", "V", 0x1, 3, 0, -1, -1, -1, -1 },
+    { "charAtWithInt:", "C", 0x1, 4, 0, -1, -1, -1, -1 },
+    { "codePointAtWithInt:", "I", 0x1, 5, 0, -1, -1, -1, -1 },
+    { "codePointBeforeWithInt:", "I", 0x1, 6, 0, -1, -1, -1, -1 },
+    { "codePointCountWithInt:withInt:", "I", 0x1, 7, 8, -1, -1, -1, -1 },
+    { "offsetByCodePointsWithInt:withInt:", "I", 0x1, 9, 8, -1, -1, -1, -1 },
+    { "getCharsWithInt:withInt:withCharArray:withInt:", "V", 0x1, 10, 11, -1, -1, -1, -1 },
+    { "setCharAtWithInt:withChar:", "V", 0x1, 12, 13, -1, -1, -1, -1 },
+    { "appendWithId:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 15, -1, -1, -1, -1 },
+    { "appendWithNSString:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 16, -1, -1, -1, -1 },
+    { "appendWithJavaLangStringBuffer:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 17, -1, -1, -1,
+      -1 },
+    { "appendWithJavaLangAbstractStringBuilder:", "LJavaLangAbstractStringBuilder;", 0x0, 14, 18,
+      -1, -1, -1, -1 },
+    { "appendWithJavaLangCharSequence:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 19, -1, -1, -1,
+      -1 },
+    { "appendWithJavaLangCharSequence:withInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 14,
+      20, -1, -1, -1, -1 },
+    { "appendWithCharArray:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 21, -1, -1, -1, -1 },
+    { "appendWithCharArray:withInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 22, -1,
+      -1, -1, -1 },
+    { "appendWithBoolean:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 23, -1, -1, -1, -1 },
+    { "appendWithChar:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 24, -1, -1, -1, -1 },
+    { "appendWithInt:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 0, -1, -1, -1, -1 },
+    { "appendWithLong:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 25, -1, -1, -1, -1 },
+    { "appendWithFloat:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 26, -1, -1, -1, -1 },
+    { "appendWithDouble:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 27, -1, -1, -1, -1 },
+    { "delete__WithInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 28, 8, -1, -1, -1, -1 },
+    { "appendCodePointWithInt:", "LJavaLangAbstractStringBuilder;", 0x1, 29, 0, -1, -1, -1, -1 },
+    { "deleteCharAtWithInt:", "LJavaLangAbstractStringBuilder;", 0x1, 30, 0, -1, -1, -1, -1 },
+    { "replaceWithInt:withInt:withNSString:", "LJavaLangAbstractStringBuilder;", 0x1, 31, 32, -1,
+      -1, -1, -1 },
+    { "substringWithInt:", "LNSString;", 0x1, 33, 0, -1, -1, -1, -1 },
+    { "subSequenceFrom:to:", "LJavaLangCharSequence;", 0x1, 34, 8, -1, -1, -1, -1 },
+    { "substringWithInt:withInt:", "LNSString;", 0x1, 33, 8, -1, -1, -1, -1 },
+    { "insertWithInt:withCharArray:withInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 35,
+      36, -1, -1, -1, -1 },
+    { "insertWithInt:withId:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 37, -1, -1, -1, -1 },
+    { "insertWithInt:withNSString:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 38, -1, -1, -1, -1
+    },
+    { "insertWithInt:withCharArray:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 39, -1, -1, -1, -1
+    },
+    { "insertWithInt:withJavaLangCharSequence:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 40, -1,
+      -1, -1, -1 },
+    { "insertWithInt:withJavaLangCharSequence:withInt:withInt:", "LJavaLangAbstractStringBuilder;",
+      0x1, 35, 41, -1, -1, -1, -1 },
+    { "insertWithInt:withBoolean:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 42, -1, -1, -1, -1
+    },
+    { "insertWithInt:withChar:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 13, -1, -1, -1, -1 },
+    { "insertWithInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 8, -1, -1, -1, -1 },
+    { "insertWithInt:withLong:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 43, -1, -1, -1, -1 },
+    { "insertWithInt:withFloat:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 44, -1, -1, -1, -1 },
+    { "insertWithInt:withDouble:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 45, -1, -1, -1, -1
+    },
+    { "indexOfWithNSString:", "I", 0x1, 46, 16, -1, -1, -1, -1 },
+    { "indexOfWithNSString:withInt:", "I", 0x1, 46, 47, -1, -1, -1, -1 },
+    { "lastIndexOfWithNSString:", "I", 0x1, 48, 16, -1, -1, -1, -1 },
+    { "lastIndexOfWithNSString:withInt:", "I", 0x1, 48, 47, -1, -1, -1, -1 },
+    { "reverse", "LJavaLangAbstractStringBuilder;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { "description", "LNSString;", 0x401, 49, -1, -1, -1, -1, -1 },
+    { "getValue", "[C", 0x10, -1, -1, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "INITIAL_CAPACITY", "I",
-      .constantValue.asInt = JavaLangAbstractStringBuilder_INITIAL_CAPACITY, 0x18, -1, -1, -1, -1
-    },
+    { "value_", "[C", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },
+    { "count_", "I", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
-    "set", "[CI", "LJavaIoInvalidObjectException;", "I", "LNSString;", "append0", "[C", "[CII", "C",
-    "LJavaLangCharSequence;II", "charAt", "delete0", "II", "deleteCharAt0", "ensureCapacity",
-    "getChars", "II[CI", "insert0", "I[C", "I[CII", "IC", "ILNSString;",
-    "ILJavaLangCharSequence;II", "replace0", "IILNSString;", "setCharAt", "setLength", "substring",
-    "toString", "subSequence", "indexOf", "LNSString;I", "lastIndexOf", "codePointAt",
-    "codePointBefore", "codePointCount", "offsetByCodePoints" };
+    "I", "ensureCapacity", "expandCapacity", "setLength", "charAt", "codePointAt",
+    "codePointBefore", "codePointCount", "II", "offsetByCodePoints", "getChars", "II[CI",
+    "setCharAt", "IC", "append", "LNSObject;", "LNSString;", "LJavaLangStringBuffer;",
+    "LJavaLangAbstractStringBuilder;", "LJavaLangCharSequence;", "LJavaLangCharSequence;II", "[C",
+    "[CII", "Z", "C", "J", "F", "D", "delete", "appendCodePoint", "deleteCharAt", "replace",
+    "IILNSString;", "substring", "subSequence", "insert", "I[CII", "ILNSObject;", "ILNSString;",
+    "I[C", "ILJavaLangCharSequence;", "ILJavaLangCharSequence;II", "IZ", "IJ", "IF", "ID",
+    "indexOf", "LNSString;I", "lastIndexOf", "toString" };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
-    "AbstractStringBuilder", "java.lang", ptrTable, methods, fields, 7, 0x400, 42, 1, -1, -1, -1,
+    "AbstractStringBuilder", "java.lang", ptrTable, methods, fields, 7, 0x400, 55, 2, -1, -1, -1,
     -1, -1 };
   return &_JavaLangAbstractStringBuilder;
 }

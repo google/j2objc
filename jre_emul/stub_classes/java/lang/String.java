@@ -327,4 +327,27 @@ public class String implements CharSequence, Comparable<String>, Serializable {
   byte[] getBytes(java.nio.charset.Charset charset)
   int offsetByCodePoints(int i, int j)
   */
+
+  static int indexOf(String source, String target, int fromIndex) {
+    return -1;
+  }
+
+  static int indexOf(char[] source, int sourceOffset, int sourceCount,
+      char[] target, int targetOffset, int targetCount, int fromIndex) {
+    return -1;
+  }
+
+  static int lastIndexOf(String source, String target, int fromIndex) {
+    return -1;
+  }
+
+  static int lastIndexOf(char[] source, int sourceOffset, int sourceCount,
+      char[] target, int targetOffset, int targetCount, int fromIndex) {
+    return -1;
+  }
+
+  int hash32() {
+    return 0;
+  }
 }
+
