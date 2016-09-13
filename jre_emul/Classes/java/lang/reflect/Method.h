@@ -64,6 +64,9 @@
 // Returns default value.
 - (id)getDefaultValue;
 
+// Returns whether this is a default method.
+- (jboolean)isDefault;
+
 // Internal methods.
 - (NSMethodSignature *)getSignature;
 

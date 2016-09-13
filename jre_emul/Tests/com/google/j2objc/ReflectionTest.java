@@ -61,6 +61,24 @@ public class ReflectionTest extends TestCase {
     public NoEquals(String s) {}
   }
 
+  static interface Defaults {
+    public boolean noDefault();
+
+    public default boolean withDefault() {
+      return true;
+    }
+  }
+
+  static class HasDefault implements Defaults {
+
+    @Override
+    public boolean noDefault() {
+      return false;
+    }
+
+    public void unrelatedMethod() {}
+  }
+
   static class ParameterizedReturnTest {
     // Method that returns a parameterized type.
     public List<String> getStringList() {
@@ -132,5 +150,23 @@ public class ReflectionTest extends TestCase {
     Field field = unsafeClass.getDeclaredField("instance");
     // Verify instance isn't null, indicating the class's +initialize method ran.
     assertNotNull(field.get(null));
+  }
+
+  public void testIsDefaultMethod() throws Exception {
+    // Test interface with a default method.
+    Class<?> defaultsInterface = Class.forName("com.google.j2objc.ReflectionTest$Defaults");
+    Method m = defaultsInterface.getMethod("withDefault");
+    assertTrue("isDefault false for default method", m.isDefault());
+    m = defaultsInterface.getMethod("noDefault");
+    assertFalse("isDefault true for non-default method", m.isDefault());
+
+    // Test implementing class.
+    Class<?> defaultClass = Class.forName("com.google.j2objc.ReflectionTest$HasDefault");
+    m = defaultClass.getMethod("withDefault");
+    assertTrue("isDefault false for default method", m.isDefault());
+    m = defaultClass.getMethod("noDefault");
+    assertFalse("isDefault true for non-default method", m.isDefault());
+    m = defaultClass.getMethod("unrelatedMethod");
+    assertFalse("isDefault true for unrelated method", m.isDefault());
   }
 }

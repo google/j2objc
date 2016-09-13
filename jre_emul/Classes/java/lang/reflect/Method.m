@@ -230,6 +230,16 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   return nil;
 }
 
+- (jboolean)isDefault {
+  // Default methods are public, non-abstract instance methods declared in an interface.
+  BOOL isPublicNonAbstractInstance =
+      ((metadata_->modifiers & (JavaLangReflectModifier_ABSTRACT
+                               | JavaLangReflectModifier_PUBLIC
+                               | JavaLangReflectModifier_STATIC))
+       == JavaLangReflectModifier_PUBLIC);
+  return isPublicNonAbstractInstance && [self->class_ isInterface];
+}
+
 // A method's hash is the hash of its declaring class's name XOR its name.
 - (NSUInteger)hash {
   return [[class_ getName] hash] ^ [[self getName] hash];
