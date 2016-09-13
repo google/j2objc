@@ -103,6 +103,9 @@ public final class TranslationUtil {
   }
 
   public static boolean needsReflection(ITypeBinding type) {
+    if (BindingUtil.isLambda(type)) {
+      return false;
+    }
     while (type != null) {
       TypeElement element = (TypeElement) BindingConverter.getElement(type);
       ReflectionSupport.Level level = getReflectionSupportLevel(

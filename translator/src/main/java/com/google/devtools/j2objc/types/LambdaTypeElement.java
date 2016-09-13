@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.types;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -30,5 +31,6 @@ public class LambdaTypeElement extends GeneratedTypeElement {
   public LambdaTypeElement(
       String name, Element enclosingElement, TypeMirror superclass) {
     super(name, ElementKind.CLASS, enclosingElement, superclass, NestingKind.ANONYMOUS);
+    addModifiers(Modifier.PRIVATE);
   }
 }

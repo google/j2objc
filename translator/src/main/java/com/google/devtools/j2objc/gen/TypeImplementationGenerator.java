@@ -93,9 +93,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
 
     printOuterDeclarations();
-    if (!BindingUtil.isPackageInfo(typeBinding)) {
-      printTypeLiteralImplementation();
-    }
+    printTypeLiteralImplementation();
   }
 
   private void printInitFlagDefinition() {
@@ -219,9 +217,11 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printTypeLiteralImplementation() {
-    newline();
-    printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
-        isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+    if (needsTypeLiteral()) {
+      newline();
+      printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
+          isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+    }
   }
 
   private boolean extendsNumber(ITypeBinding type) {

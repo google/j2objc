@@ -154,12 +154,14 @@ public class DefaultMethodsTest extends GenerationTest {
 
     // Make sure we base the non-capturing lambda on interface A's companion class that has the
     // default method shim.
-    assertTranslatedSegments(impl, "id<A, Unrelated> B_$Lambda$2_get() {",
-        "Method method", "= class_getInstanceMethod([Unrelated class], @selector(unrelated));",
-        "Method method", "= class_getInstanceMethod([A class], "
-            + "@selector(underscorePrefixWithNSString:));",
-        "instance = CreateNonCapturing("
-        );
+    assertTranslatedLines(impl,
+        "- (NSString *)underscorePrefixWithNSString:(NSString *)arg0 {",
+        "  return A_underscorePrefixWithNSString_(self, arg0);",
+        "}",
+        "",
+        "- (jboolean)unrelated {",
+        "  return Unrelated_unrelated(self);",
+        "}");
   }
 
   public void testDefaultMethodsInInterfaceExtensions() throws IOException {

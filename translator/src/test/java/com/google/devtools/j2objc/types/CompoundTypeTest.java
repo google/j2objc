@@ -19,7 +19,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -48,32 +47,25 @@ public class CompoundTypeTest extends GenerationTest {
         + "    return (Test<T> & java.io.Serializable) (c1, c2) -> { "
         + "    int res = compare(c1, c2); "
         + "    return (res != 0) ? res : other.compare(c1, c2); }; }}";
-    CompilationUnit unit = translateType("Test", source);
+    CompilationUnit unit = compileType("Test", source);
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     int methodsFound = 0;
     for (BodyDeclaration body : decl.getBodyDeclarations()) {
       if (body instanceof MethodDeclaration) {
         MethodDeclaration method = (MethodDeclaration) body;
-        // Verify a normal type isn't marked as compound.
-        if (method.getName().getIdentifier().equals("reversed")) {
+        if (method.getName().getIdentifier().equals("thenTesting")) {
+          // Verify a normal type isn't marked as compound.
           ITypeBinding binding = method.getReturnType().getTypeBinding();
           assertFalse(BindingUtil.isIntersectionType(binding));
-          methodsFound++;
-        }
-      }
-      if (body instanceof FunctionDeclaration) {
-        FunctionDeclaration function = (FunctionDeclaration) body;
-        // While this one should be.
-        if (function.getName().equals("Test_thenTestingWithTest_")) {
-          // The function's return type isn't compound, but the cast expression in
+          // The method's return type isn't compound, but the cast expression in
           // its return statement is.
-          ReturnStatement stmt = (ReturnStatement) function.getBody().getStatements().get(0);
+          ReturnStatement stmt = (ReturnStatement) method.getBody().getStatements().get(0);
           assertTrue(TypeUtil.isIntersection(stmt.getExpression().getTypeMirror()));
           methodsFound++;
         }
       }
     }
-    assertEquals(2, methodsFound);
+    assertEquals(1, methodsFound);
   }
 
   // Test NameTable.getFullName(ITypeBinding).
@@ -85,15 +77,15 @@ public class CompoundTypeTest extends GenerationTest {
         + "    return (Test<T> & java.io.Serializable) (c1, c2) -> { "
         + "    int res = compare(c1, c2); "
         + "    return (res != 0) ? res : other.compare(c1, c2); }; }}";
-    CompilationUnit unit = translateType("Test", source);
+    CompilationUnit unit = compileType("Test", source);
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     for (BodyDeclaration body : decl.getBodyDeclarations()) {
-      if (body instanceof FunctionDeclaration) {
-        FunctionDeclaration function = (FunctionDeclaration) body;
-        if (function.getName().equals("FooBarTest_thenTestingWithFooBarTest_")) {
-          // The function's return type isn't compound, but the cast expression in
+      if (body instanceof MethodDeclaration) {
+        MethodDeclaration method = (MethodDeclaration) body;
+        if (method.getName().getIdentifier().equals("thenTesting")) {
+          // The method's return type isn't compound, but the cast expression in
           // its return statement is.
-          ReturnStatement stmt = (ReturnStatement) function.getBody().getStatements().get(0);
+          ReturnStatement stmt = (ReturnStatement) method.getBody().getStatements().get(0);
           TypeMirror mirror = stmt.getExpression().getTypeMirror();
           String typeName = unit.getNameTable().getObjCType(mirror);
           assertEquals("id<FooBarTest, JavaIoSerializable>", typeName);
@@ -101,7 +93,7 @@ public class CompoundTypeTest extends GenerationTest {
         }
       }
     }
-    fail("thenTesting function not found");
+    fail("thenTesting method not found");
   }
 
   // Verify that an include for ".h" isn't generated with a compound type.

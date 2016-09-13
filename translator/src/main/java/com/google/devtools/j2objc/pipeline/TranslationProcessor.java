@@ -181,6 +181,9 @@ public class TranslationProcessor extends FileProcessor {
     new AnonymousClassConverter().run(unit);
     ticker.tick("AnonymousClassConverter");
 
+    new LambdaRewriter().run(unit);
+    ticker.tick("LambdaRewriter");
+
     new InnerClassExtractor(outerResolver, unit).run(unit);
     ticker.tick("InnerClassExtractor");
 
@@ -203,6 +206,8 @@ public class TranslationProcessor extends FileProcessor {
     }
 
     // Adds nil_chk calls wherever an expression is dereferenced.
+    // After: InnerClassExtractor - Cannot handle local classes.
+    // After: InitializationNormalizer
     // Before: LabelRewriter - Control flow analysis requires original Java
     //   labels.
     new NilCheckResolver().run(unit);
@@ -222,11 +227,6 @@ public class TranslationProcessor extends FileProcessor {
 
     new OcniExtractor(unit, deadCodeMap).run(unit);
     ticker.tick("OcniExtractor");
-
-    // After: NilCheckResolver - Don't add nil checks to our generated code,
-    // NilCheckResolver doesn't handle Functions correctly.
-    new LambdaRewriter(outerResolver).run(unit);
-    ticker.tick("LambdaRewriter");
 
     // Before: AnnotationRewriter - Needs AnnotationRewriter to add the
     //   annotation metadata to the generated package-info type.

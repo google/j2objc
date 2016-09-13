@@ -336,11 +336,16 @@ public class OuterReferenceResolver extends TreeVisitor {
         if (ElementUtil.isLambda(scope.type)) {
           if (i > lastNonLambdaScopeIdx && lastNonLambdaScopeIdx != -1) {
             VariableElement outer = getOrCreateOuterField(scope);
+            // Only add a lambda to the path if it is the current scope.
             if (i == scopeStackSize - 1) {
               path.add(outer);
             }
           } else {
-            getOrCreateInnerField(var, scope.type);
+            VariableElement inner = getOrCreateInnerField(var, scope.type);
+            // Only add a lambda to the path if it is the current scope.
+            if (i == scopeStackSize - 1) {
+              path.add(inner);
+            }
           }
         } else {
           path.add(getOrCreateOuterField(scope));

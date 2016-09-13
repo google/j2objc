@@ -347,7 +347,8 @@ public final class BindingConverter {
   public static IBinding unwrapElement(Element element) {
     if (element instanceof GeneratedVariableElement) {
       Element possibleEnclosing = element.getEnclosingElement();
-      GeneratedVariableBinding newBinding = new GeneratedVariableBinding(element.toString(), 0,
+      GeneratedVariableBinding newBinding = new GeneratedVariableBinding(
+          element.toString(), ElementUtil.fromModifierSet(element.getModifiers()),
           element.asType(), element.getKind() == ElementKind.FIELD,
           element.getKind() == ElementKind.PARAMETER,
           possibleEnclosing != null ? possibleEnclosing.asType() : null, null);
@@ -380,6 +381,10 @@ public final class BindingConverter {
 
   public static IVariableBinding unwrapVariableElement(VariableElement v) {
     return (IVariableBinding) unwrapElement(v);
+  }
+
+  public static IMethodBinding unwrapExecutableElement(ExecutableElement e) {
+    return (IMethodBinding) unwrapElement(e);
   }
 
   public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {

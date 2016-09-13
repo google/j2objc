@@ -464,8 +464,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printTypeLiteralDeclaration() {
-    newline();
-    printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
+    if (needsTypeLiteral()) {
+      newline();
+      printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
+    }
   }
 
   private void printBoxedOperators() {

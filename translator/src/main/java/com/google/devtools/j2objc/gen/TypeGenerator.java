@@ -262,6 +262,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return !typeNode.getClassInitStatements().isEmpty();
   }
 
+  protected boolean needsTypeLiteral() {
+    return !(BindingUtil.isPackageInfo(typeBinding) || typeBinding.isAnonymous()
+             || BindingUtil.isLambda(typeBinding));
+  }
+
   protected String getDeclarationType(IVariableBinding var) {
     ITypeBinding type = var.getType();
     if (BindingUtil.isVolatile(var)) {

@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.BreakStatement;
+import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.DoStatement;
@@ -407,6 +408,8 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
     // contain the other access, then they are not unsequenced.
     if (isWithinConditionalBranch(modification.expression, commonAncestor)
         || isWithinConditionalBranch(access.expression, commonAncestor)) {
+      return false;
+    } else if (commonAncestor instanceof CommaExpression) {
       return false;
     } else if (commonAncestor instanceof Assignment && modification.expression == commonAncestor) {
       // "i = 1 + (i = 2);" is not unsequenced.
