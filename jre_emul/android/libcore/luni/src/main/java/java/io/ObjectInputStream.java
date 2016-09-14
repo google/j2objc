@@ -770,9 +770,10 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
     private Object readNonPrimitiveContent(boolean unshared)
             throws ClassNotFoundException, IOException {
         checkReadPrimitiveTypes();
-        if (primitiveData.available() > 0) {
-            OptionalDataException e = new OptionalDataException();
-            e.length = primitiveData.available();
+        int remaining = primitiveData.available();
+        if (remaining > 0) {
+            OptionalDataException e = new OptionalDataException(remaining);
+            e.length = remaining;
             throw e;
         }
 
@@ -809,7 +810,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
                     break;
                 case TC_ENDBLOCKDATA: // Can occur reading class annotation
                     pushbackTC();
-                    OptionalDataException e = new OptionalDataException();
+                    OptionalDataException e = new OptionalDataException(true);
                     e.eof = true;
                     throw e;
                 default:

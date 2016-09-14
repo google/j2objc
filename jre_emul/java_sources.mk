@@ -603,7 +603,8 @@ JAVA_PUBLIC_SOURCES_IO = \
   java/io/RandomAccessFile.java \
   java/io/SequenceInputStream.java \
   java/io/StreamTokenizer.java \
-  java/io/StringBufferInputStream.java
+  java/io/StringBufferInputStream.java \
+  java/io/UncheckedIOException.java
 
 JAVA_PRIVATE_SOURCES_IO =
 
