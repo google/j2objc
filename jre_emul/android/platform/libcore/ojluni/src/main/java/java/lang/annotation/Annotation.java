@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -33,6 +33,10 @@ package java.lang.annotation;
  *
  * More information about annotation types can be found in section 9.6 of
  * <cite>The Java&trade; Language Specification</cite>.
+ *
+ * The {@link java.lang.reflect.AnnotatedElement} interface discusses
+ * compatibility concerns when evolving an annotation type from being
+ * non-repeatable to being repeatable.
  *
  * @author  Josh Bloch
  * @since   1.5
@@ -126,6 +130,7 @@ public interface Annotation {
 
     /**
      * Returns the annotation type of this annotation.
+     * @return the annotation type of this annotation
      */
     Class<? extends Annotation> annotationType();
 }

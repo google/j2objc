@@ -164,6 +164,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/annotation/ElementType.java \
   java/lang/annotation/IncompleteAnnotationException.java \
   java/lang/annotation/Inherited.java \
+  java/lang/annotation/Native.java \
   java/lang/annotation/Repeatable.java \
   java/lang/annotation/Retention.java \
   java/lang/annotation/RetentionPolicy.java \
