@@ -83,12 +83,12 @@ public class OuterReferenceResolver extends TreeVisitor {
   private ListMultimap<TypeElement, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
   private Map<TreeNode.Key, List<List<VariableElement>>> captureArgs = new HashMap<>();
-  private ArrayList<Scope> scopeStack = new ArrayList<>();
+  private Scope topScope = null;
   private Map<TypeElement, VisitingState> visitingStates = new HashMap<>();
 
   @Override
   public void run(TreeNode node) {
-    assert scopeStack.isEmpty();
+    assert topScope == null;
     super.run(node);
   }
 
@@ -140,6 +140,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private static class Scope {
 
+    private final Scope outer;
     private final TypeElement type;
     private final Set<Element> inheritedScope;
     private boolean initializingContext;
@@ -147,7 +148,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     private int constructorCount = 0;
     private int constructorsNotNeedingSuperOuterScope = 0;
 
-    private Scope(TypeElement type, Types typeEnv) {
+    private Scope(Scope outer, TypeElement type, Types typeEnv) {
+      this.outer = outer;
       this.type = type;
       ImmutableSet.Builder<Element> inheritedScopeBuilder = ImmutableSet.builder();
 
@@ -172,8 +174,8 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private Scope peekScope() {
-    assert scopeStack.size() > 0;
-    return scopeStack.get(scopeStack.size() - 1);
+    assert topScope != null;
+    return topScope;
   }
 
   // Marks the given type to be revisited. Returns true if the type has been maked for a revisit,
@@ -244,19 +246,9 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private List<VariableElement> getOuterPath(TypeElement type) {
     List<VariableElement> path = new ArrayList<>();
-    for (int i = scopeStack.size() - 1; i >= 0; i--) {
-      Scope scope = scopeStack.get(i);
-      if (type.equals(scope.type)) {
-        break;
-      }
-      if (!ElementUtil.isLambda(scope.type)) {
+    for (Scope scope = peekScope(); !type.equals(scope.type); scope = scope.outer) {
+      if (scope == peekScope() || !ElementUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
-      } else {
-        VariableElement outerField = getOrCreateOuterField(scope);
-        // A lambda should get added to the outer path only if it is the scope closest to the use.
-        if (i == scopeStack.size() - 1) {
-          path.add(outerField);
-        }
       }
     }
     return path;
@@ -264,19 +256,9 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private List<VariableElement> getOuterPathInherited(TypeElement type) {
     List<VariableElement> path = new ArrayList<>();
-    for (int i = scopeStack.size() - 1; i >= 0; i--) {
-      Scope scope = scopeStack.get(i);
-      if (scope.inheritedScope.contains(type)) {
-        break;
-      }
-      if (!ElementUtil.isLambda(scope.type)) {
+    for (Scope scope = peekScope(); !scope.inheritedScope.contains(type); scope = scope.outer) {
+      if (scope == peekScope() || !ElementUtil.isLambda(scope.type)) {
         path.add(getOrCreateOuterField(scope));
-      } else {
-        VariableElement outerField = getOrCreateOuterField(scope);
-        // A lambda should get added to the outer path only if it is innermost
-        if (i == scopeStack.size() - 1) {
-          path.add(outerField);
-        }
       }
     }
     return path;
@@ -291,67 +273,26 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private List<VariableElement> getPathForLocalVar(VariableElement var) {
-    boolean isConstant = var.getConstantValue() != null;
     ArrayList<VariableElement> path = new ArrayList<>();
-
-    int lastScopeIdx = -1;
-    int lastNonLambdaScopeIdx = -1;
-    int scopeStackSize = scopeStack.size();
-
-    for (int i = scopeStackSize - 1; i >= 0; i--) {
-      Scope scope = scopeStack.get(i);
-      if (scope.declaredVars.contains(var)) {
-        break;
-      }
-
-      lastScopeIdx = i;
-      if (!ElementUtil.isLambda(scope.type)) {
-        lastNonLambdaScopeIdx = i;
-      }
-    }
-
-    if (lastScopeIdx == -1) {
-      // Var must already be in the declaring scope. Return an empty path.
+    Scope scope = peekScope();
+    if (scope.declaredVars.contains(var)) {
+      // Var is declared in current scope, return empty path.
       return path;
     }
-
-    // Constant reference only needs a one-element path.
-    if (isConstant) {
+    if (var.getConstantValue() != null) {
+      // Var has constant value, return path directly to var.
       path.add(var);
       return path;
     }
-
-    // Traverse from the top of the stack, if we hit a lambda scope with a non-lambda scope
-    // enclosing it, then we add an outer field to the lambda and add it to the path only if there
-    // is not already an outer field in the path (since lambdas will transparently close over outer
-    // paths if they already exist). Otherwise, we transparently close over the field. If
-    // the scope is the last anonymous or inner class, get/create an inner field and add
-    // that to the path. Otherwise, this class is not the last scope so we get/create an outer field
-    // reference and add that to the path.
-    for (int i = scopeStackSize - 1; i >= lastScopeIdx; i--) {
-      Scope scope = scopeStack.get(i);
-      if (i == lastNonLambdaScopeIdx) {
-        path.add(getOrCreateInnerField(var, scope.type));
-      } else {
-        if (ElementUtil.isLambda(scope.type)) {
-          if (i > lastNonLambdaScopeIdx && lastNonLambdaScopeIdx != -1) {
-            VariableElement outer = getOrCreateOuterField(scope);
-            // Only add a lambda to the path if it is the current scope.
-            if (i == scopeStackSize - 1) {
-              path.add(outer);
-            }
-          } else {
-            VariableElement inner = getOrCreateInnerField(var, scope.type);
-            // Only add a lambda to the path if it is the current scope.
-            if (i == scopeStackSize - 1) {
-              path.add(inner);
-            }
-          }
-        } else {
-          path.add(getOrCreateOuterField(scope));
-        }
+    Scope lastScope = scope;
+    while (!(scope = scope.outer).declaredVars.contains(var)) {
+      // Except for the current scope do not include lambdas in the path.
+      if (!ElementUtil.isLambda(scope.type)) {
+        path.add(getOrCreateOuterField(lastScope));
+        lastScope = scope;
       }
     }
+    path.add(getOrCreateInnerField(var, lastScope.type));
     return path;
   }
 
@@ -362,11 +303,12 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private void pushType(TypeElement type) {
-    scopeStack.add(new Scope(type, typeEnv));
+    topScope = new Scope(topScope, type, typeEnv);
   }
 
   private void popType(TreeNode node) {
-    Scope currentScope = scopeStack.remove(scopeStack.size() - 1);
+    Scope currentScope = peekScope();
+    topScope = currentScope.outer;
     VisitingState state = visitingStates.get(currentScope.type);
     boolean revisit = state == VisitingState.NEEDS_REVISIT;
     visitingStates.put(currentScope.type, VisitingState.VISITED);
@@ -501,7 +443,6 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (qualifier != null) {
       addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
     } else {
-      assert scopeStack.size() > 0;
       Scope currentScope = peekScope();
       if (ElementUtil.isLambda(currentScope.type)) {
           addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
