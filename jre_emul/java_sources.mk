@@ -578,6 +578,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/misc/FloatConsts.java \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
+  sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/annotation/AnnotationSupport.java \
   sun/reflect/annotation/AnnotationType.java \
