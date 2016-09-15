@@ -333,4 +333,12 @@ public class NilCheckResolverTest extends GenerationTest {
         "break_test_label: ;",
         "[nil_chk(o) description];");
   }
+
+  public void testOuterExpressionOfClassInstanceCreation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { class Inner {} public Inner test(Test t) { return t.new Inner(); } }",
+        "Test", "Test.m");
+    // "t" needs a nil_chk.
+    assertTranslation(translation, "return create_Test_Inner_initWithTest_(nil_chk(t));");
+  }
 }

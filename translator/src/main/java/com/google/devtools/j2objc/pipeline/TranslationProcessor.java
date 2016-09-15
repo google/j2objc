@@ -196,6 +196,15 @@ public class TranslationProcessor extends FileProcessor {
     new InitializationNormalizer().run(unit);
     ticker.tick("InitializationNormalizer");
 
+    // Adds nil_chk calls wherever an expression is dereferenced.
+    // After: InnerClassExtractor - Cannot handle local classes.
+    // After: InitializationNormalizer
+    // Before: OuterReferenceFixer - Must resolve before outer references are substituted.
+    // Before: LabelRewriter - Control flow analysis requires original Java
+    //   labels.
+    new NilCheckResolver().run(unit);
+    ticker.tick("NilCheckResolver");
+
     // Fix references to outer scope and captured variables.
     new OuterReferenceFixer(outerResolver).run(unit);
     ticker.tick("OuterReferenceFixer");
@@ -205,14 +214,6 @@ public class TranslationProcessor extends FileProcessor {
       new UnsequencedExpressionRewriter().run(unit);
       ticker.tick("UnsequencedExpressionRewriter");
     }
-
-    // Adds nil_chk calls wherever an expression is dereferenced.
-    // After: InnerClassExtractor - Cannot handle local classes.
-    // After: InitializationNormalizer
-    // Before: LabelRewriter - Control flow analysis requires original Java
-    //   labels.
-    new NilCheckResolver().run(unit);
-    ticker.tick("NilCheckResolver");
 
     // Rewrites labeled break and continue statements.
     new LabelRewriter().run(unit);

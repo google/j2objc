@@ -375,10 +375,6 @@ public class NilCheckResolver extends TreeVisitor {
   private boolean needsNilCheck(Expression e) {
     IVariableBinding sym = TreeUtil.getVariableBinding(e);
     if (sym != null) {
-      // Outer class references should always be non-nil.
-      if (sym.getName().startsWith("this$") || sym.getName().equals("outer$")) {
-        return false;
-      }
       return BindingUtil.isVolatile(sym) || !isSafeVar(sym);
     }
     IMethodBinding method = TreeUtil.getMethodBinding(e);
@@ -457,9 +453,20 @@ public class NilCheckResolver extends TreeVisitor {
   }
 
   @Override
-  public void endVisit(ClassInstanceCreation node) {
+  public boolean visit(ClassInstanceCreation node) {
+    Expression outerTarget = node.getExpression();
+    if (outerTarget != null) {
+      outerTarget.accept(this);
+      addNilCheck(outerTarget);
+    }
+    for (Expression arg : node.getArguments()) {
+      arg.accept(this);
+    }
+    // Don't need to visit AnonymousClassDeclaration child because it's removed by
+    // AnonymousClassConverter.
     removeNonFinalFields();
     handleThrows();
+    return false;
   }
 
   @Override
