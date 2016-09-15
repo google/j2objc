@@ -91,7 +91,6 @@ public class LambdaRewriter extends TreeVisitor {
     ClassInstanceCreation creation = new ClassInstanceCreation(
         constructorBinding, Type.newType(lambdaType.asType()));
 
-    typeDecl.setKey(node.getKey());
     creation.setKey(node.getKey());
 
     removeCastExpression(node);

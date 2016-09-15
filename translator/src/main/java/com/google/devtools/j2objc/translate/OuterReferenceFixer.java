@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
@@ -74,28 +75,26 @@ public class OuterReferenceFixer extends TreeVisitor {
   public boolean visit(ClassInstanceCreation node) {
     TypeElement newType = (TypeElement) node.getExecutableElement().getEnclosingElement();
     TypeElement declaringClass = ElementUtil.getDeclaringClass(newType);
-    if (newType.getModifiers().contains(javax.lang.model.element.Modifier.STATIC)
-        || declaringClass == null) {
-      return true;
-    }
     List<TypeMirror> parameterTypes = new ArrayList<>();
-    GeneratedExecutableElement element =
-        new GeneratedExecutableElement(node.getExecutableElement());
-
     List<Expression> captureArgs = node.getArguments().subList(0, 0);
+
     if (outerResolver.needsOuterParam(newType)) {
       captureArgs.add(getOuterArg(node, declaringClass.asType()));
       parameterTypes.add(declaringClass.asType());
     }
 
     for (List<VariableElement> captureArgPath : outerResolver.getCaptureArgPaths(node)) {
-      captureArgPath = fixPath(captureArgPath);
       captureArgs.add(Name.newName(captureArgPath));
       parameterTypes.add(captureArgPath.get(captureArgPath.size() - 1).asType());
     }
-    element.addParametersPlaceholderFront(parameterTypes);
-    node.setExecutableElement(element);
-    assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();
+
+    if (!parameterTypes.isEmpty()) {
+      GeneratedExecutableElement element =
+          new GeneratedExecutableElement(node.getExecutableElement());
+      element.addParametersPlaceholderFront(parameterTypes);
+      node.setExecutableElement(element);
+      assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();
+    }
     return true;
   }
 
@@ -159,17 +158,35 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    Expression outerExpression = node.getExpression();
-    if (outerExpression == null) {
-      return;
+    TreeNode typeNode = TreeUtil.getEnclosingType(node);
+    TypeElement superType = ElementUtil.getSuperclass(
+        (TypeElement) TreeUtil.getDeclaredElement(typeNode));
+    List<Expression> args = node.getArguments().subList(0, 0);
+    List<TypeMirror> parameterTypes = new ArrayList<>();
+
+    // Outer arg.
+    if (outerResolver.needsOuterParam(superType)) {
+      Expression outerArg = TreeUtil.remove(node.getExpression());
+      if (outerArg == null) {
+        outerArg = Name.newName(fixPath(outerResolver.getPath(typeNode)));
+      }
+      args.add(outerArg);
+      parameterTypes.add(ElementUtil.getDeclaringClass(superType).asType());
     }
-    node.setExpression(null);
-    TypeMirror outerExpressionType = outerExpression.getTypeMirror();
-    GeneratedExecutableElement element =
-        new GeneratedExecutableElement(node.getExecutableElement());
-    node.setExecutableElement(element);
-    node.addArgument(0, outerExpression);
-    element.addParameterPlaceholderFront(outerExpressionType);
+
+    // Capture args.
+    for (List<VariableElement> captureArgPath : outerResolver.getCaptureArgPaths(typeNode)) {
+      args.add(Name.newName(captureArgPath));
+      parameterTypes.add(captureArgPath.get(captureArgPath.size() - 1).asType());
+    }
+
+    if (!parameterTypes.isEmpty()) {
+      GeneratedExecutableElement element =
+          new GeneratedExecutableElement(node.getExecutableElement());
+      element.addParametersPlaceholderFront(parameterTypes);
+      node.setExecutableElement(element);
+      assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();
+    }
   }
 
   private List<VariableElement> fixPath(List<VariableElement> path) {

@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -229,7 +228,6 @@ public class InnerClassExtractor extends TreeVisitor {
             TranslationUtil.findDefaultConstructorBinding(superType, typeEnv));
         statements.add(0, superCall);
       }
-      passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);
       VariableElement outerField = outerResolver.getOuterField(typeE);
       int idx = 0;
       if (outerField != null) {
@@ -244,26 +242,5 @@ public class InnerClassExtractor extends TreeVisitor {
     }
     assert constructor.getParameters().size()
         == constructor.getMethodBinding().getParameterTypes().length;
-  }
-
-  private void passOuterParamToSuper(
-      AbstractTypeDeclaration typeNode, SuperConstructorInvocation superCall,
-      ITypeBinding superType, IVariableBinding outerParamBinding) {
-    if (!BindingUtil.hasOuterContext(superType) || superCall.getExpression() != null) {
-      return;
-    }
-    assert outerParamBinding != null;
-    GeneratedMethodBinding superCallBinding =
-        new GeneratedMethodBinding(superCall.getMethodBinding().getMethodDeclaration());
-    superCall.setMethodBinding(superCallBinding);
-
-    List<VariableElement> path = outerResolver.getPath(typeNode);
-    assert path != null && path.size() > 0;
-    path = Lists.newArrayList(path);
-    path.set(0, (VariableElement) BindingConverter.getElement(outerParamBinding));
-    Name superOuterArg = Name.newName(path);
-
-    superCall.addArgument(0, superOuterArg);
-    superCallBinding.addParameter(0, superType.getDeclaringClass());
   }
 }

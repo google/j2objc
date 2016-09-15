@@ -97,8 +97,9 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   public boolean needsOuterParam(TypeElement type) {
-    return !ElementUtil.isLocal(type) || outerVars.containsKey(type)
-        || usesOuterParam.contains(type);
+    return ElementUtil.hasOuterContext(type)
+        && (!ElementUtil.isLocal(type) || outerVars.containsKey(type)
+            || usesOuterParam.contains(type));
   }
 
   public VariableElement getOuterField(TypeElement type) {
@@ -119,7 +120,6 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   public List<List<VariableElement>> getCaptureArgPaths(TreeNode node) {
-    assert node instanceof ClassInstanceCreation || node instanceof LambdaExpression;
     List<List<VariableElement>> result = captureArgs.get(node.getKey());
     if (result != null) {
       return result;
@@ -206,6 +206,14 @@ public class OuterReferenceResolver extends TreeVisitor {
     return "this$" + suffix;
   }
 
+  private String getCaptureFieldName(VariableElement var, TypeElement type) {
+    int suffix = 0;
+    while ((type = ElementUtil.getSuperclass(type)) != null && ElementUtil.isLocal(type)) {
+      suffix++;
+    }
+    return "val" + (suffix > 0 ? suffix : "") + "$" + var.getSimpleName().toString();
+  }
+
   private VariableElement getOrCreateOuterField(Scope scope) {
     // Check that this isn't a lambda, since we'll always capture the field itself
     if (scope.initializingContext && scope == peekScope()) {
@@ -236,7 +244,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
     if (innerField == null) {
       innerField = new GeneratedVariableElement(
-          "val$" + var.getSimpleName().toString(), var.asType(), ElementKind.FIELD, declaringType)
+          getCaptureFieldName(var, declaringType), var.asType(), ElementKind.FIELD, declaringType)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .addAnnotationMirrors(var.getAnnotationMirrors());
       captures.put(declaringType, new Capture(var, innerField));
@@ -321,9 +329,22 @@ public class OuterReferenceResolver extends TreeVisitor {
   // type node because there may be implicit super invocations.
   private void addSuperOuterPath(TreeNode node, TypeElement type) {
     TypeElement superclass = ElementUtil.getSuperclass(type);
-    if (superclass != null && ElementUtil.hasOuterContext(superclass)) {
+    if (superclass != null && needsOuterParam(superclass)) {
       addPath(node, getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
     }
+  }
+
+  private void resolveCaptureArgs(TreeNode node, TypeElement type) {
+    List<Capture> capturesForType = captures.get(type);
+    List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
+    for (Capture capture : capturesForType) {
+      List<VariableElement> path = getPathForLocalVar(capture.var);
+      if (path.isEmpty()) {
+        path = Collections.singletonList(capture.var);
+      }
+      capturePaths.add(path);
+    }
+    captureArgs.put(node.getKey(), capturePaths);
   }
 
   @Override
@@ -342,6 +363,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (currentScope.constructorCount > currentScope.constructorsNotNeedingSuperOuterScope) {
       addSuperOuterPath(node, node.getTypeElement());
     }
+    resolveCaptureArgs(node, ElementUtil.getSuperclass(node.getTypeElement()));
     popType(node);
   }
 
@@ -400,16 +422,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (outerField != null) {
       addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(outerField.asType())));
     }
-    List<Capture> capturesForType = captures.get(typeElement);
-    List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
-    for (Capture capture : capturesForType) {
-      List<VariableElement> path = getPathForLocalVar(capture.var);
-      if (path.isEmpty()) {
-        path = Collections.singletonList(capture.var);
-      }
-      capturePaths.add(path);
-    }
-    captureArgs.put(node.getKey(), capturePaths);
+    resolveCaptureArgs(node, typeElement);
   }
 
   @Override
@@ -486,21 +499,12 @@ public class OuterReferenceResolver extends TreeVisitor {
   @Override
   public void endVisit(ClassInstanceCreation node) {
     TypeElement typeElement = (TypeElement) node.getExecutableElement().getEnclosingElement();
-    if (node.getExpression() == null && ElementUtil.hasOuterContext(typeElement)) {
+    if (node.getExpression() == null && needsOuterParam(typeElement)) {
       TypeElement enclosingTypeElement = ElementUtil.getDeclaringClass(typeElement);
       addPath(node, getOuterPathInherited(enclosingTypeElement));
     }
     if (ElementUtil.isLocal(typeElement) && !revisitScope(typeElement)) {
-      List<Capture> capturesForType = captures.get(typeElement);
-      List<List<VariableElement>> capturePaths = new ArrayList<>(capturesForType.size());
-      for (Capture capture : capturesForType) {
-        List<VariableElement> path = getPathForLocalVar(capture.var);
-        if (path.isEmpty()) {
-          path = Collections.singletonList(capture.var);
-        }
-        capturePaths.add(path);
-      }
-      captureArgs.put(node.getKey(), capturePaths);
+      resolveCaptureArgs(node, typeElement);
     }
   }
 

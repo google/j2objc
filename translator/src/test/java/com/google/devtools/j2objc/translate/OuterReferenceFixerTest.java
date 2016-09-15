@@ -43,6 +43,19 @@ public class OuterReferenceFixerTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { void test(final Object bar) { "
         + "class Foo { void foo() { bar.toString(); new Foo(); } } } }", "Test", "Test.m");
-    assertTranslation(translation, "create_Test_1Foo_initWithTest_withId_(this$0_, val$bar_)");
+    assertTranslation(translation, "create_Test_1Foo_initWithId_(val$bar_)");
+  }
+
+  public void testLocalClassExtendsLocalClassCapturesVariables() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(final int i, final int j) { "
+        + "class A { int sum() { return i + j; } }; class B extends A {} } }", "Test", "Test.m");
+    // Local class B must also capture the locals and pass them to A's constructor.
+    assertTranslatedLines(translation,
+        "void Test_1B_initWithInt_withInt_(Test_1B *self, jint capture$0, jint capture$1) {",
+        "  self->val1$i_ = capture$0;",
+        "  self->val1$j_ = capture$1;",
+        "  Test_1A_initWithInt_withInt_(self, self->val1$i_, self->val1$j_);",
+        "}");
   }
 }
