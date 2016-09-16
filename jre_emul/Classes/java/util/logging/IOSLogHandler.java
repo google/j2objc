@@ -18,6 +18,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /*-[
+// TODO(tball): update ASL use to iOS 10's os_log and remove clang pragmas.
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 #import "NSException+JavaThrowable.h"
 #import <asl.h>
 
@@ -133,4 +137,8 @@ class IOSLogHandler extends Handler {
     }
     asl_log(logClient->_client, NULL, aslLevel, "%s", [logMessage UTF8String]);
   ]-*/;
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
 }
