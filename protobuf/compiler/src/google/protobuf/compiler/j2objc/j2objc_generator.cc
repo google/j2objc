@@ -72,15 +72,6 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
 
   // -----------------------------------------------------------------
 
-
-  if (file->options().optimize_for() == FileOptions::LITE_RUNTIME &&
-      file->options().java_generate_equals_and_hash()) {
-    *error = "The \"java_generate_equals_and_hash\" option is incompatible "
-             "with \"optimize_for = LITE_RUNTIME\".  You must optimize for "
-             "SPEED or CODE_SIZE if you want to use this option.";
-    return false;
-  }
-
   FileGenerator file_generator(file);
   if (!file_generator.Validate(error)) {
     return false;
