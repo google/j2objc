@@ -59,13 +59,12 @@ class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
   public List<? extends TypeMirror> getParameterTypes() {
     List<TypeMirror> params = new ArrayList<TypeMirror>();
     for (ITypeBinding param : ((JdtMethodBinding) binding).getParameterTypes()) {
-      params.add((TypeVariable) BindingConverter.getType(param));
+      params.add(BindingConverter.getType(param));
     }
     return params;
   }
 
-  // TODO(tball): enable when Java 8 is minimum version.
-  // @Override
+  @Override
   public TypeMirror getReceiverType() {
     return null;
   }
