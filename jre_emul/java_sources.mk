@@ -190,6 +190,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/reflect/InvocationHandler.java \
   java/lang/reflect/InvocationTargetException.java \
   java/lang/reflect/MalformedParameterizedTypeException.java \
+  java/lang/reflect/MalformedParametersException.java \
   java/lang/reflect/Member.java \
   java/lang/reflect/Modifier.java \
   java/lang/reflect/ParameterizedType.java \
@@ -789,6 +790,7 @@ JAVA_PRIVATE_SOURCES_CONCURRENT =
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/ChannelFactoryImpl.java \
+  java/nio/channels/AcceptPendingException.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
   java/nio/channels/AsynchronousCloseException.java \
@@ -806,7 +808,9 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/FileLockInterruptionException.java \
   java/nio/channels/GatheringByteChannel.java \
   java/nio/channels/IllegalBlockingModeException.java \
+  java/nio/channels/IllegalChannelGroupException.java \
   java/nio/channels/IllegalSelectorException.java \
+  java/nio/channels/InterruptedByTimeoutException.java \
   java/nio/channels/InterruptibleChannel.java \
   java/nio/channels/NetworkChannel.java \
   java/nio/channels/NoConnectionPendingException.java \
@@ -817,16 +821,19 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/OverlappingFileLockException.java \
   java/nio/channels/Pipe.java \
   java/nio/channels/ReadableByteChannel.java \
+  java/nio/channels/ReadPendingException.java \
   java/nio/channels/ScatteringByteChannel.java \
   java/nio/channels/SeekableByteChannel.java \
   java/nio/channels/SelectableChannel.java \
   java/nio/channels/SelectionKey.java \
   java/nio/channels/Selector.java \
   java/nio/channels/ServerSocketChannel.java \
+  java/nio/channels/ShutdownChannelGroupException.java \
   java/nio/channels/SocketChannel.java \
   java/nio/channels/UnresolvedAddressException.java \
   java/nio/channels/UnsupportedAddressTypeException.java \
   java/nio/channels/WritableByteChannel.java \
+  java/nio/channels/WritePendingException.java \
   java/nio/channels/spi/AbstractInterruptibleChannel.java \
   java/nio/channels/spi/AbstractSelectableChannel.java \
   java/nio/channels/spi/AbstractSelectionKey.java \
@@ -907,6 +914,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CRL.java \
   java/security/cert/CRLException.java \
   java/security/cert/CertPath.java \
+  java/security/cert/CertPathBuilderException.java \
   java/security/cert/CertPathParameters.java \
   java/security/cert/CertPathValidator.java \
   java/security/cert/CertPathValidatorException.java \
@@ -920,6 +928,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CertificateFactorySpi.java \
   java/security/cert/CertificateNotYetValidException.java \
   java/security/cert/CertificateParsingException.java \
+  java/security/cert/CertStoreException.java \
   java/security/cert/CRLReason.java \
   java/security/cert/Extension.java \
   java/security/cert/X509Certificate.java \
