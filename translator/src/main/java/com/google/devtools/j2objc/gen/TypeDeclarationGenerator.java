@@ -228,7 +228,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
           String accessorName = nameTable.getStaticAccessorName(constant.getVariableBinding());
-          printf("\n+ (%s *)%s;\n", typeName, accessorName);
+          if (Options.nullability()) {
+            printf("\n+ (%s * __nonnull)%s;\n", typeName, accessorName);
+          } else {
+            printf("\n+ (%s *)%s;\n", typeName, accessorName);
+          }
         }
       }
     }
