@@ -74,13 +74,13 @@ public class OuterReferenceFixer extends TreeVisitor {
   @Override
   public boolean visit(ClassInstanceCreation node) {
     TypeElement newType = (TypeElement) node.getExecutableElement().getEnclosingElement();
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(newType);
     List<TypeMirror> parameterTypes = new ArrayList<>();
     List<Expression> captureArgs = node.getArguments().subList(0, 0);
 
     if (outerResolver.needsOuterParam(newType)) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(newType);
       captureArgs.add(getOuterArg(node, declaringClass.asType()));
-      parameterTypes.add(declaringClass.asType());
+      parameterTypes.add(outerResolver.getOuterType(newType));
     }
 
     for (List<VariableElement> captureArgPath : outerResolver.getCaptureArgPaths(node)) {
@@ -171,7 +171,7 @@ public class OuterReferenceFixer extends TreeVisitor {
         outerArg = Name.newName(fixPath(outerResolver.getPath(typeNode)));
       }
       args.add(outerArg);
-      parameterTypes.add(ElementUtil.getDeclaringClass(superType).asType());
+      parameterTypes.add(outerResolver.getOuterType(superType));
     }
 
     // Capture args.

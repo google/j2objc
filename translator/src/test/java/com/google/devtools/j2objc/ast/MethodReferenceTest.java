@@ -81,22 +81,20 @@ public class MethodReferenceTest extends GenerationTest {
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
     // Should be capturing.
-    assertTranslatedLines(instanceTranslation,
-        "Q *__emt$0;",
-        "JreStrongAssign(&self->fun_, (__emt$0 = create_Q_init(), "
-            + "create_Test_$Lambda$1_initWithQ_(__emt$0)));");
+    assertTranslation(instanceTranslation,
+        "JreStrongAssignAndConsume(&self->fun_, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(instanceTranslation,
         "- (id)fWithId:(id)a {",
-        "  return [((Q *) nil_chk(val$__emt$0_)) o2WithId:a];",
+        "  return [target$_ o2WithId:a];",
         "}");
     String staticInstanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { static F fun = new Q()::o2; }",
         "Test", "Test.m");
-    assertTranslatedSegments(staticInstanceTranslation, "+ (void)initialize {",
-        "self == [Test class])", "Q *__emt$0;", "J2OBJC_SET_INITIALIZED(Test)");
+    assertTranslation(staticInstanceTranslation,
+        "JreStrongAssignAndConsume(&Test_fun, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(staticInstanceTranslation,
         "- (id)fWithId:(id)a {",
-        "  return [((Q *) nil_chk(val$__emt$0_)) o2WithId:a];",
+        "  return [target$_ o2WithId:a];",
         "}");
   }
 
@@ -228,11 +226,11 @@ public class MethodReferenceTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (JavaLangInteger *)a {",
-        "  return JavaLangInteger_valueOfWithInt_([this$0_ size]);",
+        "  return JavaLangInteger_valueOfWithInt_([target$_ size]);",
         "}");
     assertTranslatedLines(translation,
         "- (jint)a {",
-        "  return [((JavaLangInteger *) nil_chk([this$0_ size2])) intValue];",
+        "  return [((JavaLangInteger *) nil_chk([target$_ size2])) intValue];",
         "}");
   }
 
@@ -319,13 +317,12 @@ public class MethodReferenceTest extends GenerationTest {
     assertTranslatedLines(translation,
         "@interface Test_$Lambda$1 : NSObject < Supplier > {",
         " @public",
-        "  Holder *val$__emt$0_;",
+        "  Holder *target$_;",
         "}");
     assertTranslatedLines(translation,
         "- (void)run {",
         "  Holder *h = create_Holder_initWithInt_(1);",
-        "  Holder *__emt$0;",
-        "  id<Supplier> s = (__emt$0 = h, create_Test_$Lambda$1_initWithHolder_(__emt$0));",
+        "  id<Supplier> s = create_Test_$Lambda$1_initWithHolder_(h);",
         "}");
   }
 }

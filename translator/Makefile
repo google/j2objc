@@ -249,7 +249,6 @@ JAVA_SOURCES = \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/LabelRewriter.java \
 	translate/MetadataWriter.java \
-	translate/MethodReferenceRewriter.java \
 	translate/LambdaTypeElementAdder.java \
 	translate/LambdaRewriter.java \
 	translate/NilCheckResolver.java \

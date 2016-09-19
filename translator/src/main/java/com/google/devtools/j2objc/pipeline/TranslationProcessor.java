@@ -45,7 +45,6 @@ import com.google.devtools.j2objc.translate.LabelRewriter;
 import com.google.devtools.j2objc.translate.LambdaRewriter;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.MetadataWriter;
-import com.google.devtools.j2objc.translate.MethodReferenceRewriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
@@ -140,9 +139,6 @@ public class TranslationProcessor extends FileProcessor {
       new DeadCodeEliminator(unit, deadCodeMap).run(unit);
       ticker.tick("DeadCodeEliminator");
     }
-
-    new MethodReferenceRewriter().run(unit);
-    ticker.tick("MethodReferenceRewriter");
 
     OuterReferenceResolver outerResolver = new OuterReferenceResolver();
     outerResolver.run(unit);

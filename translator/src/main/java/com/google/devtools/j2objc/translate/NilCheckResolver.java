@@ -375,6 +375,10 @@ public class NilCheckResolver extends TreeVisitor {
   private boolean needsNilCheck(Expression e) {
     IVariableBinding sym = TreeUtil.getVariableBinding(e);
     if (sym != null) {
+      // The target in a method reference is checked upon creation.
+      if (sym.getName().equals("target$")) {
+        return false;
+      }
       return BindingUtil.isVolatile(sym) || !isSafeVar(sym);
     }
     IMethodBinding method = TreeUtil.getMethodBinding(e);

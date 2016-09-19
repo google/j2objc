@@ -137,6 +137,10 @@ public class TreeUtil {
     return node;
   }
 
+  public static MethodDeclaration getEnclosingMethod(TreeNode node) {
+    return getNearestAncestorWithType(MethodDeclaration.class, node);
+  }
+
   /**
    * With lambdas and methodbindings, the return type of the method binding does not necessarily
    * match the return type of the functional interface, which enforces the type contracts. To get
@@ -144,19 +148,8 @@ public class TreeUtil {
    * interface.
    */
   public static TypeMirror getOwningReturnType(TreeNode node) {
-    while (node != null) {
-      if (node instanceof MethodDeclaration) {
-        return ((MethodDeclaration) node).getExecutableElement().getReturnType();
-      } else if (node instanceof LambdaExpression) {
-        return ElementUtil.getFunctionalInterface(((LambdaExpression) node).getTypeMirror())
-            .getReturnType();
-      } else if (node instanceof MethodReference) {
-        return ElementUtil.getFunctionalInterface(((MethodReference) node).getTypeMirror())
-            .getReturnType();
-      }
-      node = node.getParent();
-    }
-    return null;
+    MethodDeclaration enclosingMethod = getEnclosingMethod(node);
+    return enclosingMethod == null ? null : enclosingMethod.getExecutableElement().getReturnType();
   }
 
   /**

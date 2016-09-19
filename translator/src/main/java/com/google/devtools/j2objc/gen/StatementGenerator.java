@@ -393,7 +393,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(CreationReference node) {
-    throw new AssertionError("CreationReference nodes are rewritten by MethodReferenceRewriter.");
+    throw new AssertionError("CreationReference nodes are rewritten by LambdaRewriter.");
   }
 
   @Override
@@ -432,8 +432,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ExpressionMethodReference node) {
-    throw new AssertionError(
-        "ExpressionMethodReference nodes are rewritten by MethodReferenceRewriter.");
+    throw new AssertionError("ExpressionMethodReference nodes are rewritten by LambdaRewriter.");
   }
 
   @Override
@@ -856,8 +855,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SuperMethodReference node) {
-    throw new AssertionError(
-        "SuperMethodReference nodes are rewritten by MethodReferenceRewriter.");
+    throw new AssertionError("SuperMethodReference nodes are rewritten by LambdaRewriter.");
   }
 
   @Override
@@ -1021,7 +1019,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(TypeMethodReference node) {
-    throw new AssertionError("TypeMethodReference nodes are rewritten by MethodReferenceRewriter.");
+    throw new AssertionError("TypeMethodReference nodes are rewritten by LambdaRewriter.");
   }
 
   @Override

@@ -162,7 +162,6 @@ public class InnerClassExtractor extends TreeVisitor {
       AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
     ITypeBinding type = typeNode.getTypeBinding();
     TypeElement typeE = typeNode.getTypeElement();
-    ITypeBinding outerType = type.getDeclaringClass();
     IVariableBinding outerParamBinding = null;
 
     GeneratedMethodBinding constructorBinding =
@@ -173,6 +172,8 @@ public class InnerClassExtractor extends TreeVisitor {
     List<SingleVariableDeclaration> captureDecls = constructor.getParameters().subList(0, 0);
     List<ITypeBinding> captureTypes = constructorBinding.getParameters().subList(0, 0);
     if (outerResolver.needsOuterParam(typeE)) {
+      ITypeBinding outerType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
+          outerResolver.getOuterType(typeE));
       GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
           "outer$", Modifier.FINAL, outerType, false, true, type, constructorBinding);
       captureDecls.add(new SingleVariableDeclaration(paramBinding));

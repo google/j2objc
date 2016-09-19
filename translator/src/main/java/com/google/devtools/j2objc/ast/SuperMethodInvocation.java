@@ -49,12 +49,10 @@ public class SuperMethodInvocation extends Expression {
     name.set(new SimpleName(methodBinding));
   }
 
-  public SuperMethodInvocation(ExecutableElement method, SimpleName name, Name qualifier) {
-    super();
-    this.method = method;
-    this.methodType = (ExecutableType) method.asType();
-    this.name.set(name);
-    this.qualifier.set(qualifier);
+  public SuperMethodInvocation(ExecutableElement element) {
+    method = element;
+    methodType = (ExecutableType) element.asType();
+    name.set(new SimpleName(element));
   }
 
   @Override

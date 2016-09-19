@@ -49,6 +49,10 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.VOID;
   }
 
+  public static boolean isArray(TypeMirror t) {
+    return t.getKind() == TypeKind.ARRAY;
+  }
+
   // Ugly, but we can't have it actually implement IntersectionType or return TypeKind.INTERSECTION
   // until Java 8.
   public static boolean isIntersection(TypeMirror t) {

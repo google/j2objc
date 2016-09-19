@@ -59,6 +59,10 @@ public final class ElementUtil {
 
   private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
+  public static String getName(Element element) {
+    return element.getSimpleName().toString();
+  }
+
   public static boolean isStatic(Element element) {
     return hasModifier(element, Modifier.STATIC);
   }
@@ -242,20 +246,6 @@ public final class ElementUtil {
   public static boolean isLocal(TypeElement type) {
     NestingKind nestingKind = type.getNestingKind();
     return nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL;
-  }
-
-  public static ExecutableElement getFunctionalInterface(TypeMirror type) {
-    List<DeclaredType> declaredTypes = getInheritedDeclaredTypesInclusive(type);
-    for (DeclaredType baseType : declaredTypes) {
-      TypeElement element = (TypeElement) baseType.asElement();
-      for (Element i : element.getEnclosedElements()) {
-        if (i.getKind() == ElementKind.METHOD && !ElementUtil.isDefault(i)
-            && !i.getModifiers().contains(Modifier.STATIC)) {
-          return (ExecutableElement) i;
-        }
-      }
-    }
-    return null;
   }
 
   public static List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type) {

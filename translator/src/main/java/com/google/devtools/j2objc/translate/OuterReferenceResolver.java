@@ -21,8 +21,12 @@ import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -32,10 +36,12 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -57,6 +63,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Visits a compilation unit and creates variable elements for outer references
@@ -97,9 +104,16 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   public boolean needsOuterParam(TypeElement type) {
-    return ElementUtil.hasOuterContext(type)
-        && (!ElementUtil.isLocal(type) || outerVars.containsKey(type)
-            || usesOuterParam.contains(type));
+    return outerVars.containsKey(type) || usesOuterParam.contains(type)
+        || (ElementUtil.hasOuterContext(type) && !ElementUtil.isLocal(type));
+  }
+
+  public TypeMirror getOuterType(TypeElement type) {
+    VariableElement outerField = outerVars.get(type);
+    if (outerField != null) {
+      return outerField.asType();
+    }
+    return ElementUtil.getDeclaringClass(type).asType();
   }
 
   public VariableElement getOuterField(TypeElement type) {
@@ -405,6 +419,15 @@ public class OuterReferenceResolver extends TreeVisitor {
     popType(node);
   }
 
+  private void endVisitFunctionalExpression(FunctionalExpression node) {
+    // Resolve outer and capture arguments.
+    TypeElement typeElement = node.getTypeElement();
+    if (needsOuterParam(typeElement)) {
+      addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(getOuterType(typeElement))));
+    }
+    resolveCaptureArgs(node, typeElement);
+  }
+
   @Override
   public boolean visit(LambdaExpression node) {
     pushType(node.getTypeElement());
@@ -414,15 +437,23 @@ public class OuterReferenceResolver extends TreeVisitor {
   @Override
   public void endVisit(LambdaExpression node) {
     popType(node);
+    endVisitFunctionalExpression(node);
+  }
 
-    // if we have an outer field, add the path to it so we can reference
-    // it in the lambda_get function.
-    TypeElement typeElement = node.getTypeElement();
-    VariableElement outerField = getOuterField(typeElement);
-    if (outerField != null) {
-      addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(outerField.asType())));
+  @Override
+  public void endVisit(ExpressionMethodReference node) {
+    Expression target = node.getExpression();
+    if (!ElementUtil.isStatic(node.getExecutableElement()) && isValue(target)) {
+      GeneratedVariableElement targetField = new GeneratedVariableElement(
+          "target$", target.getTypeMirror(), ElementKind.FIELD, node.getTypeElement())
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
+      // Add the target field as an outer field even though it's not really pointing to outer scope.
+      outerVars.put(node.getTypeElement(), targetField);
     }
-    resolveCaptureArgs(node, typeElement);
+  }
+
+  private static boolean isValue(Expression expr) {
+    return !(expr instanceof Name) || !ElementUtil.isType(((Name) expr).getElement());
   }
 
   @Override
@@ -472,6 +503,17 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
+  private void addSuperInvocationPath(TreeNode node, Name qualifier) {
+    if (qualifier != null) {
+      addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
+    } else {
+      Scope currentScope = peekScope();
+      if (ElementUtil.isLambda(currentScope.type)) {
+        addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
+      }
+    }
+  }
+
   @Override
   public void endVisit(SuperMethodInvocation node) {
     if (ElementUtil.isDefault(node.getExecutableElement())) {
@@ -485,27 +527,54 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
       return;
     }
-    Name qualifier = node.getQualifier();
-    if (qualifier != null) {
-      addPath(node, getOuterPath((TypeElement) qualifier.getElement()));
-    } else {
-      Scope currentScope = peekScope();
-      if (ElementUtil.isLambda(currentScope.type)) {
-        addPath(node, getOuterPath(ElementUtil.getDeclaringClass(currentScope.type)));
-      }
-    }
+    addSuperInvocationPath(node, node.getQualifier());
+  }
+
+  @Override
+  public void endVisit(SuperMethodReference node) {
+    TypeElement lambdaType = node.getTypeElement();
+    pushType(lambdaType);
+    addSuperInvocationPath(node.getName(), node.getQualifier());
+    popType(node);
+    endVisitFunctionalExpression(node);
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
     TypeElement typeElement = (TypeElement) node.getExecutableElement().getEnclosingElement();
     if (node.getExpression() == null && needsOuterParam(typeElement)) {
-      TypeElement enclosingTypeElement = ElementUtil.getDeclaringClass(typeElement);
-      addPath(node, getOuterPathInherited(enclosingTypeElement));
+      addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(getOuterType(typeElement))));
     }
     if (ElementUtil.isLocal(typeElement) && !revisitScope(typeElement)) {
       resolveCaptureArgs(node, typeElement);
     }
+  }
+
+  @Override
+  public void endVisit(CreationReference node) {
+    Type typeNode = node.getType();
+    TypeMirror creationType = typeNode.getTypeMirror();
+    if (TypeUtil.isArray(creationType)) {
+      // Nothing to capture for array creations.
+      return;
+    }
+
+    TypeElement lambdaType = node.getTypeElement();
+    pushType(lambdaType);
+    // This is kind of messy, but we use the Type child node as the key for capture scope to be
+    // transferred to the inner ClassInstanceCreation. The capture scope of the CreationReference
+    // node will be transferred to the ClassInstanceCreation that creates the lambda instance.
+    TypeElement creationElement = TypeUtil.asTypeElement(creationType);
+    if (needsOuterParam(creationElement)) {
+      TypeElement enclosingTypeElement = ElementUtil.getDeclaringClass(creationElement);
+      addPath(typeNode, getOuterPathInherited(enclosingTypeElement));
+    }
+    if (ElementUtil.isLocal(creationElement) && !revisitScope(creationElement)) {
+      resolveCaptureArgs(typeNode, creationElement);
+    }
+    popType(node);
+
+    endVisitFunctionalExpression(node);
   }
 
   private boolean visitVariableDeclaration(VariableDeclaration node) {

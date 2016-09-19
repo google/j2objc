@@ -44,7 +44,11 @@ public class ArrayCreation extends Expression {
   }
 
   public ArrayCreation(ITypeBinding type, Types typeEnv, int... dimensions) {
-    arrayType.set(new ArrayType((javax.lang.model.type.ArrayType) BindingConverter.getType(type)));
+    this((javax.lang.model.type.ArrayType) BindingConverter.getType(type), typeEnv, dimensions);
+  }
+
+  public ArrayCreation(javax.lang.model.type.ArrayType type, Types typeEnv, int... dimensions) {
+    arrayType.set(new ArrayType(type));
     for (int i : dimensions) {
       this.dimensions.add(NumberLiteral.newIntLiteral(i, typeEnv));
     }
