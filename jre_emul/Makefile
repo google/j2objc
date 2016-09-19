@@ -63,6 +63,7 @@ IOS_PRIVATE_OBJS = \
 	java_lang_StringToReal.o \
 	java_util_regex_Matcher.o \
 	java_util_regex_Pattern.o \
+	sun_misc_Unsafe.o
 
 IOS_OBJS = $(IOS_PUBLIC_OBJS) $(IOS_PRIVATE_OBJS)
 
