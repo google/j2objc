@@ -26,15 +26,12 @@
 
 package java.lang;
 
-import java.io.Serializable;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.Serializable;
 import libcore.util.BasicLruCache;
-import libcore.util.EmptyArray;
 
 /*-[
 #include "java/lang/AssertionError.h"
@@ -260,6 +257,7 @@ public abstract class Enum<E extends Enum<E>>
             "No enum constant " + enumType.getCanonicalName() + "." + name);
     }
 
+    @SuppressWarnings("rawtypes")
     private static final BasicLruCache<Class<? extends Enum>, Object[]> sharedConstantsCache
             = new BasicLruCache<Class<? extends Enum>, Object[]>(64) {
         // Use a native reflective lookup so that enums with stripped reflection will work.
@@ -269,7 +267,8 @@ public abstract class Enum<E extends Enum<E>>
             return nil;
           }
           Class cls = enumType.objcClass;
-          Method valuesMethod = class_getClassMethod(cls, @selector(values));
+          SEL valuesSelector = sel_registerName("values");
+          Method valuesMethod = class_getClassMethod(cls, valuesSelector);
           if (valuesMethod) {
             return method_invoke(cls, valuesMethod);
           }
