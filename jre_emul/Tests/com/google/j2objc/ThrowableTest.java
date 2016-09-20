@@ -30,6 +30,8 @@ import junit.framework.TestCase;
  */
 public class ThrowableTest extends TestCase {
 
+  static final String NSEXCEPTION_MESSAGE = "native exception";
+
   public void testGetMessage() throws Exception {
     Throwable t = new Throwable("themessage");
     assertEquals("themessage", t.getMessage());
@@ -112,6 +114,25 @@ public class ThrowableTest extends TestCase {
     assertNotNull(stackTrace);
     assertEquals(0, stackTrace.length);
   }
+
+  public void testThrowableToStringFormat() {
+    assertEquals("java.lang.Throwable", new Throwable().toString());
+    assertEquals("java.lang.Throwable: oops", new Throwable("oops").toString());
+  }
+
+  public void testNSExceptionDescriptionUnchanged() {
+    assertEquals(NSEXCEPTION_MESSAGE, getNSExceptionDescription());
+  }
+
+  // Verify [NSException description] only returns the exception's reason, not
+  // with the class name like java.lang.Throwable.toString() does.
+  static native String getNSExceptionDescription() /*-[
+    NSException *e = AUTORELEASE(
+        [[NSException alloc] initWithName:@"MyException"
+                                   reason:ComGoogleJ2objcThrowableTest_NSEXCEPTION_MESSAGE
+                                 userInfo:nil]);
+    return [e description];
+  ]-*/;
 
   /* TODO(kstanger): Make this test pass.
   public void testOverwriteNullCause() throws Exception {

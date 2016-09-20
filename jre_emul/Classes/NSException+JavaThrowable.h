@@ -195,8 +195,6 @@
  */
 - (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)trace;
 
-- (NSString *)description;
-
 #pragma mark Protected
 
 /*!

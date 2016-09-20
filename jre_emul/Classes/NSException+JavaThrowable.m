@@ -115,11 +115,7 @@ static void FreeRawStack(NSException *self) {
   [(NSMutableDictionary *)self.userInfo removeObjectForKey:RawStackTagKey];
 }
 
-// NSString *detailMessage_; This is a special case, since by default Throwable's detailMessage
-// is mapped to NSException's reason property. Since reason is read-only, though, an associated
-// object is necessary to support deserialized exceptions, since serialization always creates
-// objects with the class's default constructor. Normal exceptions (those not created by
-// deserialization) won't set this associated object.
+// NSString *detailMessage_;
 static NSString *DetailMessageTagKey = @"DetailMessageTag";
 static NSString *GetDetailMessage(NSException *self) {
   return (NSString *)[self.userInfo objectForKey:DetailMessageTagKey];
@@ -243,9 +239,7 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
 
 - (NSString *)getMessage {
   @synchronized (self) {
-    // Return an associated message if it exists, otherwise NSException's read-only reason.
-    NSString *associatedMessage = GetDetailMessage(self);
-    return associatedMessage ? associatedMessage : self.reason;
+    return GetDetailMessage(self);
   }
 }
 
@@ -345,16 +339,6 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     } else {
       return JreLoadStatic(LibcoreUtilEmptyArray, THROWABLE);
     }
-  }
-}
-
-- (NSString *)description {
-  NSString *className = [[self getClass] getName];
-  NSString *msg = [self getMessage];
-  if (msg) {
-    return [NSString stringWithFormat:@"%@: %@", className, msg];
-  } else {
-    return className;
   }
 }
 
@@ -521,11 +505,22 @@ void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
     NSException *self, NSString *message, NSException *causeArg, jboolean enableSuppression,
     jboolean writeableStackTrace) {
   NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-  [self initWithName:[[self class] description] reason:message userInfo:userInfo];
+
+  // The NSException reason string is based on java.lang.Throwable.toString():
+  //   . if there is a message, then the reason is "class-name: message",
+  //   . otherwise, it's "class-name".
+  // Note: this only affects translator-generated exception instances.
+  NSString *clsName = [[self getClass] getName];
+  NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
+
+  [self initWithName:[[self class] description] reason:reason userInfo:userInfo];
   if (causeArg && self != causeArg) {
     [(NSMutableDictionary *)userInfo setValue:causeArg forKey:CauseTagKey];
   }
   [userInfo release];
+  if (message) {
+    SetDetailMessage(self, message);
+  }
   if (enableSuppression) {
     JavaUtilArrayList *newArray = new_JavaUtilArrayList_init();
     SetSuppressedExceptions(self, newArray);
