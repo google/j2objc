@@ -30,7 +30,7 @@ const J2ObjcClassInfo JreEmptyClassInfo = {
 
 const J2ObjcClassInfo *JreFindMetadata(Class cls) {
   // Can't use respondsToSelector here because that will search superclasses.
-  Method metadataMethod = cls ? JreFindClassMethod(cls, "__metadata") : NULL;
+  Method metadataMethod = cls ? JreFindClassMethod(cls, @selector(__metadata)) : NULL;
   if (metadataMethod) {
     const J2ObjcClassInfo *metadata = (const J2ObjcClassInfo *)method_invoke(cls, metadataMethod);
     // We don't use any Java based assert or throwables here because this function is called during
@@ -94,12 +94,12 @@ IOSObjectArray *JreParseClassList(const char * const listStr) {
   return [IOSObjectArray arrayWithNSArray:builder type:IOSClass_class_()];
 }
 
-Method JreFindInstanceMethod(Class cls, const char *name) {
+Method JreFindInstanceMethod(Class cls, SEL selector) {
   unsigned int count;
   Method result = nil;
   Method *methods = class_copyMethodList(cls, &count);
   for (NSUInteger i = 0; i < count; i++) {
-    if (strcmp(name, sel_getName(method_getName(methods[i]))) == 0) {
+    if (selector == method_getName(methods[i])) {
       result = methods[i];
       break;
     }
@@ -108,8 +108,8 @@ Method JreFindInstanceMethod(Class cls, const char *name) {
   return result;
 }
 
-Method JreFindClassMethod(Class cls, const char *name) {
-  return JreFindInstanceMethod(object_getClass(cls), name);
+Method JreFindClassMethod(Class cls, SEL selector) {
+  return JreFindInstanceMethod(object_getClass(cls), selector);
 }
 
 static NSString *MetadataNameList(IOSObjectArray *classes) {
@@ -193,22 +193,22 @@ JavaLangReflectConstructor *JreConstructorWithParamTypes(
   return nil;
 }
 
-JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, const char *selector) {
+JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, SEL selector) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
-    if (strcmp(selector, methodInfo->selector) == 0 && methodInfo->returnType) {
+    if (selector == methodInfo->selector && methodInfo->returnType) {
       return [JavaLangReflectMethod methodWithDeclaringClass:iosClass metadata:methodInfo];
     }
   }
   return nil;
 }
 
-JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, const char *selector) {
+JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, SEL selector) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   for (int i = 0; i < metadata->methodCount; i++) {
     const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
-    if (strcmp(selector, methodInfo->selector) == 0 && !methodInfo->returnType) {
+    if (selector == methodInfo->selector && !methodInfo->returnType) {
       return [JavaLangReflectConstructor constructorWithDeclaringClass:iosClass
                                                               metadata:methodInfo];
     }
@@ -232,7 +232,7 @@ JavaLangReflectMethod *JreMethodWithNameAndParamTypesInherited(
   return superclass ? JreMethodWithNameAndParamTypesInherited(superclass, name, types) : nil;
 }
 
-JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, const char *selector) {
+JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, SEL selector) {
   JavaLangReflectMethod *method = JreMethodForSelector(iosClass, selector);
   if (method) {
     return method;

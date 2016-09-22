@@ -488,18 +488,23 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "toProto", "LComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type;", 0x1, -1, -1, -1,
-      -1, -1, -1 },
-    { "getJavaType", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", 0x1, -1, -1, -1, -1,
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "LComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type;", 0x1, -1, -1, -1, -1,
       -1, -1 },
-    { "valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type:",
-      "LComGoogleProtobufDescriptors_FieldDescriptor_Type;", 0x9, 0, 1, -1, -1, -1, -1 },
-    { "values", "[LComGoogleProtobufDescriptors_FieldDescriptor_Type;", 0x9, -1, -1, -1, -1, -1, -1
-    },
-    { "valueOfWithNSString:", "LComGoogleProtobufDescriptors_FieldDescriptor_Type;", 0x9, 0, 2, -1,
-      -1, -1, -1 },
+    { NULL, "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", 0x1, -1, -1, -1, -1, -1,
+      -1 },
+    { NULL, "LComGoogleProtobufDescriptors_FieldDescriptor_Type;", 0x9, 0, 1, -1, -1, -1, -1 },
+    { NULL, "[LComGoogleProtobufDescriptors_FieldDescriptor_Type;", 0x9, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LComGoogleProtobufDescriptors_FieldDescriptor_Type;", 0x9, 0, 2, -1, -1, -1, -1 },
   };
+
+  methods[0].selector = @selector(toProto);
+  methods[1].selector = @selector(getJavaType);
+  methods[2].selector =
+      @selector(valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type:);
+  methods[3].selector = @selector(values);
+  methods[4].selector = @selector(valueOfWithNSString:);
+
   static const J2ObjcFieldInfo fields[] = {
     { "DOUBLE", "LComGoogleProtobufDescriptors_FieldDescriptor_Type;", .constantValue.asLong = 0,
       0x4019, -1, 3, -1, -1 },
@@ -654,12 +659,15 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "values", "[LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", 0x9, -1, -1, -1, -1, -1,
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "[LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", 0x9, -1, -1, -1, -1, -1,
       -1 },
-    { "valueOfWithNSString:", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", 0x9, 0, 1,
-      -1, -1, -1, -1 },
+    { NULL, "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", 0x9, 0, 1, -1, -1, -1, -1 },
   };
+
+  methods[0].selector = @selector(values);
+  methods[1].selector = @selector(valueOfWithNSString:);
+
   static const J2ObjcFieldInfo fields[] = {
     { "INT", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType;", .constantValue.asLong = 0,
       0x4019, -1, 2, -1, -1 },

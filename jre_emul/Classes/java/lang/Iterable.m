@@ -40,11 +40,14 @@
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "iterator", "LJavaUtilIterator;", 0x401, -1, -1, -1, 0, -1, -1 },
-    { "forEachWithJavaUtilFunctionConsumer:", "V", 0x1, 1, 2, -1, 3, -1, -1 },
-    { "spliterator", "LJavaUtilSpliterator;", 0x1, -1, -1, -1, 4, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "LJavaUtilIterator;", 0x401, -1, -1, -1, 0, -1, -1 },
+    { NULL, "V", 0x1, 1, 2, -1, 3, -1, -1 },
+    { NULL, "LJavaUtilSpliterator;", 0x1, -1, -1, -1, 4, -1, -1 },
   };
+  methods[0].selector = @selector(iterator);
+  methods[1].selector = @selector(forEachWithJavaUtilFunctionConsumer:);
+  methods[2].selector = @selector(spliterator);
   static const void *ptrTable[] = {
     "()Ljava/util/Iterator<TT;>;", "forEach", "LJavaUtilFunctionConsumer;",
     "(Ljava/util/function/Consumer<-TT;>;)V", "()Ljava/util/Spliterator<TT;>;",

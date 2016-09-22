@@ -40,18 +40,18 @@
 }
 
 static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvocation *)) {
-  const char *name = self->metadata_->selector;
+  SEL selector = self->metadata_->selector;
   Class cls = self->class_.objcClass;
   bool isFactory = false;
-  Method method = JreFindInstanceMethod(cls, name);
+  Method method = JreFindInstanceMethod(cls, selector);
   if (!method) {
     // Special case for constructors declared as class methods.
-    method = JreFindClassMethod(cls, name);
+    method = JreFindClassMethod(cls, selector);
     isFactory = true;
   }
   NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
       [NSMethodSignature signatureWithObjCTypes:method_getTypeEncoding(method)]];
-  [invocation setSelector:sel_registerName(name)];
+  [invocation setSelector:selector];
   fillArgs(invocation);
   id newInstance;
   @try {
@@ -131,25 +131,42 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getName", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getDeclaringClass", "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
-    { "getParameterTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getGenericParameterTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "newInstanceWithNSObjectArray:", "LNSObject;", 0x81, 1, 2, 3, 4, -1, -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 5, 6, -1, 7, -1, -1 },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getParameterAnnotations", "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getTypeParameters", "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getExceptionTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getGenericExceptionTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "toGenericString", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isBridge", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isVarArgs", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
+    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSObject;", 0x81, 1, 2, 3, 4, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 5, 6, -1, 7, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(getName);
+  methods[1].selector = @selector(getModifiers);
+  methods[2].selector = @selector(getDeclaringClass);
+  methods[3].selector = @selector(getParameterTypes);
+  methods[4].selector = @selector(getGenericParameterTypes);
+  methods[5].selector = @selector(newInstanceWithNSObjectArray:);
+  methods[6].selector = @selector(getAnnotationWithIOSClass:);
+  methods[7].selector = @selector(getDeclaredAnnotations);
+  methods[8].selector = @selector(getParameterAnnotations);
+  methods[9].selector = @selector(getTypeParameters);
+  methods[10].selector = @selector(isSynthetic);
+  methods[11].selector = @selector(getExceptionTypes);
+  methods[12].selector = @selector(getGenericExceptionTypes);
+  methods[13].selector = @selector(toGenericString);
+  methods[14].selector = @selector(isBridge);
+  methods[15].selector = @selector(isVarArgs);
+  methods[16].selector = @selector(init);
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<TT;>;", "newInstance", "[LNSObject;",
     "LJavaLangInstantiationException;LJavaLangIllegalAccessException;"

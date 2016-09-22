@@ -361,38 +361,66 @@ static void SetWithRawValue(
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getName", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getType", "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
-    { "getGenericType", "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getDeclaringClass", "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
-    { "getWithId:", "LNSObject;", 0x1, 1, 2, 3, -1, -1, -1 },
-    { "getBooleanWithId:", "Z", 0x1, 4, 2, 3, -1, -1, -1 },
-    { "getByteWithId:", "B", 0x1, 5, 2, 3, -1, -1, -1 },
-    { "getCharWithId:", "C", 0x1, 6, 2, 3, -1, -1, -1 },
-    { "getDoubleWithId:", "D", 0x1, 7, 2, 3, -1, -1, -1 },
-    { "getFloatWithId:", "F", 0x1, 8, 2, 3, -1, -1, -1 },
-    { "getIntWithId:", "I", 0x1, 9, 2, 3, -1, -1, -1 },
-    { "getLongWithId:", "J", 0x1, 10, 2, 3, -1, -1, -1 },
-    { "getShortWithId:", "S", 0x1, 11, 2, 3, -1, -1, -1 },
-    { "setWithId:withId:", "V", 0x1, 12, 13, 3, -1, -1, -1 },
-    { "setBooleanWithId:withBoolean:", "V", 0x1, 14, 15, 3, -1, -1, -1 },
-    { "setByteWithId:withByte:", "V", 0x1, 16, 17, 3, -1, -1, -1 },
-    { "setCharWithId:withChar:", "V", 0x1, 18, 19, 3, -1, -1, -1 },
-    { "setDoubleWithId:withDouble:", "V", 0x1, 20, 21, 3, -1, -1, -1 },
-    { "setFloatWithId:withFloat:", "V", 0x1, 22, 23, 3, -1, -1, -1 },
-    { "setIntWithId:withInt:", "V", 0x1, 24, 25, 3, -1, -1, -1 },
-    { "setLongWithId:withLong:", "V", 0x1, 26, 27, 3, -1, -1, -1 },
-    { "setShortWithId:withShort:", "V", 0x1, 28, 29, 3, -1, -1, -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 30, 31, -1, 32, -1, -1
-    },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isEnumConstant", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "toGenericString", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
+    { NULL, "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
+    { NULL, "LNSObject;", 0x1, 1, 2, 3, -1, -1, -1 },
+    { NULL, "Z", 0x1, 4, 2, 3, -1, -1, -1 },
+    { NULL, "B", 0x1, 5, 2, 3, -1, -1, -1 },
+    { NULL, "C", 0x1, 6, 2, 3, -1, -1, -1 },
+    { NULL, "D", 0x1, 7, 2, 3, -1, -1, -1 },
+    { NULL, "F", 0x1, 8, 2, 3, -1, -1, -1 },
+    { NULL, "I", 0x1, 9, 2, 3, -1, -1, -1 },
+    { NULL, "J", 0x1, 10, 2, 3, -1, -1, -1 },
+    { NULL, "S", 0x1, 11, 2, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 12, 13, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 14, 15, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 16, 17, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 18, 19, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 20, 21, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 22, 23, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 24, 25, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 26, 27, 3, -1, -1, -1 },
+    { NULL, "V", 0x1, 28, 29, 3, -1, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 30, 31, -1, 32, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(getName);
+  methods[1].selector = @selector(getModifiers);
+  methods[2].selector = @selector(getType);
+  methods[3].selector = @selector(getGenericType);
+  methods[4].selector = @selector(getDeclaringClass);
+  methods[5].selector = @selector(getWithId:);
+  methods[6].selector = @selector(getBooleanWithId:);
+  methods[7].selector = @selector(getByteWithId:);
+  methods[8].selector = @selector(getCharWithId:);
+  methods[9].selector = @selector(getDoubleWithId:);
+  methods[10].selector = @selector(getFloatWithId:);
+  methods[11].selector = @selector(getIntWithId:);
+  methods[12].selector = @selector(getLongWithId:);
+  methods[13].selector = @selector(getShortWithId:);
+  methods[14].selector = @selector(setWithId:withId:);
+  methods[15].selector = @selector(setBooleanWithId:withBoolean:);
+  methods[16].selector = @selector(setByteWithId:withByte:);
+  methods[17].selector = @selector(setCharWithId:withChar:);
+  methods[18].selector = @selector(setDoubleWithId:withDouble:);
+  methods[19].selector = @selector(setFloatWithId:withFloat:);
+  methods[20].selector = @selector(setIntWithId:withInt:);
+  methods[21].selector = @selector(setLongWithId:withLong:);
+  methods[22].selector = @selector(setShortWithId:withShort:);
+  methods[23].selector = @selector(getAnnotationWithIOSClass:);
+  methods[24].selector = @selector(getDeclaredAnnotations);
+  methods[25].selector = @selector(isSynthetic);
+  methods[26].selector = @selector(isEnumConstant);
+  methods[27].selector = @selector(toGenericString);
+  methods[28].selector = @selector(init);
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "get", "LNSObject;",
     "LJavaLangIllegalArgumentException;LJavaLangIllegalAccessException;", "getBoolean", "getByte",

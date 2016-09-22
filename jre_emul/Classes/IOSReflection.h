@@ -36,11 +36,12 @@ FOUNDATION_EXPORT const J2ObjcClassInfo JreEmptyClassInfo;
 
 CF_EXTERN_C_BEGIN
 
+// JreFindMetadata is not threadsafe.
 const J2ObjcClassInfo *JreFindMetadata(Class cls);
 IOSClass *JreClassForString(const char *str);
 IOSObjectArray *JreParseClassList(const char *listStr);
-Method JreFindInstanceMethod(Class cls, const char *name);
-Method JreFindClassMethod(Class cls, const char *name);
+Method JreFindInstanceMethod(Class cls, SEL selector);
+Method JreFindClassMethod(Class cls, SEL selector);
 
 __attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
   return i < 0 ? NULL : ptrTable[i];
@@ -58,12 +59,12 @@ JavaLangReflectMethod *JreMethodWithNameAndParamTypes(
     IOSClass *iosClass, NSString *name, IOSObjectArray *paramTypes);
 JavaLangReflectConstructor *JreConstructorWithParamTypes(
     IOSClass *iosClass, IOSObjectArray *paramTypes);
-JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, const char *selector);
-JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, const char *selector);
+JavaLangReflectMethod *JreMethodForSelector(IOSClass *iosClass, SEL selector);
+JavaLangReflectConstructor *JreConstructorForSelector(IOSClass *iosClass, SEL selector);
 // Find a method in the given class or its hierarchy.
 JavaLangReflectMethod *JreMethodWithNameAndParamTypesInherited(
     IOSClass *iosClass, NSString *name, IOSObjectArray *types);
-JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, const char *selector);
+JavaLangReflectMethod *JreMethodForSelectorInherited(IOSClass *iosClass, SEL selector);
 
 // J2ObjcMethodInfo accessor functions.
 NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
@@ -71,12 +72,12 @@ NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **
 __attribute__((always_inline)) inline const char *JreMethodJavaName(
     const J2ObjcMethodInfo *metadata, const void **ptrTable) {
   const char *javaName = JrePtrAtIndex(ptrTable, metadata->javaNameIdx);
-  return javaName ? javaName : metadata->selector;
+  return javaName ? javaName : sel_getName(metadata->selector);
 }
 
 // metadata must not be NULL.
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
-  return sel_registerName(metadata->selector);
+  return metadata->selector;
 }
 
 CF_EXTERN_C_END

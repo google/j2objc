@@ -215,7 +215,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     // method is named "foo", then return the result from "fooDefault".
     NSString *defaultName = [[self getName] stringByAppendingString:@"Default"];
     Class cls = class_.objcClass;
-    Method defaultValueMethod = JreFindClassMethod(cls, [defaultName UTF8String]);
+    Method defaultValueMethod = JreFindClassMethod(cls, sel_registerName([defaultName UTF8String]));
     if (defaultValueMethod) {
       struct objc_method_description *methodDesc = method_getDescription(defaultValueMethod);
       NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
@@ -246,30 +246,52 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "getName", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getReturnType", "LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getGenericReturnType", "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getDeclaringClass", "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
-    { "getParameterTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getGenericParameterTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "invokeWithId:withNSObjectArray:", "LNSObject;", 0x81, 1, 2, 3, -1, -1, -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 4, 5, -1, 6, -1, -1 },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getParameterAnnotations", "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getTypeParameters", "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getExceptionTypes", "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getGenericExceptionTypes", "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "toGenericString", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isBridge", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isVarArgs", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getDefaultValue", "LNSObject;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isDefault", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getAnnotatedReturnType", "LJavaLangReflectAnnotatedType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
+    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSObject;", 0x81, 1, 2, 3, -1, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 4, 5, -1, 6, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSObject;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LJavaLangReflectAnnotatedType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(getName);
+  methods[1].selector = @selector(getModifiers);
+  methods[2].selector = @selector(getReturnType);
+  methods[3].selector = @selector(getGenericReturnType);
+  methods[4].selector = @selector(getDeclaringClass);
+  methods[5].selector = @selector(getParameterTypes);
+  methods[6].selector = @selector(getGenericParameterTypes);
+  methods[7].selector = @selector(invokeWithId:withNSObjectArray:);
+  methods[8].selector = @selector(getAnnotationWithIOSClass:);
+  methods[9].selector = @selector(getDeclaredAnnotations);
+  methods[10].selector = @selector(getParameterAnnotations);
+  methods[11].selector = @selector(getTypeParameters);
+  methods[12].selector = @selector(isSynthetic);
+  methods[13].selector = @selector(getExceptionTypes);
+  methods[14].selector = @selector(getGenericExceptionTypes);
+  methods[15].selector = @selector(toGenericString);
+  methods[16].selector = @selector(isBridge);
+  methods[17].selector = @selector(isVarArgs);
+  methods[18].selector = @selector(getDefaultValue);
+  methods[19].selector = @selector(isDefault);
+  methods[20].selector = @selector(getAnnotatedReturnType);
+  methods[21].selector = @selector(init);
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "invoke", "LNSObject;[LNSObject;",
     "LJavaLangIllegalAccessException;LJavaLangIllegalArgumentException;"

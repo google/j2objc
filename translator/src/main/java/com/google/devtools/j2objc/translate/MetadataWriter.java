@@ -165,6 +165,8 @@ public class MetadataWriter extends TreeVisitor {
 
     private int generateMethodsMetadata() {
       List<String> methodMetadata = new ArrayList<>();
+      List<String> selectorMetadata = new ArrayList<>();
+      int methodCount = 0;
       for (MethodDeclaration decl : TreeUtil.getMethodDeclarations(typeNode)) {
         IMethodBinding binding = decl.getMethodBinding();
         // Skip synthetic methods
@@ -176,6 +178,11 @@ public class MetadataWriter extends TreeVisitor {
         String annotationsFunc = annotationGenerator.createFunction(decl);
         String paramAnnotationsFunc = annotationGenerator.createParamsFunction(decl);
         methodMetadata.add(getMethodMetadata(binding, annotationsFunc, paramAnnotationsFunc));
+        String selector = nameTable.getMethodSelector(binding);
+        String metadata = UnicodeUtils.format("methods[%d].selector = @selector(%s);",
+            methodCount, selector);
+        ++methodCount;
+        selectorMetadata.add(metadata);
       }
       if (typeNode instanceof AnnotationTypeDeclaration) {
         // Add property accessor and static default methods.
@@ -184,19 +191,26 @@ public class MetadataWriter extends TreeVisitor {
           IMethodBinding memberBinding = (IMethodBinding)
               BindingConverter.unwrapElement(decl.getElement());
           String returnType = getTypeName(memberBinding.getReturnType());
-          String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1, -1, -1, -1 },\n",
-              cStr(name), cStr(returnType),
+          String metadata = UnicodeUtils.format("    { NULL, %s, 0x%x, -1, -1, -1, -1, -1, -1 },\n",
+              cStr(returnType),
               java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
           methodMetadata.add(metadata);
+          metadata = UnicodeUtils.format("methods[%d].selector = @selector(%s);",
+              methodCount, name);
+          ++methodCount;
+          selectorMetadata.add(metadata);
         }
       }
       if (methodMetadata.size() > 0) {
-        StringBuilder sb = new StringBuilder("static const J2ObjcMethodInfo methods[] = {\n");
+        StringBuilder sb = new StringBuilder("static J2ObjcMethodInfo methods[] = {\n");
         for (String metadata : methodMetadata) {
           sb.append(metadata);
         }
         sb.append("  };");
         stmts.add(new NativeStatement(sb.toString()));
+        for (String selector : selectorMetadata) {
+          stmts.add(new NativeStatement(selector));
+        }
       }
       return methodMetadata.size();
     }
@@ -212,8 +226,8 @@ public class MetadataWriter extends TreeVisitor {
 
       int modifiers = getMethodModifiers(method) & BindingUtil.ACC_FLAG_MASK;
       String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
-      return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s, %s, %s, %s },\n",
-          selector, cStr(returnTypeStr), modifiers, cStrIdx(methodName),
+      return UnicodeUtils.format("    { NULL, %s, 0x%x, %s, %s, %s, %s, %s, %s },\n",
+          cStr(returnTypeStr), modifiers, cStrIdx(methodName),
           cStrIdx(getTypeList(method.getParameterTypes())),
           cStrIdx(getTypeList(method.getExceptionTypes())),
           cStrIdx(SignatureGenerator.createMethodTypeSignature(method)),

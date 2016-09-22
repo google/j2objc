@@ -48,7 +48,7 @@ typedef union {
 typedef int16_t ptr_idx;
 
 typedef struct J2ObjcMethodInfo {
-  const char *selector;
+  SEL selector;
   const char *returnType;
   uint16_t modifiers;
   ptr_idx javaNameIdx;

@@ -26,15 +26,22 @@
 @implementation NSNumber (JavaNumber)
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
-    { "charValue", "B", 0x1, 0, -1, -1, -1, -1, -1 },
-    { "doubleValue", "D", 0x401, -1, -1, -1, -1, -1, -1 },
-    { "floatValue", "F", 0x401, -1, -1, -1, -1, -1, -1 },
-    { "intValue", "I", 0x401, -1, -1, -1, -1, -1, -1 },
-    { "longLongValue", "J", 0x401, 1, -1, -1, -1, -1, -1 },
-    { "shortValue", "S", 0x1, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "B", 0x1, 0, -1, -1, -1, -1, -1 },
+    { NULL, "D", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "F", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "J", 0x401, 1, -1, -1, -1, -1, -1 },
+    { NULL, "S", 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(init);
+  methods[1].selector = @selector(charValue);
+  methods[2].selector = @selector(doubleValue);
+  methods[3].selector = @selector(floatValue);
+  methods[4].selector = @selector(intValue);
+  methods[5].selector = @selector(longLongValue);
+  methods[6].selector = @selector(shortValue);
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = NSNumber_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },

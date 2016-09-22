@@ -697,76 +697,118 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, 0x0, -1, -1, -1, -1, -1, -1 },
-    { "initWithInt:", NULL, 0x0, -1, 0, -1, -1, -1, -1 },
-    { "length", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "capacity", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "ensureCapacityWithInt:", "V", 0x1, 1, 0, -1, -1, -1, -1 },
-    { "expandCapacityWithInt:", "V", 0x0, 2, 0, -1, -1, -1, -1 },
-    { "trimToSize", "V", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "setLengthWithInt:", "V", 0x1, 3, 0, -1, -1, -1, -1 },
-    { "charAtWithInt:", "C", 0x1, 4, 0, -1, -1, -1, -1 },
-    { "codePointAtWithInt:", "I", 0x1, 5, 0, -1, -1, -1, -1 },
-    { "codePointBeforeWithInt:", "I", 0x1, 6, 0, -1, -1, -1, -1 },
-    { "codePointCountWithInt:withInt:", "I", 0x1, 7, 8, -1, -1, -1, -1 },
-    { "offsetByCodePointsWithInt:withInt:", "I", 0x1, 9, 8, -1, -1, -1, -1 },
-    { "getCharsWithInt:withInt:withCharArray:withInt:", "V", 0x1, 10, 11, -1, -1, -1, -1 },
-    { "setCharAtWithInt:withChar:", "V", 0x1, 12, 13, -1, -1, -1, -1 },
-    { "appendWithId:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 15, -1, -1, -1, -1 },
-    { "appendWithNSString:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 16, -1, -1, -1, -1 },
-    { "appendWithJavaLangStringBuffer:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 17, -1, -1, -1,
-      -1 },
-    { "appendWithJavaLangAbstractStringBuilder:", "LJavaLangAbstractStringBuilder;", 0x0, 14, 18,
-      -1, -1, -1, -1 },
-    { "appendWithJavaLangCharSequence:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 19, -1, -1, -1,
-      -1 },
-    { "appendWithJavaLangCharSequence:withInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 14,
-      20, -1, -1, -1, -1 },
-    { "appendWithCharArray:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 21, -1, -1, -1, -1 },
-    { "appendWithCharArray:withInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 22, -1,
-      -1, -1, -1 },
-    { "appendWithBoolean:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 23, -1, -1, -1, -1 },
-    { "appendWithChar:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 24, -1, -1, -1, -1 },
-    { "appendWithInt:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 0, -1, -1, -1, -1 },
-    { "appendWithLong:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 25, -1, -1, -1, -1 },
-    { "appendWithFloat:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 26, -1, -1, -1, -1 },
-    { "appendWithDouble:", "LJavaLangAbstractStringBuilder;", 0x1, 14, 27, -1, -1, -1, -1 },
-    { "delete__WithInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 28, 8, -1, -1, -1, -1 },
-    { "appendCodePointWithInt:", "LJavaLangAbstractStringBuilder;", 0x1, 29, 0, -1, -1, -1, -1 },
-    { "deleteCharAtWithInt:", "LJavaLangAbstractStringBuilder;", 0x1, 30, 0, -1, -1, -1, -1 },
-    { "replaceWithInt:withInt:withNSString:", "LJavaLangAbstractStringBuilder;", 0x1, 31, 32, -1,
-      -1, -1, -1 },
-    { "substringWithInt:", "LNSString;", 0x1, 33, 0, -1, -1, -1, -1 },
-    { "subSequenceFrom:to:", "LJavaLangCharSequence;", 0x1, 34, 8, -1, -1, -1, -1 },
-    { "substringWithInt:withInt:", "LNSString;", 0x1, 33, 8, -1, -1, -1, -1 },
-    { "insertWithInt:withCharArray:withInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 35,
-      36, -1, -1, -1, -1 },
-    { "insertWithInt:withId:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 37, -1, -1, -1, -1 },
-    { "insertWithInt:withNSString:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 38, -1, -1, -1, -1
-    },
-    { "insertWithInt:withCharArray:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 39, -1, -1, -1, -1
-    },
-    { "insertWithInt:withJavaLangCharSequence:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 40, -1,
-      -1, -1, -1 },
-    { "insertWithInt:withJavaLangCharSequence:withInt:withInt:", "LJavaLangAbstractStringBuilder;",
-      0x1, 35, 41, -1, -1, -1, -1 },
-    { "insertWithInt:withBoolean:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 42, -1, -1, -1, -1
-    },
-    { "insertWithInt:withChar:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 13, -1, -1, -1, -1 },
-    { "insertWithInt:withInt:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 8, -1, -1, -1, -1 },
-    { "insertWithInt:withLong:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 43, -1, -1, -1, -1 },
-    { "insertWithInt:withFloat:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 44, -1, -1, -1, -1 },
-    { "insertWithInt:withDouble:", "LJavaLangAbstractStringBuilder;", 0x1, 35, 45, -1, -1, -1, -1
-    },
-    { "indexOfWithNSString:", "I", 0x1, 46, 16, -1, -1, -1, -1 },
-    { "indexOfWithNSString:withInt:", "I", 0x1, 46, 47, -1, -1, -1, -1 },
-    { "lastIndexOfWithNSString:", "I", 0x1, 48, 16, -1, -1, -1, -1 },
-    { "lastIndexOfWithNSString:withInt:", "I", 0x1, 48, 47, -1, -1, -1, -1 },
-    { "reverse", "LJavaLangAbstractStringBuilder;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "description", "LNSString;", 0x401, 49, -1, -1, -1, -1, -1 },
-    { "getValue", "[C", 0x10, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x0, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x0, -1, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 1, 0, -1, -1, -1, -1 },
+    { NULL, "V", 0x0, 2, 0, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 3, 0, -1, -1, -1, -1 },
+    { NULL, "C", 0x1, 4, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 5, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 6, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 7, 8, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 9, 8, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 10, 11, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 12, 13, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 15, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 16, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 17, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x0, 14, 18, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 19, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 20, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 21, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 22, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 23, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 24, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 0, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 25, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 26, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 27, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 28, 8, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 29, 0, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 30, 0, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 31, 32, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 33, 0, -1, -1, -1, -1 },
+    { NULL, "LJavaLangCharSequence;", 0x1, 34, 8, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 33, 8, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 36, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 37, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 38, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 39, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 40, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 41, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 42, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 13, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 8, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 43, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 44, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 45, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 46, 16, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 46, 47, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 48, 16, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 48, 47, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x401, 49, -1, -1, -1, -1, -1 },
+    { NULL, "[C", 0x10, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(init);
+  methods[1].selector = @selector(initWithInt:);
+  methods[2].selector = @selector(length);
+  methods[3].selector = @selector(capacity);
+  methods[4].selector = @selector(ensureCapacityWithInt:);
+  methods[5].selector = @selector(expandCapacityWithInt:);
+  methods[6].selector = @selector(trimToSize);
+  methods[7].selector = @selector(setLengthWithInt:);
+  methods[8].selector = @selector(charAtWithInt:);
+  methods[9].selector = @selector(codePointAtWithInt:);
+  methods[10].selector = @selector(codePointBeforeWithInt:);
+  methods[11].selector = @selector(codePointCountWithInt:withInt:);
+  methods[12].selector = @selector(offsetByCodePointsWithInt:withInt:);
+  methods[13].selector = @selector(getCharsWithInt:withInt:withCharArray:withInt:);
+  methods[14].selector = @selector(setCharAtWithInt:withChar:);
+  methods[15].selector = @selector(appendWithId:);
+  methods[16].selector = @selector(appendWithNSString:);
+  methods[17].selector = @selector(appendWithJavaLangStringBuffer:);
+  methods[18].selector = @selector(appendWithJavaLangAbstractStringBuilder:);
+  methods[19].selector = @selector(appendWithJavaLangCharSequence:);
+  methods[20].selector = @selector(appendWithJavaLangCharSequence:withInt:withInt:);
+  methods[21].selector = @selector(appendWithCharArray:);
+  methods[22].selector = @selector(appendWithCharArray:withInt:withInt:);
+  methods[23].selector = @selector(appendWithBoolean:);
+  methods[24].selector = @selector(appendWithChar:);
+  methods[25].selector = @selector(appendWithInt:);
+  methods[26].selector = @selector(appendWithLong:);
+  methods[27].selector = @selector(appendWithFloat:);
+  methods[28].selector = @selector(appendWithDouble:);
+  methods[29].selector = @selector(delete__WithInt:withInt:);
+  methods[30].selector = @selector(appendCodePointWithInt:);
+  methods[31].selector = @selector(deleteCharAtWithInt:);
+  methods[32].selector = @selector(replaceWithInt:withInt:withNSString:);
+  methods[33].selector = @selector(substringWithInt:);
+  methods[34].selector = @selector(subSequenceFrom:to:);
+  methods[35].selector = @selector(substringWithInt:withInt:);
+  methods[36].selector = @selector(insertWithInt:withCharArray:withInt:withInt:);
+  methods[37].selector = @selector(insertWithInt:withId:);
+  methods[38].selector = @selector(insertWithInt:withNSString:);
+  methods[39].selector = @selector(insertWithInt:withCharArray:);
+  methods[40].selector = @selector(insertWithInt:withJavaLangCharSequence:);
+  methods[41].selector = @selector(insertWithInt:withJavaLangCharSequence:withInt:withInt:);
+  methods[42].selector = @selector(insertWithInt:withBoolean:);
+  methods[43].selector = @selector(insertWithInt:withChar:);
+  methods[44].selector = @selector(insertWithInt:withInt:);
+  methods[45].selector = @selector(insertWithInt:withLong:);
+  methods[46].selector = @selector(insertWithInt:withFloat:);
+  methods[47].selector = @selector(insertWithInt:withDouble:);
+  methods[48].selector = @selector(indexOfWithNSString:);
+  methods[49].selector = @selector(indexOfWithNSString:withInt:);
+  methods[50].selector = @selector(lastIndexOfWithNSString:);
+  methods[51].selector = @selector(lastIndexOfWithNSString:withInt:);
+  methods[52].selector = @selector(reverse);
+  methods[53].selector = @selector(description);
+  methods[54].selector = @selector(getValue);
   static const J2ObjcFieldInfo fields[] = {
     { "value_", "[C", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },
     { "count_", "I", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },

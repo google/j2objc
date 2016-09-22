@@ -36,9 +36,10 @@ public class MetadataWriterTest extends GenerationTest {
   public void testConstructorsHaveNullJavaName() throws IOException {
     String translation = translateSourceFile("class Test {}", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "static const J2ObjcMethodInfo methods[] = {",
+        "static J2ObjcMethodInfo methods[] = {",
         // The fourth field, "javaNameIdx", should be -1.
-        "{ \"init\", NULL, 0x0, -1, -1, -1, -1, -1, -1 },");
+        "{ NULL, NULL, 0x0, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "methods[0].selector = @selector(init)");
   }
 
   public void testMethodMetadata() throws IOException {
@@ -58,20 +59,30 @@ public class MetadataWriterTest extends GenerationTest {
         + " abstract <V,X> void test11(V one, X two, T three);"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"test1\", \"LNSObject;\", 0x0, -1, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test2\", \"C\", 0x2, -1, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test3\", \"V\", 0x4, -1, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test4\", \"J\", 0x10, -1, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test5\", \"Z\", 0x20, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"LNSObject;\", 0x0, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"C\", 0x2, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"V\", 0x4, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"J\", 0x10, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"Z\", 0x20, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"LNSString;\", 0x80, 0, 1, -1, -1, -1, -1 }");
+    assertTranslation(translation, "{ NULL, \"V\", 0x100, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"V\", 0x400, -1, -1, 2, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"LNSObject;\", 0x400, -1, -1, -1, 3, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"V\", 0x400, 4, 5, -1, 6, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"V\", 0x400, 7, 8, -1, 9, -1, -1 },");
+    assertTranslation(translation, "methods[0].selector = @selector(test1)");
+    assertTranslation(translation, "methods[1].selector = @selector(test2)");
+    assertTranslation(translation, "methods[2].selector = @selector(test3)");
+    assertTranslation(translation, "methods[3].selector = @selector(test4)");
+    assertTranslation(translation, "methods[4].selector = @selector(test5)");
     assertTranslation(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", \"LNSString;\", 0x80, 0, 1, -1, -1, -1, -1 }");
-    assertTranslation(translation, "{ \"test7\", \"V\", 0x100, -1, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test8\", \"V\", 0x400, -1, -1, 2, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test9\", \"LNSObject;\", 0x400, -1, -1, -1, 3, -1, -1 },");
-    assertTranslation(translation,
-        "{ \"test10WithInt:withId:\", \"V\", 0x400, 4, 5, -1, 6, -1, -1 },");
-    assertTranslation(translation,
-        "{ \"test11WithId:withId:withId:\", \"V\", 0x400, 7, 8, -1, 9, -1, -1 },");
+        "methods[5].selector = @selector(test6WithNSString:withNSObjectArray:)");
+    assertTranslation(translation, "methods[6].selector = @selector(test7)");
+    assertTranslation(translation, "methods[7].selector = @selector(test8)");
+    assertTranslation(translation, "methods[8].selector = @selector(test9)");
+    assertTranslation(translation, "methods[9].selector = @selector(test10WithInt:withId:)");
+    assertTranslation(translation, "methods[10].selector = @selector(test11WithId:withId:withId:)");
+
     assertTranslation(translation,
         "static const void *ptrTable[] = { \"test6\", \"LNSString;[LNSObject;\", "
         + "\"LJavaLangInterruptedException;LJavaLangError;\", \"()TT;\", \"test10\", "
@@ -105,8 +116,10 @@ public class MetadataWriterTest extends GenerationTest {
         + " int num() default 5;"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"foo\", \"LNSString;\", 0x401, -1, -1, -1, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"num\", \"I\", 0x401, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"LNSString;\", 0x401, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ NULL, \"I\", 0x401, -1, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "methods[0].selector = @selector(foo)");
+    assertTranslation(translation, "methods[1].selector = @selector(num)");
   }
 
   public void testInnerClassesMetadata() throws IOException {

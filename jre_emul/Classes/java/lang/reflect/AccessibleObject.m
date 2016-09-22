@@ -109,17 +109,24 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "isAccessible", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "setAccessibleWithBoolean:", "V", 0x1, 0, 1, -1, -1, -1, -1 },
-    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:", "V", 0x9, 0, 2, -1, -1,
-      -1, -1 },
-    { "getAnnotationWithIOSClass:", "LJavaLangAnnotationAnnotation;", 0x1, 3, 4, -1, 5, -1, -1 },
-    { "isAnnotationPresentWithIOSClass:", "Z", 0x1, 6, 4, -1, 7, -1, -1 },
-    { "getAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getDeclaredAnnotations", "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 0, 1, -1, -1, -1, -1 },
+    { NULL, "V", 0x9, 0, 2, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 3, 4, -1, 5, -1, -1 },
+    { NULL, "Z", 0x1, 6, 4, -1, 7, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(isAccessible);
+  methods[1].selector = @selector(setAccessibleWithBoolean:);
+  methods[2].selector = @selector(setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:);
+  methods[3].selector = @selector(getAnnotationWithIOSClass:);
+  methods[4].selector = @selector(isAnnotationPresentWithIOSClass:);
+  methods[5].selector = @selector(getAnnotations);
+  methods[6].selector = @selector(getDeclaredAnnotations);
+  methods[7].selector = @selector(init);
   static const void *ptrTable[] = {
     "setAccessible", "Z", "[LJavaLangReflectAccessibleObject;Z", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",

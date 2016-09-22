@@ -953,94 +953,174 @@ jint javaStringHashCode(NSString *string) {
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "string", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
-    { "stringWithBytes:", NULL, 0x1, -1, 0, -1, -1, -1, -1 },
-    { "stringWithBytes:hibyte:", NULL, 0x1, -1, 1, -1, -1, -1, -1 },
-    { "stringWithBytes:offset:length:", NULL, 0x1, -1, 2, -1, -1, -1, -1 },
-    { "stringWithBytes:hibyte:offset:length:", NULL, 0x1, -1, 3, -1, -1, -1, -1 },
-    { "stringWithBytes:offset:length:charsetName:", NULL, 0x1, -1, 4, 5, -1, -1, -1 },
-    { "stringWithBytes:offset:length:charset:", NULL, 0x1, -1, 6, -1, -1, -1, -1 },
-    { "stringWithBytes:charset:", NULL, 0x1, -1, 7, -1, -1, -1, -1 },
-    { "stringWithBytes:charsetName:", NULL, 0x1, -1, 8, 5, -1, -1, -1 },
-    { "stringWithCharacters:", NULL, 0x1, -1, 9, -1, -1, -1, -1 },
-    { "stringWithCharacters:offset:length:", NULL, 0x1, -1, 10, -1, -1, -1, -1 },
-    { "stringWithInts:offset:length:", NULL, 0x1, -1, 11, -1, -1, -1, -1 },
-    { "stringWithOffset:length:characters:", NULL, 0x0, -1, 12, -1, -1, -1, -1 },
-    { "stringWithString:", NULL, 0x1, -1, 13, -1, -1, -1, -1 },
-    { "stringWithJavaLangStringBuffer:", NULL, 0x1, -1, 14, -1, -1, -1, -1 },
-    { "stringWithJavaLangStringBuilder:", NULL, 0x1, -1, 15, -1, -1, -1, -1 },
-    { "valueOfChars:", "LNSString;", 0x9, 16, 9, -1, -1, -1, -1 },
-    { "valueOfChars:offset:count:", "LNSString;", 0x9, 16, 10, -1, -1, -1, -1 },
-    { "formatWithJavaUtilLocale:withNSString:withNSObjectArray:", "LNSString;", 0x89, 17, 18, -1,
-      -1, -1, -1 },
-    { "formatWithNSString:withNSObjectArray:", "LNSString;", 0x89, 17, 19, -1, -1, -1, -1 },
-    { "valueOfBool:", "LNSString;", 0x9, 20, 21, -1, -1, -1, -1 },
-    { "valueOfChar:", "LNSString;", 0x9, 20, 22, -1, -1, -1, -1 },
-    { "valueOfChars:", "LNSString;", 0x9, 20, 9, -1, -1, -1, -1 },
-    { "valueOfChars:offset:count:", "LNSString;", 0x9, 20, 10, -1, -1, -1, -1 },
-    { "valueOfDouble:", "LNSString;", 0x9, 20, 23, -1, -1, -1, -1 },
-    { "valueOfFloat:", "LNSString;", 0x9, 20, 24, -1, -1, -1, -1 },
-    { "valueOfInt:", "LNSString;", 0x9, 20, 25, -1, -1, -1, -1 },
-    { "valueOfLong:", "LNSString;", 0x9, 20, 26, -1, -1, -1, -1 },
-    { "valueOf:", "LNSString;", 0x9, 20, 27, -1, -1, -1, -1 },
-    { "charAtWithInt:", "C", 0x1, 28, 25, -1, -1, -1, -1 },
-    { "codePointAt:", "I", 0x1, 29, 25, -1, -1, -1, -1 },
-    { "codePointBefore:", "I", 0x1, 30, 25, -1, -1, -1, -1 },
-    { "codePointCount:endIndex:", "I", 0x1, 31, 32, -1, -1, -1, -1 },
-    { "compareToWithId:", "I", 0x1, 33, 13, -1, -1, -1, -1 },
-    { "compareToIgnoreCase:", "I", 0x1, 34, 13, -1, -1, -1, -1 },
-    { "concat:", "LNSString;", 0x1, 35, 13, -1, -1, -1, -1 },
-    { "contains:", "Z", 0x1, 36, 37, -1, -1, -1, -1 },
-    { "hasSuffix:", "Z", 0x1, 38, 13, -1, -1, -1, -1 },
-    { "equalsIgnoreCase:", "Z", 0x1, 39, 13, -1, -1, -1, -1 },
-    { "getBytes", "[B", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "getBytesWithCharset:", "[B", 0x1, 40, 41, -1, -1, -1, -1 },
-    { "getBytesWithCharsetName:", "[B", 0x1, 40, 13, 5, -1, -1, -1 },
-    { "getBytesWithSrcBegin:withSrcEnd:withDst:withDstBegin:", "V", 0x1, 40, 42, -1, -1, -1, -1 },
-    { "getChars:sourceEnd:destination:destinationBegin:", "V", 0x1, 43, 44, -1, -1, -1, -1 },
-    { "indexOf:", "I", 0x1, 45, 25, -1, -1, -1, -1 },
-    { "indexOf:fromIndex:", "I", 0x1, 45, 32, -1, -1, -1, -1 },
-    { "indexOfString:", "I", 0x1, 45, 13, -1, -1, -1, -1 },
-    { "indexOfString:fromIndex:", "I", 0x1, 45, 46, -1, -1, -1, -1 },
-    { "intern", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "isEmpty", "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "lastIndexOf:", "I", 0x1, 47, 25, -1, -1, -1, -1 },
-    { "lastIndexOf:fromIndex:", "I", 0x1, 47, 32, -1, -1, -1, -1 },
-    { "lastIndexOfString:", "I", 0x1, 47, 13, -1, -1, -1, -1 },
-    { "lastIndexOfString:fromIndex:", "I", 0x1, 47, 46, -1, -1, -1, -1 },
-    { "length", "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "matches:", "Z", 0x1, 48, 13, -1, -1, -1, -1 },
-    { "offsetByCodePoints:codePointOffset:", "I", 0x1, 49, 32, -1, -1, -1, -1 },
-    { "regionMatches:thisOffset:aString:otherOffset:count:", "Z", 0x1, 50, 51, -1, -1, -1, -1 },
-    { "regionMatches:aString:otherOffset:count:", "Z", 0x1, 50, 52, -1, -1, -1, -1 },
-    { "replace:withChar:", "LNSString;", 0x1, 53, 54, -1, -1, -1, -1 },
-    { "replace:withSequence:", "LNSString;", 0x1, 53, 55, -1, -1, -1, -1 },
-    { "replaceAll:withReplacement:", "LNSString;", 0x1, 56, 57, -1, -1, -1, -1 },
-    { "replaceFirst:withReplacement:", "LNSString;", 0x1, 58, 57, -1, -1, -1, -1 },
-    { "split:", "[LNSString;", 0x1, 59, 13, -1, -1, -1, -1 },
-    { "split:limit:", "[LNSString;", 0x1, 59, 46, -1, -1, -1, -1 },
-    { "hasPrefix:", "Z", 0x1, 60, 13, -1, -1, -1, -1 },
-    { "hasPrefix:offset:", "Z", 0x1, 60, 46, -1, -1, -1, -1 },
-    { "subSequenceFrom:to:", "LJavaLangCharSequence;", 0x1, 61, 32, -1, -1, -1, -1 },
-    { "substring:", "LNSString;", 0x1, 62, 25, -1, -1, -1, -1 },
-    { "substring:endIndex:", "LNSString;", 0x1, 62, 32, -1, -1, -1, -1 },
-    { "toCharArray", "[C", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "lowercaseString", "LNSString;", 0x1, 63, -1, -1, -1, -1, -1 },
-    { "lowercaseStringWithJRELocale:", "LNSString;", 0x1, 63, 64, -1, -1, -1, -1 },
-    { "uppercaseString", "LNSString;", 0x1, 65, -1, -1, -1, -1, -1 },
-    { "uppercaseStringWithJRELocale:", "LNSString;", 0x1, 65, 64, -1, -1, -1, -1 },
-    { "trim", "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { "contentEqualsCharSequence:", "Z", 0x1, 66, 37, -1, -1, -1, -1 },
-    { "contentEqualsStringBuffer:", "Z", 0x1, 66, 14, -1, -1, -1, -1 },
-    { "indexOfWithNSString:withNSString:withInt:", "I", 0x8, 45, 67, -1, -1, -1, -1 },
-    { "indexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:", "I", 0x8, 45,
-      68, -1, -1, -1, -1 },
-    { "lastIndexOfWithNSString:withNSString:withInt:", "I", 0x8, 47, 67, -1, -1, -1, -1 },
-    { "lastIndexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:", "I", 0x8,
-      47, 68, -1, -1, -1, -1 },
-    { "hash32", "I", 0x0, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 2, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 3, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 4, 5, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 6, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 7, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 8, 5, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 9, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 10, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 11, -1, -1, -1, -1 },
+    { NULL, NULL, 0x0, -1, 12, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 13, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 14, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 15, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 16, 9, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 16, 10, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x89, 17, 18, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x89, 17, 19, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 21, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 22, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 9, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 10, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 23, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 24, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 25, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 26, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 20, 27, -1, -1, -1, -1 },
+    { NULL, "C", 0x1, 28, 25, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 29, 25, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 30, 25, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 31, 32, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 33, 13, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 34, 13, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 35, 13, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 36, 37, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 38, 13, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 39, 13, -1, -1, -1, -1 },
+    { NULL, "[B", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[B", 0x1, 40, 41, -1, -1, -1, -1 },
+    { NULL, "[B", 0x1, 40, 13, 5, -1, -1, -1 },
+    { NULL, "V", 0x1, 40, 42, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 43, 44, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 45, 25, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 45, 32, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 45, 13, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 45, 46, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 25, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 32, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 13, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 46, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 48, 13, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 49, 32, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 50, 51, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 50, 52, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 53, 54, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 53, 55, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 56, 57, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 58, 57, -1, -1, -1, -1 },
+    { NULL, "[LNSString;", 0x1, 59, 13, -1, -1, -1, -1 },
+    { NULL, "[LNSString;", 0x1, 59, 46, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 60, 13, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 60, 46, -1, -1, -1, -1 },
+    { NULL, "LJavaLangCharSequence;", 0x1, 61, 32, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 62, 25, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 62, 32, -1, -1, -1, -1 },
+    { NULL, "[C", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 63, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 63, 64, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 65, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 65, 64, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 66, 37, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 66, 14, -1, -1, -1, -1 },
+    { NULL, "I", 0x8, 45, 67, -1, -1, -1, -1 },
+    { NULL, "I", 0x8, 45, 68, -1, -1, -1, -1 },
+    { NULL, "I", 0x8, 47, 67, -1, -1, -1, -1 },
+    { NULL, "I", 0x8, 47, 68, -1, -1, -1, -1 },
+    { NULL, "I", 0x0, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(string);
+  methods[1].selector = @selector(stringWithBytes:);
+  methods[2].selector = @selector(stringWithBytes:hibyte:);
+  methods[3].selector = @selector(stringWithBytes:offset:length:);
+  methods[4].selector = @selector(stringWithBytes:hibyte:offset:length:);
+  methods[5].selector = @selector(stringWithBytes:offset:length:charsetName:);
+  methods[6].selector = @selector(stringWithBytes:offset:length:charset:);
+  methods[7].selector = @selector(stringWithBytes:charset:);
+  methods[8].selector = @selector(stringWithBytes:charsetName:);
+  methods[9].selector = @selector(stringWithCharacters:);
+  methods[10].selector = @selector(stringWithCharacters:offset:length:);
+  methods[11].selector = @selector(stringWithInts:offset:length:);
+  methods[12].selector = @selector(stringWithOffset:length:characters:);
+  methods[13].selector = @selector(stringWithString:);
+  methods[14].selector = @selector(stringWithJavaLangStringBuffer:);
+  methods[15].selector = @selector(stringWithJavaLangStringBuilder:);
+  methods[16].selector = @selector(valueOfChars:);
+  methods[17].selector = @selector(valueOfChars:offset:count:);
+  methods[18].selector = @selector(formatWithJavaUtilLocale:withNSString:withNSObjectArray:);
+  methods[19].selector = @selector(formatWithNSString:withNSObjectArray:);
+  methods[20].selector = @selector(valueOfBool:);
+  methods[21].selector = @selector(valueOfChar:);
+  methods[22].selector = @selector(valueOfChars:);
+  methods[23].selector = @selector(valueOfChars:offset:count:);
+  methods[24].selector = @selector(valueOfDouble:);
+  methods[25].selector = @selector(valueOfFloat:);
+  methods[26].selector = @selector(valueOfInt:);
+  methods[27].selector = @selector(valueOfLong:);
+  methods[28].selector = @selector(valueOf:);
+  methods[29].selector = @selector(charAtWithInt:);
+  methods[30].selector = @selector(codePointAt:);
+  methods[31].selector = @selector(codePointBefore:);
+  methods[32].selector = @selector(codePointCount:endIndex:);
+  methods[33].selector = @selector(compareToWithId:);
+  methods[34].selector = @selector(compareToIgnoreCase:);
+  methods[35].selector = @selector(concat:);
+  methods[36].selector = @selector(contains:);
+  methods[37].selector = @selector(hasSuffix:);
+  methods[38].selector = @selector(equalsIgnoreCase:);
+  methods[39].selector = @selector(getBytes);
+  methods[40].selector = @selector(getBytesWithCharset:);
+  methods[41].selector = @selector(getBytesWithCharsetName:);
+  methods[42].selector = @selector(getBytesWithSrcBegin:withSrcEnd:withDst:withDstBegin:);
+  methods[43].selector = @selector(getChars:sourceEnd:destination:destinationBegin:);
+  methods[44].selector = @selector(indexOf:);
+  methods[45].selector = @selector(indexOf:fromIndex:);
+  methods[46].selector = @selector(indexOfString:);
+  methods[47].selector = @selector(indexOfString:fromIndex:);
+  methods[48].selector = @selector(intern);
+  methods[49].selector = @selector(isEmpty);
+  methods[50].selector = @selector(lastIndexOf:);
+  methods[51].selector = @selector(lastIndexOf:fromIndex:);
+  methods[52].selector = @selector(lastIndexOfString:);
+  methods[53].selector = @selector(lastIndexOfString:fromIndex:);
+  methods[54].selector = @selector(length);
+  methods[55].selector = @selector(matches:);
+  methods[56].selector = @selector(offsetByCodePoints:codePointOffset:);
+  methods[57].selector = @selector(regionMatches:thisOffset:aString:otherOffset:count:);
+  methods[58].selector = @selector(regionMatches:aString:otherOffset:count:);
+  methods[59].selector = @selector(replace:withChar:);
+  methods[60].selector = @selector(replace:withSequence:);
+  methods[61].selector = @selector(replaceAll:withReplacement:);
+  methods[62].selector = @selector(replaceFirst:withReplacement:);
+  methods[63].selector = @selector(split:);
+  methods[64].selector = @selector(split:limit:);
+  methods[65].selector = @selector(hasPrefix:);
+  methods[66].selector = @selector(hasPrefix:offset:);
+  methods[67].selector = @selector(subSequenceFrom:to:);
+  methods[68].selector = @selector(substring:);
+  methods[69].selector = @selector(substring:endIndex:);
+  methods[70].selector = @selector(toCharArray);
+  methods[71].selector = @selector(lowercaseString);
+  methods[72].selector = @selector(lowercaseStringWithJRELocale:);
+  methods[73].selector = @selector(uppercaseString);
+  methods[74].selector = @selector(uppercaseStringWithJRELocale:);
+  methods[75].selector = @selector(trim);
+  methods[76].selector = @selector(contentEqualsCharSequence:);
+  methods[77].selector = @selector(contentEqualsStringBuffer:);
+  methods[78].selector = @selector(indexOfWithNSString:withNSString:withInt:);
+  methods[79].selector = @selector(indexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:);
+  methods[80].selector = @selector(lastIndexOfWithNSString:withNSString:withInt:);
+  methods[81].selector = @selector(lastIndexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:);
+  methods[82].selector = @selector(hash32);
   static const J2ObjcFieldInfo fields[] = {
     { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 69, 70,
       -1 },
@@ -1125,10 +1205,12 @@ jint javaStringHashCode(NSString *string) {
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "compareWithId:withId:", "I", 0x1, 0, 1, -1, -1, -1, -1 },
-    { "init", NULL, 0x2, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, "I", 0x1, 0, 1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(compareWithId:withId:);
+  methods[1].selector = @selector(init);
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J",
       .constantValue.asLong = NSString_CaseInsensitiveComparator_serialVersionUID, 0x1a, -1, -1, -1,

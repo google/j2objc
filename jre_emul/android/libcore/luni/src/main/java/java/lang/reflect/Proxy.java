@@ -287,9 +287,8 @@ public class Proxy implements Serializable {
 
     /*-[
     static JavaLangReflectMethod *FindMethod(id self, SEL sel) {
-      const char *selName = sel_getName(sel);
       for (IOSClass *cls in [[self getClass] getInterfacesInternal]) {
-        JavaLangReflectMethod *result = JreMethodForSelectorInherited(cls, selName);
+        JavaLangReflectMethod *result = JreMethodForSelectorInherited(cls, sel);
         if (result) {
           return result;
         }

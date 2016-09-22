@@ -232,9 +232,10 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+  static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  methods[0].selector = @selector(init);
   static const J2ObjcClassInfo _ExecutableMember = {
     "ExecutableMember", "java.lang.reflect", NULL, methods, NULL, 7, 0x401, 1, 0, -1, -1, -1, -1, -1
   };
