@@ -43,7 +43,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,9 +145,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
     private void fixNewMethods(String signature) {
       Set<ExecutablePair> existingMethods = this.existingMethods.get(signature);
       Set<ExecutablePair> newMethods = this.newMethods.get(signature);
-      Set<ExecutablePair> allMethods = new LinkedHashSet<>();
-      allMethods.addAll(existingMethods);
-      allMethods.addAll(newMethods);
+      Iterable<ExecutablePair> allMethods = Iterables.concat(existingMethods, newMethods);
       ExecutablePair first = allMethods.iterator().next();
       String mainSelector = nameTable.getMethodSelector(first.elem);
       ExecutablePair impl = resolveImplementation(allMethods);
@@ -175,7 +172,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       }
     }
 
-    private ExecutablePair resolveImplementation(Set<ExecutablePair> allMethods) {
+    private ExecutablePair resolveImplementation(Iterable<ExecutablePair> allMethods) {
       ExecutablePair impl = null;
       for (ExecutablePair method : allMethods) {
         if (takesPrecedence(method, impl)) {
