@@ -32,6 +32,7 @@ public class FunctionBinding {
   // a retained result.
   private final String retainedResultName;
   private final TypeMirror returnType;
+  // TODO(kstanger): This should be and element.
   private final TypeMirror declaringClass;
   private List<TypeMirror> parameterTypes = new ArrayList<>();
   private boolean isVarargs = false;
@@ -87,6 +88,12 @@ public class FunctionBinding {
   }
 
   public void addParameters(TypeMirror... paramTypes) {
+    for (TypeMirror paramType : paramTypes) {
+      parameterTypes.add(paramType);
+    }
+  }
+
+  public void addParameters(Iterable<? extends TypeMirror> paramTypes) {
     for (TypeMirror paramType : paramTypes) {
       parameterTypes.add(paramType);
     }

@@ -96,7 +96,8 @@ public class JdtTypes implements Types {
 
   @Override
   public TypeMirror erasure(TypeMirror t) {
-    throw new AssertionError("not implemented");
+    ITypeBinding binding = BindingConverter.unwrapTypeMirrorIntoTypeBinding(t);
+    return BindingConverter.getType(binding.getErasure());
   }
 
   @Override

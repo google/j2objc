@@ -15,176 +15,256 @@
  */
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.SetMultimap;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtElements;
+import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.UnicodeUtils;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Generate shims for classes and enums that implement interfaces with default methods. Each shim
- * calls the functionalized default method implementation defined in the interface.
+ * calls the functionalized default method implementation defined in the interface. Also generates
+ * delegating shims for inherited methods that declare a different selector than the implementation.
  *
- * @author Lukhnos Liu
+ * @author Lukhnos Liu, Keith Stanger
  */
 public class DefaultMethodShimGenerator extends TreeVisitor {
 
+  // TODO(tball): Update once ParserEnvironment is available in TreeVisitor.
+  private static Types typeUtil = JdtTypes.getInstance();
+  private static Elements elementUtil = JdtElements.getInstance();
+
+  /**
+   * Pairs an ExecutableElement with an ExecutableType representing the resolved type variables as a
+   * member of the current subclass being fixed.
+   */
+  private static class ExecutablePair {
+    private final ExecutableElement elem;
+    private final ExecutableType type;
+    private ExecutablePair(ExecutableElement elem, ExecutableType type) {
+      this.elem = elem;
+      this.type = type;
+    }
+  }
+
+  /**
+   * Handles adding all the shims for a single type and manages state for collecting inherited
+   * methods of the type.
+   */
+  private class TypeFixer {
+
+    private final AbstractTypeDeclaration typeNode;
+    private final TypeElement typeElem;
+    private final Set<TypeElement> visitedTypes = new HashSet<>();
+    private final SetMultimap<String, ExecutablePair> existingMethods = LinkedHashMultimap.create();
+    private final SetMultimap<String, ExecutablePair> newMethods = LinkedHashMultimap.create();
+    private SetMultimap<String, ExecutablePair> collector = existingMethods;
+
+    private TypeFixer(AbstractTypeDeclaration node) {
+      typeNode = node;
+      typeElem = node.getTypeElement();
+    }
+
+    private void visit() {
+      // Collect existing methods.
+      collectMethods((DeclaredType) typeElem.asType());
+      collectInheritedMethods(typeElem.getSuperclass());
+
+      // Collect new methods from newly implemented interfaces.
+      collector = newMethods;
+      for (TypeMirror t : typeElem.getInterfaces()) {
+        collectInheritedMethods((DeclaredType) t);
+      }
+
+      for (String signature : newMethods.keySet()) {
+        fixNewMethods(signature);
+      }
+    }
+
+    private void collectInheritedMethods(TypeMirror type) {
+      if (type == null) {
+        return;
+      }
+      collectMethods((DeclaredType) type);
+      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
+        collectInheritedMethods(supertype);
+      }
+    }
+
+    private void collectMethods(DeclaredType type) {
+      TypeElement typeElem = TypeUtil.asTypeElement(type);
+      if (visitedTypes.contains(typeElem)) {
+        return;
+      }
+      visitedTypes.add(typeElem);
+
+      for (ExecutableElement methodElem : Iterables.filter(
+          ElementUtil.getDeclaredMethods(typeElem), ElementUtil::isInstanceMethod)) {
+        ExecutablePair method = new ExecutablePair(
+            methodElem, (ExecutableType) typeUtil.asMemberOf(type, methodElem));
+        collector.put(getOverrideSignature(method), method);
+      }
+    }
+
+    private void fixNewMethods(String signature) {
+      Set<ExecutablePair> existingMethods = this.existingMethods.get(signature);
+      Set<ExecutablePair> newMethods = this.newMethods.get(signature);
+      Set<ExecutablePair> allMethods = new LinkedHashSet<>();
+      allMethods.addAll(existingMethods);
+      allMethods.addAll(newMethods);
+      ExecutablePair first = allMethods.iterator().next();
+      String mainSelector = nameTable.getMethodSelector(first.elem);
+      ExecutablePair impl = resolveImplementation(allMethods);
+
+      // Find the set of selectors for this method that don't yet have shims in a superclass.
+      Set<String> existingSelectors = new HashSet<>();
+      Map<String, ExecutablePair> newSelectors = new LinkedHashMap<>();
+      for (ExecutablePair method : existingMethods) {
+        existingSelectors.add(nameTable.getMethodSelector(method.elem));
+      }
+      existingSelectors.add(mainSelector);
+      for (ExecutablePair method : newMethods) {
+        String sel =  nameTable.getMethodSelector(method.elem);
+        if (!existingSelectors.contains(sel) && !newSelectors.containsKey(sel)) {
+          newSelectors.put(sel, method);
+        }
+      }
+
+      if (ElementUtil.isDefault(impl.elem) && newMethods.contains(impl)) {
+        addDefaultMethodShim(mainSelector, impl);
+      }
+      for (Map.Entry<String, ExecutablePair> entry : newSelectors.entrySet()) {
+        addRenamingMethodShim(entry.getKey(), entry.getValue(), impl);
+      }
+    }
+
+    private ExecutablePair resolveImplementation(Set<ExecutablePair> allMethods) {
+      ExecutablePair impl = null;
+      for (ExecutablePair method : allMethods) {
+        if (takesPrecedence(method, impl)) {
+          impl = method;
+        }
+      }
+      return impl;
+    }
+
+    private boolean declaredByClass(ExecutableElement e) {
+      return ElementUtil.getDeclaringClass(e).getKind().isClass();
+    }
+
+    private boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
+      return b == null
+          || (!declaredByClass(b.elem) && declaredByClass(a.elem))
+          || elementUtil.overrides(a.elem, b.elem, ElementUtil.getDeclaringClass(a.elem));
+    }
+
+    private void addShimWithInvocation(
+        String selector, ExecutablePair method, Expression invocation, List<Expression> args) {
+      IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(
+          selector, (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type));
+      // Mark synthetic to avoid writing metadata.
+      binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
+      binding.removeModifiers(Modifier.ABSTRACT | Modifier.DEFAULT);
+      binding.setDeclaringClass(BindingConverter.unwrapTypeElement(typeElem));
+
+      MethodDeclaration methodDecl = new MethodDeclaration(binding);
+      methodDecl.setHasDeclaration(false);
+
+      int i = 0;
+      for (TypeMirror paramType : method.type.getParameterTypes()) {
+        GeneratedVariableElement newParam = new GeneratedVariableElement(
+            "arg" + i++, paramType, ElementKind.PARAMETER, null);
+        methodDecl.addParameter(new SingleVariableDeclaration(newParam));
+        args.add(new SimpleName(newParam));
+      }
+
+      Block block = new Block();
+      block.addStatement(TypeUtil.isVoid(method.elem.getReturnType())
+          ? new ExpressionStatement(invocation) : new ReturnStatement(invocation));
+      methodDecl.setBody(block);
+      typeNode.addBodyDeclaration(methodDecl);
+    }
+
+    private void addDefaultMethodShim(String selector, ExecutablePair method) {
+      // The shim's only purpose is to call the default method implementation and returns it value
+      // if required.
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(method.elem);
+      String name = nameTable.getFullFunctionName(method.elem);
+      FunctionBinding fb = new FunctionBinding(
+          name, method.elem.getReturnType(), declaringClass.asType());
+      fb.addParameters(declaringClass.asType());
+      fb.addParameters(((ExecutableType) method.elem.asType()).getParameterTypes());
+      FunctionInvocation invocation = new FunctionInvocation(fb, method.type.getReturnType());
+
+      // All default method implementations require self as the first function call argument.
+      invocation.addArgument(new ThisExpression(typeElem.asType()));
+      addShimWithInvocation(selector, method, invocation, invocation.getArguments());
+    }
+
+    private void addRenamingMethodShim(
+        String selector, ExecutablePair method, ExecutablePair delegate) {
+      MethodInvocation invocation = new MethodInvocation(delegate.elem, delegate.type, null);
+      addShimWithInvocation(selector, method, invocation, invocation.getArguments());
+    }
+  }
+
+  // Generates a signature that will be the same for methods that can override each other and unique
+  // otherwise. Used as a key to group inherited methods together.
+  private static String getOverrideSignature(ExecutablePair method) {
+    StringBuilder sb = new StringBuilder(ElementUtil.getName(method.elem));
+    sb.append('(');
+    for (TypeMirror pType : method.type.getParameterTypes()) {
+      pType = typeUtil.erasure(pType);
+      sb.append(TypeUtil.getBinaryName(pType));
+    }
+    sb.append(')');
+    return sb.toString();
+  }
+
   @Override
   public void endVisit(EnumDeclaration node) {
-    addDefaultMethodShims(node);
+    new TypeFixer(node).visit();
   }
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    addDefaultMethodShims(node);
-  }
-
-  /**
-   * Implement the shims that call the default methods defined in the interfaces.
-   *
-   * To match the semantics of Java 8, we need to observe the following constraints:
-   *
-   * 1. If an interface I has a default method M, and if class C or any of C's super classes
-   *    implements I, only one shim is generated to call M in the class that implements I.
-   * 2. If an interface I1 has a default method M and I2 redeclares M, the class C that implements
-   *    I2 should have a shim that calls I2's M, not I1's.
-   * 3. If a class C inherits a concrete method M that's also declared in some interface I as
-   *    a default method, the concrete method takes precedence and no shim should be generated.
-   *
-   * We let JDT handle the improbable cases -- for example, if interface I2 re-declares method M
-   * in I1 and turns it into abstract (that is I2 no longer provides a body for M), than a class C
-   * that implements I2 can only be an abstract class. If C is not abstract, it results in a
-   * compiler error. Of course, if C is an abstract class because of the abstract M, we should never
-   * generate a shim for M.
-   *
-   * Note that the node parameter here can be a class or an interface. If node is an interface,
-   * the shim methods added here will go into its companion class. We need the shims so that lambdas
-   * based on the interface will also carry the default methods.
-   */
-  private void addDefaultMethodShims(AbstractTypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    if (type.isAnnotation()) {
-      return;
-    }
-
-    // First, collect all interfaces that are implemented by this type.
-    Set<ITypeBinding> interfaces = BindingUtil.getAllInterfaces(type);
-
-    // Now, collect those implemented by the super. This gets an empty set if type is an interface.
-    Set<ITypeBinding> implementedBySuper = BindingUtil.getAllInterfaces(type.getSuperclass());
-
-    // Remove those already implemented by super. These are the interfaces we care about. This
-    // guarantees that only one shim is ever generated for one default method (provided the
-    // default method is not re-declared later) in the inheritance chain.
-    interfaces.removeAll(implementedBySuper);
-
-    // Collect the methods declared in the interfaces. If there is already an existing method in
-    // sigMethods, we test if the iterating method overrides it. If so, we replace the entry.
-    // This guaranteed that the collected methods are from the leaf interfaces implemented by type.
-    Map<String, IMethodBinding> sigMethods = new TreeMap<>();
-    for (ITypeBinding t : interfaces) {
-      for (IMethodBinding method : t.getDeclaredMethods()) {
-        String signature = BindingUtil.getDefaultMethodSignature(method);
-        IMethodBinding existingMethod = sigMethods.get(signature);
-        if (existingMethod == null || method.overrides(existingMethod)) {
-          sigMethods.put(signature, method);
-        }
-      }
-    }
-
-    // Remove the methods declared in this type.
-    for (IMethodBinding method : type.getDeclaredMethods()) {
-      sigMethods.remove(BindingUtil.getDefaultMethodSignature(method));
-    }
-
-    // The concrete methods that the type inherits take precedence.
-    ITypeBinding superType = type;
-    while ((superType = superType.getSuperclass()) != null) {
-      for (IMethodBinding method : superType.getDeclaredMethods()) {
-        if (BindingUtil.isAbstract(method)) {
-          continue;
-        }
-        sigMethods.remove(BindingUtil.getDefaultMethodSignature(method));
-      }
-    }
-
-    // The remaining default methods are what we need to create shims for.
-    for (IMethodBinding method : sigMethods.values()) {
-      if (!BindingUtil.isDefault(method)) {
-        continue;
-      }
-
-      for (String selector : nameTable.getAllSelectors(method)) {
-        node.addBodyDeclaration(createDefaultMethodShim(selector, method, type));
-      }
-    }
-  }
-
-  private MethodDeclaration createDefaultMethodShim(
-      String selector, IMethodBinding method, ITypeBinding type) {
-    // Create the method binding and declaration.
-    IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(selector, method);
-
-    // Don't carry over the default method flag from the original binding.
-    binding.removeModifiers(Modifier.DEFAULT);
-    // Mark synthetic to avoid writing metadata.
-    binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
-
-    binding.setDeclaringClass(type);
-    MethodDeclaration methodDecl = new MethodDeclaration(binding);
-    methodDecl.setHasDeclaration(false);
-
-    // The shim's only purpose is to call the default method implementation and returns it value
-    // if required.
-    String name = nameTable.getFullFunctionName(method);
-    FunctionBinding fb =
-        new FunctionBinding(name, method.getMethodDeclaration().getReturnType(), type);
-    fb.addParameters(type);
-    fb.addParameters(method.getParameterTypes());
-    FunctionInvocation invocation = new FunctionInvocation(fb, method.getReturnType());
-
-    // All default method implementations require self as the first function call argument.
-    invocation.addArgument(new ThisExpression(type));
-
-    // For each parameter in the default method, assign a name, and use the name in both the
-    // method declaration and the function invocation.
-    for (int i = 0; i < method.getParameterTypes().length; i++) {
-      ITypeBinding paramType = method.getParameterTypes()[i];
-      String paramName = UnicodeUtils.format("arg%d", i);
-      GeneratedVariableBinding varBinding = new GeneratedVariableBinding(paramName, 0, paramType,
-          false, true, type, null);
-      methodDecl.addParameter(new SingleVariableDeclaration(varBinding));
-      invocation.addArgument(new SimpleName(varBinding));
-    }
-
-    Statement stmt = BindingUtil.isVoid(method.getReturnType())
-        ? new ExpressionStatement(invocation)
-        : new ReturnStatement(invocation);
-
-    Block block = new Block();
-    block.addStatement(stmt);
-    methodDecl.setBody(block);
-    return methodDecl;
+    new TypeFixer(node).visit();
   }
 }

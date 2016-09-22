@@ -227,8 +227,16 @@ public final class ElementUtil {
     return kind == ElementKind.FIELD || kind == ElementKind.ENUM_CONSTANT;
   }
 
-  public static boolean isConstructor(ExecutableElement element) {
+  public static boolean isMethod(Element element) {
+    return element.getKind() == ElementKind.METHOD;
+  }
+
+  public static boolean isConstructor(Element element) {
     return element.getKind() == ElementKind.CONSTRUCTOR;
+  }
+
+  public static boolean isInstanceMethod(Element element) {
+    return isMethod(element) && !isStatic(element);
   }
 
   public static boolean isWeakReference(VariableElement varElement) {

@@ -195,6 +195,7 @@ JAVA_SOURCES = \
 	jdt/JdtBinding.java \
 	jdt/JdtDeclaredType.java \
 	jdt/JdtElement.java \
+	jdt/JdtElements.java \
 	jdt/JdtExecutableElement.java \
 	jdt/JdtExecutableType.java \
 	jdt/JdtExtendedModifier.java \
@@ -334,7 +335,7 @@ $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo building j2objc jar
 	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
-	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.7 -target 1.7 -nowarn \
+	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.8 -target 1.8 -nowarn \
 	    $(JAVA_SOURCES_FULL)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@rm -rf $(UNUSED_JAR_CONTENTS)

@@ -37,8 +37,14 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.DECLARED ? ((DeclaredType) t).asElement().getKind() : null;
   }
 
+  public static boolean isClass(TypeMirror t) {
+    ElementKind kind = getDeclaredTypeKind(t);
+    return kind != null ? kind.isClass() : false;
+  }
+
   public static boolean isInterface(TypeMirror t) {
-    return getDeclaredTypeKind(t) == ElementKind.INTERFACE;
+    ElementKind kind = getDeclaredTypeKind(t);
+    return kind != null ? kind.isInterface() : false;
   }
 
   public static boolean isEnum(TypeMirror t) {
@@ -128,6 +134,35 @@ public final class TypeUtil {
         return "void";
       default:
         throw new AssertionError("Cannot resolve qualified name for type: " + t);
+    }
+  }
+
+  public static String getBinaryName(TypeMirror t) {
+    switch (t.getKind()) {
+      case ARRAY:
+        return "[" + getBinaryName(((ArrayType) t).getComponentType());
+      case DECLARED:
+        return "L" + asTypeElement(t).getQualifiedName().toString() + ";";
+      case BOOLEAN:
+        return "Z";
+      case BYTE:
+        return "B";
+      case CHAR:
+        return "C";
+      case DOUBLE:
+        return "D";
+      case FLOAT:
+        return "F";
+      case INT:
+        return "I";
+      case LONG:
+        return "J";
+      case SHORT:
+        return "S";
+      case VOID:
+        return "V";
+      default:
+        throw new AssertionError("Cannot resolve binary name for type: " + t);
     }
   }
 }

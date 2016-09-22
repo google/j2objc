@@ -100,7 +100,8 @@ public class JdtElements implements Elements {
   @Override
   public boolean overrides(ExecutableElement overrider, ExecutableElement overridden,
       TypeElement type) {
-    throw new AssertionError("not implemented");
+    return BindingConverter.unwrapExecutableElement(overrider).overrides(
+        BindingConverter.unwrapExecutableElement(overridden));
   }
 
   @Override
@@ -118,6 +119,7 @@ public class JdtElements implements Elements {
     return new StringName(cs.toString());
   }
 
+  @Override
   public boolean isFunctionalInterface(TypeElement type) {
     throw new AssertionError("not implemented");
   }

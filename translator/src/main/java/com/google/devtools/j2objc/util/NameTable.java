@@ -23,6 +23,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtElements;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
@@ -31,10 +32,8 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +41,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -579,11 +579,14 @@ public class NameTable {
   }
 
   public String getMethodSelector(ExecutableElement method) {
-    return getMethodSelector((IMethodBinding) BindingConverter.unwrapElement(method));
+    if (ElementUtil.isInstanceMethod(method)) {
+      method = getOriginalMethod(method);
+    }
+    return selectorForOriginalBinding(BindingConverter.unwrapExecutableElement(method));
   }
 
   public String getMethodSelector(IMethodBinding method) {
-    return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0));
+    return getMethodSelector(BindingConverter.getExecutableElement(method));
   }
 
   private String getRenamedMethodName(IMethodBinding method) {
@@ -616,33 +619,16 @@ public class NameTable {
   }
 
   /**
-   * In rare edge cases a single method will override two or more methods that
-   * have different selectors. This returns the additional selectors that are
-   * not returned by getMethodSelector().
-   */
-  public List<String> getExtraSelectors(IMethodBinding method) {
-    List<String> allSelectors = getAllSelectors(method);
-    return allSelectors.subList(1, allSelectors.size());
-  }
-
-  public List<String> getAllSelectors(IMethodBinding method) {
-    List<String> selectors = new ArrayList<>();
-    for (IMethodBinding originalMethod : getOriginalMethodBindings(method)) {
-      String selector = selectorForOriginalBinding(originalMethod);
-      if (!selectors.contains(selector)) {
-        selectors.add(selector);
-      }
-    }
-    return selectors;
-  }
-
-  /**
    * Returns a "Type_method" function name for static methods, such as from
    * enum types. A combination of classname plus modified selector is
    * guaranteed to be unique within the app.
    */
   public String getFullFunctionName(IMethodBinding method) {
     return getFullName(method.getDeclaringClass()) + '_' + getFunctionName(method);
+  }
+
+  public String getFullFunctionName(ExecutableElement method) {
+    return getFullFunctionName((IMethodBinding) BindingConverter.unwrapElement(method));
   }
 
   /**
@@ -712,55 +698,44 @@ public class NameTable {
     return null;
   }
 
+  private ExecutableElement getOriginalMethod(ExecutableElement method) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
+    return getOriginalMethod(method, declaringClass, declaringClass);
+  }
+
   /**
-   * Finds all the original overridden method bindings. If the method is
-   * overridden multiple times in the hierarchy, only the original is included.
-   * Multiple results are still possible if the given method overrides methods
-   * from multiple interfaces or classes that do not share the same hierarchy.
+   * Finds the original method binding to use for generating a selector. The method returned is the
+   * first method found in the hierarchy while traversing in order of declared inheritance that
+   * doesn't override a method from a supertype. (ie. it is the first leaf node found in the tree of
+   * overriding methods)
    */
-  private List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
-    method = method.getMethodDeclaration();
-    if (method.isConstructor() || BindingUtil.isStatic(method)
-        || method instanceof IOSMethodBinding) {
-      return Collections.singletonList(method);
+  private ExecutableElement getOriginalMethod(
+      ExecutableElement topMethod, TypeElement declaringClass, TypeElement currentType) {
+    if (currentType == null) {
+      return null;
     }
-    ITypeBinding declaringClass = method.getDeclaringClass();
-    List<IMethodBinding> originalBindings = new ArrayList<>();
-    originalBindings.add(method);
-
-    // Collect all the inherited types.
-    // Predictable ordering is important, so we use a LinkedHashSet.
-    LinkedHashSet<ITypeBinding> inheritedTypes =
-        BindingUtil.getOrderedInheritedTypes(declaringClass);
-    if (declaringClass.isInterface()) {
-      inheritedTypes.add(typeEnv.resolveJavaType("java.lang.Object"));
+    TypeElement superclass = currentType.getKind().isInterface() ? typeEnv.getJavaObjectElement()
+        : ElementUtil.getSuperclass(currentType);
+    ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
+    if (original != null) {
+      return original;
     }
-
-    // Find all overridden methods.
-    for (ITypeBinding inheritedType : inheritedTypes) {
-      for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
-        if (method.overrides(interfaceMethod)) {
-          originalBindings.add(interfaceMethod);
-        }
+    for (TypeMirror supertype : currentType.getInterfaces()) {
+      original = getOriginalMethod(topMethod, declaringClass, TypeUtil.asTypeElement(supertype));
+      if (original != null) {
+        return original;
       }
     }
-
-    // Remove any overridden method that overrides another overriden method,
-    // leaving only the original overridden methods. Usually there is just one
-    // but not always.
-    Iterator<IMethodBinding> iter = originalBindings.iterator();
-    while (iter.hasNext()) {
-      IMethodBinding inheritedMethod = iter.next();
-      for (IMethodBinding otherInheritedMethod : originalBindings) {
-        if (inheritedMethod != otherInheritedMethod
-            && inheritedMethod.overrides(otherInheritedMethod)) {
-          iter.remove();
-          break;
-        }
+    if (declaringClass == currentType) {
+      return topMethod;
+    }
+    for (ExecutableElement candidate : ElementUtil.getDeclaredMethods(currentType)) {
+      if (ElementUtil.isInstanceMethod(candidate)
+          && JdtElements.getInstance().overrides(topMethod, candidate, declaringClass)) {
+        return candidate;
       }
     }
-
-    return originalBindings;
+    return null;
   }
 
   /**

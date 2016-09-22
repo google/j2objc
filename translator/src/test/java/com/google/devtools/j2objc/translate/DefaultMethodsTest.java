@@ -422,11 +422,10 @@ public class DefaultMethodsTest extends GenerationTest {
     String headerC = translateSourceFile("C", "C.h");
     String implD = translateSourceFile("D", "D.m");
     assertTranslation(headerC, "- (void)fooWithId:(NSString *)s;");
-    assertTranslation(headerC, "- (void)fooWithNSString:(NSString *)s;");
     assertTranslatedLines(implD,
         "- (void)fooWithId:(NSString *)arg0 {", "C_fooWithNSString_(self, arg0);", "}");
     assertTranslatedLines(implD,
-        "- (void)fooWithNSString:(NSString *)arg0 {", "C_fooWithNSString_(self, arg0);", "}");
+        "- (void)fooWithNSString:(NSString *)arg0 {", "[self fooWithId:arg0];", "}");
   }
 
   // Regression test simplified from java.util.stream.Node.
@@ -454,5 +453,36 @@ public class DefaultMethodsTest extends GenerationTest {
         + "private interface AccumulatingSink<T> extends Sink<T> {}}", "Test", "Test.m");
     assertTranslatedLines(translation,
         "@interface Test_AccumulatingSink : NSObject < Test_AccumulatingSink >");
+  }
+
+  public void testExtraSelectorsFromMultipleOverrides() throws IOException {
+    addSourceFile("interface I { int foo(String t); }", "I.java");
+    addSourceFile("class A<T> { int foo(T t) {} }", "A.java");
+    String translation = translateSourceFile(
+        "class B extends A<String> implements I { public int foo(String t) { return 7; } }",
+        "B", "B.h");
+    assertTranslation(translation, "- (jint)fooWithId:(NSString *)t;");
+
+    translation = getTranslatedFile("B.m");
+    assertTranslatedLines(translation,
+        "- (jint)fooWithId:(NSString *)t {",
+        "  return 7;",
+        "}");
+    assertTranslatedLines(translation,
+        "- (jint)fooWithNSString:(NSString *)arg0 {",
+        "  return [self fooWithId:arg0];",
+        "}");
+  }
+
+  public void testClassInheritsOverridingMethodsWithDifferentSelectors() throws IOException {
+    addSourceFile("class A extends B implements C<B> {}", "A.java");
+    addSourceFile("class B extends D { public void foo(B b) { } }", "B.java");
+    addSourceFile("interface C<T extends D> { public void foo(T d); }", "C.java");
+    addSourceFile("class D {}", "D.java");
+    String aImpl = translateSourceFile("A", "A.m");
+    assertTranslatedLines(aImpl,
+        "- (void)fooWithD:(B *)arg0 {",
+        "  [self fooWithB:arg0];",
+        "}");
   }
 }

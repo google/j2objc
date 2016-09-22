@@ -46,7 +46,6 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -255,15 +254,11 @@ public class Functionizer extends TreeVisitor {
     boolean isDefaultMethod = Modifier.isDefault(node.getModifiers());
     FunctionDeclaration function = null;
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
-    List<String> extraSelectors = nameTable.getExtraSelectors(binding);
     if (!isInstanceMethod || isDefaultMethod || Modifier.isNative(node.getModifiers())
-        || functionizableMethods.contains(binding) || !extraSelectors.isEmpty()) {
+        || functionizableMethods.contains(binding)) {
       ITypeBinding declaringClass = binding.getDeclaringClass();
       boolean isEnumConstructor = binding.isConstructor() && declaringClass.isEnum();
       function = makeFunction(node);
-      for (String selector : extraSelectors) {
-        declarationList.add(makeExtraMethodDeclaration(node, selector));
-      }
       declarationList.add(function);
       if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)
           && !isEnumConstructor) {
@@ -286,16 +281,6 @@ public class Functionizer extends TreeVisitor {
       }
       ErrorUtil.functionizedMethod();
     }
-  }
-
-  private MethodDeclaration makeExtraMethodDeclaration(
-      MethodDeclaration original, String selector) {
-    IMethodBinding originalBinding = original.getMethodBinding();
-    IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(selector, originalBinding);
-    MethodDeclaration declaration = new MethodDeclaration(binding);
-    TreeUtil.copyList(original.getParameters(), declaration.getParameters());
-    setFunctionCaller(declaration, originalBinding);
-    return declaration;
   }
 
   /**
