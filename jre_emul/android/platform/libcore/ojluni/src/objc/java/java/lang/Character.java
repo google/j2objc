@@ -696,12 +696,28 @@ class Character implements java.io.Serializable, Comparable<Character> {
 
         /**
          * Creates a UnicodeBlock with the given identifier name and
-         * alias names.
+         * two alias names.
          */
-        private UnicodeBlock(String idName, String... aliases) {
+        private UnicodeBlock(String idName, String alias1, String alias2) {
             this(idName);
-            for (String alias : aliases)
-                map.put(alias, this);
+            map.put(alias1, this);
+            map.put(alias2, this);
+        }
+
+        /**
+         * Creates a UnicodeBlock with the given identifier name and
+         * alias names.
+         *
+         * j2objc: use 4 aliases instead of varargs to avoid creating temporary
+         *         array.
+         */
+        private UnicodeBlock(String idName,
+                String alias1, String alias2, String alias3, String alias4) {
+            this(idName);
+            map.put(alias1, this);
+            map.put(alias2, this);
+            map.put(alias3, this);
+            map.put(alias4, this);
         }
 
         /**
@@ -4378,115 +4394,120 @@ class Character implements java.io.Serializable, Comparable<Character> {
             UNKNOWN
         };
 
-        private static HashMap<String, Character.UnicodeScript> aliases;
-        static {
-            aliases = new HashMap<>(128);
-            aliases.put("ARAB", ARABIC);
-            aliases.put("ARMI", IMPERIAL_ARAMAIC);
-            aliases.put("ARMN", ARMENIAN);
-            aliases.put("AVST", AVESTAN);
-            aliases.put("BALI", BALINESE);
-            aliases.put("BAMU", BAMUM);
-            aliases.put("BATK", BATAK);
-            aliases.put("BENG", BENGALI);
-            aliases.put("BOPO", BOPOMOFO);
-            aliases.put("BRAI", BRAILLE);
-            aliases.put("BRAH", BRAHMI);
-            aliases.put("BUGI", BUGINESE);
-            aliases.put("BUHD", BUHID);
-            aliases.put("CAKM", CHAKMA);
-            aliases.put("CANS", CANADIAN_ABORIGINAL);
-            aliases.put("CARI", CARIAN);
-            aliases.put("CHAM", CHAM);
-            aliases.put("CHER", CHEROKEE);
-            aliases.put("COPT", COPTIC);
-            aliases.put("CPRT", CYPRIOT);
-            aliases.put("CYRL", CYRILLIC);
-            aliases.put("DEVA", DEVANAGARI);
-            aliases.put("DSRT", DESERET);
-            aliases.put("EGYP", EGYPTIAN_HIEROGLYPHS);
-            aliases.put("ETHI", ETHIOPIC);
-            aliases.put("GEOR", GEORGIAN);
-            aliases.put("GLAG", GLAGOLITIC);
-            aliases.put("GOTH", GOTHIC);
-            aliases.put("GREK", GREEK);
-            aliases.put("GUJR", GUJARATI);
-            aliases.put("GURU", GURMUKHI);
-            aliases.put("HANG", HANGUL);
-            aliases.put("HANI", HAN);
-            aliases.put("HANO", HANUNOO);
-            aliases.put("HEBR", HEBREW);
-            aliases.put("HIRA", HIRAGANA);
-            // it appears we don't have the KATAKANA_OR_HIRAGANA
-            //aliases.put("HRKT", KATAKANA_OR_HIRAGANA);
-            aliases.put("ITAL", OLD_ITALIC);
-            aliases.put("JAVA", JAVANESE);
-            aliases.put("KALI", KAYAH_LI);
-            aliases.put("KANA", KATAKANA);
-            aliases.put("KHAR", KHAROSHTHI);
-            aliases.put("KHMR", KHMER);
-            aliases.put("KNDA", KANNADA);
-            aliases.put("KTHI", KAITHI);
-            aliases.put("LANA", TAI_THAM);
-            aliases.put("LAOO", LAO);
-            aliases.put("LATN", LATIN);
-            aliases.put("LEPC", LEPCHA);
-            aliases.put("LIMB", LIMBU);
-            aliases.put("LINB", LINEAR_B);
-            aliases.put("LISU", LISU);
-            aliases.put("LYCI", LYCIAN);
-            aliases.put("LYDI", LYDIAN);
-            aliases.put("MAND", MANDAIC);
-            aliases.put("MERC", MEROITIC_CURSIVE);
-            aliases.put("MERO", MEROITIC_HIEROGLYPHS);
-            aliases.put("MLYM", MALAYALAM);
-            aliases.put("MONG", MONGOLIAN);
-            aliases.put("MTEI", MEETEI_MAYEK);
-            aliases.put("MYMR", MYANMAR);
-            aliases.put("NKOO", NKO);
-            aliases.put("OGAM", OGHAM);
-            aliases.put("OLCK", OL_CHIKI);
-            aliases.put("ORKH", OLD_TURKIC);
-            aliases.put("ORYA", ORIYA);
-            aliases.put("OSMA", OSMANYA);
-            aliases.put("PHAG", PHAGS_PA);
-            aliases.put("PLRD", MIAO);
-            aliases.put("PHLI", INSCRIPTIONAL_PAHLAVI);
-            aliases.put("PHNX", PHOENICIAN);
-            aliases.put("PRTI", INSCRIPTIONAL_PARTHIAN);
-            aliases.put("RJNG", REJANG);
-            aliases.put("RUNR", RUNIC);
-            aliases.put("SAMR", SAMARITAN);
-            aliases.put("SARB", OLD_SOUTH_ARABIAN);
-            aliases.put("SAUR", SAURASHTRA);
-            aliases.put("SHAW", SHAVIAN);
-            aliases.put("SHRD", SHARADA);
-            aliases.put("SINH", SINHALA);
-            aliases.put("SORA", SORA_SOMPENG);
-            aliases.put("SUND", SUNDANESE);
-            aliases.put("SYLO", SYLOTI_NAGRI);
-            aliases.put("SYRC", SYRIAC);
-            aliases.put("TAGB", TAGBANWA);
-            aliases.put("TALE", TAI_LE);
-            aliases.put("TAKR", TAKRI);
-            aliases.put("TALU", NEW_TAI_LUE);
-            aliases.put("TAML", TAMIL);
-            aliases.put("TAVT", TAI_VIET);
-            aliases.put("TELU", TELUGU);
-            aliases.put("TFNG", TIFINAGH);
-            aliases.put("TGLG", TAGALOG);
-            aliases.put("THAA", THAANA);
-            aliases.put("THAI", THAI);
-            aliases.put("TIBT", TIBETAN);
-            aliases.put("UGAR", UGARITIC);
-            aliases.put("VAII", VAI);
-            aliases.put("XPEO", OLD_PERSIAN);
-            aliases.put("XSUX", CUNEIFORM);
-            aliases.put("YIII", YI);
-            aliases.put("ZINH", INHERITED);
-            aliases.put("ZYYY", COMMON);
-            aliases.put("ZZZZ", UNKNOWN);
-        }
+        private static native Character.UnicodeScript getAlias(String scriptName) /*-[
+          static NSDictionary *aliases;
+          static dispatch_once_t once;
+          dispatch_once(&once, ^{
+            aliases = @{
+              @"ARAB" : JreLoadEnum(JavaLangCharacter_UnicodeScript, ARABIC),
+              @"ARMI" : JreEnum(JavaLangCharacter_UnicodeScript, IMPERIAL_ARAMAIC),
+              @"ARMN" : JreEnum(JavaLangCharacter_UnicodeScript, ARMENIAN),
+              @"AVST" : JreEnum(JavaLangCharacter_UnicodeScript, AVESTAN),
+              @"BALI" : JreEnum(JavaLangCharacter_UnicodeScript, BALINESE),
+              @"BAMU" : JreEnum(JavaLangCharacter_UnicodeScript, BAMUM),
+              @"BATK" : JreEnum(JavaLangCharacter_UnicodeScript, BATAK),
+              @"BENG" : JreEnum(JavaLangCharacter_UnicodeScript, BENGALI),
+              @"BOPO" : JreEnum(JavaLangCharacter_UnicodeScript, BOPOMOFO),
+              @"BRAI" : JreEnum(JavaLangCharacter_UnicodeScript, BRAILLE),
+              @"BRAH" : JreEnum(JavaLangCharacter_UnicodeScript, BRAHMI),
+              @"BUGI" : JreEnum(JavaLangCharacter_UnicodeScript, BUGINESE),
+              @"BUHD" : JreEnum(JavaLangCharacter_UnicodeScript, BUHID),
+              @"CAKM" : JreEnum(JavaLangCharacter_UnicodeScript, CHAKMA),
+              @"CANS" : JreEnum(JavaLangCharacter_UnicodeScript, CANADIAN_ABORIGINAL),
+              @"CARI" : JreEnum(JavaLangCharacter_UnicodeScript, CARIAN),
+              @"CHAM" : JreEnum(JavaLangCharacter_UnicodeScript, CHAM),
+              @"CHER" : JreEnum(JavaLangCharacter_UnicodeScript, CHEROKEE),
+              @"COPT" : JreEnum(JavaLangCharacter_UnicodeScript, COPTIC),
+              @"CPRT" : JreEnum(JavaLangCharacter_UnicodeScript, CYPRIOT),
+              @"CYRL" : JreEnum(JavaLangCharacter_UnicodeScript, CYRILLIC),
+              @"DEVA" : JreEnum(JavaLangCharacter_UnicodeScript, DEVANAGARI),
+              @"DSRT" : JreEnum(JavaLangCharacter_UnicodeScript, DESERET),
+              @"EGYP" : JreEnum(JavaLangCharacter_UnicodeScript, EGYPTIAN_HIEROGLYPHS),
+              @"ETHI" : JreEnum(JavaLangCharacter_UnicodeScript, ETHIOPIC),
+              @"GEOR" : JreEnum(JavaLangCharacter_UnicodeScript, GEORGIAN),
+              @"GLAG" : JreEnum(JavaLangCharacter_UnicodeScript, GLAGOLITIC),
+              @"GOTH" : JreEnum(JavaLangCharacter_UnicodeScript, GOTHIC),
+              @"GREK" : JreEnum(JavaLangCharacter_UnicodeScript, GREEK),
+              @"GUJR" : JreEnum(JavaLangCharacter_UnicodeScript, GUJARATI),
+              @"GURU" : JreEnum(JavaLangCharacter_UnicodeScript, GURMUKHI),
+              @"HANG" : JreEnum(JavaLangCharacter_UnicodeScript, HANGUL),
+              @"HANI" : JreEnum(JavaLangCharacter_UnicodeScript, HAN),
+              @"HANO" : JreEnum(JavaLangCharacter_UnicodeScript, HANUNOO),
+              @"HEBR" : JreEnum(JavaLangCharacter_UnicodeScript, HEBREW),
+              @"HIRA" : JreEnum(JavaLangCharacter_UnicodeScript, HIRAGANA),
+              // it appears we don't have the KATAKANA_OR_HIRAGANA
+              //@"HRKT" : JreEnum(JavaLangCharacter_UnicodeScript, KATAKANA_OR_HIRAGANA),
+              @"ITAL" : JreEnum(JavaLangCharacter_UnicodeScript, OLD_ITALIC),
+              @"JAVA" : JreEnum(JavaLangCharacter_UnicodeScript, JAVANESE),
+              @"KALI" : JreEnum(JavaLangCharacter_UnicodeScript, KAYAH_LI),
+              @"KANA" : JreEnum(JavaLangCharacter_UnicodeScript, KATAKANA),
+              @"KHAR" : JreEnum(JavaLangCharacter_UnicodeScript, KHAROSHTHI),
+              @"KHMR" : JreEnum(JavaLangCharacter_UnicodeScript, KHMER),
+              @"KNDA" : JreEnum(JavaLangCharacter_UnicodeScript, KANNADA),
+              @"KTHI" : JreEnum(JavaLangCharacter_UnicodeScript, KAITHI),
+              @"LANA" : JreEnum(JavaLangCharacter_UnicodeScript, TAI_THAM),
+              @"LAOO" : JreEnum(JavaLangCharacter_UnicodeScript, LAO),
+              @"LATN" : JreEnum(JavaLangCharacter_UnicodeScript, LATIN),
+              @"LEPC" : JreEnum(JavaLangCharacter_UnicodeScript, LEPCHA),
+              @"LIMB" : JreEnum(JavaLangCharacter_UnicodeScript, LIMBU),
+              @"LINB" : JreEnum(JavaLangCharacter_UnicodeScript, LINEAR_B),
+              @"LISU" : JreEnum(JavaLangCharacter_UnicodeScript, LISU),
+              @"LYCI" : JreEnum(JavaLangCharacter_UnicodeScript, LYCIAN),
+              @"LYDI" : JreEnum(JavaLangCharacter_UnicodeScript, LYDIAN),
+              @"MAND" : JreEnum(JavaLangCharacter_UnicodeScript, MANDAIC),
+              @"MERC" : JreEnum(JavaLangCharacter_UnicodeScript, MEROITIC_CURSIVE),
+              @"MERO" : JreEnum(JavaLangCharacter_UnicodeScript, MEROITIC_HIEROGLYPHS),
+              @"MLYM" : JreEnum(JavaLangCharacter_UnicodeScript, MALAYALAM),
+              @"MONG" : JreEnum(JavaLangCharacter_UnicodeScript, MONGOLIAN),
+              @"MTEI" : JreEnum(JavaLangCharacter_UnicodeScript, MEETEI_MAYEK),
+              @"MYMR" : JreEnum(JavaLangCharacter_UnicodeScript, MYANMAR),
+              @"NKOO" : JreEnum(JavaLangCharacter_UnicodeScript, NKO),
+              @"OGAM" : JreEnum(JavaLangCharacter_UnicodeScript, OGHAM),
+              @"OLCK" : JreEnum(JavaLangCharacter_UnicodeScript, OL_CHIKI),
+              @"ORKH" : JreEnum(JavaLangCharacter_UnicodeScript, OLD_TURKIC),
+              @"ORYA" : JreEnum(JavaLangCharacter_UnicodeScript, ORIYA),
+              @"OSMA" : JreEnum(JavaLangCharacter_UnicodeScript, OSMANYA),
+              @"PHAG" : JreEnum(JavaLangCharacter_UnicodeScript, PHAGS_PA),
+              @"PLRD" : JreEnum(JavaLangCharacter_UnicodeScript, MIAO),
+              @"PHLI" : JreEnum(JavaLangCharacter_UnicodeScript, INSCRIPTIONAL_PAHLAVI),
+              @"PHNX" : JreEnum(JavaLangCharacter_UnicodeScript, PHOENICIAN),
+              @"PRTI" : JreEnum(JavaLangCharacter_UnicodeScript, INSCRIPTIONAL_PARTHIAN),
+              @"RJNG" : JreEnum(JavaLangCharacter_UnicodeScript, REJANG),
+              @"RUNR" : JreEnum(JavaLangCharacter_UnicodeScript, RUNIC),
+              @"SAMR" : JreEnum(JavaLangCharacter_UnicodeScript, SAMARITAN),
+              @"SARB" : JreEnum(JavaLangCharacter_UnicodeScript, OLD_SOUTH_ARABIAN),
+              @"SAUR" : JreEnum(JavaLangCharacter_UnicodeScript, SAURASHTRA),
+              @"SHAW" : JreEnum(JavaLangCharacter_UnicodeScript, SHAVIAN),
+              @"SHRD" : JreEnum(JavaLangCharacter_UnicodeScript, SHARADA),
+              @"SINH" : JreEnum(JavaLangCharacter_UnicodeScript, SINHALA),
+              @"SORA" : JreEnum(JavaLangCharacter_UnicodeScript, SORA_SOMPENG),
+              @"SUND" : JreEnum(JavaLangCharacter_UnicodeScript, SUNDANESE),
+              @"SYLO" : JreEnum(JavaLangCharacter_UnicodeScript, SYLOTI_NAGRI),
+              @"SYRC" : JreEnum(JavaLangCharacter_UnicodeScript, SYRIAC),
+              @"TAGB" : JreEnum(JavaLangCharacter_UnicodeScript, TAGBANWA),
+              @"TALE" : JreEnum(JavaLangCharacter_UnicodeScript, TAI_LE),
+              @"TAKR" : JreEnum(JavaLangCharacter_UnicodeScript, TAKRI),
+              @"TALU" : JreEnum(JavaLangCharacter_UnicodeScript, NEW_TAI_LUE),
+              @"TAML" : JreEnum(JavaLangCharacter_UnicodeScript, TAMIL),
+              @"TAVT" : JreEnum(JavaLangCharacter_UnicodeScript, TAI_VIET),
+              @"TELU" : JreEnum(JavaLangCharacter_UnicodeScript, TELUGU),
+              @"TFNG" : JreEnum(JavaLangCharacter_UnicodeScript, TIFINAGH),
+              @"TGLG" : JreEnum(JavaLangCharacter_UnicodeScript, TAGALOG),
+              @"THAA" : JreEnum(JavaLangCharacter_UnicodeScript, THAANA),
+              @"THAI" : JreEnum(JavaLangCharacter_UnicodeScript, THAI),
+              @"TIBT" : JreEnum(JavaLangCharacter_UnicodeScript, TIBETAN),
+              @"UGAR" : JreEnum(JavaLangCharacter_UnicodeScript, UGARITIC),
+              @"VAII" : JreEnum(JavaLangCharacter_UnicodeScript, VAI),
+              @"XPEO" : JreEnum(JavaLangCharacter_UnicodeScript, OLD_PERSIAN),
+              @"XSUX" : JreEnum(JavaLangCharacter_UnicodeScript, CUNEIFORM),
+              @"YIII" : JreEnum(JavaLangCharacter_UnicodeScript, YI),
+              @"ZINH" : JreEnum(JavaLangCharacter_UnicodeScript, INHERITED),
+              @"ZYYY" : JreEnum(JavaLangCharacter_UnicodeScript, COMMON),
+              @"ZZZZ" : JreEnum(JavaLangCharacter_UnicodeScript, UNKNOWN)
+            };
+          });
+          return [aliases objectForKey:scriptName];
+        ]-*/;
 
         /**
          * Returns the enum constant representing the Unicode script of which
@@ -4538,7 +4559,7 @@ class Character implements java.io.Serializable, Comparable<Character> {
         public static final UnicodeScript forName(String scriptName) {
             scriptName = scriptName.toUpperCase(Locale.ENGLISH);
                                  //.replace(' ', '_'));
-            UnicodeScript sc = aliases.get(scriptName);
+            UnicodeScript sc = getAlias(scriptName);
             if (sc != null)
                 return sc;
             return valueOf(scriptName);

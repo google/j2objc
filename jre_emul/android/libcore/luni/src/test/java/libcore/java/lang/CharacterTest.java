@@ -228,4 +228,9 @@ public class CharacterTest extends junit.framework.TestCase {
       assertEquals(m.invoke(null, i), Character.isWhitespace(i));
     }
   }
+
+  // Verify that the UnicodeScript.aliases map loads successfully.
+  public void test_UnicodeScript_aliases() throws Exception {
+    assertEquals(Character.UnicodeScript.BALINESE, Character.UnicodeScript.forName("BALI"));
+  }
 }
