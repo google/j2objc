@@ -448,7 +448,7 @@ public class TreeUtil {
     } else if (value instanceof Character) {
       return new CharacterLiteral((Character) value, typeEnv);
     } else if (value instanceof Number) {
-      return new NumberLiteral((Number) value, typeEnv);
+      return new NumberLiteral((Number) value, typeEnv).setToken(value.toString());
     } else if (value instanceof String) {
       return new StringLiteral((String) value, typeEnv);
     }
