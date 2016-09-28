@@ -49,6 +49,9 @@ $(BUILD_DIR)/$(JUNIT_ROOT_JAR): $(BUILD_DIR)/.maven_generate
 $(BUILD_DIR)/$(JAVAC_JAR): | $(BUILD_DIR)
 	@cp -f $(JAVA_HOME)/lib/$(JAVAC_JAR) $@
 
+$(BUILD_DIR)/$(JARJAR): | $(BUILD_DIR)
+	@cp -f internal/$(JARJAR) $@
+
 $(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
 
