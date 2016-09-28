@@ -426,10 +426,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "OuterValue", "OuterValue.m");
 
     // Verify OuterValue constant initialization.
-    assertTranslation(impl, "OuterValue_initWithNSString_withInt_(e, @\"VALUE1\", 0);");
+    assertTranslation(impl, "OuterValue_initWithNSString_withInt_(e, names[i], i);");
 
     // Verify InnerValue constant initialization.
-    assertTranslation(impl, "OuterValue_InnerValue_initWithNSString_withInt_(e, @\"VALUE1\", 0);");
+    assertTranslation(impl, "OuterValue_InnerValue_initWithNSString_withInt_(e, names[i], i);");
   }
 
   // Tests a field initialized with an anonymous class and multiple

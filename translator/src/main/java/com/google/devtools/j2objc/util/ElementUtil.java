@@ -444,6 +444,20 @@ public final class ElementUtil {
     return false;
   }
 
+  public static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
+    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+      String className = TypeUtil.getQualifiedName(annotation.getAnnotationType());
+      if (className.equals(annotationClass.getName())) {
+        return annotation;
+      }
+    }
+    return null;
+  }
+
+  public static boolean hasAnnotation(Element element, Class<?> annotationClass) {
+    return getAnnotation(element, annotationClass) != null;
+  }
+
   public static Object getAnnotationValue(AnnotationMirror annotation, String name) {
     for (Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
         : annotation.getElementValues().entrySet()) {

@@ -18,7 +18,10 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.TypeElement;
 
 /**
  * UnitTests for the {@link ElementUtil} class.
@@ -39,5 +42,32 @@ public class ElementUtilTest extends GenerationTest {
     decl = unit.getTypes().get(0);
     annotation = decl.getAnnotations().get(0);
     assertTrue(ElementUtil.isRuntimeAnnotation(annotation.getAnnotationMirror()));
+  }
+
+  public void testGetAnnotation() throws IOException {
+    CompilationUnit unit = translateType("Example",
+        "@com.google.j2objc.annotations.ObjectiveCName(\"E\") class Example {}");
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    TypeElement element = decl.getTypeElement();
+    AnnotationMirror annotation = ElementUtil.getAnnotation(element, ObjectiveCName.class);
+    assertEquals("ObjectiveCName", annotation.getAnnotationType().toString());
+  }
+
+  public void testGetAnnotationValue() throws IOException {
+    CompilationUnit unit = translateType("Example",
+        "@com.google.j2objc.annotations.ObjectiveCName(\"E\") class Example {}");
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    TypeElement element = decl.getTypeElement();
+    AnnotationMirror annotation = ElementUtil.getAnnotation(element, ObjectiveCName.class);
+    Object value = ElementUtil.getAnnotationValue(annotation, "value");
+    assertEquals("E", value);
+  }
+
+  public void testHasAnnotation() throws IOException {
+    CompilationUnit unit = translateType("Example",
+        "@com.google.j2objc.annotations.ObjectiveCName(\"E\") class Example {}");
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    TypeElement element = decl.getTypeElement();
+    assertTrue(ElementUtil.hasAnnotation(element, ObjectiveCName.class));
   }
 }

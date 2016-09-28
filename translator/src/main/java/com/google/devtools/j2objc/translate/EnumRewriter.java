@@ -22,13 +22,17 @@ import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -36,23 +40,31 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
+import com.google.j2objc.annotations.ObjectiveCName;
+import java.util.ArrayList;
+import java.util.List;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Modifies enum types for Objective C.
@@ -86,9 +98,81 @@ public class EnumRewriter extends TreeVisitor {
     if (Options.useARC()) {
       addArcInitialization(node);
     } else {
-      addNonArcInitialization(node);
+      if (isSimpleEnum(node)) {
+        addSimpleNonArcInitialization(node);
+      } else {
+        addNonArcInitialization(node);
+      }
     }
   }
+
+  /**
+   * Returns true if an enum doesn't have custom or renamed constructors,
+   * vararg constructors or constants with anonymous class extensions.
+   */
+  private boolean isSimpleEnum(EnumDeclaration node) {
+    TypeElement type = node.getTypeElement();
+    for (EnumConstantDeclaration constant : node.getEnumConstants()) {
+      ExecutableElement method = constant.getExecutableElement();
+      if (method.getParameters().size() > 0 || method.isVarArgs()) {
+        return false;
+      }
+      if (ElementUtil.hasAnnotation(method, ObjectiveCName.class)) {
+        return false;
+      }
+      TypeElement valueType = ElementUtil.getDeclaringClass(method);
+      if (valueType != type) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private void addSimpleNonArcInitialization(EnumDeclaration node) {
+    List<EnumConstantDeclaration> constants = node.getEnumConstants();
+    List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
+    stmts.add(new NativeStatement("size_t objSize = class_getInstanceSize(self);"));
+    stmts.add(new NativeStatement(UnicodeUtils.format(
+        "size_t allocSize = %s * objSize;", constants.size())));
+    stmts.add(new NativeStatement("uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);"));
+    GeneratedVariableBinding localEnum =
+        new GeneratedVariableBinding("e", 0, typeEnv.getIdType(), false, false, null, null);
+    stmts.add(new VariableDeclarationStatement(localEnum, null));
+
+    StringBuffer sb = new StringBuffer("id names[] = {\n  ");
+    for (EnumConstantDeclaration constant : node.getEnumConstants()) {
+      sb.append("@\"" + constant.getName() + "\", ");
+    }
+    sb.append("\n};");
+    stmts.add(new NativeStatement(sb.toString()));
+
+    TypeMirror intType = typeEnv.resolveJavaTypeMirror("int");
+    GeneratedVariableElement loopCounterElement =
+        new GeneratedVariableElement("i", intType,
+            ElementKind.LOCAL_VARIABLE, TreeUtil.getEnclosingElement(node));
+    VariableDeclarationExpression loopCounter =
+        new VariableDeclarationExpression().setType(Type.newType(loopCounterElement.asType()))
+            .addFragment(new VariableDeclarationFragment(
+                loopCounterElement, TreeUtil.newLiteral(0, typeEnv)));
+    Expression loopTest = new InfixExpression()
+        .setOperator(InfixExpression.Operator.LESS)
+        .setTypeMirror(intType)
+        .addOperand(new SimpleName(loopCounterElement))
+        .addOperand(TreeUtil.newLiteral(constants.size(), typeEnv));
+    Expression loopUpdater =
+        new PostfixExpression(loopCounterElement, PostfixExpression.Operator.INCREMENT);
+    Block loopBody = new Block();
+    stmts.add(new ForStatement()
+        .addInitializer(loopCounter)
+        .setExpression(loopTest)
+        .addUpdater(loopUpdater)
+        .setBody(loopBody));
+    String enumClassName = nameTable.getFullName(node.getTypeBinding());
+    loopBody.addStatement(new NativeStatement("(" + enumClassName
+        + "_values_[i] = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);"));
+    loopBody.addStatement(new NativeStatement(enumClassName
+        + "_initWithNSString_withInt_(e, names[i], i);"));
+   }
 
   private void addNonArcInitialization(EnumDeclaration node) {
     ITypeBinding type = node.getTypeBinding();

@@ -60,6 +60,23 @@ public class EnumRewriterTest extends GenerationTest {
     assertNotInTranslation(source, "Test_Enum");
   }
 
+  public void testSimpleEnumAllocationCode() throws Exception {
+    String translation = translateSourceFile(
+        "enum Test { A, B, C, D, E }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "size_t objSize = class_getInstanceSize(self);",
+        "size_t allocSize = 5 * objSize;",
+        "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
+        "id e;",
+        "id names[] = {",
+        "@\"A\", @\"B\", @\"C\", @\"D\", @\"E\",",
+        "};",
+        "for (jint i = 0; i < 5; i++) {",
+        "(Test_values_[i] = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);",
+        "Test_initWithNSString_withInt_(e, names[i], i);",
+        "}");
+  }
+
   public void testEnumAllocationCode() throws Exception {
     String translation = translateSourceFile(
         "enum Test { A, B { public String toString() { return \"foo\"; } }, C}", "Test", "Test.m");
