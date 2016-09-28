@@ -18,6 +18,7 @@
 package com.google.j2objc.security;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 
 /*-[
@@ -52,6 +53,21 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
   @Override
   protected void engineReset() {
     buffer.reset();
+  }
+
+  public Object clone() throws CloneNotSupportedException {
+      IosSHAMessageDigest obj = (IosSHAMessageDigest) super.clone();
+      // ByteArrayOutputStreams are not cloneable, so copy it.
+      obj.buffer = new ByteArrayOutputStream();
+      if (buffer.size() > 0) {
+        try {
+          obj.buffer.write(buffer.toByteArray());
+        } catch (IOException e) {
+          // Should never happen.
+          throw new AssertionError(e);
+        }
+      }
+      return obj;
   }
 
   public static class SHA1 extends IosSHAMessageDigest {
