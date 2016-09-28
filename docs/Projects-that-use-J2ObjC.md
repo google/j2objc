@@ -72,20 +72,24 @@ layout: docs
  </td></tr>
 
  <tr><td>
+ <img src="http://a1.mzstatic.com/us/r30/Purple62/v4/15/a8/88/15a88812-9c32-019f-82f5-1190ae5532cf/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/pop-poker/id1120261979">Pop Poker</a></b>
+ </td><td>
  <img src="http://a4.mzstatic.com/us/r30/Purple/v4/66/be/c9/66bec9a8-fd60-5c07-876c-a8e4acbd3029/mzl.nzvhdrln.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/quadrus/id773251281?mt=8">Quadrus</a></b>
- </td><td>
+ </td></tr>
+
+ <tr><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple5/v4/b7/79/4a/b7794ae4-cbd2-59ad-57a0-fd2783ceeec9/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/id921359196">Quando</a></b>
- </td></tr>
-
- <tr><td>
+ </td><td>
  <img src="http://info.motionext.com/content/data/2014/08/logo_48x48.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/with-wifi/id741277613?ls=1&mt=8">With WIFI</a></b>&nbsp;&nbsp;<a href="http://www.withwifi.com/">www.withwifi.com</a>
- </td><td>
- <img src="http://a5.mzstatic.com/us/r30/Purple7/v4/7d/23/86/7d238677-fe2f-2818-cceb-4b7fc51e0c9c/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-fit-puzzle-+/id678426772?mt=8">Word&nbsp;Fit&nbsp;Puzzle&nbsp;+</a></b>
  </td></tr>
 
  <tr><td>
- <img src="http://a1.mzstatic.com/us/r30/Purple2/v4/22/1f/f2/221ff26d-4630-71f6-9457-b448b30492d7/mzl.aptusiqe.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-search-ultimate/id643964085?mt=8">Word&nbsp;Search&nbsp;Ultimate</a></b>
+ <img src="http://a5.mzstatic.com/us/r30/Purple7/v4/7d/23/86/7d238677-fe2f-2818-cceb-4b7fc51e0c9c/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-fit-puzzle-+/id678426772?mt=8">Word&nbsp;Fit&nbsp;Puzzle&nbsp;+</a></b>
  </td><td>
+ <img src="http://a1.mzstatic.com/us/r30/Purple2/v4/22/1f/f2/221ff26d-4630-71f6-9457-b448b30492d7/mzl.aptusiqe.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-search-ultimate/id643964085?mt=8">Word&nbsp;Search&nbsp;Ultimate</a></b>
+ </td></tr>
+
+ <tr><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple60/v4/d8/e9/bd/d8e9bd11-ffa9-9e7b-4714-3a8d9cee07f7/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/yahoo-esports/id1100906320">Yahoo&nbsp;Esports&nbsp;+</a></b>
  </td></tr>
 </table>
