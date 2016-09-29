@@ -1,0 +1,28 @@
+URL:     https://code.google.com/archive/p/jarjar/
+Version: 1.4 (patched)
+License: Apache 2.0, portions BSD
+License File: LICENSE
+
+Description:
+
+Jar Jar Links, utility for repackaging Java libraries
+
+Local Modifications:
+ - Changed Wildcard.java to accept '-' in replacement patterns (see Wildcard.java.patch)
+ - Updated dependency on ASM to 5.0.4-r1790
+ - Set ASM5 API level
+
+Here are the steps for rebuilding this jar from public sources:
+
+curl -O https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jarjar/jarjar-src-1.4.zip
+unzip jarjar-src-1.4.zip 
+cd jarjar-1.4/
+rm -f lib/asm-4.0.jar lib/asm-commons-4.0.jar
+curl -o lib/asm-5.0.4.jar http://central.maven.org/maven2/org/ow2/asm/asm/5.0.4/asm-5.0.4.jar
+curl -o lib/asm-commons-5.0.4.jar \
+    http://central.maven.org/maven2/org/ow2/asm/asm-commons/5.0.4/asm-commons-5.0.4.jar
+patch -p2 < ../Wildcard.java.patch
+patch -p2 < ../build.xml.patch
+patch -p2 < ../asm5.patch
+ant
+cp dist/jarjar-1.4.jar ..

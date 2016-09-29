@@ -1,0 +1,85 @@
+diff --git a/jarjar-1.4/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java b/jarjar-1.4/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
+index 348e03d..2b4ba23 100644
+--- a/jarjar-1.4/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
++++ b/jarjar-1.4/src/main/com/tonicsystems/jarjar/EmptyClassVisitor.java
+@@ -28,23 +28,23 @@ import org.objectweb.asm.Opcodes;
+ public class EmptyClassVisitor extends ClassVisitor {
+ 
+     public EmptyClassVisitor() {
+-        super(Opcodes.ASM4);
++        super(Opcodes.ASM5);
+     }
+     
+     @Override
+     public MethodVisitor visitMethod(int access, String name, String desc,
+             String signature, String[] exceptions) {
+-        return new MethodVisitor(Opcodes.ASM4) {};
++        return new MethodVisitor(Opcodes.ASM5) {};
+     }
+     
+     @Override
+     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+-        return new AnnotationVisitor(Opcodes.ASM4) {};
++        return new AnnotationVisitor(Opcodes.ASM5) {};
+     }
+     
+     @Override
+     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+-        return new FieldVisitor(Opcodes.ASM4) {};
++        return new FieldVisitor(Opcodes.ASM5) {};
+     }
+ 
+ }
+diff --git a/jarjar-1.4/src/main/com/tonicsystems/jarjar/StringReader.java b/jarjar-1.4/src/main/com/tonicsystems/jarjar/StringReader.java
+index ba7bb29..2a88cae 100644
+--- a/jarjar-1.4/src/main/com/tonicsystems/jarjar/StringReader.java
++++ b/jarjar-1.4/src/main/com/tonicsystems/jarjar/StringReader.java
+@@ -24,7 +24,7 @@ abstract class StringReader extends ClassVisitor
+     private String className;
+ 
+     public StringReader() {
+-        super(Opcodes.ASM4);
++        super(Opcodes.ASM5);
+     }
+     
+     abstract public void visitString(String className, String value, int line);
+@@ -42,7 +42,7 @@ abstract class StringReader extends ClassVisitor
+ 
+     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+         handleObject(value);
+-        return new FieldVisitor(Opcodes.ASM4){
++        return new FieldVisitor(Opcodes.ASM5){
+             @Override
+             public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+                 return StringReader.this.visitAnnotation(desc, visible);
+@@ -52,7 +52,7 @@ abstract class StringReader extends ClassVisitor
+     
+     @Override
+     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+-        return new AnnotationVisitor(Opcodes.ASM4) {
++        return new AnnotationVisitor(Opcodes.ASM5) {
+             @Override
+             public void visit(String name, Object value) {
+                 handleObject(value);
+@@ -71,7 +71,7 @@ abstract class StringReader extends ClassVisitor
+     @Override
+     public MethodVisitor visitMethod(int access, String name, String desc,
+             String signature, String[] exceptions) {
+-        MethodVisitor mv = new MethodVisitor(Opcodes.ASM4){
++        MethodVisitor mv = new MethodVisitor(Opcodes.ASM5){
+             @Override
+             public void visitLdcInsn(Object cst) {
+                 handleObject(cst);
+diff --git a/jarjar-1.4/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java b/jarjar-1.4/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
+index bbb8590..563ed72 100644
+--- a/jarjar-1.4/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
++++ b/jarjar-1.4/src/main/com/tonicsystems/jarjar/util/GetNameClassWriter.java
+@@ -25,7 +25,7 @@ public class GetNameClassWriter extends ClassVisitor
+     private String className;
+     
+     public GetNameClassWriter(int flags) {
+-        super(Opcodes.ASM4,new ClassWriter(flags));
++        super(Opcodes.ASM5,new ClassWriter(flags));
+     }
+ 
+     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {

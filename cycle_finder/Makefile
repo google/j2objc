@@ -91,7 +91,7 @@ $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@rm -rf $(UNUSED_JAR_CONTENTS)
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
-	@java -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR) process jarjar.rules $@-combined $@
+	@java -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR_JAR) process jarjar.rules $@-combined $@
 
 # Format manifest classpath with each jar on a separate line, to avoid
 # maximum line length of 72 bytes in UTF-8 encoding.
