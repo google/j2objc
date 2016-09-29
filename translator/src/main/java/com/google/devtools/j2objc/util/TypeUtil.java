@@ -108,12 +108,12 @@ public final class TypeUtil {
     return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t).getModifiers();
   }
 
-  public static String getQualifiedName(TypeMirror t) {
+  public static String getName(TypeMirror t) {
     switch (t.getKind()) {
       case ARRAY:
-        return "[" + getQualifiedName(((ArrayType) t).getComponentType());
+        return getName(((ArrayType) t).getComponentType()) + "[]";
       case DECLARED:
-        return ((TypeElement) ((DeclaredType) t).asElement()).getQualifiedName().toString();
+        return ElementUtil.getName(asTypeElement(t));
       case BOOLEAN:
         return "boolean";
       case BYTE:
@@ -132,6 +132,27 @@ public final class TypeUtil {
         return "short";
       case VOID:
         return "void";
+      default:
+        throw new AssertionError("Cannot resolve name for type: " + t);
+    }
+  }
+
+  public static String getQualifiedName(TypeMirror t) {
+    switch (t.getKind()) {
+      case ARRAY:
+        return "[" + getQualifiedName(((ArrayType) t).getComponentType());
+      case DECLARED:
+        return asTypeElement(t).getQualifiedName().toString();
+      case BOOLEAN:
+      case BYTE:
+      case CHAR:
+      case DOUBLE:
+      case FLOAT:
+      case INT:
+      case LONG:
+      case SHORT:
+      case VOID:
+        return getName(t);
       default:
         throw new AssertionError("Cannot resolve qualified name for type: " + t);
     }

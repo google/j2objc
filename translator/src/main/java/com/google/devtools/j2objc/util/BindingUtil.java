@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import java.lang.annotation.RetentionPolicy;
@@ -107,6 +108,11 @@ public final class BindingUtil {
    */
   public static boolean isInstanceVar(IVariableBinding binding) {
     return binding.isField() && !isGlobalVar(binding);
+  }
+
+  public static boolean isNonnull(IVariableBinding binding) {
+    return binding instanceof GeneratedVariableBinding
+        && ((GeneratedVariableBinding) binding).isNonnull();
   }
 
   /**

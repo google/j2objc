@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -292,13 +293,17 @@ public class TreeUtil {
   }
 
   public static IMethodBinding getMethodBinding(Expression node) {
+    return BindingConverter.unwrapExecutableElement(getExecutableElement(node));
+  }
+
+  public static ExecutableElement getExecutableElement(Expression node) {
     switch (node.getKind()) {
       case CLASS_INSTANCE_CREATION:
-        return ((ClassInstanceCreation) node).getMethodBinding();
+        return ((ClassInstanceCreation) node).getExecutableElement();
       case METHOD_INVOCATION:
-        return ((MethodInvocation) node).getMethodBinding();
+        return ((MethodInvocation) node).getExecutableElement();
       case SUPER_METHOD_INVOCATION:
-        return ((SuperMethodInvocation) node).getMethodBinding();
+        return ((SuperMethodInvocation) node).getExecutableElement();
       default:
         return null;
     }

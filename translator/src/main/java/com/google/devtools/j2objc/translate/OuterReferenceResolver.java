@@ -81,7 +81,8 @@ public class OuterReferenceResolver extends TreeVisitor {
   // A placeholder variable element that should be replaced with the outer
   // parameter in a constructor.
   public static final VariableElement OUTER_PARAMETER = new GeneratedVariableElement(
-      "<placeholder-variable>", null, ElementKind.PARAMETER, null);
+      "<placeholder-variable>", null, ElementKind.PARAMETER, null)
+      .setNonnull(true);
 
   private enum VisitingState { NEEDS_REVISIT, VISITED }
 
@@ -241,7 +242,8 @@ public class OuterReferenceResolver extends TreeVisitor {
       assert declaringClass != null : "Cannot find declaring class for " + scope.type;
       outerField = new GeneratedVariableElement(
           getOuterFieldName(scope.type), declaringClass.asType(), ElementKind.FIELD, scope.type)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .setNonnull(true);
       outerVars.put(scope.type, outerField);
     }
     return outerField;
@@ -446,7 +448,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (!ElementUtil.isStatic(node.getExecutableElement()) && isValue(target)) {
       GeneratedVariableElement targetField = new GeneratedVariableElement(
           "target$", target.getTypeMirror(), ElementKind.FIELD, node.getTypeElement())
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .setNonnull(true);
       // Add the target field as an outer field even though it's not really pointing to outer scope.
       outerVars.put(node.getTypeElement(), targetField);
     }

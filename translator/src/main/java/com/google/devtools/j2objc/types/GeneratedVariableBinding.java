@@ -44,6 +44,7 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
   private final boolean isParameter;
   private final boolean isField;
   private String typeQualifiers;
+  private boolean nonnull = false;
 
   public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
 
@@ -186,7 +187,17 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
     return sb.toString();
   }
 
+  @Override
   public boolean isEffectivelyFinal() {
     return false;
+  }
+
+  public boolean isNonnull() {
+    return nonnull;
+  }
+
+  public GeneratedVariableBinding setNonnull(boolean value) {
+    nonnull = value;
+    return this;
   }
 }

@@ -57,18 +57,19 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Adds nil_chk calls where required to maintain compatibility Java's
@@ -85,13 +86,13 @@ public class NilCheckResolver extends TreeVisitor {
 
   // These sets are used to pass down to parent nodes the set of variables that
   // are safe given that the expression is true or false.
-  private Set<IVariableBinding> safeVarsTrue = null;
-  private Set<IVariableBinding> safeVarsFalse = null;
+  private Set<VariableElement> safeVarsTrue = null;
+  private Set<VariableElement> safeVarsFalse = null;
   // Identifies the node from which safeVarsTrue and safeVarsFalse have been
   // assigned.
   private Expression conditionalSafeVarsNode = null;
 
-  private static final Set<IVariableBinding> EMPTY_VARS = Collections.emptySet();
+  private static final Set<VariableElement> EMPTY_VARS = Collections.emptySet();
 
   /**
    * A stack element that tracks which variables are safe and don't need a
@@ -109,10 +110,10 @@ public class NilCheckResolver extends TreeVisitor {
     // Indicates that control flow does not continue through the end of this
     // scope because of a return, throw, break or continue.
     private boolean terminates = false;
-    private final Map<IVariableBinding, Boolean> vars = new HashMap<>();
+    private final Map<VariableElement, Boolean> vars = new HashMap<>();
     // Saves unsafe vars to be applied the next time this scope becomes the top
     // of the stack.
-    private Map<IVariableBinding, Boolean> mergedVars = null;
+    private Map<VariableElement, Boolean> mergedVars = null;
 
     private Scope(Scope next, Kind kind, String label) {
       this.next = next;
@@ -125,7 +126,7 @@ public class NilCheckResolver extends TreeVisitor {
       }
     }
 
-    private void mergeVars(Map<IVariableBinding, Boolean> varsToMerge) {
+    private void mergeVars(Map<VariableElement, Boolean> varsToMerge) {
       if (mergedVars == null) {
         mergedVars = new HashMap<>();
         mergedVars.putAll(varsToMerge);
@@ -133,9 +134,9 @@ public class NilCheckResolver extends TreeVisitor {
         return;
       }
       // Remove any safe variables that aren't in both maps.
-      Iterator<Map.Entry<IVariableBinding, Boolean>> iter = mergedVars.entrySet().iterator();
+      Iterator<Map.Entry<VariableElement, Boolean>> iter = mergedVars.entrySet().iterator();
       while (iter.hasNext()) {
-        Map.Entry<IVariableBinding, Boolean> entry = iter.next();
+        Map.Entry<VariableElement, Boolean> entry = iter.next();
         if (entry.getValue()) {
           Boolean mergedValue = varsToMerge.get(entry.getKey());
           if (mergedValue == null || !mergedValue) {
@@ -144,25 +145,25 @@ public class NilCheckResolver extends TreeVisitor {
         }
       }
       // Add any unsafe variable from the merging map.
-      for (Map.Entry<IVariableBinding, Boolean> entry : varsToMerge.entrySet()) {
+      for (Map.Entry<VariableElement, Boolean> entry : varsToMerge.entrySet()) {
         if (!entry.getValue()) {
           mergedVars.put(entry.getKey(), false);
         }
       }
     }
 
-    private void mergeVars(Set<IVariableBinding> varsToMerge) {
+    private void mergeVars(Set<VariableElement> varsToMerge) {
       mergeVars(Maps.asMap(varsToMerge, Functions.constant(true)));
     }
 
-    private void mergeInto(Scope targetScope, Set<IVariableBinding> extraVars) {
-      Map<IVariableBinding, Boolean> vars = new HashMap<>();
-      for (IVariableBinding var : extraVars) {
+    private void mergeInto(Scope targetScope, Set<VariableElement> extraVars) {
+      Map<VariableElement, Boolean> vars = new HashMap<>();
+      for (VariableElement var : extraVars) {
         vars.put(var, true);
       }
       Scope curScope = this;
       while (curScope != targetScope) {
-        for (Map.Entry<IVariableBinding, Boolean> entry : curScope.vars.entrySet()) {
+        for (Map.Entry<VariableElement, Boolean> entry : curScope.vars.entrySet()) {
           if (!vars.containsKey(entry.getKey())) {
             vars.put(entry.getKey(), entry.getValue());
           }
@@ -190,7 +191,7 @@ public class NilCheckResolver extends TreeVisitor {
         vars.clear();
         terminates = false;
       } else {
-        Iterator<Map.Entry<IVariableBinding, Boolean>> iter = vars.entrySet().iterator();
+        Iterator<Map.Entry<VariableElement, Boolean>> iter = vars.entrySet().iterator();
         while (iter.hasNext()) {
           if (iter.next().getValue()) {
             iter.remove();
@@ -254,42 +255,42 @@ public class NilCheckResolver extends TreeVisitor {
   }
 
   private void setConditionalSafeVars(
-      Expression node, Set<IVariableBinding> newSafeVarsTrue,
-      Set<IVariableBinding> newSafeVarsFalse) {
+      Expression node, Set<VariableElement> newSafeVarsTrue,
+      Set<VariableElement> newSafeVarsFalse) {
     conditionalSafeVarsNode = node;
     safeVarsTrue = newSafeVarsTrue;
     safeVarsFalse = newSafeVarsFalse;
   }
 
-  private Set<IVariableBinding> getSafeVarsTrue(Expression expr) {
+  private Set<VariableElement> getSafeVarsTrue(Expression expr) {
     if (expr == conditionalSafeVarsNode) {
       return safeVarsTrue;
     }
     return EMPTY_VARS;
   }
 
-  private Set<IVariableBinding> getSafeVarsFalse(Expression expr) {
+  private Set<VariableElement> getSafeVarsFalse(Expression expr) {
     if (expr == conditionalSafeVarsNode) {
       return safeVarsFalse;
     }
     return EMPTY_VARS;
   }
 
-  private void addSafeVar(IVariableBinding var) {
+  private void addSafeVar(VariableElement var) {
     if (scope != null) {
       scope.vars.put(var, true);
     }
   }
 
-  private void addSafeVars(Set<IVariableBinding> vars) {
+  private void addSafeVars(Set<VariableElement> vars) {
     if (scope != null && vars != null) {
-      for (IVariableBinding var : vars) {
+      for (VariableElement var : vars) {
         scope.vars.put(var, true);
       }
     }
   }
 
-  private void removeSafeVar(IVariableBinding var) {
+  private void removeSafeVar(VariableElement var) {
     if (scope != null) {
       scope.vars.put(var, false);
     }
@@ -301,8 +302,8 @@ public class NilCheckResolver extends TreeVisitor {
     }
     Scope curScope = scope;
     while (curScope != null) {
-      for (IVariableBinding var : curScope.vars.keySet()) {
-        if (var.isField() && !BindingUtil.isFinal(var)) {
+      for (VariableElement var : curScope.vars.keySet()) {
+        if (var.getKind().isField() && !ElementUtil.isFinal(var)) {
           scope.vars.put(var, false);
         }
       }
@@ -322,7 +323,7 @@ public class NilCheckResolver extends TreeVisitor {
     }
   }
 
-  private boolean isSafeVar(IVariableBinding var) {
+  private boolean isSafeVar(VariableElement var) {
     Scope curScope = scope;
     while (curScope != null) {
       Boolean result = curScope.vars.get(var);
@@ -354,18 +355,19 @@ public class NilCheckResolver extends TreeVisitor {
   }
 
   // Checks if the given method is a primitive boxing or unboxing method.
-  private boolean isBoxingMethod(IMethodBinding method) {
-    ITypeBinding declaringClass = method.getDeclaringClass();
+  private boolean isBoxingMethod(ExecutableElement method) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
     // Autoboxing methods.
     if (typeEnv.isBoxedPrimitive(declaringClass)) {
-      String name = method.getName();
-      ITypeBinding returnType = method.getReturnType();
-      ITypeBinding[] paramTypes = method.getParameterTypes();
-      if (name.equals("valueOf") && paramTypes.length == 1 && paramTypes[0].isPrimitive()) {
+      String name = ElementUtil.getName(method);
+      TypeMirror returnType = method.getReturnType();
+      List<? extends VariableElement> params = method.getParameters();
+      if (name.equals("valueOf") && params.size() == 1
+          && params.get(0).asType().getKind().isPrimitive()) {
         return true;
       }
-      if (returnType.isPrimitive() && name.equals(returnType.getName() + "Value")
-          && paramTypes.length == 0) {
+      if (params.isEmpty() && returnType.getKind().isPrimitive()
+          && name.equals(TypeUtil.getName(returnType) + "Value")) {
         return true;
       }
     }
@@ -373,18 +375,14 @@ public class NilCheckResolver extends TreeVisitor {
   }
 
   private boolean needsNilCheck(Expression e) {
-    IVariableBinding sym = TreeUtil.getVariableBinding(e);
+    VariableElement sym = TreeUtil.getVariableElement(e);
     if (sym != null) {
-      // The target in a method reference is checked upon creation.
-      if (sym.getName().equals("target$")) {
-        return false;
-      }
-      return BindingUtil.isVolatile(sym) || !isSafeVar(sym);
+      return !ElementUtil.isNonnull(sym) && (ElementUtil.isVolatile(sym) || !isSafeVar(sym));
     }
-    IMethodBinding method = TreeUtil.getMethodBinding(e);
+    ExecutableElement method = TreeUtil.getExecutableElement(e);
     if (method != null) {
       // Check for some common cases where the result is known not to be null.
-      return !method.isConstructor() && !method.getName().equals("getClass")
+      return !ElementUtil.isConstructor(method) && !ElementUtil.getName(method).equals("getClass")
           && !isBoxingMethod(method);
     }
     switch (e.getKind()) {
@@ -405,7 +403,7 @@ public class NilCheckResolver extends TreeVisitor {
     if (!needsNilCheck(node)) {
       return;
     }
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    VariableElement var = TreeUtil.getVariableElement(node);
     if (var != null) {
       addSafeVar(var);
     }
@@ -432,18 +430,17 @@ public class NilCheckResolver extends TreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
     Expression receiver = node.getExpression();
     if (receiver != null) {
       receiver.accept(this);
-      if (!BindingUtil.isStatic(binding)) {
+      if (!ElementUtil.isStatic(node.getExecutableElement())) {
         addNilCheck(receiver);
       }
     }
     for (Expression arg : node.getArguments()) {
       arg.accept(this);
     }
-    if (!isBoxingMethod(node.getMethodBinding())) {
+    if (!isBoxingMethod(node.getExecutableElement())) {
       removeNonFinalFields();
       handleThrows();
     }
@@ -525,8 +522,8 @@ public class NilCheckResolver extends TreeVisitor {
 
   private boolean handleConditional(Expression expr, TreeNode thenNode, TreeNode elseNode) {
     expr.accept(this);
-    Set<IVariableBinding> safeVarsThen = getSafeVarsTrue(expr);
-    Set<IVariableBinding> safeVarsElse = getSafeVarsFalse(expr);
+    Set<VariableElement> safeVarsThen = getSafeVarsTrue(expr);
+    Set<VariableElement> safeVarsElse = getSafeVarsFalse(expr);
     Scope originalScope = scope;
     pushScope();
     addSafeVars(safeVarsThen);
@@ -555,11 +552,11 @@ public class NilCheckResolver extends TreeVisitor {
     if (equals || notEquals) {
       Expression lhs = node.getOperand(0);
       Expression rhs = node.getOperand(1);
-      IVariableBinding maybeNullVar = null;
+      VariableElement maybeNullVar = null;
       if (lhs instanceof NullLiteral) {
-        maybeNullVar = TreeUtil.getVariableBinding(rhs);
+        maybeNullVar = TreeUtil.getVariableElement(rhs);
       } else if (rhs instanceof NullLiteral) {
-        maybeNullVar = TreeUtil.getVariableBinding(lhs);
+        maybeNullVar = TreeUtil.getVariableElement(lhs);
       }
       if (maybeNullVar != null) {
         if (equals) {
@@ -573,14 +570,14 @@ public class NilCheckResolver extends TreeVisitor {
   }
 
   private boolean handleConditionalOperator(InfixExpression node, boolean logicalAnd) {
-    Set<IVariableBinding> newSafeVars = new HashSet<>();
+    Set<VariableElement> newSafeVars = new HashSet<>();
     int pushCount = 0;
     for (Iterator<Expression> it = node.getOperands().iterator(); it.hasNext(); ) {
       Expression operand = it.next();
       operand.accept(this);
-      Set<IVariableBinding> safeVarsForBranch =
+      Set<VariableElement> safeVarsForBranch =
           logicalAnd ? getSafeVarsTrue(operand) : getSafeVarsFalse(operand);
-      Set<IVariableBinding> safeVarsForMerge =
+      Set<VariableElement> safeVarsForMerge =
           logicalAnd ? getSafeVarsFalse(operand) : getSafeVarsTrue(operand);
       newSafeVars.addAll(safeVarsForBranch);
       if (it.hasNext()) {
@@ -598,7 +595,7 @@ public class NilCheckResolver extends TreeVisitor {
     return false;
   }
 
-  private void handleAssignment(IVariableBinding var, Expression value) {
+  private void handleAssignment(VariableElement var, Expression value) {
     if (needsNilCheck(value)) {
       removeSafeVar(var);
     } else {
@@ -609,7 +606,7 @@ public class NilCheckResolver extends TreeVisitor {
   @Override
   public void endVisit(Assignment node) {
     if (node.getOperator() == Assignment.Operator.ASSIGN) {
-      IVariableBinding var = TreeUtil.getVariableBinding(node.getLeftHandSide());
+      VariableElement var = TreeUtil.getVariableElement(node.getLeftHandSide());
       if (var != null) {
         handleAssignment(var, node.getRightHandSide());
       }
@@ -620,7 +617,7 @@ public class NilCheckResolver extends TreeVisitor {
   public void endVisit(VariableDeclarationFragment node) {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
-      handleAssignment(node.getVariableBinding(), initializer);
+      handleAssignment(node.getVariableElement(), initializer);
     }
   }
 
@@ -783,7 +780,7 @@ public class NilCheckResolver extends TreeVisitor {
   @Override
   public void endVisit(FunctionInvocation node) {
     if (node.getName().equals("nil_chk")) {
-      IVariableBinding var = TreeUtil.getVariableBinding(node.getArgument(0));
+      VariableElement var = TreeUtil.getVariableElement(node.getArgument(0));
       if (var != null) {
         addSafeVar(var);
       }

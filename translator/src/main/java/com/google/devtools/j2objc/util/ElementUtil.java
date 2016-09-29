@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtTypes;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -149,6 +150,13 @@ public final class ElementUtil {
    */
   public static boolean isInstanceVar(VariableElement element) {
     return element.getKind() == ElementKind.FIELD && !isGlobalVar(element);
+  }
+
+  public static boolean isNonnull(VariableElement element) {
+    if (element instanceof GeneratedVariableElement) {
+      return ((GeneratedVariableElement) element).isNonnull();
+    }
+    return BindingUtil.isNonnull(BindingConverter.unwrapVariableElement(element));
   }
 
   public static boolean isAbstract(Element element) {

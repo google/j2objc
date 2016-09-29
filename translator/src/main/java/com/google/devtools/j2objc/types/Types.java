@@ -303,6 +303,10 @@ public class Types {
         BindingConverter.unwrapTypeMirrorIntoTypeBinding(wrapperType)));
   }
 
+  public boolean isBoxedPrimitive(TypeElement type) {
+    return isBoxedPrimitive(BindingConverter.unwrapTypeElement(type));
+  }
+
   public boolean isBoxedPrimitive(ITypeBinding type) {
     return wrapperToPrimitiveTypes.containsKey(type);
   }

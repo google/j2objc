@@ -32,6 +32,7 @@ import javax.lang.model.type.TypeMirror;
 public class GeneratedVariableElement extends GeneratedElement implements VariableElement {
 
   private final TypeMirror type;
+  private boolean nonnull = false;
 
   public GeneratedVariableElement(
       String name, TypeMirror type, ElementKind kind, Element enclosingElement) {
@@ -59,6 +60,15 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
   @Override
   public Object getConstantValue() {
     return null;
+  }
+
+  public boolean isNonnull() {
+    return nonnull;
+  }
+
+  public GeneratedVariableElement setNonnull(boolean value) {
+    nonnull = value;
+    return this;
   }
 
   @Override
