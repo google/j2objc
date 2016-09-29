@@ -14,6 +14,8 @@
 #
 # Author: Keith Stanger
 
+JARJAR_HOME = jarjar
+JARJAR_JAR = jarjar-1.4.jar
 JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
 JUNIT_JAR = j2objc_junit.jar
 
@@ -46,7 +48,6 @@ HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar
 MOCKITO_JAR = mockito-core-1.9.5.jar
 MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
-JARJAR_JAR = jarjar-1.4.jar
 JAVAC_JAR = tools.jar
 
 DOCLAVA_JAR = doclava-1.0.6.jar

@@ -214,11 +214,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.jarjar</groupId>
-      <artifactId>jarjar</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <dependency>
         <groupId>com.google.doclava</groupId>
         <artifactId>doclava</artifactId>
         <version>1.0.6</version>
