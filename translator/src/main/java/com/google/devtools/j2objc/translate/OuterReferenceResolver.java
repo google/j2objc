@@ -78,16 +78,10 @@ import javax.lang.model.type.TypeMirror;
  */
 public class OuterReferenceResolver extends TreeVisitor {
 
-  // A placeholder variable element that should be replaced with the outer
-  // parameter in a constructor.
-  public static final VariableElement OUTER_PARAMETER = new GeneratedVariableElement(
-      "<placeholder-variable>", null, ElementKind.PARAMETER, null)
-      .setNonnull(true);
-
   private enum VisitingState { NEEDS_REVISIT, VISITED }
 
   private Map<TypeElement, VariableElement> outerVars = new HashMap<>();
-  private Set<TypeElement> usesOuterParam = new HashSet<>();
+  private Map<TypeElement, VariableElement> outerParams = new HashMap<>();
   private ListMultimap<TypeElement, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
   private Map<TreeNode.Key, List<List<VariableElement>>> captureArgs = new HashMap<>();
@@ -105,8 +99,11 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   public boolean needsOuterParam(TypeElement type) {
-    return outerVars.containsKey(type) || usesOuterParam.contains(type)
-        || (ElementUtil.hasOuterContext(type) && !ElementUtil.isLocal(type));
+    return outerParams.containsKey(type) || automaticOuterParam(type);
+  }
+
+  public VariableElement getOuterParam(TypeElement type) {
+    return outerParams.get(type);
   }
 
   public TypeMirror getOuterType(TypeElement type) {
@@ -114,7 +111,13 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (outerField != null) {
       return outerField.asType();
     }
-    return ElementUtil.getDeclaringClass(type).asType();
+    return getDeclaringType(type);
+  }
+
+  private static TypeMirror getDeclaringType(TypeElement type) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(type);
+    assert declaringClass != null : "Cannot find declaring class for " + type;
+    return declaringClass.asType();
   }
 
   public VariableElement getOuterField(TypeElement type) {
@@ -140,6 +143,10 @@ public class OuterReferenceResolver extends TreeVisitor {
       return result;
     }
     return Collections.emptyList();
+  }
+
+  private static boolean automaticOuterParam(TypeElement type) {
+    return ElementUtil.hasOuterContext(type) && !ElementUtil.isLocal(type);
   }
 
   private static class Capture {
@@ -229,24 +236,36 @@ public class OuterReferenceResolver extends TreeVisitor {
     return "val" + (suffix > 0 ? suffix : "") + "$" + var.getSimpleName().toString();
   }
 
-  private VariableElement getOrCreateOuterField(Scope scope) {
-    // Check that this isn't a lambda, since we'll always capture the field itself
-    if (scope.initializingContext && scope == peekScope()) {
-      usesOuterParam.add(scope.type);
-      return OUTER_PARAMETER;
+  private VariableElement getOrCreateOuterParam(TypeElement type) {
+    VariableElement outerParam = outerParams.get(type);
+    if (outerParam == null) {
+      outerParam = new GeneratedVariableElement(
+          "outer$", getDeclaringType(type), ElementKind.PARAMETER, type)
+          .setNonnull(true);
+      outerParams.put(type, outerParam);
     }
+    return outerParam;
+  }
 
-    VariableElement outerField = outerVars.get(scope.type);
+  private VariableElement getOrCreateOuterField(TypeElement type) {
+    VariableElement outerField = outerVars.get(type);
     if (outerField == null) {
-      TypeElement declaringClass = ElementUtil.getDeclaringClass(scope.type);
-      assert declaringClass != null : "Cannot find declaring class for " + scope.type;
       outerField = new GeneratedVariableElement(
-          getOuterFieldName(scope.type), declaringClass.asType(), ElementKind.FIELD, scope.type)
+          getOuterFieldName(type), getDeclaringType(type), ElementKind.FIELD, type)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .setNonnull(true);
-      outerVars.put(scope.type, outerField);
+      outerVars.put(type, outerField);
     }
     return outerField;
+  }
+
+  private VariableElement getOrCreateOuterVar(Scope scope) {
+    // Always create the outer param since it is required to initialize the field.
+    VariableElement outerParam = getOrCreateOuterParam(scope.type);
+    if (scope.initializingContext && scope == peekScope()) {
+      return outerParam;
+    }
+    return getOrCreateOuterField(scope.type);
   }
 
   private VariableElement getOrCreateInnerField(VariableElement var, TypeElement declaringType) {
@@ -272,7 +291,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     List<VariableElement> path = new ArrayList<>();
     for (Scope scope = peekScope(); !type.equals(scope.type); scope = scope.outer) {
       if (scope == peekScope() || !ElementUtil.isLambda(scope.type)) {
-        path.add(getOrCreateOuterField(scope));
+        path.add(getOrCreateOuterVar(scope));
       }
     }
     return path;
@@ -282,7 +301,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     List<VariableElement> path = new ArrayList<>();
     for (Scope scope = peekScope(); !scope.inheritedScope.contains(type); scope = scope.outer) {
       if (scope == peekScope() || !ElementUtil.isLambda(scope.type)) {
-        path.add(getOrCreateOuterField(scope));
+        path.add(getOrCreateOuterVar(scope));
       }
     }
     return path;
@@ -312,7 +331,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     while (!(scope = scope.outer).declaredVars.contains(var)) {
       // Except for the current scope do not include lambdas in the path.
       if (!ElementUtil.isLambda(scope.type)) {
-        path.add(getOrCreateOuterField(lastScope));
+        path.add(getOrCreateOuterVar(lastScope));
         lastScope = scope;
       }
     }
@@ -328,6 +347,9 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private void pushType(TypeElement type) {
     topScope = new Scope(topScope, type, typeEnv);
+    if (automaticOuterParam(type)) {
+      getOrCreateOuterParam(type);
+    }
   }
 
   private void popType(TreeNode node) {
@@ -446,12 +468,16 @@ public class OuterReferenceResolver extends TreeVisitor {
   public void endVisit(ExpressionMethodReference node) {
     Expression target = node.getExpression();
     if (!ElementUtil.isStatic(node.getExecutableElement()) && isValue(target)) {
-      GeneratedVariableElement targetField = new GeneratedVariableElement(
-          "target$", target.getTypeMirror(), ElementKind.FIELD, node.getTypeElement())
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .setNonnull(true);
+      TypeElement type = node.getTypeElement();
+      TypeMirror targetType = target.getTypeMirror();
       // Add the target field as an outer field even though it's not really pointing to outer scope.
-      outerVars.put(node.getTypeElement(), targetField);
+      outerVars.put(type, new GeneratedVariableElement(
+          "target$", targetType, ElementKind.FIELD, type)
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .setNonnull(true));
+      outerParams.put(type, new GeneratedVariableElement(
+          "outer$", targetType, ElementKind.PARAMETER, type)
+          .setNonnull(true));
     }
   }
 

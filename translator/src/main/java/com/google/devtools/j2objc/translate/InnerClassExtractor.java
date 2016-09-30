@@ -162,7 +162,7 @@ public class InnerClassExtractor extends TreeVisitor {
       AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
     ITypeBinding type = typeNode.getTypeBinding();
     TypeElement typeE = typeNode.getTypeElement();
-    IVariableBinding outerParamBinding = null;
+    VariableElement outerParam = outerResolver.getOuterParam(typeE);
 
     GeneratedMethodBinding constructorBinding =
         new GeneratedMethodBinding(constructor.getMethodBinding().getMethodDeclaration());
@@ -171,14 +171,9 @@ public class InnerClassExtractor extends TreeVisitor {
     // Adds the outer and captured parameters to the declaration.
     List<SingleVariableDeclaration> captureDecls = constructor.getParameters().subList(0, 0);
     List<ITypeBinding> captureTypes = constructorBinding.getParameters().subList(0, 0);
-    if (outerResolver.needsOuterParam(typeE)) {
-      ITypeBinding outerType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-          outerResolver.getOuterType(typeE));
-      GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
-          "outer$", Modifier.FINAL, outerType, false, true, type, constructorBinding);
-      captureDecls.add(new SingleVariableDeclaration(paramBinding));
-      captureTypes.add(outerType);
-      outerParamBinding = paramBinding;
+    if (outerParam != null) {
+      captureDecls.add(new SingleVariableDeclaration(outerParam));
+      captureTypes.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerParam.asType()));
     }
     List<VariableElement> innerFields = outerResolver.getInnerFields(typeE);
     List<IVariableBinding> captureParams = Lists.newArrayListWithCapacity(innerFields.size());
@@ -214,9 +209,9 @@ public class InnerClassExtractor extends TreeVisitor {
       thisCall.setMethodBinding(newThisBinding);
       List<Expression> args = thisCall.getArguments().subList(0, 0);
       List<ITypeBinding> params = newThisBinding.getParameters().subList(0, 0);
-      if (outerParamBinding != null) {
-        args.add(new SimpleName(outerParamBinding));
-        params.add(outerParamBinding.getType());
+      if (outerParam != null) {
+        args.add(new SimpleName(outerParam));
+        params.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerParam.asType()));
       }
       for (IVariableBinding captureParam : captureParams) {
         args.add(new SimpleName(captureParam));
@@ -232,9 +227,9 @@ public class InnerClassExtractor extends TreeVisitor {
       VariableElement outerField = outerResolver.getOuterField(typeE);
       int idx = 0;
       if (outerField != null) {
-        assert outerParamBinding != null;
+        assert outerParam != null;
         statements.add(idx++, new ExpressionStatement(
-            new Assignment(new SimpleName(outerField), new SimpleName(outerParamBinding))));
+            new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
       }
       for (int i = 0; i < innerFields.size(); i++) {
         statements.add(idx++, new ExpressionStatement(new Assignment(

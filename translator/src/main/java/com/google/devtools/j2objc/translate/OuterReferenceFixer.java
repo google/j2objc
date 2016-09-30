@@ -14,14 +14,11 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
@@ -32,7 +29,6 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.List;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -46,29 +42,9 @@ import javax.lang.model.type.TypeMirror;
 public class OuterReferenceFixer extends TreeVisitor {
 
   private final OuterReferenceResolver outerResolver;
-  private VariableElement outerParam = null;
 
   public OuterReferenceFixer(OuterReferenceResolver outerResolver) {
     this.outerResolver = outerResolver;
-  }
-
-  @Override
-  public boolean visit(MethodDeclaration node) {
-    if (node.getExecutableElement().getKind() == ElementKind.CONSTRUCTOR) {
-      List<SingleVariableDeclaration> params = node.getParameters();
-      if (params.size() > 0) {
-        VariableElement firstParam = params.get(0).getVariableElement();
-        if (firstParam.getSimpleName().toString().equals("outer$")) {
-          outerParam = firstParam;
-        }
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public void endVisit(MethodDeclaration node) {
-    outerParam = null;
   }
 
   @Override
@@ -106,7 +82,7 @@ public class OuterReferenceFixer extends TreeVisitor {
     }
     List<VariableElement> path = outerResolver.getPath(node);
     if (path != null) {
-      return Name.newName(fixPath(path));
+      return Name.newName(path);
     }
     return new ThisExpression(declaringClass);
   }
@@ -115,7 +91,7 @@ public class OuterReferenceFixer extends TreeVisitor {
   public boolean visit(MethodInvocation node) {
     List<VariableElement> path = outerResolver.getPath(node);
     if (path != null) {
-      node.setExpression(Name.newName(fixPath(path)));
+      node.setExpression(Name.newName(path));
     }
     return true;
   }
@@ -125,7 +101,7 @@ public class OuterReferenceFixer extends TreeVisitor {
     List<VariableElement> path = outerResolver.getPath(node);
     if (path != null) {
       // We substitute the qualifying type name with the outer variable name.
-      node.setQualifier(Name.newName(fixPath(path)));
+      node.setQualifier(Name.newName(path));
     } else {
       node.setQualifier(null);
     }
@@ -139,7 +115,7 @@ public class OuterReferenceFixer extends TreeVisitor {
         VariableElement var = path.get(0);
         node.replaceWith(TreeUtil.newLiteral(var.getConstantValue(), typeEnv));
       } else {
-        node.replaceWith(Name.newName(fixPath(path)));
+        node.replaceWith(Name.newName(path));
       }
     }
     return true;
@@ -149,7 +125,7 @@ public class OuterReferenceFixer extends TreeVisitor {
   public boolean visit(ThisExpression node) {
     List<VariableElement> path = outerResolver.getPath(node);
     if (path != null) {
-      node.replaceWith(Name.newName(fixPath(path)));
+      node.replaceWith(Name.newName(path));
     } else {
       node.setQualifier(null);
     }
@@ -168,7 +144,7 @@ public class OuterReferenceFixer extends TreeVisitor {
     if (outerResolver.needsOuterParam(superType)) {
       Expression outerArg = TreeUtil.remove(node.getExpression());
       if (outerArg == null) {
-        outerArg = Name.newName(fixPath(outerResolver.getPath(typeNode)));
+        outerArg = Name.newName(outerResolver.getPath(typeNode));
       }
       args.add(outerArg);
       parameterTypes.add(outerResolver.getOuterType(superType));
@@ -187,14 +163,5 @@ public class OuterReferenceFixer extends TreeVisitor {
       node.setExecutableElement(element);
       assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();
     }
-  }
-
-  private List<VariableElement> fixPath(List<VariableElement> path) {
-    if (path.get(0) == OuterReferenceResolver.OUTER_PARAMETER) {
-      assert outerParam != null;
-      path = Lists.newArrayList(path);
-      path.set(0, outerParam);
-    }
-    return path;
   }
 }
