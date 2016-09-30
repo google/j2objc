@@ -411,6 +411,7 @@ public class DebugASTPrinter extends TreeVisitor {
         it.next().accept(this);
       }
     }
+    printStaticBlock(node);
     sb.println('}');
     return false;
   }
@@ -724,12 +725,13 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(NativeExpression node) {
-    sb.println(node.getCode());
+    sb.print(node.getCode());
     return false;
   }
 
   @Override
   public boolean visit(NativeStatement node) {
+    sb.printIndent();
     sb.println(node.getCode());
     return false;
   }
@@ -1073,6 +1075,7 @@ public class DebugASTPrinter extends TreeVisitor {
     for (Iterator<BodyDeclaration> it = node.getBodyDeclarations().iterator(); it.hasNext(); ) {
       it.next().accept(this);
     }
+    printStaticBlock(node);
     sb.unindent();
     sb.printIndent();
     sb.println('}');
@@ -1236,6 +1239,20 @@ public class DebugASTPrinter extends TreeVisitor {
         }
       }
       sb.print('>');
+    }
+  }
+
+  private void printStaticBlock(AbstractTypeDeclaration node) {
+    if (!node.getClassInitStatements().isEmpty()) {
+      sb.printIndent();
+      sb.println("static {");
+      sb.indent();
+      for (Statement stmt : node.getClassInitStatements()) {
+        stmt.accept(this);
+      }
+      sb.unindent();
+      sb.printIndent();
+      sb.println('}');
     }
   }
 }
