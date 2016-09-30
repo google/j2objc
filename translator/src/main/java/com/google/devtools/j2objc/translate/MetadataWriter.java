@@ -208,9 +208,13 @@ public class MetadataWriter extends TreeVisitor {
         }
         sb.append("  };");
         stmts.add(new NativeStatement(sb.toString()));
+        stmts.add(new NativeStatement("#pragma clang diagnostic push"));
+        stmts.add(new NativeStatement(
+            "#pragma clang diagnostic ignored \"-Wobjc-multiple-method-names\""));
         for (String selector : selectorMetadata) {
           stmts.add(new NativeStatement(selector));
         }
+        stmts.add(new NativeStatement("#pragma clang diagnostic pop"));
       }
       return methodMetadata.size();
     }

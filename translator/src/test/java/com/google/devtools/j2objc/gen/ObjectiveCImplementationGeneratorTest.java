@@ -542,11 +542,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       throws IOException {
     String translation = translateSourceFile(
             "class Test { public static String foo; }", "Test", "Test.m");
-
-    assertNotInTranslation(translation, "#pragma clang diagnostic push");
     assertNotInTranslation(translation,
         "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
-    assertNotInTranslation(translation, "#pragma clang diagnostic pop");
   }
 
   public void testFreeFormNativeCode() throws IOException {
