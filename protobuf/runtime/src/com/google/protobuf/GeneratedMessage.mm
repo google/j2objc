@@ -42,6 +42,7 @@
 #import "com/google/protobuf/CodedInputStream.h"
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/ExtensionRegistryLite.h"
+#import "com/google/protobuf/Internal.h"
 #import "com/google/protobuf/InvalidProtocolBufferException.h"
 #import "com/google/protobuf/ProtocolMessageEnum.h"
 #import "com/google/protobuf/WireFormat.h"
@@ -3031,6 +3032,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_GeneratedExte
 
 // Define the type literal accessors for all the Message type interfaces here
 // because they don't have source files.
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufInternal_EnumLite)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessage)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessage_Builder)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessageOrBuilder)

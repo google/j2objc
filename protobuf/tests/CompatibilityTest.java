@@ -23,6 +23,7 @@ import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.GeneratedMessage.ExtendableMessageOrBuilder;
+import com.google.protobuf.Internal;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
@@ -1325,5 +1326,11 @@ public class CompatibilityTest extends ProtobufTest {
     ExtendableMessageOrBuilder emob = (ExtendableMessageOrBuilder) o;
     o = data;
     emob = (ExtendableMessageOrBuilder) o;
+  }
+
+  public void testInternalEnumLite() throws Exception {
+    Object value = TypicalData.EnumType.VALUE9;
+    assertTrue(value instanceof Internal.EnumLite);
+    assertEquals(9, ((Internal.EnumLite) value).getNumber());
   }
 }
