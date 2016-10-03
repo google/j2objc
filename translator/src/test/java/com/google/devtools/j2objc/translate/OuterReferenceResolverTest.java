@@ -171,6 +171,25 @@ public class OuterReferenceResolverTest extends GenerationTest {
     }
   }
 
+  public void testNestedLocalClassesWithNestedCreations() {
+    // This test is particularly tricky for OuterReferenceResolver because A captures variable i,
+    // but that is not known until after A's creation. A's creation occurs within B, which requires
+    // B to have an outer field in order to access A's capturing field for i. B's creation therefore
+    // requires the outer field to be passed as an outer argument.
+    // Because of the cascading effects of the statements in this test and the order in which they
+    // occur, we would need to do three passes over the code to resolve B's creation successfuly.
+    resolveSource("Test",
+        "class Test { void test(int i) { class A { "
+        + "void foo() { class B { void bar() { new B(); new A(); } } } "
+        + "int other() { return i; } } } }");
+    ClassInstanceCreation bCreate =
+        (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(0);
+    List<VariableElement> path = outerResolver.getPath(bCreate);
+    assertNotNull(path);
+    assertEquals(1, path.size());
+    assertEquals("this$0", ElementUtil.getName(path.get(0)));
+  }
+
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
     outerResolver.run(unit);

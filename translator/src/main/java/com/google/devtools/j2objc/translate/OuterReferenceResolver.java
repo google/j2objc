@@ -78,15 +78,12 @@ import javax.lang.model.type.TypeMirror;
  */
 public class OuterReferenceResolver extends TreeVisitor {
 
-  private enum VisitingState { NEEDS_REVISIT, VISITED }
-
   private Map<TypeElement, VariableElement> outerVars = new HashMap<>();
   private Map<TypeElement, VariableElement> outerParams = new HashMap<>();
   private ListMultimap<TypeElement, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
   private Map<TreeNode.Key, List<List<VariableElement>>> captureArgs = new HashMap<>();
   private Scope topScope = null;
-  private Map<TypeElement, VisitingState> visitingStates = new HashMap<>();
 
   @Override
   public void run(TreeNode node) {
@@ -175,6 +172,10 @@ public class OuterReferenceResolver extends TreeVisitor {
     private final Set<Element> inheritedScope;
     private final boolean initializingContext;
     private final Set<VariableElement> declaredVars = new HashSet<>();
+    // These callbacks are used for correct resolution of local classes where the captures are not
+    // always known at the point of creation.
+    private List<Runnable> onExit = new ArrayList<>();
+    private List<Runnable> onOuterParam = new ArrayList<>();
     // The following fields are used only by CLASS scope kinds.
     private int constructorCount = 0;
     private int constructorsNotNeedingSuperOuterScope = 0;
@@ -232,19 +233,51 @@ public class OuterReferenceResolver extends TreeVisitor {
     return scope;
   }
 
-  // Marks the given type to be revisited. Returns true if the type has been maked for a revisit,
-  // false if the type has already been visited.
-  private boolean revisitScope(TypeElement type) {
-    VisitingState state = visitingStates.get(type);
-    if (state == null) {
-      visitingStates.put(type, VisitingState.NEEDS_REVISIT);
-      return true;
+  // Finds the non-method scope for the given type.
+  private Scope findScopeForType(TypeElement type) {
+    Scope scope = peekScope();
+    while (scope != null) {
+      if (scope.kind != ScopeKind.METHOD && type.equals(scope.type)) {
+        return scope;
+      }
+      scope = scope.outer;
     }
-    switch (state) {
-      case NEEDS_REVISIT: return true;
-      case VISITED: return false;
+    return null;
+  }
+
+  private Runnable captureCurrentScope(Runnable runnable) {
+    Scope capturedScope = peekScope();
+    return new Runnable() {
+      @Override
+      public void run() {
+        Scope saved = topScope;
+        topScope = capturedScope;
+        runnable.run();
+        topScope = saved;
+      }
+    };
+  }
+
+  private void onExitScope(TypeElement type, Runnable runnable) {
+    Scope scope = findScopeForType(type);
+    if (scope != null) {
+      scope.onExit.add(captureCurrentScope(runnable));
+    } else {
+      // The given type is not currently in scope, so execute the runnable now.
+      runnable.run();
     }
-    throw new AssertionError("Invalid state");
+  }
+
+  // Executes the runnable if or when the given type needs an outer param.
+  private void whenNeedsOuterParam(TypeElement type, Runnable runnable) {
+    if (needsOuterParam(type)) {
+      runnable.run();
+    } else if (ElementUtil.isLocal(type)) {
+      Scope scope = findScopeForType(type);
+      if (scope != null) {
+        scope.onOuterParam.add(captureCurrentScope(runnable));
+      }
+    }
   }
 
   private String getOuterFieldName(TypeElement type) {
@@ -275,6 +308,10 @@ public class OuterReferenceResolver extends TreeVisitor {
           "outer$", getDeclaringType(type), ElementKind.PARAMETER, type)
           .setNonnull(true);
       outerParams.put(type, outerParam);
+      Scope scope = findScopeForType(type);
+      for (Runnable runnable : scope.onOuterParam) {
+        runnable.run();
+      }
     }
     return outerParam;
   }
@@ -381,14 +418,11 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
-  private void popType(TreeNode node) {
+  private void popType() {
     Scope currentScope = peekScope();
     topScope = currentScope.outer;
-    VisitingState state = visitingStates.get(currentScope.type);
-    boolean revisit = state == VisitingState.NEEDS_REVISIT;
-    visitingStates.put(currentScope.type, VisitingState.VISITED);
-    if (revisit) {
-      node.accept(this);
+    for (Runnable runnable : currentScope.onExit) {
+      runnable.run();
     }
   }
 
@@ -431,7 +465,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       addSuperOuterPath(node, node.getTypeElement());
     }
     resolveCaptureArgs(node, ElementUtil.getSuperclass(node.getTypeElement()));
-    popType(node);
+    popType();
   }
 
   @Override
@@ -447,7 +481,7 @@ public class OuterReferenceResolver extends TreeVisitor {
         || ((ClassInstanceCreation) parent).getExpression() == null) {
       addSuperOuterPath(node, node.getTypeElement());
     }
-    popType(node);
+    popType();
   }
 
   @Override
@@ -458,7 +492,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    popType(node);
+    popType();
   }
 
   @Override
@@ -469,7 +503,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    popType(node);
+    popType();
   }
 
   private void endVisitFunctionalExpression(FunctionalExpression node) {
@@ -489,7 +523,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(LambdaExpression node) {
-    popType(node);
+    popType();
     endVisitFunctionalExpression(node);
   }
 
@@ -593,18 +627,22 @@ public class OuterReferenceResolver extends TreeVisitor {
     TypeElement lambdaType = node.getTypeElement();
     pushType(lambdaType);
     addSuperInvocationPath(node.getName(), node.getQualifier());
-    popType(node);
+    popType();
     endVisitFunctionalExpression(node);
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
     TypeElement typeElement = (TypeElement) node.getExecutableElement().getEnclosingElement();
-    if (node.getExpression() == null && needsOuterParam(typeElement)) {
-      addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(getOuterType(typeElement))));
+    if (node.getExpression() == null) {
+      whenNeedsOuterParam(typeElement, () -> {
+        addPath(node, getOuterPathInherited(TypeUtil.asTypeElement(getOuterType(typeElement))));
+      });
     }
-    if (ElementUtil.isLocal(typeElement) && !revisitScope(typeElement)) {
-      resolveCaptureArgs(node, typeElement);
+    if (ElementUtil.isLocal(typeElement)) {
+      onExitScope(typeElement, () -> {
+        resolveCaptureArgs(node, typeElement);
+      });
     }
   }
 
@@ -623,14 +661,16 @@ public class OuterReferenceResolver extends TreeVisitor {
     // transferred to the inner ClassInstanceCreation. The capture scope of the CreationReference
     // node will be transferred to the ClassInstanceCreation that creates the lambda instance.
     TypeElement creationElement = TypeUtil.asTypeElement(creationType);
-    if (needsOuterParam(creationElement)) {
+    whenNeedsOuterParam(creationElement, () -> {
       TypeElement enclosingTypeElement = ElementUtil.getDeclaringClass(creationElement);
       addPath(typeNode, getOuterPathInherited(enclosingTypeElement));
+    });
+    if (ElementUtil.isLocal(creationElement)) {
+      onExitScope(creationElement, () -> {
+        resolveCaptureArgs(typeNode, creationElement);
+      });
     }
-    if (ElementUtil.isLocal(creationElement) && !revisitScope(creationElement)) {
-      resolveCaptureArgs(typeNode, creationElement);
-    }
-    popType(node);
+    popType();
 
     endVisitFunctionalExpression(node);
   }
