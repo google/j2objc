@@ -716,6 +716,7 @@ JAVA_PRIVATE_SOURCES_NET = \
   okio/Util.java
 
 JAVA_PUBLIC_SOURCES_UTIL = \
+  java/util/Base64.java \
   java/util/EventListener.java \
   java/util/EventListenerProxy.java \
   java/util/EventObject.java \

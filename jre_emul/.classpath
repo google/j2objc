@@ -30,6 +30,7 @@
 	<classpathentry kind="src" path="android/platform/external/mockwebserver/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/test/java"/>
+	<classpathentry kind="src" path="android/platform/libcore/luni/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/luni/src/test/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/objc/java"/>

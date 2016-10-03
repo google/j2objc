@@ -348,6 +348,7 @@ TEST_SOURCES := \
     libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/text/SimpleDateFormatTest.java \
+    libcore/java/util/Base64Test.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
     libcore/java/util/CurrencyTest.java \
