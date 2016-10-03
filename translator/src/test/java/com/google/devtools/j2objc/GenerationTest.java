@@ -69,6 +69,7 @@ public class GenerationTest extends TestCase {
   protected File tempDir;
   protected Parser parser;
   private DeadCodeMap deadCodeMap = null;
+  private DeadCodeMap treeShakerMap = null;
 
   static {
     // Prevents errors and warnings from being printed to the console.
@@ -114,6 +115,10 @@ public class GenerationTest extends TestCase {
   protected void setDeadCodeMap(DeadCodeMap deadCodeMap) {
     this.deadCodeMap = deadCodeMap;
   }
+  
+  protected void setTreeShakerMap(DeadCodeMap treeShakerMap) {
+    this.treeShakerMap = treeShakerMap;
+  }
 
   protected void addSourcesToSourcepaths() throws IOException {
     Options.getSourcePathEntries().add(tempDir.getCanonicalPath());
@@ -151,7 +156,7 @@ public class GenerationTest extends TestCase {
    */
   protected CompilationUnit translateType(String typeName, String source) {
     CompilationUnit newUnit = compileType(typeName, source);
-    TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
+    TranslationProcessor.applyMutations(newUnit, deadCodeMap, treeShakerMap, TimeTracker.noop());
     return newUnit;
   }
 
@@ -373,7 +378,8 @@ public class GenerationTest extends TestCase {
     List<ProcessingContext> inputs = batch.getInputs();
     parser.setEnableDocComments(Options.docCommentsEnabled());
     new InputFilePreprocessor(parser).processInputs(inputs);
-    new TranslationProcessor(parser, DeadCodeMap.builder().build()).processInputs(inputs);
+    new TranslationProcessor(parser, DeadCodeMap.builder().build(), 
+        DeadCodeMap.builder().build()).processInputs(inputs);
     return getTranslatedFile(outputPath + extension);
   }
 

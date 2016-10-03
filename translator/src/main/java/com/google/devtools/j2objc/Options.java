@@ -107,6 +107,7 @@ public class Options {
   private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
+  private static File treeShakerUsageFile = null;
 
   public static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
   // Null if not set (means we use the default). Can be empty also (means we use no mapping files).
@@ -414,6 +415,11 @@ public class Options {
           usage("--dead-code-report requires an argument");
         }
         proGuardUsageFile = new File(args[nArg]);
+      } else if (arg.equals("--tree-shaker-report")) {
+        if (++nArg == args.length) {
+          usage("--tree-shaker-report requires an argument");
+        }
+        treeShakerUsageFile = new File(args[nArg]);
       } else if (arg.equals("--prefix")) {
         if (++nArg == args.length) {
           usage("--prefix requires an argument");
@@ -850,8 +856,20 @@ public class Options {
     return fileHeader;
   }
 
+  public static void setProGuardUsageFile(File newProGuardUsageFile) {
+    proGuardUsageFile = newProGuardUsageFile;
+  }
+  
+  public static void setTreeShakerUsageFile(File newTreeShakerUsageFile) {
+    treeShakerUsageFile = newTreeShakerUsageFile;
+  }
+  
   public static File getProGuardUsageFile() {
     return proGuardUsageFile;
+  }
+  
+  public static File getTreeShakerUsageFile() {
+    return treeShakerUsageFile;
   }
 
   public static File getOutputHeaderMappingFile() {

@@ -127,4 +127,15 @@ public class DeadCodeMap {
   public boolean classHasConstructorRemoved(String clazz) {
     return hasConstructorRemovedClasses.contains(clazz);
   }
+  
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    
+    builder.append(deadClasses.asList().toString() + "\n");
+    builder.append(deadFields.toString() + "\n");
+    builder.append(deadMethods.toString());
+    
+    return builder.toString();
+  }
 }

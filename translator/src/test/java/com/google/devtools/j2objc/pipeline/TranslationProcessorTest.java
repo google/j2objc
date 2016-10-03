@@ -58,7 +58,7 @@ public class TranslationProcessorTest extends GenerationTest {
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null, null);
     processor.processInputs(batch.getInputs());
 
     assertEquals(0, ErrorUtil.errorCount());
@@ -71,7 +71,7 @@ public class TranslationProcessorTest extends GenerationTest {
 
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null, null);
     processor.processInputs(batch.getInputs());
     processor.processBuildClosureDependencies();
 
@@ -95,7 +95,7 @@ public class TranslationProcessorTest extends GenerationTest {
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null, null);
     processor.processInputs(batch.getInputs());
     processor.processBuildClosureDependencies();
 

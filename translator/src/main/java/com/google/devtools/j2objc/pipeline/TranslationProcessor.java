@@ -82,12 +82,14 @@ public class TranslationProcessor extends FileProcessor {
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
   private final DeadCodeMap deadCodeMap;
+  private final DeadCodeMap treeShakerMap;
 
   private int processedCount = 0;
 
-  public TranslationProcessor(Parser parser, DeadCodeMap deadCodeMap) {
+  public TranslationProcessor(Parser parser, DeadCodeMap deadCodeMap, DeadCodeMap treeShakerMap) {
     super(parser);
     this.deadCodeMap = deadCodeMap;
+    this.treeShakerMap = treeShakerMap;
   }
 
   @Override
@@ -97,7 +99,7 @@ public class TranslationProcessor extends FileProcessor {
       System.out.println("translating " + unitName);
     }
     TimeTracker ticker = TimeTracker.getTicker(unitName);
-    applyMutations(unit, deadCodeMap, ticker);
+    applyMutations(unit, deadCodeMap, treeShakerMap, ticker);
     ticker.tick("Tree mutations");
     ticker.printResults(System.out);
     processedCount++;
@@ -123,8 +125,8 @@ public class TranslationProcessor extends FileProcessor {
    * also modified to add support for iOS memory management, extract inner
    * classes, etc.
    */
-  public static void applyMutations(
-      CompilationUnit unit, DeadCodeMap deadCodeMap, TimeTracker ticker) {
+  public static void applyMutations(CompilationUnit unit, DeadCodeMap deadCodeMap,
+      DeadCodeMap treeShakerMap, TimeTracker ticker) {
     ticker.push();
 
     // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
@@ -138,6 +140,11 @@ public class TranslationProcessor extends FileProcessor {
     if (deadCodeMap != null) {
       new DeadCodeEliminator(unit, deadCodeMap).run(unit);
       ticker.tick("DeadCodeEliminator");
+    }
+
+    if (treeShakerMap != null) {
+//    TODO(user): Add algorithm step, report step, and elimination step to treeshaker
+      ticker.tick("TreeShaker");
     }
 
     OuterReferenceResolver outerResolver = new OuterReferenceResolver();

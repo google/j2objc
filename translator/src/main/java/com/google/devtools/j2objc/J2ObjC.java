@@ -83,7 +83,14 @@ public class J2ObjC {
   }
 
   private static DeadCodeMap loadDeadCodeMap() {
-    File file = Options.getProGuardUsageFile();
+    return parseDeadCodeFile(Options.getProGuardUsageFile());
+  }
+  
+  private static DeadCodeMap loadTreeShakerMap() {
+    return parseDeadCodeFile(Options.getTreeShakerUsageFile());
+  }
+
+  private static DeadCodeMap parseDeadCodeFile(File file) {
     if (file != null) {
       try {
         return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
@@ -135,7 +142,7 @@ public class J2ObjC {
 
       Options.getHeaderMap().loadMappings();
       TranslationProcessor translationProcessor =
-          new TranslationProcessor(parser, loadDeadCodeMap());
+          new TranslationProcessor(parser, loadDeadCodeMap(), loadTreeShakerMap());
       translationProcessor.processInputs(inputs);
       translationProcessor.processBuildClosureDependencies();
       if (ErrorUtil.errorCount() > 0) {

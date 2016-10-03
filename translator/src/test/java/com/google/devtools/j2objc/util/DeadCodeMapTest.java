@@ -55,4 +55,19 @@ public class DeadCodeMapTest extends TestCase {
     assertFalse(report.isDeadMethod("foo.bah.Bar", "def", "()"));
     assertFalse(report.isDeadMethod("x.y.Z", "abc", "()"));
   }
+  
+  public void testToString() {
+    DeadCodeMap report = DeadCodeMap.builder()
+        .addDeadClass("foo.bar.Baz")
+        .addDeadClass("foo.bar.Bax")
+        .addDeadMethod("foo.bah.Bar", "abc", "()")
+        .addDeadField("foo.bah.Bar", "xyz")
+        .addDeadField("foo.bah.Bar", "mno")
+        .build();
+    
+    String stringVersion = report.toString();
+    assertEquals(stringVersion, "[foo.bar.Baz, foo.bar.Bax]\n" 
+        + "{foo.bah.Bar=[xyz, mno]}\n"
+        + "{foo.bah.Bar={abc=[()]}}");
+  }
 }
