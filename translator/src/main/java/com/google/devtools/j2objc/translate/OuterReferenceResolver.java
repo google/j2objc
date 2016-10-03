@@ -160,23 +160,34 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
+  private enum ScopeKind { CLASS, LAMBDA, METHOD }
+
+  /**
+   * Encapsulates relevant information about the types being visited. Scope instances are linked to
+   * form a stack of enclosing types and methods.
+   */
   private static class Scope {
 
+    private final ScopeKind kind;
     private final Scope outer;
+    private final Scope outerClass;  // Direct pointer to the next CLASS scope.
     private final TypeElement type;
     private final Set<Element> inheritedScope;
-    private boolean initializingContext;
-    private Set<VariableElement> declaredVars = new HashSet<>();
+    private final boolean initializingContext;
+    private final Set<VariableElement> declaredVars = new HashSet<>();
+    // The following fields are used only by CLASS scope kinds.
     private int constructorCount = 0;
     private int constructorsNotNeedingSuperOuterScope = 0;
 
     private Scope(Scope outer, TypeElement type, Types typeEnv) {
+      kind = ElementUtil.isLambda(type) ? ScopeKind.LAMBDA : ScopeKind.CLASS;
       this.outer = outer;
+      outerClass = firstClassScope(outer);
       this.type = type;
       ImmutableSet.Builder<Element> inheritedScopeBuilder = ImmutableSet.builder();
 
       // Lambdas are ignored when resolving implicit outer scope.
-      if (!ElementUtil.isLambda(type)) {
+      if (kind == ScopeKind.CLASS) {
         for (DeclaredType inheritedType :
           ElementUtil.getInheritedDeclaredTypesInclusive(type.asType())) {
           inheritedScopeBuilder.add(inheritedType.asElement());
@@ -191,13 +202,34 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();
-      this.initializingContext = !ElementUtil.isLambda(type);
+      this.initializingContext = kind == ScopeKind.CLASS;
+    }
+
+    /**
+     * Creates a Scope for a method declaration. This scope will contain mostly the same state as
+     * its enclosing CLASS scope, but may have a different value for "initializingContext".
+     */
+    private Scope(Scope outer, ExecutableElement method) {
+      kind = ScopeKind.METHOD;
+      this.outer = outer;
+      // Skip over the immediately enclosing class, since this scope has the same type information.
+      outerClass = outer.outerClass;
+      type = outer.type;
+      inheritedScope = outer.inheritedScope;
+      initializingContext = ElementUtil.isConstructor(method);
     }
   }
 
   private Scope peekScope() {
     assert topScope != null;
     return topScope;
+  }
+
+  private static Scope firstClassScope(Scope scope) {
+    while (scope != null && scope.kind != ScopeKind.CLASS) {
+      scope = scope.outer;
+    }
+    return scope;
   }
 
   // Marks the given type to be revisited. Returns true if the type has been maked for a revisit,
@@ -289,20 +321,17 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private List<VariableElement> getOuterPath(TypeElement type) {
     List<VariableElement> path = new ArrayList<>();
-    for (Scope scope = peekScope(); !type.equals(scope.type); scope = scope.outer) {
-      if (scope == peekScope() || !ElementUtil.isLambda(scope.type)) {
-        path.add(getOrCreateOuterVar(scope));
-      }
+    for (Scope scope = peekScope(); !type.equals(scope.type); scope = scope.outerClass) {
+      path.add(getOrCreateOuterVar(scope));
     }
     return path;
   }
 
   private List<VariableElement> getOuterPathInherited(TypeElement type) {
     List<VariableElement> path = new ArrayList<>();
-    for (Scope scope = peekScope(); !scope.inheritedScope.contains(type); scope = scope.outer) {
-      if (scope == peekScope() || !ElementUtil.isLambda(scope.type)) {
-        path.add(getOrCreateOuterVar(scope));
-      }
+    for (Scope scope = peekScope(); !scope.inheritedScope.contains(type);
+         scope = scope.outerClass) {
+      path.add(getOrCreateOuterVar(scope));
     }
     return path;
   }
@@ -329,8 +358,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
     Scope lastScope = scope;
     while (!(scope = scope.outer).declaredVars.contains(var)) {
-      // Except for the current scope do not include lambdas in the path.
-      if (!ElementUtil.isLambda(scope.type)) {
+      // Except for the top scope, only include CLASS scopes when generating the path.
+      if (scope == lastScope.outerClass) {
         path.add(getOrCreateOuterVar(lastScope));
         lastScope = scope;
       }
@@ -623,31 +652,29 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    // Assume all code except for non-constructor methods is initializer code.
-    if (ElementUtil.isConstructor(node.getExecutableElement())) {
-      peekScope().constructorCount++;
-    } else {
-      peekScope().initializingContext = false;
+    Scope currentScope = peekScope();
+    ExecutableElement elem = node.getExecutableElement();
+    if (ElementUtil.isConstructor(elem)) {
+      currentScope.constructorCount++;
     }
+    topScope = new Scope(currentScope, elem);
     return true;
   }
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    if (!ElementUtil.isConstructor(node.getExecutableElement())) {
-      peekScope().initializingContext = true;
-    }
+    topScope = topScope.outer;
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    peekScope().constructorsNotNeedingSuperOuterScope++;
+    firstClassScope(peekScope()).constructorsNotNeedingSuperOuterScope++;
   }
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
     if (node.getExpression() != null) {
-      peekScope().constructorsNotNeedingSuperOuterScope++;
+      firstClassScope(peekScope()).constructorsNotNeedingSuperOuterScope++;
     }
   }
 }
