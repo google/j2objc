@@ -141,17 +141,20 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
       return Collections.emptyList();
     }
 
-    @Override
+    // TODO(kstanger): enable this Override when Java 8 is minimum version.
+    //@Override
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
       return GeneratedTypeElement.this.getAnnotation(annotationType);
     }
 
-    @Override
+    // TODO(kstanger): enable this Override when Java 8 is minimum version.
+    //@Override
     public List<? extends AnnotationMirror> getAnnotationMirrors() {
       return GeneratedTypeElement.this.getAnnotationMirrors();
     }
 
-    @Override
+    // TODO(kstanger): enable this Override when Java 8 is minimum version.
+    //@Override
     public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
       return GeneratedTypeElement.this.getAnnotationsByType(annotationType);
     }

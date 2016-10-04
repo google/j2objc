@@ -36,9 +36,15 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  * Utility methods for types. Methods not referenced by the
  * translator are not implemented.
  */
-class JdtTypes implements Types {
+// TODO(tball): add to ProcessingEnvironment impl, make package-private.
+public class JdtTypes implements Types {
 
-  static final JdtTypes INSTANCE = new JdtTypes();
+  private static final JdtTypes INSTANCE = new JdtTypes();
+
+  // TODO(tball): remove when added to ProcessingEnvironment.
+  public static JdtTypes getInstance() {
+    return INSTANCE;
+  }
 
   @Override
   public Element asElement(TypeMirror t) {

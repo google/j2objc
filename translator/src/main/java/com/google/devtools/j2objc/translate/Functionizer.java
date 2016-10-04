@@ -293,7 +293,7 @@ public class Functionizer extends TreeVisitor {
 
     FunctionDeclaration function = new FunctionDeclaration(
         nameTable.getFullFunctionName(m), m.getReturnType(), declaringClass);
-    function.setJniSignature(SignatureGenerator.createJniFunctionSignature(m, env));
+    function.setJniSignature(SignatureGenerator.createJniFunctionSignature(m));
     function.setLineNumber(method.getName().getLineNumber());
 
     if (!BindingUtil.isStatic(m)) {

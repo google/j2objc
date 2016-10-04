@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -40,6 +41,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -96,8 +98,7 @@ public class LambdaRewriter extends TreeVisitor {
     }
 
     public void resolveFunctionalInterface() {
-      List<DeclaredType> declaredTypes =
-          ElementUtil.getInheritedDeclaredTypesInclusive(typeMirror, env);
+      List<DeclaredType> declaredTypes = ElementUtil.getInheritedDeclaredTypesInclusive(typeMirror);
       for (DeclaredType baseType : declaredTypes) {
         TypeElement element = (TypeElement) baseType.asElement();
         for (Element i : element.getEnclosedElements()) {
@@ -105,7 +106,7 @@ public class LambdaRewriter extends TreeVisitor {
               && !i.getModifiers().contains(Modifier.STATIC)) {
             functionalInterface = (ExecutableElement) i;
             functionalInterfaceType =
-                (ExecutableType) env.typeUtilities().asMemberOf(baseType, i);
+                (ExecutableType) JdtTypes.getInstance().asMemberOf(baseType, i);
             return;
           }
         }
@@ -306,6 +307,10 @@ public class LambdaRewriter extends TreeVisitor {
   @Override
   public void endVisit(TypeMethodReference node) {
     new RewriteContext(node).rewriteTypeMethodReference(node);
+  }
+
+  private static boolean isTypeName(Expression expr) {
+    return expr instanceof Name && ElementUtil.isType(((Name) expr).getElement());
   }
 
   private static String getParamName(int i) {

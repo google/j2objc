@@ -33,6 +33,8 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.jdt.JdtElements;
+import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -50,6 +52,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -61,6 +65,10 @@ import org.eclipse.jdt.core.dom.Modifier;
  * @author Lukhnos Liu, Keith Stanger
  */
 public class DefaultMethodShimGenerator extends TreeVisitor {
+
+  // TODO(tball): Update once ParserEnvironment is available in TreeVisitor.
+  private static Types typeUtil = JdtTypes.getInstance();
+  private static Elements elementUtil = JdtElements.getInstance();
 
   /**
    * Pairs an ExecutableElement with an ExecutableType representing the resolved type variables as a
@@ -114,7 +122,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
         return;
       }
       collectMethods((DeclaredType) type);
-      for (TypeMirror supertype : env.typeUtilities().directSupertypes(type)) {
+      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
         collectInheritedMethods(supertype);
       }
     }
@@ -129,7 +137,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       for (ExecutableElement methodElem : Iterables.filter(
           ElementUtil.getDeclaredMethods(typeElem), ElementUtil::isInstanceMethod)) {
         ExecutablePair method = new ExecutablePair(
-            methodElem, (ExecutableType) env.typeUtilities().asMemberOf(type, methodElem));
+            methodElem, (ExecutableType) typeUtil.asMemberOf(type, methodElem));
         collector.put(getOverrideSignature(method), method);
       }
     }
@@ -181,8 +189,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
     private boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
       return b == null
           || (!declaredByClass(b.elem) && declaredByClass(a.elem))
-          || env.elementUtilities().overrides(a.elem, b.elem,
-              ElementUtil.getDeclaringClass(a.elem));
+          || elementUtil.overrides(a.elem, b.elem, ElementUtil.getDeclaringClass(a.elem));
     }
 
     private void addShimWithInvocation(
@@ -236,11 +243,11 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
 
   // Generates a signature that will be the same for methods that can override each other and unique
   // otherwise. Used as a key to group inherited methods together.
-  private String getOverrideSignature(ExecutablePair method) {
+  private static String getOverrideSignature(ExecutablePair method) {
     StringBuilder sb = new StringBuilder(ElementUtil.getName(method.elem));
     sb.append('(');
     for (TypeMirror pType : method.type.getParameterTypes()) {
-      pType = env.typeUtilities().erasure(pType);
+      pType = typeUtil.erasure(pType);
       sb.append(TypeUtil.getBinaryName(pType));
     }
     sb.append(')');

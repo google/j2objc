@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.jdt.JdtElements;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -100,7 +100,7 @@ public class SignatureGenerator {
     return builder.toString();
   }
 
-  public static String createJniFunctionSignature(IMethodBinding method, ParserEnvironment env) {
+  public static String createJniFunctionSignature(IMethodBinding method) {
     // Mangle function name as described in JNI specification.
     // http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/design.html#wp615
     StringBuilder sb = new StringBuilder();
@@ -109,7 +109,7 @@ public class SignatureGenerator {
     String methodName = method.getName();
     ITypeBinding declaringClass = method.getDeclaringClass();
     PackageElement pkg =
-        env.elementUtilities().getPackageOf(BindingConverter.getElement(declaringClass));
+        JdtElements.getInstance().getPackageOf(BindingConverter.getElement(declaringClass));
     if (pkg != null && !pkg.isUnnamed()) {
       String pkgName = pkg.getQualifiedName().toString();
       for (String part : pkgName.split("\\.")) {

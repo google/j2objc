@@ -36,7 +36,7 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class Types {
 
-  private final ParserEnvironment env;
+  private final ParserEnvironment environment;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
       new HashMap<ITypeBinding, ITypeBinding>();
@@ -85,7 +85,7 @@ public class Types {
   private final IOSMethodBinding deallocMethod;
 
   public Types(ParserEnvironment env) {
-    this.env = env;
+    this.environment = env;
 
     // Find core java types.
     javaObjectType = resolveWellKnownType("java.lang.Object");
@@ -188,7 +188,7 @@ public class Types {
   }
 
   private JdtTypeBinding resolveWellKnownType(String name) {
-    return (JdtTypeBinding) BindingConverter.unwrapElement(env.resolve(name));
+    return (JdtTypeBinding) BindingConverter.unwrapElement(environment.resolve(name));
   }
 
   private void loadPrimitiveAndWrapperTypes(String primitiveName, String wrapperName) {

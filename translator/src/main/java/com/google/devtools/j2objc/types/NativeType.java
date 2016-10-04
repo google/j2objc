@@ -36,7 +36,8 @@ public class NativeType implements TypeMirror {
     this.name = name;
   }
 
-  @Override
+  // TODO(user): enable this Override and the ones below when Java 8 is minimum version.
+  // @Override
   public List<? extends AnnotationMirror> getAnnotationMirrors() {
     return Collections.emptyList();
   }
@@ -46,12 +47,12 @@ public class NativeType implements TypeMirror {
     return name;
   }
 
-  @Override
+  //@Override
   public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
     return null;
   }
 
-  @Override
+  //@Override
   @SuppressWarnings("unchecked")
   public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
     return (A[]) Array.newInstance(annotationType, 0);
