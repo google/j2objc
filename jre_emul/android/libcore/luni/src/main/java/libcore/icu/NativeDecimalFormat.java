@@ -666,7 +666,6 @@ public final class NativeDecimalFormat implements Cloneable {
         ParsePosition position, boolean parseBigDecimal) /*-[
       nil_chk(string);
       NSNumberFormatter *formatter = (NSNumberFormatter *) nativeFormatter;
-      NSNumber *result;
       int start = [position getIndex];
       NSRange range = NSMakeRange(start, [string length] - start);
 
@@ -691,12 +690,14 @@ public final class NativeDecimalFormat implements Cloneable {
         }
       }
 
+      NSNumber *result = nil;
       NSError *error = nil;
       BOOL success = [formatter getObjectValue:&result
                                      forString:string
                                          range:&range
                                          error:&error];
-      if (success && (error == nil)) {
+      // On an empty string NSNumberFormatter returns YES but leaves the result value nil.
+      if (success && !error && result) {
         [position setIndexWithInt:start + (int) range.length];
         if (fmod([result doubleValue], 1.0) == 0) {
           return JavaLangLong_valueOfWithLong_([result longLongValue]);

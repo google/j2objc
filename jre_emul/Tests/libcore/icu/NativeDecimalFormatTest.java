@@ -17,6 +17,8 @@ package libcore.icu;
 import junit.framework.TestCase;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -35,5 +37,11 @@ public class NativeDecimalFormatTest extends TestCase {
     Date date = sdf.parse(timeString);
     // Only check seconds, as hour and date changes depending on timezone.
     assertTrue(date.toString().contains(":23"));
+  }
+
+  public void testParseEmptyString() throws Exception {
+    DecimalFormat df = new DecimalFormat();
+    ParsePosition pos = new ParsePosition(0);
+    assertNull(df.parse("", pos));
   }
 }
