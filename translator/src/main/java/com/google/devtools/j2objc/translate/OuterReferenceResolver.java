@@ -46,7 +46,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
@@ -163,7 +162,7 @@ public class OuterReferenceResolver extends TreeVisitor {
    * Encapsulates relevant information about the types being visited. Scope instances are linked to
    * form a stack of enclosing types and methods.
    */
-  private static class Scope {
+  private class Scope {
 
     private final ScopeKind kind;
     private final Scope outer;
@@ -180,7 +179,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     private int constructorCount = 0;
     private int constructorsNotNeedingSuperOuterScope = 0;
 
-    private Scope(Scope outer, TypeElement type, Types typeEnv) {
+    private Scope(Scope outer, TypeElement type) {
       kind = ElementUtil.isLambda(type) ? ScopeKind.LAMBDA : ScopeKind.CLASS;
       this.outer = outer;
       outerClass = firstClassScope(outer);
@@ -190,7 +189,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       // Lambdas are ignored when resolving implicit outer scope.
       if (kind == ScopeKind.CLASS) {
         for (DeclaredType inheritedType :
-          ElementUtil.getInheritedDeclaredTypesInclusive(type.asType())) {
+          ElementUtil.getInheritedDeclaredTypesInclusive(type.asType(), env)) {
           inheritedScopeBuilder.add(inheritedType.asElement());
         }
       }
@@ -199,7 +198,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       // "inherit" from Object. Therefore we add this manually to make the set complete. This is
       // needed because Java 8 default methods can call methods in Object.
       if (ElementUtil.isInterface(type)) {
-        inheritedScopeBuilder.add(typeEnv.getJavaObjectElement());
+        inheritedScopeBuilder.add(env.types().getJavaObjectElement());
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();
@@ -412,7 +411,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private void pushType(TypeElement type) {
-    topScope = new Scope(topScope, type, typeEnv);
+    topScope = new Scope(topScope, type);
     if (automaticOuterParam(type)) {
       getOrCreateOuterParam(type);
     }

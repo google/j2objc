@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtIntersectionType;
-import com.google.devtools.j2objc.jdt.JdtTypes;
 import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -81,8 +80,8 @@ public final class TypeUtil {
     }
   }
 
-  public static DeclaredType getSuperclass(TypeMirror t) {
-    List<? extends TypeMirror> supertypes = JdtTypes.getInstance().directSupertypes(t);
+  public static DeclaredType getSuperclass(TypeMirror t, ParserEnvironment env) {
+    List<? extends TypeMirror> supertypes = env.typeUtilities().directSupertypes(t);
     if (supertypes.isEmpty()) {
       return null;
     }

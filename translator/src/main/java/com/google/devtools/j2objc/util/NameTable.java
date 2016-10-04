@@ -23,12 +23,10 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtElements;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.util.ArrayList;
@@ -58,7 +56,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  */
 public class NameTable {
 
-  private final Types typeEnv;
+  private final ParserEnvironment env;
   private final Map<IVariableBinding, String> variableNames = new HashMap<>();
 
   public static final String INIT_NAME = "init";
@@ -341,7 +339,7 @@ public class NameTable {
 
   private NameTable(
       ParserEnvironment env, PackagePrefixes prefixMap, Map<String, String> methodMappings) {
-    this.typeEnv = env.types();
+    this.env = env;
     this.prefixMap = prefixMap;
     this.methodMappings = methodMappings;
   }
@@ -527,7 +525,7 @@ public class NameTable {
   }
 
   private String getParameterTypeKeyword(ITypeBinding type) {
-    if (typeEnv.isIdType(type) || type.isTypeVariable()) {
+    if (env.types().isIdType(type) || type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
       if (bounds.length > 0) {
         return getParameterTypeKeyword(bounds[0]);
@@ -714,7 +712,8 @@ public class NameTable {
     if (currentType == null) {
       return null;
     }
-    TypeElement superclass = currentType.getKind().isInterface() ? typeEnv.getJavaObjectElement()
+    TypeElement superclass = currentType.getKind().isInterface()
+        ? env.types().getJavaObjectElement()
         : ElementUtil.getSuperclass(currentType);
     ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
     if (original != null) {
@@ -731,7 +730,7 @@ public class NameTable {
     }
     for (ExecutableElement candidate : ElementUtil.getDeclaredMethods(currentType)) {
       if (ElementUtil.isInstanceMethod(candidate)
-          && JdtElements.getInstance().overrides(topMethod, candidate, declaringClass)) {
+          && env.elementUtilities().overrides(topMethod, candidate, declaringClass)) {
         return candidate;
       }
     }
@@ -827,7 +826,7 @@ public class NameTable {
     String classType = null;
     List<String> interfaces = new ArrayList<>();
     for (ITypeBinding type : types) {
-      if (typeEnv.isIdType(type) || typeEnv.isJavaVoidType(type)) {
+      if (env.types().isIdType(type) || env.types().isJavaVoidType(type)) {
         continue;
       }
       if (type.isInterface()) {
@@ -883,7 +882,7 @@ public class NameTable {
    */
   public String getFullName(ITypeBinding binding) {
     // Make sure type variables aren't included.
-    binding = typeEnv.mapType(binding.getErasure());
+    binding = env.types().mapType(binding.getErasure());
 
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.

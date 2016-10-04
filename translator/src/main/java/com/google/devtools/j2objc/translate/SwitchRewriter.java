@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -123,7 +122,7 @@ public class SwitchRewriter extends TreeVisitor {
     if (!typeEnv.isJavaStringType(type)) {
       return;
     }
-    TypeMirror arrayType = JdtTypes.getInstance().getArrayType(type);
+    TypeMirror arrayType = env.typeUtilities().getArrayType(type);
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     int idx = 0;
     for (Statement stmt : node.getStatements()) {
@@ -151,11 +150,11 @@ public class SwitchRewriter extends TreeVisitor {
     if (!TypeUtil.isEnum(type)) {
       return;
     }
-    DeclaredType enumType = TypeUtil.getSuperclass(type);
+    DeclaredType enumType = TypeUtil.getSuperclass(type, env);
     TypeElement enumElem = (TypeElement) enumType.asElement();
     ExecutableElement ordinalMethod = ElementUtil.findMethod(enumElem, "ordinal");
     ExecutableType ordinalType =
-        (ExecutableType) JdtTypes.getInstance().asMemberOf(enumType, ordinalMethod);
+        (ExecutableType) env.typeUtilities().asMemberOf(enumType, ordinalMethod);
     MethodInvocation invocation =
         new MethodInvocation(ordinalMethod, ordinalType, TreeUtil.remove(expr));
     node.setExpression(invocation);

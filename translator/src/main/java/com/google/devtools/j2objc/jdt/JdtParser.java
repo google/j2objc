@@ -247,12 +247,12 @@ public class JdtParser extends Parser {
 
     @Override
     public javax.lang.model.util.Elements elementUtilities() {
-      return JdtElements.getInstance();
+      return JdtElements.INSTANCE;
     }
 
     @Override
     public javax.lang.model.util.Types typeUtilities() {
-      return JdtTypes.getInstance();
+      return JdtTypes.INSTANCE;
     }
   }
 }

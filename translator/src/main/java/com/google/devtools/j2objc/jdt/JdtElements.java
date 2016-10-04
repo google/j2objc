@@ -31,15 +31,9 @@ import javax.lang.model.util.Elements;
  * Utility methods for elements. Methods not referenced by the
  * translator are not implemented.
  */
-// TODO(tball): add to ProcessingEnvironment impl, make package-private.
-public class JdtElements implements Elements {
+class JdtElements implements Elements {
 
-  private static final JdtElements INSTANCE = new JdtElements();
-
-  // TODO(tball): remove when added to ProcessingEnvironment.
-  public static JdtElements getInstance() {
-    return INSTANCE;
-  }
+  static final JdtElements INSTANCE = new JdtElements();
 
   @Override
   public PackageElement getPackageElement(CharSequence name) {

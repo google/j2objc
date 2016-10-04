@@ -104,6 +104,10 @@ public class CompilationUnit extends TreeNode {
     return Kind.COMPILATION_UNIT;
   }
 
+  public ParserEnvironment getEnv() {
+    return env;
+  }
+
   public Types getTypeEnv() {
     return env.types();
   }
