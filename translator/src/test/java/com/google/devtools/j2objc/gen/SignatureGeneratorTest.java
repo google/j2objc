@@ -145,30 +145,32 @@ public class SignatureGeneratorTest extends GenerationTest {
     // Expected JNI signatures were copied from javah output.
 
     // Verify no parameters, since foo isn't overloaded.
-    assertEquals("Java_foo_bar_D_foo", SignatureGenerator.createJniFunctionSignature(methods[6]));
+    assertEquals("Java_foo_bar_D_foo",
+        SignatureGenerator.createJniFunctionSignature(methods[6], unit.getEnv()));
 
     // Verify underscores and dollar signs in names are mangled.
     assertEquals("Java_foo_bar_D_a_1b_00024c",
-        SignatureGenerator.createJniFunctionSignature(methods[1]));
+        SignatureGenerator.createJniFunctionSignature(methods[1], unit.getEnv()));
 
     // Verify Unicode characters are mangled.
     assertEquals("Java_foo_bar_D__04f60_0597d_04e16_0754c",
-        SignatureGenerator.createJniFunctionSignature(methods[7]));
+        SignatureGenerator.createJniFunctionSignature(methods[7], unit.getEnv()));
 
     // Verify overloaded methods have parameter suffixes.
-    assertEquals("Java_foo_bar_D_bar__", SignatureGenerator.createJniFunctionSignature(methods[2]));
+    assertEquals("Java_foo_bar_D_bar__",
+        SignatureGenerator.createJniFunctionSignature(methods[2], unit.getEnv()));
     assertEquals("Java_foo_bar_D_bar__Ljava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods[3]));
+        SignatureGenerator.createJniFunctionSignature(methods[3], unit.getEnv()));
     assertEquals("Java_foo_bar_D_bar__ZLjava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods[4]));
+        SignatureGenerator.createJniFunctionSignature(methods[4], unit.getEnv()));
     assertEquals("Java_foo_bar_D_bar___3Ljava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods[5]));
+        SignatureGenerator.createJniFunctionSignature(methods[5], unit.getEnv()));
 
     // Check Unicode class name mangling.
     methods = decls.get(1).getTypeBinding().getDeclaredMethods();
     assertEquals(2, methods.length);
     assertEquals("Java_foo_bar_D_00024_06d4b_08bd5_mumble",
-        SignatureGenerator.createJniFunctionSignature(methods[1]));
+        SignatureGenerator.createJniFunctionSignature(methods[1], unit.getEnv()));
   }
 
   public void testGenericTypeMetadata() throws IOException {

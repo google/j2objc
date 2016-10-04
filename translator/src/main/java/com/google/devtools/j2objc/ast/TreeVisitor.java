@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.ParserEnvironment;
 
 /**
  * Base visitor class for the J2ObjC tree.
@@ -23,6 +24,7 @@ import com.google.devtools.j2objc.util.NameTable;
 public class TreeVisitor {
 
   protected CompilationUnit unit = null;
+  protected ParserEnvironment env = null;
   protected Types typeEnv = null;
   protected NameTable nameTable = null;
 
@@ -34,6 +36,7 @@ public class TreeVisitor {
    */
   public void run(TreeNode node) {
     unit = TreeUtil.getCompilationUnit(node);
+    env = unit.getEnv();
     typeEnv = unit.getTypeEnv();
     nameTable = unit.getNameTable();
     node.accept(this);

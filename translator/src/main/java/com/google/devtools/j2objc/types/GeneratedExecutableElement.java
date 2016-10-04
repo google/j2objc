@@ -118,7 +118,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     return parameters;
   }
 
-  //@Override
+  @Override
   public TypeMirror getReceiverType() {
     throw new AssertionError("not implemented");
   }
@@ -128,7 +128,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     return varargs;
   }
 
-  //@Override
+  @Override
   public boolean isDefault() {
     throw new AssertionError("not implemented");
   }

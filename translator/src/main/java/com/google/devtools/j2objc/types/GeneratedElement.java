@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.jdt.JdtElements;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +57,32 @@ abstract class GeneratedElement implements Element {
 
   @Override
   public Name getSimpleName() {
-    return JdtElements.getInstance().getName(name);
+    return new Name() {
+      @Override
+      public int length() {
+        return name.length();
+      }
+
+      @Override
+      public char charAt(int index) {
+        return name.charAt(index);
+      }
+
+      @Override
+      public CharSequence subSequence(int start, int end) {
+        return name.subSequence(start, end);
+      }
+
+      @Override
+      public boolean contentEquals(CharSequence cs) {
+        return name.equals(cs);
+      }
+
+      @Override
+      public String toString() {
+        return name;
+      }
+    };
   }
 
   @Override
@@ -109,8 +133,7 @@ abstract class GeneratedElement implements Element {
     return null;
   }
 
-  // TODO(kstanger): enable this Override when Java 8 is minimum version.
-  //@Override
+  @Override
   public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
     throw new AssertionError("not implemented");
   }

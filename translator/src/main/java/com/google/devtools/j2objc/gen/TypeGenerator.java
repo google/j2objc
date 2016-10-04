@@ -33,11 +33,11 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtElements;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IBinding;
@@ -69,6 +69,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final AbstractTypeDeclaration typeNode;
   protected final ITypeBinding typeBinding;
   protected final CompilationUnit compilationUnit;
+  protected final ParserEnvironment env;
   protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
@@ -82,6 +83,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeNode = node;
     typeBinding = node.getTypeBinding();
     compilationUnit = TreeUtil.getCompilationUnit(node);
+    env = compilationUnit.getEnv();
     typeEnv = compilationUnit.getTypeEnv();
     nameTable = compilationUnit.getNameTable();
     typeName = nameTable.getFullName(typeBinding);
@@ -343,7 +345,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
     try {
       PackageElement pkg =
-          JdtElements.getInstance().getPackageOf(BindingConverter.getElement(typeBinding));
+          env.elementUtilities().getPackageOf(BindingConverter.getElement(typeBinding));
       String pkgName = pkg.getQualifiedName().toString();
       // See if a package-info source file has a ParametersAreNonnullByDefault annotation.
       InputFile file = FileUtil.findOnSourcePath(pkgName + ".package-info");

@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtTypes;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import java.util.ArrayList;
@@ -264,9 +263,10 @@ public final class ElementUtil {
     return nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL;
   }
 
-  public static List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type) {
+  public static List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type,
+      ParserEnvironment env) {
     List<DeclaredType> typeElements = new ArrayList<>();
-    for (TypeMirror superType : getOrderedInheritedTypesInclusive(type)) {
+    for (TypeMirror superType : getOrderedInheritedTypesInclusive(type, env)) {
       if (!TypeUtil.isIntersection(superType)) {
         typeElements.add((DeclaredType) superType);
       }
@@ -274,20 +274,21 @@ public final class ElementUtil {
     return typeElements;
   }
 
-  public static LinkedHashSet<TypeMirror> getOrderedInheritedTypesInclusive(TypeMirror type) {
+  public static LinkedHashSet<TypeMirror> getOrderedInheritedTypesInclusive(TypeMirror type,
+      ParserEnvironment env) {
     LinkedHashSet<TypeMirror> inheritedTypes = new LinkedHashSet<>();
-    collectInheritedTypesInclusive(type, inheritedTypes);
+    collectInheritedTypesInclusive(type, inheritedTypes, env);
     return inheritedTypes;
   }
 
   private static void collectInheritedTypesInclusive(
-      TypeMirror type, Set<TypeMirror> inheritedTypes) {
+      TypeMirror type, Set<TypeMirror> inheritedTypes, ParserEnvironment env) {
     if (type == null) {
       return;
     }
     inheritedTypes.add(type);
-    for (TypeMirror superType : JdtTypes.getInstance().directSupertypes(type)) {
-      collectInheritedTypesInclusive(superType, inheritedTypes);
+    for (TypeMirror superType : env.typeUtilities().directSupertypes(type)) {
+      collectInheritedTypesInclusive(superType, inheritedTypes, env);
     }
   }
 
