@@ -23,7 +23,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  * Anonymous class declaration node. Must be the child of a
  * ClassInstanceCreation node.
  */
-public final class AnonymousClassDeclaration extends TreeNode {
+public final class AnonymousClassDeclaration extends TreeNode implements CommonTypeDeclaration {
 
   private TypeElement element = null;
   private final ChildList<BodyDeclaration> bodyDeclarations =
@@ -47,6 +47,7 @@ public final class AnonymousClassDeclaration extends TreeNode {
     return (ITypeBinding) BindingConverter.unwrapElement(element);
   }
 
+  @Override
   public TypeElement getTypeElement() {
     return element;
   }
@@ -56,6 +57,7 @@ public final class AnonymousClassDeclaration extends TreeNode {
     return this;
   }
 
+  @Override
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
   }

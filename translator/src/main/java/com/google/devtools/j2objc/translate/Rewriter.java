@@ -254,16 +254,12 @@ public class Rewriter extends TreeVisitor {
     LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
         rewriteExtraDimensions(node.getType(), node.getFragments());
     if (newDeclarations != null) {
-      List<BodyDeclaration> bodyDecls = TreeUtil.getBodyDeclarations(node.getParent());
-      int location = 0;
-      while (location < bodyDecls.size() && !node.equals(bodyDecls.get(location))) {
-        location++;
-      }
+      List<BodyDeclaration> bodyDecls = TreeUtil.asDeclarationSublist(node);
       for (Integer dimensions : newDeclarations.keySet()) {
         List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
         FieldDeclaration newDecl = new FieldDeclaration(fragments.get(0));
         newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
-        bodyDecls.add(++location, newDecl);
+        bodyDecls.add(newDecl);
       }
     }
   }

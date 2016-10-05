@@ -105,7 +105,7 @@ public class TreeUtil {
     return null;
   }
 
-  public static <T extends TreeNode> T getNearestAncestorWithType(Class<T> type, TreeNode node) {
+  public static <T> T getNearestAncestorWithType(Class<T> type, TreeNode node) {
     while (node != null) {
       if (type.isInstance(node)) {
         return type.cast(node);
@@ -115,10 +115,9 @@ public class TreeUtil {
     return null;
   }
 
-  public static TreeNode getNearestAncestorWithTypeOneOf(List<Class<? extends TreeNode>> types,
-      TreeNode node) {
+  public static TreeNode getNearestAncestorWithTypeOneOf(List<Class<?>> types, TreeNode node) {
     while (node != null) {
-      for (Class<? extends TreeNode> c : types) {
+      for (Class<?> c : types) {
         if (c.isInstance(node)) {
           return node;
         }
@@ -203,11 +202,7 @@ public class TreeUtil {
     };
   }
 
-  public static Iterable<MethodDeclaration> getMethodDeclarations(AbstractTypeDeclaration node) {
-    return getMethodDeclarations(node.getBodyDeclarations());
-  }
-
-  public static Iterable<MethodDeclaration> getMethodDeclarations(AnonymousClassDeclaration node) {
+  public static Iterable<MethodDeclaration> getMethodDeclarations(CommonTypeDeclaration node) {
     return getMethodDeclarations(node.getBodyDeclarations());
   }
 
@@ -215,7 +210,7 @@ public class TreeUtil {
     return Iterables.filter(nodes, MethodDeclaration.class);
   }
 
-  public static List<MethodDeclaration> getMethodDeclarationsList(AbstractTypeDeclaration node) {
+  public static List<MethodDeclaration> getMethodDeclarationsList(CommonTypeDeclaration node) {
     return Lists.newArrayList(getMethodDeclarations(node));
   }
 
@@ -224,19 +219,9 @@ public class TreeUtil {
     return Iterables.filter(node.getBodyDeclarations(), FunctionDeclaration.class);
   }
 
-  public static List<BodyDeclaration> getBodyDeclarations(TreeNode node) {
-    if (node instanceof AbstractTypeDeclaration) {
-      return ((AbstractTypeDeclaration) node).getBodyDeclarations();
-    } else if (node instanceof AnonymousClassDeclaration) {
-      return ((AnonymousClassDeclaration) node).getBodyDeclarations();
-    } else {
-      throw new AssertionError(
-          "node type does not contains body declarations: " + node.getClass().getSimpleName());
-    }
-  }
-
   public static List<BodyDeclaration> asDeclarationSublist(BodyDeclaration node) {
-    List<BodyDeclaration> declarations = getBodyDeclarations(node.getParent());
+    List<BodyDeclaration> declarations =
+        ((CommonTypeDeclaration) node.getParent()).getBodyDeclarations();
     int index = declarations.indexOf(node);
     assert index != -1;
     return declarations.subList(index, index + 1);
@@ -246,10 +231,8 @@ public class TreeUtil {
    * Gets the element that is declared by this node.
    */
   public static Element getDeclaredElement(TreeNode node) {
-    if (node instanceof AnonymousClassDeclaration) {
-      return ((AnonymousClassDeclaration) node).getTypeElement();
-    } else if (node instanceof AbstractTypeDeclaration) {
-      return ((AbstractTypeDeclaration) node).getTypeElement();
+    if (node instanceof CommonTypeDeclaration) {
+      return ((CommonTypeDeclaration) node).getTypeElement();
     } else if (node instanceof MethodDeclaration) {
       return ((MethodDeclaration) node).getExecutableElement();
     } else if (node instanceof VariableDeclaration) {
@@ -309,11 +292,8 @@ public class TreeUtil {
     }
   }
 
-  private static final List<Class<? extends TreeNode>> TYPE_NODE_BASE_CLASSES =
-      ImmutableList.of(AbstractTypeDeclaration.class, AnonymousClassDeclaration.class);
-
-  public static TreeNode getEnclosingType(TreeNode node) {
-    return getNearestAncestorWithTypeOneOf(TYPE_NODE_BASE_CLASSES, node);
+  public static CommonTypeDeclaration getEnclosingType(TreeNode node) {
+    return getNearestAncestorWithType(CommonTypeDeclaration.class, node);
   }
 
   public static ITypeBinding getEnclosingTypeBinding(TreeNode node) {
@@ -321,18 +301,11 @@ public class TreeUtil {
   }
 
   public static TypeElement getEnclosingTypeElement(TreeNode node) {
-    TreeNode enclosingType = getEnclosingType(node);
-    if (enclosingType instanceof AbstractTypeDeclaration) {
-      return ((AbstractTypeDeclaration) enclosingType).getTypeElement();
-    } else if (enclosingType instanceof AnonymousClassDeclaration) {
-      return ((AnonymousClassDeclaration) enclosingType).getTypeElement();
-    } else {
-      return null;
-    }
+    return getEnclosingType(node).getTypeElement();
   }
 
   public static List<BodyDeclaration> getEnclosingTypeBodyDeclarations(TreeNode node) {
-    return getBodyDeclarations(getEnclosingType(node));
+    return getEnclosingType(node).getBodyDeclarations();
   }
 
   public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {
@@ -340,9 +313,8 @@ public class TreeUtil {
     return enclosingMethod == null ? null : enclosingMethod.getMethodBinding();
   }
 
-  private static final List<Class<? extends TreeNode>> NODE_TYPES_WITH_ELEMENTS = ImmutableList.of(
-      AbstractTypeDeclaration.class, AnonymousClassDeclaration.class, MethodDeclaration.class,
-      VariableDeclaration.class);
+  private static final List<Class<?>> NODE_TYPES_WITH_ELEMENTS = ImmutableList.of(
+      CommonTypeDeclaration.class, MethodDeclaration.class, VariableDeclaration.class);
 
   public static Element getEnclosingElement(TreeNode node) {
     return getDeclaredElement(getNearestAncestorWithTypeOneOf(NODE_TYPES_WITH_ELEMENTS, node));

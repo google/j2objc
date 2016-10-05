@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
@@ -134,9 +135,9 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    TreeNode typeNode = TreeUtil.getEnclosingType(node);
-    TypeElement superType = ElementUtil.getSuperclass(
-        (TypeElement) TreeUtil.getDeclaredElement(typeNode));
+    CommonTypeDeclaration typeDecl = TreeUtil.getEnclosingType(node);
+    TypeElement superType = ElementUtil.getSuperclass(typeDecl.getTypeElement());
+    TreeNode typeNode = typeDecl.asNode();
     List<Expression> args = node.getArguments().subList(0, 0);
     List<TypeMirror> parameterTypes = new ArrayList<>();
 

@@ -79,6 +79,7 @@ JAVA_SOURCES = \
 	ast/ClassInstanceCreation.java \
 	ast/CommaExpression.java \
 	ast/Comment.java \
+	ast/CommonTypeDeclaration.java \
 	ast/CompilationUnit.java \
 	ast/ConditionalExpression.java \
 	ast/ConstructorInvocation.java \

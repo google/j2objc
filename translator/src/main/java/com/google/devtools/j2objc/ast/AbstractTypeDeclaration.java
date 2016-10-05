@@ -23,7 +23,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 /**
  * Superclass node for classes, enums and annotation declarations.
  */
-public abstract class AbstractTypeDeclaration extends BodyDeclaration {
+public abstract class AbstractTypeDeclaration extends BodyDeclaration
+    implements CommonTypeDeclaration {
 
   private TypeElement typeElement = null;
   protected final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
@@ -64,6 +65,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     this.typeElement = BindingConverter.getTypeElement(typeBinding);
   }
 
+  @Override
   public TypeElement getTypeElement() {
     return typeElement;
   }
@@ -82,6 +84,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
     return this;
   }
 
+  @Override
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
   }
