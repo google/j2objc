@@ -34,8 +34,6 @@ public abstract class MethodReference extends FunctionalExpression {
 
   protected ExecutableElement methodElement;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
-  // We generate an invocation to properly resolve translations with normal visitors.
-  protected ChildLink<Statement> invocation = ChildLink.create(Statement.class, this);
 
   public MethodReference() {}
 
@@ -43,7 +41,6 @@ public abstract class MethodReference extends FunctionalExpression {
     super(other);
     methodElement = other.getExecutableElement();
     typeArguments.copyFrom(other.getTypeArguments());
-    invocation.copyFrom(other.getInvocation());
   }
 
   public IMethodBinding getMethodBinding() {
@@ -65,15 +62,6 @@ public abstract class MethodReference extends FunctionalExpression {
 
   public MethodReference addTypeArgument(Type typeArg) {
     typeArguments.add(typeArg);
-    return this;
-  }
-
-  public Statement getInvocation() {
-    return invocation.get();
-  }
-
-  public MethodReference setInvocation(Statement invocation) {
-    this.invocation.set(invocation);
     return this;
   }
 

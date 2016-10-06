@@ -46,7 +46,6 @@ public class CreationReference extends MethodReference {
     if (visitor.visit(this)) {
       type.accept(visitor);
       typeArguments.accept(visitor);
-      invocation.accept(visitor);
     }
     visitor.endVisit(this);
   }

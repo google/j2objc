@@ -58,7 +58,6 @@ public class TypeMethodReference extends MethodReference {
       type.accept(visitor);
       typeArguments.accept(visitor);
       name.accept(visitor);
-      invocation.accept(visitor);
     }
     visitor.endVisit(this);
   }
