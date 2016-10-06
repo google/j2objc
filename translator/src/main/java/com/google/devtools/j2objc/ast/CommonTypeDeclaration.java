@@ -26,6 +26,11 @@ public interface CommonTypeDeclaration {
 
   List<BodyDeclaration> getBodyDeclarations();
 
+  // This is the expression that must be passed as the outer param for implicit super() calls.
+  Expression getSuperOuter();
+
+  CommonTypeDeclaration setSuperOuter(Expression newSuperOuter);
+
   // CommonTypeDeclaration can not be made a subtype of TreeNode because TreeNode is not an
   // interface.
   default TreeNode asNode() {

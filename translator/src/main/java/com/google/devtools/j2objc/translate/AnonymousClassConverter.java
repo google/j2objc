@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -37,8 +36,6 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-
-import java.lang.reflect.Modifier;
 
 /**
  * Converts anonymous classes into inner classes.  This includes creating
@@ -64,12 +61,9 @@ public class AnonymousClassConverter extends TreeVisitor {
     TreeNode parent = node.getParent();
     ClassInstanceCreation newInvocation = null;
     EnumConstantDeclaration enumConstant = null;
-    Expression outerExpression = null;
     IMethodBinding constructorBinding = null;
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
-      outerExpression = newInvocation.getExpression();
-      newInvocation.setExpression(null);
       constructorBinding = newInvocation.getMethodBinding();
     } else if (parent instanceof EnumConstantDeclaration) {
       enumConstant = (EnumConstantDeclaration) parent;
@@ -88,13 +82,9 @@ public class AnonymousClassConverter extends TreeVisitor {
     }
 
     // Add a default constructor.
-    GeneratedMethodBinding defaultConstructor =
-        addDefaultConstructor(typeDecl, constructorBinding, outerExpression);
+    GeneratedMethodBinding defaultConstructor = addDefaultConstructor(typeDecl, constructorBinding);
     if (newInvocation != null) {
       newInvocation.setMethodBinding(defaultConstructor);
-      if (outerExpression != null) {
-        newInvocation.addArgument(0, outerExpression);
-      }
     } else {
       enumConstant.setExecutableElement(BindingConverter.getExecutableElement(defaultConstructor));
     }
@@ -115,12 +105,12 @@ public class AnonymousClassConverter extends TreeVisitor {
 
     // Add type declaration to enclosing type.
     TreeUtil.getEnclosingTypeBodyDeclarations(parent).add(typeDecl);
-    typeDecl.setKey(node.getKey());
+    typeDecl.setSuperOuter(TreeUtil.remove(node.getSuperOuter()));
     super.endVisit(node);
   }
 
   private GeneratedMethodBinding addDefaultConstructor(
-      TypeDeclaration node, IMethodBinding constructorBinding, Expression outerExpression) {
+      TypeDeclaration node, IMethodBinding constructorBinding) {
     ITypeBinding clazz = node.getTypeBinding();
     GeneratedMethodBinding binding = new GeneratedMethodBinding(constructorBinding);
     MethodDeclaration constructor = new MethodDeclaration(binding);
@@ -128,17 +118,6 @@ public class AnonymousClassConverter extends TreeVisitor {
 
     IMethodBinding superCallBinding = findSuperConstructorBinding(constructorBinding);
     SuperConstructorInvocation superCall = new SuperConstructorInvocation(superCallBinding);
-
-    // If there is an outer expression (eg myFoo.new Foo() {};), then this must
-    // be passed to the super class as its outer reference.
-    if (outerExpression != null) {
-      ITypeBinding outerExpressionType = outerExpression.getTypeBinding();
-      GeneratedVariableBinding outerExpressionParam = new GeneratedVariableBinding(
-          "superOuter$", Modifier.FINAL, outerExpressionType, false, true, clazz, binding);
-      constructor.addParameter(0, new SingleVariableDeclaration(outerExpressionParam));
-      binding.addParameter(0, outerExpressionType);
-      superCall.setExpression(new SimpleName(outerExpressionParam));
-    }
 
     // The invocation arguments must become parameters of the generated
     // constructor and passed to the super call.

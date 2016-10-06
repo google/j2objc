@@ -356,10 +356,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "create_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
+        "create_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, nil_chk(b), b, 1)");
     assertTranslatedLines(translation,
         "void Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_("
-          + "Test_A_$1 *self, Test_A *outer$, Test_B *capture$0, Test_B *superOuter$, "
+          + "Test_A_$1 *self, Test_A *outer$, Test_B *superOuter$, Test_B *capture$0, "
           + "jint arg$0) {",
         "  JreStrongAssign(&self->this$1_, outer$);",
         "  JreStrongAssign(&self->val$b_, capture$0);",
@@ -504,5 +504,19 @@ public class AnonymousClassConverterTest extends GenerationTest {
           + "Test_$2 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
         "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
         "}");
+  }
+
+  public void testAnonymousClassWithinLambdaWithSuperOuterParam() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { interface I { A get(); } class A {} "
+        + "static class B { String s;  I test(Test t, int i) { "
+        + "return () -> t.new A() { public String toString() { return s + i; } }; } } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "static Test_B_$1 *create_Test_B_$1_initWithTest_B_withTest_withInt_("
+        + "Test_B *outer$, Test *superOuter$, jint capture$0);");
+    assertTranslation(translation,
+        "return create_Test_B_$1_initWithTest_B_withTest_withInt_("
+        + "this$0_, nil_chk(val$t_), val$i_);");
   }
 }

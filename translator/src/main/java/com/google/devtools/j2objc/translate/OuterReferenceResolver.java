@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -79,6 +80,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private Map<TypeElement, VariableElement> outerVars = new HashMap<>();
   private Map<TypeElement, VariableElement> outerParams = new HashMap<>();
+  private Map<TypeElement, VariableElement> superOuterParams = new HashMap<>();
   private ListMultimap<TypeElement, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<VariableElement>> outerPaths = new HashMap<>();
   private Map<TreeNode.Key, List<List<VariableElement>>> captureArgs = new HashMap<>();
@@ -100,6 +102,10 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   public VariableElement getOuterParam(TypeElement type) {
     return outerParams.get(type);
+  }
+
+  public VariableElement getSuperOuterParam(TypeElement type) {
+    return superOuterParams.get(type);
   }
 
   public TypeMirror getOuterType(TypeElement type) {
@@ -427,10 +433,11 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   // Resolve the path for the outer scope to a SuperConstructorInvocation. This path goes on the
   // type node because there may be implicit super invocations.
-  private void addSuperOuterPath(TreeNode node, TypeElement type) {
-    TypeElement superclass = ElementUtil.getSuperclass(type);
+  private void addSuperOuterPath(CommonTypeDeclaration node) {
+    TypeElement superclass = ElementUtil.getSuperclass(node.getTypeElement());
     if (superclass != null && needsOuterParam(superclass)) {
-      addPath(node, getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
+      node.setSuperOuter(Name.newName(getOuterPathInherited(
+          ElementUtil.getDeclaringClass(superclass))));
     }
   }
 
@@ -461,7 +468,7 @@ public class OuterReferenceResolver extends TreeVisitor {
       currentScope.constructorCount++;
     }
     if (currentScope.constructorCount > currentScope.constructorsNotNeedingSuperOuterScope) {
-      addSuperOuterPath(node, node.getTypeElement());
+      addSuperOuterPath(node);
     }
     resolveCaptureArgs(node, ElementUtil.getSuperclass(node.getTypeElement()));
     popType();
@@ -476,9 +483,20 @@ public class OuterReferenceResolver extends TreeVisitor {
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
     TreeNode parent = node.getParent();
-    if (!(parent instanceof ClassInstanceCreation)
-        || ((ClassInstanceCreation) parent).getExpression() == null) {
-      addSuperOuterPath(node, node.getTypeElement());
+    Expression superOuter = parent instanceof ClassInstanceCreation
+        ? TreeUtil.remove(((ClassInstanceCreation) parent).getExpression()) : null;
+    if (superOuter != null) {
+      // The parent creation node has an explicit outer reference that needs to be passed through to
+      // the superclass constructor.
+      TypeElement type = node.getTypeElement();
+      ((ClassInstanceCreation) parent).setSuperOuterArg(superOuter);
+      VariableElement param = new GeneratedVariableElement(
+          "superOuter$", superOuter.getTypeMirror(), ElementKind.PARAMETER, type)
+          .setNonnull(true);
+      superOuterParams.put(type, param);
+      node.setSuperOuter(new SimpleName(param));
+    } else {
+      addSuperOuterPath(node);
     }
     popType();
   }

@@ -25,6 +25,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   private boolean isInterface = false;
   private ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
   private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
+  private ChildLink<Expression> superOuter = ChildLink.create(Expression.class, this);
 
   public TypeDeclaration() {}
 
@@ -33,6 +34,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     isInterface = other.isInterface();
     superclassType.copyFrom(other.getSuperclassType());
     superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
+    superOuter.copyFrom(other.getSuperOuter());
   }
 
   public TypeDeclaration(ITypeBinding typeBinding) {
@@ -80,6 +82,17 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   }
 
   @Override
+  public Expression getSuperOuter() {
+    return superOuter.get();
+  }
+
+  @Override
+  public TypeDeclaration setSuperOuter(Expression newSuperOuter) {
+    superOuter.set(newSuperOuter);
+    return this;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
@@ -89,6 +102,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
       superInterfaceTypes.accept(visitor);
       bodyDeclarations.accept(visitor);
       classInitStatements.accept(visitor);
+      superOuter.accept(visitor);
     }
     visitor.endVisit(this);
   }

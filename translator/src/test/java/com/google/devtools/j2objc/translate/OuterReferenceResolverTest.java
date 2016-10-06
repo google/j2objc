@@ -20,11 +20,14 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -81,10 +84,9 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     // B will need an outer reference to Test so it can initialize its
     // superclass A.
-    List<VariableElement> bPath = outerResolver.getPath(bNode);
-    assertNotNull(bPath);
-    assertEquals(1, bPath.size());
-    assertEquals("outer$", ElementUtil.getName(bPath.get(0)));
+    Expression bSuperOuter = bNode.getSuperOuter();
+    assertTrue(bSuperOuter instanceof SimpleName);
+    assertEquals("outer$", ElementUtil.getName(TreeUtil.getVariableElement(bSuperOuter)));
 
     // foo() call will need to get to B's scope to call the inherited method.
     MethodInvocation fooCall = (MethodInvocation) nodesByType.get(Kind.METHOD_INVOCATION).get(0);

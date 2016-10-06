@@ -460,6 +460,11 @@ public class NilCheckResolver extends TreeVisitor {
       outerTarget.accept(this);
       addNilCheck(outerTarget);
     }
+    Expression superOuterArg = node.getSuperOuterArg();
+    if (superOuterArg != null) {
+      superOuterArg.accept(this);
+      addNilCheck(superOuterArg);
+    }
     for (Expression arg : node.getArguments()) {
       arg.accept(this);
     }

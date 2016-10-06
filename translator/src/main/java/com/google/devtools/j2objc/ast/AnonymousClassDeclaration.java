@@ -28,6 +28,7 @@ public final class AnonymousClassDeclaration extends TreeNode implements CommonT
   private TypeElement element = null;
   private final ChildList<BodyDeclaration> bodyDeclarations =
       ChildList.create(BodyDeclaration.class, this);
+  private final ChildLink<Expression> superOuter = ChildLink.create(Expression.class, this);
 
   public AnonymousClassDeclaration() {}
 
@@ -35,6 +36,7 @@ public final class AnonymousClassDeclaration extends TreeNode implements CommonT
     super(other);
     element = other.getTypeElement();
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
+    superOuter.copyFrom(other.getSuperOuter());
   }
 
   @Override
@@ -67,10 +69,27 @@ public final class AnonymousClassDeclaration extends TreeNode implements CommonT
     return this;
   }
 
+  public AnonymousClassDeclaration addBodyDeclaration(BodyDeclaration decl) {
+    bodyDeclarations.add(decl);
+    return this;
+  }
+
+  @Override
+  public Expression getSuperOuter() {
+    return superOuter.get();
+  }
+
+  @Override
+  public AnonymousClassDeclaration setSuperOuter(Expression newSuperOuter) {
+    superOuter.set(newSuperOuter);
+    return this;
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       bodyDeclarations.accept(visitor);
+      superOuter.accept(visitor);
     }
     visitor.endVisit(this);
   }
@@ -78,10 +97,5 @@ public final class AnonymousClassDeclaration extends TreeNode implements CommonT
   @Override
   public AnonymousClassDeclaration copy() {
     return new AnonymousClassDeclaration(this);
-  }
-
-  public AnonymousClassDeclaration addBodyDeclaration(BodyDeclaration decl) {
-    bodyDeclarations.add(decl);
-    return this;
   }
 }
