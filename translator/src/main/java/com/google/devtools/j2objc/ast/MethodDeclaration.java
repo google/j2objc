@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public class MethodDeclaration extends BodyDeclaration {
 
-  private IMethodBinding methodBinding = null;
+  private ExecutableElement executableElement = null;
   private boolean isConstructor = false;
   private boolean hasDeclaration = true;
   private ChildLink<Type> returnType = ChildLink.create(Type.class, this);
@@ -37,7 +37,7 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public MethodDeclaration(MethodDeclaration other) {
     super(other);
-    methodBinding = other.getMethodBinding();
+    executableElement = other.getExecutableElement();
     isConstructor = other.isConstructor();
     hasDeclaration = other.hasDeclaration();
     returnType.copyFrom(other.getReturnType());
@@ -48,7 +48,7 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public MethodDeclaration(IMethodBinding methodBinding) {
     super(methodBinding);
-    this.methodBinding = methodBinding;
+    executableElement = BindingConverter.getExecutableElement(methodBinding);
     isConstructor = methodBinding.isConstructor();
     returnType.set(Type.newType(methodBinding.getReturnType()));
     name.set(new SimpleName(methodBinding));
@@ -64,19 +64,19 @@ public class MethodDeclaration extends BodyDeclaration {
   }
 
   public IMethodBinding getMethodBinding() {
-    return methodBinding;
+    return BindingConverter.unwrapExecutableElement(executableElement);
   }
 
   public ExecutableElement getExecutableElement() {
-    return BindingConverter.getExecutableElement(methodBinding);
+    return executableElement;
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
-    methodBinding = newMethodBinding;
+    executableElement = BindingConverter.getExecutableElement(newMethodBinding);
   }
 
   public MethodDeclaration setExecutableElement(ExecutableElement newElement) {
-    methodBinding = (IMethodBinding) BindingConverter.unwrapElement(newElement);
+    executableElement = newElement;
     return this;
   }
 

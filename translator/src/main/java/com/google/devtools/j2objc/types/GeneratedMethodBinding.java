@@ -258,40 +258,6 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
   }
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
-    result = prime * result + modifiers;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-    result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
-    result = prime * result + (varargs ? 1231 : 1237);
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (!(obj instanceof GeneratedMethodBinding)) {
-      return false;
-    }
-    GeneratedMethodBinding other = (GeneratedMethodBinding) obj;
-    return name.equals(other.name)
-        && modifiers == other.modifiers
-        && varargs == other.varargs
-        // The returnType is null for constructors, so test equality first.
-        && (returnType == null ? other.returnType == null : returnType.equals(other.returnType))
-        && declaringClass.equals(other.declaringClass)
-        && parameters.equals(other.parameters);
-  }
-
-  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
     ASTNode.printModifiers(modifiers, sb);
@@ -310,6 +276,7 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
     return sb.toString();
   }
 
+  @Override
   public ITypeBinding getDeclaredReceiverType() {
     return null;
   }

@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -200,29 +201,32 @@ public class AbstractMethodRewriter extends TreeVisitor {
       }
     }
 
-    boolean isInterface = type.isInterface();
     for (IMethodBinding method : newDeclarations.values()) {
       if (deadCodeMap != null && deadCodeMap.isDeadMethod(method.getMethodDeclaration())) {
         continue;
       }
 
-      node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(method, isInterface));
+      node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(method, type));
     }
   }
 
   private MethodDeclaration newReturnTypeNarrowingDeclaration(
-      IMethodBinding method, boolean isInterface) {
-    MethodDeclaration decl = new MethodDeclaration(method);
+      IMethodBinding method, ITypeBinding declaringClass) {
+    String selector = nameTable.getMethodSelector(method);
+    IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(selector, method);
     // Remove all modifiers except the visibility.
-    decl.removeModifiers(~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE));
-    decl.addModifiers(Modifier.ABSTRACT | BindingUtil.ACC_SYNTHETIC);
-    if (!isInterface) {
+    binding.removeModifiers(~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE));
+    // Mark synthetic to avoid writing metadata.
+    binding.addModifiers(Modifier.ABSTRACT | BindingUtil.ACC_SYNTHETIC);
+    binding.setDeclaringClass(declaringClass);
+    MethodDeclaration decl = new MethodDeclaration(binding);
+    if (!declaringClass.isInterface()) {
       unit.setHasIncompleteImplementation();
     }
     int argCount = 0;
-    for (ITypeBinding paramType : method.getParameterTypes()) {
+    for (ITypeBinding paramType : binding.getParameterTypes()) {
       decl.addParameter(new SingleVariableDeclaration(new GeneratedVariableBinding(
-          "arg" + argCount++, 0, paramType, false, true, null, method)));
+          "arg" + argCount++, 0, paramType, false, true, null, binding)));
     }
     return decl;
   }
