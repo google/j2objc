@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -30,12 +29,15 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 
 /**
  * Converts anonymous classes into inner classes.  This includes creating
@@ -57,51 +59,31 @@ public class AnonymousClassConverter extends TreeVisitor {
    */
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
-    ITypeBinding typeBinding = node.getTypeBinding();
+    TypeElement typeElement = node.getTypeElement();
+    ExecutableElement constructorElement = null;
+
     TreeNode parent = node.getParent();
-    ClassInstanceCreation newInvocation = null;
-    EnumConstantDeclaration enumConstant = null;
-    IMethodBinding constructorBinding = null;
     if (parent instanceof ClassInstanceCreation) {
-      newInvocation = (ClassInstanceCreation) parent;
-      constructorBinding = newInvocation.getMethodBinding();
+      ClassInstanceCreation newInvocation = (ClassInstanceCreation) parent;
+      constructorElement = newInvocation.getExecutableElement();
+      newInvocation.setAnonymousClassDeclaration(null);
+      newInvocation.setType(Type.newType(typeElement.asType()));
     } else if (parent instanceof EnumConstantDeclaration) {
-      enumConstant = (EnumConstantDeclaration) parent;
-      constructorBinding = enumConstant.getMethodBinding();
+      EnumConstantDeclaration enumConstant = (EnumConstantDeclaration) parent;
+      constructorElement = enumConstant.getExecutableElement();
+      enumConstant.setAnonymousClassDeclaration(null);
     } else {
       throw new AssertionError(
           "unknown anonymous class declaration parent: " + parent.getClass().getName());
     }
 
     // Create a type declaration for this anonymous class.
-    TypeDeclaration typeDecl = new TypeDeclaration(typeBinding);
+    TypeDeclaration typeDecl = new TypeDeclaration(typeElement);
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
-
-    for (BodyDeclaration decl : node.getBodyDeclarations()) {
-      typeDecl.addBodyDeclaration(decl.copy());
-    }
+    TreeUtil.moveList(node.getBodyDeclarations(), typeDecl.getBodyDeclarations());
 
     // Add a default constructor.
-    GeneratedMethodBinding defaultConstructor = addDefaultConstructor(typeDecl, constructorBinding);
-    if (newInvocation != null) {
-      newInvocation.setMethodBinding(defaultConstructor);
-    } else {
-      enumConstant.setExecutableElement(BindingConverter.getExecutableElement(defaultConstructor));
-    }
-
-    // If invocation, replace anonymous class invocation with the new constructor.
-    if (newInvocation != null) {
-      newInvocation.setAnonymousClassDeclaration(null);
-      newInvocation.setType(Type.newType(typeBinding));
-      IMethodBinding oldBinding = newInvocation.getMethodBinding();
-      if (oldBinding != null) {
-        GeneratedMethodBinding invocationBinding = new GeneratedMethodBinding(oldBinding);
-        invocationBinding.setDeclaringClass(typeBinding);
-        newInvocation.setMethodBinding(invocationBinding);
-      }
-    } else {
-      enumConstant.setAnonymousClassDeclaration(null);
-    }
+    addDefaultConstructor(typeDecl, constructorElement);
 
     // Add type declaration to enclosing type.
     TreeUtil.getEnclosingTypeBodyDeclarations(parent).add(typeDecl);
@@ -109,42 +91,42 @@ public class AnonymousClassConverter extends TreeVisitor {
     super.endVisit(node);
   }
 
-  private GeneratedMethodBinding addDefaultConstructor(
-      TypeDeclaration node, IMethodBinding constructorBinding) {
-    ITypeBinding clazz = node.getTypeBinding();
-    GeneratedMethodBinding binding = new GeneratedMethodBinding(constructorBinding);
-    MethodDeclaration constructor = new MethodDeclaration(binding);
+  private void addDefaultConstructor(TypeDeclaration node, ExecutableElement constructorElement) {
+    MethodDeclaration constructor = new MethodDeclaration(constructorElement);
     constructor.setBody(new Block());
 
-    IMethodBinding superCallBinding = findSuperConstructorBinding(constructorBinding);
-    SuperConstructorInvocation superCall = new SuperConstructorInvocation(superCallBinding);
+    ExecutableElement superCallElement = findSuperConstructorElement(constructorElement);
+    SuperConstructorInvocation superCall = new SuperConstructorInvocation(superCallElement);
 
     // The invocation arguments must become parameters of the generated
     // constructor and passed to the super call.
     int argCount = 0;
-    for (ITypeBinding argType : constructorBinding.getParameterTypes()) {
-      GeneratedVariableBinding argBinding = new GeneratedVariableBinding(
-          "arg$" + argCount++, 0, argType, false, true, clazz, binding);
-      constructor.addParameter(new SingleVariableDeclaration(argBinding));
-      superCall.addArgument(new SimpleName(argBinding));
+    for (VariableElement param : constructorElement.getParameters()) {
+      GeneratedVariableElement newParam = new GeneratedVariableElement(
+          "arg$" + argCount++, param.asType(), ElementKind.PARAMETER, constructorElement);
+      constructor.addParameter(new SingleVariableDeclaration(newParam));
+      superCall.addArgument(new SimpleName(newParam));
     }
-    assert (superCall.getArguments().size() == superCallBinding.getParameterTypes().length)
-        || (superCallBinding.isVarargs()
-            && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length - 1);
+    assert (superCall.getArguments().size() == superCallElement.getParameters().size())
+        || (superCallElement.isVarArgs()
+            && superCall.getArguments().size() >= superCallElement.getParameters().size() - 1);
 
     constructor.getBody().addStatement(superCall);
 
     node.addBodyDeclaration(constructor);
-    assert constructor.getParameters().size() == binding.getParameterTypes().length;
-
-    return binding;
+    assert constructor.getParameters().size() == constructorElement.getParameters().size();
   }
 
-  private IMethodBinding findSuperConstructorBinding(IMethodBinding constructorBinding) {
-    ITypeBinding superClass = constructorBinding.getDeclaringClass().getSuperclass();
-    for (IMethodBinding m : superClass.getDeclaredMethods()) {
-      if (m.isConstructor() && constructorBinding.isSubsignature(m)) {
-        return m;
+  private ExecutableElement findSuperConstructorElement(ExecutableElement constructorElement) {
+    DeclaredType superClass =
+        (DeclaredType) ElementUtil.getDeclaringClass(constructorElement).getSuperclass();
+    for (ExecutableElement m : ElementUtil.getDeclaredMethods(TypeUtil.asTypeElement(superClass))) {
+      if (ElementUtil.isConstructor(m)) {
+        ExecutableType mType = (ExecutableType) env.typeUtilities().asMemberOf(superClass, m);
+        if (env.typeUtilities().isSubsignature(
+            (ExecutableType) constructorElement.asType(), mType)) {
+          return m;
+        }
       }
     }
     throw new AssertionError("could not find constructor");

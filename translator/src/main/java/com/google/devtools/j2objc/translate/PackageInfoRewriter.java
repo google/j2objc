@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -68,7 +69,7 @@ public class PackageInfoRewriter {
         NameTable.PACKAGE_INFO_CLASS_NAME, pkg.getPackageElement(), typeEnv.getNSObject(), false,
         null);
     typeBinding.setModifiers(Modifier.PRIVATE);
-    TypeDeclaration typeDecl = new TypeDeclaration(typeBinding);
+    TypeDeclaration typeDecl = new TypeDeclaration(BindingConverter.getTypeElement(typeBinding));
     TreeUtil.moveList(pkg.getAnnotations(), typeDecl.getAnnotations());
 
     if (prefix != null) {

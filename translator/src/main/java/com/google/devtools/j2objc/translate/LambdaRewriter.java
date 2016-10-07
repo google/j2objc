@@ -114,7 +114,7 @@ public class LambdaRewriter extends TreeVisitor {
     }
 
     private void createTypeDeclaration() {
-      typeDecl = new TypeDeclaration(BindingConverter.unwrapTypeElement(lambdaType));
+      typeDecl = new TypeDeclaration(lambdaType);
       typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
       TreeUtil.getEnclosingTypeBodyDeclarations(node).add(typeDecl);
     }

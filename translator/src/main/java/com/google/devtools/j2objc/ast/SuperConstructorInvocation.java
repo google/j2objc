@@ -37,6 +37,10 @@ public class SuperConstructorInvocation extends Statement {
     arguments.copyFrom(other.getArguments());
   }
 
+  public SuperConstructorInvocation(ExecutableElement executableElement) {
+    method = executableElement;
+  }
+
   public SuperConstructorInvocation(IMethodBinding methodBinding) {
     method = BindingConverter.getExecutableElement(methodBinding);
   }
