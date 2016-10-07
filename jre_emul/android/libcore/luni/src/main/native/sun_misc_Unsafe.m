@@ -80,7 +80,7 @@ jint Java_sun_misc_Unsafe_addressSize(JNIEnv *env, jobject self) {
  * Signature: (Ljava/lang/Class;)Ljava/lang/Object;
  */
 jobject Java_sun_misc_Unsafe_allocateInstance(JNIEnv *env, jobject self, jclass c) {
-  return [c.objcClass alloc];
+  return (*env)->AllocObject(env, c);
 }
 
 

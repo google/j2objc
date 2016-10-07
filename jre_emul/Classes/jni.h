@@ -262,6 +262,7 @@ struct JNINativeInterface {
   jmethodID     (*GetMethodID)(JNIEnv*, jclass, const char*, const char*);
   jmethodID     (*GetStaticMethodID)(JNIEnv*, jclass, const char*, const char*);
 
+  jobject       (*AllocObject)(JNIEnv*, jclass);
   jobject       (*NewObject)(JNIEnv*, jclass, jmethodID, ...);
   jobject       (*NewObjectV)(JNIEnv*, jclass, jmethodID, va_list);
   jobject       (*NewObjectA)(JNIEnv*, jclass, jmethodID, const jvalue*);
@@ -724,6 +725,10 @@ struct _JNIEnv {
 
     jmethodID GetStaticMethodID(jclass clazz, const char *name, const char *sig)
     { return functions->GetStaticMethodID(this, clazz, name, sig); }
+
+    jobject AllocObject(jclass clazz) {
+        return functions->AllocObject(this, clazz);
+    }
 
     jobject NewObject(jclass clazz, jmethodID methodID, ...) {
       va_list args;

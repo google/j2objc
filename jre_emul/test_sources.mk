@@ -572,6 +572,7 @@ TEST_SOURCES := \
     org/json/ParsingTest.java \
     org/json/SelfUseTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
+    sun/misc/UnsafeTest.java \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/api/java/util/AbstractMapTest.java \
     tests/api/java/util/BitSetTest.java \

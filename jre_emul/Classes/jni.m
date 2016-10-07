@@ -28,9 +28,11 @@
 #include "IOSPrimitiveArray.h"
 #include "NSException+JavaThrowable.h"
 #include "java/lang/ClassNotFoundException.h"
+#include "java/lang/InstantiationException.h"
 #include "java/lang/reflect/Constructor.h"
 #include "java/lang/reflect/Field.h"
 #include "java/lang/reflect/Method.h"
+#include "java/lang/reflect/Modifier.h"
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
 
@@ -528,6 +530,16 @@ static void ToArgsArray(IOSObjectArray *paramTypes, jvalue *jargs, va_list args)
   }
 }
 
+static jobject AllocObject(JNIEnv *env, jclass clazz) {
+  nil_chk(clazz);
+  jint modifiers = [clazz getModifiers];
+  if ((modifiers & (JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_INTERFACE)) > 0
+      || [clazz isArray] || [clazz isEnum]) {
+    @throw create_JavaLangInstantiationException_initWithNSString_([clazz getName]);
+  }
+  return [clazz.objcClass alloc];
+}
+
 static jobject NewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
   return (jobject) [(JavaLangReflectConstructor *)methodID
       jniNewInstance:(const J2ObjcRawValue *)args];
@@ -870,6 +882,7 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &GetStaticFieldID,
   &GetMethodID,
   &GetStaticMethodID,
+  &AllocObject,
   &NewObject,
   &NewObjectV,
   &NewObjectA,
