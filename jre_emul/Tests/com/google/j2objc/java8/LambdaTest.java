@@ -413,6 +413,21 @@ public class LambdaTest extends TestCase {
     assertEquals(21141, inner.get(1000, 20));
   }
 
+  interface IntSupplierSupplier {
+    IntSupplier get();
+  }
+
+  public void testNestedLambdaCapturesOuterScope() {
+    IntSupplier s = new IntSupplier() {
+      int i = 1234;
+      public int get() {
+        IntSupplierSupplier ss = () -> () -> i;
+        return ss.get().get();
+      }
+    };
+    assertEquals(1234, s.get());
+  }
+
   interface ImplicitCaptures {
     interface F {
       int f();

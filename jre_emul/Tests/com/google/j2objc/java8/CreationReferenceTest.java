@@ -138,4 +138,29 @@ public class CreationReferenceTest extends TestCase {
     Lambdas.Zero<String> fun1 = gen1.apply();
     assertEquals(fun1.apply(), "Works!");
   }
+
+  static class StatefulOuter {
+    int state;
+
+    class Inner {
+      int getOuterState() {
+        return state;
+      }
+    }
+
+    interface Provider {
+      Inner get();
+    }
+
+    Provider innerProvider() {
+      return Inner::new;
+    }
+  }
+
+  public void testCreationReferenceOfClassWithOuterScope() throws Exception {
+    StatefulOuter o = new StatefulOuter();
+    o.state = 9876;
+    StatefulOuter.Provider p = o.innerProvider();
+    assertEquals(9876, p.get().getOuterState());
+  }
 }
