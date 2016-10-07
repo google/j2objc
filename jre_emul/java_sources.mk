@@ -75,6 +75,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/io/StringWriter.java \
   java/io/SyncFailedException.java \
   java/io/UTFDataFormatException.java \
+  java/io/UncheckedIOException.java \
   java/io/UnsupportedEncodingException.java \
   java/io/WriteAbortedException.java \
   java/io/Writer.java \
@@ -605,8 +606,7 @@ JAVA_PUBLIC_SOURCES_IO = \
   java/io/RandomAccessFile.java \
   java/io/SequenceInputStream.java \
   java/io/StreamTokenizer.java \
-  java/io/StringBufferInputStream.java \
-  java/io/UncheckedIOException.java
+  java/io/StringBufferInputStream.java
 
 JAVA_PRIVATE_SOURCES_IO =
 

@@ -65,3 +65,9 @@ TYPE sun.misc.URLClassPath
 
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
+
+# TODO(kstanger,tball): OpenJDK cycles to be resolved.
+FIELD java.io.PrintStream.formatter
+FIELD java.io.PrintWriter.formatter
+FIELD java.io.PrintWriter.psOut
+FIELD java.io.OutputStreamWriter.out

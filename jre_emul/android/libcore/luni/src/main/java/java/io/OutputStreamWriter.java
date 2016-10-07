@@ -325,7 +325,7 @@ public class OutputStreamWriter extends Writer {
         }
     }
 
-    @Override boolean checkError() {
-        return out.checkError();
+    void flushBuffer() throws IOException {
+        flushBytes(false);
     }
 }
