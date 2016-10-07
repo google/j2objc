@@ -29,7 +29,7 @@ public class OuterReferenceFixerTest extends GenerationTest {
     addSourceFile("class A { class Inner { } }", "A.java");
     String translation = translateSourceFile(
         "class B extends A.Inner { B(A a) { a.super(); } }", "B", "B.m");
-    assertTranslation(translation, "A_Inner_initWithA_(self, a);");
+    assertTranslation(translation, "A_Inner_initWithA_(self, nil_chk(a));");
   }
 
   public void testLocalClassCaptureVariablesInsideGenericClass() throws IOException {

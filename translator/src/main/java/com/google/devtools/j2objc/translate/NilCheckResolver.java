@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
@@ -470,6 +471,21 @@ public class NilCheckResolver extends TreeVisitor {
     }
     // Don't need to visit AnonymousClassDeclaration child because it's removed by
     // AnonymousClassConverter.
+    removeNonFinalFields();
+    handleThrows();
+    return false;
+  }
+
+  @Override
+  public boolean visit(SuperConstructorInvocation node) {
+    Expression outerTarget = node.getExpression();
+    if (outerTarget != null) {
+      outerTarget.accept(this);
+      addNilCheck(outerTarget);
+    }
+    for (Expression arg : node.getArguments()) {
+      arg.accept(this);
+    }
     removeNonFinalFields();
     handleThrows();
     return false;
