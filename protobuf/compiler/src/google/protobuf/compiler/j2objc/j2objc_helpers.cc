@@ -38,6 +38,12 @@
 #include <map>
 #include <set>
 #include <sstream>
+#include "third_party/abcl/strings/case.h"
+#include "third_party/abcl/strings/escaping.h"
+#include "third_party/abcl/strings/numbers.h"
+#include "third_party/abcl/strings/string_view.h"
+#include "third_party/abcl/strings/strip.h"
+#include "third_party/abcl/strings/util.h"
 
 namespace google {
 namespace protobuf {

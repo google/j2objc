@@ -35,6 +35,7 @@
 #include <google/protobuf/compiler/j2objc/j2objc_field.h>
 
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
+#include "third_party/abcl/strings/numbers.h"
 
 namespace google {
 namespace protobuf {
