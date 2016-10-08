@@ -27,22 +27,34 @@ import java.util.List;
  */
 public abstract class Parser {
 
-  protected List<String> classpathEntries = Lists.newArrayList();
-  protected List<String> sourcepathEntries = Lists.newArrayList();
+  protected final List<String> classpathEntries = Lists.newArrayList();
+  protected final List<String> sourcepathEntries = Lists.newArrayList();
   protected String encoding = null;
+  protected final Options options;
   protected boolean includeRunningVMBootclasspath = true;
 
   protected static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
+
+  public Parser(Options options){
+    this.options = options;
+  }
 
   /**
    * Returns a new Parser instance.
    */
   public static Parser newParser() {
+    return newParser(new Options());
+  }
+
+  /**
+   * Return a new Parser instance with the provided Options.
+   */
+  public static Parser newParser(Options options) {
     // TODO(tball): remove after front-end conversion is complete.
-    if (Options.isJDT()) {
-      return new com.google.devtools.j2objc.jdt.JdtParser();
+    if (options.isJDT()) {
+      return new com.google.devtools.j2objc.jdt.JdtParser(options);
     }
-    return new com.google.devtools.j2objc.javac.JavacParser();
+    return new com.google.devtools.j2objc.javac.JavacParser(options);
   }
 
   /**

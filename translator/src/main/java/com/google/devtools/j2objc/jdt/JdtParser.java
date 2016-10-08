@@ -76,6 +76,10 @@ public class JdtParser extends Parser {
     return compilerOptions;
   }
 
+  public JdtParser(Options options){
+    super(options);
+  }
+
   @Override
   public void addClasspathEntry(String entry) {
     if (isValidPathEntry(entry)) {
@@ -137,7 +141,7 @@ public class JdtParser extends Parser {
       mainTypeName = FileUtil.getQualifiedMainTypeName(file, unit);
     }
     ParserEnvironment parserEnv = new JdtParserEnvironment(unit.getAST());
-    TranslationEnvironment env = new TranslationEnvironment(parserEnv);
+    TranslationEnvironment env = new TranslationEnvironment(options, parserEnv);
     return TreeConverter.convertCompilationUnit(env, unit, path, mainTypeName, source);
   }
 
@@ -166,7 +170,7 @@ public class JdtParser extends Parser {
           try {
             String source = FileUtil.readFile(file);
             ParserEnvironment parserEnv = new JdtParserEnvironment(ast.getAST());
-            TranslationEnvironment env = new TranslationEnvironment(parserEnv);
+            TranslationEnvironment env = new TranslationEnvironment(options, parserEnv);
             com.google.devtools.j2objc.ast.CompilationUnit unit =
                 TreeConverter.convertCompilationUnit(
                     env, ast, sourceFilePath, FileUtil.getMainTypeName(file), source);

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 
 /**
@@ -28,19 +29,25 @@ public class TranslationEnvironment {
   private final SignatureGenerator signatureGenerator;
   private final TranslationUtil translationUtil;
   private final Runnable resetMethod;
+  private final Options options;
 
-  public TranslationEnvironment(ParserEnvironment parserEnv) {
+  public TranslationEnvironment(Options options, ParserEnvironment parserEnv) {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
     typeUtil = new TypeUtil(parserEnv, elementUtil);
     captureInfo = new CaptureInfo(typeUtil);
     nameTable = new NameTable(typeUtil, captureInfo);
     signatureGenerator = new SignatureGenerator(typeUtil);
     translationUtil = new TranslationUtil(typeUtil, nameTable);
+    this.options = options;
     resetMethod = () -> parserEnv.reset();
   }
 
   public ElementUtil elementUtil() {
     return elementUtil;
+  }
+
+  public Options options() {
+    return options;
   }
 
   public TypeUtil typeUtil() {

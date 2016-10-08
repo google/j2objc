@@ -50,6 +50,10 @@ import javax.tools.ToolProvider;
  */
 public class JavacParser extends Parser {
 
+  public JavacParser(Options options){
+    super(options);
+  }
+
   @Override
   public void setEnableDocComments(boolean enable) {
     // Ignore, since JavacTaskImpl always enables them.
@@ -75,7 +79,7 @@ public class JavacParser extends Parser {
       JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
       task.analyze();
       processDiagnostics(parserEnv.diagnostics());
-      return TreeConverter.convertCompilationUnit(parserEnv, unit);
+      return TreeConverter.convertCompilationUnit(options, parserEnv, unit);
     } catch (IOException e) {
       ErrorUtil.fatalError(e, path);
     }
@@ -182,7 +186,7 @@ public class JavacParser extends Parser {
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
-              .convertCompilationUnit(env, (JCTree.JCCompilationUnit) ast);
+              .convertCompilationUnit(options, env, (JCTree.JCCompilationUnit) ast);
           handler.handleParsedUnit(unit.getSourceFilePath(), unit);
         }
       }

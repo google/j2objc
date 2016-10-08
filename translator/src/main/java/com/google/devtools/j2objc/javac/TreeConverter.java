@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -150,15 +151,15 @@ public class TreeConverter {
   private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
-      JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
+      Options options, JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
     String sourceFilePath = getPath(javacUnit.getSourceFile());
     try {
       TreeConverter converter = new TreeConverter(javacUnit);
       JavaFileObject sourceFile = javacUnit.getSourceFile();
       String source = sourceFile.getCharContent(false).toString();
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
-      converter.newUnit = new CompilationUnit(new TranslationEnvironment(env), sourceFilePath,
-          mainTypeName, source);
+      converter.newUnit = new CompilationUnit(new TranslationEnvironment(options, env),
+          sourceFilePath, mainTypeName, source);
       PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
       SourcePosition pkgPos = converter.getPosition(javacUnit.pid);
       converter.newUnit.setPackage(converter.convertPackage(pkg, pkgPos));
