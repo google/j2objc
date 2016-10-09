@@ -40,10 +40,16 @@
 
 # java.lang.Object
 java.lang.Object.equals(Ljava/lang/Object;)Z = isEqual:
-java.lang.Object.getClass()Ljava/lang/Class; = getClass
+java.lang.Object.getClass()Ljava/lang/Class; = java_getClass
 java.lang.Object.hashCode()I = hash
 java.lang.Object.toString()Ljava/lang/String; = description
-java.lang.Object.finalize()V = javaFinalize
+java.lang.Object.finalize()V = java_finalize
+java.lang.Object.clone()Ljava/lang/Object; = java_clone
+java.lang.Object.notify()V = java_notify
+java.lang.Object.notifyAll()V = java_notifyAll
+java.lang.Object.wait()V = java_wait
+java.lang.Object.wait(J)V = java_waitWithTimeout:
+java.lang.Object.wait(JI)V = java_waitWithTimeout:nanos:
 
 # java.lang.Class
 java.lang.Class.asSubclass(Ljava/lang/Class;)Ljava/lang/Class; = asSubclass:
@@ -98,12 +104,17 @@ java.lang.Class.isInterface()Z = isInterface
 java.lang.Class.isPrimitive()Z = isPrimitive
 java.lang.Class.newInstance()Ljava/lang/Object; = newInstance
 
+# java.lang.Cloneable
+java.lang.Cloneable.clone()Ljava/lang/Object; = java_clone
+
+# java.lang.Comparable
+java.lang.Comparable.compareTo(Ljava/lang/Object;)I = java_compareTo:
+
 # java.lang.String
 java.lang.String.charAt(I)C = charAtWithInt:
 java.lang.String.codePointAt(I)I = codePointAt:
 java.lang.String.codePointBefore(I)I = codePointBefore:
 java.lang.String.codePointCount(II)I = codePointCount:endIndex:
-java.lang.String.compareTo(Ljava/lang/String;)I = compareToWithId:
 java.lang.String.compareToIgnoreCase(Ljava/lang/String;)I = compareToIgnoreCase:
 java.lang.String.concat(Ljava/lang/String;)Ljava/lang/String; = concat:
 java.lang.String.contains(Ljava/lang/CharSequence;)Z = contains:

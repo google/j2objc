@@ -748,7 +748,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
     for (jint i = 0; i < declared->size_; i++) {
       id<JavaLangAnnotationAnnotation> annotation = declared->buffer_[i];
-      IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
+      IOSObjectArray *attributes = [[annotation java_getClass] getDeclaredAnnotations];
       for (jint j = 0; j < attributes->size_; j++) {
         id<JavaLangAnnotationAnnotation> attribute = attributes->buffer_[j];
         if (inheritedAnnotation == [attribute annotationType]) {
@@ -993,7 +993,7 @@ static IOSObjectArray *GetEnumConstants(IOSClass *cls) {
 }
 
 - (IOSObjectArray *)getEnumConstants {
-  return [GetEnumConstants(self) clone];
+  return [GetEnumConstants(self) java_clone];
 }
 
 // Package private method. In OpenJDK it differentiated from the above because
@@ -1184,7 +1184,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     [NSCopying class];
 
     // Verify that these categories successfully loaded.
-    if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
+    if ([[NSObject class] instanceMethodSignatureForSelector:@selector(java_compareTo:)] == NULL ||
         [[NSString class] instanceMethodSignatureForSelector:@selector(trim)] == NULL ||
         ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
       [NSException raise:@"J2ObjCLinkError"

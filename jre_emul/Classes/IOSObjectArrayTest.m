@@ -117,7 +117,7 @@
     [array replaceObjectAtIndex:i
                      withObject:[NSNumber numberWithInt:i]];
   }
-  IOSObjectArray *clone = [array clone];
+  IOSObjectArray *clone = [array java_clone];
   XCTAssertEqual([array length], [clone length], @"counts don't match", nil);
   for (int i = 0; i < 10; i++) {
     XCTAssertEqual([array objectAtIndex:i], [clone objectAtIndex:i],

@@ -244,7 +244,7 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
 }
 
 - (IOSObjectArray *)getStackTrace {
-  return [InternalGetStackTrace(self) clone];
+  return [InternalGetStackTrace(self) java_clone];
 }
 
 - (NSException *)initCauseWithNSException:(NSException *)causeArg {
@@ -304,7 +304,7 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     if (!stackTrace) {
       return;  // writableStackTrace was false.
     }
-    IOSObjectArray *newTrace = [stackTraceArg clone];
+    IOSObjectArray *newTrace = [stackTraceArg java_clone];
     // Always check args whether or not stack trace is writeable (not nil).
     jint count = newTrace->size_;
     for (jint i = 0; i < count; i++) {

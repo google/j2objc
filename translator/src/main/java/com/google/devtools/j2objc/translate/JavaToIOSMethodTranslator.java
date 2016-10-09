@@ -137,7 +137,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     cloneMethod.setBody(block);
 
     GeneratedMethodBinding cloneBinding = GeneratedMethodBinding.newMethod(
-        "clone", 0, nsObjectType, type);
+        "java_clone", 0, nsObjectType, type);
     MethodInvocation invocation = new MethodInvocation(cloneBinding, null);
     if (Options.useReferenceCounting()) {
       invocation = new MethodInvocation(typeEnv.getRetainMethod(), invocation);

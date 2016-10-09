@@ -36,14 +36,14 @@
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
 
-- (id)clone {
+- (id)java_clone {
   if (![NSCopying_class_() isInstance:self]) {
     @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
   }
 
   // Use the Java getClass method because it returns the class we want in case
   // self's class hass been swizzled by a WeakReference or RetainedWith field.
-  Class cls = [self getClass].objcClass;
+  Class cls = [self java_getClass].objcClass;
   size_t instanceSize = class_getInstanceSize(cls);
   // We don't want to copy the NSObject portion of the object, in particular the
   // isa pointer, because it may contain the retain count.
@@ -78,11 +78,11 @@
   return clone;
 }
 
-- (IOSClass *)getClass {
+- (IOSClass *)java_getClass {
   return IOSClass_fromClass([self class]);
 }
 
-- (int)compareToWithId:(id)other {
+- (int)java_compareTo:(id)other {
 #if __has_feature(objc_arc)
   @throw [[JavaLangClassCastException alloc] init];
 #else
@@ -91,7 +91,7 @@
   return 0;
 }
 
-- (void)notify {
+- (void)java_notify {
   int result = objc_sync_notify(self);
   if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
     return;
@@ -104,7 +104,7 @@
   }
 }
 
-- (void)notifyAll {
+- (void)java_notifyAll {
   int result = objc_sync_notifyAll(self);
   if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
     return;
@@ -148,22 +148,22 @@ static void doWait(id obj, long long timeout) {
   }
 }
 
-- (void)wait {
+- (void)java_wait {
   doWait(self, 0LL);
 }
 
-- (void)waitWithLong:(long long)timeout {
+- (void)java_waitWithTimeout:(long long)timeout {
   doWait(self, timeout);
 }
 
-- (void)waitWithLong:(long long)timeout withInt:(int)nanos {
+- (void)java_waitWithTimeout:(long long)timeout nanos:(int)nanos {
   if (nanos < 0) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }
   doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
-- (void)javaFinalize {
+- (void)java_finalize {
 }
 
 - (void)__javaClone:(id)original {

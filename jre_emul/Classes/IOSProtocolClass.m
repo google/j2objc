@@ -62,7 +62,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (jboolean)isInstance:(id)object {
-  return ConformsToProtocol([object getClass], self);
+  return ConformsToProtocol([object java_getClass], self);
 }
 
 - (NSString *)description {

@@ -287,7 +287,7 @@ public class Proxy implements Serializable {
 
     /*-[
     static JavaLangReflectMethod *FindMethod(id self, SEL sel) {
-      for (IOSClass *cls in [[self getClass] getInterfacesInternal]) {
+      for (IOSClass *cls in [[self java_getClass] getInterfacesInternal]) {
         JavaLangReflectMethod *result = JreMethodForSelectorInherited(cls, sel);
         if (result) {
           return result;
@@ -333,7 +333,7 @@ public class Proxy implements Serializable {
                            withNSObjectArray:args];
       IOSClass *returnType = [method getReturnType];
       if (returnType != [IOSClass voidClass]) {
-        IOSClass *resultType = [javaResult getClass];
+        IOSClass *resultType = [javaResult java_getClass];
         if ([returnType isPrimitive]) {
           // Return value is currently wrapped, so check wrapper type instead.
           returnType = [(IOSPrimitiveClass *) returnType wrapperClass];

@@ -181,7 +181,7 @@ destinationBegin:(int)dstBegin;
 - (IOSCharArray *)toCharArray;
 
 // java.lang.Comparable implementation methods
-- (jint)compareToWithId:(id)another;
+- (jint)java_compareTo:(id)another;
 
 // CharSequence.charAt(int)
 - (jchar)charAtWithInt:(jint)index;
