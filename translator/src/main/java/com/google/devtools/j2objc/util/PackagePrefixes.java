@@ -124,7 +124,7 @@ public final class PackagePrefixes {
       for (AnnotationMirror annotation : packageElement.getAnnotationMirrors()) {
         DeclaredType annotationType = annotation.getAnnotationType();
         if (annotationType.asElement().getSimpleName().toString().equals("ObjectiveCName")) {
-          String prefix = (String) annotation.getElementValues().get("value").getValue();
+          String prefix = (String) ElementUtil.getAnnotationValue(annotation, "value");
           addPrefix(packageName, prefix);
           // Don't return, as there may be a prefix annotation that overrides this value.
         }
