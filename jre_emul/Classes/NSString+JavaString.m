@@ -1048,11 +1048,6 @@ jint javaStringHashCode(NSString *string) {
     { NULL, "Z", 0x1, 66, 14, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x89, 67, 68, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x9, 67, 69, -1, 70, -1, -1 },
-    { NULL, "I", 0x8, 45, 71, -1, -1, -1, -1 },
-    { NULL, "I", 0x8, 45, 72, -1, -1, -1, -1 },
-    { NULL, "I", 0x8, 47, 71, -1, -1, -1, -1 },
-    { NULL, "I", 0x8, 47, 72, -1, -1, -1, -1 },
-    { NULL, "I", 0x0, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
@@ -1136,19 +1131,14 @@ jint javaStringHashCode(NSString *string) {
   methods[77].selector = @selector(contentEqualsStringBuffer:);
   methods[78].selector = @selector(joinWithJavaLangCharSequence:withJavaLangCharSequenceArray:);
   methods[79].selector = @selector(joinWithJavaLangCharSequence:withJavaLangIterable:);
-  methods[80].selector = @selector(indexOfWithNSString:withNSString:withInt:);
-  methods[81].selector = @selector(indexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:);
-  methods[82].selector = @selector(lastIndexOfWithNSString:withNSString:withInt:);
-  methods[83].selector = @selector(lastIndexOfWithCharArray:withInt:withInt:withCharArray:withInt:withInt:withInt:);
-  methods[84].selector = @selector(hash32);
   #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 73, 74,
+    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 71, 72,
       -1 },
     { "serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },
     { "serialPersistentFields", "[LJavaIoObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
-      75, -1, -1 },
+      73, -1, -1 },
   };
   static const void *ptrTable[] = {
     "[B", "[BI", "[BII", "[BIII", "[BIILNSString;", "LJavaIoUnsupportedEncodingException;",
@@ -1165,13 +1155,12 @@ jint javaStringHashCode(NSString *string) {
     "toLowerCase", "LJavaUtilLocale;", "toUpperCase", "contentEquals", "join",
     "LJavaLangCharSequence;[LJavaLangCharSequence;", "LJavaLangCharSequence;LJavaLangIterable;",
     "(Ljava/lang/CharSequence;Ljava/lang/Iterable<+Ljava/lang/CharSequence;>;)Ljava/lang/String;",
-    "LNSString;LNSString;I", "[CII[CIII", &NSString_CASE_INSENSITIVE_ORDER,
-    "Ljava/util/Comparator<Ljava/lang/String;>;", &NSString_serialPersistentFields,
-    "LNSString_CaseInsensitiveComparator;",
+    &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
+    &NSString_serialPersistentFields, "LNSString_CaseInsensitiveComparator;",
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 85, 3, -1, 76, -1, 77, -1 };
+    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 80, 3, -1, 74, -1, 75, -1 };
   return &_NSString;
 }
 

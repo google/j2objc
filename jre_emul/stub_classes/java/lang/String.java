@@ -328,34 +328,5 @@ public class String implements CharSequence, Comparable<String>, Serializable {
       return 0;
     }
   }
-
-  /* Unimplemented/mapped methods.
-  String(byte[] bytes, int i, int j, java.nio.charset.Charset charset)
-  String(byte[] bytes, java.nio.charset.Charset charset)
-  byte[] getBytes(java.nio.charset.Charset charset)
-  int offsetByCodePoints(int i, int j)
-  */
-
-  static int indexOf(String source, String target, int fromIndex) {
-    return -1;
-  }
-
-  static int indexOf(char[] source, int sourceOffset, int sourceCount,
-      char[] target, int targetOffset, int targetCount, int fromIndex) {
-    return -1;
-  }
-
-  static int lastIndexOf(String source, String target, int fromIndex) {
-    return -1;
-  }
-
-  static int lastIndexOf(char[] source, int sourceOffset, int sourceCount,
-      char[] target, int targetOffset, int targetCount, int fromIndex) {
-    return -1;
-  }
-
-  int hash32() {
-    return 0;
-  }
 }
 
