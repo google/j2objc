@@ -28,6 +28,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   private ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
   private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
   private ChildLink<Expression> superOuter = ChildLink.create(Expression.class, this);
+  private ChildList<Expression> superCaptureArgs = ChildList.create(Expression.class, this);
 
   public TypeDeclaration() {}
 
@@ -37,6 +38,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     superclassType.copyFrom(other.getSuperclassType());
     superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
     superOuter.copyFrom(other.getSuperOuter());
+    superCaptureArgs.copyFrom(other.getSuperCaptureArgs());
   }
 
   public TypeDeclaration(TypeElement typeElement) {
@@ -95,6 +97,11 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   }
 
   @Override
+  public List<Expression> getSuperCaptureArgs() {
+    return superCaptureArgs;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
@@ -105,6 +112,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
       bodyDeclarations.accept(visitor);
       classInitStatements.accept(visitor);
       superOuter.accept(visitor);
+      superCaptureArgs.accept(visitor);
     }
     visitor.endVisit(this);
   }

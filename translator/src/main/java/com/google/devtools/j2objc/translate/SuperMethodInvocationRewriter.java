@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
-import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
@@ -107,7 +106,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    Name qualifier = node.getQualifier();
+    Expression receiver = node.getReceiver();
     IMethodBinding method = node.getMethodBinding();
     TypeMirror exprType = node.getTypeMirror();
 
@@ -120,34 +119,34 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
       binding.addParameters(method.getParameterTypes());
       FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
       List<Expression> args = invocation.getArguments();
-      if (qualifier == null) {
+      if (receiver == null) {
         args.add(new ThisExpression(TreeUtil.getEnclosingTypeBinding(node)));
       } else {
-        // OuterReferenceFixer has provided an outer path.
-        args.add(TreeUtil.remove(qualifier));
+        // OuterReferenceResolver has provided an outer path.
+        args.add(TreeUtil.remove(receiver));
       }
       TreeUtil.copyList(node.getArguments(), args);
       node.replaceWith(invocation);
       return;
     }
 
-    if (qualifier == null) {
+    if (receiver == null) {
       return;
     }
-    IVariableBinding var = TreeUtil.getVariableBinding(qualifier);
-    assert var != null : "Expected qualifier to be a variable";
-    TypeMirror qualifierType = BindingConverter.getType(var.getType());
+    IVariableBinding var = TreeUtil.getVariableBinding(receiver);
+    assert var != null : "Expected receiver to be a variable";
+    TypeMirror receiverType = BindingConverter.getType(var.getType());
 
-    SuperMethodBindingPair superMethod = new SuperMethodBindingPair(qualifierType, method);
+    SuperMethodBindingPair superMethod = new SuperMethodBindingPair(receiverType, method);
     superMethods.add(superMethod);
 
     FunctionBinding binding = new FunctionBinding(
-        getSuperFunctionName(superMethod), exprType, TypeUtil.asTypeElement(qualifierType));
-    binding.addParameters(qualifierType, typeEnv.getIdTypeMirror());
+        getSuperFunctionName(superMethod), exprType, TypeUtil.asTypeElement(receiverType));
+    binding.addParameters(receiverType, typeEnv.getIdTypeMirror());
     binding.addParameters(method.getParameterTypes());
     FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
     List<Expression> args = invocation.getArguments();
-    args.add(TreeUtil.remove(qualifier));
+    args.add(TreeUtil.remove(receiver));
     String selectorExpr = UnicodeUtils.format("@selector(%s)", nameTable.getMethodSelector(method));
     args.add(new NativeExpression(selectorExpr, typeEnv.getIdType()));
     TreeUtil.copyList(node.getArguments(), args);

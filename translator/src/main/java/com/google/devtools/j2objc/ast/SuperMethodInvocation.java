@@ -30,6 +30,8 @@ public class SuperMethodInvocation extends Expression {
   private ExecutableType methodType = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  // Resolved by OuterReferenceResolver.
+  private ChildLink<Expression> receiver = ChildLink.create(Expression.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperMethodInvocation() {}
@@ -40,6 +42,7 @@ public class SuperMethodInvocation extends Expression {
     methodType = other.getExecutableType();
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
+    receiver.copyFrom(other.getReceiver());
     arguments.copyFrom(other.getArguments());
   }
 
@@ -105,6 +108,15 @@ public class SuperMethodInvocation extends Expression {
     return this;
   }
 
+  public Expression getReceiver() {
+    return receiver.get();
+  }
+
+  public SuperMethodInvocation setReceiver(Expression newReceiver) {
+    receiver.set(newReceiver);
+    return this;
+  }
+
   public List<Expression> getArguments() {
     return arguments;
   }
@@ -118,6 +130,8 @@ public class SuperMethodInvocation extends Expression {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       qualifier.accept(visitor);
+      name.accept(visitor);
+      receiver.accept(visitor);
       arguments.accept(visitor);
     }
     visitor.endVisit(this);

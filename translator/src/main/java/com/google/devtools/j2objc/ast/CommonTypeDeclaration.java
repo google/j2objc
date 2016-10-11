@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import java.util.Collections;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 
@@ -30,6 +31,10 @@ public interface CommonTypeDeclaration {
   Expression getSuperOuter();
 
   CommonTypeDeclaration setSuperOuter(Expression newSuperOuter);
+
+  default List<Expression> getSuperCaptureArgs() {
+    return Collections.emptyList();
+  }
 
   // CommonTypeDeclaration can not be made a subtype of TreeNode because TreeNode is not an
   // interface.

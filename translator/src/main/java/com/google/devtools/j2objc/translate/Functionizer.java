@@ -447,10 +447,10 @@ public class Functionizer extends TreeVisitor {
 
     @Override
     public void endVisit(SuperMethodInvocation node) {
-      // Super invocations won't work from a function. Setting the qualifier
+      // Super invocations won't work from a function. Setting the receiver
       // will cause SuperMethodInvocationRewriter to rewrite this invocation.
-      if (node.getQualifier() == null) {
-        node.setQualifier(new SimpleName(selfParam));
+      if (node.getReceiver() == null) {
+        node.setReceiver(new SimpleName(selfParam));
       }
     }
   }

@@ -55,6 +55,8 @@ public class TypeMethodReference extends MethodReference {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      lambdaOuterArg.accept(visitor);
+      lambdaCaptureArgs.accept(visitor);
       type.accept(visitor);
       typeArguments.accept(visitor);
       name.accept(visitor);

@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
@@ -64,10 +65,11 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     PostfixExpression increment =
         (PostfixExpression) nodesByType.get(Kind.POSTFIX_EXPRESSION).get(0);
-    List<VariableElement> path = outerResolver.getPath(increment.getOperand());
-    assertNotNull(path);
-    assertEquals(2, path.size());
-    assertEquals("Test", path.get(0).asType().toString());
+    Expression iNode = increment.getOperand();
+    assertTrue(iNode instanceof QualifiedName);
+    VariableElement outerVar = TreeUtil.getVariableElement(((QualifiedName) iNode).getQualifier());
+    assertNotNull(outerVar);
+    assertEquals("Test", outerVar.asType().toString());
   }
 
   public void testInheritedOuterMethod() {
@@ -90,10 +92,11 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     // foo() call will need to get to B's scope to call the inherited method.
     MethodInvocation fooCall = (MethodInvocation) nodesByType.get(Kind.METHOD_INVOCATION).get(0);
-    List<VariableElement> fooPath = outerResolver.getPath(fooCall);
-    assertNotNull(fooPath);
-    assertEquals(1, fooPath.size());
-    assertEquals("B", fooPath.get(0).asType().toString());
+    Expression expr = fooCall.getExpression();
+    assertTrue(expr instanceof SimpleName);
+    VariableElement fooReceiver = TreeUtil.getVariableElement(expr);
+    assertNotNull(fooReceiver);
+    assertEquals("B", fooReceiver.asType().toString());
   }
 
   public void testCapturedLocalVariable() {
@@ -109,16 +112,20 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("val$i", innerFields.get(0).getSimpleName().toString());
     ClassInstanceCreation creationNode =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(0);
-    List<List<VariableElement>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
-    assertEquals(1, captureArgPaths.size());
-    assertEquals(1, captureArgPaths.get(0).size());
-    assertEquals("i", captureArgPaths.get(0).get(0).getSimpleName().toString());
+    List<Expression> captureArgs = creationNode.getCaptureArgs();
+    assertEquals(1, captureArgs.size());
+    Expression captureArg = captureArgs.get(0);
+    assertTrue(captureArg instanceof SimpleName);
+    VariableElement captureVar = TreeUtil.getVariableElement(captureArg);
+    assertNotNull(captureVar);
+    assertEquals("i", ElementUtil.getName(captureVar));
 
     InfixExpression addition = (InfixExpression) nodesByType.get(Kind.INFIX_EXPRESSION).get(0);
-    List<VariableElement> iPath = outerResolver.getPath(addition.getOperands().get(0));
-    assertNotNull(iPath);
-    assertEquals(1, iPath.size());
-    assertEquals("val$i", iPath.get(0).getSimpleName().toString());
+    Expression iNode = addition.getOperands().get(0);
+    assertTrue(iNode instanceof SimpleName);
+    VariableElement iVar = TreeUtil.getVariableElement(iNode);
+    assertNotNull(iVar);
+    assertEquals("val$i", ElementUtil.getName(iVar));
   }
 
   public void testCapturedWeakLocalVariable() {
@@ -156,10 +163,13 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("val$o", innerFields.get(0).getSimpleName().toString());
     ClassInstanceCreation creationNode =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(1);
-    List<List<VariableElement>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
-    assertEquals(1, captureArgPaths.size());
-    assertEquals(1, captureArgPaths.get(0).size());
-    assertEquals("val$o", captureArgPaths.get(0).get(0).getSimpleName().toString());
+    List<Expression> captureArgs = creationNode.getCaptureArgs();
+    assertEquals(1, captureArgs.size());
+    Expression captureArg = captureArgs.get(0);
+    assertTrue(captureArg instanceof SimpleName);
+    VariableElement captureVar = TreeUtil.getVariableElement(captureArg);
+    assertNotNull(captureVar);
+    assertEquals("val$o", ElementUtil.getName(captureVar));
   }
 
   public void testNoOuterFieldWhenSuperConstructorIsQualified() {
@@ -186,10 +196,11 @@ public class OuterReferenceResolverTest extends GenerationTest {
         + "int other() { return i; } } } }");
     ClassInstanceCreation bCreate =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(0);
-    List<VariableElement> path = outerResolver.getPath(bCreate);
-    assertNotNull(path);
-    assertEquals(1, path.size());
-    assertEquals("this$0", ElementUtil.getName(path.get(0)));
+    Expression outerArg = bCreate.getExpression();
+    assertTrue(outerArg instanceof SimpleName);
+    VariableElement var = TreeUtil.getVariableElement(outerArg);
+    assertNotNull(var);
+    assertEquals("this$0", ElementUtil.getName(var));
   }
 
   private void resolveSource(String name, String source) {

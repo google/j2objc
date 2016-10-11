@@ -844,8 +844,8 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
-    assert node.getQualifier() == null
-        : "Qualifiers expected to be handled by SuperMethodInvocationRewriter.";
+    assert node.getReceiver() == null
+        : "Receivers expected to be handled by SuperMethodInvocationRewriter.";
     assert !BindingUtil.isStatic(binding) : "Static invocations are rewritten by Functionizer.";
     buffer.append("[super");
     printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());

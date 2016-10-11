@@ -20,6 +20,8 @@ public class SuperMethodReference extends MethodReference {
 
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  // Resolved by OuterReferenceResolver.
+  private ChildLink<Expression> receiver = ChildLink.create(Expression.class, this);
 
   public SuperMethodReference() {}
 
@@ -27,20 +29,12 @@ public class SuperMethodReference extends MethodReference {
     super(other);
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
+    receiver.copyFrom(other.getReceiver());
   }
 
   @Override
   public Kind getKind() {
     return Kind.SUPER_METHOD_REFERENCE;
-  }
-
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public SuperMethodReference setName(SimpleName newName) {
-    name.set(newName);
-    return this;
   }
 
   public Name getQualifier() {
@@ -52,12 +46,33 @@ public class SuperMethodReference extends MethodReference {
     return this;
   }
 
+  public SimpleName getName() {
+    return name.get();
+  }
+
+  public SuperMethodReference setName(SimpleName newName) {
+    name.set(newName);
+    return this;
+  }
+
+  public Expression getReceiver() {
+    return receiver.get();
+  }
+
+  public SuperMethodReference setReceiver(Expression newReceiver) {
+    receiver.set(newReceiver);
+    return this;
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      lambdaOuterArg.accept(visitor);
+      lambdaCaptureArgs.accept(visitor);
       qualifier.accept(visitor);
       typeArguments.accept(visitor);
       name.accept(visitor);
+      receiver.accept(visitor);
     }
     visitor.endVisit(this);
   }

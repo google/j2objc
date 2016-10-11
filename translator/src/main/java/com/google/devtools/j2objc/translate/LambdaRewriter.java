@@ -140,6 +140,8 @@ public class LambdaRewriter extends TreeVisitor {
       typeDecl.addBodyDeclaration(constructorDecl);
 
       creation = new ClassInstanceCreation(constructorBinding, Type.newType(lambdaType.asType()));
+      creation.setExpression(TreeUtil.remove(node.getLambdaOuterArg()));
+      TreeUtil.moveList(node.getLambdaCaptureArgs(), creation.getCaptureArgs());
       creation.setKey(node.getKey());
     }
 
@@ -220,6 +222,8 @@ public class LambdaRewriter extends TreeVisitor {
             node.getExecutableElement(), Type.newType(creationType));
         forwardRemainingArgs(createParameters(), creation.getArguments());
         creation.setKey(node.getType().getKey());
+        creation.setExpression(TreeUtil.remove(node.getCreationOuterArg()));
+        TreeUtil.moveList(node.getCreationCaptureArgs(), creation.getCaptureArgs());
         setImplementationBody(creation);
       }
     }
@@ -248,7 +252,7 @@ public class LambdaRewriter extends TreeVisitor {
 
     private void rewriteSuperMethodReference(SuperMethodReference node) {
       SuperMethodInvocation invocation = new SuperMethodInvocation(node.getExecutableElement());
-      invocation.setQualifier(TreeUtil.remove(node.getQualifier()));
+      invocation.setReceiver(TreeUtil.remove(node.getReceiver()));
       forwardRemainingArgs(createParameters(), invocation.getArguments());
       invocation.setKey(node.getName().getKey());
       setImplementationBody(invocation);

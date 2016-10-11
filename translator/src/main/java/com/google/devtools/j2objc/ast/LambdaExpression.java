@@ -67,6 +67,8 @@ public class LambdaExpression extends FunctionalExpression {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      lambdaOuterArg.accept(visitor);
+      lambdaCaptureArgs.accept(visitor);
       parameters.accept(visitor);
       body.accept(visitor);
     }

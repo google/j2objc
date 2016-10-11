@@ -33,6 +33,7 @@ public class ClassInstanceCreation extends Expression {
   // Used by anonymous classes where we have two outer scopes, one for the class and one for the
   // superclass.
   private ChildLink<Expression> superOuterArg = ChildLink.create(Expression.class, this);
+  private ChildList<Expression> captureArgs = ChildList.create(Expression.class, this);
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
   private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
@@ -46,6 +47,7 @@ public class ClassInstanceCreation extends Expression {
     hasRetainedResult = other.hasRetainedResult();
     expression.copyFrom(other.getExpression());
     superOuterArg.copyFrom(other.getSuperOuterArg());
+    captureArgs.copyFrom(other.getCaptureArgs());
     type.copyFrom(other.getType());
     arguments.copyFrom(other.getArguments());
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
@@ -120,6 +122,10 @@ public class ClassInstanceCreation extends Expression {
     return this;
   }
 
+  public List<Expression> getCaptureArgs() {
+    return captureArgs;
+  }
+
   public Type getType() {
     return type.get();
   }
@@ -162,6 +168,7 @@ public class ClassInstanceCreation extends Expression {
     if (visitor.visit(this)) {
       expression.accept(visitor);
       superOuterArg.accept(visitor);
+      captureArgs.accept(visitor);
       type.accept(visitor);
       arguments.accept(visitor);
       anonymousClassDeclaration.accept(visitor);

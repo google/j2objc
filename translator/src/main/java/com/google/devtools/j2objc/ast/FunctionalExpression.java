@@ -27,6 +27,8 @@ public abstract class FunctionalExpression extends Expression {
   private TypeMirror typeMirror;
   private TypeElement typeElement;
   private List<TypeMirror> targetTypes = new ArrayList<>();
+  protected ChildLink<Expression> lambdaOuterArg = ChildLink.create(Expression.class, this);
+  protected ChildList<Expression> lambdaCaptureArgs = ChildList.create(Expression.class, this);
 
   public FunctionalExpression() {
   }
@@ -36,6 +38,8 @@ public abstract class FunctionalExpression extends Expression {
     typeMirror = other.getTypeMirror();
     typeElement = other.getTypeElement();
     targetTypes.addAll(other.getTargetTypes());
+    lambdaOuterArg.copyFrom(other.getLambdaOuterArg());
+    lambdaCaptureArgs.copyFrom(other.getLambdaCaptureArgs());
   }
 
   @Override
@@ -64,6 +68,19 @@ public abstract class FunctionalExpression extends Expression {
   public FunctionalExpression addTargetType(TypeMirror t) {
     targetTypes.add(t);
     return this;
+  }
+
+  public Expression getLambdaOuterArg() {
+    return lambdaOuterArg.get();
+  }
+
+  public FunctionalExpression setLambdaOuterArg(Expression newOuterArg) {
+    lambdaOuterArg.set(newOuterArg);
+    return this;
+  }
+
+  public List<Expression> getLambdaCaptureArgs() {
+    return lambdaCaptureArgs;
   }
 
   @Override
