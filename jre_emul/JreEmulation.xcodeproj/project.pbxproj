@@ -635,11 +635,13 @@
 		06459FC71A4223F000F5ED23 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C54AD31A40C7A4004B3ACD /* libicucore.dylib */; };
 		06574A1A1A8EAF0B000A3616 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06574A1C1A8EAF84000A3616 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06574A1B1A8EAF84000A3616 /* QuartzCore.framework */; };
+		065F96361DAC05A300807A81 /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 065F96341DAC03F900807A81 /* Base64Test.m */; };
+		065F96371DAC05A300807A81 /* IosSHAMessageDigestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 065F96331DAC03F900807A81 /* IosSHAMessageDigestTest.m */; };
+		065F96381DAC05A300807A81 /* UnsafeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 065F96351DAC03F900807A81 /* UnsafeTest.m */; };
 		0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */; };
 		0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		069FE7FA1D8B1FF3006D0FD8 /* sun_misc_Unsafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */; };
-		069FE7FD1D8B2043006D0FD8 /* AnnotatedElements.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FE7FC1D8B2043006D0FD8 /* AnnotatedElements.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
 		06C73F5819180E64001D3CC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06C73F5A19180E6D001D3CC8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
@@ -1903,6 +1905,9 @@
 		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
 		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
 		06574A1B1A8EAF84000A3616 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		065F96331DAC03F900807A81 /* IosSHAMessageDigestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosSHAMessageDigestTest.m; path = com/google/j2objc/security/IosSHAMessageDigestTest.m; sourceTree = "<group>"; };
+		065F96341DAC03F900807A81 /* Base64Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Base64Test.m; path = libcore/java/util/Base64Test.m; sourceTree = "<group>"; };
+		065F96351DAC03F900807A81 /* UnsafeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnsafeTest.m; path = sun/misc/UnsafeTest.m; sourceTree = "<group>"; };
 		0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JRELogPaneViewController.xib; sourceTree = "<group>"; };
 		0660B4A81A02EA1C00B643F5 /* JRETestRunListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestRunListener.h; sourceTree = "<group>"; };
 		0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestRunListener.m; sourceTree = "<group>"; };
@@ -6045,6 +6050,7 @@
 				062025081D512ACA001EE455 /* AtomicReferenceTest.m */,
 				062025091D512ACA001EE455 /* AtomicStampedReferenceTest.m */,
 				0620268B1D512D08001EE455 /* AttributedCharacterIteratorAttributeTest.m */,
+				065F96341DAC03F900807A81 /* Base64Test.m */,
 				062024F01D512AA2001EE455 /* Base64Test.m */,
 				0620271B1D512D82001EE455 /* BeanDescriptorTest.m */,
 				062028BD1D512E89001EE455 /* BigIntegerAddTest.m */,
@@ -6210,6 +6216,7 @@
 				062029291D512F25001EE455 /* InvalidKeySpecExceptionTest.m */,
 				0620292A1D512F25001EE455 /* InvalidParameterSpecExceptionTest.m */,
 				0620252A1D512B37001EE455 /* IosSecureRandomImplTest.m */,
+				065F96331DAC03F900807A81 /* IosSHAMessageDigestTest.m */,
 				0620253B1D512B37001EE455 /* JniTest.m */,
 				062028F51D512EDB001EE455 /* JSONArrayTest.m */,
 				062028F61D512EDB001EE455 /* JSONObjectTest.m */,
@@ -6588,6 +6595,7 @@
 				0620289E1D512E78001EE455 /* TypeVariableTest.m */,
 				0620289F1D512E78001EE455 /* UndeclaredThrowableExceptionTest.m */,
 				062028A01D512E78001EE455 /* UndeclaredThrowableExceptionTests.m */,
+				065F96351DAC03F900807A81 /* UnsafeTest.m */,
 				062027D61D512DED001EE455 /* UnsupportedOperationExceptionTest.m */,
 				062026791D512D08001EE455 /* URITest.m */,
 				0620267A1D512D08001EE455 /* URLConnectionTest.m */,
@@ -6843,6 +6851,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				065F96361DAC05A300807A81 /* Base64Test.m in Sources */,
+				065F96371DAC05A300807A81 /* IosSHAMessageDigestTest.m in Sources */,
+				065F96381DAC05A300807A81 /* UnsafeTest.m in Sources */,
 				0620262F1D512CA1001EE455 /* OldDataInputStreamTest.m in Sources */,
 				062026A11D512D08001EE455 /* DatagramSocketTest.m in Sources */,
 				062026F51D512D17001EE455 /* ZipEntryTest.m in Sources */,
@@ -7445,7 +7456,6 @@
 				062027DE1D512DED001EE455 /* AssertionErrorTest.m in Sources */,
 				062028CC1D512E89001EE455 /* BigIntegerConvertTest.m in Sources */,
 				062028B71D512E78001EE455 /* ModifierTest.m in Sources */,
-				069FE7FD1D8B2043006D0FD8 /* AnnotatedElements.m in Sources */,
 				062028B31D512E78001EE455 /* GenericReflectionTestsBase.m in Sources */,
 				0620255A1D512B37001EE455 /* NativeTimeZoneTest.m in Sources */,
 				062029751D512F41001EE455 /* Support_Configuration.m in Sources */,

@@ -105,12 +105,7 @@ public class SystemTest extends TestCase {
   public void testGetEnv() {
     Map<String, String> variables = System.getenv();
     assertNotNull(variables);
-    if (onMac()) {
-      assertFalse(variables.keySet().isEmpty());
-    } else {
-      // iOS doesn't support environ or _NSGetEnviron().
-      assertTrue(variables.keySet().isEmpty());
-    }
+    assertFalse(variables.keySet().isEmpty());
 
     // Verify an immutable map was returned.
     try {
