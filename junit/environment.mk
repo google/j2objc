@@ -33,12 +33,9 @@ HAMCREST_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(HAMCREST_SOURCE_JAR)
 RUNNER_LIB = $(ARCH_BUILD_DIR)/libjunit_runner.a
 RUNNER_LIB_DIST = $(ARCH_LIB_DIR)/libjunit_runner.a
 
-# Compiler settings, based on Xcode log output
-WARNINGS = -Wno-trigraphs -Wunused-variable -Werror -Wincompatible-pointer-types
-
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := -ObjC $(WARNINGS) -std=c11 \
+OBJCFLAGS := -ObjC $(CC_WARNINGS) -std=c11 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 

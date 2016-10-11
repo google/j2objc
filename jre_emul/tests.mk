@@ -49,7 +49,7 @@ JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 INCLUDE_DIRS = $(TESTS_DIR) $(TESTS_DIR)/arc $(CLASS_DIR) $(EMULATION_CLASS_DIR)
 INCLUDE_ARGS = $(INCLUDE_DIRS:%=-I%)
 
-TEST_JOCC := ../dist/j2objcc -g
+TEST_JOCC := ../dist/j2objcc -g $(WARNINGS)
 LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support
 COMPILE_FLAGS := $(INCLUDE_ARGS) -c -Wno-objc-redundant-literal-use -Wno-format -Werror \
   -Wno-parentheses
@@ -211,7 +211,7 @@ run-each-test: link resources $(TEST_BIN)
 # Build and run the JreEmulation project's test bundle, then close simulator app.
 # Note: the simulator app's name was changed to "Simulator" in Xcode 7.
 run-xctests: test
-	@xcodebuild -project JreEmulation.xcodeproj -scheme jre_emul -destination \
+	@xcodebuild -project JreEmulation.xcodeproj -target jre_emul -destination \
 	    'platform=iOS Simulator,name=iPhone 6' test
 	@killall 'iOS Simulator' || killall 'Simulator'
 
