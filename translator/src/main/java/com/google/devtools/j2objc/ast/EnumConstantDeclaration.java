@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -25,7 +26,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  */
 public class EnumConstantDeclaration extends BodyDeclaration {
 
-  private IVariableBinding variableBinding = null;
+  private VariableElement variableElement = null;
   private ExecutableElement method = null;
   private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -36,7 +37,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   public EnumConstantDeclaration(EnumConstantDeclaration other) {
     super(other);
-    variableBinding = other.getVariableBinding();
+    variableElement = other.getVariableElement();
     method = other.getExecutableElement();
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
@@ -49,11 +50,15 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   }
 
   public IVariableBinding getVariableBinding() {
-    return variableBinding;
+    return BindingConverter.unwrapVariableElement(variableElement);
   }
 
-  public EnumConstantDeclaration setVariableBinding(IVariableBinding binding) {
-    this.variableBinding = binding;
+  public VariableElement getVariableElement() {
+    return variableElement;
+  }
+
+  public EnumConstantDeclaration setVariableElement(VariableElement element) {
+    variableElement = element;
     return this;
   }
 

@@ -604,7 +604,7 @@ public class TreeConverter {
     EnumConstantDeclaration newNode = new EnumConstantDeclaration();
     convertBodyDeclaration(node, newNode);
     newNode
-        .setVariableBinding(BindingConverter.wrapBinding(node.resolveVariable()))
+        .setVariableElement(BindingConverter.getVariableElement(node.resolveVariable()))
         .setExecutableElement(
             BindingConverter.getExecutableElement(node.resolveConstructorBinding()))
         .setName((SimpleName) convert(node.getName()))
