@@ -696,6 +696,11 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   [super dealloc];
 }
 
+// Suppress undeclared-selector warnings to avoid creating method bodies
+// for all the abstract methods which are implemented in subclasses.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x0, -1, -1, -1, -1, -1, -1 },
@@ -830,5 +835,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     -1, -1 };
   return &_JavaLangAbstractStringBuilder;
 }
+
+#pragma clang diagnostic pop
 
 @end

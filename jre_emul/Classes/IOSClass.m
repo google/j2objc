@@ -422,7 +422,7 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
   // Check for a package-info class that has a __prefix method.
   NSString *pkgInfoName = [CamelCasePackage(package) stringByAppendingString:@"package_info"];
   Class pkgInfoCls = NSClassFromString(pkgInfoName);
-  Method prefixMethod = JreFindClassMethod(pkgInfoCls, @selector(__prefix));
+  Method prefixMethod = JreFindClassMethod(pkgInfoCls, sel_registerName("__prefix"));
   if (prefixMethod) {
     prefix = method_invoke(pkgInfoCls, prefixMethod);
   }

@@ -25,6 +25,11 @@
 #import "java/lang/reflect/Method.h"
 #import "objc/message.h"
 
+// Suppress undeclared-selector warning to avoid incurring sel_registerName()
+// overhead with every metadata lookup.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+
 const J2ObjcClassInfo JreEmptyClassInfo = {
     NULL, NULL, NULL, NULL, NULL, J2OBJC_METADATA_VERSION, 0x0, 0, 0, -1, -1, -1, -1, -1 };
 
@@ -278,3 +283,5 @@ static NSMutableString *BuildQualifiedName(const J2ObjcClassInfo *metadata) {
 NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
   return BuildQualifiedName(metadata);
 }
+
+#pragma clang diagnostic pop

@@ -22,7 +22,7 @@
 #import "IOSReflection.h"
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/reflect/Field.h"
-
+#import "java/lang/reflect/Proxy.h"
 
 @implementation IOSProxyClass
 
