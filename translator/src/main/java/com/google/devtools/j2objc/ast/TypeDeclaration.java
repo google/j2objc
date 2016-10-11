@@ -25,10 +25,10 @@ import javax.lang.model.type.TypeMirror;
 public class TypeDeclaration extends AbstractTypeDeclaration {
 
   private boolean isInterface = false;
-  private ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
-  private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
-  private ChildLink<Expression> superOuter = ChildLink.create(Expression.class, this);
-  private ChildList<Expression> superCaptureArgs = ChildList.create(Expression.class, this);
+  private final ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
+  private final ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
+  private final ChildLink<Expression> superOuter = ChildLink.create(Expression.class, this);
+  private final ChildList<Expression> superCaptureArgs = ChildList.create(Expression.class, this);
 
   public TypeDeclaration() {}
 
