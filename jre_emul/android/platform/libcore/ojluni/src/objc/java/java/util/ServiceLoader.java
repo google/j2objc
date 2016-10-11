@@ -195,7 +195,7 @@ public final class ServiceLoader<S>
     private LinkedHashMap<String,S> providers = new LinkedHashMap<>();
 
     // The current lazy-lookup iterator
-    private LazyIterator lookupIterator;
+    private Iterator<S> lookupIterator;
 
     /**
      * Clear this loader's provider cache so that all providers will be
@@ -210,7 +210,9 @@ public final class ServiceLoader<S>
      */
     public void reload() {
         providers.clear();
-        lookupIterator = new LazyIterator(service, loader);
+        lookupIterator = hasServicesDirectory()
+            ? new LazyIterator(service, loader)
+            : Collections.emptyIterator();
     }
 
     private ServiceLoader(Class<S> svc, ClassLoader cl) {
@@ -498,8 +500,7 @@ public final class ServiceLoader<S>
      * @return A new service loader
      */
     public static <S> ServiceLoader<S> load(Class<S> service) {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        return ServiceLoader.load(service, cl);
+        return ServiceLoader.load(service, ClassLoader.getSystemClassLoader());
     }
 
     /**
@@ -564,4 +565,12 @@ public final class ServiceLoader<S>
         return "java.util.ServiceLoader[" + service.getName() + "]";
     }
 
+    private native boolean hasServicesDirectory() /*-[
+      for (NSBundle *bundle in NSBundle.allBundles) {
+        if ([bundle URLForResource:@"services" withExtension:nil subdirectory:@"META-INF"]) {
+          return YES;
+        }
+      }
+      return NO;
+    ]-*/;
 }
