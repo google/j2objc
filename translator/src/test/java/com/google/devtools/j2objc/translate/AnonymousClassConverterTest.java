@@ -519,4 +519,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "return create_Test_B_$1_initWithTest_B_withTest_withInt_("
         + "this$0_, nil_chk(val$t_), val$i_);");
   }
+
+  public void testSuperclassHasCapturedVariables() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static Object test(int i) { class Local { int foo() { return i; } } "
+        + "return new Local() { }; } }", "Test", "Test.m");
+    // Test that the anonymous class captures i and passes it to Local's constructor.
+    assertTranslation(translation, "Test_1Local_initWithInt_(self, self->val1$i_);");
+  }
 }

@@ -81,6 +81,7 @@ public class AnonymousClassConverter extends TreeVisitor {
     TypeDeclaration typeDecl = new TypeDeclaration(typeElement);
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
     TreeUtil.moveList(node.getBodyDeclarations(), typeDecl.getBodyDeclarations());
+    TreeUtil.moveList(node.getSuperCaptureArgs(), typeDecl.getSuperCaptureArgs());
 
     // Add a default constructor.
     addDefaultConstructor(typeDecl, constructorElement);

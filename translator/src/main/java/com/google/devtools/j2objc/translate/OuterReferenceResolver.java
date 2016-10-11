@@ -455,13 +455,13 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
+    TypeElement type = node.getTypeElement();
     TreeNode parent = node.getParent();
     Expression superOuter = parent instanceof ClassInstanceCreation
         ? TreeUtil.remove(((ClassInstanceCreation) parent).getExpression()) : null;
     if (superOuter != null) {
       // The parent creation node has an explicit outer reference that needs to be passed through to
       // the superclass constructor.
-      TypeElement type = node.getTypeElement();
       ((ClassInstanceCreation) parent).setSuperOuterArg(superOuter);
       VariableElement param = new GeneratedVariableElement(
           "superOuter$", superOuter.getTypeMirror(), ElementKind.PARAMETER, type)
@@ -471,6 +471,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     } else {
       addSuperOuterPath(node);
     }
+    addCaptureArgs(ElementUtil.getSuperclass(type), node.getSuperCaptureArgs());
     popType();
   }
 

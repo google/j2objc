@@ -104,16 +104,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration
   }
 
   @Override
-  public Expression getSuperOuter() {
-    return null;
-  }
-
-  @Override
-  public AbstractTypeDeclaration setSuperOuter(Expression newSuperOuter) {
-    throw new AssertionError("Cannot set superOuter child on this node");
-  }
-
-  @Override
   public void validateInner() {
     super.validateInner();
     Preconditions.checkNotNull(typeElement);

@@ -28,9 +28,13 @@ public interface CommonTypeDeclaration {
   List<BodyDeclaration> getBodyDeclarations();
 
   // This is the expression that must be passed as the outer param for implicit super() calls.
-  Expression getSuperOuter();
+  default Expression getSuperOuter() {
+    return null;
+  }
 
-  CommonTypeDeclaration setSuperOuter(Expression newSuperOuter);
+  default CommonTypeDeclaration setSuperOuter(Expression newSuperOuter) {
+    throw new AssertionError("Cannot set superOuter child on this node");
+  }
 
   default List<Expression> getSuperCaptureArgs() {
     return Collections.emptyList();
