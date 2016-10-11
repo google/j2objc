@@ -142,7 +142,6 @@ public class LambdaRewriter extends TreeVisitor {
       creation = new ClassInstanceCreation(constructorBinding, Type.newType(lambdaType.asType()));
       creation.setExpression(TreeUtil.remove(node.getLambdaOuterArg()));
       TreeUtil.moveList(node.getLambdaCaptureArgs(), creation.getCaptureArgs());
-      creation.setKey(node.getKey());
     }
 
     private void removeCastExpression() {
@@ -221,7 +220,6 @@ public class LambdaRewriter extends TreeVisitor {
         ClassInstanceCreation creation = new ClassInstanceCreation(
             node.getExecutableElement(), Type.newType(creationType));
         forwardRemainingArgs(createParameters(), creation.getArguments());
-        creation.setKey(node.getType().getKey());
         creation.setExpression(TreeUtil.remove(node.getCreationOuterArg()));
         TreeUtil.moveList(node.getCreationCaptureArgs(), creation.getCaptureArgs());
         setImplementationBody(creation);
@@ -254,7 +252,6 @@ public class LambdaRewriter extends TreeVisitor {
       SuperMethodInvocation invocation = new SuperMethodInvocation(node.getExecutableElement());
       invocation.setReceiver(TreeUtil.remove(node.getReceiver()));
       forwardRemainingArgs(createParameters(), invocation.getArguments());
-      invocation.setKey(node.getName().getKey());
       setImplementationBody(invocation);
     }
 
