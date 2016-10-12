@@ -62,6 +62,7 @@ import com.google.devtools.j2objc.translate.VariableRenamer;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -129,6 +130,8 @@ public class TranslationProcessor extends FileProcessor {
       DeadCodeMap treeShakerMap, TimeTracker ticker) {
     ticker.push();
 
+    CaptureInfo captureInfo = new CaptureInfo();
+
     // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
     new LambdaTypeElementAdder().run(unit);
     ticker.tick("LambdaTypeElementAdder");
@@ -147,8 +150,7 @@ public class TranslationProcessor extends FileProcessor {
       ticker.tick("TreeShaker");
     }
 
-    OuterReferenceResolver outerResolver = new OuterReferenceResolver();
-    outerResolver.run(unit);
+    new OuterReferenceResolver(captureInfo).run(unit);
     ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
@@ -177,7 +179,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("EnhancedForRewriter");
 
     // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
-    new LambdaRewriter(outerResolver).run(unit);
+    new LambdaRewriter(captureInfo).run(unit);
     ticker.tick("LambdaRewriter");
 
     // Add auto-boxing conversions.
@@ -188,7 +190,7 @@ public class TranslationProcessor extends FileProcessor {
     new AnonymousClassConverter().run(unit);
     ticker.tick("AnonymousClassConverter");
 
-    new InnerClassExtractor(outerResolver, unit).run(unit);
+    new InnerClassExtractor(unit, captureInfo).run(unit);
     ticker.tick("InnerClassExtractor");
 
     // Generate method shims for classes implementing interfaces that have default methods
@@ -209,7 +211,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("NilCheckResolver");
 
     // Fix references to outer scope and captured variables.
-    new OuterReferenceFixer(outerResolver).run(unit);
+    new OuterReferenceFixer(captureInfo).run(unit);
     ticker.tick("OuterReferenceFixer");
 
     // Rewrites expressions that would cause unsequenced compile errors.

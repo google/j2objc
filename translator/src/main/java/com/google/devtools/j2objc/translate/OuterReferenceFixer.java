@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,10 @@ import javax.lang.model.type.TypeMirror;
  */
 public class OuterReferenceFixer extends TreeVisitor {
 
-  private final OuterReferenceResolver outerResolver;
+  private final CaptureInfo captureInfo;
 
-  public OuterReferenceFixer(OuterReferenceResolver outerResolver) {
-    this.outerResolver = outerResolver;
+  public OuterReferenceFixer(CaptureInfo captureInfo) {
+    this.captureInfo = captureInfo;
   }
 
   @Override
@@ -48,10 +49,10 @@ public class OuterReferenceFixer extends TreeVisitor {
     List<TypeMirror> parameterTypes = new ArrayList<>();
     List<Expression> outerArgs = node.getArguments().subList(0, 0);
 
-    if (outerResolver.needsOuterParam(newType)) {
+    if (captureInfo.needsOuterParam(newType)) {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(newType);
       outerArgs.add(getOuterArg(node, declaringClass.asType()));
-      parameterTypes.add(outerResolver.getOuterType(newType));
+      parameterTypes.add(captureInfo.getOuterType(newType));
     }
 
     Expression superOuterArg = TreeUtil.remove(node.getSuperOuterArg());
@@ -92,13 +93,13 @@ public class OuterReferenceFixer extends TreeVisitor {
     List<TypeMirror> parameterTypes = new ArrayList<>();
 
     // Outer arg.
-    if (outerResolver.needsOuterParam(superType)) {
+    if (captureInfo.needsOuterParam(superType)) {
       Expression outerArg = TreeUtil.remove(node.getExpression());
       if (outerArg == null) {
         outerArg = typeDecl.getSuperOuter().copy();
       }
       args.add(outerArg);
-      parameterTypes.add(outerResolver.getOuterType(superType));
+      parameterTypes.add(captureInfo.getOuterType(superType));
     }
 
     // Capture args.

@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -46,19 +44,17 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -77,74 +73,17 @@ import javax.lang.model.type.TypeMirror;
  */
 public class OuterReferenceResolver extends TreeVisitor {
 
-  private Map<TypeElement, VariableElement> outerVars = new HashMap<>();
-  private Map<TypeElement, VariableElement> outerParams = new HashMap<>();
-  private Map<TypeElement, VariableElement> superOuterParams = new HashMap<>();
-  private ListMultimap<TypeElement, Capture> captures = ArrayListMultimap.create();
+  private final CaptureInfo captureInfo;
   private Scope topScope = null;
+
+  public OuterReferenceResolver(CaptureInfo captureInfo) {
+    this.captureInfo = captureInfo;
+  }
 
   @Override
   public void run(TreeNode node) {
     assert topScope == null;
     super.run(node);
-  }
-
-  public boolean needsOuterReference(TypeElement type) {
-    return outerVars.containsKey(type);
-  }
-
-  public boolean needsOuterParam(TypeElement type) {
-    return outerParams.containsKey(type) || automaticOuterParam(type);
-  }
-
-  public VariableElement getOuterParam(TypeElement type) {
-    return outerParams.get(type);
-  }
-
-  public VariableElement getSuperOuterParam(TypeElement type) {
-    return superOuterParams.get(type);
-  }
-
-  public TypeMirror getOuterType(TypeElement type) {
-    VariableElement outerField = outerVars.get(type);
-    if (outerField != null) {
-      return outerField.asType();
-    }
-    return getDeclaringType(type);
-  }
-
-  private static TypeMirror getDeclaringType(TypeElement type) {
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(type);
-    assert declaringClass != null : "Cannot find declaring class for " + type;
-    return declaringClass.asType();
-  }
-
-  public VariableElement getOuterField(TypeElement type) {
-    return outerVars.get(type);
-  }
-
-  public List<VariableElement> getInnerFields(TypeElement type) {
-    List<Capture> capturesForType = captures.get(type);
-    List<VariableElement> innerFields = new ArrayList<>(capturesForType.size());
-    for (Capture capture : capturesForType) {
-      innerFields.add(capture.field);
-    }
-    return innerFields;
-  }
-
-  private static boolean automaticOuterParam(TypeElement type) {
-    return ElementUtil.hasOuterContext(type) && !ElementUtil.isLocal(type);
-  }
-
-  private static class Capture {
-
-    private final VariableElement var;
-    private final VariableElement field;
-
-    private Capture(VariableElement var, VariableElement field) {
-      this.var = var;
-      this.field = field;
-    }
   }
 
   private enum ScopeKind { CLASS, LAMBDA, METHOD }
@@ -165,7 +104,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     // These callbacks are used for correct resolution of local classes where the captures are not
     // always known at the point of creation.
     private List<Runnable> onExit = new ArrayList<>();
-    private List<Runnable> onOuterParam = new ArrayList<>();
+    private final Queue<Runnable> onOuterParam;
     // The following fields are used only by CLASS scope kinds.
     private int constructorCount = 0;
     private int constructorsNotNeedingSuperOuterScope = 0;
@@ -194,6 +133,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
       this.inheritedScope = inheritedScopeBuilder.build();
       this.initializingContext = kind == ScopeKind.CLASS;
+      this.onOuterParam = new LinkedList<>();
     }
 
     /**
@@ -208,6 +148,11 @@ public class OuterReferenceResolver extends TreeVisitor {
       type = outer.type;
       inheritedScope = outer.inheritedScope;
       initializingContext = ElementUtil.isConstructor(method);
+      onOuterParam = outer.onOuterParam;
+    }
+
+    private boolean isInitializing() {
+      return initializingContext && this == peekScope();
     }
   }
 
@@ -260,7 +205,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   // Executes the runnable if or when the given type needs an outer param.
   private void whenNeedsOuterParam(TypeElement type, Runnable runnable) {
-    if (needsOuterParam(type)) {
+    if (captureInfo.needsOuterParam(type)) {
       runnable.run();
     } else if (ElementUtil.isLocal(type)) {
       Scope scope = findScopeForType(type);
@@ -270,80 +215,12 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
-  private String getOuterFieldName(TypeElement type) {
-    // Ensure that the new outer field does not conflict with a field in a superclass.
-    TypeElement typeElement = ElementUtil.getSuperclass(type);
-    int suffix = 0;
-    while (typeElement != null) {
-      if (ElementUtil.hasOuterContext(typeElement)) {
-        suffix++;
-      }
-      typeElement = ElementUtil.getSuperclass(typeElement);
-    }
-    return "this$" + suffix;
-  }
-
-  private String getCaptureFieldName(VariableElement var, TypeElement type) {
-    int suffix = 0;
-    while ((type = ElementUtil.getSuperclass(type)) != null && ElementUtil.isLocal(type)) {
-      suffix++;
-    }
-    return "val" + (suffix > 0 ? suffix : "") + "$" + var.getSimpleName().toString();
-  }
-
-  private VariableElement getOrCreateOuterParam(TypeElement type) {
-    VariableElement outerParam = outerParams.get(type);
-    if (outerParam == null) {
-      outerParam = new GeneratedVariableElement(
-          "outer$", getDeclaringType(type), ElementKind.PARAMETER, type)
-          .setNonnull(true);
-      outerParams.put(type, outerParam);
-      Scope scope = findScopeForType(type);
-      for (Runnable runnable : scope.onOuterParam) {
-        runnable.run();
-      }
-    }
-    return outerParam;
-  }
-
-  private VariableElement getOrCreateOuterField(TypeElement type) {
-    VariableElement outerField = outerVars.get(type);
-    if (outerField == null) {
-      outerField = new GeneratedVariableElement(
-          getOuterFieldName(type), getDeclaringType(type), ElementKind.FIELD, type)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .setNonnull(true);
-      outerVars.put(type, outerField);
-    }
-    return outerField;
-  }
-
   private VariableElement getOrCreateOuterVar(Scope scope) {
-    // Always create the outer param since it is required to initialize the field.
-    VariableElement outerParam = getOrCreateOuterParam(scope.type);
-    if (scope.initializingContext && scope == peekScope()) {
-      return outerParam;
+    while (!scope.onOuterParam.isEmpty()) {
+      scope.onOuterParam.remove().run();
     }
-    return getOrCreateOuterField(scope.type);
-  }
-
-  private VariableElement getOrCreateInnerField(VariableElement var, TypeElement declaringType) {
-    List<Capture> capturesForType = captures.get(declaringType);
-    VariableElement innerField = null;
-    for (Capture capture : capturesForType) {
-      if (var.equals(capture.var)) {
-        innerField = capture.field;
-        break;
-      }
-    }
-    if (innerField == null) {
-      innerField = new GeneratedVariableElement(
-          getCaptureFieldName(var, declaringType), var.asType(), ElementKind.FIELD, declaringType)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .addAnnotationMirrors(var.getAnnotationMirrors());
-      captures.put(declaringType, new Capture(var, innerField));
-    }
-    return innerField;
+    return scope.isInitializing() ? captureInfo.getOrCreateOuterParam(scope.type)
+        : captureInfo.getOrCreateOuterField(scope.type);
   }
 
   private Name getOuterPath(TypeElement type) {
@@ -390,14 +267,11 @@ public class OuterReferenceResolver extends TreeVisitor {
         lastScope = scope;
       }
     }
-    return Name.newName(path, getOrCreateInnerField(var, lastScope.type));
+    return Name.newName(path, captureInfo.getOrCreateInnerField(var, lastScope.type));
   }
 
   private void pushType(TypeElement type) {
     topScope = new Scope(topScope, type);
-    if (automaticOuterParam(type)) {
-      getOrCreateOuterParam(type);
-    }
   }
 
   private void popType() {
@@ -412,16 +286,16 @@ public class OuterReferenceResolver extends TreeVisitor {
   // type node because there may be implicit super invocations.
   private void addSuperOuterPath(CommonTypeDeclaration node) {
     TypeElement superclass = ElementUtil.getSuperclass(node.getTypeElement());
-    if (superclass != null && needsOuterParam(superclass)) {
+    if (superclass != null && captureInfo.needsOuterParam(superclass)) {
       node.setSuperOuter(getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
     }
   }
 
   private void addCaptureArgs(TypeElement type, List<Expression> args) {
-    for (Capture capture : captures.get(type)) {
-      Expression path = getPathForLocalVar(capture.var);
+    for (VariableElement var : captureInfo.getCapturedLocals(type)) {
+      Expression path = getPathForLocalVar(var);
       if (path == null) {
-        path = new SimpleName(capture.var);
+        path = new SimpleName(var);
       }
       args.add(path);
     }
@@ -463,11 +337,8 @@ public class OuterReferenceResolver extends TreeVisitor {
       // The parent creation node has an explicit outer reference that needs to be passed through to
       // the superclass constructor.
       ((ClassInstanceCreation) parent).setSuperOuterArg(superOuter);
-      VariableElement param = new GeneratedVariableElement(
-          "superOuter$", superOuter.getTypeMirror(), ElementKind.PARAMETER, type)
-          .setNonnull(true);
-      superOuterParams.put(type, param);
-      node.setSuperOuter(new SimpleName(param));
+      node.setSuperOuter(new SimpleName(
+          captureInfo.createSuperOuterParam(type, superOuter.getTypeMirror())));
     } else {
       addSuperOuterPath(node);
     }
@@ -500,9 +371,9 @@ public class OuterReferenceResolver extends TreeVisitor {
   private void endVisitFunctionalExpression(FunctionalExpression node) {
     // Resolve outer and capture arguments.
     TypeElement typeElement = node.getTypeElement();
-    if (needsOuterParam(typeElement)) {
+    if (captureInfo.needsOuterParam(typeElement)) {
       node.setLambdaOuterArg(
-          getOuterPathInherited(TypeUtil.asTypeElement(getOuterType(typeElement))));
+          getOuterPathInherited(TypeUtil.asTypeElement(captureInfo.getOuterType(typeElement))));
     }
     addCaptureArgs(typeElement, node.getLambdaCaptureArgs());
   }
@@ -523,16 +394,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   public void endVisit(ExpressionMethodReference node) {
     Expression target = node.getExpression();
     if (!ElementUtil.isStatic(node.getExecutableElement()) && isValue(target)) {
-      TypeElement type = node.getTypeElement();
-      TypeMirror targetType = target.getTypeMirror();
-      // Add the target field as an outer field even though it's not really pointing to outer scope.
-      outerVars.put(type, new GeneratedVariableElement(
-          "target$", targetType, ElementKind.FIELD, type)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .setNonnull(true));
-      outerParams.put(type, new GeneratedVariableElement(
-          "outer$", targetType, ElementKind.PARAMETER, type)
-          .setNonnull(true));
+      captureInfo.addMethodReferenceReceiver(node.getTypeElement(), target.getTypeMirror());
     }
   }
 
@@ -556,17 +418,6 @@ public class OuterReferenceResolver extends TreeVisitor {
   public boolean visit(SimpleName node) {
     VariableElement var = TreeUtil.getVariableElement(node);
     if (var != null) {
-      /*if (ElementUtil.isField(var) && !ElementUtil.isStatic(var)) {
-        Name path = getPathForField(var);
-        if (path != null) {
-          node.replaceWith(path);
-        }
-      } else if (!ElementUtil.isField(var)) {
-        Expression path = getPathForLocalVar(var);
-        if (path != null) {
-          node.replaceWith(path);
-        }
-      }*/
       Expression path = null;
       if (ElementUtil.isInstanceVar(var)) {
         path = getPathForField(var);
@@ -651,7 +502,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (node.getExpression() == null) {
       whenNeedsOuterParam(typeElement, () -> {
         node.setExpression(
-            getOuterPathInherited(TypeUtil.asTypeElement(getOuterType(typeElement))));
+            getOuterPathInherited(TypeUtil.asTypeElement(captureInfo.getOuterType(typeElement))));
       });
     }
     if (ElementUtil.isLocal(typeElement)) {

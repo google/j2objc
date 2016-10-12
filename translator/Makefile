@@ -289,6 +289,7 @@ JAVA_SOURCES = \
 	types/PointerTypeBinding.java \
 	types/Types.java \
 	util/BindingUtil.java \
+	util/CaptureInfo.java \
 	util/DeadCodeMap.java \
 	util/ElementUtil.java \
 	util/ErrorUtil.java \

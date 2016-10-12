@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.io.IOException;
 import java.util.List;
@@ -43,13 +44,13 @@ import javax.lang.model.element.VariableElement;
  */
 public class OuterReferenceResolverTest extends GenerationTest {
 
-  private OuterReferenceResolver outerResolver;
+  private CaptureInfo captureInfo;
   private ListMultimap<Kind, TreeNode> nodesByType = ArrayListMultimap.create();
 
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    outerResolver = new OuterReferenceResolver();
+    captureInfo = new CaptureInfo();
   }
 
   @Override
@@ -61,7 +62,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     resolveSource("Test", "class Test { int i; class Inner { void test() { i++; } } }");
 
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
-    assertTrue(outerResolver.needsOuterReference(innerNode.getTypeElement()));
+    assertTrue(captureInfo.needsOuterReference(innerNode.getTypeElement()));
 
     PostfixExpression increment =
         (PostfixExpression) nodesByType.get(Kind.POSTFIX_EXPRESSION).get(0);
@@ -80,9 +81,9 @@ public class OuterReferenceResolverTest extends GenerationTest {
     TypeDeclaration aNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
     TypeDeclaration bNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(2);
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(3);
-    assertFalse(outerResolver.needsOuterReference(aNode.getTypeElement()));
-    assertFalse(outerResolver.needsOuterReference(bNode.getTypeElement()));
-    assertTrue(outerResolver.needsOuterReference(innerNode.getTypeElement()));
+    assertFalse(captureInfo.needsOuterReference(aNode.getTypeElement()));
+    assertFalse(captureInfo.needsOuterReference(bNode.getTypeElement()));
+    assertTrue(captureInfo.needsOuterReference(innerNode.getTypeElement()));
 
     // B will need an outer reference to Test so it can initialize its
     // superclass A.
@@ -106,8 +107,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    assertFalse(outerResolver.needsOuterReference(runnableNode.getTypeElement()));
-    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getTypeElement());
+    assertFalse(captureInfo.needsOuterReference(runnableNode.getTypeElement()));
+    List<VariableElement> innerFields = captureInfo.getInnerFields(runnableNode.getTypeElement());
     assertEquals(1, innerFields.size());
     assertEquals("val$i", innerFields.get(0).getSimpleName().toString());
     ClassInstanceCreation creationNode =
@@ -136,7 +137,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getTypeElement());
+    List<VariableElement> innerFields = captureInfo.getInnerFields(runnableNode.getTypeElement());
     assertEquals(1, innerFields.size());
     assertTrue(ElementUtil.isWeakReference(innerFields.get(0)));
   }
@@ -147,7 +148,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration decl =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    assertFalse(outerResolver.needsOuterParam(decl.getTypeElement()));
+    assertFalse(captureInfo.needsOuterParam(decl.getTypeElement()));
   }
 
   public void testAnonymousClassCreatesLocalClassWithCaptures() {
@@ -158,7 +159,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    List<VariableElement> innerFields = outerResolver.getInnerFields(runnableNode.getTypeElement());
+    List<VariableElement> innerFields = captureInfo.getInnerFields(runnableNode.getTypeElement());
     assertEquals(1, innerFields.size());
     assertEquals("val$o", innerFields.get(0).getSimpleName().toString());
     ClassInstanceCreation creationNode =
@@ -179,7 +180,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     List<TreeNode> typeNodes = nodesByType.get(Kind.TYPE_DECLARATION);
     assertEquals(5, typeNodes.size());
     for (TreeNode typeNode : typeNodes) {
-      assertNull(outerResolver.getOuterField(((TypeDeclaration) typeNode).getTypeElement()));
+      assertNull(captureInfo.getOuterField(((TypeDeclaration) typeNode).getTypeElement()));
     }
   }
 
@@ -205,7 +206,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
-    outerResolver.run(unit);
+    new OuterReferenceResolver(captureInfo).run(unit);
     findTypeDeclarations(unit);
   }
 

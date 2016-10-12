@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.jdt.JdtParser;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripper;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -123,7 +124,7 @@ public class CycleFinder {
   public List<List<Edge>> findCycles() throws IOException {
     final TypeCollector typeCollector = new TypeCollector();
     Parser parser = createParser(options);
-    final OuterReferenceResolver outerResolver = new OuterReferenceResolver();
+    final CaptureInfo captureInfo = new CaptureInfo();
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
@@ -133,7 +134,7 @@ public class CycleFinder {
       public void handleParsedUnit(String path, CompilationUnit unit) {
         new LambdaTypeElementAdder().run(unit);
         typeCollector.visitAST(unit);
-        outerResolver.run(unit);
+        new OuterReferenceResolver(captureInfo).run(unit);
       }
     };
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
@@ -146,7 +147,7 @@ public class CycleFinder {
 
     // Construct the graph and find cycles.
     ReferenceGraph graph = new ReferenceGraph(
-        typeCollector, outerResolver, NameList.createFromFiles(options.getWhitelistFiles()),
+        typeCollector, captureInfo, NameList.createFromFiles(options.getWhitelistFiles()),
         getBlacklist());
     return graph.findCycles();
   }

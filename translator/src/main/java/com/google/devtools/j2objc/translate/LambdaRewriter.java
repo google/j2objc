@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
@@ -66,10 +67,10 @@ import javax.lang.model.type.TypeMirror;
  */
 public class LambdaRewriter extends TreeVisitor {
 
-  private final OuterReferenceResolver outerResolver;
+  private final CaptureInfo captureInfo;
 
-  public LambdaRewriter(OuterReferenceResolver outerResolver) {
-    this.outerResolver = outerResolver;
+  public LambdaRewriter(CaptureInfo captureInfo) {
+    this.captureInfo = captureInfo;
   }
 
   private class RewriteContext {
@@ -180,8 +181,8 @@ public class LambdaRewriter extends TreeVisitor {
     }
 
     private boolean isCapturing() {
-      return outerResolver.getOuterField(lambdaType) != null
-          || !outerResolver.getInnerFields(lambdaType).isEmpty();
+      return captureInfo.getOuterField(lambdaType) != null
+          || !captureInfo.getInnerFields(lambdaType).isEmpty();
     }
 
     private void rewriteLambdaExpression(LambdaExpression node) {
@@ -232,7 +233,7 @@ public class LambdaRewriter extends TreeVisitor {
       Expression invocationTarget = null;
 
       if (!ElementUtil.isStatic(methodElem)) {
-        VariableElement targetField = outerResolver.getOuterField(lambdaType);
+        VariableElement targetField = captureInfo.getOuterField(lambdaType);
         if (targetField != null) {
           invocationTarget = new SimpleName(targetField);
           creation.setExpression(TreeUtil.remove(node.getExpression()));
