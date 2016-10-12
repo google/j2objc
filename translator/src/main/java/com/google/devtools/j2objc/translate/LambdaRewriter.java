@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
@@ -34,10 +35,10 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
@@ -65,11 +66,12 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Nathan Braswell, Keith Stanger
  */
-public class LambdaRewriter extends TreeVisitor {
+public class LambdaRewriter extends UnitTreeVisitor {
 
   private final CaptureInfo captureInfo;
 
-  public LambdaRewriter(CaptureInfo captureInfo) {
+  public LambdaRewriter(CompilationUnit unit, CaptureInfo captureInfo) {
+    super(unit);
     this.captureInfo = captureInfo;
   }
 

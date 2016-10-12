@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommaExpression;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -39,8 +40,8 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -71,10 +72,14 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Keith Stanger
  */
-public class EnumRewriter extends TreeVisitor {
+public class EnumRewriter extends UnitTreeVisitor {
 
   private GeneratedVariableBinding nameVar = null;
   private GeneratedVariableBinding ordinalVar = null;
+
+  public EnumRewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   private GeneratedMethodBinding addEnumConstructorParams(IMethodBinding method) {
     GeneratedMethodBinding newMethod = new GeneratedMethodBinding(method);

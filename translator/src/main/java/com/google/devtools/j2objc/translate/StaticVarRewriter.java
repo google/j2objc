@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.CommaExpression;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.NativeExpression;
@@ -24,7 +25,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -38,7 +39,11 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  *
  * @author Keith Stanger
  */
-public class StaticVarRewriter extends TreeVisitor {
+public class StaticVarRewriter extends UnitTreeVisitor {
+
+  public StaticVarRewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   private boolean needsStaticLoad(TreeNode currentNode, IVariableBinding var) {
     if (!BindingUtil.isStatic(var) || BindingUtil.isPrimitiveConstant(var)

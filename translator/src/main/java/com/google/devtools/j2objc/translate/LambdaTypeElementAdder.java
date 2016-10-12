@@ -14,14 +14,15 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,9 +33,13 @@ import javax.lang.model.element.TypeElement;
  *
  * @author Keith Stanger
  */
-public class LambdaTypeElementAdder extends TreeVisitor {
+public class LambdaTypeElementAdder extends UnitTreeVisitor {
 
   private Map<TypeElement, Integer> lambdaCounts = new HashMap<>();
+
+  public LambdaTypeElementAdder(CompilationUnit unit) {
+    super(unit);
+  }
 
   private String getLambdaUniqueName(FunctionalExpression node) {
     TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(node);

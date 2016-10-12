@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -27,8 +28,8 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -46,7 +47,11 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Tom Ball
  */
-public class JavaToIOSMethodTranslator extends TreeVisitor {
+public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
+
+  public JavaToIOSMethodTranslator(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public boolean visit(MethodDeclaration node) {

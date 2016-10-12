@@ -14,9 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -27,29 +24,34 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Determines which declarations should be moved out of the public header file.
  *
  * @author Keith Stanger
  */
-public class PrivateDeclarationResolver extends TreeVisitor {
+public class PrivateDeclarationResolver extends UnitTreeVisitor {
 
-  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap = Maps.newHashMap();
+  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap = new HashMap<>();
   // Collects types that must be public because they are exposed by another
   // public declaration. These types and all of their supertypes must be public.
-  private Set<ITypeBinding> publicTypes = Sets.newHashSet();
-  private List<AbstractTypeDeclaration> publicNodesToVisit = Lists.newArrayList();
+  private Set<ITypeBinding> publicTypes = new HashSet<>();
+  private List<AbstractTypeDeclaration> publicNodesToVisit = new ArrayList<>();
+
+  public PrivateDeclarationResolver(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public boolean visit(CompilationUnit node) {

@@ -55,6 +55,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
+    captureInfo = null;
     nodesByType.clear();
   }
 
@@ -206,7 +207,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
-    new OuterReferenceResolver(captureInfo).run(unit);
+    new OuterReferenceResolver(unit, captureInfo).run();
     findTypeDeclarations(unit);
   }
 

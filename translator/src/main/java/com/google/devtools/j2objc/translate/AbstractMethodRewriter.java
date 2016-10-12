@@ -22,8 +22,8 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -49,13 +49,12 @@ import java.util.Set;
  *
  * @author Tom Ball, Keith Stanger
  */
-public class AbstractMethodRewriter extends TreeVisitor {
+public class AbstractMethodRewriter extends UnitTreeVisitor {
 
-  private final CompilationUnit unit;
   private final DeadCodeMap deadCodeMap;
 
   public AbstractMethodRewriter(CompilationUnit unit, DeadCodeMap deadCodeMap) {
-    this.unit = unit;
+    super(unit);
     this.deadCodeMap = deadCodeMap;
   }
 

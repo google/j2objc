@@ -91,12 +91,12 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnionType;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -125,7 +125,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  *
  * @author Tom Ball
  */
-public class StatementGenerator extends TreeVisitor {
+public class StatementGenerator extends UnitTreeVisitor {
 
   private final SourceBuilder buffer;
   private final boolean useReferenceCounting;
@@ -135,11 +135,12 @@ public class StatementGenerator extends TreeVisitor {
     if (node == null) {
       throw new NullPointerException("cannot generate a null statement");
     }
-    generator.run(node);
+    node.accept(generator);
     return generator.getResult();
   }
 
   private StatementGenerator(TreeNode node, int currentLine) {
+    super(TreeUtil.getCompilationUnit(node));
     buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
     useReferenceCounting = !Options.useARC();
   }

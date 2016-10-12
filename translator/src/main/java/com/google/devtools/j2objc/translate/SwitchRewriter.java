@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -28,7 +29,7 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
@@ -49,7 +50,11 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
-public class SwitchRewriter extends TreeVisitor {
+public class SwitchRewriter extends UnitTreeVisitor {
+
+  public SwitchRewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public void endVisit(SwitchStatement node) {

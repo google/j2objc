@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -67,9 +68,13 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Tom Ball
  */
-public class Functionizer extends TreeVisitor {
+public class Functionizer extends UnitTreeVisitor {
 
   private Set<IMethodBinding> functionizableMethods;
+
+  public Functionizer(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public boolean visit(CompilationUnit node) {

@@ -132,9 +132,9 @@ public class CycleFinder {
     Parser.Handler handler = new Parser.Handler() {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
-        new LambdaTypeElementAdder().run(unit);
+        new LambdaTypeElementAdder(unit).run();
         typeCollector.visitAST(unit);
-        new OuterReferenceResolver(captureInfo).run(unit);
+        new OuterReferenceResolver(unit, captureInfo).run();
       }
     };
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());

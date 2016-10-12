@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.AssertStatement;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.DoStatement;
@@ -41,8 +42,8 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
@@ -63,10 +64,14 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Tom Ball
  */
-public class Autoboxer extends TreeVisitor {
+public class Autoboxer extends UnitTreeVisitor {
 
   private static final String VALUE_METHOD = "Value";
   private static final String VALUEOF_METHOD = "valueOf";
+
+  public Autoboxer(CompilationUnit unit) {
+    super(unit);
+  }
 
   /**
    * Convert a primitive type expression into a wrapped instance.  Each

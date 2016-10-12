@@ -161,6 +161,7 @@ JAVA_SOURCES = \
 	ast/TypeLiteral.java \
 	ast/TypeMethodReference.java \
 	ast/UnionType.java \
+	ast/UnitTreeVisitor.java \
 	ast/VariableDeclaration.java \
 	ast/VariableDeclarationExpression.java \
 	ast/VariableDeclarationFragment.java \

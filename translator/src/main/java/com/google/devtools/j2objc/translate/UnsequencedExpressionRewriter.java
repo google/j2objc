@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.CommaExpression;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.DoStatement;
@@ -46,7 +47,7 @@ import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -73,13 +74,17 @@ import java.util.Set;
  *
  * @author Keith Stanger
  */
-public class UnsequencedExpressionRewriter extends TreeVisitor {
+public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
   private IMethodBinding currentMethod = null;
   private int count = 1;
   private List<VariableAccess> orderedAccesses = Lists.newArrayList();
   private TreeNode currentTopNode = null;
   private boolean hasModification = false;
+
+  public UnsequencedExpressionRewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   /**
    * Metadata for a given read or write access of a variable within an

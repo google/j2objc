@@ -20,6 +20,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -30,8 +31,8 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.ThisExpression;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
@@ -60,7 +61,11 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Lukhnos Liu, Keith Stanger
  */
-public class DefaultMethodShimGenerator extends TreeVisitor {
+public class DefaultMethodShimGenerator extends UnitTreeVisitor {
+
+  public DefaultMethodShimGenerator(CompilationUnit unit) {
+    super(unit);
+  }
 
   /**
    * Pairs an ExecutableElement with an ExecutableType representing the resolved type variables as a

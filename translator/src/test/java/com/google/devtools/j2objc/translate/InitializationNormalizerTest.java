@@ -29,14 +29,6 @@ public class InitializationNormalizerTest extends GenerationTest {
   // TODO(tball): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
 
-  InitializationNormalizer instance;
-
-  @Override
-  protected void setUp() throws IOException {
-    super.setUp();
-    instance = new InitializationNormalizer();
-  }
-
   /**
    * Verify that for a constructor that calls another constructor and has
    * other statements, the "this-constructor" statement is used to

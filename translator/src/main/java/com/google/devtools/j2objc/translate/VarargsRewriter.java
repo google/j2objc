@@ -18,13 +18,14 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -37,7 +38,11 @@ import java.util.List;
  *
  * @author Keith Stanger
  */
-public class VarargsRewriter extends TreeVisitor {
+public class VarargsRewriter extends UnitTreeVisitor {
+
+  public VarargsRewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   private void rewriteVarargs(IMethodBinding method, List<Expression> args) {
     if (!method.isVarargs()) {

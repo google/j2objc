@@ -133,15 +133,15 @@ public class TranslationProcessor extends FileProcessor {
     CaptureInfo captureInfo = new CaptureInfo();
 
     // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
-    new LambdaTypeElementAdder().run(unit);
+    new LambdaTypeElementAdder(unit).run();
     ticker.tick("LambdaTypeElementAdder");
 
     // Adds implicit default constructors, like javac does.
-    new DefaultConstructorAdder().run(unit);
+    unit.accept(new DefaultConstructorAdder());
     ticker.tick("DefaultConstructorAdder");
 
     if (deadCodeMap != null) {
-      new DeadCodeEliminator(unit, deadCodeMap).run(unit);
+      new DeadCodeEliminator(unit, deadCodeMap).run();
       ticker.tick("DeadCodeEliminator");
     }
 
@@ -150,55 +150,55 @@ public class TranslationProcessor extends FileProcessor {
       ticker.tick("TreeShaker");
     }
 
-    new OuterReferenceResolver(captureInfo).run(unit);
+    new OuterReferenceResolver(unit, captureInfo).run();
     ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
-    new GwtConverter().run(unit);
+    new GwtConverter(unit).run();
     ticker.tick("GwtConverter");
 
     // Before: Rewriter - Pruning unreachable statements must happen before
     //   rewriting labeled break statements.
     // Before: AnonymousClassConverter - Removes unreachable local classes.
-    new ConstantBranchPruner().run(unit);
+    new ConstantBranchPruner(unit).run();
     ticker.tick("ConstantBranchPruner");
 
     // Modify AST to be more compatible with Objective C
-    new Rewriter().run(unit);
+    new Rewriter(unit).run();
     ticker.tick("Rewriter");
 
     // Add abstract method stubs.
-    new AbstractMethodRewriter(unit, deadCodeMap).run(unit);
+    new AbstractMethodRewriter(unit, deadCodeMap).run();
     ticker.tick("AbstractMethodRewriter");
 
-    new VariableRenamer().run(unit);
+    new VariableRenamer(unit).run();
     ticker.tick("VariableRenamer");
 
     // Rewrite enhanced for loops into correct C code.
-    new EnhancedForRewriter().run(unit);
+    new EnhancedForRewriter(unit).run();
     ticker.tick("EnhancedForRewriter");
 
     // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
-    new LambdaRewriter(captureInfo).run(unit);
+    new LambdaRewriter(unit, captureInfo).run();
     ticker.tick("LambdaRewriter");
 
     // Add auto-boxing conversions.
-    new Autoboxer().run(unit);
+    new Autoboxer(unit).run();
     ticker.tick("Autoboxer");
 
     // Extract inner and anonymous classes
-    new AnonymousClassConverter().run(unit);
+    new AnonymousClassConverter(unit).run();
     ticker.tick("AnonymousClassConverter");
 
-    new InnerClassExtractor(unit, captureInfo).run(unit);
+    new InnerClassExtractor(unit, captureInfo).run();
     ticker.tick("InnerClassExtractor");
 
     // Generate method shims for classes implementing interfaces that have default methods
-    new DefaultMethodShimGenerator().run(unit);
+    new DefaultMethodShimGenerator(unit).run();
     ticker.tick("DefaultMethodShimGenerator");
 
     // Normalize init statements
-    new InitializationNormalizer().run(unit);
+    new InitializationNormalizer(unit).run();
     ticker.tick("InitializationNormalizer");
 
     // Adds nil_chk calls wherever an expression is dereferenced.
@@ -207,32 +207,32 @@ public class TranslationProcessor extends FileProcessor {
     // Before: OuterReferenceFixer - Must resolve before outer references are substituted.
     // Before: LabelRewriter - Control flow analysis requires original Java
     //   labels.
-    new NilCheckResolver().run(unit);
+    new NilCheckResolver(unit).run();
     ticker.tick("NilCheckResolver");
 
     // Fix references to outer scope and captured variables.
-    new OuterReferenceFixer(captureInfo).run(unit);
+    unit.accept(new OuterReferenceFixer(captureInfo));
     ticker.tick("OuterReferenceFixer");
 
     // Rewrites expressions that would cause unsequenced compile errors.
     if (Options.extractUnsequencedModifications()) {
-      new UnsequencedExpressionRewriter().run(unit);
+      new UnsequencedExpressionRewriter(unit).run();
       ticker.tick("UnsequencedExpressionRewriter");
     }
 
     // Rewrites labeled break and continue statements.
-    new LabelRewriter().run(unit);
+    unit.accept(new LabelRewriter());
     ticker.tick("LabelRewriter");
 
     // Before: ArrayRewriter - Adds ArrayCreation nodes.
     // Before: Functionizer - Can't rewrite function arguments.
-    new VarargsRewriter().run(unit);
+    new VarargsRewriter(unit).run();
     ticker.tick("VarargsRewriter");
 
-    new JavaCloneWriter().run(unit);
+    new JavaCloneWriter(unit).run();
     ticker.tick("JavaCloneWriter");
 
-    new OcniExtractor(unit, deadCodeMap).run(unit);
+    new OcniExtractor(unit, deadCodeMap).run();
     ticker.tick("OcniExtractor");
 
     // Before: AnnotationRewriter - Needs AnnotationRewriter to add the
@@ -242,71 +242,71 @@ public class TranslationProcessor extends FileProcessor {
 
     // Before: DestructorGenerator - Annotation types need a destructor to
     //   release the added fields.
-    new AnnotationRewriter().run(unit);
+    new AnnotationRewriter(unit).run();
     ticker.tick("AnnotationRewriter");
 
     // Before: Functionizer - Edits constructor invocations before they are
     //   functionized.
-    new EnumRewriter().run(unit);
+    new EnumRewriter(unit).run();
     ticker.tick("EnumRewriter");
 
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases
     // only its own instance variables.
-    new DestructorGenerator().run(unit);
+    new DestructorGenerator(unit).run();
     ticker.tick("DestructorGenerator");
 
     // Before: StaticVarRewriter - Generates static variable access expressions.
-    new MetadataWriter().run(unit);
+    new MetadataWriter(unit).run();
     ticker.tick("MetadataWriter");
 
     // Before: Functionizer - Needs to rewrite some ClassInstanceCreation nodes
     //   before Functionizer does.
     // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle
     //   the hasRetainedResult flag on ClassInstanceCreation nodes.
-    new JavaToIOSMethodTranslator().run(unit);
+    new JavaToIOSMethodTranslator(unit).run();
     ticker.tick("JavaToIOSMethodTranslator");
 
     // After: OcniExtractor - So that native methods can be correctly
     //   functionized.
-    new Functionizer().run(unit);
+    new Functionizer(unit).run();
     ticker.tick("Functionizer");
 
     // After: OuterReferenceFixer, Functionizer - Those passes edit the
     //   qualifier on SuperMethodInvocation nodes.
-    new SuperMethodInvocationRewriter().run(unit);
+    new SuperMethodInvocationRewriter(unit).run();
     ticker.tick("SuperMethodInvocationRewriter");
 
-    new OperatorRewriter().run(unit);
+    new OperatorRewriter(unit).run();
     ticker.tick("OperatorRewriter");
 
     // After: OperatorRewriter - Static load rewriting needs to happen after
     //   operator rewriting.
-    new StaticVarRewriter().run(unit);
+    new StaticVarRewriter(unit).run();
     ticker.tick("StaticVarRewriter");
 
     // After: StaticVarRewriter, OperatorRewriter - They set the
     //   hasRetainedResult on ArrayCreation nodes.
-    new ArrayRewriter().run(unit);
+    new ArrayRewriter(unit).run();
     ticker.tick("ArrayRewriter");
 
-    new SwitchRewriter().run(unit);
+    new SwitchRewriter(unit).run();
     ticker.tick("SwitchRewriter");
 
     // Breaks up deeply nested expressions such as chained method calls.
     // Should be one of the last translations because other mutations will
     // affect how deep the expressions are.
-    new ComplexExpressionExtractor().run(unit);
+    unit.accept(new ComplexExpressionExtractor());
     ticker.tick("ComplexExpressionExtractor");
 
     // Should be one of the last translations because methods and functions
     // added in other phases may need added casts.
-    new CastResolver().run(unit);
+    new CastResolver(unit).run();
     ticker.tick("CastResolver");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
     //   top-level and functionizing to have occured.
-    new PrivateDeclarationResolver().run(unit);
+    new PrivateDeclarationResolver(unit).run();
     ticker.tick("PrivateDeclarationResolver");
 
     // Make sure we still have a valid AST.
@@ -364,10 +364,10 @@ public class TranslationProcessor extends FileProcessor {
 
   private void checkDependencies(CompilationUnit unit) {
     HeaderImportCollector hdrCollector =
-        new HeaderImportCollector(HeaderImportCollector.Filter.INCLUDE_ALL);
-    hdrCollector.collect(unit);
-    ImplementationImportCollector implCollector = new ImplementationImportCollector();
-    implCollector.collect(unit);
+        new HeaderImportCollector(unit, HeaderImportCollector.Filter.INCLUDE_ALL);
+    hdrCollector.run();
+    ImplementationImportCollector implCollector = new ImplementationImportCollector(unit);
+    implCollector.run();
     Set<Import> imports = hdrCollector.getForwardDeclarations();
     imports.addAll(hdrCollector.getSuperTypes());
     imports.addAll(implCollector.getImports());

@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -29,8 +30,8 @@ import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.jdt.BindingConverter;
@@ -53,13 +54,17 @@ import java.util.List;
 /**
  * Adds the __metadata method to classes to support reflection.
  */
-public class MetadataWriter extends TreeVisitor {
+public class MetadataWriter extends UnitTreeVisitor {
 
   // Metadata structure version. Increment it when any structure changes are made.
   public static final int METADATA_VERSION = 7;
 
   private static final NativeTypeBinding CLASS_INFO_TYPE =
       new NativeTypeBinding("const J2ObjcClassInfo *");
+
+  public MetadataWriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public void endVisit(TypeDeclaration node) {

@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -39,9 +40,9 @@ import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.CaptureInfo;
@@ -71,19 +72,14 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
-public class OuterReferenceResolver extends TreeVisitor {
+public class OuterReferenceResolver extends UnitTreeVisitor {
 
   private final CaptureInfo captureInfo;
   private Scope topScope = null;
 
-  public OuterReferenceResolver(CaptureInfo captureInfo) {
+  public OuterReferenceResolver(CompilationUnit unit, CaptureInfo captureInfo) {
+    super(unit);
     this.captureInfo = captureInfo;
-  }
-
-  @Override
-  public void run(TreeNode node) {
-    assert topScope == null;
-    super.run(node);
   }
 
   private enum ScopeKind { CLASS, LAMBDA, METHOD }

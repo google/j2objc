@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -34,8 +35,8 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -66,9 +67,13 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  *
  * @author Tom Ball
  */
-public class Rewriter extends TreeVisitor {
+public class Rewriter extends UnitTreeVisitor {
 
   private Map<VariableElement, VariableElement> localRefs = new HashMap<>();
+
+  public Rewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public boolean visit(MethodDeclaration node) {

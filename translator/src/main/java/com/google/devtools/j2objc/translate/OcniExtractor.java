@@ -31,9 +31,9 @@ import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -54,14 +54,13 @@ import java.util.regex.Pattern;
  *
  * @author Keith Stanger
  */
-public class OcniExtractor extends TreeVisitor {
+public class OcniExtractor extends UnitTreeVisitor {
 
-  private final CompilationUnit unit;
   private final ListMultimap<TreeNode, Comment> blockComments;
   private final DeadCodeMap deadCodeMap;
 
   public OcniExtractor(CompilationUnit unit, DeadCodeMap deadCodeMap) {
-    this.unit = unit;
+    super(unit);
     blockComments = findBlockComments(unit);
     this.deadCodeMap = deadCodeMap;
   }

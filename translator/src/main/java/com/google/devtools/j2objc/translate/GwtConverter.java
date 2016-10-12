@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.Expression;
@@ -33,7 +34,7 @@ import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -48,7 +49,7 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
-public class GwtConverter extends TreeVisitor {
+public class GwtConverter extends UnitTreeVisitor {
 
   private static final String GWT_CLASS = "com.google.gwt.core.client.GWT";
 
@@ -70,6 +71,10 @@ public class GwtConverter extends TreeVisitor {
       "NavigableSet", "Non-UTF-8 Charset", "OutputStream", "proto", "protos", "Readable",
       "Reader", "Reader,InputStream", "reflection", "regular expressions", "String.format()",
       "uses NavigableMap", "Writer", "Writer,OutputStream");
+
+  public GwtConverter(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public boolean visit(ConditionalExpression node) {

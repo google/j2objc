@@ -21,29 +21,28 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.TranslationUtil;
-
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Collects the set of imports needed to resolve type references in a header.
  *
  * @author Tom Ball
  */
-public class HeaderImportCollector extends TreeVisitor {
+public class HeaderImportCollector extends UnitTreeVisitor {
 
   /**
    * Describes which declarations should be visited by the collector.
@@ -70,24 +69,15 @@ public class HeaderImportCollector extends TreeVisitor {
 
   // Forward declarations. The order in which imports are collected affect
   // which imports become forward declarations.
-  private Set<Import> forwardDecls = Sets.newLinkedHashSet();
+  private Set<Import> forwardDecls = new LinkedHashSet<>();
   // Supertypes of the below declared types that haven't been seen by this collector.
-  private Set<Import> superTypes = Sets.newLinkedHashSet();
+  private Set<Import> superTypes = new LinkedHashSet<>();
   // Declared types seen by this collector.
-  private Set<Import> declaredTypes = Sets.newHashSet();
+  private Set<Import> declaredTypes = new HashSet<>();
 
-  public HeaderImportCollector(Filter filter) {
+  public HeaderImportCollector(CompilationUnit unit, Filter filter) {
+    super(unit);
     this.filter = filter;
-  }
-
-  public void collect(TreeNode node) {
-    run(node);
-  }
-
-  public void collect(List<? extends TreeNode> nodes) {
-    for (TreeNode node : nodes) {
-      collect(node);
-    }
   }
 
   public Set<Import> getForwardDeclarations() {

@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -28,23 +26,23 @@ import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Some super method invocations cannot be translated directly as an ObjC super
@@ -55,16 +53,13 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
-public class SuperMethodInvocationRewriter extends TreeVisitor {
+public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
-  private Set<SuperMethodBindingPair> superMethods;
-  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap;
+  private Set<SuperMethodBindingPair> superMethods = new LinkedHashSet<>();
+  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap = new HashMap<>();
 
-  @Override
-  public boolean visit(CompilationUnit unit) {
-    superMethods = Sets.newLinkedHashSet();
-    typeMap = Maps.newHashMap();
-    return true;
+  public SuperMethodInvocationRewriter(CompilationUnit unit) {
+    super(unit);
   }
 
   @Override

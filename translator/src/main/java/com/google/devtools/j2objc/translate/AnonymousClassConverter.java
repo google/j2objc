@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -26,9 +27,9 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -48,7 +49,11 @@ import javax.lang.model.type.ExecutableType;
  *
  * @author Tom Ball
  */
-public class AnonymousClassConverter extends TreeVisitor {
+public class AnonymousClassConverter extends UnitTreeVisitor {
+
+  public AnonymousClassConverter(CompilationUnit unit) {
+    super(unit);
+  }
 
   /**
    * Convert the anonymous class into an inner class.  Fields are added for

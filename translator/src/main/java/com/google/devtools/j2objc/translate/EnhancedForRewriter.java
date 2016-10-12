@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -27,7 +28,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
@@ -52,7 +53,11 @@ import javax.lang.model.element.VariableElement;
  *
  * @author Keith Stanger
  */
-public class EnhancedForRewriter extends TreeVisitor {
+public class EnhancedForRewriter extends UnitTreeVisitor {
+
+  public EnhancedForRewriter(CompilationUnit unit) {
+    super(unit);
+  }
 
   @Override
   public void endVisit(EnhancedForStatement node) {

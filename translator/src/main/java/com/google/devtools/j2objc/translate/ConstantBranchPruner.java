@@ -21,6 +21,7 @@ import static java.lang.Boolean.FALSE;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -31,7 +32,7 @@ import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
@@ -43,7 +44,11 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class ConstantBranchPruner extends TreeVisitor {
+public class ConstantBranchPruner extends UnitTreeVisitor {
+
+  public ConstantBranchPruner(CompilationUnit unit) {
+    super(unit);
+  }
 
   /**
    * Removes all unreachable statements that occur after a return statement in

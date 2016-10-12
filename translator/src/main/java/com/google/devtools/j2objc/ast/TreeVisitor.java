@@ -14,36 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.ParserEnvironment;
-
 /**
  * Base visitor class for the J2ObjC tree.
  */
 public class TreeVisitor {
-
-  protected CompilationUnit unit = null;
-  protected ParserEnvironment env = null;
-  protected Types typeEnv = null;
-  protected NameTable nameTable = null;
-
-  /**
-   * Executes this visitor on a specified node.  This entry point should
-   * be used instead of visit(), so that certain state can be initialized.
-   *
-   * @param node the top-level node to visit.
-   */
-  public void run(TreeNode node) {
-    unit = TreeUtil.getCompilationUnit(node);
-    env = unit.getEnv();
-    typeEnv = unit.getTypeEnv();
-    nameTable = unit.getNameTable();
-    node.accept(this);
-    unit = null;
-    typeEnv = null;
-    nameTable = null;
-  }
 
   public boolean preVisit(TreeNode node) {
     return true;

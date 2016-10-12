@@ -16,11 +16,11 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -38,18 +38,18 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnionType;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -66,18 +66,12 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Tom Ball
  */
-public class ImplementationImportCollector extends TreeVisitor {
+public class ImplementationImportCollector extends UnitTreeVisitor {
 
-  private Set<Import> imports = Sets.newLinkedHashSet();
+  private Set<Import> imports = new LinkedHashSet<>();
 
-  public void collect(TreeNode node) {
-    run(node);
-  }
-
-  public void collect(Iterable<? extends TreeNode> nodes) {
-    for (TreeNode node : nodes) {
-      collect(node);
-    }
+  public ImplementationImportCollector(CompilationUnit unit) {
+    super(unit);
   }
 
   public Set<Import> getImports() {

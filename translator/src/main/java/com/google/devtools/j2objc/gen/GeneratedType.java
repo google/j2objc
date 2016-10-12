@@ -25,12 +25,9 @@ import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Contains the generated source code and additional context for a single Java
@@ -89,15 +86,15 @@ public class GeneratedType {
     }
 
     HeaderImportCollector headerCollector =
-        new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
-    headerCollector.collect(typeNode);
+        new HeaderImportCollector(unit, HeaderImportCollector.Filter.PUBLIC_ONLY);
+    typeNode.accept(headerCollector);
 
     HeaderImportCollector privateDeclarationCollector =
-        new HeaderImportCollector(HeaderImportCollector.Filter.PRIVATE_ONLY);
-    privateDeclarationCollector.collect(typeNode);
+        new HeaderImportCollector(unit, HeaderImportCollector.Filter.PRIVATE_ONLY);
+    typeNode.accept(privateDeclarationCollector);
 
-    ImplementationImportCollector importCollector = new ImplementationImportCollector();
-    importCollector.collect(typeNode);
+    ImplementationImportCollector importCollector = new ImplementationImportCollector(unit);
+    typeNode.accept(importCollector);
 
     SourceBuilder builder = new SourceBuilder(Options.emitLineDirectives());
     TypeDeclarationGenerator.generate(builder, typeNode);

@@ -34,9 +34,9 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -60,7 +60,7 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Tom Ball
  */
-public class InnerClassExtractor extends TreeVisitor {
+public class InnerClassExtractor extends UnitTreeVisitor {
 
   private final CaptureInfo captureInfo;
   private final List<AbstractTypeDeclaration> unitTypes;
@@ -68,6 +68,7 @@ public class InnerClassExtractor extends TreeVisitor {
   private ArrayList<Integer> typeOrderStack = Lists.newArrayList();
 
   public InnerClassExtractor(CompilationUnit unit, CaptureInfo captureInfo) {
+    super(unit);
     this.captureInfo = captureInfo;
     unitTypes = unit.getTypes();
   }

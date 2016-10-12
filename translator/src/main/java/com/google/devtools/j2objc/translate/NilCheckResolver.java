@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.DoStatement;
@@ -51,9 +52,9 @@ import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
@@ -78,7 +79,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
-public class NilCheckResolver extends TreeVisitor {
+public class NilCheckResolver extends UnitTreeVisitor {
 
   // Contains the set of "safe" variables that don't need nil checks. A new
   // Scope is added to the stack when entering conditionally executed code such
@@ -94,6 +95,10 @@ public class NilCheckResolver extends TreeVisitor {
   private Expression conditionalSafeVarsNode = null;
 
   private static final Set<VariableElement> EMPTY_VARS = Collections.emptySet();
+
+  public NilCheckResolver(CompilationUnit unit) {
+    super(unit);
+  }
 
   /**
    * A stack element that tracks which variables are safe and don't need a

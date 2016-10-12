@@ -16,12 +16,13 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
@@ -38,10 +39,14 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  *
  * @author Keith Stanger
  */
-public class VariableRenamer extends TreeVisitor {
+public class VariableRenamer extends UnitTreeVisitor {
 
   private List<Set<String>> fieldNameStack = new ArrayList<>();
   private Set<TypeElement> renamedTypes = new HashSet<>();
+
+  public VariableRenamer(CompilationUnit unit) {
+    super(unit);
+  }
 
   private void collectAndRenameFields(TypeElement type, Set<VariableElement> fields) {
     if (type == null) {
