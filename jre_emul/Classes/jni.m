@@ -469,7 +469,7 @@ static jfieldID GetStaticFieldID(JNIEnv *env, jclass clazz, const char *name, co
 static jmethodID GetMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
   IOSClass *iosClass = (IOSClass *) clazz;
   JNIMethodSignature methodSig = JNIParseMethodSignature(sig);
-  ExecutableMember *result = nil;
+  JavaLangReflectExecutable *result = nil;
   if (strcmp(name, "<init>") == 0) {
     result = [iosClass getConstructor:methodSig.paramTypes];
   } else {

@@ -72,7 +72,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 }
 
 - (IOSObjectArray *)getAnnotations {
-  // Overridden by ExecutableMember to also return inherited members.
+  // Overridden by Executable to also return inherited members.
   return [self getDeclaredAnnotations];
 }
 

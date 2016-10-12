@@ -13,18 +13,19 @@
 // limitations under the License.
 
 //
-//  ExecutableMember.h
+//  Executable.h
 //  JreEmulation
 //
 //  Created by Tom Ball on 11/11/11.
 //
 
-#ifndef _ExecutableMember_H_
-#define _ExecutableMember_H_
+#ifndef _JavaLangReflectExecutable_H_
+#define _JavaLangReflectExecutable_H_
 
-#import "IOSMetadata.h"
-#import "java/lang/reflect/AccessibleObject.h"
-#import "java/lang/reflect/Member.h"
+#include "IOSMetadata.h"
+#include "java/lang/reflect/AccessibleObject.h"
+#include "java/lang/reflect/GenericDeclaration.h"
+#include "java/lang/reflect/Member.h"
 
 // The first arguments all messages have are self and _cmd.
 // These are unmodified when specifying method-specific arguments.
@@ -32,11 +33,13 @@
 
 @class IOSClass;
 @class IOSObjectArray;
+@protocol JavaLangReflectAnnotatedType;
+@protocol JavaLangAnnotationAnnotation;
 
 // Common parent of Member and Constructor with their shared functionality.
 // This class isn't directly called from translated Java, since Java's
 // Method and Constructor classes just duplicate their common code.
-@interface ExecutableMember : JavaLangReflectAccessibleObject
+@interface JavaLangReflectExecutable : JavaLangReflectAccessibleObject
     < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
  @protected
   IOSClass *class_;
@@ -49,14 +52,8 @@
 
 - (NSString *)getName;
 
-// This method returns Modifier.PUBLIC (1) for an instance method, or
-// Modifier.PUBLIC | Modifier.STATIC (9) for a class method.  Even though
-// iOS init methods are instance methods, constructors are always returned
-// as class methods.
-//
-// Note: an enum isn't used because the Java API is defined with an int.
-// This is because reflection was added to Java before enum support was.
-- (int)getModifiers;
+// Returns the set of modifier flags, as defined by java.lang.reflect.Modifier.
+- (jint)getModifiers;
 
 // Returns the class this executable is a member of.
 - (IOSClass *)getDeclaringClass;
@@ -66,26 +63,31 @@
 - (IOSObjectArray *)getGenericExceptionTypes;
 
 // Returns the parameter types for this executable member.
+- (jint)getParameterCount;
+- (IOSObjectArray *)getParameters;
 - (IOSObjectArray *)getParameterTypes;
 - (IOSObjectArray *)getGenericParameterTypes;
-
 - (IOSObjectArray *)getTypeParameters;
-
-- (IOSObjectArray *)getParameterAnnotations;
 
 // Returns true if this method has variable arguments.
 - (jboolean)isVarArgs;
 
-// Returns true if this is a bridge method.
-- (jboolean)isBridge;
-
 // Returns true if this method was added by j2objc.
 - (jboolean)isSynthetic;
+
+// Annotation accessors.
+- (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)cls;
+- (IOSObjectArray *)getDeclaredAnnotations;
+- (IOSObjectArray *)getParameterAnnotations;
+
+- (NSString *)toGenericString;
+- (IOSObjectArray *)getAllGenericParameterTypes;
 
 // Internal methods.
 - (IOSObjectArray *)getParameterTypesInternal;
 - (SEL)getSelector;
+- (jboolean)hasRealParameterData;
 
 @end
 
-#endif // _ExecutableMember_H_
+#endif // _JavaLangReflectExecutable_H_

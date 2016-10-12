@@ -1,7 +1,6 @@
 //
-//  ExecutableMember.m
+//  Executable.m
 //  JreEmulation
-// Copyright 2011 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,26 +18,30 @@
 //  Created by Tom Ball on 11/11/11.
 //
 
-#import "ExecutableMember.h"
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "IOSReflection.h"
+#import "java/lang/AssertionError.h"
 #import "java/lang/ClassLoader.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/StringBuilder.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/lang/reflect/Constructor.h"
+#import "java/lang/reflect/Executable.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/Parameter.h"
 #import "java/lang/reflect/Type.h"
 #import "java/lang/reflect/TypeVariable.h"
+#import "libcore/reflect/AnnotatedElements.h"
 #import "libcore/reflect/GenericSignatureParser.h"
 #import "libcore/reflect/ListOfTypes.h"
 #import "libcore/reflect/Types.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
 
-@interface ExecutableMember () {
+@interface JavaLangReflectExecutable () {
+  _Atomic(IOSObjectArray *) params_;
   _Atomic(IOSObjectArray *) paramTypes_;
 }
 @end
@@ -58,9 +61,9 @@
      typeParameters:(IOSObjectArray *)typeParameters;
 @end
 
-static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
+static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self);
 
-@implementation ExecutableMember
+@implementation JavaLangReflectExecutable
 
 - (instancetype)initWithDeclaringClass:(IOSClass *)aClass
                               metadata:(const J2ObjcMethodInfo *)metadata {
@@ -98,6 +101,37 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 - (IOSObjectArray *)getParameterTypes {
   return [IOSObjectArray arrayWithArray:[self getParameterTypesInternal]];
+}
+
+- (jint)getParameterCount {
+  return [self getParameterTypesInternal]->size_;
+}
+
+- (IOSObjectArray *)getParametersInternal {
+  IOSObjectArray *result = __c11_atomic_load(&params_, __ATOMIC_ACQUIRE);
+  if (!result) {
+    @synchronized(self) {
+      result = __c11_atomic_load(&params_, __ATOMIC_RELAXED);
+      if (!result) {
+        IOSObjectArray *paramTypes = [self getParameterTypesInternal];
+        jint nParams = paramTypes->size_;
+        result = [IOSObjectArray newArrayWithLength:nParams type:JavaLangReflectParameter_class_()];
+        for (jint i = 0; i < nParams; i++) {
+          NSString *name = [NSString stringWithFormat:@"arg%d", i];
+          id param =
+              new_JavaLangReflectParameter_initWithNSString_withInt_withJavaLangReflectExecutable_withInt_(
+                  name, 0, self, i);
+          IOSObjectArray_Set(result, i, param);
+        }
+        __c11_atomic_store(&params_, result, __ATOMIC_RELEASE);
+      }
+    }
+  }
+  return result;
+}
+
+- (IOSObjectArray *)getParameters {
+  return [IOSObjectArray arrayWithArray:[self getParametersInternal]];
 }
 
 // Returns the class this executable is a member of.
@@ -204,21 +238,31 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return (metadata_->modifiers & JavaLangReflectModifier_VARARGS) > 0;
 }
 
-- (jboolean)isBridge {
-  // Translator doesn't generate bridge methods.
-  return false;
-}
-
 - (SEL)getSelector {
   return JreMethodSelector(metadata_);
 }
 
+- (jboolean)hasRealParameterData {
+  return metadata_ != nil;
+}
+
+- (IOSObjectArray *)getAllGenericParameterTypes {
+  return LibcoreReflectTypes_getTypeArray_clone_(
+      getMethodOrConstructorGenericInfo(self)->genericParameterTypes_, false);
+}
+
+- (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)cls {
+  return
+      LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+          self, nil_chk(cls));
+}
+
 // isEqual and hash are uniquely identified by their class and selectors.
 - (BOOL)isEqual:(id)anObject {
-  if (![anObject isKindOfClass:[ExecutableMember class]]) {
+  if (![anObject isKindOfClass:[JavaLangReflectExecutable class]]) {
     return NO;
   }
-  ExecutableMember *other = (ExecutableMember *) anObject;
+  JavaLangReflectExecutable *other = (JavaLangReflectExecutable *) anObject;
   return class_ == other->class_ && metadata_ == other->metadata_;
 }
 
@@ -233,20 +277,62 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
+    { NULL, "LIOSClass;", 0x401, -1, -1, -1, 0, -1, -1 },
+    { NULL, "LNSString;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectTypeVariable;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[[LJavaLangAnnotationAnnotation;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectParameter;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 1, 2, -1, 3, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 4, 2, -1, 5, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x0, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectType;", 0x0, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  methods[0].selector = @selector(init);
+  methods[0].selector = @selector(getDeclaringClass);
+  methods[1].selector = @selector(getName);
+  methods[2].selector = @selector(getModifiers);
+  methods[3].selector = @selector(getTypeParameters);
+  methods[4].selector = @selector(getParameterTypes);
+  methods[5].selector = @selector(getExceptionTypes);
+  methods[6].selector = @selector(getParameterAnnotations);
+  methods[7].selector = @selector(toGenericString);
+  methods[8].selector = @selector(getParameterCount);
+  methods[9].selector = @selector(getGenericParameterTypes);
+  methods[10].selector = @selector(getParameters);
+  methods[11].selector = @selector(getGenericExceptionTypes);
+  methods[12].selector = @selector(isVarArgs);
+  methods[13].selector = @selector(isSynthetic);
+  methods[14].selector = @selector(getAnnotationWithIOSClass:);
+  methods[15].selector = @selector(getAnnotationsByTypeWithIOSClass:);
+  methods[16].selector = @selector(getDeclaredAnnotations);
+  methods[17].selector = @selector(hasRealParameterData);
+  methods[18].selector = @selector(getAllGenericParameterTypes);
+  methods[19].selector = @selector(init);
   #pragma clang diagnostic pop
-  static const J2ObjcClassInfo _ExecutableMember = {
-    "ExecutableMember", "java.lang.reflect", NULL, methods, NULL, 7, 0x401, 1, 0, -1, -1, -1, -1, -1
+  static const void *ptrTable[] = {
+    "()Ljava/lang/Class<*>;", "getAnnotation", "LIOSClass;",
+    "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "getAnnotationsByType",
+    "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;" };
+  static const J2ObjcClassInfo _JavaLangReflectExecutable = {
+    "Executable", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x401, 20, 0, -1, -1, -1, -1, -1
   };
-  return &_ExecutableMember;
+  return &_JavaLangReflectExecutable;
 }
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
-GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
+GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) {
   const J2ObjcMethodInfo *metadata = self->metadata_;
   NSString *signatureAttribute = JreMethodGenericString(metadata, self->ptrTable_);
   jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];

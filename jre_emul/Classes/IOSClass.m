@@ -775,22 +775,26 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 
 - (id<JavaLangAnnotationAnnotation>)getDeclaredAnnotationWithIOSClass:(IOSClass *)annotationClass {
   return ((id<JavaLangAnnotationAnnotation>)
-      LibcoreReflectAnnotatedElements_getDeclaredAnnotationWithJavaLangReflectAnnotatedElement_withIOSClass_(
+      JavaLangReflectAnnotatedElement_getDeclaredAnnotationWithIOSClass_(
           self, annotationClass));
 }
 
 - (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
-  return LibcoreReflectAnnotatedElements_getAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+  return LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
       self, annotationClass);
 }
 
 - (IOSObjectArray *)getDeclaredAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
-  return LibcoreReflectAnnotatedElements_getDeclaredAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+  return LibcoreReflectAnnotatedElements_getDirectOrIndirectAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
       self, annotationClass);
 }
 
 - (const J2ObjcClassInfo *)getMetadata {
   return metadata_;
+}
+
+- (NSString *)getTypeName {
+  return JavaLangReflectType_getTypeName(self);
 }
 
 - (id)getPackage {
@@ -1260,6 +1264,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 39, 7, -1, 40, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 41, 7, -1, 40, -1, -1 },
     { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 42, 7, -1, 43, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
@@ -1325,7 +1330,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   methods[58].selector = @selector(getDeclaredAnnotationsByTypeWithIOSClass:);
   methods[59].selector = @selector(getAnnotationsByTypeWithIOSClass:);
   methods[60].selector = @selector(getDeclaredAnnotationWithIOSClass:);
-  methods[61].selector = @selector(init);
+  methods[61].selector = @selector(getTypeName);
+  methods[62].selector = @selector(init);
   #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = IOSClass_serialVersionUID, 0x1a, -1, -1, -1,
@@ -1353,7 +1359,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 62, 1, -1, -1, -1, 44, -1 };
+    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 63, 1, -1, -1, -1, 44, -1 };
   return &_IOSClass;
 }
 

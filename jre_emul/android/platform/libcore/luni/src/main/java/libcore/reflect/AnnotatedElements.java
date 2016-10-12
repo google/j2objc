@@ -32,45 +32,15 @@ import java.util.ArrayList;
  */
 public final class AnnotatedElements {
   /**
-   * Default implementation for {@link AnnotatedElement#getDeclaredAnnotation}.
-   *
-   * @return Directly present annotation of type {@code annotationClass} for {@code element},
-   *         or {@code null} if none was found.
-   */
-  public static <T extends Annotation> T getDeclaredAnnotation(AnnotatedElement element,
-      Class<T> annotationClass) {
-    if (annotationClass == null) {
-      throw new NullPointerException("annotationClass");
-    }
-
-    Annotation[] annotations = element.getDeclaredAnnotations();
-
-    // Safeguard: getDeclaredAnnotations should never return null.
-    if (annotations == null) {
-      return null;
-    }
-
-    // The annotation might be directly present:
-    // Return the first (and only) annotation whose class matches annotationClass.
-    for (int i = 0; i < annotations.length; ++i) {
-      if (annotationClass.isInstance(annotations[i])) {
-        return (T)annotations[i];  // Safe because of above guard.
-      }
-    }
-
-    // The annotation was *not* directly present:
-    // If the array was empty, or we found no matches, return null.
-    return null;
-  }
-
-  /**
-   * Default implementation for {@link AnnotatedElement#getDeclaredAnnotationsByType}.
+   * Default implementation of {@link AnnotatedElement#getDeclaredAnnotationsByType}, and
+   * {@link AnnotatedElement#getAnnotationsByType} for elements that do not support annotation
+   * inheritance.
    *
    * @return Directly/indirectly present list of annotations of type {@code annotationClass} for
    *         {@code element}, or an empty array if none were found.
    */
-  public static <T extends Annotation> T[] getDeclaredAnnotationsByType(AnnotatedElement element,
-      Class<T> annotationClass) {
+  public static <T extends Annotation> T[] getDirectOrIndirectAnnotationsByType(
+        AnnotatedElement element, Class<T> annotationClass) {
     if (annotationClass == null) {
       throw new NullPointerException("annotationClass");
     }
@@ -182,37 +152,7 @@ public final class AnnotatedElements {
     return (repeatableAnnotation == null) ? null : repeatableAnnotation.value();
   }
 
-  /**
-   * Default implementation of {@link AnnotatedElement#getAnnotationsByType}.
-   *
-   * <p>
-   * This method does not handle inherited annotations and is
-   * intended for use for {@code Method}, {@code Field}, {@code Package}.
-   * The {@link Class#getAnnotationsByType} is implemented explicitly.
-   * </p>
-   *
-   * @return Associated annotations of type {@code annotationClass} for {@code element}.
-   */
-  public static <T extends Annotation> T[] getAnnotationsByType(AnnotatedElement element,
-      Class<T> annotationClass) {
-    if (annotationClass == null) {
-      throw new NullPointerException("annotationClass");
-    }
-
-    // Find any associated annotations [directly or repeatably (indirectly) present on this class].
-    T[] annotations = element.getDeclaredAnnotationsByType(annotationClass);
-    if (annotations == null) {
-      throw new AssertionError("annotations must not be null");  // Internal error.
-    }
-
-    // If nothing was found, we would look for associated annotations recursively up to the root
-    // class. However this can only happen if AnnotatedElement is a Class, which is handled
-    // in the Class override of this method.
-    return annotations;
-  }
-
   private AnnotatedElements() {
-    throw new AssertionError("Instances of AnnotatedElements not allowed");
   }
 }
 

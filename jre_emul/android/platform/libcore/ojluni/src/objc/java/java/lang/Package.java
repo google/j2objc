@@ -26,26 +26,8 @@
 
 package java.lang;
 
-import java.io.InputStream;
-import java.util.Enumeration;
-
-import java.util.StringTokenizer;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import java.lang.annotation.Annotation;
-
-import libcore.reflect.AnnotatedElements;
+import java.net.URL;
 
 /**
  * {@code Package} objects contain version information
@@ -377,7 +359,7 @@ public class Package implements java.lang.reflect.AnnotatedElement {
      */
     @Override
     public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
-      return AnnotatedElements.getDeclaredAnnotationsByType(this, annotationClass);
+      return getPackageInfo().getDeclaredAnnotationsByType(annotationClass);
     }
 
     /**
@@ -386,7 +368,7 @@ public class Package implements java.lang.reflect.AnnotatedElement {
      */
     @Override
     public <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
-      return AnnotatedElements.getAnnotationsByType(this, annotationClass);
+      return getPackageInfo().getAnnotationsByType(annotationClass);
     }
 
     /**
@@ -395,8 +377,9 @@ public class Package implements java.lang.reflect.AnnotatedElement {
      */
     @Override
     public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
-      return AnnotatedElements.getDeclaredAnnotation(this, annotationClass);
+      return getPackageInfo().getDeclaredAnnotation(annotationClass);
     }
+
     /**
      * Construct a package instance with the specified version
      * information.
@@ -437,5 +420,5 @@ public class Package implements java.lang.reflect.AnnotatedElement {
     private final String implVendor;
     private final URL sealBase;
     private transient final ClassLoader loader;
-    private transient Class packageInfo;
+    private transient Class<?> packageInfo;
 }

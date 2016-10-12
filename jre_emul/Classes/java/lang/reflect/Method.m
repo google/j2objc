@@ -264,10 +264,8 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSObject;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "LJavaLangReflectAnnotatedType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
@@ -288,12 +286,10 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   methods[13].selector = @selector(getExceptionTypes);
   methods[14].selector = @selector(getGenericExceptionTypes);
   methods[15].selector = @selector(toGenericString);
-  methods[16].selector = @selector(isBridge);
-  methods[17].selector = @selector(isVarArgs);
-  methods[18].selector = @selector(getDefaultValue);
-  methods[19].selector = @selector(isDefault);
-  methods[20].selector = @selector(getAnnotatedReturnType);
-  methods[21].selector = @selector(init);
+  methods[16].selector = @selector(isVarArgs);
+  methods[17].selector = @selector(getDefaultValue);
+  methods[18].selector = @selector(isDefault);
+  methods[19].selector = @selector(init);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "invoke", "LNSObject;[LNSObject;",
@@ -301,7 +297,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     "LJavaLangReflectInvocationTargetException;", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
-    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 22, 0, -1, -1, -1, -1, -1 };
+    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 20, 0, -1, -1, -1, -1, -1 };
   return &_JavaLangReflectMethod;
 }
 

@@ -93,10 +93,6 @@ public class Method extends Executable {
     return null;
   }
 
-  public boolean isBridge() {
-    return false;
-  }
-
   public boolean isVarArgs() {
     return false;
   }
@@ -107,9 +103,5 @@ public class Method extends Executable {
 
   public boolean isDefault() {
     return false;
-  }
-
-  public AnnotatedType getAnnotatedReturnType() {
-    return null;
   }
 }

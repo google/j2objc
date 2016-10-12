@@ -194,6 +194,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/reflect/MalformedParametersException.java \
   java/lang/reflect/Member.java \
   java/lang/reflect/Modifier.java \
+  java/lang/reflect/Parameter.java \
   java/lang/reflect/ParameterizedType.java \
   java/lang/reflect/Proxy.java \
   java/lang/reflect/ReflectPermission.java \

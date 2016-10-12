@@ -85,10 +85,6 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
     return null;
   }
 
-  public boolean isBridge() {
-    return false;
-  }
-
   public boolean isVarArgs() {
     return false;
   }

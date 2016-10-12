@@ -147,7 +147,6 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
@@ -166,9 +165,8 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   methods[11].selector = @selector(getExceptionTypes);
   methods[12].selector = @selector(getGenericExceptionTypes);
   methods[13].selector = @selector(toGenericString);
-  methods[14].selector = @selector(isBridge);
-  methods[15].selector = @selector(isVarArgs);
-  methods[16].selector = @selector(init);
+  methods[14].selector = @selector(isVarArgs);
+  methods[15].selector = @selector(init);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<TT;>;", "newInstance", "[LNSObject;",
@@ -179,7 +177,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 17, 0, -1, -1, -1, 8, -1
+    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 8, -1
   };
   return &_JavaLangReflectConstructor;
 }

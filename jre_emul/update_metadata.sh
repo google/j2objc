@@ -8,10 +8,7 @@ TEMP_DIR=metadata_temp
 REPLACE_SCRIPT=../scripts/replace_metadata.py
 J2OBJC=../dist/j2objc
 STUBS_DIR=stub_classes
-
-if [ $1 == "-java8" ]; then
-  SOURCE_FLAG="-source 1.8"
-fi
+SOURCE_FLAG="-source 1.8"
 
 function update_file {
   objc_source=$1
@@ -39,7 +36,7 @@ update_file Classes/java/lang/AbstractStringBuilder.m java/lang/AbstractStringBu
 update_file Classes/java/lang/Iterable.m java/lang/Iterable.java
 update_file Classes/java/lang/reflect/AccessibleObject.m java/lang/reflect/AccessibleObject.java
 update_file Classes/java/lang/reflect/Constructor.m java/lang/reflect/Constructor.java
-update_file Classes/java/lang/reflect/ExecutableMember.m java/lang/reflect/ExecutableMember.java
+update_file Classes/java/lang/reflect/Executable.m java/lang/reflect/Executable.java
 update_file Classes/java/lang/reflect/Field.m java/lang/reflect/Field.java
 update_file Classes/java/lang/reflect/Method.m java/lang/reflect/Method.java
 

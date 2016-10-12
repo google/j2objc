@@ -36,7 +36,6 @@ public abstract class Executable extends AccessibleObject implements GenericDecl
   public abstract Class<?>[] getParameterTypes();
   public abstract Class<?>[] getExceptionTypes();
   public abstract Annotation[][] getParameterAnnotations();
-  public abstract AnnotatedType getAnnotatedReturnType();
   public abstract String toGenericString();
 
   public int getParameterCount() {
@@ -75,23 +74,11 @@ public abstract class Executable extends AccessibleObject implements GenericDecl
     return null;
   }
 
-  public AnnotatedType getAnnotatedReceiverType() {
-    return null;
+  boolean hasRealParameterData() {
+    return false;
   }
 
-  public AnnotatedType[] getAnnotatedParameterTypes() {
+  Type[] getAllGenericParameterTypes() {
     return null;
   }
-
-  public AnnotatedType[] getAnnotatedExceptionTypes() {
-    return null;
-  }
-
-  // Package-private abstract methods, needed when compiling jre_emul.jar with Java 8
-  // without specifying a bootclasspath.
-  //abstract Executable getRoot();
-  //abstract void handleParameterNumberMismatch(int resultLength, int numParameters);
-  //abstract boolean hasGenericInformation();
-  //abstract void specificToGenericStringHeader(StringBuilder sb);
-  //abstract void specificToStringHeader(StringBuilder sb);
 }

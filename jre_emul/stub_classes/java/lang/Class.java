@@ -294,4 +294,11 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
     return null;
   }
+
+  /**
+   * @since 1.8
+   */
+  public String getTypeName() {
+    return null;
+  }
 }
