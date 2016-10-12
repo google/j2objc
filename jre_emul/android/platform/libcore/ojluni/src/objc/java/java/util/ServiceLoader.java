@@ -26,6 +26,7 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.WeakOuter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -315,6 +316,7 @@ public final class ServiceLoader<S>
 
     // Private inner class implementing fully-lazy provider lookup
     //
+    @WeakOuter
     private class LazyIterator
         implements Iterator<S>
     {
@@ -433,7 +435,8 @@ public final class ServiceLoader<S>
      *          service
      */
     public Iterator<S> iterator() {
-        return new Iterator<S>() {
+        @WeakOuter
+        class ProviderIterator implements Iterator<S> {
 
             Iterator<Map.Entry<String,S>> knownProviders
                 = providers.entrySet().iterator();
@@ -455,6 +458,7 @@ public final class ServiceLoader<S>
             }
 
         };
+        return new ProviderIterator();
     }
 
     /**
