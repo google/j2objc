@@ -47,6 +47,7 @@
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Package.h"
+#import "java/lang/StringBuilder.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/lang/annotation/Inherited.h"
 #import "java/lang/reflect/Constructor.h"
@@ -379,6 +380,50 @@ static NSString *Capitalize(NSString *s) {
 - (NSString *)description {
   // matches java.lang.Class.toString() output
   return [NSString stringWithFormat:@"class %@", [self getName]];
+}
+
+- (NSString *)toGenericString {
+  // Translation of Java method in Android libcore's java/lang/Class.java.
+  if ([self isPrimitive]) {
+    return [self description];
+  }
+  else {
+    JavaLangStringBuilder *sb = create_JavaLangStringBuilder_init();
+    jint modifiers = [self getModifiers] & JavaLangReflectModifier_classModifiers();
+    if (modifiers != 0) {
+      [sb appendWithNSString:JavaLangReflectModifier_toStringWithInt_(modifiers)];
+      [sb appendWithChar:' '];
+    }
+    if ([self isAnnotation]) {
+      [sb appendWithChar:'@'];
+    }
+    if ([self isInterface]) {
+      [sb appendWithNSString:@"interface"];
+    }
+    else {
+      if ([self isEnum]) {
+        [sb appendWithNSString:@"enum"];
+      } else {
+        [sb appendWithNSString:@"class"];
+      }
+    }
+    [sb appendWithChar:' '];
+    [sb appendWithNSString:[self getName]];
+    IOSObjectArray *typeparms = [self getTypeParameters];
+    if (((IOSObjectArray *) nil_chk(typeparms))->size_ > 0) {
+      jboolean first = true;
+      [sb appendWithChar:'<'];
+      for (id<JavaLangReflectTypeVariable> typeparm in typeparms) {
+        if (!first) {
+          [sb appendWithChar:','];
+        }
+        [sb appendWithNSString:[((id<JavaLangReflectTypeVariable>) nil_chk(typeparm)) getTypeName]];
+        first = false;
+      }
+      [sb appendWithChar:'>'];
+    }
+    return [sb description];
+  }
 }
 
 - (NSString *)binaryName {
@@ -1265,6 +1310,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 41, 7, -1, 40, -1, -1 },
     { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 42, 7, -1, 43, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
@@ -1331,7 +1377,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   methods[59].selector = @selector(getAnnotationsByTypeWithIOSClass:);
   methods[60].selector = @selector(getDeclaredAnnotationWithIOSClass:);
   methods[61].selector = @selector(getTypeName);
-  methods[62].selector = @selector(init);
+  methods[62].selector = @selector(toGenericString);
+  methods[63].selector = @selector(init);
   #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = IOSClass_serialVersionUID, 0x1a, -1, -1, -1,
@@ -1359,7 +1406,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 63, 1, -1, -1, -1, 44, -1 };
+    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 44, -1 };
   return &_IOSClass;
 }
 

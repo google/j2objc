@@ -186,6 +186,8 @@
 - (id)getProtectionDomain;
 - (id)getSigners;
 
+- (NSString *)toGenericString;
+
 // Boxing and unboxing (internal)
 - (id)__boxValue:(J2ObjcRawValue *)rawValue;
 - (jboolean)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;

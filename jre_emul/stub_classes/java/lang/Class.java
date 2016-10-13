@@ -301,4 +301,11 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   public String getTypeName() {
     return null;
   }
+
+  /**
+   * @since 1.8
+   */
+  public String toGenericString() {
+    return null;
+  }
 }
