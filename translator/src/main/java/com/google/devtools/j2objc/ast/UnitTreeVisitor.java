@@ -15,8 +15,10 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 
 /**
  * A TreeVisitor that contains CompilationUnit specific state accessible by subclasses.
@@ -24,15 +26,18 @@ import com.google.devtools.j2objc.util.ParserEnvironment;
 public class UnitTreeVisitor extends TreeVisitor {
 
   protected final CompilationUnit unit;
-  protected final ParserEnvironment env;
+  protected final ElementUtil elementUtil;
+  protected final TypeUtil typeUtil;
   protected final Types typeEnv;
   protected final NameTable nameTable;
 
   public UnitTreeVisitor(CompilationUnit unit) {
     this.unit = unit;
-    env = unit.getEnv();
-    typeEnv = unit.getTypeEnv();
-    nameTable = unit.getNameTable();
+    TranslationEnvironment env = unit.getEnv();
+    elementUtil = env.elementUtil();
+    typeUtil = env.typeUtil();
+    typeEnv = env.types();
+    nameTable = env.nameTable();
   }
 
   public void run() {

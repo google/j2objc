@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
+import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +57,8 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  */
 public class NameTable {
 
-  private final ParserEnvironment env;
+  private final Types typeEnv;
+  private final ElementUtil elementUtil;
   private final Map<IVariableBinding, String> variableNames = new HashMap<>();
 
   public static final String INIT_NAME = "init";
@@ -328,8 +330,8 @@ public class NameTable {
       }
     }
 
-    public NameTable newNameTable(ParserEnvironment env) {
-      return new NameTable(env, prefixMap, methodMappings);
+    public NameTable newNameTable(Types typeEnv, ElementUtil elementUtil) {
+      return new NameTable(typeEnv, elementUtil, prefixMap, methodMappings);
     }
   }
 
@@ -338,8 +340,10 @@ public class NameTable {
   }
 
   private NameTable(
-      ParserEnvironment env, PackagePrefixes prefixMap, Map<String, String> methodMappings) {
-    this.env = env;
+      Types typeEnv, ElementUtil elementUtil, PackagePrefixes prefixMap,
+      Map<String, String> methodMappings) {
+    this.typeEnv = typeEnv;
+    this.elementUtil = elementUtil;
     this.prefixMap = prefixMap;
     this.methodMappings = methodMappings;
   }
@@ -525,7 +529,7 @@ public class NameTable {
   }
 
   private String getParameterTypeKeyword(ITypeBinding type) {
-    if (env.types().isIdType(type) || type.isTypeVariable()) {
+    if (typeEnv.isIdType(type) || type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
       if (bounds.length > 0) {
         return getParameterTypeKeyword(bounds[0]);
@@ -713,7 +717,7 @@ public class NameTable {
       return null;
     }
     TypeElement superclass = currentType.getKind().isInterface()
-        ? env.types().getJavaObjectElement()
+        ? typeEnv.getJavaObjectElement()
         : ElementUtil.getSuperclass(currentType);
     ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
     if (original != null) {
@@ -730,7 +734,7 @@ public class NameTable {
     }
     for (ExecutableElement candidate : ElementUtil.getDeclaredMethods(currentType)) {
       if (ElementUtil.isInstanceMethod(candidate)
-          && env.elementUtilities().overrides(topMethod, candidate, declaringClass)) {
+          && elementUtil.overrides(topMethod, candidate, declaringClass)) {
         return candidate;
       }
     }
@@ -826,7 +830,7 @@ public class NameTable {
     String classType = null;
     List<String> interfaces = new ArrayList<>();
     for (ITypeBinding type : types) {
-      if (env.types().isIdType(type) || env.types().isJavaVoidType(type)) {
+      if (typeEnv.isIdType(type) || typeEnv.isJavaVoidType(type)) {
         continue;
       }
       if (type.isInterface()) {
@@ -882,7 +886,7 @@ public class NameTable {
    */
   public String getFullName(ITypeBinding binding) {
     // Make sure type variables aren't included.
-    binding = env.types().mapType(binding.getErasure());
+    binding = typeEnv.mapType(binding.getErasure());
 
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.
@@ -941,7 +945,7 @@ public class NameTable {
 
   public static String getMainTypeFullName(CompilationUnit unit) {
     PackageElement pkgElement = unit.getPackage().getPackageElement();
-    return unit.getNameTable().getPrefix(pkgElement) + unit.getMainTypeName();
+    return unit.getEnv().nameTable().getPrefix(pkgElement) + unit.getMainTypeName();
   }
 
   public String getPrefix(PackageElement packageElement) {

@@ -127,7 +127,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!typeEnv.isJavaStringType(type)) {
       return;
     }
-    TypeMirror arrayType = env.typeUtilities().getArrayType(type);
+    TypeMirror arrayType = typeUtil.getArrayType(type);
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     int idx = 0;
     for (Statement stmt : node.getStatements()) {
@@ -155,11 +155,10 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!TypeUtil.isEnum(type)) {
       return;
     }
-    DeclaredType enumType = TypeUtil.getSuperclass(type, env);
+    DeclaredType enumType = typeUtil.getSuperclass(type);
     TypeElement enumElem = (TypeElement) enumType.asElement();
     ExecutableElement ordinalMethod = ElementUtil.findMethod(enumElem, "ordinal");
-    ExecutableType ordinalType =
-        (ExecutableType) env.typeUtilities().asMemberOf(enumType, ordinalMethod);
+    ExecutableType ordinalType = typeUtil.asMemberOf(enumType, ordinalMethod);
     MethodInvocation invocation =
         new MethodInvocation(ordinalMethod, ordinalType, TreeUtil.remove(expr));
     node.setExpression(invocation);

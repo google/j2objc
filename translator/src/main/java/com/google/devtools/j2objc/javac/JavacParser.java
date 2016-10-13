@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.SourceVersion;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.tree.JCTree;
@@ -120,7 +121,8 @@ public class JavacParser extends Parser {
     Iterable<? extends JavaFileObject> fileObjects = fileManager.getJavaFileObjectsFromFiles(files);
     JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(
         null, fileManager, diagnostics, javacOptions, null, fileObjects);
-    JavacEnvironment env = new JavacEnvironment(nameTableFactory, task.getContext());
+    JavacEnvironment parserEnv = new JavacEnvironment(task.getContext());
+    TranslationEnvironment env = new TranslationEnvironment(nameTableFactory, parserEnv);
 
     List<CompilationUnitTree> units = new ArrayList<>();
     try {

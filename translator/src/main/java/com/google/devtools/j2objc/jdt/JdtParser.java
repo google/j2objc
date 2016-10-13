@@ -21,10 +21,10 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.SourceVersion;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.lang.model.element.Element;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -131,8 +133,8 @@ public class JdtParser extends Parser {
       RegularInputFile file = new RegularInputFile(path);
       mainTypeName = FileUtil.getQualifiedMainTypeName(file, unit);
     }
-    ParserEnvironment env =
-        new JdtParserEnvironment(unit.getAST(), nameTableFactory);
+    ParserEnvironment parserEnv = new JdtParserEnvironment(unit.getAST());
+    TranslationEnvironment env = new TranslationEnvironment(nameTableFactory, parserEnv);
     return TreeConverter.convertCompilationUnit(env, unit, path, mainTypeName, source);
   }
 
@@ -160,8 +162,8 @@ public class JdtParser extends Parser {
           RegularInputFile file = new RegularInputFile(sourceFilePath);
           try {
             String source = FileUtil.readFile(file);
-            ParserEnvironment env =
-                new JdtParserEnvironment(ast.getAST(), nameTableFactory);
+            ParserEnvironment parserEnv = new JdtParserEnvironment(ast.getAST());
+            TranslationEnvironment env = new TranslationEnvironment(nameTableFactory, parserEnv);
             com.google.devtools.j2objc.ast.CompilationUnit unit =
                 TreeConverter.convertCompilationUnit(
                     env, ast, sourceFilePath, FileUtil.getMainTypeName(file), source);
@@ -232,11 +234,11 @@ public class JdtParser extends Parser {
     return !hasErrors;
   }
 
-  private static class JdtParserEnvironment extends ParserEnvironment {
+  private static class JdtParserEnvironment implements ParserEnvironment {
+
     private final AST ast;
 
-    JdtParserEnvironment(AST ast, NameTable.Factory nameTableFactory) {
-      super(nameTableFactory);
+    JdtParserEnvironment(AST ast) {
       this.ast = ast;
     }
 
@@ -246,12 +248,12 @@ public class JdtParser extends Parser {
     }
 
     @Override
-    public javax.lang.model.util.Elements elementUtilities() {
+    public Elements elementUtilities() {
       return JdtElements.INSTANCE;
     }
 
     @Override
-    public javax.lang.model.util.Types typeUtilities() {
+    public Types typeUtilities() {
       return JdtTypes.INSTANCE;
     }
   }

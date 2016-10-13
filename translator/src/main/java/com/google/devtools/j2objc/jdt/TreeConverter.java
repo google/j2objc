@@ -116,7 +116,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +134,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
-      ParserEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit,
+      TranslationEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit,
       String sourceFilePath, String mainTypeName, String source) {
     return new CompilationUnit(env, jdtUnit, sourceFilePath, mainTypeName, source);
   }

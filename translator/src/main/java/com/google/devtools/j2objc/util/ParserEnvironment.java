@@ -14,47 +14,23 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.types.Types;
 import javax.lang.model.element.Element;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 /**
  * The environment used by the parser to generate compilation units.
  */
-public abstract class ParserEnvironment {
-  private final NameTable.Factory nameTableFactory;
-  private NameTable nameTable;
-  private Types types;
-
-  protected ParserEnvironment(NameTable.Factory nameTableFactory) {
-    Preconditions.checkNotNull(nameTableFactory);
-    this.nameTableFactory = nameTableFactory;
-  }
-
-  public synchronized NameTable nameTable() {
-    if (nameTable == null) {
-      nameTable = nameTableFactory.newNameTable(this);
-    }
-    return nameTable;
-  }
-
-  public synchronized Types types() {
-    if (types == null) {
-      types = new Types(this);
-    }
-    return types;
-  }
+public interface ParserEnvironment {
 
   /**
    * Returns the element associated with a fully-qualified name.
    * Null is returned if there is no associated element for the
    * specified name.
    */
-  public abstract Element resolve(String name);
+  public Element resolve(String name);
 
-  // TODO(tball): return an instance that merges j.l.m.u.Elements and ElementUtil.
-  public abstract javax.lang.model.util.Elements elementUtilities();
+  public Elements elementUtilities();
 
-  // TODO(tball): return an instance that merges j.l.m.u.Types and BindingUtil.
-  public abstract javax.lang.model.util.Types typeUtilities();
+  public Types typeUtilities();
 }

@@ -119,7 +119,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
         return;
       }
       collectMethods((DeclaredType) type);
-      for (TypeMirror supertype : env.typeUtilities().directSupertypes(type)) {
+      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
         collectInheritedMethods(supertype);
       }
     }
@@ -134,7 +134,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       for (ExecutableElement methodElem : Iterables.filter(
           ElementUtil.getDeclaredMethods(typeElem), ElementUtil::isInstanceMethod)) {
         ExecutablePair method = new ExecutablePair(
-            methodElem, (ExecutableType) env.typeUtilities().asMemberOf(type, methodElem));
+            methodElem, typeUtil.asMemberOf(type, methodElem));
         collector.put(getOverrideSignature(method), method);
       }
     }
@@ -186,8 +186,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     private boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
       return b == null
           || (!declaredByClass(b.elem) && declaredByClass(a.elem))
-          || env.elementUtilities().overrides(a.elem, b.elem,
-              ElementUtil.getDeclaringClass(a.elem));
+          || elementUtil.overrides(a.elem, b.elem, ElementUtil.getDeclaringClass(a.elem));
     }
 
     private void addShimWithInvocation(
@@ -245,8 +244,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     StringBuilder sb = new StringBuilder(ElementUtil.getName(method.elem));
     sb.append('(');
     for (TypeMirror pType : method.type.getParameterTypes()) {
-      pType = env.typeUtilities().erasure(pType);
-      sb.append(TypeUtil.getBinaryName(pType));
+      sb.append(TypeUtil.getBinaryName(typeUtil.erasure(pType)));
     }
     sb.append(')');
     return sb.toString();

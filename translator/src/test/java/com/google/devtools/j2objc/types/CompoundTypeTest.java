@@ -87,7 +87,7 @@ public class CompoundTypeTest extends GenerationTest {
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) method.getBody().getStatements().get(0);
           TypeMirror mirror = stmt.getExpression().getTypeMirror();
-          String typeName = unit.getNameTable().getObjCType(mirror);
+          String typeName = unit.getEnv().nameTable().getObjCType(mirror);
           assertEquals("id<FooBarTest, JavaIoSerializable>", typeName);
           return;
         }

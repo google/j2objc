@@ -19,11 +19,9 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,10 +33,11 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -60,7 +59,13 @@ public final class ElementUtil {
   // Class files can only use the lower 16 bits.
   public static final int ACC_FLAG_MASK = 0xFFFF;
 
+  private final Elements javacElements;
+
   private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
+
+  public ElementUtil(Elements javacElements) {
+    this.javacElements = javacElements;
+  }
 
   public static String getName(Element element) {
     return element.getSimpleName().toString();
@@ -266,35 +271,6 @@ public final class ElementUtil {
     return nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL;
   }
 
-  public static List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type,
-      ParserEnvironment env) {
-    List<DeclaredType> typeElements = new ArrayList<>();
-    for (TypeMirror superType : getOrderedInheritedTypesInclusive(type, env)) {
-      if (!TypeUtil.isIntersection(superType)) {
-        typeElements.add((DeclaredType) superType);
-      }
-    }
-    return typeElements;
-  }
-
-  public static LinkedHashSet<TypeMirror> getOrderedInheritedTypesInclusive(TypeMirror type,
-      ParserEnvironment env) {
-    LinkedHashSet<TypeMirror> inheritedTypes = new LinkedHashSet<>();
-    collectInheritedTypesInclusive(type, inheritedTypes, env);
-    return inheritedTypes;
-  }
-
-  private static void collectInheritedTypesInclusive(
-      TypeMirror type, Set<TypeMirror> inheritedTypes, ParserEnvironment env) {
-    if (type == null) {
-      return;
-    }
-    inheritedTypes.add(type);
-    for (TypeMirror superType : env.typeUtilities().directSupertypes(type)) {
-      collectInheritedTypesInclusive(superType, inheritedTypes, env);
-    }
-  }
-
   public static <T extends Element> Iterable<T> filterEnclosedElements(
       Element elem, Class<T> resultClass, ElementKind... kinds) {
     List<ElementKind> kindsList = Arrays.asList(kinds);
@@ -329,6 +305,15 @@ public final class ElementUtil {
     return Iterables.getFirst(Iterables.filter(
         filterEnclosedElements(type, ExecutableElement.class, ElementKind.METHOD),
         method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
+  }
+
+  public boolean overrides(
+      ExecutableElement overrider, ExecutableElement overridden, TypeElement type) {
+    return javacElements.overrides(overrider, overridden, type);
+  }
+
+  public PackageElement getPackage(Element e) {
+    return javacElements.getPackageOf(e);
   }
 
   public static Set<Modifier> toModifierSet(int modifiers) {

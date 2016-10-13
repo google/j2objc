@@ -114,8 +114,8 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
 
       // Lambdas are ignored when resolving implicit outer scope.
       if (kind == ScopeKind.CLASS) {
-        for (DeclaredType inheritedType :
-          ElementUtil.getInheritedDeclaredTypesInclusive(type.asType(), env)) {
+        for (DeclaredType inheritedType
+             : typeUtil.getInheritedDeclaredTypesInclusive(type.asType())) {
           inheritedScopeBuilder.add(inheritedType.asElement());
         }
       }
@@ -124,7 +124,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
       // "inherit" from Object. Therefore we add this manually to make the set complete. This is
       // needed because Java 8 default methods can call methods in Object.
       if (ElementUtil.isInterface(type)) {
-        inheritedScopeBuilder.add(env.types().getJavaObjectElement());
+        inheritedScopeBuilder.add(typeEnv.getJavaObjectElement());
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();

@@ -70,7 +70,7 @@ public class PackagePrefixesTest extends GenerationTest {
     String source = "package foo.bar; public class SomeClass {}";
     Options.addPackagePrefix("foo.bar", "FB");
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }
@@ -80,7 +80,7 @@ public class PackagePrefixesTest extends GenerationTest {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
     Options.addPackagePrefix("foo.bar", "FB");
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     assertEquals("FBSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
   }
@@ -89,7 +89,7 @@ public class PackagePrefixesTest extends GenerationTest {
     String source = "package foo.bar; public class SomeClass {}";
     Options.addPackagePrefix("foo.*", "FB");
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }

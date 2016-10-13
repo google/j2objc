@@ -39,7 +39,7 @@ public class NameTableTest extends GenerationTest {
   public void testGetFullNameNoPackage() {
     String source = "public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     assertEquals("SomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }
@@ -48,7 +48,7 @@ public class NameTableTest extends GenerationTest {
   public void testGetFullNameWithPackage() {
     String source = "package foo.bar; public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     assertEquals("FooBarSomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }
@@ -57,7 +57,7 @@ public class NameTableTest extends GenerationTest {
   public void testGetFullNameWithInnerClass() {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
   }
@@ -67,7 +67,7 @@ public class NameTableTest extends GenerationTest {
     String source = "package foo.bar; "
         + "public enum SomeClass { A; static class Inner {} static enum Inner2 { B; }}";
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     // Outer type should not have "Enum" added to name.
     assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
@@ -83,7 +83,7 @@ public class NameTableTest extends GenerationTest {
         // This matches JVM naming, once '$' is substituted for the '_' characters.
         + "{ class Foo {}} { class Foo {}}}}";
     CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     assertEquals("FooBarSomeClass_1Foo", nameTable.getFullName(decl.getTypeBinding()));
     decl = unit.getTypes().get(2);
@@ -93,7 +93,7 @@ public class NameTableTest extends GenerationTest {
   public void testTypeVariableWithTypeVariableBounds() {
     String source = "class A<T> { <E extends T> void foo(E e) {} }";
     CompilationUnit unit = translateType("A", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     final IMethodBinding[] methodBinding = new IMethodBinding[1];
     unit.accept(new TreeVisitor() {
       @Override public void endVisit(MethodDeclaration node) {

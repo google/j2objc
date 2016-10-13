@@ -299,9 +299,11 @@ JAVA_SOURCES = \
 	util/NameTable.java \
 	util/PackagePrefixes.java \
 	util/Parser.java \
+	util/ParserEnvironment.java \
 	util/ProGuardUsageParser.java \
 	util/SourceVersion.java \
 	util/TimeTracker.java \
+	util/TranslationEnvironment.java \
 	util/TranslationUtil.java \
 	util/TypeUtil.java \
 	util/UnicodeUtils.java \

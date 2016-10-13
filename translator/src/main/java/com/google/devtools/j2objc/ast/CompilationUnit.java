@@ -17,9 +17,7 @@ package com.google.devtools.j2objc.ast;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.TreeConverter;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.util.List;
 import org.eclipse.jdt.core.dom.ASTNode;
 
@@ -28,7 +26,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
  */
 public class CompilationUnit extends TreeNode {
 
-  private final ParserEnvironment env;
+  private final TranslationEnvironment env;
   private final String sourceFilePath;
   private final String mainTypeName;
   private final String source;
@@ -44,7 +42,7 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(AbstractTypeDeclaration.class, this);
 
   public CompilationUnit(
-      ParserEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtNode,
+      TranslationEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtNode,
       String sourceFilePath, String mainTypeName, String source) {
     super(jdtNode);
     this.env = env;
@@ -75,8 +73,8 @@ public class CompilationUnit extends TreeNode {
     }
   }
 
-  public CompilationUnit(ParserEnvironment env, String sourceFilePath, String mainTypeName,
-      String source) {
+  public CompilationUnit(
+      TranslationEnvironment env, String sourceFilePath, String mainTypeName, String source) {
     super();
     this.env = env;
     this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
@@ -104,16 +102,8 @@ public class CompilationUnit extends TreeNode {
     return Kind.COMPILATION_UNIT;
   }
 
-  public ParserEnvironment getEnv() {
+  public TranslationEnvironment getEnv() {
     return env;
-  }
-
-  public Types getTypeEnv() {
-    return env.types();
-  }
-
-  public NameTable getNameTable() {
-    return env.nameTable();
   }
 
   public String getSourceFilePath() {

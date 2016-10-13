@@ -128,9 +128,8 @@ public class AnonymousClassConverter extends UnitTreeVisitor {
         (DeclaredType) ElementUtil.getDeclaringClass(constructorElement).getSuperclass();
     for (ExecutableElement m : ElementUtil.getDeclaredMethods(TypeUtil.asTypeElement(superClass))) {
       if (ElementUtil.isConstructor(m)) {
-        ExecutableType mType = (ExecutableType) env.typeUtilities().asMemberOf(superClass, m);
-        if (env.typeUtilities().isSubsignature(
-            (ExecutableType) constructorElement.asType(), mType)) {
+        ExecutableType mType = typeUtil.asMemberOf(superClass, m);
+        if (typeUtil.isSubsignature((ExecutableType) constructorElement.asType(), mType)) {
           return m;
         }
       }

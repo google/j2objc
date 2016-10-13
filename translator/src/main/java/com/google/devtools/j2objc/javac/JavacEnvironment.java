@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.javac;
 
-import com.google.devtools.j2objc.util.NameTable.Factory;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symtab;
@@ -30,7 +29,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-class JavacEnvironment extends ParserEnvironment {
+class JavacEnvironment implements ParserEnvironment {
+
   private final Context context;
   private final ClassReader classReader;
   private final Names javacNames;
@@ -38,8 +38,7 @@ class JavacEnvironment extends ParserEnvironment {
   private final JavacElements javacElements;
   private final JavacTypes javacTypes;
 
-  protected JavacEnvironment(Factory nameTableFactory, Context context) {
-    super(nameTableFactory);
+  protected JavacEnvironment(Context context) {
     this.context = context;
     classReader = ClassReader.instance(context);
     javacNames = Names.instance(context);

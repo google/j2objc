@@ -37,7 +37,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IBinding;
@@ -69,7 +69,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final AbstractTypeDeclaration typeNode;
   protected final ITypeBinding typeBinding;
   protected final CompilationUnit compilationUnit;
-  protected final ParserEnvironment env;
+  protected final TranslationEnvironment env;
   protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
@@ -84,8 +84,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeBinding = node.getTypeBinding();
     compilationUnit = TreeUtil.getCompilationUnit(node);
     env = compilationUnit.getEnv();
-    typeEnv = compilationUnit.getTypeEnv();
-    nameTable = compilationUnit.getNameTable();
+    typeEnv = env.types();
+    nameTable = env.nameTable();
     typeName = nameTable.getFullName(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
     parametersNonnullByDefault = Options.nullability()
@@ -344,8 +344,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       return true;
     }
     try {
-      PackageElement pkg =
-          env.elementUtilities().getPackageOf(BindingConverter.getElement(typeBinding));
+      PackageElement pkg = env.elementUtil().getPackage(BindingConverter.getElement(typeBinding));
       String pkgName = pkg.getQualifiedName().toString();
       // See if a package-info source file has a ParametersAreNonnullByDefault annotation.
       InputFile file = FileUtil.findOnSourcePath(pkgName + ".package-info");

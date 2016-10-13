@@ -74,7 +74,7 @@ public class GeneratedType {
   public static GeneratedType fromTypeDeclaration(AbstractTypeDeclaration typeNode) {
     ITypeBinding typeBinding = typeNode.getTypeBinding();
     CompilationUnit unit = TreeUtil.getCompilationUnit(typeNode);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
 
     ImmutableList.Builder<String> superTypes = ImmutableList.builder();
     ITypeBinding superclass = typeBinding.getSuperclass();

@@ -51,7 +51,7 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.FileUtil;
-import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree.Kind;
@@ -77,7 +77,7 @@ public class TreeConverter {
   private JCTree.JCCompilationUnit unit;
 
   public static CompilationUnit convertCompilationUnit(
-      ParserEnvironment env, JCTree.JCCompilationUnit javacUnit) {
+      TranslationEnvironment env, JCTree.JCCompilationUnit javacUnit) {
     TreeConverter converter = new TreeConverter(javacUnit);
     String sourceFilePath = javacUnit.getSourceFile().toUri().getPath();
     InputFile sourceFile = convertFileObject(javacUnit.getSourceFile());

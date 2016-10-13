@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
@@ -38,6 +37,7 @@ import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationEnvironment;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
@@ -65,9 +65,9 @@ class RuntimeAnnotationGenerator {
 
   public RuntimeAnnotationGenerator(AbstractTypeDeclaration typeNode) {
     this.typeNode = typeNode;
-    CompilationUnit unit = TreeUtil.getCompilationUnit(typeNode);
-    typeEnv = unit.getTypeEnv();
-    nameTable = unit.getNameTable();
+    TranslationEnvironment env = TreeUtil.getCompilationUnit(typeNode).getEnv();
+    typeEnv = env.types();
+    nameTable = env.nameTable();
     className = nameTable.getFullName(typeNode.getTypeBinding());
   }
 

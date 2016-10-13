@@ -53,7 +53,7 @@ public class PackageInfoRewriter {
 
   private PackageInfoRewriter(CompilationUnit unit) {
     this.unit = unit;
-    typeEnv = unit.getTypeEnv();
+    typeEnv = unit.getEnv().types();
   }
 
   private void run() {

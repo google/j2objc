@@ -233,7 +233,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
     assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
@@ -271,7 +271,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
     assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
@@ -300,7 +300,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
-    NameTable nameTable = unit.getNameTable();
+    NameTable nameTable = unit.getEnv().nameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(2);
     assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));

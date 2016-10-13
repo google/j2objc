@@ -16,14 +16,20 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtIntersectionType;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 
 /**
  * Utility methods for working with TypeMirrors.
@@ -31,6 +37,12 @@ import javax.lang.model.type.TypeMirror;
  * @author Nathan Braswell
  */
 public final class TypeUtil {
+
+  private final Types javacTypes;
+
+  public TypeUtil(Types javacTypes) {
+    this.javacTypes = javacTypes;
+  }
 
   public static ElementKind getDeclaredTypeKind(TypeMirror t) {
     return t.getKind() == TypeKind.DECLARED ? ((DeclaredType) t).asElement().getKind() : null;
@@ -80,8 +92,8 @@ public final class TypeUtil {
     }
   }
 
-  public static DeclaredType getSuperclass(TypeMirror t, ParserEnvironment env) {
-    List<? extends TypeMirror> supertypes = env.typeUtilities().directSupertypes(t);
+  public DeclaredType getSuperclass(TypeMirror t) {
+    List<? extends TypeMirror> supertypes = directSupertypes(t);
     if (supertypes.isEmpty()) {
       return null;
     }
@@ -105,6 +117,52 @@ public final class TypeUtil {
   public static int getModifiers(TypeMirror t) {
     // the public modifier api doesn't expose synthetic
     return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t).getModifiers();
+  }
+
+  public ExecutableType asMemberOf(DeclaredType containing, ExecutableElement method) {
+    return (ExecutableType) javacTypes.asMemberOf(containing, method);
+  }
+
+  public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
+    return javacTypes.isSubsignature(m1, m2);
+  }
+
+  public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
+    return javacTypes.directSupertypes(t);
+  }
+
+  public TypeMirror erasure(TypeMirror t) {
+    return javacTypes.erasure(t);
+  }
+
+  public ArrayType getArrayType(TypeMirror componentType) {
+    return javacTypes.getArrayType(componentType);
+  }
+
+  public List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type) {
+    List<DeclaredType> typeElements = new ArrayList<>();
+    for (TypeMirror superType : getOrderedInheritedTypesInclusive(type)) {
+      if (!TypeUtil.isIntersection(superType)) {
+        typeElements.add((DeclaredType) superType);
+      }
+    }
+    return typeElements;
+  }
+
+  public LinkedHashSet<TypeMirror> getOrderedInheritedTypesInclusive(TypeMirror type) {
+    LinkedHashSet<TypeMirror> inheritedTypes = new LinkedHashSet<>();
+    collectInheritedTypesInclusive(type, inheritedTypes);
+    return inheritedTypes;
+  }
+
+  private void collectInheritedTypesInclusive(TypeMirror type, Set<TypeMirror> inheritedTypes) {
+    if (type == null) {
+      return;
+    }
+    inheritedTypes.add(type);
+    for (TypeMirror superType : directSupertypes(type)) {
+      collectInheritedTypesInclusive(superType, inheritedTypes);
+    }
   }
 
   public static String getName(TypeMirror t) {
