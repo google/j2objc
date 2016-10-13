@@ -35,9 +35,9 @@ code for their Android app, which they either own or are licensed to use.
 
 ## Requirements ##
 
-* JDK 1.7 or higher
+* JDK 1.8 or higher
 * Mac workstation or laptop
-* OS X 10.10 or higher
+* OS X 10.11 or higher
 * Xcode 7 or higher
 
 ## License ##
