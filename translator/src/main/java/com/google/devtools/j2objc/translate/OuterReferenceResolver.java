@@ -219,6 +219,11 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
         : captureInfo.getOrCreateOuterField(scope.type);
   }
 
+  private VariableElement getOrCreateCaptureVar(VariableElement var, Scope scope) {
+    return scope.isInitializing() ? captureInfo.getOrCreateCaptureParam(var, scope.type)
+        : captureInfo.getOrCreateCaptureField(var, scope.type);
+  }
+
   private Name getOuterPath(TypeElement type) {
     Name path = null;
     for (Scope scope = peekScope(); !type.equals(scope.type); scope = scope.outerClass) {
@@ -263,7 +268,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
         lastScope = scope;
       }
     }
-    return Name.newName(path, captureInfo.getOrCreateInnerField(var, lastScope.type));
+    return Name.newName(path, getOrCreateCaptureVar(var, lastScope));
   }
 
   private void pushType(TypeElement type) {
@@ -288,7 +293,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
   }
 
   private void addCaptureArgs(TypeElement type, List<Expression> args) {
-    for (VariableElement var : captureInfo.getCapturedLocals(type)) {
+    for (VariableElement var : captureInfo.getCapturedVars(type)) {
       Expression path = getPathForLocalVar(var);
       if (path == null) {
         path = new SimpleName(var);

@@ -53,9 +53,7 @@ public class OuterReferenceFixerTest extends GenerationTest {
     // Local class B must also capture the locals and pass them to A's constructor.
     assertTranslatedLines(translation,
         "void Test_1B_initWithInt_withInt_(Test_1B *self, jint capture$0, jint capture$1) {",
-        "  self->val1$i_ = capture$0;",
-        "  self->val1$j_ = capture$1;",
-        "  Test_1A_initWithInt_withInt_(self, self->val1$i_, self->val1$j_);",
+        "  Test_1A_initWithInt_withInt_(self, capture$0, capture$1);",
         "}");
   }
 }

@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -109,9 +110,10 @@ public class OuterReferenceResolverTest extends GenerationTest {
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
     assertFalse(captureInfo.needsOuterReference(runnableNode.getTypeElement()));
-    List<VariableElement> innerFields = captureInfo.getInnerFields(runnableNode.getTypeElement());
+    List<VariableElement> innerFields = Lists.newArrayList(
+        captureInfo.getCaptureFields(runnableNode.getTypeElement()));
     assertEquals(1, innerFields.size());
-    assertEquals("val$i", innerFields.get(0).getSimpleName().toString());
+    assertEquals("val$i", ElementUtil.getName(innerFields.get(0)));
     ClassInstanceCreation creationNode =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(0);
     List<Expression> captureArgs = creationNode.getCaptureArgs();
@@ -138,7 +140,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    List<VariableElement> innerFields = captureInfo.getInnerFields(runnableNode.getTypeElement());
+    List<VariableElement> innerFields = Lists.newArrayList(
+        captureInfo.getCaptureFields(runnableNode.getTypeElement()));
     assertEquals(1, innerFields.size());
     assertTrue(ElementUtil.isWeakReference(innerFields.get(0)));
   }
@@ -160,9 +163,10 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
     AnonymousClassDeclaration runnableNode =
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
-    List<VariableElement> innerFields = captureInfo.getInnerFields(runnableNode.getTypeElement());
+    List<VariableElement> innerFields = Lists.newArrayList(
+        captureInfo.getCaptureFields(runnableNode.getTypeElement()));
     assertEquals(1, innerFields.size());
-    assertEquals("val$o", innerFields.get(0).getSimpleName().toString());
+    assertEquals("val$o", ElementUtil.getName(innerFields.get(0)));
     ClassInstanceCreation creationNode =
         (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(1);
     List<Expression> captureArgs = creationNode.getCaptureArgs();

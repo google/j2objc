@@ -155,7 +155,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     private void replaceNode() {
-      if (isCapturing()) {
+      if (captureInfo.isCapturing(lambdaType)) {
         node.replaceWith(creation);
       } else {
         // For non-capturing lambdas, create a static final instance.
@@ -180,11 +180,6 @@ public class LambdaRewriter extends UnitTreeVisitor {
         block.addStatement(new ReturnStatement(expr));
       }
       return block;
-    }
-
-    private boolean isCapturing() {
-      return captureInfo.getOuterField(lambdaType) != null
-          || !captureInfo.getInnerFields(lambdaType).isEmpty();
     }
 
     private void rewriteLambdaExpression(LambdaExpression node) {

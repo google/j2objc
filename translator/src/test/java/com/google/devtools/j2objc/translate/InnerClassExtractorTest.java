@@ -597,11 +597,10 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "    public boolean hasMoreElements() { return it.hasNext(); }"
         + "    public Object nextElement() { return it.next(); }}; }}";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertFalse(translation.contains("this$0_"));
+    assertNotInTranslation(translation, "this$0_");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
-    assertTranslation(translation, "id<JavaUtilCollection> val$c_;");
-    assertFalse(translation.contains("this$0_"));
+    assertTranslation(translation, "[((id<JavaUtilCollection>) nil_chk(capture$0)) iterator]");
     assertTranslation(translation,
         "return create_A_$1_initWithJavaUtilCollection_(c);");
     assertTranslation(translation,

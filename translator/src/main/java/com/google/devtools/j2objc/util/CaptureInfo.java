@@ -18,7 +18,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +39,30 @@ public class CaptureInfo {
   private final Map<TypeElement, VariableElement> superOuterParams = new HashMap<>();
   private final ListMultimap<TypeElement, LocalCapture> localCaptures = ArrayListMultimap.create();
 
-  private static class LocalCapture {
+  /**
+   * Information about a captured local variable.
+   */
+  public static class LocalCapture {
 
     private final VariableElement var;
-    private final VariableElement field;
+    private final VariableElement param;
+    private VariableElement field;
 
-    private LocalCapture(VariableElement var, VariableElement field) {
+    private LocalCapture(VariableElement var, VariableElement param) {
       this.var = var;
-      this.field = field;
+      this.param = param;
+    }
+
+    public VariableElement getParam() {
+      return param;
+    }
+
+    public boolean hasField() {
+      return field != null;
+    }
+
+    public VariableElement getField() {
+      return field;
     }
   }
 
@@ -78,17 +94,26 @@ public class CaptureInfo {
     return outerFields.get(type);
   }
 
-  public Iterable<VariableElement> getCapturedLocals(TypeElement type) {
+  public List<LocalCapture> getLocalCaptures(TypeElement type) {
+    return Collections.unmodifiableList(localCaptures.get(type));
+  }
+
+  public Iterable<VariableElement> getCapturedVars(TypeElement type) {
     return Iterables.transform(localCaptures.get(type), capture -> capture.var);
   }
 
-  public List<VariableElement> getInnerFields(TypeElement type) {
-    List<LocalCapture> capturesForType = localCaptures.get(type);
-    List<VariableElement> innerFields = new ArrayList<>(capturesForType.size());
-    for (LocalCapture capture : capturesForType) {
-      innerFields.add(capture.field);
-    }
-    return innerFields;
+  public Iterable<VariableElement> getCaptureParams(TypeElement type) {
+    return Iterables.transform(localCaptures.get(type), capture -> capture.param);
+  }
+
+  public Iterable<VariableElement> getCaptureFields(TypeElement type) {
+    return Iterables.transform(Iterables.filter(
+        localCaptures.get(type), LocalCapture::hasField), capture -> capture.field);
+  }
+
+  public boolean isCapturing(TypeElement type) {
+    return outerFields.containsKey(type)
+        || !Iterables.isEmpty(Iterables.filter(localCaptures.get(type), LocalCapture::hasField));
   }
 
   private static boolean automaticOuterParam(TypeElement type) {
@@ -147,23 +172,32 @@ public class CaptureInfo {
     return outerField;
   }
 
-  public VariableElement getOrCreateInnerField(VariableElement var, TypeElement declaringType) {
+  private LocalCapture getOrCreateLocalCapture(VariableElement var, TypeElement declaringType) {
     List<LocalCapture> capturesForType = localCaptures.get(declaringType);
-    VariableElement innerField = null;
-    for (LocalCapture capture : capturesForType) {
-      if (var.equals(capture.var)) {
-        innerField = capture.field;
-        break;
+    for (LocalCapture localCapture : capturesForType) {
+      if (var.equals(localCapture.var)) {
+        return localCapture;
       }
     }
-    if (innerField == null) {
-      innerField = new GeneratedVariableElement(
+    LocalCapture newCapture = new LocalCapture(var, new GeneratedVariableElement(
+        "capture$" + capturesForType.size(), var.asType(), ElementKind.PARAMETER, declaringType));
+    capturesForType.add(newCapture);
+    return newCapture;
+  }
+
+  public VariableElement getOrCreateCaptureParam(VariableElement var, TypeElement declaringType) {
+    return getOrCreateLocalCapture(var, declaringType).param;
+  }
+
+  public VariableElement getOrCreateCaptureField(VariableElement var, TypeElement declaringType) {
+    LocalCapture capture = getOrCreateLocalCapture(var, declaringType);
+    if (capture.field == null) {
+      capture.field = new GeneratedVariableElement(
           getCaptureFieldName(var, declaringType), var.asType(), ElementKind.FIELD, declaringType)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .addAnnotationMirrors(var.getAnnotationMirrors());
-      localCaptures.put(declaringType, new LocalCapture(var, innerField));
     }
-    return innerField;
+    return capture.field;
   }
 
   public VariableElement createSuperOuterParam(TypeElement type, TypeMirror superOuterType) {

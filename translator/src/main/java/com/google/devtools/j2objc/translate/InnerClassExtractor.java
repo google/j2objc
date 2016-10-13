@@ -39,7 +39,6 @@ import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -50,7 +49,6 @@ import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -145,8 +143,7 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       members.add(0, new FieldDeclaration(outerFieldElement, null));
     }
 
-    List<VariableElement> innerFields = captureInfo.getInnerFields(clazz);
-    for (VariableElement field : innerFields) {
+    for (VariableElement field : captureInfo.getCaptureFields(clazz)) {
       node.addBodyDeclaration(new FieldDeclaration(field, null));
     }
   }
@@ -182,18 +179,9 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       captureDecls.add(new SingleVariableDeclaration(superOuterParam));
       captureTypes.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(superOuterParam.asType()));
     }
-    List<VariableElement> innerFields = captureInfo.getInnerFields(typeE);
-    List<IVariableBinding> captureParams = Lists.newArrayListWithCapacity(innerFields.size());
-    int captureCount = 0;
-    for (VariableElement innerField : innerFields) {
-      ITypeBinding innerFieldType =
-          BindingConverter.unwrapTypeMirrorIntoTypeBinding(innerField.asType());
-      GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
-          "capture$" + captureCount++, Modifier.FINAL, innerFieldType, false, true, type,
-          constructorBinding);
-      captureDecls.add(new SingleVariableDeclaration(paramBinding));
-      captureTypes.add(innerFieldType);
-      captureParams.add(paramBinding);
+    for (VariableElement captureParam : captureInfo.getCaptureParams(typeE)) {
+      captureDecls.add(new SingleVariableDeclaration(captureParam));
+      captureTypes.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(captureParam.asType()));
     }
 
     ConstructorInvocation thisCall = null;
@@ -220,9 +208,9 @@ public class InnerClassExtractor extends UnitTreeVisitor {
         args.add(new SimpleName(outerParam));
         params.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerParam.asType()));
       }
-      for (IVariableBinding captureParam : captureParams) {
+      for (VariableElement captureParam : captureInfo.getCaptureParams(typeE)) {
         args.add(new SimpleName(captureParam));
-        params.add(captureParam.getType());
+        params.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(captureParam.asType()));
       }
     } else {
       ITypeBinding superType = type.getSuperclass().getTypeDeclaration();
@@ -238,9 +226,11 @@ public class InnerClassExtractor extends UnitTreeVisitor {
         statements.add(idx++, new ExpressionStatement(
             new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
       }
-      for (int i = 0; i < innerFields.size(); i++) {
-        statements.add(idx++, new ExpressionStatement(new Assignment(
-            new SimpleName(innerFields.get(i)), new SimpleName(captureParams.get(i)))));
+      for (CaptureInfo.LocalCapture capture : captureInfo.getLocalCaptures(typeE)) {
+        if (capture.hasField()) {
+          statements.add(idx++, new ExpressionStatement(new Assignment(
+              new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));
+        }
       }
     }
     assert constructor.getParameters().size()

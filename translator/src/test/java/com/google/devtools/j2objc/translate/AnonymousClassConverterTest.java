@@ -523,8 +523,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
   public void testSuperclassHasCapturedVariables() throws IOException {
     String translation = translateSourceFile(
         "class Test { static Object test(int i) { class Local { int foo() { return i; } } "
-        + "return new Local() { }; } }", "Test", "Test.m");
+        + "return new Local() { int bar() { return i; } }; } }", "Test", "Test.m");
     // Test that the anonymous class captures i and passes it to Local's constructor.
-    assertTranslation(translation, "Test_1Local_initWithInt_(self, self->val1$i_);");
+    assertTranslatedLines(translation,
+        "void Test_$1_initWithInt_(Test_$1 *self, jint capture$0) {",
+        "  self->val1$i_ = capture$0;",
+        "  Test_1Local_initWithInt_(self, capture$0);",
+        "}");
   }
 }

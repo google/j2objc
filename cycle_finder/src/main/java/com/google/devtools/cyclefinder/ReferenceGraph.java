@@ -178,7 +178,7 @@ public class ReferenceGraph {
     for (ITypeBinding type : allTypes.values()) {
       if (type.isAnonymous()) {
         for (VariableElement capturedVarElement :
-             captureInfo.getInnerFields(
+             captureInfo.getCaptureFields(
                  BindingConverter.getTypeElement(type.getTypeDeclaration()))) {
           IVariableBinding capturedVarBinding = (IVariableBinding) BindingConverter.unwrapElement(
               capturedVarElement);
