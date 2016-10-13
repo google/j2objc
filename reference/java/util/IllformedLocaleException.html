@@ -235,12 +235,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a locale subtag or field is not well formed.
-
- See <code><a href="reference/java/util/Locale.html">Locale</a></code> and <code><a href="reference/java/util/Locale.Builder.html">Locale.Builder</a></code>.</p>
-
+<p>Thrown by methods in <code><a href="reference/java/util/Locale.html">Locale</a></code> and <code><a href="reference/java/util/Locale.Builder.html">Locale.Builder</a></code> to
+ indicate that an argument is not a well-formed BCP 47 tag.</p>
 
 
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Locale.html">Locale</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -305,8 +309,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllformedLocaleException.html#IllformedLocaleException()">IllformedLocaleException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance with no detail message and an error index
- of <code>-1</code>.</div>
+        <div class="jd-descrdiv">Constructs a new <code>IllformedLocaleException</code> with no
+ detail message and -1 as the error index.</div>
   
   </td></tr>
 
@@ -324,7 +328,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllformedLocaleException.html#IllformedLocaleException(java.lang.String)">IllformedLocaleException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Constructs a new instance with the specified error message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>IllformedLocaleException</code> with the
+ given message and -1 as the error index.</div>
   
   </td></tr>
 
@@ -342,8 +347,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllformedLocaleException.html#IllformedLocaleException(java.lang.String, int)">IllformedLocaleException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, int errorIndex)
         
-        <div class="jd-descrdiv">Constructs a new instance with the specified error message and
- error index.</div>
+        <div class="jd-descrdiv">Constructs a new <code>IllformedLocaleException</code> with the
+ given message and the error index.</div>
   
   </td></tr>
 
@@ -374,6 +379,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllformedLocaleException.html#getErrorIndex()">getErrorIndex</a></span>()
         
+        <div class="jd-descrdiv">Returns the index where the error was found.</div>
+  
   </td></tr>
 
 
@@ -604,6 +611,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -904,8 +930,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with no detail message and an error index
- of <code>-1</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllformedLocaleException</code> with no
+ detail message and -1 as the error index.
 </p></div>
 
     </div>
@@ -937,8 +963,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the specified error message.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllformedLocaleException</code> with the
+ given message and -1 as the error index.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the message
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -969,9 +1005,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the specified error message and
- error index.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllformedLocaleException</code> with the
+ given message and the error index.  The error index is the approximate
+ offset from the start of the ill-formed value to the point where the
+ parse first detected an error.  A negative error index value indicates
+ either the error index is not applicable or unknown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the message</td>
+        </tr>
+        <tr>
+          <th>errorIndex</th>
+          <td>the index
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1017,7 +1069,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index where the error was found. A negative value indicates
+ either the error index is not applicable or unknown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the error index
+</li></ul>
+  </div>
 
     </div>
 </div>

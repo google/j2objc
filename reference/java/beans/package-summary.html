@@ -125,7 +125,8 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a></td>
-              <td class="jd-descrcol" width="100%">A PropertyChangeListener can subscribe with a event source.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A "PropertyChange" event gets fired whenever a bean changes a "bound"
+ property.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -151,8 +152,9 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/IndexedPropertyChangeEvent.html">IndexedPropertyChangeEvent</a></td>
-              <td class="jd-descrcol" width="100%">A type of <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> that indicates that an indexed property
- has changed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An "IndexedPropertyChange" event gets delivered whenever a component that
+ conforms to the JavaBeans&trade; specification (a "bean") changes a bound
+ indexed property.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/IndexedPropertyDescriptor.html">IndexedPropertyDescriptor</a></td>
@@ -173,17 +175,19 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></td>
-              <td class="jd-descrcol" width="100%">An event that indicates that a constraint or a boundary of a property has
- changed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A "PropertyChange" event gets delivered whenever a bean changes a "bound"
+ or "constrained" property.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html">PropertyChangeListenerProxy</a></td>
-              <td class="jd-descrcol" width="100%">The implementation of this listener proxy just delegates the received events
- to its listener.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A class which extends the <code>EventListenerProxy</code>
+ specifically for adding a <code>PropertyChangeListener</code>
+ with a "bound" property.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeSupport.html">PropertyChangeSupport</a></td>
-              <td class="jd-descrcol" width="100%">Manages a list of listeners to be notified when a property changes.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is a utility class that can be used by beans that support bound
+ properties.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyDescriptor.html">PropertyDescriptor</a></td>

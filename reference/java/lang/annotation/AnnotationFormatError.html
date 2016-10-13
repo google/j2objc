@@ -212,13 +212,18 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Indicates that an annotation in the binary representation of a class is
- syntactically incorrect and the annotation parser is unable to process it.
- This exception is unlikely to ever occur, given that the code has been
- compiled by an ordinary Java compiler.</p>
+<p>Thrown when the annotation parser attempts to read an annotation
+ from a class file and determines that the annotation is malformed.
+ This error can be thrown by the {@linkplain java.lang.reflect.AnnotatedElement API used to read annotations
+ reflectively}.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -283,7 +288,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/AnnotationFormatError.html#AnnotationFormatError(java.lang.String)">AnnotationFormatError</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Constructs an instance with the message provided.</div>
+        <div class="jd-descrdiv">Constructs a new <tt>AnnotationFormatError</tt> with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -301,7 +307,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/AnnotationFormatError.html#AnnotationFormatError(java.lang.String, java.lang.Throwable)">AnnotationFormatError</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> message, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs an instance with a message and a cause.</div>
+        <div class="jd-descrdiv">Constructs a new <tt>AnnotationFormatError</tt> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -319,7 +326,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/AnnotationFormatError.html#AnnotationFormatError(java.lang.Throwable)">AnnotationFormatError</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs an instance with a cause.</div>
+        <div class="jd-descrdiv">Constructs a new <tt>AnnotationFormatError</tt> with the specified
+ cause and a detail message of
+ <tt>(cause == null ? null : cause.toString())</tt> (which
+ typically contains the class and detail message of <tt>cause</tt>).</div>
   
   </td></tr>
 
@@ -553,6 +563,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -853,13 +882,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance with the message provided.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <tt>AnnotationFormatError</tt> with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the details of the error.
+          <td>the detail message.
 </td>
         </tr>
       </table>
@@ -894,17 +924,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance with a message and a cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <tt>AnnotationFormatError</tt> with the specified
+ detail message and cause.  Note that the detail message associated
+ with <code>cause</code> is <i>not</i> automatically incorporated in
+ this error's detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the details of the error.</td>
+          <td>the detail message</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the cause of the error or <code>null</code> if none.
+          <td>the cause (A <tt>null</tt> value is permitted, and
+     indicates that the cause is nonexistent or unknown.)
 </td>
         </tr>
       </table>
@@ -939,15 +973,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance with a cause. If the cause is not
- <code>null</code>, then <code>cause.toString()</code> is used as the
- error's message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <tt>AnnotationFormatError</tt> with the specified
+ cause and a detail message of
+ <tt>(cause == null ? null : cause.toString())</tt> (which
+ typically contains the class and detail message of <tt>cause</tt>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the cause of the error or <code>null</code> if none.
+          <td>the cause (A <tt>null</tt> value is permitted, and
+     indicates that the cause is nonexistent or unknown.)
 </td>
         </tr>
       </table>

@@ -528,7 +528,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#comparator()">comparator</a></span>()
         
-        <div class="jd-descrdiv">Returns the comparator used to compare elements in this <code>SortedSet</code>.</div>
+        <div class="jd-descrdiv">Returns the comparator used to order the elements in this set,
+ or <tt>null</tt> if this set uses the {@linkplain Comparable
+ natural ordering} of its elements.</div>
   
   </td></tr>
 
@@ -618,7 +620,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#first()">first</a></span>()
         
-        <div class="jd-descrdiv">Returns the first element in this <code>SortedSet</code>.</div>
+        <div class="jd-descrdiv">Returns the first (lowest) element currently in this set.</div>
   
   </td></tr>
 
@@ -674,8 +676,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#headSet(E)">headSet</a></span>(E toElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements less than the end element.
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements are
+ strictly less than <tt>toElement</tt>.
 
  <p>Equivalent to <code>headSet(toElement, false)</code>.</div>
   
@@ -750,7 +752,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#last()">last</a></span>()
         
-        <div class="jd-descrdiv">Returns the last element in this <code>SortedSet</code>.</div>
+        <div class="jd-descrdiv">Returns the last (highest) element currently in this set.</div>
   
   </td></tr>
 
@@ -899,9 +901,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#subSet(E, E)">subSet</a></span>(E fromElement, E toElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element but less than the end element.
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements range
+ from <tt>fromElement</tt>, inclusive, to <tt>toElement</tt>,
+ exclusive.
 
  <p>Equivalent to <code>subSet(fromElement, true, toElement, false)</code>.</div>
   
@@ -940,9 +942,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#tailSet(E)">tailSet</a></span>(E fromElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element.
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements are
+ greater than or equal to <tt>fromElement</tt>.
 
  <p>Equivalent to <code>tailSet(fromElement, true)</code>.</div>
   
@@ -994,10 +995,9 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractSet.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractSet.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this Set and returns true if they are
- equal.</div>
+        <div class="jd-descrdiv">Compares the specified object with this set for equality.</div>
   
   </td></tr>
 
@@ -1015,7 +1015,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractSet.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this set.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this set.</div>
   
   </td></tr>
 
@@ -1031,10 +1031,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractSet.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractSet.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this collection which are contained in the
- specified collection.</div>
+        <div class="jd-descrdiv">Removes from this set all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1075,10 +1075,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -1094,10 +1097,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -1115,7 +1121,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -1131,9 +1140,12 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -1149,10 +1161,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -1170,7 +1186,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -1188,8 +1206,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -1205,10 +1222,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -1224,10 +1244,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1243,10 +1267,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1264,7 +1292,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -1282,7 +1310,12 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1300,7 +1333,11 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1318,7 +1355,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -1589,9 +1626,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object to this set.</div>
+        <div class="jd-descrdiv">Adds the specified element to this set if it is not already present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1607,10 +1645,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Adds the objects in the specified collection which do not exist yet in
- this set.</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this set if
+ they're not already present (optional operation).</div>
   
   </td></tr>
 
@@ -1628,7 +1666,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Set.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this set, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this set (optional operation).</div>
   
   </td></tr>
 
@@ -1644,9 +1682,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this set for the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains the specified element.</div>
   
   </td></tr>
 
@@ -1662,9 +1700,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Searches this set for all objects in the specified collection.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains all of the elements of the
+ specified collection.</div>
   
   </td></tr>
 
@@ -1680,10 +1719,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this set, and returns true if they
- represent the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this set for equality.</div>
   
   </td></tr>
 
@@ -1701,7 +1739,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Set.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this set.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this set.</div>
   
   </td></tr>
 
@@ -1719,7 +1757,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Set.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns true if this set has no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains no elements.</div>
   
   </td></tr>
 
@@ -1737,7 +1775,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Set.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this set.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this set.</div>
   
   </td></tr>
 
@@ -1753,9 +1791,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the specified object from this set.</div>
+        <div class="jd-descrdiv">Removes the specified element from this set if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1771,9 +1810,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects in the specified collection from this set.</div>
+        <div class="jd-descrdiv">Removes from this set all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1789,10 +1829,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this set that are not contained in the specified
- collection.</div>
+        <div class="jd-descrdiv">Retains only the elements in this set that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1810,7 +1850,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Set.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this set.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this set (its cardinality).</div>
   
   </td></tr>
 
@@ -1822,13 +1862,13 @@ From interface
             
             
             
-            &lt;T&gt;
-            T[]
+            
+            <a href="../../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Set.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#spliterator()">spliterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this set.</div>
+        <div class="jd-descrdiv">Creates a <code>Spliterator</code> over the elements in this set.</div>
   
   </td></tr>
 
@@ -1840,13 +1880,32 @@ From interface
             
             
             
+            &lt;T&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Set.html#toArray(T[])">toArray</a></span>(T[] a)
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this set; the
+ runtime type of the returned array is that of the specified array.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
             
             <a href="../../../../reference/java/lang/Object.html">Object[]</a>
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Set.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this set.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this set.</div>
   
   </td></tr>
 
@@ -1887,10 +1946,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1906,10 +1965,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1927,7 +1986,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -1943,9 +2002,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -1961,10 +2020,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1980,10 +2039,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -2001,7 +2059,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -2019,7 +2077,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -2037,8 +2095,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -2051,13 +2108,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -2073,10 +2130,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -2092,10 +2149,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -2113,7 +2208,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -2129,9 +2260,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -2149,7 +2281,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -2285,8 +2417,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/NavigableSet.html#headSet(E)">headSet</a></span>(E toElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements less than the end element.
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements are
+ strictly less than <tt>toElement</tt>.
 
  <p>Equivalent to <code>headSet(toElement, false)</code>.</div>
   
@@ -2419,9 +2551,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/NavigableSet.html#subSet(E, E)">subSet</a></span>(E fromElement, E toElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element but less than the end element.
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements range
+ from <tt>fromElement</tt>, inclusive, to <tt>toElement</tt>,
+ exclusive.
 
  <p>Equivalent to <code>subSet(fromElement, true, toElement, false)</code>.</div>
   
@@ -2441,9 +2573,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/NavigableSet.html#tailSet(E)">tailSet</a></span>(E fromElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element.
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements are
+ greater than or equal to <tt>fromElement</tt>.
 
  <p>Equivalent to <code>tailSet(fromElement, true)</code>.</div>
   
@@ -2506,6 +2637,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -2513,6 +2660,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -2554,7 +2717,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#comparator()">comparator</a></span>()
         
-        <div class="jd-descrdiv">Returns the comparator used to compare elements in this <code>SortedSet</code>.</div>
+        <div class="jd-descrdiv">Returns the comparator used to order the elements in this set,
+ or <tt>null</tt> if this set uses the {@linkplain Comparable
+ natural ordering} of its elements.</div>
   
   </td></tr>
 
@@ -2572,7 +2737,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#first()">first</a></span>()
         
-        <div class="jd-descrdiv">Returns the first element in this <code>SortedSet</code>.</div>
+        <div class="jd-descrdiv">Returns the first (lowest) element currently in this set.</div>
   
   </td></tr>
 
@@ -2588,10 +2753,10 @@ From interface
             <a href="../../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#headSet(E)">headSet</a></span>(E end)
+        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#headSet(E)">headSet</a></span>(E toElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements less than the end element.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements are
+ strictly less than <tt>toElement</tt>.</div>
   
   </td></tr>
 
@@ -2609,7 +2774,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#last()">last</a></span>()
         
-        <div class="jd-descrdiv">Returns the last element in this <code>SortedSet</code>.</div>
+        <div class="jd-descrdiv">Returns the last (highest) element currently in this set.</div>
   
   </td></tr>
 
@@ -2622,14 +2787,12 @@ From interface
             
             
             
-            <a href="../../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
+            <a href="../../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#subSet(E, E)">subSet</a></span>(E start, E end)
+        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#spliterator()">spliterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element but less than the end element.</div>
+        <div class="jd-descrdiv">Creates a <code>Spliterator</code> over the elements in this sorted set.</div>
   
   </td></tr>
 
@@ -2645,11 +2808,30 @@ From interface
             <a href="../../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#tailSet(E)">tailSet</a></span>(E start)
+        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#subSet(E, E)">subSet</a></span>(E fromElement, E toElement)
         
-        <div class="jd-descrdiv">Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements range
+ from <tt>fromElement</tt>, inclusive, to <tt>toElement</tt>,
+ exclusive.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/SortedSet.html#tailSet(E)">tailSet</a></span>(E fromElement)
+        
+        <div class="jd-descrdiv">Returns a view of the portion of this set whose elements are
+ greater than or equal to <tt>fromElement</tt>.</div>
   
   </td></tr>
 
@@ -3114,10 +3296,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the comparator used to compare elements in this <code>SortedSet</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the comparator used to order the elements in this set,
+ or <tt>null</tt> if this set uses the {@linkplain Comparable
+ natural ordering} of its elements.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a comparator or null if the natural ordering is used.
+      <ul class="nolist"><li>the comparator used to order the elements in this set,
+         or <tt>null</tt> if this set uses the natural ordering
+         of its elements
 </li></ul>
   </div>
 
@@ -3341,11 +3527,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the first element in this <code>SortedSet</code>. The first element
- is the lowest element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the first (lowest) element currently in this set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the first element.</li></ul>
+      <ul class="nolist"><li>the first (lowest) element currently in this set</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -3522,10 +3707,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements less than the end element. The
- returned <code>SortedSet</code> is backed by this <code>SortedSet</code> so changes
- to one set are reflected by the other.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements are
+ strictly less than <tt>toElement</tt>.  The returned set is
+ backed by this set, so changes in the returned set are
+ reflected in this set, and vice-versa.  The returned set
+ supports all optional set operations that this set supports.
+
+ <p>The returned set will throw an <tt>IllegalArgumentException</tt>
+ on an attempt to insert an element outside its range.
 
  <p>Equivalent to <code>headSet(toElement, false)</code>.</p></div>
   <div class="jd-tagdata">
@@ -3533,13 +3722,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>toElement</th>
-          <td>the end element.</td>
+          <td>high endpoint (exclusive) of the returned set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a subset where the elements are less than <code>end</code>.</li></ul>
+      <ul class="nolist"><li>a view of the portion of this set whose elements are strictly
+         less than <tt>toElement</tt></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -3721,11 +3911,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the last element in this <code>SortedSet</code>. The last element is
- the highest element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the last (highest) element currently in this set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the last element.</li></ul>
+      <ul class="nolist"><li>the last (highest) element currently in this set</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -4077,7 +4266,7 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements range from
  <code>fromElement</code> to <code>toElement</code>.  If <code>fromElement</code> and
- <code>toElement</code> are equal, the returned set is empty unless <code>fromExclusive</code> and <code>toExclusive</code> are both true.  The returned set
+ <code>toElement</code> are equal, the returned set is empty unless <code>fromInclusive</code> and <code>toInclusive</code> are both true.  The returned set
  is backed by this set, so changes in the returned set are reflected in
  this set, and vice-versa.  The returned set supports all optional set
  operations that this set supports.
@@ -4161,11 +4350,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element but less than the end element. The returned <code>SortedSet</code> is
- backed by this SortedMap so changes to one set are reflected by the
- other.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements range
+ from <tt>fromElement</tt>, inclusive, to <tt>toElement</tt>,
+ exclusive.  (If <tt>fromElement</tt> and <tt>toElement</tt> are
+ equal, the returned set is empty.)  The returned set is backed
+ by this set, so changes in the returned set are reflected in
+ this set, and vice-versa.  The returned set supports all
+ optional set operations that this set supports.
+
+ <p>The returned set will throw an <tt>IllegalArgumentException</tt>
+ on an attempt to insert an element outside its range.
 
  <p>Equivalent to <code>subSet(fromElement, true, toElement, false)</code>.</p></div>
   <div class="jd-tagdata">
@@ -4173,18 +4367,18 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>fromElement</th>
-          <td>the start element.</td>
+          <td>low endpoint (inclusive) of the returned set</td>
         </tr>
         <tr>
           <th>toElement</th>
-          <td>the end element.</td>
+          <td>high endpoint (exclusive) of the returned set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a subset where the elements are greater or equal to <code>start</code>
-         and less than <code>end</code>.</li></ul>
+      <ul class="nolist"><li>a view of the portion of this set whose elements range from
+         <tt>fromElement</tt>, inclusive, to <tt>toElement</tt>, exclusive</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -4310,10 +4504,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>SortedSet</code> of the specified portion of this
- <code>SortedSet</code> which contains elements greater or equal to the start
- element. The returned <code>SortedSet</code> is backed by this
- <code>SortedSet</code> so changes to one set are reflected by the other.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements are
+ greater than or equal to <tt>fromElement</tt>.  The returned
+ set is backed by this set, so changes in the returned set are
+ reflected in this set, and vice-versa.  The returned set
+ supports all optional set operations that this set supports.
+
+ <p>The returned set will throw an <tt>IllegalArgumentException</tt>
+ on an attempt to insert an element outside its range.
 
  <p>Equivalent to <code>tailSet(fromElement, true)</code>.</p></div>
   <div class="jd-tagdata">
@@ -4321,13 +4519,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>fromElement</th>
-          <td>the start element.</td>
+          <td>low endpoint (inclusive) of the returned set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a subset where the elements are greater or equal to <code>start</code> .</li></ul>
+      <ul class="nolist"><li>a view of the portion of this set whose elements are greater
+         than or equal to <tt>fromElement</tt></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>

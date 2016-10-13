@@ -158,36 +158,6 @@ layout: api
 
 
 
-<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
-
-  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-direct" class="jd-expando-trigger closed"
-          ><a id="subclasses-direct-trigger"
-          class="jd-expando-trigger-img" /></a>Known Direct Subclasses
-
-  <div id="subclasses-direct">
-      <div id="subclasses-direct-list"
-              class="jd-inheritedlinks"
-              
-              >
-          
-            
-              <a href="../../../../reference/java/nio/charset/IOSCharsetEncoder.html">IOSCharsetEncoder</a>
-            
-          
-      </div>
-      <div id="subclasses-direct-summary"
-              style="display: none;"
-              >
-  <table class="jd-sumtable-expando">
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IOSCharsetEncoder.html">IOSCharsetEncoder</a></td>
-              <td class="jd-descrcol" width="100%">iOS native charset encoder.&nbsp;</td>
-          </tr>
-  </table>
-      </div>
-  </div>
-</td></tr></table>
-
 
 
 
@@ -195,53 +165,61 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Transforms a sequence of 16-bit Java characters to a byte sequence in some encoding.
-
- <p>The input character sequence is a <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code> and the
- output byte sequence is a <code><a href="reference/java/nio/ByteBuffer.html">ByteBuffer</a></code>.
-
- <p>Use <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer)">encode(CharBuffer)</a></code> to encode an entire <code>CharBuffer</code> to a
- new <code>ByteBuffer</code>, or <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode(CharBuffer, ByteBuffer, boolean)</a></code> for more
- control. When using the latter method, the entire operation proceeds as follows:
+<p>A converter that can converts a 16-bit Unicode character sequence to a byte
+ sequence in some charset.
+ <p>
+ The input character sequence is wrapped by a
+ <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code> and the output character sequence is a
+ <code><a href="reference/java/nio/ByteBuffer.html">ByteBuffer</a></code>. An encoder instance should be used
+ in the following sequence, which is referred to as a encoding operation:
  <ol>
- <li>Invoke <code><a href="reference/java/nio/charset/CharsetEncoder.html#reset()">reset()</a></code> to reset the encoder if this instance has been used before.</li>
- <li>Invoke <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode</a></code> with the <code>endOfInput</code>
- parameter set to false until additional input is not needed (as signaled by the return value).
- The input buffer must be filled and the output buffer must be flushed between invocations.
- <p>The <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode</a></code> method will
- convert as many characters as possible, and the process won't stop until the
- input buffer has been exhausted, the output buffer has been filled, or an
- error has occurred. A <code><a href="reference/java/nio/charset/CoderResult.html">CoderResult</a></code> instance will be
- returned to indicate the current state. The caller should fill the input buffer, flush
- the output buffer, or recovering from an error and try again, accordingly.
- </li>
- <li>Invoke <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode</a></code> for the last time with
- <code>endOfInput</code> set to true.</li>
- <li>Invoke <code><a href="reference/java/nio/charset/CharsetEncoder.html#flush(java.nio.ByteBuffer)">flush(ByteBuffer)</a></code> to flush remaining output.</li>
+ <li>invoking the <code><a href="reference/java/nio/charset/CharsetEncoder.html#reset()">reset</a></code> method to reset the encoder if the
+ encoder has been used;</li>
+ <li>invoking the <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode</a></code>
+ method until the additional input is not needed, the <code>endOfInput</code>
+ parameter must be set to false, the input buffer must be filled and the
+ output buffer must be flushed between invocations;</li>
+ <li>invoking the <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode</a></code>
+ method for the last time and the <code>endOfInput</code> parameter must be
+ set to <code>true</code></li>
+ <li>invoking the <code><a href="reference/java/nio/charset/CharsetEncoder.html#flush(java.nio.ByteBuffer)">flush</a></code> method to flush the
+ output.</li>
  </ol>
-
- <p>There are two classes of encoding error: <i>malformed input</i>
- signifies that the input character sequence is not legal, while <i>unmappable character</i>
- signifies that the input is legal but cannot be mapped to a byte sequence (because the charset
- cannot represent the character, for example).
-
- <p>Errors can be handled in three ways. The default is to
- <code><a href="reference/java/nio/charset/CodingErrorAction.html#REPORT">report</a></code> the error to the caller. The alternatives are to
- <code><a href="reference/java/nio/charset/CodingErrorAction.html#IGNORE">ignore</a></code> the error or <code><a href="reference/java/nio/charset/CodingErrorAction.html#REPLACE">replace</a></code>
- the problematic input with the byte sequence returned by <code><a href="reference/java/nio/charset/CharsetEncoder.html#replacement()">replacement()</a></code>. The disposition
- for each of the two kinds of error can be set independently using the <code><a href="reference/java/nio/charset/CharsetEncoder.html#onMalformedInput(java.nio.charset.CodingErrorAction)">onMalformedInput(CodingErrorAction)</a></code>
- and <code><a href="reference/java/nio/charset/CharsetEncoder.html#onUnmappableCharacter(java.nio.charset.CodingErrorAction)">onUnmappableCharacter(CodingErrorAction)</a></code> methods.
-
- <p>The default replacement bytes depend on the charset but can be overridden using the
- <code><a href="reference/java/nio/charset/CharsetEncoder.html#replaceWith(byte[])">replaceWith(byte[])</a></code> method.
-
- <p>This class is abstract and encapsulates many common operations of the
+ <p>
+ The <code><a href="reference/java/nio/charset/CharsetEncoder.html#encode(java.nio.CharBuffer, java.nio.ByteBuffer, boolean)">encode</a></code> method will
+ convert as many characters as possible, and the process won't stop until the
+ input characters have run out, the output buffer has been filled or some
+ error has happened. A <code><a href="reference/java/nio/charset/CoderResult.html">CoderResult</a></code> instance will be
+ returned to indicate the stop reason, and the invoker can identify the result
+ and choose further action, which includes filling the input buffer, flushing
+ the output buffer or recovering from an error and trying again.
+ <p>
+ There are two common encoding errors. One is named malformed and it is
+ returned when the input content is an illegal 16-bit Unicode character
+ sequence, the other is named unmappable character and occurs when there is a
+ problem mapping the input to a valid byte sequence in the specified charset.
+ <p>
+ Both errors can be handled in three ways, the default one is to report the
+ error to the invoker by a <code><a href="reference/java/nio/charset/CoderResult.html">CoderResult</a></code> instance, and the
+ alternatives are to ignore it or to replace the erroneous input with the
+ replacement byte array. The replacement byte array is '<code>?</code>' by
+ default and can be changed by invoking the
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#replaceWith(byte[])">replaceWith</a></code> method. The invoker of this encoder
+ can choose one way by specifying a
+ <code><a href="reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a></code> instance for each error type via
+ the <code><a href="reference/java/nio/charset/CharsetEncoder.html#onMalformedInput(java.nio.charset.CodingErrorAction)">onMalformedInput</a></code> method and
+ the <code><a href="reference/java/nio/charset/CharsetEncoder.html#onUnmappableCharacter(java.nio.charset.CodingErrorAction)">onUnmappableCharacter</a></code>
+ method.
+ <p>
+ This class is abstract and encapsulates many common operations of the
  encoding process for all charsets. Encoders for a specific charset should
  extend this class and need only to implement the
  <code><a href="reference/java/nio/charset/CharsetEncoder.html#encodeLoop(java.nio.CharBuffer, java.nio.ByteBuffer)">encodeLoop</a></code> method for basic
- encoding.
-
- <p>This class is not thread-safe.</p>
+ encoding. If a subclass maintains an internal state, it should override the
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#implFlush(java.nio.ByteBuffer)">implFlush</a></code> method and the
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#implReset()">implReset</a></code> method in addition.
+ <p>
+ This class is not thread-safe.</p>
 
 
 
@@ -316,8 +294,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#CharsetEncoder(java.nio.charset.Charset, float, float)">CharsetEncoder</a></span>(<a href="../../../../reference/java/nio/charset/Charset.html">Charset</a> cs, float averageBytesPerChar, float maxBytesPerChar)
         
-        <div class="jd-descrdiv">Constructs a new <code>CharsetEncoder</code> using the given parameters and
- the replacement byte array <code>{ (byte) '?' </code>}.</div>
+        <div class="jd-descrdiv">Constructs a new <code>CharsetEncoder</code> using the given
+ <code>Charset</code>, average number and maximum number of bytes
+ created by this encoder for one input character.</div>
   
   </td></tr>
 
@@ -366,7 +345,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#averageBytesPerChar()">averageBytesPerChar</a></span>()
         
-        <div class="jd-descrdiv">Returns the average number of bytes created by this encoder for a single
+        <div class="jd-descrdiv">Gets the average number of bytes created by this encoder for a single
  input character.</div>
   
   </td></tr>
@@ -422,7 +401,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#charset()">charset</a></span>()
         
-        <div class="jd-descrdiv">Returns the <code><a href="reference/java/nio/charset/Charset.html">Charset</a></code> which this encoder uses.</div>
+        <div class="jd-descrdiv">Gets the <code>Charset</code> which this encoder uses.</div>
   
   </td></tr>
 
@@ -430,9 +409,9 @@ layout: api
 	 
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
-            abstract
             
             
+            final
             
             
             <a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a>
@@ -491,19 +470,38 @@ layout: api
             
             
             
-            <a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a>
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#malformedInputAction()">malformedInputAction</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#isLegalReplacement(byte[])">isLegalReplacement</a></span>(byte[] repl)
         
-        <div class="jd-descrdiv">Returns this encoder's <code>CodingErrorAction</code> when a malformed
- input error occurred during the encoding process.</div>
+        <div class="jd-descrdiv">Checks if the given argument is legal as this encoder's replacement byte
+ array.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#malformedInputAction()">malformedInputAction</a></span>()
+        
+        <div class="jd-descrdiv">Gets this encoder's <code>CodingErrorAction</code> when a malformed
+ input error occurred during the encoding process.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -515,14 +513,14 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#maxBytesPerChar()">maxBytesPerChar</a></span>()
         
-        <div class="jd-descrdiv">Returns the maximum number of bytes which can be created by this encoder for
+        <div class="jd-descrdiv">Gets the maximum number of bytes which can be created by this encoder for
  one input character, must be positive.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -540,7 +538,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -558,7 +556,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -576,7 +574,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -588,13 +586,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#replacement()">replacement</a></span>()
         
-        <div class="jd-descrdiv">Returns the replacement byte array, which is never null or empty.</div>
+        <div class="jd-descrdiv">Gets the replacement byte array, which is never null or empty.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -612,7 +610,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -624,7 +622,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#unmappableCharacterAction()">unmappableCharacterAction</a></span>()
         
-        <div class="jd-descrdiv">Returns this encoder's <code>CodingErrorAction</code> when unmappable
+        <div class="jd-descrdiv">Gets this encoder's <code>CodingErrorAction</code> when unmappable
  character occurred during encoding process.</div>
   
   </td></tr>
@@ -655,6 +653,98 @@ layout: api
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#encodeLoop(java.nio.CharBuffer, java.nio.ByteBuffer)">encodeLoop</a></span>(<a href="../../../../reference/java/nio/CharBuffer.html">CharBuffer</a> in, <a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> out)
         
         <div class="jd-descrdiv">Encodes characters into bytes.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/charset/CoderResult.html">CoderResult</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#implFlush(java.nio.ByteBuffer)">implFlush</a></span>(<a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> out)
+        
+        <div class="jd-descrdiv">Flushes this encoder.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#implOnMalformedInput(java.nio.charset.CodingErrorAction)">implOnMalformedInput</a></span>(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)
+        
+        <div class="jd-descrdiv">Notifies that this encoder's <code>CodingErrorAction</code> specified
+ for malformed input error has been changed.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#implOnUnmappableCharacter(java.nio.charset.CodingErrorAction)">implOnUnmappableCharacter</a></span>(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)
+        
+        <div class="jd-descrdiv">Notifies that this encoder's <code>CodingErrorAction</code> specified
+ for unmappable character error has been changed.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#implReplaceWith(byte[])">implReplaceWith</a></span>(byte[] newReplacement)
+        
+        <div class="jd-descrdiv">Notifies that this encoder's replacement has been changed.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html#implReset()">implReset</a></span>()
+        
+        <div class="jd-descrdiv">Resets this encoder's charset related state.</div>
   
   </td></tr>
 
@@ -964,9 +1054,39 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>CharsetEncoder</code> using the given parameters and
- the replacement byte array <code>{ (byte) '?' </code>}.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>CharsetEncoder</code> using the given
+ <code>Charset</code>, average number and maximum number of bytes
+ created by this encoder for one input character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>cs</th>
+          <td>the <code>Charset</code> to be used by this encoder.</td>
+        </tr>
+        <tr>
+          <th>averageBytesPerChar</th>
+          <td>average number of bytes created by this encoder for one input
+            character, must be positive.</td>
+        </tr>
+        <tr>
+          <th>maxBytesPerChar</th>
+          <td>maximum number of bytes which can be created by this encoder
+            for one input character, must be positive.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if <code>maxBytesPerChar</code> or
+             <code>averageBytesPerChar</code> is negative.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1021,7 +1141,8 @@ From class
           <th>replacement</th>
           <td>the replacement byte array, cannot be null or empty, its
             length cannot be larger than <code>maxBytesPerChar</code>,
-            and must be a legal replacement.</td>
+            and must be a legal replacement, which can be justified by
+            <code><a href="reference/java/nio/charset/CharsetEncoder.html#isLegalReplacement(byte[])">isLegalReplacement</a></code>.</td>
         </tr>
       </table>
   </div>
@@ -1075,9 +1196,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the average number of bytes created by this encoder for a single
- input character.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the average number of bytes created by this encoder for a single
+ input character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the average number of bytes created by this encoder for a single
+         input character.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1231,8 +1357,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code><a href="reference/java/nio/charset/Charset.html">Charset</a></code> which this encoder uses.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the <code>Charset</code> which this encoder uses.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>Charset</code> which this encoder uses.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1245,8 +1375,8 @@ From class
       <span class="normal">
         public
         
+        final
         
-        abstract
         
         <a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a>
       </span>
@@ -1460,6 +1590,11 @@ From class
       
   <div class="jd-tagdata jd-tagdescr"><p>Flushes this encoder.
  <p>
+ This method will call <code><a href="reference/java/nio/charset/CharsetEncoder.html#implFlush(java.nio.ByteBuffer)">implFlush</a></code>. Some
+ encoders may need to write some bytes to the output buffer when they have
+ read all input characters, subclasses can overridden
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#implFlush(java.nio.ByteBuffer)">implFlush</a></code> to perform writing action.
+ <p>
  The maximum number of written bytes won't larger than
  <code><a href="reference/java/nio/Buffer.html#remaining()">out.remaining()</a></code>. If some encoder wants to
  write more bytes than the output buffer's available remaining space, then
@@ -1503,6 +1638,58 @@ From class
 </div>
 
 
+<a id="isLegalReplacement(byte[])"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isLegalReplacement</span>
+      <span class="normal">(byte[] repl)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks if the given argument is legal as this encoder's replacement byte
+ array.
+
+ The given byte array is legal if and only if it can be decode into
+ sixteen bits Unicode characters.
+
+ This method can be overridden for performance improvement.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>repl</th>
+          <td>the given byte array to be checked.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>true if the the given argument is legal as this encoder's
+         replacement byte array.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="malformedInputAction()"></a>
 
 <div class="jd-details api apilevel-">
@@ -1528,9 +1715,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns this encoder's <code>CodingErrorAction</code> when a malformed
- input error occurred during the encoding process.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this encoder's <code>CodingErrorAction</code> when a malformed
+ input error occurred during the encoding process.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this encoder's <code>CodingErrorAction</code> when a malformed
+         input error occurred during the encoding process.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1561,9 +1753,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum number of bytes which can be created by this encoder for
- one input character, must be positive.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the maximum number of bytes which can be created by this encoder for
+ one input character, must be positive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the maximum number of bytes which can be created by this encoder
+         for one input character, must be positive.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1594,7 +1791,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets this encoder's action on malformed input error.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this encoder's action on malformed input error.
+
+ This method will call the
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#implOnMalformedInput(java.nio.charset.CodingErrorAction)">implOnMalformedInput</a></code>
+ method with the given new action as argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1648,7 +1849,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets this encoder's action on unmappable character error.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this encoder's action on unmappable character error.
+
+ This method will call the
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#implOnUnmappableCharacter(java.nio.charset.CodingErrorAction)">implOnUnmappableCharacter</a></code>
+ method with the given new action as argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1705,7 +1910,9 @@ From class
   <div class="jd-tagdata jd-tagdescr"><p>Sets the new replacement value.
 
  This method first checks the given replacement's validity, then changes
- the replacement value.</p></div>
+ the replacement value and finally calls the
+ <code><a href="reference/java/nio/charset/CharsetEncoder.html#implReplaceWith(byte[])">implReplaceWith</a></code> method with the given
+ new replacement as argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1713,7 +1920,8 @@ From class
           <th>replacement</th>
           <td>the replacement byte array, cannot be null or empty, its
             length cannot be larger than <code>maxBytesPerChar</code>,
-            and it must be legal replacement.</td>
+            and it must be legal replacement, which can be justified by
+            calling <code>isLegalReplacement(byte[] repl)</code>.</td>
         </tr>
       </table>
   </div>
@@ -1762,8 +1970,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the replacement byte array, which is never null or empty.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the replacement byte array, which is never null or empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the replacement byte array, cannot be null or empty.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1794,7 +2006,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Resets this encoder.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Resets this encoder. This method will reset the internal status and then
+ calla <code>implReset()</code> to reset any status related to the
+ specific charset.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>this encoder.
@@ -1830,9 +2044,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns this encoder's <code>CodingErrorAction</code> when unmappable
- character occurred during encoding process.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this encoder's <code>CodingErrorAction</code> when unmappable
+ character occurred during encoding process.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this encoder's <code>CodingErrorAction</code> when unmappable
+         character occurred during encoding process.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1915,6 +2134,215 @@ From class
       <ul class="nolist"><li>a <code>CoderResult</code> instance indicating the result.
 </li></ul>
   </div>
+
+    </div>
+</div>
+
+
+<a id="implFlush(java.nio.ByteBuffer)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../reference/java/nio/charset/CoderResult.html">CoderResult</a>
+      </span>
+      <span class="sympad">implFlush</span>
+      <span class="normal">(<a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> out)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes this encoder. The default implementation does nothing and always
+ returns <code>CoderResult.UNDERFLOW</code>; this method can be
+ overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>out</th>
+          <td>the output buffer.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>CoderResult.UNDERFLOW</code> or
+         <code>CoderResult.OVERFLOW</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implOnMalformedInput(java.nio.charset.CodingErrorAction)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implOnMalformedInput</span>
+      <span class="normal">(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Notifies that this encoder's <code>CodingErrorAction</code> specified
+ for malformed input error has been changed. The default implementation
+ does nothing; this method can be overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>newAction</th>
+          <td>the new action.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implOnUnmappableCharacter(java.nio.charset.CodingErrorAction)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implOnUnmappableCharacter</span>
+      <span class="normal">(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Notifies that this encoder's <code>CodingErrorAction</code> specified
+ for unmappable character error has been changed. The default
+ implementation does nothing; this method can be overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>newAction</th>
+          <td>the new action.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implReplaceWith(byte[])"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implReplaceWith</span>
+      <span class="normal">(byte[] newReplacement)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Notifies that this encoder's replacement has been changed. The default
+ implementation does nothing; this method can be overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>newReplacement</th>
+          <td>the new replacement string.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implReset()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implReset</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Resets this encoder's charset related state. The default implementation
+ does nothing; this method can be overridden if needed.
+</p></div>
 
     </div>
 </div>

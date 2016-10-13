@@ -149,13 +149,11 @@ layout: api
   
       implements
       
-        <a href="../../../reference/java/lang/CharSequence.html">CharSequence</a>
-      
         <a href="../../../reference/java/lang/Appendable.html">Appendable</a>
       
-        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
-      
         <a href="../../../reference/java/lang/CharSequence.html">CharSequence</a>
+      
+        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
       
   
   
@@ -622,8 +620,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#capacity()">capacity</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of characters that can be held without growing.</div>
-  
   </td></tr>
 
 
@@ -640,7 +636,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#charAt(int)">charAt</a></span>(int index)
         
-        <div class="jd-descrdiv">Retrieves the character at the <code>index</code>.</div>
+        <div class="jd-descrdiv">Returns the <code>char</code> value at the specified index.</div>
   
   </td></tr>
 
@@ -658,8 +654,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#codePointAt(int)">codePointAt</a></span>(int index)
         
-        <div class="jd-descrdiv">Retrieves the Unicode code point value at the <code>index</code>.</div>
-  
   </td></tr>
 
 
@@ -676,8 +670,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#codePointBefore(int)">codePointBefore</a></span>(int index)
         
-        <div class="jd-descrdiv">Retrieves the Unicode code point value that precedes the <code>index</code>.</div>
-  
   </td></tr>
 
 
@@ -694,9 +686,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#codePointCount(int, int)">codePointCount</a></span>(int beginIndex, int endIndex)
         
-        <div class="jd-descrdiv">Calculates the number of Unicode code points between <code>start</code>
- and <code>end</code>.</div>
-  
   </td></tr>
 
 
@@ -749,9 +738,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#ensureCapacity(int)">ensureCapacity</a></span>(int min)
         
-        <div class="jd-descrdiv">Ensures that this object has a minimum capacity available before
- requiring the internal buffer to be enlarged.</div>
-  
   </td></tr>
 
 
@@ -785,10 +771,8 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#indexOf(java.lang.String)">indexOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#indexOf(java.lang.String)">indexOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Searches for the first index of the specified character.</div>
-  
   </td></tr>
 
 
@@ -805,8 +789,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#indexOf(java.lang.String, int)">indexOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> subString, int start)
         
-        <div class="jd-descrdiv">Searches for the index of the specified character.</div>
-  
   </td></tr>
 
 
@@ -1008,9 +990,9 @@ layout: api
             <a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#insert(int, boolean)">insert</a></span>(int index, boolean b)
+        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#insert(int, java.lang.Object)">insert</a></span>(int index, <a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Inserts the string representation of the specified boolean into this
+        <div class="jd-descrdiv">Inserts the string representation of the specified object into this
  buffer at the specified offset.</div>
   
   </td></tr>
@@ -1027,9 +1009,9 @@ layout: api
             <a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#insert(int, java.lang.Object)">insert</a></span>(int index, <a href="../../../reference/java/lang/Object.html">Object</a> obj)
+        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#insert(int, boolean)">insert</a></span>(int index, boolean b)
         
-        <div class="jd-descrdiv">Inserts the string representation of the specified object into this
+        <div class="jd-descrdiv">Inserts the string representation of the specified boolean into this
  buffer at the specified offset.</div>
   
   </td></tr>
@@ -1048,8 +1030,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#lastIndexOf(java.lang.String, int)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> subString, int start)
         
-        <div class="jd-descrdiv">Searches for the index of the specified character.</div>
-  
   </td></tr>
 
 
@@ -1064,10 +1044,8 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#lastIndexOf(java.lang.String)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#lastIndexOf(java.lang.String)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Searches for the last index of the specified character.</div>
-  
   </td></tr>
 
 
@@ -1084,7 +1062,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#length()">length</a></span>()
         
-        <div class="jd-descrdiv">The current length.</div>
+        <div class="jd-descrdiv">Returns the length of this character sequence.</div>
   
   </td></tr>
 
@@ -1102,9 +1080,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#offsetByCodePoints(int, int)">offsetByCodePoints</a></span>(int index, int codePointOffset)
         
-        <div class="jd-descrdiv">Returns the index that is offset <code>codePointOffset</code> code points from
- <code>index</code>.</div>
-  
   </td></tr>
 
 
@@ -1158,8 +1133,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#setCharAt(int, char)">setCharAt</a></span>(int index, char ch)
         
-        <div class="jd-descrdiv">Sets the character at the <code>index</code>.</div>
-  
   </td></tr>
 
 
@@ -1176,8 +1149,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#setLength(int)">setLength</a></span>(int length)
         
-        <div class="jd-descrdiv">Sets the current length to a new value.</div>
-  
   </td></tr>
 
 
@@ -1194,8 +1165,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#subSequence(int, int)">subSequence</a></span>(int start, int end)
         
-        <div class="jd-descrdiv">Returns a <code>CharSequence</code> of the subsequence from the <code>start</code>
- index to the <code>end</code> index.</div>
+        <div class="jd-descrdiv">Returns a new <code>CharSequence</code> that is a subsequence of this sequence.</div>
   
   </td></tr>
 
@@ -1213,9 +1183,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#substring(int, int)">substring</a></span>(int start, int end)
         
-        <div class="jd-descrdiv">Returns the String value of the subsequence from the <code>start</code> index
- to the <code>end</code> index.</div>
-  
   </td></tr>
 
 
@@ -1232,9 +1199,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#substring(int)">substring</a></span>(int start)
         
-        <div class="jd-descrdiv">Returns the String value of the subsequence from the <code>start</code> index
- to the current end.</div>
-  
   </td></tr>
 
 
@@ -1251,7 +1215,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the current String representation.</div>
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
   
   </td></tr>
 
@@ -1269,8 +1234,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#trimToSize()">trimToSize</a></span>()
         
-        <div class="jd-descrdiv">Trims off any extra capacity beyond the current length.</div>
-  
   </td></tr>
 
 
@@ -1278,31 +1241,6 @@ layout: api
 </table>
 
 
-
-
-<!-- ========== METHOD SUMMARY =========== -->
-<table id="promethods" class="jd-sumtable"><tr><th colspan="12">Protected Methods</th></tr>
-
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            <a href="../../../reference/java/lang/String.html">String</a>
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StringBuffer.html#toString0()">toString0</a></span>()
-        
-  </td></tr>
-
-
-
-</table>
 
 
 
@@ -1547,105 +1485,6 @@ From class
 
 <tr class="api apilevel-" >
 <td colspan="12">
-  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.CharSequence" class="jd-expando-trigger closed"
-          ><a id="inherited-methods-java.lang.CharSequence-trigger"
-          class="jd-expando-trigger-img" /></a>
-From interface
-
-  <a href="../../../reference/java/lang/CharSequence.html">java.lang.CharSequence</a>
-
-<div id="inherited-methods-java.lang.CharSequence">
-  <div id="inherited-methods-java.lang.CharSequence-list"
-        class="jd-inheritedlinks">
-  </div>
-  <div id="inherited-methods-java.lang.CharSequence-summary" style="display: none;">
-    <table class="jd-sumtable-expando">
-    
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            char
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#charAt(int)">charAt</a></span>(int index)
-        
-        <div class="jd-descrdiv">Returns the character at <code>index</code>.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            int
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#length()">length</a></span>()
-        
-        <div class="jd-descrdiv">Returns the number of characters in this sequence.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            <a href="../../../reference/java/lang/CharSequence.html">CharSequence</a>
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#subSequence(int, int)">subSequence</a></span>(int start, int end)
-        
-        <div class="jd-descrdiv">Returns a <code>CharSequence</code> from the <code>start</code> index (inclusive)
- to the <code>end</code> index (exclusive) of this sequence.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            <a href="../../../reference/java/lang/String.html">String</a>
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#toString()">toString</a></span>()
-        
-        <div class="jd-descrdiv">Returns a string with the same characters in the same order as in this
- sequence.</div>
-  
-  </td></tr>
-
-
-</table>
-  </div>
-</div>
-</td></tr>
-
-
-
-<tr class="api apilevel-" >
-<td colspan="12">
   <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Appendable" class="jd-expando-trigger closed"
           ><a id="inherited-methods-java.lang.Appendable-trigger"
           class="jd-expando-trigger-img" /></a>
@@ -1675,7 +1514,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the specified character.</div>
+        <div class="jd-descrdiv">Appends the specified character to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -1693,7 +1532,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this
+ <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -1711,7 +1551,142 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this <tt>Appendable</tt>.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.CharSequence" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.CharSequence-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/CharSequence.html">java.lang.CharSequence</a>
+
+<div id="inherited-methods-java.lang.CharSequence">
+  <div id="inherited-methods-java.lang.CharSequence-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.CharSequence-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            char
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#charAt(int)">charAt</a></span>(int index)
+        
+        <div class="jd-descrdiv">Returns the <code>char</code> value at the specified index.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/IntStream.html">IntStream</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#chars()">chars</a></span>()
+        
+        <div class="jd-descrdiv">Returns a stream of <code>int</code> zero-extending the <code>char</code> values
+ from this sequence.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/IntStream.html">IntStream</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#codePoints()">codePoints</a></span>()
+        
+        <div class="jd-descrdiv">Returns a stream of code point values from this sequence.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#length()">length</a></span>()
+        
+        <div class="jd-descrdiv">Returns the length of this character sequence.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/CharSequence.html">CharSequence</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#subSequence(int, int)">subSequence</a></span>(int start, int end)
+        
+        <div class="jd-descrdiv">Returns a new <code>CharSequence</code> that is a subsequence of this sequence.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing the characters in this sequence in the same
+ order as this sequence.</div>
   
   </td></tr>
 
@@ -2207,8 +2182,8 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
-            <td>if <code>length < 0</code> , <code>start < 0</code> or <code>start +
-             length > chars.length</code>.</td>
+            <td>if <code>length &lt; 0</code> , <code>start &lt; 0</code> or <code>start +
+             length &gt; chars.length</code>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
@@ -2713,16 +2688,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of characters that can be held without growing.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the capacity</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/StringBuffer.html#ensureCapacity(int)">ensureCapacity(int)</a></code></li><li><code><a href="../../../reference/java/lang/StringBuffer.html#length()">length()</a></code></li>
-      </ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -2753,19 +2719,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the character at the <code>index</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>char</code> value at the specified index.  An index ranges from zero
+ to <tt>length() - 1</tt>.  The first <code>char</code> value of the sequence is at
+ index zero, the next at index one, and so on, as for array
+ indexing. </p>
+
+ <p>If the <code>char</code> value specified by the index is a
+ <a href="../../..//java/lang/Character.html#unicode">surrogate</a>, the surrogate
+ value is returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>index</th>
-          <td>the index of the character to retrieve.</td>
+          <td>the index of the <code>char</code> value to be returned</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the char value.</li></ul>
+      <ul class="nolist"><li>the specified <code>char</code> value</li></ul>
   </div>
 
     </div>
@@ -2797,20 +2770,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the Unicode code point value at the <code>index</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>index</th>
-          <td>the index to the <code>char</code> code unit.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the Unicode code point value.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -2841,20 +2801,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the Unicode code point value that precedes the <code>index</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>index</th>
-          <td>the index to the <code>char</code> code unit within this object.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the Unicode code point value.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -2885,25 +2832,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Calculates the number of Unicode code points between <code>start</code>
- and <code>end</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>beginIndex</th>
-          <td>the inclusive beginning index of the subsequence.</td>
-        </tr>
-        <tr>
-          <th>endIndex</th>
-          <td>the exclusive end index of the subsequence.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of Unicode code points in the subsequence.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -2957,7 +2886,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>start < 0</code>, <code>start > end</code> or <code>end >
+            <td>if <code>start &lt; 0</code>, <code>start &gt; end</code> or <code>end &gt;
              length()</code>.
 </td>
         </tr>
@@ -3012,7 +2941,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>location < 0</code> or <code>location >= length()</code>
+            <td>if <code>location &lt; 0</code> or <code>location &gt;= length()</code>
 </td>
         </tr>
       </table>
@@ -3047,23 +2976,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Ensures that this object has a minimum capacity available before
- requiring the internal buffer to be enlarged. The general policy of this
- method is that if the <code>minimumCapacity</code> is larger than the current
- capacity(), then the capacity will be increased to the largest
- value of either the <code>minimumCapacity</code> or the current capacity
- multiplied by two plus two. Although this is the general policy, there is
- no guarantee that the capacity will change.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>min</th>
-          <td>the new minimum capacity to set.
-</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -3122,8 +3035,8 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>start < 0</code>, <code>end > length()</code>, <code>start >
-             end</code>, <code>index < 0</code>, <code>end - start > buffer.length -
+            <td>if <code>start &lt; 0</code>, <code>end &gt; length()</code>, <code>start &gt;
+             end</code>, <code>index &lt; 0</code>, <code>end - start &gt; buffer.length -
              index</code>
 </td>
         </tr>
@@ -3147,7 +3060,7 @@ From interface
         int
       </span>
       <span class="sympad">indexOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3159,27 +3072,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches for the first index of the specified character. The search for
- the character starts at the beginning and moves towards the end.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>string</th>
-          <td>the string to find.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the specified character, -1 if the character isn't
-         found.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/StringBuffer.html#lastIndexOf(java.lang.String)">lastIndexOf(String)</a></code></li>
-      </ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -3210,26 +3103,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches for the index of the specified character. The search for the
- character starts at the specified offset and moves towards the end.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>subString</th>
-          <td>the string to find.</td>
-        </tr>
-        <tr>
-          <th>start</th>
-          <td>the starting offset.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the specified character, -1 if the character isn't
-         found</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -3283,7 +3157,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.</td>
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
@@ -3346,7 +3220,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -3408,7 +3282,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.</td>
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.</td>
         </tr>
       </table>
   </div>
@@ -3465,7 +3339,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -3524,7 +3398,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -3595,8 +3469,8 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>length < 0</code>, <code>start < 0</code>, <code>start +
-             length > chars.length</code>, <code>index < 0</code> or <code>index >
+            <td>if <code>length &lt; 0</code>, <code>start &lt; 0</code>, <code>start +
+             length &gt; chars.length</code>, <code>index &lt; 0</code> or <code>index &gt;
              length()</code>
 </td>
         </tr>
@@ -3656,7 +3530,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -3717,7 +3591,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -3776,7 +3650,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -3857,65 +3731,6 @@ From interface
 </div>
 
 
-<a id="insert(int, boolean)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        <a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a>
-      </span>
-      <span class="sympad">insert</span>
-      <span class="normal">(int index, boolean b)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the string representation of the specified boolean into this
- buffer at the specified offset.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>index</th>
-          <td>the index at which to insert.</td>
-        </tr>
-        <tr>
-          <th>b</th>
-          <td>the boolean to insert.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this buffer.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="insert(int, java.lang.Object)"></a>
 
 <div class="jd-details api apilevel-">
@@ -3969,7 +3784,66 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code> or <code>index > length()</code>.
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="insert(int, boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a>
+      </span>
+      <span class="sympad">insert</span>
+      <span class="normal">(int index, boolean b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the string representation of the specified boolean into this
+ buffer at the specified offset.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>index</th>
+          <td>the index at which to insert.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the boolean to insert.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this buffer.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
+            <td>if <code>index &lt; 0</code> or <code>index &gt; length()</code>.
 </td>
         </tr>
       </table>
@@ -4004,26 +3878,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches for the index of the specified character. The search for the
- character starts at the specified offset and moves towards the beginning.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>subString</th>
-          <td>the string to find.</td>
-        </tr>
-        <tr>
-          <th>start</th>
-          <td>the starting offset.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the specified character, -1 if the character isn't
-         found.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4042,7 +3897,7 @@ From interface
         int
       </span>
       <span class="sympad">lastIndexOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4054,36 +3909,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches for the last index of the specified character. The search for
- the character starts at the end and moves towards the beginning.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>string</th>
-          <td>the string to find.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the specified character, -1 if the character isn't
-         found.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>string</code> is <code>null</code>.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/String.html#lastIndexOf(java.lang.String)">lastIndexOf(java.lang.String)</a></code></li>
-      </ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4114,10 +3940,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The current length.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the length of this character sequence.  The length is the number
+ of 16-bit <code>char</code>s in the sequence.</p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of characters contained in this instance.
+      <ul class="nolist"><li>the number of <code>char</code>s in this sequence
 </li></ul>
   </div>
 
@@ -4150,26 +3977,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index that is offset <code>codePointOffset</code> code points from
- <code>index</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>index</th>
-          <td>the index to calculate the offset from.</td>
-        </tr>
-        <tr>
-          <th>codePointOffset</th>
-          <td>the number of code points to count.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index that is <code>codePointOffset</code> code points away from
-         index.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4301,20 +4109,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the character at the <code>index</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>index</th>
-          <td>the zero-based index of the character to replace.</td>
-        </tr>
-        <tr>
-          <th>ch</th>
-          <td>the character to set.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4345,18 +4140,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the current length to a new value. If the new length is larger than
- the current length, then the new characters at the end of this object
- will contain the <code>char</code> value of <code> </code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>length</th>
-          <td>the new length of this StringBuffer.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4387,24 +4171,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>CharSequence</code> of the subsequence from the <code>start</code>
- index to the <code>end</code> index.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>CharSequence</code> that is a subsequence of this sequence.
+ The subsequence starts with the <code>char</code> value at the specified index and
+ ends with the <code>char</code> value at index <tt>end - 1</tt>.  The length
+ (in <code>char</code>s) of the
+ returned sequence is <tt>end - start</tt>, so if <tt>start == end</tt>
+ then an empty sequence is returned. </p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>start</th>
-          <td>the inclusive start index to begin the subsequence.</td>
+          <td>the start index, inclusive</td>
         </tr>
         <tr>
           <th>end</th>
-          <td>the exclusive end index to end the subsequence.</td>
+          <td>the end index, exclusive</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a CharSequence containing the subsequence.</li></ul>
+      <ul class="nolist"><li>the specified subsequence</li></ul>
   </div>
 
     </div>
@@ -4436,25 +4224,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the String value of the subsequence from the <code>start</code> index
- to the <code>end</code> index.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>start</th>
-          <td>the inclusive start index to begin the subsequence.</td>
-        </tr>
-        <tr>
-          <th>end</th>
-          <td>the exclusive end index to end the subsequence.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a String containing the subsequence.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4485,21 +4255,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the String value of the subsequence from the <code>start</code> index
- to the current end.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>start</th>
-          <td>the inclusive start index to begin the subsequence.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a String containing the subsequence.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4530,10 +4286,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the current String representation.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
+ object. Subclasses are encouraged to override this method and provide an
+ implementation that takes into account the object's type and data. The
+ default implementation is equivalent to the following expression:
+ <pre>
+   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
+ <code>toString</code> method</a>
+ if you intend implementing your own <code>toString</code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a String containing the characters in this instance.
+      <ul class="nolist"><li>a printable representation of this object.
 </li></ul>
   </div>
 
@@ -4566,8 +4330,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Trims off any extra capacity beyond the current length. Note, this method
- is NOT guaranteed to change the capacity of this object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -4577,42 +4340,6 @@ From interface
 
 
 <!-- ========= METHOD DETAIL ======== -->
-
-<h2>Protected Methods</h2>
-
-
-
-<a id="toString0()"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        protected
-        
-        
-        
-        
-        <a href="../../../reference/java/lang/String.html">String</a>
-      </span>
-      <span class="sympad">toString0</span>
-      <span class="normal">()</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
-
-    </div>
-</div>
-
-
 
 
 

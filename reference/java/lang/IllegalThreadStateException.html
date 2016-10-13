@@ -260,12 +260,18 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when an operation is attempted which is not possible given the state
- that the executing thread is in.
-</p>
+<p>Thrown to indicate that a thread is not in an appropriate state
+ for the requested operation. See, for example, the
+ <code>suspend</code> and <code>resume</code> methods in class
+ <code>Thread</code>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#resume()">resume()</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html#suspend()">suspend()</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -330,8 +336,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IllegalThreadStateException.html#IllegalThreadStateException()">IllegalThreadStateException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalThreadStateException</code> that includes the
- current stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>IllegalThreadStateException</code> with no
+ detail message.</div>
   
   </td></tr>
 
@@ -347,10 +353,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/IllegalThreadStateException.html#IllegalThreadStateException(java.lang.String)">IllegalThreadStateException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/IllegalThreadStateException.html#IllegalThreadStateException(java.lang.String)">IllegalThreadStateException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalThreadStateException</code> with the current
- stack trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>IllegalThreadStateException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -588,6 +594,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -888,8 +913,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalThreadStateException</code> that includes the
- current stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IllegalThreadStateException</code> with no
+ detail message.
 </p></div>
 
     </div>
@@ -909,7 +934,7 @@ From class
         
       </span>
       <span class="sympad">IllegalThreadStateException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -921,14 +946,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalThreadStateException</code> with the current
- stack trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IllegalThreadStateException</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

@@ -110,6 +110,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -193,10 +200,14 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Concatenates two or more existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code>s. Reads are taken from
- the first stream until it ends, then the next stream is used, until the last
- stream returns end of file.
-</p>
+<p>A <code>SequenceInputStream</code> represents
+ the logical concatenation of other input
+ streams. It starts out with an ordered
+ collection of input streams and reads from
+ the first one until end of file is reached,
+ whereupon it reads from the second one,
+ and so on, until end of file is reached
+ on the last of the contained input streams.</p>
 
 
 
@@ -262,10 +273,12 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#SequenceInputStream(java.io.InputStream, java.io.InputStream)">SequenceInputStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> s1, <a href="../../../reference/java/io/InputStream.html">InputStream</a> s2)
+        <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#SequenceInputStream(java.util.Enumeration<? extends java.io.InputStream>)">SequenceInputStream</a></span>(<a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/io/InputStream.html">InputStream</a>&gt; e)
         
-        <div class="jd-descrdiv">Constructs a new <code>SequenceInputStream</code> using the two streams
- <code>s1</code> and <code>s2</code> as the sequence of streams to read from.</div>
+        <div class="jd-descrdiv">Initializes a newly created <code>SequenceInputStream</code>
+ by remembering the argument, which must
+ be an <code>Enumeration</code>  that produces
+ objects whose run-time type is <code>InputStream</code>.</div>
   
   </td></tr>
 
@@ -281,10 +294,14 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#SequenceInputStream(java.util.Enumeration<? extends java.io.InputStream>)">SequenceInputStream</a></span>(<a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/io/InputStream.html">InputStream</a>&gt; e)
+        <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#SequenceInputStream(java.io.InputStream, java.io.InputStream)">SequenceInputStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> s1, <a href="../../../reference/java/io/InputStream.html">InputStream</a> s2)
         
-        <div class="jd-descrdiv">Constructs a new SequenceInputStream using the elements returned from
- Enumeration <code>e</code> as the stream sequence.</div>
+        <div class="jd-descrdiv">Initializes a newly
+ created <code>SequenceInputStream</code>
+ by remembering the two arguments, which
+ will be read in order, first <code>s1</code>
+ and then <code>s2</code>, to provide the
+ bytes to be read from this <code>SequenceInputStream</code>.</div>
   
   </td></tr>
 
@@ -315,8 +332,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#available()">available</a></span>()
         
-        <div class="jd-descrdiv">Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of bytes that can be read (or
+ skipped over) from the current underlying input stream without
+ blocking by the next invocation of a method for the current
+ underlying input stream.</div>
   
   </td></tr>
 
@@ -334,7 +353,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes all streams in this sequence of input stream.</div>
+        <div class="jd-descrdiv">Closes this input stream and releases any system resources
+ associated with the stream.</div>
   
   </td></tr>
 
@@ -352,8 +372,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single byte from this sequence of input streams and returns it as
- an integer in the range from 0 to 255.</div>
+        <div class="jd-descrdiv">Reads the next byte of data from this input stream.</div>
   
   </td></tr>
 
@@ -369,10 +388,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#read(byte[], int, int)">read</a></span>(byte[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/SequenceInputStream.html#read(byte[], int, int)">read</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Reads at most <code>count</code> bytes from this sequence of input streams and
- stores them in the byte array <code>buffer</code> starting at <code>offset</code>.</div>
+        <div class="jd-descrdiv">Reads up to <code>len</code> bytes of data from this input stream
+ into an array of bytes.</div>
   
   </td></tr>
 
@@ -424,8 +443,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#available()">available</a></span>()
         
-        <div class="jd-descrdiv">Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of bytes that can be read (or
+ skipped over) from this input stream without blocking by the next
+ invocation of a method for this input stream.</div>
   
   </td></tr>
 
@@ -443,7 +463,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this input stream and releases any system resources associated
+ with the stream.</div>
   
   </td></tr>
 
@@ -452,7 +473,7 @@ From class
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -461,7 +482,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#mark(int)">mark</a></span>(int readlimit)
         
-        <div class="jd-descrdiv">Sets a mark position in this InputStream.</div>
+        <div class="jd-descrdiv">Marks the current position in this input stream.</div>
   
   </td></tr>
 
@@ -479,8 +500,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#markSupported()">markSupported</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this stream supports the <code>mark()</code> and
- <code>reset()</code> methods.</div>
+        <div class="jd-descrdiv">Tests if this input stream supports the <code>mark</code> and
+ <code>reset</code> methods.</div>
   
   </td></tr>
 
@@ -498,8 +519,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single byte from this stream and returns it as an integer in the
- range from 0 to 255.</div>
+        <div class="jd-descrdiv">Reads the next byte of data from the input stream.</div>
   
   </td></tr>
 
@@ -515,10 +535,10 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[], int, int)">read</a></span>(byte[] buffer, int byteOffset, int byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[], int, int)">read</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Reads up to <code>byteCount</code> bytes from this stream and stores them in
- the byte array <code>buffer</code> starting at <code>byteOffset</code>.</div>
+        <div class="jd-descrdiv">Reads up to <code>len</code> bytes of data from the input stream into
+ an array of bytes.</div>
   
   </td></tr>
 
@@ -534,9 +554,10 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[])">read</a></span>(byte[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[])">read</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Equivalent to <code>read(buffer, 0, buffer.length)</code>.</div>
+        <div class="jd-descrdiv">Reads some number of bytes from the input stream and stores them into
+ the buffer array <code>b</code>.</div>
   
   </td></tr>
 
@@ -554,7 +575,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this stream to the last marked location.</div>
+        <div class="jd-descrdiv">Repositions this stream to the position at the time the
+ <code>mark</code> method was last called on this input stream.</div>
   
   </td></tr>
 
@@ -570,9 +592,10 @@ From class
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#skip(long)">skip</a></span>(long byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips at most <code>byteCount</code> bytes in this stream.</div>
+        <div class="jd-descrdiv">Skips over and discards <code>n</code> bytes of data from this input
+ stream.</div>
   
   </td></tr>
 
@@ -845,7 +868,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -890,61 +957,6 @@ From interface
 
 
 
-<a id="SequenceInputStream(java.io.InputStream, java.io.InputStream)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">SequenceInputStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> s1, <a href="../../../reference/java/io/InputStream.html">InputStream</a> s2)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SequenceInputStream</code> using the two streams
- <code>s1</code> and <code>s2</code> as the sequence of streams to read from.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>s1</th>
-          <td>the first stream to get bytes from.</td>
-        </tr>
-        <tr>
-          <th>s2</th>
-          <td>the second stream to get bytes from.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>s1</code> is <code>null</code>.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="SequenceInputStream(java.util.Enumeration<? extends java.io.InputStream>)"></a>
 
 <div class="jd-details api apilevel-">
@@ -970,24 +982,77 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new SequenceInputStream using the elements returned from
- Enumeration <code>e</code> as the stream sequence. The instances returned by
- <code>e.nextElement()</code> must be of type <code><a href="reference/java/io/InputStream.html">InputStream</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Initializes a newly created <code>SequenceInputStream</code>
+ by remembering the argument, which must
+ be an <code>Enumeration</code>  that produces
+ objects whose run-time type is <code>InputStream</code>.
+ The input streams that are  produced by
+ the enumeration will be read, in order,
+ to provide the bytes to be read  from this
+ <code>SequenceInputStream</code>. After
+ each input stream from the enumeration
+ is exhausted, it is closed by calling its
+ <code>close</code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e</th>
-          <td>the enumeration of <code>InputStreams</code> to get bytes from.</td>
+          <td>an enumeration of input streams.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="SequenceInputStream(java.io.InputStream, java.io.InputStream)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">SequenceInputStream</span>
+      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> s1, <a href="../../../reference/java/io/InputStream.html">InputStream</a> s2)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Initializes a newly
+ created <code>SequenceInputStream</code>
+ by remembering the two arguments, which
+ will be read in order, first <code>s1</code>
+ and then <code>s2</code>, to provide the
+ bytes to be read from this <code>SequenceInputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the elements in <code>e</code> is <code>null</code>.
+          <th>s1</th>
+          <td>the first input stream to read.</td>
+        </tr>
+        <tr>
+          <th>s2</th>
+          <td>the second input stream to read.
 </td>
         </tr>
       </table>
@@ -1037,48 +1102,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.
-
- <p>Note that this method provides such a weak guarantee that it is not very useful in
- practice.
-
- <p>Firstly, the guarantee is "without blocking for more input" rather than "without
- blocking": a read may still block waiting for I/O to complete&nbsp;&mdash; the guarantee is
- merely that it won't have to wait indefinitely for data to be written. The result of this
- method should not be used as a license to do I/O on a thread that shouldn't be blocked.
-
- <p>Secondly, the result is a
- conservative estimate and may be significantly smaller than the actual number of bytes
- available. In particular, an implementation that always returns 0 would be correct.
- In general, callers should only use this method if they'd be satisfied with
- treating the result as a boolean yes or no answer to the question "is there definitely
- data ready?".
-
- <p>Thirdly, the fact that a given number of bytes is "available" does not guarantee that a
- read or skip will actually read or skip that many bytes: they may read or skip fewer.
-
- <p>It is particularly important to realize that you <i>must not</i> use this method to
- size a container and assume that you can read the entirety of the stream without needing
- to resize the container. Such callers should probably write everything they read to a
- <code><a href="reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></code> and convert that to a byte array. Alternatively, if you're
- reading from a file, <code><a href="reference/java/io/File.html#length()">length()</a></code> returns the current length of the file (though
- assuming the file's length can't change may be incorrect, reading a file is inherently
- racy).
-
- <p>The default implementation of this method in <code>InputStream</code> always returns 0.
- Subclasses should override this method if they are able to indicate the number of bytes
- available.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of bytes that can be read (or
+ skipped over) from the current underlying input stream without
+ blocking by the next invocation of a method for the current
+ underlying input stream. The next invocation might be
+ the same thread or another thread.  A single read or skip of this
+ many bytes will not block, but may read or skip fewer bytes.
+ <p>
+ This method simply calls <code>available</code> of the current underlying
+ input stream and returns the result.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the estimated number of bytes available</li></ul>
+      <ul class="nolist"><li>an estimate of the number of bytes that can be read (or
+         skipped over) from the current underlying input stream
+         without blocking or <code>0</code> if this input stream
+         has been closed by invoking its <code><a href="reference/java/io/SequenceInputStream.html#close()">close()</a></code> method</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <td>if an I/O error occurs.</td>
         </tr>
       </table>
   </div>
@@ -1112,13 +1157,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes all streams in this sequence of input stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this input stream and releases any system resources
+ associated with the stream.
+ A closed <code>SequenceInputStream</code>
+ cannot  perform input operations and cannot
+ be reopened.
+ <p>
+ If this stream was created
+ from an enumeration, all remaining elements
+ are requested from the enumeration and closed
+ before the <code>close</code> method returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while closing any of the input streams.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1153,24 +1207,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads a single byte from this sequence of input streams and returns it as
- an integer in the range from 0 to 255. It tries to read from the current
- stream first; if the end of this stream has been reached, it reads from
- the next one. Blocks until one byte has been read, the end of the last
- input stream in the sequence has been reached, or an exception is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reads the next byte of data from this input stream. The byte is
+ returned as an <code>int</code> in the range <code>0</code> to
+ <code>255</code>. If no byte is available because the end of the
+ stream has been reached, the value <code>-1</code> is returned.
+ This method blocks until input data is available, the end of the
+ stream is detected, or an exception is thrown.
+ <p>
+ This method
+ tries to read one character from the current substream. If it
+ reaches the end of the stream, it calls the <code>close</code>
+ method of the current substream and begins reading from the next
+ substream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the byte read or -1 if either the end of the last stream in the
-         sequence has been reached or this input stream sequence is
-         closed.</li></ul>
+      <ul class="nolist"><li>the next byte of data, or <code>-1</code> if the end of the
+             stream is reached.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while reading the current source input
-             stream.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1193,7 +1252,7 @@ From interface
         int
       </span>
       <span class="sympad">read</span>
-      <span class="normal">(byte[] buffer, int offset, int count)</span>
+      <span class="normal">(byte[] b, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1205,59 +1264,54 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads at most <code>count</code> bytes from this sequence of input streams and
- stores them in the byte array <code>buffer</code> starting at <code>offset</code>.
- Blocks only until at least 1 byte has been read, the end of the stream
- has been reached, or an exception is thrown.
+  <div class="jd-tagdata jd-tagdescr"><p>Reads up to <code>len</code> bytes of data from this input stream
+ into an array of bytes.  If <code>len</code> is not zero, the method
+ blocks until at least 1 byte of input is available; otherwise, no
+ bytes are read and <code>0</code> is returned.
  <p>
- This SequenceInputStream shows the same behavior as other InputStreams.
- To do this it will read only as many bytes as a call to read on the
- current substream returns. If that call does not return as many bytes as
- requested by <code>count</code>, it will not retry to read more on its own
- because subsequent reads might block. This would violate the rule that
- it will only block until at least one byte has been read.
- <p>
- If a substream has already reached the end when this call is made, it
- will close that substream and start with the next one. If there are no
- more substreams it will return -1.</p></div>
+ The <code>read</code> method of <code>SequenceInputStream</code>
+ tries to read the data from the current substream. If it fails to
+ read any characters because the substream has reached the end of
+ the stream, it calls the <code>close</code> method of the current
+ substream and begins reading from the next substream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the array in which to store the bytes read.</td>
+          <th>b</th>
+          <td>the buffer into which the data is read.</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the initial position in <code>buffer</code> to store the bytes read
-            from this stream.</td>
+          <th>off</th>
+          <td>the start offset in array <code>b</code>
+                   at which the data is written.</td>
         </tr>
         <tr>
-          <th>count</th>
-          <td>the maximum number of bytes to store in <code>buffer</code>.</td>
+          <th>len</th>
+          <td>the maximum number of bytes read.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of bytes actually read; -1 if this sequence of streams
-         is closed or if the end of the last stream in the sequence has
-         been reached.</li></ul>
+      <ul class="nolist"><li>int   the number of bytes read.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>If <code>b</code> is <code>null</code>.</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>count < 0</code>, or if <code>offset + count</code> is greater than the size of <code>buffer</code>.</td>
+            <td>If <code>off</code> is negative,
+ <code>len</code> is negative, or <code>len</code> is greater than
+ <code>b.length - off</code></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an I/O error occurs.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>buffer</code> is <code>null</code>.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>

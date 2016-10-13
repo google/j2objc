@@ -257,23 +257,23 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/net/BindException.html">BindException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>BindException</code> is thrown when a process cannot bind a local
- address/port, either because it is already bound or reserved by the OS.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that an error occurred while attempting to bind a
+ socket to a local address and port.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/net/ConnectException.html">ConnectException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>ConnectException</code> is thrown if a connection cannot be established to
- a remote host on a specific port.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that an error occurred while attempting to connect a
+ socket to a remote address and port.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/net/NoRouteToHostException.html">NoRouteToHostException</a></td>
-              <td class="jd-descrcol" width="100%">The <code>NoRouteToHostException</code> will be thrown while attempting to connect
- to a remote host but the host cannot be reached for instance because of a
- badly configured router or a blocking firewall.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that an error occurred while attempting to connect a
+ socket to a remote address and port.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/net/PortUnreachableException.html">PortUnreachableException</a></td>
-              <td class="jd-descrcol" width="100%">This <code>PortUnreachableException</code> will be thrown if an <code>ICMP_Port_Unreachable</code> message has been received.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that an ICMP Port Unreachable message has been
+ received on a connected datagram.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -287,9 +287,7 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This <code>SocketException</code> may be thrown during socket creation or setting
- options, and is the superclass of all other socket related exceptions.
-</p>
+<p>Thrown to indicate that there is an error creating or accessing a Socket.</p>
 
 
 
@@ -355,9 +353,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/SocketException.html#SocketException()">SocketException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/net/SocketException.html#SocketException(java.lang.String)">SocketException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance.</div>
+        <div class="jd-descrdiv">Constructs a new <code>SocketException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -373,9 +372,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/SocketException.html#SocketException(java.lang.String)">SocketException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/net/SocketException.html#SocketException()">SocketException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance with the given detail message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>SocketException</code> with no detail message.</div>
   
   </td></tr>
 
@@ -611,6 +610,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -886,6 +904,48 @@ From class
 
 
 
+<a id="SocketException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">SocketException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SocketException</code> with the
+ specified detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="SocketException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -911,39 +971,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance.
-</p></div>
-
-    </div>
-</div>
-
-
-<a id="SocketException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">SocketException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the given detail message.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SocketException</code> with no detail message.
 </p></div>
 
     </div>

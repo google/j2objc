@@ -110,6 +110,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -210,8 +217,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> for class for writing content to an
- (internal) byte array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements an output stream in which the data is
+ written into a byte array.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/FileOutputStream.html">FileOutputStream</a></td>
@@ -219,8 +226,8 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and performs some transformation on
- the output data while it is being written.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class is the superclass of all classes that filter output
+ streams.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></td>
@@ -284,7 +291,7 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and <em>buffers</em> the output.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The class implements a buffered output stream.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/zip/CheckedOutputStream.html">CheckedOutputStream</a></td>
@@ -317,8 +324,9 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and provides convenience methods for
- writing common data types in a human readable format.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code>PrintStream</code> adds functionality to another output stream,
+ namely the ability to print representations of various data values
+ conveniently.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/zip/ZipOutputStream.html">ZipOutputStream</a></td>
@@ -334,31 +342,19 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A writable sink for bytes.
-
- <p>Most clients will use output streams that write data to the file system
- (<code><a href="reference/java/io/FileOutputStream.html">FileOutputStream</a></code>), the network (<code><a href="reference/java/net/Socket.html#getOutputStream()">getOutputStream()</a></code>/<code><a href="reference/java/net/URLConnection.html#getOutputStream()">getOutputStream()</a></code>), or to an in-memory byte array
- (<code><a href="reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></code>).
-
- <p>Use <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code> to adapt a byte stream like this one into a
- character stream.
-
- <p>Most clients should wrap their output stream with <code><a href="reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></code>. Callers that do only bulk writes may omit buffering.
-
- <h3>Subclassing OutputStream</h3>
- Subclasses that decorate another output stream should consider subclassing
- <code><a href="reference/java/io/FilterOutputStream.html">FilterOutputStream</a></code>, which delegates all calls to the target output
- stream.
-
- <p>All output stream subclasses should override <strong>both</strong> <code><a href="reference/java/io/OutputStream.html#write(int)">write(int)</a></code> and <code><a href="reference/java/io/OutputStream.html#write(byte[], int, int)">write(byte[],int,int)</a></code>. The
- three argument overload is necessary for bulk access to the data. This is
- much more efficient than byte-by-byte access.</p>
+<p>This abstract class is the superclass of all classes representing
+ an output stream of bytes. An output stream accepts output bytes
+ and sends them to some sink.
+ <p>
+ Applications that need to define a subclass of
+ <code>OutputStream</code> must always provide at least a method
+ that writes one byte of output.</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/InputStream.html">InputStream</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></code></li><li><code><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></code></li><li><code><a href="../../../reference/java/io/DataOutputStream.html">DataOutputStream</a></code></li><li><code><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></code></li><li><code><a href="../../../reference/java/io/InputStream.html">InputStream</a></code></li><li><code><a href="../../../reference/java/io/OutputStream.html#write(int)">write(int)</a></code></li>
       </ul>
   </div>
 
@@ -425,8 +421,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#OutputStream()">OutputStream</a></span>()
         
-        <div class="jd-descrdiv">Default constructor.</div>
-  
   </td></tr>
 
 
@@ -456,7 +450,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this output stream and releases any system resources
+ associated with this stream.</div>
   
   </td></tr>
 
@@ -474,7 +469,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes this stream.</div>
+        <div class="jd-descrdiv">Flushes this output stream and forces any buffered output bytes
+ to be written out.</div>
   
   </td></tr>
 
@@ -490,9 +486,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[])">write</a></span>(byte[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[])">write</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Equivalent to <code>write(buffer, 0, buffer.length)</code>.</div>
+        <div class="jd-descrdiv">Writes <code>b.length</code> bytes from the specified byte array
+ to this output stream.</div>
   
   </td></tr>
 
@@ -508,10 +505,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write</a></span>(byte[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- position <code>offset</code> to this stream.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> bytes from the specified byte array
+ starting at offset <code>off</code> to this output stream.</div>
   
   </td></tr>
 
@@ -527,9 +524,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(int)">write</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(int)">write</a></span>(int b)
         
-        <div class="jd-descrdiv">Writes a single byte to this stream.</div>
+        <div class="jd-descrdiv">Writes the specified byte to this output stream.</div>
   
   </td></tr>
 
@@ -811,7 +808,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
   
   </td></tr>
 
@@ -854,8 +852,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Flushable.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes the object by writing out any buffered data to the underlying
- output.</div>
+        <div class="jd-descrdiv">Flushes this stream by writing any buffered output to the underlying
+ stream.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -925,8 +966,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Default constructor.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -972,14 +1012,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes this stream. Implementations of this method should free any
- resources used by the stream. This implementation does nothing.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this output stream and releases any system resources
+ associated with this stream. The general contract of <code>close</code>
+ is that it closes the output stream. A closed stream cannot perform
+ output operations and cannot be reopened.
+ <p>
+ The <code>close</code> method of <code>OutputStream</code> does nothing.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while closing this stream.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1014,14 +1058,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Flushes this stream. Implementations of this method should ensure that
- any buffered data is written out. This implementation does nothing.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes this output stream and forces any buffered output bytes
+ to be written out. The general contract of <code>flush</code> is
+ that calling it is an indication that, if any bytes previously
+ written have been buffered by the implementation of the output
+ stream, such bytes should immediately be written to their
+ intended destination.
+ <p>
+ If the intended destination of this stream is an abstraction provided by
+ the underlying operating system, for example a file, then flushing the
+ stream guarantees only that bytes previously written to the stream are
+ passed to the operating system for writing; it does not guarantee that
+ they are actually written to a physical device such as a disk drive.
+ <p>
+ The <code>flush</code> method of <code>OutputStream</code> does nothing.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while flushing this stream.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1044,7 +1100,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(byte[] buffer)</span>
+      <span class="normal">(byte[] b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1056,16 +1112,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>write(buffer, 0, buffer.length)</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>b.length</code> bytes from the specified byte array
+ to this output stream. The general contract for <code>write(b)</code>
+ is that it should have exactly the same effect as the call
+ <code>write(b, 0, b.length)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>b</th>
+          <td>the data.</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <td>if an I/O error occurs.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write(byte[], int, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1085,7 +1157,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(byte[] buffer, int offset, int count)</span>
+      <span class="normal">(byte[] b, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1097,23 +1169,39 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- position <code>offset</code> to this stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>len</code> bytes from the specified byte array
+ starting at offset <code>off</code> to this output stream.
+ The general contract for <code>write(b, off, len)</code> is that
+ some of the bytes in the array <code>b</code> are written to the
+ output stream in order; element <code>b[off]</code> is the first
+ byte written and <code>b[off+len-1]</code> is the last byte written
+ by this operation.
+ <p>
+ The <code>write</code> method of <code>OutputStream</code> calls
+ the write method of one argument on each of the bytes to be
+ written out. Subclasses are encouraged to override this method and
+ provide a more efficient implementation.
+ <p>
+ If <code>b</code> is <code>null</code>, a
+ <code>NullPointerException</code> is thrown.
+ <p>
+ If <code>off</code> is negative, or <code>len</code> is negative, or
+ <code>off+len</code> is greater than the length of the array
+ <code>b</code>, then an <tt>IndexOutOfBoundsException</tt> is thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the buffer to be written.</td>
+          <th>b</th>
+          <td>the data.</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the start position in <code>buffer</code> from where to get bytes.</td>
+          <th>off</th>
+          <td>the start offset in the data.</td>
         </tr>
         <tr>
-          <th>count</th>
-          <td>the number of bytes from <code>buffer</code> to write to this
-            stream.</td>
+          <th>len</th>
+          <td>the number of bytes to write.</td>
         </tr>
       </table>
   </div>
@@ -1122,13 +1210,9 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while writing to this stream.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>count < 0</code>, or if
-             <code>offset + count</code> is bigger than the length of
-             <code>buffer</code>.
+            <td>if an I/O error occurs. In particular,
+             an <code>IOException</code> is thrown if the output
+             stream is closed.
 </td>
         </tr>
       </table>
@@ -1151,7 +1235,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(int oneByte)</span>
+      <span class="normal">(int b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1163,14 +1247,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes a single byte to this stream. Only the least significant byte of
- the integer <code>oneByte</code> is written to the stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the specified byte to this output stream. The general
+ contract for <code>write</code> is that one byte is written
+ to the output stream. The byte to be written is the eight
+ low-order bits of the argument <code>b</code>. The 24
+ high-order bits of <code>b</code> are ignored.
+ <p>
+ Subclasses of <code>OutputStream</code> must provide an
+ implementation for this method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>oneByte</th>
-          <td>the byte to be written.</td>
+          <th>b</th>
+          <td>the <code>byte</code>.</td>
         </tr>
       </table>
   </div>
@@ -1179,7 +1269,9 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while writing to this stream.
+            <td>if an I/O error occurs. In particular,
+             an <code>IOException</code> may be thrown if the
+             output stream has been closed.
 </td>
         </tr>
       </table>

@@ -110,6 +110,298 @@ layout: api
 <div id="jd-content" class="api apilevel-">
 
 
+  <div class="jd-descr">
+    Provides the API for accessing and processing data stored in a 
+data source (usually a relational database) using the 
+Java<sup><font size=-2>TM</font></sup> programming language. 
+This API includes a framework whereby different
+drivers can be installed dynamically to access different data sources.
+Although the JDBC<sup><font size=-2>TM</font></sup> API is mainly geared 
+to passing SQL statements to a database, it provides for reading and
+writing data from any data source with a tabular format.
+The reader/writer facility, available through the 
+<code>javax.sql.RowSet</code> group of interfaces, can be customized to
+use and update data from a spread sheet, flat file, or any other tabular 
+data source.
+<P>
+<h2>What the JDBC<sup><font size=-2>TM</font></sup> 4.1 API Includes</h2>
+The JDBC<sup><font size=-2>TM</font></sup> 4.1 API includes both
+the <code>java.sql</code> package, referred to as the JDBC core API,
+and the <code>javax.sql</code> package, referred to as the JDBC Optional
+Package API. This complete JDBC API
+is included in the Java<sup><font size=-2>TM</font></sup>  
+Standard Edition (Java SE<sup><font size=-2>TM</font></sup>), version 7.
+The <code>javax.sql</code> package extends the functionality of the JDBC API 
+from a client-side API to a server-side API, and it is an essential part
+of the Java<sup><font size=-2>TM</font></sup>  Enterprise Edition
+(Java EE<sup><font size=-2>TM</font></sup>) technology. 
+<P>
+<h2>Versions</h2>
+The JDBC 4.1 API incorporates all of the previous JDBC API versions:
+<UL>
+ <LI> The JDBC 4.0 API
+ <LI> The JDBC 3.0 API
+ <LI> The JDBC 2.1 core API
+ <LI> The JDBC 2.0 Optional Package API<br>
+      (Note that the JDBC 2.1 core API and the JDBC 2.0 Optional Package
+      API together are referred to as the JDBC 2.0 API.)
+ <LI> The JDBC 1.2 API
+ <LI> The JDBC 1.0 API
+</UL>
+<P>
+Classes, interfaces, methods, fields, constructors, and exceptions 
+have the following "since" tags that indicate when they were introduced 
+into the Java platform. When these "since" tags are used in
+Javadoc<sup><font size=-2>TM</font></sup> comments for the JDBC API,
+they indicate the following:
+<UL>
+ <LI>Since 1.7 -- new in the JDBC 4.1 API and part of the Java SE platform,
+     version 7
+<LI>Since 1.6 -- new in the JDBC 4.0 API and part of the Java SE platform,
+     version 6
+ <LI>Since 1.4 -- new in the JDBC 3.0 API and part of the J2SE platform, 
+     version 1.4
+ <LI>Since 1.2 -- new in the JDBC 2.0 API and part of the J2SE platform, 
+     version 1.2
+ <LI>Since 1.1 or no "since" tag -- in the original JDBC 1.0 API and part of
+      the JDK<sup><font size=-2>TM</font></sup>, version 1.1
+</UL>
+<P>
+<b>NOTE:</b> Many of the new features are optional; consequently, there is 
+some variation in drivers and the features they support. Always 
+check your driver's documentation to see whether it supports a feature before
+you try to use it.
+<P>
+<b>NOTE:</b> The class <code>SQLPermission</code> was added in the
+Java<sup><font size=-2>TM</font></sup> 2 SDK, Standard Edition, 
+version 1.3 release. This class is used to prevent unauthorized
+access to the logging stream associated with the <code>DriverManager</code>,
+which may contain information such as table names, column data, and so on.
+<p>
+
+<h2>What the <code>java.sql</code> Package Contains</h2>
+The <code>java.sql</code> package contains API for the following:
+<UL>
+  <LI>Making a connection with a database via the <code>DriverManager</code> facility
+  <UL>
+	 <LI><code>DriverManager</code> class -- makes a connection with a driver
+	 <LI><code>SQLPermission</code> class -- provides permission when code
+                  running within a Security Manager, such as an applet,
+                  attempts to set up a logging stream through the
+                  <code>DriverManager</code>
+	 <LI><code>Driver</code> interface -- provides the API for registering
+             and connecting drivers based on JDBC technology ("JDBC drivers"); 
+             generally used only by the <code>DriverManager</code> class
+	 <LI><code>DriverPropertyInfo</code> class -- provides properties for a
+             JDBC driver; not used by the general user
+  </UL>
+  <LI>Sending SQL statements to a database
+  <UL>
+	 <LI><code>Statement</code> --  used to send basic SQL statements
+	 <LI><code>PreparedStatement</code> --  used to send prepared statements or 
+              basic SQL statements (derived from <code>Statement</code>)
+	 <LI><code>CallableStatement</code> --  used to call database stored 
+              procedures (derived from <code>PreparedStatement</code>)
+	 <LI><code>Connection</code> interface --  provides methods for creating
+             statements and managing connections and their properties
+	 <LI><code>Savepoint</code> --  provides savepoints in a transaction
+
+  </UL>
+  <LI>Retrieving and updating the results of a query
+  <UL>
+	 <LI><code>ResultSet</code> interface
+  </UL>
+  <LI>Standard mappings for SQL types to classes and interfaces in the 
+      Java programming language
+  <UL>
+	 <LI><code>Array</code> interface -- mapping for SQL <code>ARRAY</code> 
+	 <LI><code>Blob</code> interface -- mapping for SQL <code>BLOB</code> 
+	 <LI><code>Clob</code> interface -- mapping for SQL <code>CLOB</code>
+	 <LI><code>Date</code> class -- mapping for SQL <code>DATE</code> 
+	  <LI><code>NClob</code> interface -- mapping for SQL <code>NCLOB</code>
+	 <LI><code>Ref</code> interface -- mapping for SQL <code>REF</code> 
+	  <LI><code>RowId</code> interface -- mapping for SQL <code>ROWID</code>
+	 <LI><code>Struct</code> interface -- mapping for SQL <code>STRUCT</code> 
+	  <LI><code>SQLXML</code> interface -- mapping for SQL <code>XML</code>
+	 <LI><code>Time</code> class -- mapping for SQL <code>TIME</code> 
+	 <LI><code>Timestamp</code> class -- mapping for SQL <code>TIMESTAMP</code> 
+	 <LI><code>Types</code> class -- provides constants for SQL types
+  </UL>
+  <LI>Custom mapping an SQL user-defined type (UDT) to a class in the
+	  Java programming language
+  <UL>
+	 <LI><code>SQLData</code> interface -- specifies the mapping of
+              a UDT to an instance of this class
+	 <LI><code>SQLInput</code> interface -- provides methods for reading
+              UDT attributes from a stream
+	 <LI><code>SQLOutput</code> interface -- provides methods for writing
+              UDT attributes back to a stream
+  </UL>
+  <LI>Metadata
+  <UL>
+	 <LI><code>DatabaseMetaData</code> interface -- provides information
+              about the database
+	 <LI><code>ResultSetMetaData</code> interface -- provides information
+              about the columns of a <code>ResultSet</code> object
+	 <LI><code>ParameterMetaData</code> interface -- provides information
+              about the parameters to <code>PreparedStatement</code> commands
+  </UL>
+  <LI>Exceptions
+	<UL>
+	  <LI><code>SQLException</code> -- thrown by most methods when there
+		 is a problem accessing data and by some methods for other reasons
+	  <LI><code>SQLWarning</code> -- thrown to indicate a warning
+	  <LI><code>DataTruncation</code> -- thrown to indicate that data may have
+     	  been truncated
+	  <LI><code>BatchUpdateException</code> -- thrown to indicate that not all
+		 commands in a batch update executed successfully
+	</UL>
+</UL>
+<P>
+    <h3><code>java.sql</code> and <code>javax.sql</code> Features Introduced in the JDBC 4.1 API</h3>
+<UL>
+    <LI>Allow <code>Connection</code>,
+        <code>ResultSet</code> and <code>Statement</code> objects to be
+        used with the try-with-resources statement</LI>
+    <LI>Supported added to <code>CallableStatement</code> and
+        <code>ResultSet</code> to specify the Java type to convert to via the
+        <code>getObject</code> method</LI>
+    <LI><code>DatabaseMetaData</code> methods to return PseudoColumns and if a
+        generated key is always returned</LI>
+    <LI>Added support to <code>Connection</code> to specify a database schema,
+    abort and timeout a physical connection.</LI>
+    <LI>Added support to close a <code>Statement</code> object when its dependent
+    objects have been closed</LI>
+    <LI>Support for obtaining the parent logger for a <code>Driver</code>,
+     <code>DataSource</code>, <code>ConnectionPoolDataSource</code> and
+     <code>XADataSource</code></LI>
+
+</UL>
+<h3><code>java.sql</code> and <code>javax.sql</code> Features Introduced in the JDBC 4.0 API</h3>
+<UL>
+  <LI>auto java.sql.Driver discovery -- no longer need to load a 
+<code>java.sql.Driver</code> class via <code>Class.forName</code>
+ <LI>National Character Set support added
+ <li>Support added for the SQL:2003 XML data type
+ <lI>SQLException enhancements -- Added support for cause chaining; New SQLExceptions
+ added for common SQLState class value codes
+ <li>Enhanced Blob/Clob functionality -- Support provided to create and free a Blob/Clob instance
+ as well as additional methods added to improve accessiblity
+ <li>Support added for accessing a SQL ROWID
+ <li>Support added to allow a JDBC application to access an instance of a JDBC resource
+ that has been wrapped by a vendor, usually in an application server or connection 
+ pooling environment.
+ <li>Availability to be notified when a <code>PreparedStatement</code> that is associated
+ with a <code>PooledConnection</code> has been closed or the driver determines is invalid
+ 
+ 
+</UL>
+<P>
+<P>
+<h3><code>java.sql</code> and <code>javax.sql</code> Features Introduced in the JDBC 3.0 API</h3>
+<UL>
+  <LI>Pooled statements -- reuse of statements associated with a pooled 
+       connection
+  <LI>Savepoints -- allow a transaction to be rolled back to a designated
+      savepoint
+  <LI>Properties defined for <code>ConnectionPoolDataSource</code> -- specify
+      how connections are to be pooled
+  <LI>Metadata for parameters of a <code>PreparedStatement</code> object
+  <LI>Ability to retrieve values from automatically generated columns
+  <LI>Ability to have multiple <code>ResultSet</code> objects 
+       returned from <code>CallableStatement</code> objects open at the
+      same time
+  <LI>Ability to identify parameters to <code>CallableStatement</code>
+      objects by name as well as by index
+  <LI><code>ResultSet</code> holdability -- ability to specify whether cursors
+      should be held open or closed at the end of a transaction
+  <LI>Ability to retrieve and update the SQL structured type instance that a
+      <code>Ref</code> object references
+  <LI>Ability to programmatically update <code>BLOB</code>,
+      <code>CLOB</code>, <code>ARRAY</code>, and <code>REF</code> values.
+  <LI>Addition of the <code>java.sql.Types.DATALINK</code> data type -- 
+      allows JDBC drivers access to objects stored outside a data source
+  <LI>Addition of metadata for retrieving SQL type hierarchies
+</UL>
+<P>
+<h3><code>java.sql</code> Features Introduced in the JDBC 2.1 Core API</h3>
+<UL>
+  <LI>Scrollable result sets--using new methods in the <code>ResultSet</code>
+	  interface that allow the cursor to be moved to a particular row or to a
+	  position relative to its current position
+  <LI>Batch updates
+  <LI>Programmatic updates--using <code>ResultSet</code> updater methods
+  <LI>New data types--interfaces mapping the SQL3 data types
+  <LI>Custom mapping of user-defined types (UDTs)
+  <LI>Miscellaneous features, including performance hints, the use of character
+	  streams, full precision for <code>java.math.BigDecimal</code> values,
+	  additional security, and
+	  support for time zones in date, time, and timestamp values. 
+</UL>
+<P>
+<h3><code>javax.sql</code> Features Introduced in the JDBC 2.0 Optional
+Package API</h3>
+<UL>
+  <LI>The <code>DataSource</code> interface as a means of making a connection.  The
+      Java Naming and Directory Interface<sup><font size=-2>TM</font></sup>
+      (JNDI) is used for registering a <code>DataSource</code> object with a 
+      naming service and also for  retrieving it.
+  <LI>Pooled connections -- allowing connections to be used and reused
+  <LI>Distributed transactions -- allowing a transaction to span diverse
+      DBMS servers
+  <LI><code>RowSet</code> technology -- providing a convenient means of
+       handling and passing data
+</UL>
+<P>
+<P>
+<h3>Custom Mapping of UDTs</h3>
+A user-defined type (UDT) defined in SQL can be mapped to a class in the Java
+programming language. An SQL structured type or an SQL <code>DISTINCT</code>
+type are the UDTs that may be custom mapped.  The following three
+steps set up a custom mapping:
+<ol>
+  <li>Defining the SQL structured type or <code>DISTINCT</code> type in SQL
+  <li>Defining the class in the Java programming language to which the
+	  SQL UDT will be mapped.  This class must implement the
+	  <code>SQLData</code> interface.
+  <li>Making an entry in a <code>Connection</code> object's type map
+      that contains two things:
+   <ul>
+       <li>the fully-qualified SQL name of the UDT
+       <li>the <code>Class</code> object for the class that implements the 
+           <code>SQLData</code> interface
+   </ul>
+</ol>
+<p>
+When these are in place for a UDT, calling the methods
+<code>ResultSet.getObject</code> or <code>CallableStatement.getObject</code> 
+on that UDT will automatically retrieve the custom mapping for it. Also, the
+<code>PreparedStatement.setObject</code> method will automatically map the
+object back to its SQL type to store it in the data source.
+
+<h2>Package Specification</h2>
+
+<ul>
+  <li><a href="http://java.sun.com/products/jdbc/download.html">Specification 
+      of the JDBC 4.0 API</a>
+</ul>
+
+<h2>Related Documentation</h2>
+
+<ul>
+  <li><a href="../../../openjdk-redirect.html?v=8&path=/technotes/guides/jdbc/getstart/GettingStartedTOC.fm.html">Getting Started</a>--overviews of the major interfaces
+<P>
+  <li><a href="http://java.sun.com/docs/books/tutorial/jdbc">Chapters on the JDBC 
+     API</a>--from the online version of <i>The Java Tutorial Continued</i>
+<P>
+  <li><a href="http://java.sun.com/docs/books/jdbc">
+<i>JDBC<sup><font size=-2>TM</font></sup>API Tutorial and Reference, 
+Third Edition</i></a>--
+a complete reference and tutorial for the JDBC 3.0 API
+</ul>
+<P>
+  </div>
+
 
 
 
@@ -121,101 +413,112 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Array.html">Array</a></td>
-              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>ARRAY</code> type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The mapping in the Java programming language for the SQL type
+ <code>ARRAY</code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Blob.html">Blob</a></td>
-              <td class="jd-descrcol" width="100%">A Java interface representing the SQL <code>BLOB</code> type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The representation (mapping) in
+ the Java<sup><font size=-2>TM</font></sup> programming
+ language of an SQL
+ <code>BLOB</code> value.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></td>
-              <td class="jd-descrcol" width="100%">An interface used to call <i>Stored Procedures</i>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The interface used to execute SQL stored procedures.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Clob.html">Clob</a></td>
-              <td class="jd-descrcol" width="100%">A Java interface mapping for the SQL CLOB type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The mapping in the Java<sup><font size=-2>TM</font></sup> programming language
+ for the SQL <code>CLOB</code> type.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html">Connection</a></td>
-              <td class="jd-descrcol" width="100%">A connection represents a link from a Java application to a database.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A connection (session) with a specific
+ database.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></td>
-              <td class="jd-descrcol" width="100%">An interface which provides comprehensive information about the database
- management system and its supported features.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Comprehensive information about the database as a whole.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Driver.html">Driver</a></td>
-              <td class="jd-descrcol" width="100%">An interface to a JDBC driver.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The interface that every driver class must implement.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/NClob.html">NClob</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The mapping in the Java<sup><font size=-2>TM</font></sup> programming language
+ for the SQL <code>NCLOB</code> type.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></td>
-              <td class="jd-descrcol" width="100%">An interface used to get information about the types and properties of
- parameters in a <code>PreparedStatement</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An object that can be used to get information about the types
+ and properties for each parameter marker in a
+ <code>PreparedStatement</code> object.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></td>
-              <td class="jd-descrcol" width="100%">An interface for a precompiled SQL Statement.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An object that represents a precompiled SQL statement.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Ref.html">Ref</a></td>
-              <td class="jd-descrcol" width="100%">This interface represents an SQL Ref - a data object containing a cursor
- or pointer to a result table.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The mapping in the Java programming language of an SQL <code>REF</code>
+ value, which is a reference to an SQL structured type value in the database.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></td>
-              <td class="jd-descrcol" width="100%">An interface for an object which represents a database table entry, returned
- as the result of the query to the database.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A table of data representing a database result set, which
+ is usually generated by executing a statement that queries the database.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></td>
-              <td class="jd-descrcol" width="100%">Provides information about the columns returned in a <code>ResultSet</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An object that can be used to get information about the types
+ and properties of the columns in a <code>ResultSet</code> object.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/RowId.html">RowId</a></td>
-              <td class="jd-descrcol" width="100%">Maps SQL's ROWID type into Java.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The representation (mapping) in the Java programming language of an SQL ROWID
+ value.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></td>
-              <td class="jd-descrcol" width="100%">A savepoint is an instant during the current transaction that can be utilized
- by a rollback via the <code><a href="reference/java/sql/Connection.html#rollback()">rollback()</a></code> command.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The representation of a savepoint, which is a point within
+ the current transaction that can be referenced from the
+ <code>Connection.rollback</code> method.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLData.html">SQLData</a></td>
-              <td class="jd-descrcol" width="100%">An interface for the custom mapping of an SQL <i>User Defined Type</i> (UDT)
- to a Java class.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The interface used for the custom mapping of an SQL user-defined type (UDT) to
+ a class in the Java programming language.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLInput.html">SQLInput</a></td>
-              <td class="jd-descrcol" width="100%">The <code>SQLInput</code> interface defines operations which apply to a type of
- input stream which carries a series of values representing an instance of
- an SQL structured type or SQL distinct type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An input stream that contains a stream of values representing an
+ instance of an SQL structured type or an SQL distinct type.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLOutput.html">SQLOutput</a></td>
-              <td class="jd-descrcol" width="100%">The interface for an output stream used to write attributes of an SQL <i>User
- Defined Type</i> (UDT) to the database.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The output stream for writing the attributes of a user-defined
+ type back to the database.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a></td>
-              <td class="jd-descrcol" width="100%">Maps SQL's XML type into Java.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The mapping in the JavaTM programming language for the SQL XML type.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html">Statement</a></td>
-              <td class="jd-descrcol" width="100%">Interface used for executing static SQL statements to retrieve query results.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>The object used for executing a static SQL statement
+ and returning the results it produces.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Struct.html">Struct</a></td>
-              <td class="jd-descrcol" width="100%">An interface which provides facilities for manipulating an SQL structured type
- as a Java object.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>The standard mapping in the Java programming language for an SQL
+ structured type.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Wrapper.html">Wrapper</a></td>
-              <td class="jd-descrcol" width="100%">This class is an actual usage of the wrapper pattern for JDBC classes.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Interface for JDBC classes which provide the ability to retrieve the delegate instance when the instance
+ in question is in fact a proxy class.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -229,15 +532,16 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Date.html">Date</a></td>
-              <td class="jd-descrcol" width="100%">A class which can consume and produce dates in SQL <code>Date</code> format.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around a millisecond value that allows
+ JDBC to identify this as an SQL <code>DATE</code> value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></td>
-              <td class="jd-descrcol" width="100%">Provides facilities for managing JDBC drivers.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>The basic service for managing a set of JDBC drivers.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverPropertyInfo.html">DriverPropertyInfo</a></td>
-              <td class="jd-descrcol" width="100%">A class holding information about driver properties of a database connection.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Driver properties for making a connection.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLPermission.html">SQLPermission</a></td>
@@ -245,16 +549,18 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Time.html">Time</a></td>
-              <td class="jd-descrcol" width="100%">Java representation of an SQL <code>TIME</code> value.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around the <code>java.util.Date</code> class that allows the JDBC
+ API to identify this as an SQL <code>TIME</code> value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></td>
-              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>TIMESTAMP</code> type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around <code>java.util.Date</code> that allows
+ the JDBC API to identify this as an SQL <code>TIMESTAMP</code> value.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Types.html">Types</a></td>
-              <td class="jd-descrcol" width="100%">A class which defines constants used to identify generic SQL types, also
- called JDBC types.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>The class that defines the constants that are used to identify generic
+ SQL types, called JDBC types.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -268,12 +574,12 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></td>
-              <td class="jd-descrcol" width="100%">An enumeration to describe the reason why a property cannot be set by calling
- Connection.setClientInfo.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Enumeration for status of the reason that a property could not be set
+ via a call to <code>Connection.setClientInfo</code>&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></td>
-              <td class="jd-descrcol" width="100%">An enumeration to describe the life-time of RowID.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Enumeration for RowId life-time values.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -287,82 +593,95 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></td>
-              <td class="jd-descrcol" width="100%">This exception is thrown if a problem occurs during a batch update operation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when an error
+ occurs during a batch update operation.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></td>
-              <td class="jd-descrcol" width="100%">An exception which is thrown when a JDBC driver unexpectedly truncates a data
- value either when reading (resulting in warning), or when writing data
- (resulting in an error).&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An exception  thrown as a <code>DataTruncation</code> exception
+ (on writes) or reported as a
+ <code>DataTruncation</code> warning (on reads)
+  when a data values is unexpectedly truncated for reasons other than its having
+  execeeded <code>MaxFieldSize</code>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when one or more
- client info properties could not be set on a Connection.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> is thrown when one or more client info properties
+ could not be set on a <code>Connection</code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when various data
- errors arise.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>22</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-              <td class="jd-descrcol" width="100%">An exception that indicates a failed JDBC operation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>An exception that provides information on a database access
+ error or other errors.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
- various the JDBC driver does not support an optional JDBC feature.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value is '<i>0A</i>'
+ ( the value is 'zero' A).&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
- various the an integrity constraint (foreign key, primary key or unique key)
- has been violated.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>23</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
- the authorization credentials presented during connection establishment are
- not valid.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>28</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when the
- connection operation that failed will not succeed when the operation is
- retried without the cause of the failure being corrected.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown for the SQLState
+ class value '<i>08</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when an instance where a retry
+ of the same operation would fail unless the cause of the <code>SQLException</code>
+ is corrected.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown in situations where a
+ previously failed operation might be able to succeed if the application performs
+  some recovery steps and retries the entire transaction or in the case of a
+ distributed transaction, the transaction branch.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>42</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the timeout specified by <code>Statement</code>
+  has expired.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>40</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> for the SQLState class
+ value '<i>08</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> is thrown in situations where a
+ previoulsy failed operation might be able to succeed when the operation is
+ retried without any intervention by application-level functionality.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></td>
-              <td class="jd-descrcol" width="100%">An exception class that holds information about Database access warnings.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>An exception that provides information on  database access
+ warnings.&nbsp;</td>
           </tr>
   </table>
     </div>

@@ -260,11 +260,8 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This <code>PortUnreachableException</code> will be thrown if an <code>ICMP_Port_Unreachable</code> message has been received.
-
- <p>Most applications <strong>should not</strong> catch this exception; it is
- more robust to catch the superclass <code>SocketException</code>.
-</p>
+<p>Signals that an ICMP Port Unreachable message has been
+ received on a connected datagram.</p>
 
 
 
@@ -330,9 +327,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/PortUnreachableException.html#PortUnreachableException()">PortUnreachableException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/net/PortUnreachableException.html#PortUnreachableException(java.lang.String)">PortUnreachableException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance.</div>
+        <div class="jd-descrdiv">Constructs a new <code>PortUnreachableException</code> with a
+ detail message.</div>
   
   </td></tr>
 
@@ -348,9 +346,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/PortUnreachableException.html#PortUnreachableException(java.lang.String)">PortUnreachableException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/net/PortUnreachableException.html#PortUnreachableException()">PortUnreachableException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance with the given detail message.</div>
+        <div class="jd-descrdiv">Construct a new <code>PortUnreachableException</code> with no
+ detailed message.</div>
   
   </td></tr>
 
@@ -588,6 +587,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -863,6 +881,48 @@ From class
 
 
 
+<a id="PortUnreachableException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">PortUnreachableException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PortUnreachableException</code> with a
+ detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="PortUnreachableException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -888,39 +948,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance.
-</p></div>
-
-    </div>
-</div>
-
-
-<a id="PortUnreachableException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">PortUnreachableException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the given detail message.
+  <div class="jd-tagdata jd-tagdescr"><p>Construct a new <code>PortUnreachableException</code> with no
+ detailed message.
 </p></div>
 
     </div>

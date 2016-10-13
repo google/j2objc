@@ -220,7 +220,11 @@ layout: api
             
               <a href="../../../reference/java/security/cert/CRLException.html">CRLException</a>,
             
+              <a href="../../../reference/java/security/cert/CertPathBuilderException.html">CertPathBuilderException</a>,
+            
               <a href="../../../reference/java/security/cert/CertPathValidatorException.html">CertPathValidatorException</a>,
+            
+              <a href="../../../reference/java/security/cert/CertStoreException.html">CertStoreException</a>,
             
               <a href="../../../reference/java/security/cert/CertificateException.html">CertificateException</a>,
             
@@ -254,53 +258,60 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CRLException.html">CRLException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown if errors occur during handling of <code>CRL</code>s.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">CRL (Certificate Revocation List) Exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertPathBuilderException.html">CertPathBuilderException</a></td>
+              <td class="jd-descrcol" width="100%">An exception indicating one of a variety of problems encountered when
+ building a certification path with a <code>CertPathBuilder</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertPathValidatorException.html">CertPathValidatorException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a certification path (or certificate chain)
- cannot be validated.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An exception indicating one of a variety of problems encountered when
+ validating a certification path.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertStoreException.html">CertStoreException</a></td>
+              <td class="jd-descrcol" width="100%">An exception indicating one of a variety of problems retrieving
+ certificates and CRLs from a <code>CertStore</code>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateException.html">CertificateException</a></td>
-              <td class="jd-descrcol" width="100%">The base class for all <code>Certificate</code> related exceptions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception indicates one of a variety of certificate problems.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/DigestException.html">DigestException</a></td>
-              <td class="jd-descrcol" width="100%"><code>DigestException</code> is a general message digest exception.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the generic Message Digest exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></td>
-              <td class="jd-descrcol" width="100%"><code>InvalidAlgorithmParameterException</code> indicates the occurrence of
- invalid algorithm parameters.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the exception for invalid or inappropriate algorithm parameters.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/spec/InvalidKeySpecException.html">InvalidKeySpecException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when an invalid key specification is
- encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the exception for invalid key specifications.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/spec/InvalidParameterSpecException.html">InvalidParameterSpecException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when an invalid parameter specification is
- encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the exception for invalid parameter specifications.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyException.html">KeyException</a></td>
-              <td class="jd-descrcol" width="100%"><code>KeyException</code> is the common superclass of all key related exceptions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the basic key exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></td>
-              <td class="jd-descrcol" width="100%"><code>KeyStoreException</code> is a general <code>KeyStore</code> exception.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the generic KeyStore exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
-              <td class="jd-descrcol" width="100%"><code>NoSuchAlgorithmException</code> indicates that a requested algorithm could
- not be found.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown when a particular cryptographic algorithm is
+ requested but is not available in the environment.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></td>
-              <td class="jd-descrcol" width="100%"><code>NoSuchProviderException</code> indicates that a requested security provider
- could not be found.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown when a particular security provider is
+ requested but is not available in the environment.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/javax/crypto/ShortBufferException.html">ShortBufferException</a></td>
@@ -309,12 +320,11 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></td>
-              <td class="jd-descrcol" width="100%"><code>SignatureException</code> is a general <code>Signature</code> exception.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the generic Signature exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></td>
-              <td class="jd-descrcol" width="100%"><code>UnrecoverableEntryException</code> indicates, that a <code>KeyStore.Entry</code>
- cannot be recovered from a <code>KeyStore</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown if an entry in the keystore cannot be recovered.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -358,36 +368,33 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateEncodingException.html">CertificateEncodingException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when an error occurs while a <code>Certificate</code>
- is being encoded.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Encoding Exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateExpiredException.html">CertificateExpiredException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> has expired.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Expired Exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateNotYetValidException.html">CertificateNotYetValidException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> is not yet valid or
- will not yet be valid on a specified date.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate is not yet valid exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateParsingException.html">CertificateParsingException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> can not be parsed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Parsing Exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidKeyException.html">InvalidKeyException</a></td>
-              <td class="jd-descrcol" width="100%"><code>InvalidKeyException</code> indicates exceptional conditions, caused by an
- invalid key.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the exception for invalid Keys (invalid encoding, wrong
+ length, uninitialized, etc).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></td>
-              <td class="jd-descrcol" width="100%"><code>KeyManagementException</code> is a general exception, thrown to indicate an
- exception during processing an operation concerning key management.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the general key management exception for all operations
+ dealing with key management.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableKeyException.html">UnrecoverableKeyException</a></td>
-              <td class="jd-descrcol" width="100%"><code>UnrecoverableKeyException</code> indicates, that a key cannot be recovered
- from a <code>KeyStore</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown if a key in the keystore cannot be recovered.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -399,9 +406,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>GeneralSecurityException</code> is a general security exception and the
- superclass for all security specific exceptions.
-</p>
+<p>The <code>GeneralSecurityException</code> class is a generic
+ security exception class that provides type safety for all the
+ security-related exception classes that extend from it.</p>
 
 
 
@@ -467,10 +474,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/GeneralSecurityException.html#GeneralSecurityException(java.lang.String)">GeneralSecurityException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../reference/java/security/GeneralSecurityException.html#GeneralSecurityException()">GeneralSecurityException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>GeneralSecurityException</code> with the
- given message.</div>
+        <div class="jd-descrdiv">Constructs a GeneralSecurityException with no detail message.</div>
   
   </td></tr>
 
@@ -486,9 +492,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/GeneralSecurityException.html#GeneralSecurityException()">GeneralSecurityException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/security/GeneralSecurityException.html#GeneralSecurityException(java.lang.String)">GeneralSecurityException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>GeneralSecurityException</code>.</div>
+        <div class="jd-descrdiv">Constructs a GeneralSecurityException with the specified detail
+ message.</div>
   
   </td></tr>
 
@@ -506,8 +513,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/GeneralSecurityException.html#GeneralSecurityException(java.lang.String, java.lang.Throwable)">GeneralSecurityException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>GeneralSecurityException</code> with the
- given message and the cause.</div>
+        <div class="jd-descrdiv">Creates a <code>GeneralSecurityException</code> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -525,8 +532,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/GeneralSecurityException.html#GeneralSecurityException(java.lang.Throwable)">GeneralSecurityException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>GeneralSecurityException</code> with the
- cause.</div>
+        <div class="jd-descrdiv">Creates a <code>GeneralSecurityException</code> with the specified cause
+ and a detail message of <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</div>
   
   </td></tr>
 
@@ -760,6 +769,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -1035,48 +1063,6 @@ From class
 
 
 
-<a id="GeneralSecurityException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">GeneralSecurityException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>GeneralSecurityException</code> with the
- given message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="GeneralSecurityException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -1102,8 +1088,52 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>GeneralSecurityException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a GeneralSecurityException with no detail message.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="GeneralSecurityException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">GeneralSecurityException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a GeneralSecurityException with the specified detail
+ message.
+ A detail message is a String that describes this particular
+ exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1134,19 +1164,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>GeneralSecurityException</code> with the
- given message and the cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>GeneralSecurityException</code> with the specified
+ detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+        by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1180,15 +1212,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>GeneralSecurityException</code> with the
- cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>GeneralSecurityException</code> with the specified cause
+ and a detail message of <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>

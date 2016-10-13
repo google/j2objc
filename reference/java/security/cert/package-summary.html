@@ -142,10 +142,14 @@ The functionality to check the different entries and extension fields of X.509 c
               <td class="jd-descrcol" width="100%">The interface specification for certification path algorithm parameters.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorException.Reason.html">CertPathValidatorException.Reason</a></td>
+              <td class="jd-descrcol" width="100%">The reason the validation algorithm failed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorResult.html">CertPathValidatorResult</a></td>
               <td class="jd-descrcol" width="100%">The interface specification for certification path validation results.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/X509Extension.html">X509Extension</a></td>
               <td class="jd-descrcol" width="100%">The interface specifying an X.509 Certificate or CRL extension.&nbsp;</td>
           </tr>
@@ -212,6 +216,18 @@ The functionality to check the different entries and extension fields of X.509 c
 
 
   
+    <h2>Enums</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorException.BasicReason.html">CertPathValidatorException.BasicReason</a></td>
+              <td class="jd-descrcol" width="100%">The BasicReason enumerates the potential reasons that a certification
+ path of any type may be invalid.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
 
 
   
@@ -221,34 +237,42 @@ The functionality to check the different entries and extension fields of X.509 c
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateEncodingException.html">CertificateEncodingException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when an error occurs while a <code>Certificate</code>
- is being encoded.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Encoding Exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateException.html">CertificateException</a></td>
-              <td class="jd-descrcol" width="100%">The base class for all <code>Certificate</code> related exceptions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception indicates one of a variety of certificate problems.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateExpiredException.html">CertificateExpiredException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> has expired.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Expired Exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateNotYetValidException.html">CertificateNotYetValidException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> is not yet valid or
- will not yet be valid on a specified date.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate is not yet valid exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateParsingException.html">CertificateParsingException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> can not be parsed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Parsing Exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathBuilderException.html">CertPathBuilderException</a></td>
+              <td class="jd-descrcol" width="100%">An exception indicating one of a variety of problems encountered when
+ building a certification path with a <code>CertPathBuilder</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html">CertPathValidatorException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a certification path (or certificate chain)
- cannot be validated.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An exception indicating one of a variety of problems encountered when
+ validating a certification path.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertStoreException.html">CertStoreException</a></td>
+              <td class="jd-descrcol" width="100%">An exception indicating one of a variety of problems retrieving
+ certificates and CRLs from a <code>CertStore</code>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CRLException.html">CRLException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown if errors occur during handling of <code>CRL</code>s.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">CRL (Certificate Revocation List) Exception.&nbsp;</td>
           </tr>
   </table>
     </div>

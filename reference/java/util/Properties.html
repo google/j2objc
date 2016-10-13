@@ -257,24 +257,79 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>Properties</code> object is a <code>Hashtable</code> where the keys and values
- must be <code>String</code>s. Each property can have a default
- <code>Properties</code> list which specifies the default
- values to be used when a given key is not found in this <code>Properties</code>
- instance.
+<p>The <code>Properties</code> class represents a persistent set of
+ properties. The <code>Properties</code> can be saved to a stream
+ or loaded from a stream. Each key and its corresponding value in
+ the property list is a string.
+ <p>
+ A property list can contain another property list as its
+ "defaults"; this second property list is searched if
+ the property key is not found in the original property list.
+ <p>
+ Because <code>Properties</code> inherits from <code>Hashtable</code>, the
+ <code>put</code> and <code>putAll</code> methods can be applied to a
+ <code>Properties</code> object.  Their use is strongly discouraged as they
+ allow the caller to insert entries whose keys or values are not
+ <code>Strings</code>.  The <code>setProperty</code> method should be used
+ instead.  If the <code>store</code> or <code>save</code> method is called
+ on a "compromised" <code>Properties</code> object that contains a
+ non-<code>String</code> key or value, the call will fail. Similarly,
+ the call to the <code>propertyNames</code> or <code>list</code> method
+ will fail if it is called on a "compromised" <code>Properties</code>
+ object that contains a non-<code>String</code> key.
 
- <a name="character_encoding"><h3>Character Encoding</h3></a>
- <p>Note that in some cases <code>Properties</code> uses ISO-8859-1 instead of UTF-8.
- ISO-8859-1 is only capable of representing a tiny subset of Unicode.
- Use either the <code>loadFromXML</code>/<code>storeToXML</code> methods (which use UTF-8 by
- default) or the <code>load</code>/<code>store</code> overloads that take
- an <code>OutputStreamWriter</code> (so you can supply a UTF-8 instance) instead.</p>
+ <p>
+ The <code><a href="reference/java/util/Properties.html#load(java.io.Reader)">load(Reader)</a></code> <tt>/</tt>
+ <code><a href="reference/java/util/Properties.html#store(java.io.Writer, java.lang.String)">store(Writer, String)</a></code>
+ methods load and store properties from and to a character based stream
+ in a simple line-oriented format specified below.
+
+ The <code><a href="reference/java/util/Properties.html#load(java.io.InputStream)">load(InputStream)</a></code> <tt>/</tt>
+ <code><a href="reference/java/util/Properties.html#store(java.io.OutputStream, java.lang.String)">store(OutputStream, String)</a></code>
+ methods work the same way as the load(Reader)/store(Writer, String) pair, except
+ the input/output stream is encoded in ISO 8859-1 character encoding.
+ Characters that cannot be directly represented in this encoding can be written using
+ Unicode escapes as defined in section 3.3 of
+ <cite>The Java&trade; Language Specification</cite>;
+ only a single 'u' character is allowed in an escape
+ sequence. The native2ascii tool can be used to convert property files to and
+ from other character encodings.
+
+ <p> The <code><a href="reference/java/util/Properties.html#loadFromXML(java.io.InputStream)">loadFromXML(InputStream)</a></code> and <code><a href="reference/java/util/Properties.html#storeToXML(java.io.OutputStream, java.lang.String, java.lang.String)">storeToXML(OutputStream, String, String)</a></code> methods load and store properties
+ in a simple XML format.  By default the UTF-8 character encoding is used,
+ however a specific encoding may be specified if required.  An XML properties
+ document has the following DOCTYPE declaration:
+
+ <pre>
+ &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+ </pre>
+ Note that the system URI (http://java.sun.com/dtd/properties.dtd) is
+ <i>not</i> accessed when exporting or importing properties; it merely
+ serves as a string to uniquely identify the DTD, which is:
+ <pre>
+    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+    &lt;!-- DTD for properties --&gt;
+
+    &lt;!ELEMENT properties ( comment?, entry* ) &gt;
+
+    &lt;!ATTLIST properties version CDATA #FIXED "1.0"&gt;
+
+    &lt;!ELEMENT comment (#PCDATA) &gt;
+
+    &lt;!ELEMENT entry (#PCDATA) &gt;
+
+    &lt;!ATTLIST entry key CDATA #REQUIRED&gt;
+ </pre>
+
+ <p>This class is thread-safe: multiple threads can share a single
+ <tt>Properties</tt> object without the need for external synchronization.</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Hashtable.html">Hashtable</a></code></li><li><code><a href="../../../reference/java/lang/System.html#getProperties()">getProperties()</a></code></li>
+      <ul class="nolist"><li><a href="{@docRoot}/../technotes/tools/solaris/native2ascii.html">native2ascii tool for Solaris</a></li><li><a href="{@docRoot}/../technotes/tools/windows/native2ascii.html">native2ascii tool for Windows</a></li>
       </ul>
   </div>
 
@@ -330,8 +385,8 @@ layout: api
           
           <a href="../../../reference/java/util/Properties.html">Properties</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Properties.html#defaults">defaults</a></td>
-          <td class="jd-descrcol" width="100%">The default values for keys not found in this <code>Properties</code>
- instance.</td>
+          <td class="jd-descrcol" width="100%">A property list that contains default values for any keys not
+ found in this property list.</td>
       </tr>
       
     
@@ -362,7 +417,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#Properties()">Properties</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>Properties</code> object.</div>
+        <div class="jd-descrdiv">Creates an empty property list with no default values.</div>
   
   </td></tr>
 
@@ -378,10 +433,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#Properties(java.util.Properties)">Properties</a></span>(<a href="../../../reference/java/util/Properties.html">Properties</a> properties)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#Properties(java.util.Properties)">Properties</a></span>(<a href="../../../reference/java/util/Properties.html">Properties</a> defaults)
         
-        <div class="jd-descrdiv">Constructs a new <code>Properties</code> object using the specified default
- <code>Properties</code>.</div>
+        <div class="jd-descrdiv">Creates an empty property list with the specified defaults.</div>
   
   </td></tr>
 
@@ -410,9 +464,9 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#getProperty(java.lang.String, java.lang.String)">getProperty</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> defaultValue)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#getProperty(java.lang.String, java.lang.String)">getProperty</a></span>(<a href="../../../reference/java/lang/String.html">String</a> key, <a href="../../../reference/java/lang/String.html">String</a> defaultValue)
         
-        <div class="jd-descrdiv">Searches for the property with the specified name.</div>
+        <div class="jd-descrdiv">Searches for the property with the specified key in this property list.</div>
   
   </td></tr>
 
@@ -428,9 +482,9 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#getProperty(java.lang.String)">getProperty</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#getProperty(java.lang.String)">getProperty</a></span>(<a href="../../../reference/java/lang/String.html">String</a> key)
         
-        <div class="jd-descrdiv">Searches for the property with the specified name.</div>
+        <div class="jd-descrdiv">Searches for the property with the specified key in this property list.</div>
   
   </td></tr>
 
@@ -448,7 +502,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#list(java.io.PrintStream)">list</a></span>(<a href="../../../reference/java/io/PrintStream.html">PrintStream</a> out)
         
-        <div class="jd-descrdiv">Lists the mappings in this <code>Properties</code> to <code>out</code> in a human-readable form.</div>
+        <div class="jd-descrdiv">Prints this property list out to the specified output stream.</div>
   
   </td></tr>
 
@@ -466,7 +520,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#list(java.io.PrintWriter)">list</a></span>(<a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a> out)
         
-        <div class="jd-descrdiv">Lists the mappings in this <code>Properties</code> to <code>out</code> in a human-readable form.</div>
+        <div class="jd-descrdiv">Prints this property list out to the specified output stream.</div>
   
   </td></tr>
 
@@ -482,9 +536,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#load(java.io.InputStream)">load</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#load(java.io.InputStream)">load</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> inStream)
         
-        <div class="jd-descrdiv">Loads properties from the specified <code>InputStream</code>, assumed to be ISO-8859-1.</div>
+        <div class="jd-descrdiv">Reads a property list (key and element pairs) from the input
+ byte stream.</div>
   
   </td></tr>
 
@@ -500,9 +555,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#load(java.io.Reader)">load</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> in)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#load(java.io.Reader)">load</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> reader)
         
-        <div class="jd-descrdiv">Loads properties from the specified <code>Reader</code>.</div>
+        <div class="jd-descrdiv">Reads a property list (key and element pairs) from the input
+ character stream in a simple line-oriented format.</div>
   
   </td></tr>
 
@@ -520,8 +576,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#loadFromXML(java.io.InputStream)">loadFromXML</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)
         
-        <div class="jd-descrdiv">Loads the properties from an <code>InputStream</code> containing the
- properties in XML form.</div>
+        <div class="jd-descrdiv">Loads all of the properties represented by the XML document on the
+ specified input stream into this properties table.</div>
   
   </td></tr>
 
@@ -539,7 +595,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#propertyNames()">propertyNames</a></span>()
         
-        <div class="jd-descrdiv">Returns all of the property names (keys) in this <code>Properties</code> object.</div>
+        <div class="jd-descrdiv">Returns an enumeration of all the keys in this property list,
+ including distinct keys in the default property list if a key
+ of the same name has not already been found from the main
+ properties list.</div>
   
   </td></tr>
 
@@ -555,15 +614,16 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#save(java.io.OutputStream, java.lang.String)">save</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comment)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#save(java.io.OutputStream, java.lang.String)">save</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comments)
         
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method ignores any <code>IOException</code> thrown while
-             writing -- use <code><a href="reference/java/util/Properties.html#store(java.io.OutputStream, java.lang.String)">store(OutputStream, String)</a></code> instead for better exception
-             handling.
-</em></div>
+      This method does not throw an IOException if an I/O error
+ occurs while saving the property list.  The preferred way to save a
+ properties list is via the <code>store(OutputStream out,
+ String comments)</code> method or the
+ <code>storeToXML(OutputStream os, String comment)</code> method.</em></div>
   
   </td></tr>
 
@@ -572,16 +632,16 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
             <a href="../../../reference/java/lang/Object.html">Object</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#setProperty(java.lang.String, java.lang.String)">setProperty</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> value)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#setProperty(java.lang.String, java.lang.String)">setProperty</a></span>(<a href="../../../reference/java/lang/String.html">String</a> key, <a href="../../../reference/java/lang/String.html">String</a> value)
         
-        <div class="jd-descrdiv">Maps the specified key to the specified value.</div>
+        <div class="jd-descrdiv">Calls the <tt>Hashtable</tt> method <code>put</code>.</div>
   
   </td></tr>
 
@@ -590,16 +650,19 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#store(java.io.OutputStream, java.lang.String)">store</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comment)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#store(java.io.OutputStream, java.lang.String)">store</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comments)
         
-        <div class="jd-descrdiv">Stores properties to the specified <code>OutputStream</code>, using ISO-8859-1.</div>
+        <div class="jd-descrdiv">Writes this property list (key and element pairs) in this
+ <code>Properties</code> table to the output stream in a format suitable
+ for loading into a <code>Properties</code> table using the
+ <code><a href="reference/java/util/Properties.html#load(java.io.InputStream)">load(InputStream)</a></code> method.</div>
   
   </td></tr>
 
@@ -608,17 +671,19 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Properties.html#store(java.io.Writer, java.lang.String)">store</a></span>(<a href="../../../reference/java/io/Writer.html">Writer</a> writer, <a href="../../../reference/java/lang/String.html">String</a> comment)
+        <span class="sympad"><a href="../../../reference/java/util/Properties.html#store(java.io.Writer, java.lang.String)">store</a></span>(<a href="../../../reference/java/io/Writer.html">Writer</a> writer, <a href="../../../reference/java/lang/String.html">String</a> comments)
         
-        <div class="jd-descrdiv">Stores the mappings in this <code>Properties</code> object to <code>out</code>,
- putting the specified comment at the beginning.</div>
+        <div class="jd-descrdiv">Writes this property list (key and element pairs) in this
+ <code>Properties</code> table to the output character stream in a
+ format suitable for using the <code><a href="reference/java/util/Properties.html#load(java.io.Reader)">load(Reader)</a></code>
+ method.</div>
   
   </td></tr>
 
@@ -627,7 +692,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
@@ -636,7 +701,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#storeToXML(java.io.OutputStream, java.lang.String, java.lang.String)">storeToXML</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> os, <a href="../../../reference/java/lang/String.html">String</a> comment, <a href="../../../reference/java/lang/String.html">String</a> encoding)
         
-        <div class="jd-descrdiv">Writes all properties stored in this instance into the <code>OutputStream</code> in XML representation.</div>
+        <div class="jd-descrdiv">Emits an XML document representing all of the properties contained
+ in this table, using the specified encoding.</div>
   
   </td></tr>
 
@@ -654,7 +720,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#storeToXML(java.io.OutputStream, java.lang.String)">storeToXML</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> os, <a href="../../../reference/java/lang/String.html">String</a> comment)
         
-        <div class="jd-descrdiv">Writes all properties stored in this instance into the <code>OutputStream</code> in XML representation.</div>
+        <div class="jd-descrdiv">Emits an XML document representing all of the properties contained
+ in this table.</div>
   
   </td></tr>
 
@@ -672,8 +739,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Properties.html#stringPropertyNames()">stringPropertyNames</a></span>()
         
-        <div class="jd-descrdiv">Returns those property names (keys) in this <code>Properties</code> object for which
- both key and value are strings.</div>
+        <div class="jd-descrdiv">Returns a set of keys in this property list where
+ the key and its corresponding value are strings,
+ including distinct keys in the default property list if a key
+ of the same name has not already been found from the main
+ properties list.</div>
   
   </td></tr>
 
@@ -725,8 +795,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all key/value pairs from this <code>Hashtable</code>, leaving the
- size zero and the capacity unchanged.</div>
+        <div class="jd-descrdiv">Clears this hashtable so that it contains no keys.</div>
   
   </td></tr>
 
@@ -744,8 +813,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv">Returns a new <code>Hashtable</code> with the same key/value pairs, capacity
- and load factor.</div>
+        <div class="jd-descrdiv">Creates a shallow copy of this hashtable.</div>
   
   </td></tr>
 
@@ -754,7 +822,65 @@ From class
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
+            synchronized
             
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#compute(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">compute</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">Attempts to compute a mapping for the specified key and its current
+ mapped value (or <code>null</code> if there is no current mapping).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#computeIfAbsent(K, java.util.function.Function<? super K, ? extends V>)">computeIfAbsent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; mappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>), attempts to compute its value using the given mapping
+ function and enters it into this map unless <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#computeIfPresent(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">computeIfPresent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the value for the specified key is present and non-null, attempts to
+ compute a new mapping given the key and its current mapped value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
             
             
             
@@ -763,14 +889,13 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns true if this <code>Hashtable</code> contains the specified object as
- the value of at least one of the key/value pairs.</div>
+        <div class="jd-descrdiv">Tests if some key maps into the specified value in this hashtable.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             synchronized
@@ -782,17 +907,16 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#containsKey(java.lang.Object)">containsKey</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns true if this <code>Hashtable</code> contains the specified object as a
- key of one of the key/value pairs.</div>
+        <div class="jd-descrdiv">Tests if the specified object is a key in this hashtable.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
@@ -801,13 +925,13 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Searches this <code>Hashtable</code> for the specified value.</div>
+        <div class="jd-descrdiv">Returns true if this hashtable maps one or more keys to this value.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             synchronized
@@ -819,7 +943,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#elements()">elements</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration on the values of this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Returns an enumeration of the values in this hashtable.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>,&nbsp;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#entrySet()">entrySet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
   
   </td></tr>
 
@@ -832,12 +974,13 @@ From class
             
             
             
-            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>,&nbsp;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;&gt;
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#entrySet()">entrySet</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns a set of the mappings contained in this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Compares the specified Object with this Map for equality,
+ as per the definition in the Map interface.</div>
   
   </td></tr>
 
@@ -850,13 +993,13 @@ From class
             
             
             
-            boolean
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#forEach(java.util.function.BiConsumer<? super K, ? super V>)">forEach</a></span>(<a href="../../../reference/java/util/function/BiConsumer.html">BiConsumer</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V&gt; action)
         
-        <div class="jd-descrdiv">Compares this <code>Hashtable</code> with the specified object and indicates
- if they are equal.</div>
+        <div class="jd-descrdiv">Performs the given action for each entry in this map until all entries
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -874,14 +1017,33 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#get(java.lang.Object)">get</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value associated with the specified key in this
- <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#getOrDefault(java.lang.Object, V)">getOrDefault</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> defaultValue)
+        
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped, or
+ <code>defaultValue</code> if this map contains no mapping for the key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             synchronized
@@ -893,25 +1055,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            synchronized
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#isEmpty()">isEmpty</a></span>()
-        
-        <div class="jd-descrdiv">Returns true if this <code>Hashtable</code> has no key/value pairs.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this Map as per the definition in the
+ Map interface.</div>
   
   </td></tr>
 
@@ -924,12 +1069,48 @@ From class
             
             
             
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#isEmpty()">isEmpty</a></span>()
+        
+        <div class="jd-descrdiv">Tests if this hashtable maps no keys to values.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
             <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#keySet()">keySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a set of the keys contained in this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#keys()">keys</a></span>()
+        
+        <div class="jd-descrdiv">Returns an enumeration of the keys in this hashtable.</div>
   
   </td></tr>
 
@@ -942,12 +1123,13 @@ From class
             
             
             
-            <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
+            <a href="../../../reference/java/lang/Object.html">Object</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#keys()">keys</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#merge(K, V, java.util.function.BiFunction<? super V, ? super V, ? extends V>)">merge</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
         
-        <div class="jd-descrdiv">Returns an enumeration on the keys of this <code>Hashtable</code> instance.</div>
+        <div class="jd-descrdiv">If the specified key is not already associated with a value or is
+ associated with null, associates it with the given non-null value.</div>
   
   </td></tr>
 
@@ -965,8 +1147,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#put(K, V)">put</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Associate the specified value with the specified key in this
- <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Maps the specified <code>key</code> to the specified
+ <code>value</code> in this hashtable.</div>
   
   </td></tr>
 
@@ -982,15 +1164,35 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; t)
         
-        <div class="jd-descrdiv">Copies every mapping to this <code>Hashtable</code> from the specified map.</div>
+        <div class="jd-descrdiv">Copies all of the mappings from the specified map to this hashtable.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#putIfAbsent(K, V)">putIfAbsent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>) associates it with the given value and returns
+ <code>null</code>, else returns the current value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1002,7 +1204,28 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#rehash()">rehash</a></span>()
         
-        <div class="jd-descrdiv">Increases the capacity of this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Increases the capacity of and internally reorganizes this
+ hashtable, in order to accommodate and access its entries more
+ efficiently.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#remove(java.lang.Object, java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">Removes the entry for the specified key only if it is currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1020,8 +1243,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes the key/value pair with the specified key from this
- <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Removes the key (and its corresponding value) from this
+ hashtable.</div>
   
   </td></tr>
 
@@ -1034,12 +1257,13 @@ From class
             
             
             
-            int
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#size()">size</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#replace(K, V, V)">replace</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> oldValue, <a href="../../../reference/java/lang/Object.html">Object</a> newValue)
         
-        <div class="jd-descrdiv">Returns the number of key/value pairs in this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1052,12 +1276,13 @@ From class
             
             
             
-            <a href="../../../reference/java/lang/String.html">String</a>
+            <a href="../../../reference/java/lang/Object.html">Object</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#toString()">toString</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#replace(K, V)">replace</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if it is
+ currently mapped to some value.</div>
   
   </td></tr>
 
@@ -1070,12 +1295,70 @@ From class
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#replaceAll(java.util.function.BiFunction<? super K, ? super V, ? extends V>)">replaceAll</a></span>(<a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; function)
+        
+        <div class="jd-descrdiv">Replaces each entry's value with the result of invoking the given
+ function on that entry until all entries have been processed or the
+ function throws an exception.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns the number of keys in this hashtable.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string representation of this <tt>Hashtable</tt> object
+ in the form of a set of entries, enclosed in braces and separated
+ by the ASCII characters "<tt>,&nbsp;</tt>" (comma and space).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
             <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Hashtable.html#values()">values</a></span>()
         
-        <div class="jd-descrdiv">Returns a collection of the values contained in this <code>Hashtable</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.</div>
   
   </td></tr>
 
@@ -1118,7 +1401,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#elements()">elements</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration on the elements of this dictionary.</div>
+        <div class="jd-descrdiv">Returns an enumeration of the values in this dictionary.</div>
   
   </td></tr>
 
@@ -1136,7 +1419,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#get(java.lang.Object)">get</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value which is associated with <code>key</code>.</div>
+        <div class="jd-descrdiv">Returns the value to which the key is mapped in this dictionary.</div>
   
   </td></tr>
 
@@ -1154,7 +1437,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns true if this dictionary has no key/value pairs.</div>
+        <div class="jd-descrdiv">Tests if this dictionary maps no keys to value.</div>
   
   </td></tr>
 
@@ -1172,7 +1455,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#keys()">keys</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration on the keys of this dictionary.</div>
+        <div class="jd-descrdiv">Returns an enumeration of the keys in this dictionary.</div>
   
   </td></tr>
 
@@ -1190,7 +1473,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#put(K, V)">put</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Associate <code>key</code> with <code>value</code> in this dictionary.</div>
+        <div class="jd-descrdiv">Maps the specified <code>key</code> to the specified
+ <code>value</code> in this dictionary.</div>
   
   </td></tr>
 
@@ -1208,8 +1492,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes the key/value pair with the specified <code>key</code> from this
- dictionary.</div>
+        <div class="jd-descrdiv">Removes the <code>key</code> (and its corresponding
+ <code>value</code>) from this dictionary.</div>
   
   </td></tr>
 
@@ -1227,7 +1511,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of key/value pairs in this dictionary.</div>
+        <div class="jd-descrdiv">Returns the number of entries (distinct keys) in this dictionary.</div>
   
   </td></tr>
 
@@ -1500,13 +1784,71 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Map</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the mappings from this map (optional operation).</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#compute(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">compute</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">Attempts to compute a mapping for the specified key and its current
+ mapped value (or <code>null</code> if there is no current mapping).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#computeIfAbsent(K, java.util.function.Function<? super K, ? extends V>)">computeIfAbsent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; mappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>), attempts to compute its value using the given mapping
+ function and enters it into this map unless <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#computeIfPresent(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">computeIfPresent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the value for the specified key is present and non-null, attempts to
+ compute a new mapping given the key and its current mapped value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -1518,25 +1860,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#containsKey(java.lang.Object)">containsKey</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified key.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
-        
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains a mapping for the specified
+ key.</div>
   
   </td></tr>
 
@@ -1549,12 +1874,13 @@ From interface
             
             
             
-            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>,&nbsp;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;&gt;
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns a <code>Set</code> containing all of the mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map maps one or more keys to the
+ specified value.</div>
   
   </td></tr>
 
@@ -1567,13 +1893,49 @@ From interface
             
             
             
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>,&nbsp;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns <code>true</code> if the
- specified object is a <code>Map</code> and both <code>Map</code>s contain the same mappings.</div>
+        <div class="jd-descrdiv">Compares the specified object with this map for equality.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#forEach(java.util.function.BiConsumer<? super K, ? super V>)">forEach</a></span>(<a href="../../../reference/java/util/function/BiConsumer.html">BiConsumer</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V&gt; action)
+        
+        <div class="jd-descrdiv">Performs the given action for each entry in this map until all entries
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -1591,7 +1953,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#get(java.lang.Object)">get</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value of the mapping with the specified key.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -1604,12 +1967,13 @@ From interface
             
             
             
-            int
+            <a href="../../../reference/java/lang/Object.html">Object</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#getOrDefault(java.lang.Object, V)">getOrDefault</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> defaultValue)
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped, or
+ <code>defaultValue</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -1622,12 +1986,12 @@ From interface
             
             
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this map is empty.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this map.</div>
   
   </td></tr>
 
@@ -1640,12 +2004,49 @@ From interface
             
             
             
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains no key-value mappings.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#keySet()">keySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a set of the keys contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#merge(K, V, java.util.function.BiFunction<? super V, ? super V, ? extends V>)">merge</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value or is
+ associated with null, associates it with the given non-null value.</div>
   
   </td></tr>
 
@@ -1663,7 +2064,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#put(K, V)">put</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Maps the specified key to the specified value.</div>
+        <div class="jd-descrdiv">Associates the specified value with the specified key in this map
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1679,9 +2081,49 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Copies every mapping in the specified <code>Map</code> to this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Copies all of the mappings from the specified map to this map
+ (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#putIfAbsent(K, V)">putIfAbsent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>) associates it with the given value and returns
+ <code>null</code>, else returns the current value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#remove(java.lang.Object, java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">Removes the entry for the specified key only if it is currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1699,7 +2141,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes a mapping with the specified key from this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Removes the mapping for a key from this map if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1712,12 +2155,13 @@ From interface
             
             
             
-            int
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#size()">size</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#replace(K, V, V)">replace</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> oldValue, <a href="../../../reference/java/lang/Object.html">Object</a> newValue)
         
-        <div class="jd-descrdiv">Returns the number of mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1730,12 +2174,69 @@ From interface
             
             
             
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#replace(K, V)">replace</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if it is
+ currently mapped to some value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#replaceAll(java.util.function.BiFunction<? super K, ? super V, ? extends V>)">replaceAll</a></span>(<a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; function)
+        
+        <div class="jd-descrdiv">Replaces each entry's value with the result of invoking the given
+ function on that entry until all entries have been processed or the
+ function throws an exception.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns the number of key-value mappings in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#values()">values</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>Collection</code> of the values contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.</div>
   
   </td></tr>
 
@@ -1804,9 +2305,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The default values for keys not found in this <code>Properties</code>
- instance.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>A property list that contains default values for any keys not
+ found in this property list.</p></div>
 
     
     </div>
@@ -1848,7 +2348,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Properties</code> object.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an empty property list with no default values.
 </p></div>
 
     </div>
@@ -1868,7 +2368,7 @@ From interface
         
       </span>
       <span class="sympad">Properties</span>
-      <span class="normal">(<a href="../../../reference/java/util/Properties.html">Properties</a> properties)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Properties.html">Properties</a> defaults)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1880,14 +2380,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Properties</code> object using the specified default
- <code>Properties</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an empty property list with the specified defaults.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>properties</th>
-          <td>the default <code>Properties</code>.
+          <th>defaults</th>
+          <td>the defaults.
 </td>
         </tr>
       </table>
@@ -1925,7 +2424,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">getProperty</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> defaultValue)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> key, <a href="../../../reference/java/lang/String.html">String</a> defaultValue)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1937,27 +2436,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches for the property with the specified name. If the property is not
- found, it looks in the default <code>Properties</code>. If the property is not
- found in the default <code>Properties</code>, it returns the specified
- default.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Searches for the property with the specified key in this property list.
+ If the key is not found in this property list, the default property list,
+ and its defaults, recursively, are then checked. The method returns the
+ default value argument if the property is not found.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>name</th>
-          <td>the name of the property to find.</td>
+          <th>key</th>
+          <td>the hashtable key.</td>
         </tr>
         <tr>
           <th>defaultValue</th>
-          <td>the default value.</td>
+          <td>a default value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the named property value.
-</li></ul>
+      <ul class="nolist"><li>the value in this property list with the specified key value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#setProperty(java.lang.String, java.lang.String)">setProperty(String, String)</a></code></li><li><code><a href="../../../reference/java/util/Properties.html#defaults">defaults</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1977,7 +2480,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">getProperty</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> name)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> key)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1989,22 +2492,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches for the property with the specified name. If the property is not
- found, the default <code>Properties</code> are checked. If the property is not
- found in the default <code>Properties</code>, <code>null</code> is returned.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Searches for the property with the specified key in this property list.
+ If the key is not found in this property list, the default property list,
+ and its defaults, recursively, are then checked. The method returns
+ <code>null</code> if the property is not found.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>name</th>
-          <td>the name of the property to find.</td>
+          <th>key</th>
+          <td>the property key.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the named property value, or <code>null</code> if it can't be found.
-</li></ul>
+      <ul class="nolist"><li>the value in this property list with the specified key value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#setProperty(java.lang.String, java.lang.String)">setProperty(String, String)</a></code></li><li><code><a href="../../../reference/java/util/Properties.html#defaults">defaults</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2036,9 +2544,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Lists the mappings in this <code>Properties</code> to <code>out</code> in a human-readable form.
- Note that values are truncated to 37 characters, so this method is rarely useful.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints this property list out to the specified output stream.
+ This method is useful for debugging.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>out</th>
+          <td>an output stream.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if any key in this property list
+          is not a string.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2069,9 +2596,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Lists the mappings in this <code>Properties</code> to <code>out</code> in a human-readable form.
- Note that values are truncated to 37 characters, so this method is rarely useful.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints this property list out to the specified output stream.
+ This method is useful for debugging.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>out</th>
+          <td>an output stream.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if any key in this property list
+          is not a string.</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2090,7 +2635,7 @@ From interface
         void
       </span>
       <span class="sympad">load</span>
-      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)</span>
+      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> inStream)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2102,14 +2647,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Loads properties from the specified <code>InputStream</code>, assumed to be ISO-8859-1.
- See "<a href="#character_encoding">Character Encoding</a>".</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a property list (key and element pairs) from the input
+ byte stream. The input stream is in a simple line-oriented
+ format as specified in
+ <code><a href="reference/java/util/Properties.html#load(java.io.Reader)">load(Reader)</a></code> and is assumed to use
+ the ISO 8859-1 character encoding; that is each byte is one Latin1
+ character. Characters not in Latin1, and certain special characters,
+ are represented in keys and elements using Unicode escapes as defined in
+ section 3.3 of
+ <cite>The Java&trade; Language Specification</cite>.
+ <p>
+ The specified stream remains open after this method returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>in</th>
-          <td>the <code>InputStream</code></td>
+          <th>inStream</th>
+          <td>the input stream.</td>
         </tr>
       </table>
   </div>
@@ -2118,7 +2672,13 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <td>if an error occurred when reading from the
+             input stream.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if the input stream contains a
+             malformed Unicode escape sequence.</td>
         </tr>
       </table>
   </div>
@@ -2140,7 +2700,7 @@ From interface
         void
       </span>
       <span class="sympad">load</span>
-      <span class="normal">(<a href="../../../reference/java/io/Reader.html">Reader</a> in)</span>
+      <span class="normal">(<a href="../../../reference/java/io/Reader.html">Reader</a> reader)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2152,31 +2712,154 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Loads properties from the specified <code>Reader</code>.
- The properties file is interpreted according to the following rules:
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a property list (key and element pairs) from the input
+ character stream in a simple line-oriented format.
+ <p>
+ Properties are processed in terms of lines. There are two
+ kinds of line, <i>natural lines</i> and <i>logical lines</i>.
+ A natural line is defined as a line of
+ characters that is terminated either by a set of line terminator
+ characters (<code>\n</code> or <code>\r</code> or <code>\r\n</code>)
+ or by the end of the stream. A natural line may be either a blank line,
+ a comment line, or hold all or some of a key-element pair. A logical
+ line holds all the data of a key-element pair, which may be spread
+ out across several adjacent natural lines by escaping
+ the line terminator sequence with a backslash character
+ <code>\</code>.  Note that a comment line cannot be extended
+ in this manner; every natural line that is a comment must have
+ its own comment indicator, as described below. Lines are read from
+ input until the end of the stream is reached.
+
+ <p>
+ A natural line that contains only white space characters is
+ considered blank and is ignored.  A comment line has an ASCII
+ <code>'#'</code> or <code>'!'</code> as its first non-white
+ space character; comment lines are also ignored and do not
+ encode key-element information.  In addition to line
+ terminators, this format considers the characters space
+ (<code>' '</code>, <code>'&#92;u0020'</code>), tab
+ (<code>'\t'</code>, <code>'&#92;u0009'</code>), and form feed
+ (<code>'\f'</code>, <code>'&#92;u000C'</code>) to be white
+ space.
+
+ <p>
+ If a logical line is spread across several natural lines, the
+ backslash escaping the line terminator sequence, the line
+ terminator sequence, and any white space at the start of the
+ following line have no affect on the key or element values.
+ The remainder of the discussion of key and element parsing
+ (when loading) will assume all the characters constituting
+ the key and element appear on a single natural line after
+ line continuation characters have been removed.  Note that
+ it is <i>not</i> sufficient to only examine the character
+ preceding a line terminator sequence to decide if the line
+ terminator is escaped; there must be an odd number of
+ contiguous backslashes for the line terminator to be escaped.
+ Since the input is processed from left to right, a
+ non-zero even number of 2<i>n</i> contiguous backslashes
+ before a line terminator (or elsewhere) encodes <i>n</i>
+ backslashes after escape processing.
+
+ <p>
+ The key contains all of the characters in the line starting
+ with the first non-white space character and up to, but not
+ including, the first unescaped <code>'='</code>,
+ <code>':'</code>, or white space character other than a line
+ terminator. All of these key termination characters may be
+ included in the key by escaping them with a preceding backslash
+ character; for example,<p>
+
+ <code>\:\=</code><p>
+
+ would be the two-character key <code>":="</code>.  Line
+ terminator characters can be included using <code>\r</code> and
+ <code>\n</code> escape sequences.  Any white space after the
+ key is skipped; if the first non-white space character after
+ the key is <code>'='</code> or <code>':'</code>, then it is
+ ignored and any white space characters after it are also
+ skipped.  All remaining characters on the line become part of
+ the associated element string; if there are no remaining
+ characters, the element is the empty string
+ <code>&quot;&quot;</code>.  Once the raw character sequences
+ constituting the key and element are identified, escape
+ processing is performed as described above.
+
+ <p>
+ As an example, each of the following three lines specifies the key
+ <code>"Truth"</code> and the associated element value
+ <code>"Beauty"</code>:
+ <p>
+ <pre>
+ Truth = Beauty
+  Truth:Beauty
+ Truth                    :Beauty
+ </pre>
+ As another example, the following three lines specify a single
+ property:
+ <p>
+ <pre>
+ fruits                           apple, banana, pear, \
+                                  cantaloupe, watermelon, \
+                                  kiwi, mango
+ </pre>
+ The key is <code>"fruits"</code> and the associated element is:
+ <p>
+ <pre>"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"</pre>
+ Note that a space appears before each <code>\</code> so that a space
+ will appear after each comma in the final result; the <code>\</code>,
+ line terminator, and leading white space on the continuation line are
+ merely discarded and are <i>not</i> replaced by one or more other
+ characters.
+ <p>
+ As a third example, the line:
+ <p>
+ <pre>cheeses
+ </pre>
+ specifies that the key is <code>"cheeses"</code> and the associated
+ element is the empty string <code>""</code>.<p>
+ <p>
+
+ <a name="unicodeescapes"></a>
+ Characters in keys and elements can be represented in escape
+ sequences similar to those used for character and string literals
+ (see sections 3.3 and 3.10.6 of
+ <cite>The Java&trade; Language Specification</cite>).
+
+ The differences from the character escape sequences and Unicode
+ escapes used for characters and strings are:
+
  <ul>
- <li>Empty lines are ignored.</li>
- <li>Lines starting with either a "#" or a "!" are comment lines and are
- ignored.</li>
- <li>A backslash at the end of the line escapes the following newline
- character ("\r", "\n", "\r\n"). If there's whitespace after the
- backslash it will just escape that whitespace instead of concatenating
- the lines. This does not apply to comment lines.</li>
- <li>A property line consists of the key, the space between the key and
- the value, and the value. The key goes up to the first whitespace, "=" or
- ":" that is not escaped. The space between the key and the value contains
- either one whitespace, one "=" or one ":" and any amount of additional
- whitespace before and after that character. The value starts with the
- first character after the space between the key and the value.</li>
- <li>Following escape sequences are recognized: "\ ", "\\", "\r", "\n",
- "\!", "\#", "\t", "\b", "\f", and "&#92;uXXXX" (unicode character).</li>
- </ul></p></div>
+ <li> Octal escapes are not recognized.
+
+ <li> The character sequence <code>\b</code> does <i>not</i>
+ represent a backspace character.
+
+ <li> The method does not treat a backslash character,
+ <code>\</code>, before a non-valid escape character as an
+ error; the backslash is silently dropped.  For example, in a
+ Java string the sequence <code>"\z"</code> would cause a
+ compile time error.  In contrast, this method silently drops
+ the backslash.  Therefore, this method treats the two character
+ sequence <code>"\b"</code> as equivalent to the single
+ character <code>'b'</code>.
+
+ <li> Escapes are not necessary for single and double quotes;
+ however, by the rule above, single and double quote characters
+ preceded by a backslash still yield single and double quote
+ characters, respectively.
+
+ <li> Only a single 'u' character is allowed in a Uniocde escape
+ sequence.
+
+ </ul>
+ <p>
+ The specified stream remains open after this method returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>in</th>
-          <td>the <code>Reader</code></td>
+          <th>reader</th>
+          <td>the input character stream.</td>
         </tr>
       </table>
   </div>
@@ -2184,12 +2867,14 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th></td>
-            <td>IOException</td>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an error occurred when reading from the
+          input stream.</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if a malformed Unicode escape
+          appears in the input.</td>
         </tr>
       </table>
   </div>
@@ -2223,23 +2908,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Loads the properties from an <code>InputStream</code> containing the
- properties in XML form. The XML document must begin with (and conform to)
- following DOCTYPE:
+  <div class="jd-tagdata jd-tagdescr"><p>Loads all of the properties represented by the XML document on the
+ specified input stream into this properties table.
 
+ <p>The XML document must have the following DOCTYPE declaration:
  <pre>
- &lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+ &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
  </pre>
+ Furthermore, the document must satisfy the properties DTD described
+ above.
 
- Also the content of the XML data must satisfy the DTD but the xml is not
- validated against it. The DTD is not loaded from the SYSTEM ID. After
- this method returns the InputStream is not closed.</p></div>
+ <p>The specified stream is closed after this method returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>in</th>
-          <td>the InputStream containing the XML document.</td>
+          <td>the input stream from which to read the XML document.</td>
         </tr>
       </table>
   </div>
@@ -2248,15 +2933,24 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>in case an error occurs during a read operation.</td>
+            <td>if reading from the specified input stream
+         results in an <tt>IOException</tt>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></td>
-            <td>if the XML data is not a valid
-             properties file.
-</td>
+            <td>Data on input stream does not
+         constitute a valid XML document with the mandated document type.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>in</code> is null.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#storeToXML(java.io.OutputStream, java.lang.String, java.lang.String)">storeToXML(OutputStream, String, String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2288,8 +2982,30 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns all of the property names (keys) in this <code>Properties</code> object.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of all the keys in this property list,
+ including distinct keys in the default property list if a key
+ of the same name has not already been found from the main
+ properties list.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an enumeration of all the keys in this property list, including
+          the keys in the default property list.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if any key in this property list
+          is not a string.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li><li><code><a href="../../../reference/java/util/Properties.html#defaults">defaults</a></code></li><li><code><a href="../../../reference/java/util/Properties.html#stringPropertyNames()">stringPropertyNames()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2308,7 +3024,7 @@ From interface
         void
       </span>
       <span class="sympad">save</span>
-      <span class="normal">(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comment)</span>
+      <span class="normal">(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comments)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2322,24 +3038,24 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method ignores any <code>IOException</code> thrown while
-             writing -- use <code><a href="reference/java/util/Properties.html#store(java.io.OutputStream, java.lang.String)">store(OutputStream, String)</a></code> instead for better exception
-             handling.
-
+  This method is deprecated.</strong><br/> This method does not throw an IOException if an I/O error
+ occurs while saving the property list.  The preferred way to save a
+ properties list is via the <code>store(OutputStream out,
+ String comments)</code> method or the
+ <code>storeToXML(OutputStream os, String comment)</code> method.
   </p>
-  <div class="jd-tagdata jd-tagdescr"><p>Saves the mappings in this <code>Properties</code> to the specified <code>OutputStream</code>, putting the specified comment at the beginning. The output
- from this method is suitable for being read by the
- <code><a href="reference/java/util/Properties.html#load(java.io.InputStream)">load(InputStream)</a></code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Calls the <code>store(OutputStream out, String comments)</code> method
+ and suppresses IOExceptions that were thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>out</th>
-          <td>the <code>OutputStream</code> to write to.</td>
+          <td>an output stream.</td>
         </tr>
         <tr>
-          <th>comment</th>
-          <td>the comment to add at the beginning.</td>
+          <th>comments</th>
+          <td>a description of the property list.</td>
         </tr>
       </table>
   </div>
@@ -2348,8 +3064,10 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the key or value of a mapping is not a
-                String.</td>
+            <td>if this <code>Properties</code> object
+             contains any keys or values that are not
+             <code>Strings</code>.
+</td>
         </tr>
       </table>
   </div>
@@ -2367,11 +3085,11 @@ From interface
         
         
         
-        
+        synchronized
         <a href="../../../reference/java/lang/Object.html">Object</a>
       </span>
       <span class="sympad">setProperty</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> value)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> key, <a href="../../../reference/java/lang/String.html">String</a> value)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2383,25 +3101,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Maps the specified key to the specified value. If the key already exists,
- the old value is replaced. The key and value cannot be <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Calls the <tt>Hashtable</tt> method <code>put</code>. Provided for
+ parallelism with the <tt>getProperty</tt> method. Enforces use of
+ strings for property keys and values. The value returned is the
+ result of the <tt>Hashtable</tt> call to <code>put</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>name</th>
-          <td>the key.</td>
+          <th>key</th>
+          <td>the key to be placed into this property list.</td>
         </tr>
         <tr>
           <th>value</th>
-          <td>the value.</td>
+          <td>the value corresponding to <tt>key</tt>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the old value mapped to the key, or <code>null</code>.
-</li></ul>
+      <ul class="nolist"><li>the previous value of the specified key in this property
+             list, or <code>null</code> if it did not have one.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#getProperty(java.lang.String)">getProperty(String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2417,11 +3142,11 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">store</span>
-      <span class="normal">(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comment)</span>
+      <span class="normal">(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, <a href="../../../reference/java/lang/String.html">String</a> comments)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2433,18 +3158,44 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Stores properties to the specified <code>OutputStream</code>, using ISO-8859-1.
- See "<a href="#character_encoding">Character Encoding</a>".</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes this property list (key and element pairs) in this
+ <code>Properties</code> table to the output stream in a format suitable
+ for loading into a <code>Properties</code> table using the
+ <code><a href="reference/java/util/Properties.html#load(java.io.InputStream)">load(InputStream)</a></code> method.
+ <p>
+ Properties from the defaults table of this <code>Properties</code>
+ table (if any) are <i>not</i> written out by this method.
+ <p>
+ This method outputs the comments, properties keys and values in
+ the same format as specified in
+ <code><a href="reference/java/util/Properties.html#store(java.io.Writer, java.lang.String)">store(Writer)</a></code>,
+ with the following differences:
+ <ul>
+ <li>The stream is written using the ISO 8859-1 character encoding.
+
+ <li>Characters not in Latin-1 in the comments are written as
+ <code>&#92;u</code><i>xxxx</i> for their appropriate unicode
+ hexadecimal value <i>xxxx</i>.
+
+ <li>Characters less than <code>&#92;u0020</code> and characters greater
+ than <code>&#92;u007E</code> in property keys or values are written
+ as <code>&#92;u</code><i>xxxx</i> for the appropriate hexadecimal
+ value <i>xxxx</i>.
+ </ul>
+ <p>
+ After the entries have been written, the output stream is flushed.
+ The output stream remains open after this method returns.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>out</th>
-          <td>the <code>OutputStream</code></td>
+          <td>an output stream.</td>
         </tr>
         <tr>
-          <th>comment</th>
-          <td>an optional comment to be written, or null</td>
+          <th>comments</th>
+          <td>a description of the property list.</td>
         </tr>
       </table>
   </div>
@@ -2452,17 +3203,18 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th></td>
-            <td>IOException</td>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if writing this property list to the specified
+             output stream throws an <tt>IOException</tt>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if a key or value is not a string
-</td>
+            <td>if this <code>Properties</code> object
+             contains any keys or values that are not <code>Strings</code>.</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>out</code> is null.</td>
         </tr>
       </table>
   </div>
@@ -2480,11 +3232,11 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">store</span>
-      <span class="normal">(<a href="../../../reference/java/io/Writer.html">Writer</a> writer, <a href="../../../reference/java/lang/String.html">String</a> comment)</span>
+      <span class="normal">(<a href="../../../reference/java/io/Writer.html">Writer</a> writer, <a href="../../../reference/java/lang/String.html">String</a> comments)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2496,18 +3248,53 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Stores the mappings in this <code>Properties</code> object to <code>out</code>,
- putting the specified comment at the beginning.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes this property list (key and element pairs) in this
+ <code>Properties</code> table to the output character stream in a
+ format suitable for using the <code><a href="reference/java/util/Properties.html#load(java.io.Reader)">load(Reader)</a></code>
+ method.
+ <p>
+ Properties from the defaults table of this <code>Properties</code>
+ table (if any) are <i>not</i> written out by this method.
+ <p>
+ If the comments argument is not null, then an ASCII <code>#</code>
+ character, the comments string, and a line separator are first written
+ to the output stream. Thus, the <code>comments</code> can serve as an
+ identifying comment. Any one of a line feed ('\n'), a carriage
+ return ('\r'), or a carriage return followed immediately by a line feed
+ in comments is replaced by a line separator generated by the <code>Writer</code>
+ and if the next character in comments is not character <code>#</code> or
+ character <code>!</code> then an ASCII <code>#</code> is written out
+ after that line separator.
+ <p>
+ Next, a comment line is always written, consisting of an ASCII
+ <code>#</code> character, the current date and time (as if produced
+ by the <code>toString</code> method of <code>Date</code> for the
+ current time), and a line separator as generated by the <code>Writer</code>.
+ <p>
+ Then every entry in this <code>Properties</code> table is
+ written out, one per line. For each entry the key string is
+ written, then an ASCII <code>=</code>, then the associated
+ element string. For the key, all space characters are
+ written with a preceding <code>\</code> character.  For the
+ element, leading space characters, but not embedded or trailing
+ space characters, are written with a preceding <code>\</code>
+ character. The key and element characters <code>#</code>,
+ <code>!</code>, <code>=</code>, and <code>:</code> are written
+ with a preceding backslash to ensure that they are properly loaded.
+ <p>
+ After the entries have been written, the output stream is flushed.
+ The output stream remains open after this method returns.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>writer</th>
-          <td>the <code>Writer</code></td>
+          <td>an output character stream writer.</td>
         </tr>
         <tr>
-          <th>comment</th>
-          <td>an optional comment to be written, or null</td>
+          <th>comments</th>
+          <td>a description of the property list.</td>
         </tr>
       </table>
   </div>
@@ -2515,16 +3302,18 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th></td>
-            <td>IOException</td>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if writing this property list to the specified
+             output stream throws an <tt>IOException</tt>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if a key or value is not a string</td>
+            <td>if this <code>Properties</code> object
+             contains any keys or values that are not <code>Strings</code>.</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>writer</code> is null.</td>
         </tr>
       </table>
   </div>
@@ -2542,7 +3331,7 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">storeToXML</span>
@@ -2558,29 +3347,35 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes all properties stored in this instance into the <code>OutputStream</code> in XML representation. The DOCTYPE is
+  <div class="jd-tagdata jd-tagdescr"><p>Emits an XML document representing all of the properties contained
+ in this table, using the specified encoding.
 
+ <p>The XML document will have the following DOCTYPE declaration:
  <pre>
- &lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+ &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
  </pre>
 
- If the comment is null, no comment is added to the output. The parameter
- <code>encoding</code> defines which encoding should be used. The <code>OutputStream</code> is not closed at the end.</p></div>
+<p>If the specified comment is <code>null</code> then no comment
+ will be stored in the document.
+
+ <p>The specified stream remains open after this method returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>os</th>
-          <td>the <code>OutputStream</code> to write to.</td>
+          <td>the output stream on which to emit the XML document.</td>
         </tr>
         <tr>
           <th>comment</th>
-          <td>the comment to add. If null, no comment is added.</td>
+          <td>a description of the property list, or <code>null</code>
+                  if no comment is desired.</td>
         </tr>
         <tr>
           <th>encoding</th>
-          <td>the code identifying the encoding that should be used to
-            write into the <code>OutputStream</code>.</td>
+          <td>the name of a supported
+                  <a href="../lang/package-summary.html#charenc">
+                  character encoding</a></td>
         </tr>
       </table>
   </div>
@@ -2589,10 +3384,26 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs during writing to the output.
-</td>
+            <td>if writing to the specified output stream
+         results in an <tt>IOException</tt>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>os</code> is <code>null</code>,
+         or if <code>encoding</code> is <code>null</code>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if this <code>Properties</code> object
+         contains any keys or values that are not
+         <code>Strings</code>.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#loadFromXML(java.io.InputStream)">loadFromXML(InputStream)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2624,26 +3435,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes all properties stored in this instance into the <code>OutputStream</code> in XML representation. The DOCTYPE is
+  <div class="jd-tagdata jd-tagdescr"><p>Emits an XML document representing all of the properties contained
+ in this table.
 
- <pre>
- &lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
- </pre>
-
- If the comment is null, no comment is added to the output. UTF-8 is used
- as the encoding. The <code>OutputStream</code> is not closed at the end. A
- call to this method is the same as a call to <code>storeToXML(os,
- comment, "UTF-8")</code>.</p></div>
+ <p> An invocation of this method of the form <tt>props.storeToXML(os,
+ comment)</tt> behaves in exactly the same way as the invocation
+ <tt>props.storeToXML(os, comment, "UTF-8");</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>os</th>
-          <td>the <code>OutputStream</code> to write to.</td>
+          <td>the output stream on which to emit the XML document.</td>
         </tr>
         <tr>
           <th>comment</th>
-          <td>the comment to add. If null, no comment is added.</td>
+          <td>a description of the property list, or <code>null</code>
+        if no comment is desired.</td>
         </tr>
       </table>
   </div>
@@ -2652,10 +3460,25 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs during writing to the output.
-</td>
+            <td>if writing to the specified output stream
+         results in an <tt>IOException</tt>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>os</code> is null.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if this <code>Properties</code> object
+         contains any keys or values that are not
+         <code>Strings</code>.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#loadFromXML(java.io.InputStream)">loadFromXML(InputStream)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2687,11 +3510,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns those property names (keys) in this <code>Properties</code> object for which
- both key and value are strings.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a set of keys in this property list where
+ the key and its corresponding value are strings,
+ including distinct keys in the default property list if a key
+ of the same name has not already been found from the main
+ properties list.  Properties whose key or value is not
+ of type <tt>String</tt> are omitted.
+ <p>
+ The returned set is not backed by the <tt>Properties</tt> object.
+ Changes to this <tt>Properties</tt> are not reflected in the set,
+ or vice versa.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a set of keys in the property list</li></ul>
+      <ul class="nolist"><li>a set of keys in this property list where
+          the key and its corresponding value are strings,
+          including the keys in the default property list.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html#defaults">defaults</a></code></li>
+      </ul>
   </div>
 
     </div>

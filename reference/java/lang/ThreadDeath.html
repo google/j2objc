@@ -212,9 +212,22 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>ThreadDeath is thrown when a thread stops executing. It is used to aid in the
- orderly unrolling of the thread's stack (eg. cleanup of monitors).
-</p>
+<p>An instance of <code>ThreadDeath</code> is thrown in the victim thread
+ when the (deprecated) <code><a href="reference/java/lang/Thread.html#stop()">stop()</a></code> method is invoked.
+
+ <p>An application should catch instances of this class only if it
+ must clean up after being terminated asynchronously.  If
+ <code>ThreadDeath</code> is caught by a method, it is important that it
+ be rethrown so that the thread actually dies.
+
+ <p>The {@linkplain ThreadGroup#uncaughtException top-level error
+ handler} does not print out a message if <code>ThreadDeath</code> is
+ never caught.
+
+ <p>The class <code>ThreadDeath</code> is specifically a subclass of
+ <code>Error</code> rather than <code>Exception</code>, even though it is a
+ "normal occurrence", because many applications catch all
+ occurrences of <code>Exception</code> and then discard the exception.</p>
 
 
 
@@ -282,8 +295,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadDeath.html#ThreadDeath()">ThreadDeath</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of this class.</div>
-  
   </td></tr>
 
 
@@ -516,6 +527,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -816,10 +846,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of this class. Note that in the case of
- ThreadDeath, the stack trace may <em>not</em> be filled in a way which
- allows a stack trace to be printed.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>

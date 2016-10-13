@@ -428,8 +428,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#clearAssertionStatus()">clearAssertionStatus</a></span>()
         
-        <div class="jd-descrdiv">Sets the default assertion status for this class loader to <code>false</code>
- and removes any package default and class assertion status settings.</div>
+        <div class="jd-descrdiv">Sets the default assertion status for this class loader to
+ <tt>false</tt> and discards any package defaults or class assertion
+ status settings associated with the class loader.</div>
   
   </td></tr>
 
@@ -445,11 +446,10 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int, java.security.ProtectionDomain)">defineClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className, byte[] classRep, int offset, int length, <a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> protectionDomain)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int, java.security.ProtectionDomain)">defineClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, byte[] b, int off, int len, <a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> protectionDomain)
         
-        <div class="jd-descrdiv">Constructs a new class from an array of bytes containing a class
- definition in class file format and assigns the specified protection
- domain to the new class.</div>
+        <div class="jd-descrdiv">Converts an array of bytes into an instance of class <tt>Class</tt>,
+ with an optional <tt>ProtectionDomain</tt>.</div>
   
   </td></tr>
 
@@ -467,8 +467,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, java.nio.ByteBuffer, java.security.ProtectionDomain)">defineClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> b, <a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> protectionDomain)
         
-        <div class="jd-descrdiv">Defines a new class with the specified name, byte code from the byte
- buffer and the optional protection domain.</div>
+        <div class="jd-descrdiv">Converts a <code><a href="reference/java/nio/ByteBuffer.html"><tt>ByteBuffer</tt></a></code>
+ into an instance of class <tt>Class</tt>,
+ with an optional <tt>ProtectionDomain</tt>.</div>
   
   </td></tr>
 
@@ -484,12 +485,12 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(byte[], int, int)">defineClass</a></span>(byte[] classRep, int offset, int length)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(byte[], int, int)">defineClass</a></span>(byte[] b, int off, int len)
         
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass(String, byte[], int, int)</a></code>
+      Replaced by <code><a href="reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass(String, byte[], int, int)</a></code>
 </em></div>
   
   </td></tr>
@@ -506,10 +507,9 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className, byte[] classRep, int offset, int length)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Constructs a new class from an array of bytes containing a class
- definition in class file format.</div>
+        <div class="jd-descrdiv">Converts an array of bytes into an instance of class <tt>Class</tt>.</div>
   
   </td></tr>
 
@@ -527,8 +527,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#definePackage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URL)">definePackage</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> specTitle, <a href="../../../reference/java/lang/String.html">String</a> specVersion, <a href="../../../reference/java/lang/String.html">String</a> specVendor, <a href="../../../reference/java/lang/String.html">String</a> implTitle, <a href="../../../reference/java/lang/String.html">String</a> implVersion, <a href="../../../reference/java/lang/String.html">String</a> implVendor, <a href="../../../reference/java/net/URL.html">URL</a> sealBase)
         
-        <div class="jd-descrdiv">Defines and returns a new <code>Package</code> using the specified
- information.</div>
+        <div class="jd-descrdiv">Defines a package by name in this <tt>ClassLoader</tt>.</div>
   
   </td></tr>
 
@@ -544,10 +543,9 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findClass(java.lang.String)">findClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findClass(java.lang.String)">findClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Overridden by subclasses, throws a <code>ClassNotFoundException</code> by
- default.</div>
+        <div class="jd-descrdiv">Finds the class with the specified <a href="#name">binary name</a>.</div>
   
   </td></tr>
 
@@ -563,10 +561,9 @@ From class
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findLibrary(java.lang.String)">findLibrary</a></span>(<a href="../../../reference/java/lang/String.html">String</a> libName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findLibrary(java.lang.String)">findLibrary</a></span>(<a href="../../../reference/java/lang/String.html">String</a> libname)
         
-        <div class="jd-descrdiv">Returns the absolute path of the native library with the specified name,
- or <code>null</code>.</div>
+        <div class="jd-descrdiv">Returns the absolute path name of a native library.</div>
   
   </td></tr>
 
@@ -582,10 +579,11 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findLoadedClass(java.lang.String)">findLoadedClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findLoadedClass(java.lang.String)">findLoadedClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns the class with the specified name if it has already been loaded
- by the VM or <code>null</code> if it has not yet been loaded.</div>
+        <div class="jd-descrdiv">Returns the class with the given <a href="#name">binary name</a> if this
+ loader has been recorded by the Java virtual machine as an initiating
+ loader of a class with that <a href="#name">binary name</a>.</div>
   
   </td></tr>
 
@@ -601,9 +599,9 @@ From class
             <a href="../../../reference/java/net/URL.html">URL</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findResource(java.lang.String)">findResource</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findResource(java.lang.String)">findResource</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Finds the URL of the resource with the specified name.</div>
+        <div class="jd-descrdiv">Finds the resource with the given name.</div>
   
   </td></tr>
 
@@ -619,9 +617,10 @@ From class
             <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findResources(java.lang.String)">findResources</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findResources(java.lang.String)">findResources</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Finds an enumeration of URLs for the resource with the specified name.</div>
+        <div class="jd-descrdiv">Returns an enumeration of <code><a href="reference/java/net/URL.html"><tt>URL</tt></a></code> objects
+ representing all the resources with the given name.</div>
   
   </td></tr>
 
@@ -637,10 +636,10 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findSystemClass(java.lang.String)">findSystemClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findSystemClass(java.lang.String)">findSystemClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Finds the class with the specified name, loading it using the system
- class loader if necessary.</div>
+        <div class="jd-descrdiv">Finds a class with the specified <a href="#name">binary name</a>,
+ loading it if necessary.</div>
   
   </td></tr>
 
@@ -658,7 +657,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getPackage(java.lang.String)">getPackage</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns the package with the specified name.</div>
+        <div class="jd-descrdiv">Returns a <tt>Package</tt> that has been defined by this class loader
+ or any of its ancestors.</div>
   
   </td></tr>
 
@@ -676,7 +676,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getPackages()">getPackages</a></span>()
         
-        <div class="jd-descrdiv">Returns all the packages known to this class loader.</div>
+        <div class="jd-descrdiv">Returns all of the <tt>Packages</tt> defined by this class loader and
+ its ancestors.</div>
   
   </td></tr>
 
@@ -694,7 +695,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getParent()">getParent</a></span>()
         
-        <div class="jd-descrdiv">Returns this class loader's parent.</div>
+        <div class="jd-descrdiv">Returns the parent class loader for delegation.</div>
   
   </td></tr>
 
@@ -710,9 +711,9 @@ From class
             <a href="../../../reference/java/net/URL.html">URL</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResource(java.lang.String)">getResource</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResource(java.lang.String)">getResource</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns the URL of the resource with the specified name.</div>
+        <div class="jd-descrdiv">Finds the resource with the given name.</div>
   
   </td></tr>
 
@@ -728,9 +729,9 @@ From class
             <a href="../../../reference/java/io/InputStream.html">InputStream</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResourceAsStream(java.lang.String)">getResourceAsStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResourceAsStream(java.lang.String)">getResourceAsStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns a stream for the resource with the specified name.</div>
+        <div class="jd-descrdiv">Returns an input stream for reading the specified resource.</div>
   
   </td></tr>
 
@@ -746,9 +747,9 @@ From class
             <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResources(java.lang.String)">getResources</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResources(java.lang.String)">getResources</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns an enumeration of URLs for the resource with the specified name.</div>
+        <div class="jd-descrdiv">Finds all the resources with the given name.</div>
   
   </td></tr>
 
@@ -766,7 +767,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemClassLoader()">getSystemClassLoader</a></span>()
         
-        <div class="jd-descrdiv">Returns the system class loader.</div>
+        <div class="jd-descrdiv">Returns the system class loader for delegation.</div>
   
   </td></tr>
 
@@ -782,9 +783,10 @@ From class
             <a href="../../../reference/java/net/URL.html">URL</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResource(java.lang.String)">getSystemResource</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResource(java.lang.String)">getSystemResource</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Finds the URL of the resource with the specified name.</div>
+        <div class="jd-descrdiv">Find a resource of the specified name from the search path used to load
+ classes.</div>
   
   </td></tr>
 
@@ -800,9 +802,10 @@ From class
             <a href="../../../reference/java/io/InputStream.html">InputStream</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResourceAsStream(java.lang.String)">getSystemResourceAsStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResourceAsStream(java.lang.String)">getSystemResourceAsStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns a stream for the resource with the specified name.</div>
+        <div class="jd-descrdiv">Open for reading, a resource of the specified name from the search path
+ used to load classes.</div>
   
   </td></tr>
 
@@ -818,9 +821,10 @@ From class
             <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResources(java.lang.String)">getSystemResources</a></span>(<a href="../../../reference/java/lang/String.html">String</a> resName)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResources(java.lang.String)">getSystemResources</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns an enumeration of URLs for the resource with the specified name.</div>
+        <div class="jd-descrdiv">Finds all resources of the specified name from the search path used to
+ load classes.</div>
   
   </td></tr>
 
@@ -836,10 +840,9 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String, boolean)">loadClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className, boolean resolve)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String, boolean)">loadClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, boolean resolve)
         
-        <div class="jd-descrdiv">Loads the class with the specified name, optionally linking it after
- loading.</div>
+        <div class="jd-descrdiv">Loads the class with the specified <a href="#name">binary name</a>.</div>
   
   </td></tr>
 
@@ -855,15 +858,33 @@ From class
             <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String)">loadClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String)">loadClass</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Loads the class with the specified name.</div>
+        <div class="jd-descrdiv">Loads the class with the specified <a href="#name">binary name</a>.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#registerAsParallelCapable()">registerAsParallelCapable</a></span>()
+        
+        <div class="jd-descrdiv">Registers the caller as parallel capable.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -873,27 +894,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#resolveClass(java.lang.Class<?>)">resolveClass</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; clazz)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#resolveClass(java.lang.Class<?>)">resolveClass</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Forces a class to be linked (initialized).</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setClassAssertionStatus(java.lang.String, boolean)">setClassAssertionStatus</a></span>(<a href="../../../reference/java/lang/String.html">String</a> cname, boolean enable)
-        
-        <div class="jd-descrdiv">Sets the assertion status of the class with the specified name.</div>
+        <div class="jd-descrdiv">Links the specified class.</div>
   
   </td></tr>
 
@@ -909,7 +912,26 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setDefaultAssertionStatus(boolean)">setDefaultAssertionStatus</a></span>(boolean enable)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setClassAssertionStatus(java.lang.String, boolean)">setClassAssertionStatus</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className, boolean enabled)
+        
+        <div class="jd-descrdiv">Sets the desired assertion status for the named top-level class in this
+ class loader and any nested classes contained therein.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setDefaultAssertionStatus(boolean)">setDefaultAssertionStatus</a></span>(boolean enabled)
         
         <div class="jd-descrdiv">Sets the default assertion status for this class loader.</div>
   
@@ -917,7 +939,7 @@ From class
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -927,15 +949,15 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setPackageAssertionStatus(java.lang.String, boolean)">setPackageAssertionStatus</a></span>(<a href="../../../reference/java/lang/String.html">String</a> pname, boolean enable)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setPackageAssertionStatus(java.lang.String, boolean)">setPackageAssertionStatus</a></span>(<a href="../../../reference/java/lang/String.html">String</a> packageName, boolean enabled)
         
-        <div class="jd-descrdiv">Sets the assertion status of the package with the specified name.</div>
+        <div class="jd-descrdiv">Sets the package default assertion status for the named package.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -947,7 +969,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setSigners(java.lang.Class<?>, java.lang.Object[])">setSigners</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; c, <a href="../../../reference/java/lang/Object.html">Object[]</a> signers)
         
-        <div class="jd-descrdiv">Sets the signers of the specified class.</div>
+        <div class="jd-descrdiv">Sets the signers of a class.</div>
   
   </td></tr>
 

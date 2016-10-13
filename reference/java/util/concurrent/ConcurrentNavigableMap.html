@@ -318,8 +318,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html#headMap(K)">headMap</a></span>(K toKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys that
- are less than the specified <code>endKey</code>.
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys are
+ strictly less than <code>toKey</code>.
 
  <p>Equivalent to <code>headMap(toKey, false)</code>.</div>
   
@@ -394,9 +394,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html#subMap(K, K)">subMap</a></span>(K fromKey, K toKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys
- greater than or equal to the specified <code>startKey</code> and less than the
- specified <code>endKey</code>.
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys range from
+ <code>fromKey</code>, inclusive, to <code>toKey</code>, exclusive.
 
  <p>Equivalent to <code>subMap(fromKey, true, toKey, false)</code>.</div>
   
@@ -454,8 +453,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html#tailMap(K)">tailMap</a></span>(K fromKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys that
- are greater than or equal to the specified <code>startKey</code>.
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys are
+ greater than or equal to <code>fromKey</code>.
 
  <p>Equivalent to <code>tailMap(fromKey, true)</code>.</div>
   
@@ -740,8 +739,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/NavigableMap.html#headMap(K)">headMap</a></span>(K toKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys that
- are less than the specified <code>endKey</code>.
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys are
+ strictly less than <code>toKey</code>.
 
  <p>Equivalent to <code>headMap(toKey, false)</code>.</div>
   
@@ -933,9 +932,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/NavigableMap.html#subMap(K, K)">subMap</a></span>(K fromKey, K toKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys
- greater than or equal to the specified <code>startKey</code> and less than the
- specified <code>endKey</code>.
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys range from
+ <code>fromKey</code>, inclusive, to <code>toKey</code>, exclusive.
 
  <p>Equivalent to <code>subMap(fromKey, true, toKey, false)</code>.</div>
   
@@ -993,8 +991,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/NavigableMap.html#tailMap(K)">tailMap</a></span>(K fromKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys that
- are greater than or equal to the specified <code>startKey</code>.
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys are
+ greater than or equal to <code>fromKey</code>.
 
  <p>Equivalent to <code>tailMap(fromKey, true)</code>.</div>
   
@@ -1039,13 +1037,71 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Map</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the mappings from this map (optional operation).</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#compute(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">compute</a></span>(K key, <a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">Attempts to compute a mapping for the specified key and its current
+ mapped value (or <code>null</code> if there is no current mapping).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#computeIfAbsent(K, java.util.function.Function<? super K, ? extends V>)">computeIfAbsent</a></span>(K key, <a href="../../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; mappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>), attempts to compute its value using the given mapping
+ function and enters it into this map unless <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#computeIfPresent(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">computeIfPresent</a></span>(K key, <a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the value for the specified key is present and non-null, attempts to
+ compute a new mapping given the key and its current mapped value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -1057,25 +1113,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#containsKey(java.lang.Object)">containsKey</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified key.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> value)
-        
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains a mapping for the specified
+ key.</div>
   
   </td></tr>
 
@@ -1088,12 +1127,13 @@ From interface
             
             
             
-            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns a <code>Set</code> containing all of the mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map maps one or more keys to the
+ specified value.</div>
   
   </td></tr>
 
@@ -1106,13 +1146,49 @@ From interface
             
             
             
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns <code>true</code> if the
- specified object is a <code>Map</code> and both <code>Map</code>s contain the same mappings.</div>
+        <div class="jd-descrdiv">Compares the specified object with this map for equality.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#forEach(java.util.function.BiConsumer<? super K, ? super V>)">forEach</a></span>(<a href="../../../../reference/java/util/function/BiConsumer.html">BiConsumer</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V&gt; action)
+        
+        <div class="jd-descrdiv">Performs the given action for each entry in this map until all entries
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -1130,7 +1206,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#get(java.lang.Object)">get</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value of the mapping with the specified key.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -1143,12 +1220,13 @@ From interface
             
             
             
-            int
+            V
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#getOrDefault(java.lang.Object, V)">getOrDefault</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key, V defaultValue)
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped, or
+ <code>defaultValue</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -1161,12 +1239,12 @@ From interface
             
             
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this map is empty.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this map.</div>
   
   </td></tr>
 
@@ -1179,12 +1257,49 @@ From interface
             
             
             
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains no key-value mappings.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/Set.html">Set</a>&lt;K&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#keySet()">keySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a set of the keys contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#merge(K, V, java.util.function.BiFunction<? super V, ? super V, ? extends V>)">merge</a></span>(K key, V value, <a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value or is
+ associated with null, associates it with the given non-null value.</div>
   
   </td></tr>
 
@@ -1202,7 +1317,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#put(K, V)">put</a></span>(K key, V value)
         
-        <div class="jd-descrdiv">Maps the specified key to the specified value.</div>
+        <div class="jd-descrdiv">Associates the specified value with the specified key in this map
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1218,9 +1334,49 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Copies every mapping in the specified <code>Map</code> to this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Copies all of the mappings from the specified map to this map
+ (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#putIfAbsent(K, V)">putIfAbsent</a></span>(K key, V value)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>) associates it with the given value and returns
+ <code>null</code>, else returns the current value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#remove(java.lang.Object, java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">Removes the entry for the specified key only if it is currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1238,7 +1394,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes a mapping with the specified key from this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Removes the mapping for a key from this map if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1251,12 +1408,13 @@ From interface
             
             
             
-            int
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#size()">size</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#replace(K, V, V)">replace</a></span>(K key, V oldValue, V newValue)
         
-        <div class="jd-descrdiv">Returns the number of mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1269,12 +1427,69 @@ From interface
             
             
             
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#replace(K, V)">replace</a></span>(K key, V value)
+        
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if it is
+ currently mapped to some value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#replaceAll(java.util.function.BiFunction<? super K, ? super V, ? extends V>)">replaceAll</a></span>(<a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; function)
+        
+        <div class="jd-descrdiv">Replaces each entry's value with the result of invoking the given
+ function on that entry until all entries have been processed or the
+ function throws an exception.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns the number of key-value mappings in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#values()">values</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>Collection</code> of the values contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.</div>
   
   </td></tr>
 
@@ -1317,8 +1532,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#comparator()">comparator</a></span>()
         
-        <div class="jd-descrdiv">Returns the comparator used to compare keys in this sorted map, or null if the natural
- ordering is in use.</div>
+        <div class="jd-descrdiv">Returns the comparator used to order the keys in this map, or
+ <code>null</code> if this map uses the {@linkplain Comparable
+ natural ordering} of its keys.</div>
   
   </td></tr>
 
@@ -1331,12 +1547,12 @@ From interface
             
             
             
-            K
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#firstKey()">firstKey</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#entrySet()">entrySet</a></span>()
         
-        <div class="jd-descrdiv">Returns the least key in this sorted map.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
   
   </td></tr>
 
@@ -1349,13 +1565,49 @@ From interface
             
             
             
+            K
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#firstKey()">firstKey</a></span>()
+        
+        <div class="jd-descrdiv">Returns the first (lowest) key currently in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#headMap(K)">headMap</a></span>(K endKey)
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#headMap(K)">headMap</a></span>(K toKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys that
- are less than the specified <code>endKey</code>.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys are
+ strictly less than <code>toKey</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;K&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#keySet()">keySet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.</div>
   
   </td></tr>
 
@@ -1373,7 +1625,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#lastKey()">lastKey</a></span>()
         
-        <div class="jd-descrdiv">Returns the greatest key in this sorted map.</div>
+        <div class="jd-descrdiv">Returns the last (highest) key currently in this map.</div>
   
   </td></tr>
 
@@ -1389,11 +1641,10 @@ From interface
             <a href="../../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#subMap(K, K)">subMap</a></span>(K startKey, K endKey)
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#subMap(K, K)">subMap</a></span>(K fromKey, K toKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys
- greater than or equal to the specified <code>startKey</code> and less than the
- specified <code>endKey</code>.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys range from
+ <code>fromKey</code>, inclusive, to <code>toKey</code>, exclusive.</div>
   
   </td></tr>
 
@@ -1409,10 +1660,28 @@ From interface
             <a href="../../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#tailMap(K)">tailMap</a></span>(K startKey)
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#tailMap(K)">tailMap</a></span>(K fromKey)
         
-        <div class="jd-descrdiv">Returns a sorted map over a range of this sorted map with all keys that
- are greater than or equal to the specified <code>startKey</code>.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this map whose keys are
+ greater than or equal to <code>fromKey</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;V&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/SortedMap.html#values()">values</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.</div>
   
   </td></tr>
 
@@ -1583,12 +1852,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a sorted map over a range of this sorted map with all keys that
- are less than the specified <code>endKey</code>. Changes to the returned
- sorted map are reflected in this sorted map and vice versa.
- <p>
- Note: The returned map will not allow an insertion of a key outside the
- specified range.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys are
+ strictly less than <code>toKey</code>.  The returned map is backed
+ by this map, so changes in the returned map are reflected in
+ this map, and vice-versa.  The returned map supports all
+ optional map operations that this map supports.
+
+ <p>The returned map will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert a key outside its range.
 
  <p>Equivalent to <code>headMap(toKey, false)</code>.</p></div>
   <div class="jd-tagdata">
@@ -1596,13 +1867,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>toKey</th>
-          <td>the high boundary of the range specified.</td>
+          <td>high endpoint (exclusive) of the keys in the returned map</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a sorted map where the keys are less than <code>endKey</code>.</li></ul>
+      <ul class="nolist"><li>a view of the portion of this map whose keys are strictly
+         less than <code>toKey</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -1829,13 +2101,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a sorted map over a range of this sorted map with all keys
- greater than or equal to the specified <code>startKey</code> and less than the
- specified <code>endKey</code>. Changes to the returned sorted map are
- reflected in this sorted map and vice versa.
- <p>
- Note: The returned map will not allow an insertion of a key outside the
- specified range.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys range from
+ <code>fromKey</code>, inclusive, to <code>toKey</code>, exclusive.  (If
+ <code>fromKey</code> and <code>toKey</code> are equal, the returned map
+ is empty.)  The returned map is backed by this map, so changes
+ in the returned map are reflected in this map, and vice-versa.
+ The returned map supports all optional map operations that this
+ map supports.
+
+ <p>The returned map will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert a key outside its range.
 
  <p>Equivalent to <code>subMap(fromKey, true, toKey, false)</code>.</p></div>
   <div class="jd-tagdata">
@@ -1843,17 +2118,18 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>fromKey</th>
-          <td>the low boundary of the range (inclusive).</td>
+          <td>low endpoint (inclusive) of the keys in the returned map</td>
         </tr>
         <tr>
           <th>toKey</th>
-          <td>the high boundary of the range (exclusive),</td>
+          <td>high endpoint (exclusive) of the keys in the returned map</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a sorted map with the key from the specified range.</li></ul>
+      <ul class="nolist"><li>a view of the portion of this map whose keys range from
+         <code>fromKey</code>, inclusive, to <code>toKey</code>, exclusive</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -1906,7 +2182,7 @@ From interface
   <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys range from
  <code>fromKey</code> to <code>toKey</code>.  If <code>fromKey</code> and
  <code>toKey</code> are equal, the returned map is empty unless
- <code>fromExclusive</code> and <code>toExclusive</code> are both true.  The
+ <code>fromInclusive</code> and <code>toInclusive</code> are both true.  The
  returned map is backed by this map, so changes in the returned map are
  reflected in this map, and vice-versa.  The returned map supports all
  optional map operations that this map supports.
@@ -2065,12 +2341,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a sorted map over a range of this sorted map with all keys that
- are greater than or equal to the specified <code>startKey</code>. Changes to
- the returned sorted map are reflected in this sorted map and vice versa.
- <p>
- Note: The returned map will not allow an insertion of a key outside the
- specified range.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys are
+ greater than or equal to <code>fromKey</code>.  The returned map is
+ backed by this map, so changes in the returned map are
+ reflected in this map, and vice-versa.  The returned map
+ supports all optional map operations that this map supports.
+
+ <p>The returned map will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert a key outside its range.
 
  <p>Equivalent to <code>tailMap(fromKey, true)</code>.</p></div>
   <div class="jd-tagdata">
@@ -2078,14 +2356,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>fromKey</th>
-          <td>the low boundary of the range specified.</td>
+          <td>low endpoint (inclusive) of the keys in the returned map</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a sorted map where the keys are greater or equal to
-         <code>startKey</code>.</li></ul>
+      <ul class="nolist"><li>a view of the portion of this map whose keys are greater
+         than or equal to <code>fromKey</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>

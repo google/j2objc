@@ -181,7 +181,7 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">Hashtable is a synchronized implementation of <code><a href="reference/java/util/Map.html">Map</a></code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements a hash table, which maps keys to values.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -215,8 +215,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Properties.html">Properties</a></td>
-              <td class="jd-descrcol" width="100%">A <code>Properties</code> object is a <code>Hashtable</code> where the keys and values
- must be <code>String</code>s.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Properties</code> class represents a persistent set of
+ properties.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/Provider.html">Provider</a></td>
@@ -233,17 +233,24 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><strong>Note: Do not use this class since it is obsolete. Please use the
- <code><a href="reference/java/util/Map.html">Map</a></code> interface for new implementations.</strong>
+<p>The <code>Dictionary</code> class is the abstract parent of any
+ class, such as <code>Hashtable</code>, which maps keys to values.
+ Every key and every value is an object. In any one <tt>Dictionary</tt>
+ object, every key is associated with at most one value. Given a
+ <tt>Dictionary</tt> and a key, the associated element can be looked up.
+ Any non-<code>null</code> object can be used as a key and as a value.
  <p>
- Dictionary is an abstract class which is the superclass of all classes that
- associate keys with values, such as <code>Hashtable</code>.</p>
+ As a rule, the <code>equals</code> method should be used by
+ implementations of this class to decide if two keys are the same.
+ <p>
+ <strong>NOTE: This class is obsolete.  New implementations should
+ implement the Map interface, rather than extending this class.</strong></p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Hashtable.html">Hashtable</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Map.html">Map</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(java.lang.Object)</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li><li><code><a href="../../../reference/java/util/Hashtable.html">Hashtable</a></code></li>
       </ul>
   </div>
 
@@ -310,7 +317,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#Dictionary()">Dictionary</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of this class.</div>
+        <div class="jd-descrdiv">Sole constructor.</div>
   
   </td></tr>
 
@@ -341,7 +348,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#elements()">elements</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration on the elements of this dictionary.</div>
+        <div class="jd-descrdiv">Returns an enumeration of the values in this dictionary.</div>
   
   </td></tr>
 
@@ -359,7 +366,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#get(java.lang.Object)">get</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value which is associated with <code>key</code>.</div>
+        <div class="jd-descrdiv">Returns the value to which the key is mapped in this dictionary.</div>
   
   </td></tr>
 
@@ -377,7 +384,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns true if this dictionary has no key/value pairs.</div>
+        <div class="jd-descrdiv">Tests if this dictionary maps no keys to value.</div>
   
   </td></tr>
 
@@ -395,7 +402,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#keys()">keys</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration on the keys of this dictionary.</div>
+        <div class="jd-descrdiv">Returns an enumeration of the keys in this dictionary.</div>
   
   </td></tr>
 
@@ -413,7 +420,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#put(K, V)">put</a></span>(K key, V value)
         
-        <div class="jd-descrdiv">Associate <code>key</code> with <code>value</code> in this dictionary.</div>
+        <div class="jd-descrdiv">Maps the specified <code>key</code> to the specified
+ <code>value</code> in this dictionary.</div>
   
   </td></tr>
 
@@ -431,8 +439,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes the key/value pair with the specified <code>key</code> from this
- dictionary.</div>
+        <div class="jd-descrdiv">Removes the <code>key</code> (and its corresponding
+ <code>value</code>) from this dictionary.</div>
   
   </td></tr>
 
@@ -450,7 +458,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Dictionary.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of key/value pairs in this dictionary.</div>
+        <div class="jd-descrdiv">Returns the number of entries (distinct keys) in this dictionary.</div>
   
   </td></tr>
 
@@ -759,7 +767,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of this class.
+  <div class="jd-tagdata jd-tagdescr"><p>Sole constructor.  (For invocation by subclass constructors, typically
+ implicit.)
 </p></div>
 
     </div>
@@ -806,14 +815,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration on the elements of this dictionary.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of the values in this dictionary. The general
+ contract for the <tt>elements</tt> method is that an
+ <tt>Enumeration</tt> is returned that will generate all the elements
+ contained in entries in this dictionary.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enumeration of the values of this dictionary.</li></ul>
+      <ul class="nolist"><li>an enumeration of the values in this dictionary.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#keys()">keys()</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#size()">size()</a></code></li><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#keys()">keys()</a></code></li><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li>
       </ul>
   </div>
 
@@ -846,24 +858,37 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the value which is associated with <code>key</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value to which the key is mapped in this dictionary.
+ The general contract for the <tt>isEmpty</tt> method is that if this
+ dictionary contains an entry for the specified key, the associated
+ value is returned; otherwise, <tt>null</tt> is returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key of the value returned.</td>
+          <td>a key in this dictionary.
+          <code>null</code> if the key is not mapped to any value in
+          this dictionary.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value associated with <code>key</code>, or <code>null</code> if the
-         specified key does not exist.</li></ul>
+      <ul class="nolist"><li>the value to which the key is mapped in this dictionary;</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the <tt>key</tt> is <tt>null</tt>.</td>
+        </tr>
+      </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#put(K, V)">put(K, V)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#put(K, V)">put(java.lang.Object, java.lang.Object)</a></code></li>
       </ul>
   </div>
 
@@ -896,16 +921,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this dictionary has no key/value pairs.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if this dictionary maps no keys to value. The general contract
+ for the <tt>isEmpty</tt> method is that the result is true if and only
+ if this dictionary contains no entries.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this dictionary has no key/value pairs,
-         <code>false</code> otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#size()">size()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if this dictionary maps no keys to values;
+          <code>false</code> otherwise.
+</li></ul>
   </div>
 
     </div>
@@ -937,14 +960,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration on the keys of this dictionary.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of the keys in this dictionary. The general
+ contract for the keys method is that an <tt>Enumeration</tt> object
+ is returned that will generate all the keys for which this dictionary
+ contains entries.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enumeration of the keys of this dictionary.</li></ul>
+      <ul class="nolist"><li>an enumeration of the keys in this dictionary.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#elements()">elements()</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#size()">size()</a></code></li><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#elements()">elements()</a></code></li><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li>
       </ul>
   </div>
 
@@ -977,28 +1003,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Associate <code>key</code> with <code>value</code> in this dictionary. If <code>key</code> exists in the dictionary before this call, the old value in the
- dictionary is replaced by <code>value</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Maps the specified <code>key</code> to the specified
+ <code>value</code> in this dictionary. Neither the key nor the
+ value can be <code>null</code>.
+ <p>
+ If this dictionary already contains an entry for the specified
+ <tt>key</tt>, the value already in this dictionary for that
+ <tt>key</tt> is returned, after modifying the entry to contain the
+  new element. <p>If this dictionary does not already have an entry
+  for the specified <tt>key</tt>, an entry is created for the
+  specified <tt>key</tt> and <tt>value</tt>, and <tt>null</tt> is
+  returned.
+ <p>
+ The <code>value</code> can be retrieved by calling the
+ <code>get</code> method with a <code>key</code> that is equal to
+ the original <code>key</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key to add.</td>
+          <td>the hashtable key.</td>
         </tr>
         <tr>
           <th>value</th>
-          <td>the value to add.</td>
+          <td>the value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the old value previously associated with <code>key</code> or <code>null</code> if <code>key</code> is new to the dictionary.</li></ul>
+      <ul class="nolist"><li>the previous value to which the <code>key</code> was mapped
+             in this dictionary, or <code>null</code> if the key did not
+             have a previous mapping.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the <code>key</code> or
+               <code>value</code> is <code>null</code>.</td>
+        </tr>
+      </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#elements()">elements()</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#get(java.lang.Object)">get(Object)</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#keys()">keys()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(java.lang.Object)</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#get(java.lang.Object)">get(java.lang.Object)</a></code></li>
       </ul>
   </div>
 
@@ -1031,26 +1082,33 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the key/value pair with the specified <code>key</code> from this
- dictionary.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the <code>key</code> (and its corresponding
+ <code>value</code>) from this dictionary. This method does nothing
+ if the <code>key</code> is not in this dictionary.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key to remove.</td>
+          <td>the key that needs to be removed.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the associated value before the deletion or <code>null</code> if
-         <code>key</code> was not known to this dictionary.</li></ul>
+      <ul class="nolist"><li>the value to which the <code>key</code> had been mapped in this
+          dictionary, or <code>null</code> if the key did not have a
+          mapping.</li></ul>
   </div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#get(java.lang.Object)">get(Object)</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#put(K, V)">put(K, V)</a></code></li>
-      </ul>
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <tt>key</tt> is <tt>null</tt>.
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1082,15 +1140,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of key/value pairs in this dictionary.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of entries (distinct keys) in this dictionary.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of key/value pairs in this dictionary.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Dictionary.html#elements()">elements()</a></code></li><li><code><a href="../../../reference/java/util/Dictionary.html#keys()">keys()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the number of keys in this dictionary.
+</li></ul>
   </div>
 
     </div>

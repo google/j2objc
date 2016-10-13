@@ -110,6 +110,11 @@ layout: api
 <div id="jd-content" class="api apilevel-">
 
 
+  <div class="jd-descr">
+    Provides library support for the Java programming language
+ annotation facility.
+  </div>
+
 
 
 
@@ -121,7 +126,7 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/annotation/Annotation.html">Annotation</a></td>
-              <td class="jd-descrcol" width="100%">Defines the interface implemented by all annotations.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The common interface extended by all annotation types.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -138,11 +143,11 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/annotation/ElementType.html">ElementType</a></td>
-              <td class="jd-descrcol" width="100%">Defines an enumeration for Java program elements.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A program element type.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/annotation/RetentionPolicy.html">RetentionPolicy</a></td>
-              <td class="jd-descrcol" width="100%">Defines an enumeration for annotation retention policies.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Annotation retention policy.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -156,13 +161,15 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/annotation/AnnotationTypeMismatchException.html">AnnotationTypeMismatchException</a></td>
-              <td class="jd-descrcol" width="100%">Indicates that an annotation type has changed since it was compiled or
- serialized.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that a program has attempted to access an element of
+ an annotation whose type has changed after the annotation was compiled
+ (or serialized).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/annotation/IncompleteAnnotationException.html">IncompleteAnnotationException</a></td>
-              <td class="jd-descrcol" width="100%">Indicates that an element of an annotation type was accessed that was added
- after the type was compiled or serialized.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that a program has attempted to access an element of
+ an annotation type that was added to the annotation type definition after
+ the annotation was compiled (or serialized).&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -176,8 +183,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/annotation/AnnotationFormatError.html">AnnotationFormatError</a></td>
-              <td class="jd-descrcol" width="100%">Indicates that an annotation in the binary representation of a class is
- syntactically incorrect and the annotation parser is unable to process it.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when the annotation parser attempts to read an annotation
+ from a class file and determines that the annotation is malformed.&nbsp;</td>
           </tr>
   </table>
     </div>

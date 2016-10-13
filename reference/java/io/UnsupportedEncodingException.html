@@ -235,9 +235,7 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program asks for a particular character converter that is
- unavailable.
-</p>
+<p>The Character Encoding is not supported.</p>
 
 
 
@@ -305,8 +303,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/UnsupportedEncodingException.html#UnsupportedEncodingException()">UnsupportedEncodingException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>UnsupportedEncodingException</code> with its stack
- trace filled in.</div>
+        <div class="jd-descrdiv">Constructs an UnsupportedEncodingException without a detail message.</div>
   
   </td></tr>
 
@@ -322,10 +319,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/UnsupportedEncodingException.html#UnsupportedEncodingException(java.lang.String)">UnsupportedEncodingException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/io/UnsupportedEncodingException.html#UnsupportedEncodingException(java.lang.String)">UnsupportedEncodingException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>UnsupportedEncodingException</code> with its stack
- trace and detail message filled in.</div>
+        <div class="jd-descrdiv">Constructs an UnsupportedEncodingException with a detail message.</div>
   
   </td></tr>
 
@@ -561,6 +557,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -861,8 +876,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnsupportedEncodingException</code> with its stack
- trace filled in.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an UnsupportedEncodingException without a detail message.
 </p></div>
 
     </div>
@@ -882,7 +896,7 @@ From class
         
       </span>
       <span class="sympad">UnsupportedEncodingException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -894,14 +908,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnsupportedEncodingException</code> with its stack
- trace and detail message filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an UnsupportedEncodingException with a detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>Describes the reason for the exception.
 </td>
         </tr>
       </table>

@@ -212,11 +212,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when the string being parsed is not in the correct form.
-</p>
+<p>Signals that an error has been reached unexpectedly
+ while parsing.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Exception.html">Exception</a></code></li><li><code><a href="../../../reference/java/text/Format.html">Format</a></code></li><li><code><a href="../../../reference/java/text/FieldPosition.html">FieldPosition</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -279,10 +284,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/text/ParseException.html#ParseException(java.lang.String, int)">ParseException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, int location)
+        <span class="sympad"><a href="../../../reference/java/text/ParseException.html#ParseException(java.lang.String, int)">ParseException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, int errorOffset)
         
-        <div class="jd-descrdiv">Constructs a new instance of this class with its stack trace, detail
- message and the location of the error filled in.</div>
+        <div class="jd-descrdiv">Constructs a ParseException with the specified detail message and
+ offset.</div>
   
   </td></tr>
 
@@ -313,7 +318,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/text/ParseException.html#getErrorOffset()">getErrorOffset</a></span>()
         
-        <div class="jd-descrdiv">Returns the index at which this parse exception occurred.</div>
+        <div class="jd-descrdiv">Returns the position where the error was found.</div>
   
   </td></tr>
 
@@ -543,6 +548,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -831,7 +855,7 @@ From class
         
       </span>
       <span class="sympad">ParseException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, int location)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, int errorOffset)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -843,18 +867,19 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of this class with its stack trace, detail
- message and the location of the error filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a ParseException with the specified detail message and
+ offset.
+ A detail message is a String that describes this particular exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.</td>
+          <th>s</th>
+          <td>the detail message</td>
         </tr>
         <tr>
-          <th>location</th>
-          <td>the index at which the parse exception occurred.
+          <th>errorOffset</th>
+          <td>the position where the error is found while parsing.
 </td>
         </tr>
       </table>
@@ -904,10 +929,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index at which this parse exception occurred.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the position where the error was found.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the location of this exception in the parsed string.
+      <ul class="nolist"><li>the position where the error was found
 </li></ul>
   </div>
 

@@ -655,7 +655,7 @@ layout: api
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
  this deque (in other words, the first element of this deque), or
- returns <tt>null</tt> if this deque is empty.</div>
+ returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -674,7 +674,7 @@ layout: api
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html#peekFirst()">peekFirst</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -693,7 +693,7 @@ layout: api
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html#peekLast()">peekLast</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -713,7 +713,7 @@ layout: api
         
         <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
  (in other words, the first element of this deque), or returns
- <tt>null</tt> if this deque is empty.</div>
+ <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -732,7 +732,7 @@ layout: api
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html#pollFirst()">pollFirst</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -751,7 +751,7 @@ layout: api
         <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html#pollLast()">pollLast</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -789,9 +789,8 @@ layout: api
         
         <div class="jd-descrdiv">Pushes an element onto the stack represented by this deque (in other
  words, at the head of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.</div>
+ immediately without violating capacity restrictions, throwing an
+ <code>IllegalStateException</code> if no space is currently available.</div>
   
   </td></tr>
 
@@ -971,6 +970,33 @@ layout: api
 
 
 
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="promethods" class="jd-sumtable"><tr><th colspan="12">Protected Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html#finalize()">finalize</a></span>()
+        
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
 
 
 
@@ -1010,10 +1036,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -1029,10 +1058,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -1050,7 +1082,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -1066,9 +1101,12 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -1084,10 +1122,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -1105,7 +1147,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -1123,8 +1167,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -1140,10 +1183,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -1159,10 +1205,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1178,10 +1228,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1199,7 +1253,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -1217,7 +1271,12 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1235,7 +1294,11 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1253,7 +1316,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -1524,10 +1587,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1543,10 +1606,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1564,7 +1627,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -1580,9 +1643,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -1598,10 +1661,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1617,10 +1680,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -1638,7 +1700,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -1656,7 +1718,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -1674,8 +1736,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -1688,13 +1749,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -1710,10 +1771,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -1729,10 +1790,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1750,7 +1849,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -1766,9 +1901,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -1786,7 +1922,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -1832,8 +1968,8 @@ From interface
         <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
  (in other words, at the tail of this deque) if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.</div>
+ <code>true</code> upon success and throwing an
+ <code>IllegalStateException</code> if no space is currently available.</div>
   
   </td></tr>
 
@@ -1852,7 +1988,9 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#addFirst(E)">addFirst</a></span>(E e)
         
         <div class="jd-descrdiv">Inserts the specified element at the front of this deque if it is
- possible to do so immediately without violating capacity restrictions.</div>
+ possible to do so immediately without violating capacity restrictions,
+ throwing an <code>IllegalStateException</code> if no space is currently
+ available.</div>
   
   </td></tr>
 
@@ -1871,7 +2009,9 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#addLast(E)">addLast</a></span>(E e)
         
         <div class="jd-descrdiv">Inserts the specified element at the end of this deque if it is
- possible to do so immediately without violating capacity restrictions.</div>
+ possible to do so immediately without violating capacity restrictions,
+ throwing an <code>IllegalStateException</code> if no space is currently
+ available.</div>
   
   </td></tr>
 
@@ -1889,7 +2029,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns <tt>true</tt> if this deque contains the specified element.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this deque contains the specified element.</div>
   
   </td></tr>
 
@@ -2002,7 +2142,7 @@ From interface
         <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
  (in other words, at the tail of this deque) if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and <tt>false</tt> if no space is currently
+ <code>true</code> upon success and <code>false</code> if no space is currently
  available.</div>
   
   </td></tr>
@@ -2061,7 +2201,7 @@ From interface
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
  this deque (in other words, the first element of this deque), or
- returns <tt>null</tt> if this deque is empty.</div>
+ returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -2080,7 +2220,7 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#peekFirst()">peekFirst</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -2099,7 +2239,7 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#peekLast()">peekLast</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -2119,7 +2259,7 @@ From interface
         
         <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
  (in other words, the first element of this deque), or returns
- <tt>null</tt> if this deque is empty.</div>
+ <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -2138,7 +2278,7 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#pollFirst()">pollFirst</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -2157,7 +2297,7 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Deque.html#pollLast()">pollLast</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -2195,9 +2335,8 @@ From interface
         
         <div class="jd-descrdiv">Pushes an element onto the stack represented by this deque (in other
  words, at the head of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.</div>
+ immediately without violating capacity restrictions, throwing an
+ <code>IllegalStateException</code> if no space is currently available.</div>
   
   </td></tr>
 
@@ -2364,6 +2503,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -2371,6 +2526,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -2414,7 +2585,7 @@ From interface
         
         <div class="jd-descrdiv">Inserts the specified element into this queue if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt>
+ <code>true</code> upon success and throwing an <code>IllegalStateException</code>
  if no space is currently available.</div>
   
   </td></tr>
@@ -2471,7 +2642,7 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Queue.html#peek()">peek</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the head of this queue,
- or returns <tt>null</tt> if this queue is empty.</div>
+ or returns <code>null</code> if this queue is empty.</div>
   
   </td></tr>
 
@@ -2490,7 +2661,7 @@ From interface
         <span class="sympad"><a href="../../../../reference/java/util/Queue.html#poll()">poll</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the head of this queue,
- or returns <tt>null</tt> if this queue is empty.</div>
+ or returns <code>null</code> if this queue is empty.</div>
   
   </td></tr>
 
@@ -2686,7 +2857,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
           <th>e</th>
-          <td>the object to add.</td>
+          <td>element whose presence in this collection is to be ensured</td>
         </tr>
       </table>
   </div>
@@ -3407,13 +3578,13 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head of the queue represented by
  this deque (in other words, the first element of this deque), or
- returns <tt>null</tt> if this deque is empty.
+ returns <code>null</code> if this deque is empty.
 
  <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#peekFirst()">peekFirst()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>the head of the queue represented by this deque, or
-         <tt>null</tt> if this deque is empty
+         <code>null</code> if this deque is empty
 </li></ul>
   </div>
 
@@ -3447,10 +3618,10 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+ or returns <code>null</code> if this deque is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of this deque, or <tt>null</tt> if this deque is empty
+      <ul class="nolist"><li>the head of this deque, or <code>null</code> if this deque is empty
 </li></ul>
   </div>
 
@@ -3484,10 +3655,10 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+ or returns <code>null</code> if this deque is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the tail of this deque, or <tt>null</tt> if this deque is empty
+      <ul class="nolist"><li>the tail of this deque, or <code>null</code> if this deque is empty
 </li></ul>
   </div>
 
@@ -3522,12 +3693,12 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head of the queue represented by this deque
  (in other words, the first element of this deque), or returns
- <tt>null</tt> if this deque is empty.
+ <code>null</code> if this deque is empty.
 
  <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#pollFirst()">pollFirst()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the first element of this deque, or <tt>null</tt> if
+      <ul class="nolist"><li>the first element of this deque, or <code>null</code> if
          this deque is empty
 </li></ul>
   </div>
@@ -3562,10 +3733,10 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+ or returns <code>null</code> if this deque is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of this deque, or <tt>null</tt> if this deque is empty
+      <ul class="nolist"><li>the head of this deque, or <code>null</code> if this deque is empty
 </li></ul>
   </div>
 
@@ -3599,10 +3770,10 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+ or returns <code>null</code> if this deque is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the tail of this deque, or <tt>null</tt> if this deque is empty
+      <ul class="nolist"><li>the tail of this deque, or <code>null</code> if this deque is empty
 </li></ul>
   </div>
 
@@ -3676,9 +3847,8 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Pushes an element onto the stack represented by this deque (in other
  words, at the head of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.
+ immediately without violating capacity restrictions, throwing an
+ <code>IllegalStateException</code> if no space is currently available.
 
  <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(E)</a></code>.</p></div>
   <div class="jd-tagdata">
@@ -4179,6 +4349,77 @@ From interface
 
 
 <!-- ========= METHOD DETAIL ======== -->
+
+<h2>Protected Methods</h2>
+
+
+
+<a id="finalize()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">finalize</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Invoked when the garbage collector has detected that this instance is no longer reachable.
+ The default implementation does nothing, but this method can be overridden to free resources.
+
+ <p>Note that objects that override <code>finalize</code> are significantly more expensive than
+ objects that don't. Finalizers may be run a long time after the object is no longer
+ reachable, depending on memory pressure, so it's a bad idea to rely on them for cleanup.
+ Note also that finalizers are run on a single VM-wide finalizer thread,
+ so doing blocking work in a finalizer is a bad idea. A finalizer is usually only necessary
+ for a class that has a native peer and needs to call a native method to destroy that peer.
+ Even then, it's better to provide an explicit <code>close</code> method (and implement
+ <code><a href="reference/java/io/Closeable.html">Closeable</a></code>), and insist that callers manually dispose of instances. This
+ works well for something like files, but less well for something like a <code>BigInteger</code>
+ where typical calling code would have to deal with lots of temporaries. Unfortunately,
+ code that creates lots of temporaries is the worst kind of code from the point of view of
+ the single finalizer thread.
+
+ <p>If you <i>must</i> use finalizers, consider at least providing your own
+ <code><a href="reference/java/lang/ref/ReferenceQueue.html">ReferenceQueue</a></code> and having your own thread process that queue.
+
+ <p>Unlike constructors, finalizers are not automatically chained. You are responsible for
+ calling <code>super.finalize()</code> yourself.
+
+ <p>Uncaught exceptions thrown by finalizers are ignored and do not terminate the finalizer
+ thread.
+
+ See <i>Effective Java</i> Item 7, "Avoid finalizers" for more.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/Throwable.html">Throwable</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 
 
 

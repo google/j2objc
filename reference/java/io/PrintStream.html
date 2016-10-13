@@ -133,6 +133,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -239,13 +246,21 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and provides convenience methods for
- writing common data types in a human readable format. This is not to be
- confused with DataOutputStream which is used for encoding common data types
- so that they can be read back in. No <code>IOException</code> is thrown by this
- class. Instead, callers should use <code><a href="reference/java/io/PrintStream.html#checkError()">checkError()</a></code> to see if a problem
- has occurred in this stream.
-</p>
+<p>A <code>PrintStream</code> adds functionality to another output stream,
+ namely the ability to print representations of various data values
+ conveniently.  Two other features are provided as well.  Unlike other output
+ streams, a <code>PrintStream</code> never throws an
+ <code>IOException</code>; instead, exceptional situations merely set an
+ internal flag that can be tested via the <code>checkError</code> method.
+ Optionally, a <code>PrintStream</code> can be created so as to flush
+ automatically; this means that the <code>flush</code> method is
+ automatically invoked after a byte array is written, one of the
+ <code>println</code> methods is invoked, or a newline character or byte
+ (<code>'\n'</code>) is written.
+
+ <p> All characters printed by a <code>PrintStream</code> are converted into
+ bytes using the platform's default character encoding.  The <code><code><a href="reference/java/io/PrintWriter.html">PrintWriter</a></code></code> class should be used in situations that require writing
+ characters rather than bytes.</p>
 
 
 
@@ -322,7 +337,7 @@ layout: api
           
           <a href="../../../reference/java/io/OutputStream.html">OutputStream</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/FilterOutputStream.html#out">out</a></td>
-          <td class="jd-descrcol" width="100%">The target output stream for this filter stream.</td>
+          <td class="jd-descrcol" width="100%">The underlying output stream to be filtered.</td>
       </tr>
       
     
@@ -330,6 +345,8 @@ layout: api
   </div>
 </div>
 </td></tr>
+
+
 
 
 
@@ -365,8 +382,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.OutputStream)">PrintStream</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out)
         
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with <code>out</code> as its target
- stream.</div>
+        <div class="jd-descrdiv">Creates a new print stream.</div>
   
   </td></tr>
 
@@ -384,8 +400,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.OutputStream, boolean)">PrintStream</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, boolean autoFlush)
         
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with <code>out</code> as its target
- stream.</div>
+        <div class="jd-descrdiv">Creates a new print stream.</div>
   
   </td></tr>
 
@@ -401,46 +416,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.OutputStream, boolean, java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, boolean autoFlush, <a href="../../../reference/java/lang/String.html">String</a> charsetName)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.OutputStream, boolean, java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, boolean autoFlush, <a href="../../../reference/java/lang/String.html">String</a> encoding)
         
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with <code>out</code> as its target
- stream and using the character encoding <code>charsetName</code> while writing.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.File)">PrintStream</a></span>(<a href="../../../reference/java/io/File.html">File</a> file)
-        
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with <code>file</code> as its target.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.File, java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/io/File.html">File</a> file, <a href="../../../reference/java/lang/String.html">String</a> charsetName)
-        
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with <code>file</code> as its target.</div>
+        <div class="jd-descrdiv">Creates a new print stream.</div>
   
   </td></tr>
 
@@ -458,8 +436,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> fileName)
         
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with the file identified by
- <code>fileName</code> as its target.</div>
+        <div class="jd-descrdiv">Creates a new print stream, without automatic line flushing, with the
+ specified file name.</div>
   
   </td></tr>
 
@@ -475,10 +453,48 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.lang.String, java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> fileName, <a href="../../../reference/java/lang/String.html">String</a> charsetName)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.lang.String, java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/lang/String.html">String</a> fileName, <a href="../../../reference/java/lang/String.html">String</a> csn)
         
-        <div class="jd-descrdiv">Constructs a new <code>PrintStream</code> with the file identified by
- <code>fileName</code> as its target.</div>
+        <div class="jd-descrdiv">Creates a new print stream, without automatic line flushing, with the
+ specified file name and charset.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.File)">PrintStream</a></span>(<a href="../../../reference/java/io/File.html">File</a> file)
+        
+        <div class="jd-descrdiv">Creates a new print stream, without automatic line flushing, with the
+ specified file.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#PrintStream(java.io.File, java.lang.String)">PrintStream</a></span>(<a href="../../../reference/java/io/File.html">File</a> file, <a href="../../../reference/java/lang/String.html">String</a> csn)
+        
+        <div class="jd-descrdiv">Creates a new print stream, without automatic line flushing, with the
+ specified file and charset.</div>
   
   </td></tr>
 
@@ -509,7 +525,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the char <code>c</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character to this output stream.</div>
   
   </td></tr>
 
@@ -525,9 +541,10 @@ layout: api
             <a href="../../../reference/java/io/PrintStream.html">PrintStream</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> charSequence, int start, int end)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of CharSequence <code>charSequence</code>, or <code>"null"</code>.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this output
+ stream.</div>
   
   </td></tr>
 
@@ -543,9 +560,9 @@ layout: api
             <a href="../../../reference/java/io/PrintStream.html">PrintStream</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> charSequence)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the CharSequence <code>charSequence</code>, or <code>"null"</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this output stream.</div>
   
   </td></tr>
 
@@ -563,7 +580,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#checkError()">checkError</a></span>()
         
-        <div class="jd-descrdiv">Flushes this stream and returns the value of the error flag.</div>
+        <div class="jd-descrdiv">Flushes the stream and checks its error state.</div>
   
   </td></tr>
 
@@ -572,7 +589,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
@@ -581,7 +598,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this print stream.</div>
+        <div class="jd-descrdiv">Closes the stream.</div>
   
   </td></tr>
 
@@ -590,7 +607,7 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
@@ -599,7 +616,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Ensures that all pending data is sent out to the target stream.</div>
+        <div class="jd-descrdiv">Flushes the stream.</div>
   
   </td></tr>
 
@@ -617,8 +634,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#format(java.util.Locale, java.lang.String, java.lang.Object...)">format</a></span>(<a href="../../../reference/java/util/Locale.html">Locale</a> l, <a href="../../../reference/java/lang/String.html">String</a> format, <a href="../../../reference/java/lang/Object.html">Object...</a> args)
         
-        <div class="jd-descrdiv">Writes a string formatted by an intermediate <code><a href="reference/java/util/Formatter.html">Formatter</a></code> to this
- stream using the specified locale, format string and arguments.</div>
+        <div class="jd-descrdiv">Writes a formatted string to this output stream using the specified
+ format string and arguments.</div>
   
   </td></tr>
 
@@ -636,8 +653,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#format(java.lang.String, java.lang.Object...)">format</a></span>(<a href="../../../reference/java/lang/String.html">String</a> format, <a href="../../../reference/java/lang/Object.html">Object...</a> args)
         
-        <div class="jd-descrdiv">Formats <code>args</code> according to the format string <code>format</code>, and writes the result
- to this stream.</div>
+        <div class="jd-descrdiv">Writes a formatted string to this output stream using the specified
+ format string and arguments.</div>
   
   </td></tr>
 
@@ -653,9 +670,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(double)">print</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(int)">print</a></span>(int i)
         
-        <div class="jd-descrdiv">Prints the string representation of the double <code>d</code>.</div>
+        <div class="jd-descrdiv">Prints an integer.</div>
   
   </td></tr>
 
@@ -671,9 +688,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(int)">print</a></span>(int i)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(double)">print</a></span>(double d)
         
-        <div class="jd-descrdiv">Prints the string representation of the int <code>i</code>.</div>
+        <div class="jd-descrdiv">Prints a double-precision floating-point number.</div>
   
   </td></tr>
 
@@ -691,7 +708,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(boolean)">print</a></span>(boolean b)
         
-        <div class="jd-descrdiv">Prints the string representation of the boolean <code>b</code>.</div>
+        <div class="jd-descrdiv">Prints a boolean value.</div>
   
   </td></tr>
 
@@ -709,7 +726,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(char)">print</a></span>(char c)
         
-        <div class="jd-descrdiv">Prints the string representation of the char <code>c</code>.</div>
+        <div class="jd-descrdiv">Prints a character.</div>
   
   </td></tr>
 
@@ -727,7 +744,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(long)">print</a></span>(long l)
         
-        <div class="jd-descrdiv">Prints the string representation of the long <code>l</code>.</div>
+        <div class="jd-descrdiv">Prints a long integer.</div>
   
   </td></tr>
 
@@ -745,7 +762,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(float)">print</a></span>(float f)
         
-        <div class="jd-descrdiv">Prints the string representation of the float <code>f</code>.</div>
+        <div class="jd-descrdiv">Prints a floating-point number.</div>
   
   </td></tr>
 
@@ -754,16 +771,16 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(java.lang.String)">print</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(java.lang.String)">print</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Prints a string to the target stream.</div>
+        <div class="jd-descrdiv">Prints a string.</div>
   
   </td></tr>
 
@@ -779,9 +796,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(java.lang.Object)">print</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(java.lang.Object)">print</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Prints the string representation of the Object <code>o</code>, or <code>"null"</code>.</div>
+        <div class="jd-descrdiv">Prints an object.</div>
   
   </td></tr>
 
@@ -797,9 +814,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(char[])">print</a></span>(char[] chars)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#print(char[])">print</a></span>(char[] s)
         
-        <div class="jd-descrdiv">Prints the string representation of the character array <code>chars</code>.</div>
+        <div class="jd-descrdiv">Prints an array of characters.</div>
   
   </td></tr>
 
@@ -817,7 +834,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#printf(java.lang.String, java.lang.Object...)">printf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> format, <a href="../../../reference/java/lang/Object.html">Object...</a> args)
         
-        <div class="jd-descrdiv">Prints a formatted string.</div>
+        <div class="jd-descrdiv">A convenience method to write a formatted string to this output stream
+ using the specified format string and arguments.</div>
   
   </td></tr>
 
@@ -835,7 +853,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#printf(java.util.Locale, java.lang.String, java.lang.Object...)">printf</a></span>(<a href="../../../reference/java/util/Locale.html">Locale</a> l, <a href="../../../reference/java/lang/String.html">String</a> format, <a href="../../../reference/java/lang/Object.html">Object...</a> args)
         
-        <div class="jd-descrdiv">Prints a formatted string.</div>
+        <div class="jd-descrdiv">A convenience method to write a formatted string to this output stream
+ using the specified format string and arguments.</div>
   
   </td></tr>
 
@@ -851,10 +870,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(java.lang.Object)">println</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(java.lang.Object)">println</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> x)
         
-        <div class="jd-descrdiv">Prints the string representation of the Object <code>o</code>, or <code>"null"</code>,
- followed by a newline.</div>
+        <div class="jd-descrdiv">Prints an Object and then terminate the line.</div>
   
   </td></tr>
 
@@ -870,9 +888,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(char)">println</a></span>(char c)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(char)">println</a></span>(char x)
         
-        <div class="jd-descrdiv">Prints the string representation of the char <code>c</code> followed by a newline.</div>
+        <div class="jd-descrdiv">Prints a character and then terminate the line.</div>
   
   </td></tr>
 
@@ -888,9 +906,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(boolean)">println</a></span>(boolean b)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(boolean)">println</a></span>(boolean x)
         
-        <div class="jd-descrdiv">Prints the string representation of the boolean <code>b</code> followed by a newline.</div>
+        <div class="jd-descrdiv">Prints a boolean and then terminate the line.</div>
   
   </td></tr>
 
@@ -906,9 +924,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(long)">println</a></span>(long l)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(long)">println</a></span>(long x)
         
-        <div class="jd-descrdiv">Prints the string representation of the long <code>l</code> followed by a newline.</div>
+        <div class="jd-descrdiv">Prints a long and then terminate the line.</div>
   
   </td></tr>
 
@@ -926,7 +944,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println()">println</a></span>()
         
-        <div class="jd-descrdiv">Prints a newline.</div>
+        <div class="jd-descrdiv">Terminates the current line by writing the line separator string.</div>
   
   </td></tr>
 
@@ -942,45 +960,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(int)">println</a></span>(int i)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(int)">println</a></span>(int x)
         
-        <div class="jd-descrdiv">Prints the string representation of the int <code>i</code> followed by a newline.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            synchronized
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(java.lang.String)">println</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str)
-        
-        <div class="jd-descrdiv">Prints a string followed by a newline.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(char[])">println</a></span>(char[] chars)
-        
-        <div class="jd-descrdiv">Prints the string representation of the character array <code>chars</code> followed by a newline.</div>
+        <div class="jd-descrdiv">Prints an integer and then terminate the line.</div>
   
   </td></tr>
 
@@ -996,9 +978,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(float)">println</a></span>(float f)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(java.lang.String)">println</a></span>(<a href="../../../reference/java/lang/String.html">String</a> x)
         
-        <div class="jd-descrdiv">Prints the string representation of the float <code>f</code> followed by a newline.</div>
+        <div class="jd-descrdiv">Prints a String and then terminate the line.</div>
   
   </td></tr>
 
@@ -1014,9 +996,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(double)">println</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(char[])">println</a></span>(char[] x)
         
-        <div class="jd-descrdiv">Prints the string representation of the double <code>d</code> followed by a newline.</div>
+        <div class="jd-descrdiv">Prints an array of characters and then terminate the line.</div>
   
   </td></tr>
 
@@ -1032,10 +1014,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#write(byte[], int, int)">write</a></span>(byte[] buffer, int offset, int length)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(float)">println</a></span>(float x)
         
-        <div class="jd-descrdiv">Writes <code>count</code> bytes from <code>buffer</code> starting at <code>offset</code>
- to the target stream.</div>
+        <div class="jd-descrdiv">Prints a float and then terminate the line.</div>
   
   </td></tr>
 
@@ -1044,16 +1025,53 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
+            
             
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#write(int)">write</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#println(double)">println</a></span>(double x)
         
-        <div class="jd-descrdiv">Writes one byte to the target stream.</div>
+        <div class="jd-descrdiv">Prints a double and then terminate the line.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#write(byte[], int, int)">write</a></span>(byte[] buf, int off, int len)
+        
+        <div class="jd-descrdiv">Writes <code>len</code> bytes from the specified byte array starting at
+ offset <code>off</code> to this stream.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#write(int)">write</a></span>(int b)
+        
+        <div class="jd-descrdiv">Writes the specified byte to this stream.</div>
   
   </td></tr>
 
@@ -1082,7 +1100,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#clearError()">clearError</a></span>()
         
-        <div class="jd-descrdiv">Sets the error state of the stream to false.</div>
+        <div class="jd-descrdiv">Clears the internal error state of this stream.</div>
   
   </td></tr>
 
@@ -1100,7 +1118,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PrintStream.html#setError()">setError</a></span>()
         
-        <div class="jd-descrdiv">Sets the error flag of this print stream to true.</div>
+        <div class="jd-descrdiv">Sets the error state of the stream to <code>true</code>.</div>
   
   </td></tr>
 
@@ -1150,7 +1168,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this output stream and releases any system resources
+ associated with the stream.</div>
   
   </td></tr>
 
@@ -1168,7 +1187,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Ensures that all pending data is sent out to the target stream.</div>
+        <div class="jd-descrdiv">Flushes this output stream and forces any buffered output bytes
+ to be written out to the stream.</div>
   
   </td></tr>
 
@@ -1184,10 +1204,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#write(byte[], int, int)">write</a></span>(byte[] buffer, int offset, int length)
+        <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#write(byte[])">write</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- <code>offset</code> to the target stream.</div>
+        <div class="jd-descrdiv">Writes <code>b.length</code> bytes to this output stream.</div>
   
   </td></tr>
 
@@ -1203,9 +1222,29 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#write(int)">write</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#write(byte[], int, int)">write</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Writes one byte to the target stream.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> bytes from the specified
+ <code>byte</code> array starting at offset <code>off</code> to
+ this output stream.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/FilterOutputStream.html#write(int)">write</a></span>(int b)
+        
+        <div class="jd-descrdiv">Writes the specified <code>byte</code> to this output stream.</div>
   
   </td></tr>
 
@@ -1248,7 +1287,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this output stream and releases any system resources
+ associated with this stream.</div>
   
   </td></tr>
 
@@ -1266,7 +1306,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes this stream.</div>
+        <div class="jd-descrdiv">Flushes this output stream and forces any buffered output bytes
+ to be written out.</div>
   
   </td></tr>
 
@@ -1282,9 +1323,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[])">write</a></span>(byte[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[])">write</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Equivalent to <code>write(buffer, 0, buffer.length)</code>.</div>
+        <div class="jd-descrdiv">Writes <code>b.length</code> bytes from the specified byte array
+ to this output stream.</div>
   
   </td></tr>
 
@@ -1300,10 +1342,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write</a></span>(byte[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- position <code>offset</code> to this stream.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> bytes from the specified byte array
+ starting at offset <code>off</code> to this output stream.</div>
   
   </td></tr>
 
@@ -1319,9 +1361,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(int)">write</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(int)">write</a></span>(int b)
         
-        <div class="jd-descrdiv">Writes a single byte to this stream.</div>
+        <div class="jd-descrdiv">Writes the specified byte to this output stream.</div>
   
   </td></tr>
 
@@ -1594,7 +1636,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
   
   </td></tr>
 
@@ -1637,8 +1680,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Flushable.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes the object by writing out any buffered data to the underlying
- output.</div>
+        <div class="jd-descrdiv">Flushes this stream by writing any buffered output to the underlying
+ stream.</div>
   
   </td></tr>
 
@@ -1681,7 +1724,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the specified character.</div>
+        <div class="jd-descrdiv">Appends the specified character to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -1699,7 +1742,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this
+ <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -1717,7 +1761,50 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this <tt>Appendable</tt>.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1787,27 +1874,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with <code>out</code> as its target
- stream. By default, the new print stream does not automatically flush its
- contents to the target stream when a newline is encountered.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream.  This stream will not flush automatically.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>out</th>
-          <td>the target output stream.</td>
+          <td>The output stream to which values and objects will be
+                    printed</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>out</code> is <code>null</code>.
-</td>
-        </tr>
-      </table>
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintWriter.html#PrintWriter(java.io.OutputStream)">PrintWriter(java.io.OutputStream)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1839,33 +1920,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with <code>out</code> as its target
- stream. The parameter <code>autoFlush</code> determines if the print stream
- automatically flushes its contents to the target stream when a newline is
- encountered.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>out</th>
-          <td>the target output stream.</td>
+          <td>The output stream to which values and objects will be
+                    printed</td>
         </tr>
         <tr>
           <th>autoFlush</th>
-          <td>indicates whether to flush contents upon encountering a
-            newline sequence.</td>
+          <td>A boolean; if true, the output buffer will be flushed
+                    whenever a byte array is written, one of the
+                    <code>println</code> methods is invoked, or a newline
+                    character or byte (<code>'\n'</code>) is written</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>out</code> is <code>null</code>.
-</td>
-        </tr>
-      </table>
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintWriter.html#PrintWriter(java.io.OutputStream, boolean)">PrintWriter(java.io.OutputStream, boolean)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1885,7 +1961,7 @@ From interface
         
       </span>
       <span class="sympad">PrintStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, boolean autoFlush, <a href="../../../reference/java/lang/String.html">String</a> charsetName)</span>
+      <span class="normal">(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out, boolean autoFlush, <a href="../../../reference/java/lang/String.html">String</a> encoding)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1897,155 +1973,36 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with <code>out</code> as its target
- stream and using the character encoding <code>charsetName</code> while writing. The
- parameter <code>autoFlush</code> determines if the print stream automatically
- flushes its contents to the target stream when a newline is encountered.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>out</th>
-          <td>the target output stream.</td>
+          <td>The output stream to which values and objects will be
+                    printed</td>
         </tr>
         <tr>
           <th>autoFlush</th>
-          <td>indicates whether or not to flush contents upon encountering a
-            newline sequence.</td>
+          <td>A boolean; if true, the output buffer will be flushed
+                    whenever a byte array is written, one of the
+                    <code>println</code> methods is invoked, or a newline
+                    character or byte (<code>'\n'</code>) is written</td>
         </tr>
         <tr>
-          <th>charsetName</th>
-          <td>the non-null string describing the desired character encoding.</td>
+          <th>encoding</th>
+          <td>The name of a supported
+                    <a href="../lang/package-summary.html#charenc">
+                    character encoding</a></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>out</code> or <code>charsetName</code> are <code>null</code>.</td>
-        </tr>
         <tr>
             <th><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
-            <td>if the encoding specified by <code>charsetName</code> is not supported.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="PrintStream(java.io.File)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">PrintStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/File.html">File</a> file)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with <code>file</code> as its target. The
- VM's default character set is used for character encoding.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>file</th>
-          <td>the target file. If the file already exists, its contents are
-            removed, otherwise a new file is created.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
-            <td>if an error occurs while opening or creating the target file.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="PrintStream(java.io.File, java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">PrintStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/File.html">File</a> file, <a href="../../../reference/java/lang/String.html">String</a> charsetName)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with <code>file</code> as its target. The
- character set named <code>charsetName</code> is used for character encoding.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>file</th>
-          <td>the target file. If the file already exists, its contents are
-            removed, otherwise a new file is created.</td>
-        </tr>
-        <tr>
-          <th>charsetName</th>
-          <td>the name of the character set used for character encoding.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
-            <td>if an error occurs while opening or creating the target file.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>charsetName</code> is <code>null</code>.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
-            <td>if the encoding specified by <code>charsetName</code> is not supported.
-</td>
+            <td>If the named encoding is not supported</td>
         </tr>
       </table>
   </div>
@@ -2079,16 +2036,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with the file identified by
- <code>fileName</code> as its target. The VM's default character
- set is used for character encoding.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream, without automatic line flushing, with the
+ specified file name.  This convenience constructor creates
+ the necessary intermediate <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code>, which will encode characters using the
+ {@linkplain java.nio.charset.Charset#defaultCharset() default charset}
+ for this instance of the Java virtual machine.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>fileName</th>
-          <td>the target file's name. If the file already exists, its
-            contents are removed, otherwise a new file is created.</td>
+          <td>The name of the file to use as the destination of this print
+         stream.  If the file exists, then it will be truncated to
+         zero size; otherwise, a new file will be created.  The output
+         will be written to the file and is buffered.</td>
         </tr>
       </table>
   </div>
@@ -2097,8 +2058,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
-            <td>if an error occurs while opening or creating the target file.
-</td>
+            <td>If the given file object does not denote an existing, writable
+          regular file and a new regular file of that name cannot be
+          created, or if some other error occurs while opening or
+          creating the file</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>If a security manager is present and <code><a href="reference/java/lang/SecurityManager.html#checkWrite(java.io.FileDescriptor)">checkWrite(fileName)</a></code> denies write
+          access to the file</td>
         </tr>
       </table>
   </div>
@@ -2120,7 +2088,7 @@ From interface
         
       </span>
       <span class="sympad">PrintStream</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> fileName, <a href="../../../reference/java/lang/String.html">String</a> charsetName)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> fileName, <a href="../../../reference/java/lang/String.html">String</a> csn)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2132,20 +2100,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PrintStream</code> with the file identified by
- <code>fileName</code> as its target. The character set named <code>charsetName</code> is
- used for character encoding.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream, without automatic line flushing, with the
+ specified file name and charset.  This convenience constructor creates
+ the necessary intermediate <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code>, which will encode characters using the provided
+ charset.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>fileName</th>
-          <td>the target file's name. If the file already exists, its
-            contents are removed, otherwise a new file is created.</td>
+          <td>The name of the file to use as the destination of this print
+         stream.  If the file exists, then it will be truncated to
+         zero size; otherwise, a new file will be created.  The output
+         will be written to the file and is buffered.</td>
         </tr>
         <tr>
-          <th>charsetName</th>
-          <td>the name of the character set used for character encoding.</td>
+          <th>csn</th>
+          <td>The name of a supported {@linkplain java.nio.charset.Charset
+         charset}</td>
         </tr>
       </table>
   </div>
@@ -2154,16 +2126,155 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
-            <td>if an error occurs while opening or creating the target file.</td>
+            <td>If the given file object does not denote an existing, writable
+          regular file and a new regular file of that name cannot be
+          created, or if some other error occurs while opening or
+          creating the file</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>charsetName</code> is <code>null</code>.</td>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>If a security manager is present and <code><a href="reference/java/lang/SecurityManager.html#checkWrite(java.io.FileDescriptor)">checkWrite(fileName)</a></code> denies write
+          access to the file</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
-            <td>if the encoding specified by <code>charsetName</code> is not supported.
-</td>
+            <td>If the named charset is not supported</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="PrintStream(java.io.File)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">PrintStream</span>
+      <span class="normal">(<a href="../../../reference/java/io/File.html">File</a> file)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream, without automatic line flushing, with the
+ specified file.  This convenience constructor creates the necessary
+ intermediate <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code>,
+ which will encode characters using the {@linkplain java.nio.charset.Charset#defaultCharset() default charset} for this
+ instance of the Java virtual machine.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>file</th>
+          <td>The file to use as the destination of this print stream.  If the
+         file exists, then it will be truncated to zero size; otherwise,
+         a new file will be created.  The output will be written to the
+         file and is buffered.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
+            <td>If the given file object does not denote an existing, writable
+          regular file and a new regular file of that name cannot be
+          created, or if some other error occurs while opening or
+          creating the file</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>If a security manager is present and <code><a href="reference/java/lang/SecurityManager.html#checkWrite(java.io.FileDescriptor)">checkWrite(file.getPath())</a></code>
+          denies write access to the file</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="PrintStream(java.io.File, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">PrintStream</span>
+      <span class="normal">(<a href="../../../reference/java/io/File.html">File</a> file, <a href="../../../reference/java/lang/String.html">String</a> csn)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new print stream, without automatic line flushing, with the
+ specified file and charset.  This convenience constructor creates
+ the necessary intermediate <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code>, which will encode characters using the provided
+ charset.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>file</th>
+          <td>The file to use as the destination of this print stream.  If the
+         file exists, then it will be truncated to zero size; otherwise,
+         a new file will be created.  The output will be written to the
+         file and is buffered.</td>
+        </tr>
+        <tr>
+          <th>csn</th>
+          <td>The name of a supported {@linkplain java.nio.charset.Charset
+         charset}</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
+            <td>If the given file object does not denote an existing, writable
+          regular file and a new regular file of that name cannot be
+          created, or if some other error occurs while opening or
+          creating the file</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>If a security manager is presentand <code><a href="reference/java/lang/SecurityManager.html#checkWrite(java.io.FileDescriptor)">checkWrite(file.getPath())</a></code>
+          denies write access to the file</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
+            <td>If the named charset is not supported</td>
         </tr>
       </table>
   </div>
@@ -2212,20 +2323,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends the char <code>c</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character to this output stream.
+
+ <p> An invocation of this method of the form <tt>out.append(c)</tt>
+ behaves in exactly the same way as the invocation
+
+ <pre>
+     out.print(c) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the character to append.</td>
+          <td>The 16-bit character to append</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.
-</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
 
     </div>
@@ -2245,7 +2361,7 @@ From interface
         <a href="../../../reference/java/io/PrintStream.html">PrintStream</a>
       </span>
       <span class="sympad">append</span>
-      <span class="normal">(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> charSequence, int start, int end)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2257,39 +2373,48 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends a subsequence of CharSequence <code>charSequence</code>, or <code>"null"</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends a subsequence of the specified character sequence to this output
+ stream.
+
+ <p> An invocation of this method of the form <tt>out.append(csq, start,
+ end)</tt> when <tt>csq</tt> is not <tt>null</tt>, behaves in
+ exactly the same way as the invocation
+
+ <pre>
+     out.print(csq.subSequence(start, end).toString()) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>charSequence</th>
-          <td>the character sequence appended to the target stream.</td>
+          <th>csq</th>
+          <td>The character sequence from which a subsequence will be
+         appended.  If <tt>csq</tt> is <tt>null</tt>, then characters
+         will be appended as if <tt>csq</tt> contained the four
+         characters <tt>"null"</tt>.</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the index of the first char in the character sequence appended
-            to the target stream.</td>
+          <td>The index of the first character in the subsequence</td>
         </tr>
         <tr>
           <th>end</th>
-          <td>the index of the character following the last character of the
-            subsequence appended to the target stream.</td>
+          <td>The index of the character following the last character in the
+         subsequence</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>start > end</code>, <code>start < 0</code>, <code>end < 0</code> or
-             either <code>start</code> or <code>end</code> are greater or equal than
-             the length of <code>charSequence</code>.
-</td>
+            <td>If <tt>start</tt> or <tt>end</tt> are negative, <tt>start</tt>
+          is greater than <tt>end</tt>, or <tt>end</tt> is greater than
+          <tt>csq.length()</tt></td>
         </tr>
       </table>
   </div>
@@ -2311,7 +2436,7 @@ From interface
         <a href="../../../reference/java/io/PrintStream.html">PrintStream</a>
       </span>
       <span class="sympad">append</span>
-      <span class="normal">(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> charSequence)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2323,20 +2448,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends the CharSequence <code>charSequence</code>, or <code>"null"</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character sequence to this output stream.
+
+ <p> An invocation of this method of the form <tt>out.append(csq)</tt>
+ behaves in exactly the same way as the invocation
+
+ <pre>
+     out.print(csq.toString()) </pre>
+
+ <p> Depending on the specification of <tt>toString</tt> for the
+ character sequence <tt>csq</tt>, the entire sequence may not be
+ appended.  For instance, invoking then <tt>toString</tt> method of a
+ character buffer will return a subsequence whose content depends upon
+ the buffer's position and limit.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>charSequence</th>
-          <td>the character sequence to append.</td>
+          <th>csq</th>
+          <td>The character sequence to append.  If <tt>csq</tt> is
+         <tt>null</tt>, then the four characters <tt>"null"</tt> are
+         appended to this output stream.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.
-</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
 
     </div>
@@ -2368,17 +2506,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Flushes this stream and returns the value of the error flag.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes the stream and checks its error state. The internal error state
+ is set to <code>true</code> when the underlying output stream throws an
+ <code>IOException</code> other than <code>InterruptedIOException</code>,
+ and when the <code>setError</code> method is invoked.  If an operation
+ on the underlying output stream throws an
+ <code>InterruptedIOException</code>, then the <code>PrintStream</code>
+ converts the exception back into an interrupt by doing:
+ <pre>
+     Thread.currentThread().interrupt();
+ </pre>
+ or the equivalent.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if either an <code>IOException</code> has been thrown
-         previously or if <code>setError()</code> has been called;
-         <code>false</code> otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintStream.html#setError()">setError()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if and only if this stream has encountered an
+         <code>IOException</code> other than
+         <code>InterruptedIOException</code>, or the
+         <code>setError</code> method has been invoked
+</li></ul>
   </div>
 
     </div>
@@ -2394,7 +2539,7 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">close</span>
@@ -2410,10 +2555,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes this print stream. Flushes this stream and then closes the target
- stream. If an I/O error occurs, this stream's error state is set to
- <code>true</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closes the stream.  This is done by flushing the stream and then closing
+ the underlying output stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/OutputStream.html#close()">close()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2428,7 +2576,7 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">flush</span>
@@ -2444,10 +2592,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Ensures that all pending data is sent out to the target stream. It also
- flushes the target stream. If an I/O error occurs, this stream's error
- state is set to <code>true</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes the stream.  This is done by writing any buffered output bytes to
+ the underlying output stream and then flushing that stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/OutputStream.html#flush()">flush()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2478,45 +2629,56 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes a string formatted by an intermediate <code><a href="reference/java/util/Formatter.html">Formatter</a></code> to this
- stream using the specified locale, format string and arguments.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a formatted string to this output stream using the specified
+ format string and arguments.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>l</th>
-          <td>the locale used in the method. No localization will be applied
-            if <code>l</code> is <code>null</code>.</td>
+          <td>The {@linkplain java.util.Locale locale} to apply during
+         formatting.  If <tt>l</tt> is <tt>null</tt> then no localization
+         is applied.</td>
         </tr>
         <tr>
           <th>format</th>
-          <td>the format string (see <code><a href="reference/java/util/Formatter.html#format(java.lang.String, java.lang.Object...)">format(String, Object...)</a></code>)</td>
+          <td>A format string as described in <a
+         href="../util/Formatter.html#syntax">Format string syntax</a></td>
         </tr>
         <tr>
           <th>args</th>
-          <td>the list of arguments passed to the formatter. If there are
-            more arguments than required by <code>format</code>,
-            additional arguments are ignored.</td>
+          <td>Arguments referenced by the format specifiers in the format
+         string.  If there are more arguments than format specifiers, the
+         extra arguments are ignored.  The number of arguments is
+         variable and may be zero.  The maximum number of arguments is
+         limited by the maximum dimension of a Java array as defined by
+         <cite>The Java&trade; Virtual Machine Specification</cite>.
+         The behaviour on a
+         <tt>null</tt> argument depends on the <a
+         href="../util/Formatter.html#syntax">conversion</a>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
-            <td>if the format string is illegal or incompatible with the
-             arguments, if there are not enough arguments or if any other
-             error regarding the format string or arguments is detected.</td>
+            <th></td>
+            <td>If a format string contains an illegal syntax, a format
+          specifier that is incompatible with the given arguments,
+          insufficient arguments given the format string, or other
+          illegal conditions.  For specification of all possible
+          formatting errors, see the <a
+          href="../util/Formatter.html#detail">Details</a> section of the
+          formatter class specification.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>format == null</code>
-</td>
+            <td>If the <tt>format</tt> is <tt>null</tt></td>
         </tr>
       </table>
   </div>
@@ -2550,43 +2712,103 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Formats <code>args</code> according to the format string <code>format</code>, and writes the result
- to this stream. This method uses the user's default locale.
- See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a formatted string to this output stream using the specified
+ format string and arguments.
+
+ <p> The locale always used is the one returned by <code><a href="reference/java/util/Locale.html#getDefault()">Locale.getDefault()</a></code>, regardless of any
+ previous invocations of other formatting methods on this object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>format</th>
-          <td>the format string (see <code><a href="reference/java/util/Formatter.html#format(java.lang.String, java.lang.Object...)">format(String, Object...)</a></code>)</td>
+          <td>A format string as described in <a
+         href="../util/Formatter.html#syntax">Format string syntax</a></td>
         </tr>
         <tr>
           <th>args</th>
-          <td>the list of arguments passed to the formatter. If there are
-            more arguments than required by <code>format</code>,
-            additional arguments are ignored.</td>
+          <td>Arguments referenced by the format specifiers in the format
+         string.  If there are more arguments than format specifiers, the
+         extra arguments are ignored.  The number of arguments is
+         variable and may be zero.  The maximum number of arguments is
+         limited by the maximum dimension of a Java array as defined by
+         <cite>The Java&trade; Virtual Machine Specification</cite>.
+         The behaviour on a
+         <tt>null</tt> argument depends on the <a
+         href="../util/Formatter.html#syntax">conversion</a>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
-            <td>if the format string is illegal or incompatible with the
-             arguments, if there are not enough arguments or if any other
-             error regarding the format string or arguments is detected.</td>
+            <th></td>
+            <td>If a format string contains an illegal syntax, a format
+          specifier that is incompatible with the given arguments,
+          insufficient arguments given the format string, or other
+          illegal conditions.  For specification of all possible
+          formatting errors, see the <a
+          href="../util/Formatter.html#detail">Details</a> section of the
+          formatter class specification.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>format == null</code>
-</td>
+            <td>If the <tt>format</tt> is <tt>null</tt></td>
         </tr>
       </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="print(int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">print</span>
+      <span class="normal">(int i)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Prints an integer.  The string produced by <code><code><a href="reference/java/lang/String.html#valueOf(int)">valueOf(int)</a></code></code> is translated into bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>i</th>
+          <td>The <code>int</code> to be printed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html#toString(int)">toString(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2618,40 +2840,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the double <code>d</code>.
-</p></div>
-
-    </div>
-</div>
-
-
-<a id="print(int)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        void
-      </span>
-      <span class="sympad">print</span>
-      <span class="normal">(int i)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the int <code>i</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a double-precision floating-point number.  The string produced by
+ <code><code><a href="reference/java/lang/String.html#valueOf(double)">valueOf(double)</a></code></code> is translated into
+ bytes according to the platform's default character encoding, and these
+ bytes are written in exactly the manner of the <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>d</th>
+          <td>The <code>double</code> to be printed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#toString(double)">toString(double)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2682,8 +2888,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the boolean <code>b</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a boolean value.  The string produced by <code><code><a href="reference/java/lang/String.html#valueOf(boolean)">valueOf(boolean)</a></code></code> is translated into bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>b</th>
+          <td>The <code>boolean</code> to be printed
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2714,8 +2932,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the char <code>c</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a character.  The character is translated into one or more bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>c</th>
+          <td>The <code>char</code> to be printed
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2746,8 +2976,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the long <code>l</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a long integer.  The string produced by <code><code><a href="reference/java/lang/String.html#valueOf(long)">valueOf(long)</a></code></code> is translated into bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>l</th>
+          <td>The <code>long</code> to be printed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#toString(long)">toString(long)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2778,8 +3024,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the float <code>f</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a floating-point number.  The string produced by <code><code><a href="reference/java/lang/String.html#valueOf(float)">valueOf(float)</a></code></code> is translated into bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>f</th>
+          <td>The <code>float</code> to be printed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Float.html#toString(float)">toString(float)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2794,11 +3056,11 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">print</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> str)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2810,25 +3072,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints a string to the target stream. The string is converted to an array
- of bytes using the encoding chosen during the construction of this
- stream. The bytes are then written to the target stream with
- <code>write(int)</code>.
-
- <p>If an I/O error occurs, this stream's error state is set to <code>true</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a string.  If the argument is <code>null</code> then the string
+ <code>"null"</code> is printed.  Otherwise, the string's characters are
+ converted into bytes according to the platform's default character
+ encoding, and these bytes are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>str</th>
-          <td>the string to print to the target stream.</td>
+          <th>s</th>
+          <td>The <code>String</code> to be printed
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintStream.html#write(int)">write(int)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2848,7 +3105,7 @@ From interface
         void
       </span>
       <span class="sympad">print</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2860,8 +3117,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the Object <code>o</code>, or <code>"null"</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints an object.  The string produced by the <code><code><a href="reference/java/lang/String.html#valueOf(java.lang.Object)">valueOf(Object)</a></code></code> method is translated into bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>The <code>Object</code> to be printed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#toString()">toString()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2880,7 +3153,7 @@ From interface
         void
       </span>
       <span class="sympad">print</span>
-      <span class="normal">(char[] chars)</span>
+      <span class="normal">(char[] s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2892,8 +3165,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the character array <code>chars</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints an array of characters.  The characters are converted into bytes
+ according to the platform's default character encoding, and these bytes
+ are written in exactly the manner of the
+ <code><code><a href="reference/java/io/PrintStream.html#write(int)">write(int)</a></code></code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>s</th>
+          <td>The array of chars to be printed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>If <code>s</code> is <code>null</code>
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2924,43 +3218,56 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints a formatted string. The behavior of this method is the same as
- this stream's <code>#format(String, Object...)</code> method.
+  <div class="jd-tagdata jd-tagdescr"><p>A convenience method to write a formatted string to this output stream
+ using the specified format string and arguments.
 
- <p>The <code>Locale</code> used is the user's default locale.
- See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".</p></div>
+ <p> An invocation of this method of the form <tt>out.printf(format,
+ args)</tt> behaves in exactly the same way as the invocation
+
+ <pre>
+     out.format(format, args) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>format</th>
-          <td>the format string (see <code><a href="reference/java/util/Formatter.html#format(java.lang.String, java.lang.Object...)">format(String, Object...)</a></code>)</td>
+          <td>A format string as described in <a
+         href="../util/Formatter.html#syntax">Format string syntax</a></td>
         </tr>
         <tr>
           <th>args</th>
-          <td>the list of arguments passed to the formatter. If there are
-            more arguments than required by <code>format</code>,
-            additional arguments are ignored.</td>
+          <td>Arguments referenced by the format specifiers in the format
+         string.  If there are more arguments than format specifiers, the
+         extra arguments are ignored.  The number of arguments is
+         variable and may be zero.  The maximum number of arguments is
+         limited by the maximum dimension of a Java array as defined by
+         <cite>The Java&trade; Virtual Machine Specification</cite>.
+         The behaviour on a
+         <tt>null</tt> argument depends on the <a
+         href="../util/Formatter.html#syntax">conversion</a>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
-            <td>if the format string is illegal or incompatible with the
-             arguments, if there are not enough arguments or if any other
-             error regarding the format string or arguments is detected.</td>
+            <th></td>
+            <td>If a format string contains an illegal syntax, a format
+          specifier that is incompatible with the given arguments,
+          insufficient arguments given the format string, or other
+          illegal conditions.  For specification of all possible
+          formatting errors, see the <a
+          href="../util/Formatter.html#detail">Details</a> section of the
+          formatter class specification.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>format == null</code>
-</td>
+            <td>If the <tt>format</tt> is <tt>null</tt></td>
         </tr>
       </table>
   </div>
@@ -2994,45 +3301,62 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints a formatted string. The behavior of this method is the same as
- this stream's <code>#format(Locale, String, Object...)</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>A convenience method to write a formatted string to this output stream
+ using the specified format string and arguments.
+
+ <p> An invocation of this method of the form <tt>out.printf(l, format,
+ args)</tt> behaves in exactly the same way as the invocation
+
+ <pre>
+     out.format(l, format, args) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>l</th>
-          <td>the locale used in the method. No localization will be applied
-            if <code>l</code> is <code>null</code>.</td>
+          <td>The {@linkplain java.util.Locale locale} to apply during
+         formatting.  If <tt>l</tt> is <tt>null</tt> then no localization
+         is applied.</td>
         </tr>
         <tr>
           <th>format</th>
-          <td>the format string (see <code><a href="reference/java/util/Formatter.html#format(java.lang.String, java.lang.Object...)">format(String, Object...)</a></code>)</td>
+          <td>A format string as described in <a
+         href="../util/Formatter.html#syntax">Format string syntax</a></td>
         </tr>
         <tr>
           <th>args</th>
-          <td>the list of arguments passed to the formatter. If there are
-            more arguments than required by <code>format</code>,
-            additional arguments are ignored.</td>
+          <td>Arguments referenced by the format specifiers in the format
+         string.  If there are more arguments than format specifiers, the
+         extra arguments are ignored.  The number of arguments is
+         variable and may be zero.  The maximum number of arguments is
+         limited by the maximum dimension of a Java array as defined by
+         <cite>The Java&trade; Virtual Machine Specification</cite>.
+         The behaviour on a
+         <tt>null</tt> argument depends on the <a
+         href="../util/Formatter.html#syntax">conversion</a>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream.</li></ul>
+      <ul class="nolist"><li>This output stream</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
-            <td>if the format string is illegal or incompatible with the
-             arguments, if there are not enough arguments or if any other
-             error regarding the format string or arguments is detected.</td>
+            <th></td>
+            <td>If a format string contains an illegal syntax, a format
+          specifier that is incompatible with the given arguments,
+          insufficient arguments given the format string, or other
+          illegal conditions.  For specification of all possible
+          formatting errors, see the <a
+          href="../util/Formatter.html#detail">Details</a> section of the
+          formatter class specification.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>format == null</code>.
-</td>
+            <td>If the <tt>format</tt> is <tt>null</tt></td>
         </tr>
       </table>
   </div>
@@ -3054,7 +3378,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3066,9 +3390,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the Object <code>o</code>, or <code>"null"</code>,
- followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints an Object and then terminate the line.  This method calls
+ at first String.valueOf(x) to get the printed object's string value,
+ then behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(java.lang.String)">print(String)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>The <code>Object</code> to be printed.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3087,7 +3423,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(char c)</span>
+      <span class="normal">(char x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3099,8 +3435,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the char <code>c</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a character and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(char)">print(char)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>The <code>char</code> to be printed.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3119,7 +3466,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(boolean b)</span>
+      <span class="normal">(boolean x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3131,8 +3478,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the boolean <code>b</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a boolean and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(boolean)">print(boolean)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>The <code>boolean</code> to be printed
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3151,7 +3509,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(long l)</span>
+      <span class="normal">(long x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3163,8 +3521,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the long <code>l</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a long and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(long)">print(long)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>a The <code>long</code> to be printed.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3195,7 +3564,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints a newline.
+  <div class="jd-tagdata jd-tagdescr"><p>Terminates the current line by writing the line separator string.  The
+ line separator string is defined by the system property
+ <code>line.separator</code>, and is not necessarily a single newline
+ character (<code>'\n'</code>).
 </p></div>
 
     </div>
@@ -3215,7 +3587,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(int i)</span>
+      <span class="normal">(int x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3227,8 +3599,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the int <code>i</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints an integer and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(int)">print(int)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>The <code>int</code> to be printed.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3243,11 +3626,11 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> str)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3259,24 +3642,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints a string followed by a newline. The string is converted to an array of bytes using
- the encoding chosen during the construction of this stream. The bytes are
- then written to the target stream with <code>write(int)</code>.
-
- <p>If an I/O error occurs, this stream's error state is set to <code>true</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a String and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(java.lang.String)">print(String)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>str</th>
-          <td>the string to print to the target stream.</td>
+          <th>x</th>
+          <td>The <code>String</code> to be printed.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintStream.html#write(int)">write(int)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -3296,7 +3673,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(char[] chars)</span>
+      <span class="normal">(char[] x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3308,8 +3685,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the character array <code>chars</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints an array of characters and then terminate the line.  This method
+ behaves as though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(char[])">print(char[])</a></code></code> and
+ then <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>an array of chars to print.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3328,7 +3716,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(float f)</span>
+      <span class="normal">(float x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3340,8 +3728,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the float <code>f</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a float and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(float)">print(float)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>The <code>float</code> to be printed.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3360,7 +3759,7 @@ From interface
         void
       </span>
       <span class="sympad">println</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3372,8 +3771,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Prints the string representation of the double <code>d</code> followed by a newline.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a double and then terminate the line.  This method behaves as
+ though it invokes <code><code><a href="reference/java/io/PrintStream.html#print(double)">print(double)</a></code></code> and then
+ <code><code><a href="reference/java/io/PrintStream.html#println()">println()</a></code></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>The <code>double</code> to be printed.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -3392,7 +3802,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(byte[] buffer, int offset, int length)</span>
+      <span class="normal">(byte[] buf, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3404,42 +3814,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> bytes from <code>buffer</code> starting at <code>offset</code>
- to the target stream. If autoFlush is set, this stream gets flushed after
- writing the buffer.
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>len</code> bytes from the specified byte array starting at
+ offset <code>off</code> to this stream.  If automatic flushing is
+ enabled then the <code>flush</code> method will be invoked.
 
- <p>This stream's error flag is set to <code>true</code> if this stream is closed
- or an I/O error occurs.</p></div>
+ <p> Note that the bytes will be written as given; to write characters
+ that will be translated according to the platform's default character
+ encoding, use the <code>print(char)</code> or <code>println(char)</code>
+ methods.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the buffer to be written.</td>
+          <th>buf</th>
+          <td>A byte array</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the index of the first byte in <code>buffer</code> to write.</td>
+          <th>off</th>
+          <td>Offset from which to start taking bytes</td>
         </tr>
         <tr>
-          <th>length</th>
-          <td>the number of bytes in <code>buffer</code> to write.</td>
+          <th>len</th>
+          <td>Number of bytes to write
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>count < 0</code>, or if <code>offset + count</code> is bigger than the length of <code>buffer</code>.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintStream.html#flush()">flush()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -3455,11 +3854,11 @@ From interface
         
         
         
-        synchronized
+        
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(int oneByte)</span>
+      <span class="normal">(int b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3471,22 +3870,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes one byte to the target stream. Only the least significant byte of
- the integer <code>oneByte</code> is written. This stream is flushed if
- <code>oneByte</code> is equal to the character <code>'\n'</code> and this stream is
- set to autoFlush.
- <p>
- This stream's error flag is set to <code>true</code> if it is closed or an I/O
- error occurs.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the specified byte to this stream.  If the byte is a newline and
+ automatic flushing is enabled then the <code>flush</code> method will be
+ invoked.
+
+ <p> Note that the byte is written as given; to write a character that
+ will be translated according to the platform's default character
+ encoding, use the <code>print(char)</code> or <code>println(char)</code>
+ methods.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>oneByte</th>
-          <td>the byte to be written
-</td>
+          <th>b</th>
+          <td>The byte to be written</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/PrintStream.html#print(char)">print(char)</a></code></li><li><code><a href="../../../reference/java/io/PrintStream.html#println(char)">println(char)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3527,7 +3931,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the error state of the stream to false.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Clears the internal error state of this stream.
+
+ <p> This method will cause subsequent invocations of <code><a href="reference/java/io/PrintStream.html#checkError()">checkError()</a></code> to return <tt>false</tt> until another write
+ operation fails and invokes <code><a href="reference/java/io/PrintStream.html#setError()">setError()</a></code>.</p></div>
 
     </div>
 </div>
@@ -3558,8 +3965,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the error flag of this print stream to true.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the error state of the stream to <code>true</code>.
+
+ <p> This method will cause subsequent invocations of <code><a href="reference/java/io/PrintStream.html#checkError()">checkError()</a></code> to return <tt>true</tt> until <code><a href="reference/java/io/PrintStream.html#clearError()">clearError()</a></code> is invoked.</p></div>
 
     </div>
 </div>

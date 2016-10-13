@@ -121,12 +121,12 @@ layout: api
   
 
   
+   
+  
   
   
   
 
-  
-   
   
   
   
@@ -269,9 +269,17 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An exception, which is subclass of SQLNonTransientException, is thrown when
- various the JDBC driver does not support an optional JDBC feature.
-</p>
+<p>The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value is '<i>0A</i>'
+ ( the value is 'zero' A).
+ This indicates that the JDBC driver does not support an optional JDBC feature.
+ Optional JDBC features can fall into the fallowing categories:
+<p>
+<UL>
+<LI>no support for an optional feature
+<LI>no support for an optional overloaded method
+<LI>no support for an optional mode for a method.  The mode for a method is
+determined based on constants passed as parameter values to a method
+</UL></p>
 
 
 
@@ -339,7 +347,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException()">SQLFeatureNotSupportedException</a></span>()
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object.</div>
   
   </td></tr>
 
@@ -357,7 +365,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given <code>reason</code>.</div>
   
   </td></tr>
 
@@ -373,9 +382,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given <code>reason</code> and <code>SQLState</code>.</div>
   
   </td></tr>
 
@@ -391,9 +401,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String, int)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String, int)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+  with a given <code>reason</code>, <code>SQLState</code>  and
+ <code>vendorCode</code>.</div>
   
   </td></tr>
 
@@ -411,7 +423,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.Throwable)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+   with a given  <code>cause</code>.</div>
   
   </td></tr>
 
@@ -429,7 +442,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.Throwable)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given
+ <code>reason</code> and  <code>cause</code>.</div>
   
   </td></tr>
 
@@ -445,9 +460,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String, java.lang.Throwable)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String, java.lang.Throwable)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given
+ <code>reason</code>, <code>SQLState</code> and  <code>cause</code>.</div>
   
   </td></tr>
 
@@ -463,9 +480,12 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String, int, java.lang.Throwable)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html#SQLFeatureNotSupportedException(java.lang.String, java.lang.String, int, java.lang.Throwable)">SQLFeatureNotSupportedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLFeatureNotSupportedException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given
+ <code>reason</code>, <code>SQLState</code>, <code>vendorCode</code>
+ and  <code>cause</code>.</div>
   
   </td></tr>
 
@@ -523,7 +543,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getErrorCode()">getErrorCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the integer error code for this <code>SQLException</code>.</div>
+        <div class="jd-descrdiv">Retrieves the vendor-specific exception code
+ for this <code>SQLException</code> object.</div>
   
   </td></tr>
 
@@ -541,8 +562,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getNextException()">getNextException</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the <code>SQLException</code> chained to this <code>SQLException</code>,
- if any.</div>
+        <div class="jd-descrdiv">Retrieves the exception chained to this
+ <code>SQLException</code> object by setNextException(SQLException ex).</div>
   
   </td></tr>
 
@@ -560,7 +581,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getSQLState()">getSQLState</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the <code>SQLState</code> description string for this <code>SQLException</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the SQLState for this <code>SQLException</code> object.</div>
   
   </td></tr>
 
@@ -578,7 +599,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Obsolete.</div>
+        <div class="jd-descrdiv">Returns an iterator over the chained SQLExceptions.</div>
   
   </td></tr>
 
@@ -596,7 +617,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#setNextException(java.sql.SQLException)">setNextException</a></span>(<a href="../../../reference/java/sql/SQLException.html">SQLException</a> ex)
         
-        <div class="jd-descrdiv">Obsolete.</div>
+        <div class="jd-descrdiv">Adds an <code>SQLException</code> object to the end of the chain.</div>
   
   </td></tr>
 
@@ -817,6 +838,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -1057,8 +1097,6 @@ From class
 
 
 
-
-
 <tr class="api apilevel-" >
 <td colspan="12">
   <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Iterable" class="jd-expando-trigger closed"
@@ -1085,6 +1123,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;<a href="../../../reference/java/lang/Throwable.html">Throwable</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -1095,10 +1149,28 @@ From interface
   </td></tr>
 
 
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;<a href="../../../reference/java/lang/Throwable.html">Throwable</a>&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
+  </td></tr>
+
+
 </table>
   </div>
 </div>
 </td></tr>
+
+
 
 
 </table>
@@ -1160,10 +1232,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to null, the SQLState string is set to null and the Error Code is set
- to 0.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object.
+  The <code>reason</code>, <code>SQLState</code> are initialized
+ to <code>null</code> and the vendor code is initialized to 0.
+
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
 
     </div>
 </div>
@@ -1194,16 +1270,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the given reason string, the SQLState string is set to null and
- the Error Code is set to 0.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given <code>reason</code>. The <code>SQLState</code>
+ is initialized to <code>null</code> and the vender code is initialized
+ to 0.
+
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string
-</td>
+          <td>a description of the exception</td>
         </tr>
       </table>
   </div>
@@ -1225,7 +1306,7 @@ From interface
         
       </span>
       <span class="sympad">SQLFeatureNotSupportedException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1237,20 +1318,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the given reason string, the SQLState string is set to the given
- SQLState string and the Error Code is set to 0.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given <code>reason</code> and <code>SQLState</code>.
+
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method. The vendor code
+ is initialized to 0.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string
-</td>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
         </tr>
       </table>
   </div>
@@ -1272,7 +1357,7 @@ From interface
         
       </span>
       <span class="sympad">SQLFeatureNotSupportedException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1284,24 +1369,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the given reason string, the SQLState string is set to the given
- SQLState string and the Error Code is set to the given error code value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+  with a given <code>reason</code>, <code>SQLState</code>  and
+ <code>vendorCode</code>.
+
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
         </tr>
         <tr>
           <th>vendorCode</th>
-          <td>the integer value for the error code
-</td>
+          <td>a database vendor specific exception code</td>
         </tr>
       </table>
   </div>
@@ -1335,17 +1424,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the null if cause == null or cause.toString() if cause!=null,and
- the cause Throwable object is set to the given cause Throwable object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+   with a given  <code>cause</code>.
+ The <code>SQLState</code> is initialized
+ to <code>null</code> and the vendor code is initialized to 0.
+ The <code>reason</code>  is initialized to <code>null</code> if
+ <code>cause==null</code> or to <code>cause.toString()</code> if
+ <code>cause!=null</code>.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the underlying reason for this <code>SQLException</code> (which is saved for later retrieval bythe <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.</td>
         </tr>
       </table>
   </div>
@@ -1379,21 +1472,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the given and the cause Throwable object is set to the given cause
- Throwable object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given
+ <code>reason</code> and  <code>cause</code>.
+ The <code>SQLState</code> is  initialized to <code>null</code>
+ and the vendor code is initialized to 0.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception.</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.</td>
         </tr>
       </table>
   </div>
@@ -1415,7 +1510,7 @@ From interface
         
       </span>
       <span class="sympad">SQLFeatureNotSupportedException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1427,26 +1522,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the given reason string, the SQLState string is set to the given
- SQLState string and the cause Throwable object is set to the given cause
- Throwable object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given
+ <code>reason</code>, <code>SQLState</code> and  <code>cause</code>.
+ The vendor code is initialized to 0.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception.</td>
         </tr>
         <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.</td>
         </tr>
       </table>
   </div>
@@ -1468,7 +1563,7 @@ From interface
         
       </span>
       <span class="sympad">SQLFeatureNotSupportedException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1480,31 +1575,30 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLFeatureNotSupportedException object. The Reason string is
- set to the given reason string, the SQLState string is set to the given
- SQLState string , the Error Code is set to the given error code value,
- and the cause Throwable object is set to the given cause Throwable
- object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLFeatureNotSupportedException</code> object
+ with a given
+ <code>reason</code>, <code>SQLState</code>, <code>vendorCode</code>
+ and  <code>cause</code>.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
         </tr>
         <tr>
           <th>vendorCode</th>
-          <td>the integer value for the error code</td>
+          <td>a database vendor-specific exception code</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.</td>
         </tr>
       </table>
   </div>

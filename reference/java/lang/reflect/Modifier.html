@@ -165,7 +165,12 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This class provides static methods to decode class and member modifiers.</p>
+<p>The Modifier class provides <code>static</code> methods and
+ constants to decode class and member access modifiers.  The sets of
+ modifiers are represented as integers with distinct bit positions
+ representing different modifiers.  The values for the constants
+ representing the modifiers are taken from the tables in sections 4.1, 4.4, 4.5, and 4.7 of
+ <cite>The Java&trade; Virtual Machine Specification</cite>.</p>
 
 
 
@@ -226,7 +231,8 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html#FINAL">FINAL</a></td>
-        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>final</code> modifier.</td>
+        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>final</code>
+ modifier.</td>
     </tr>
     
     
@@ -241,7 +247,8 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html#NATIVE">NATIVE</a></td>
-        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>native</code> modifier.</td>
+        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>native</code>
+ modifier.</td>
     </tr>
     
     
@@ -272,14 +279,16 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html#STATIC">STATIC</a></td>
-        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>static</code> modifier.</td>
+        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>static</code>
+ modifier.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html#STRICT">STRICT</a></td>
-        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>strict</code> modifier.</td>
+        <td class="jd-descrcol" width="100%">The <code>int</code> value representing the <code>strictfp</code>
+ modifier.</td>
     </tr>
     
     
@@ -339,8 +348,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#Modifier()">Modifier</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>Modifier</code> instance.</div>
-  
   </td></tr>
 
 
@@ -365,12 +372,13 @@ layout: api
             
             static
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isAbstract(int)">isAbstract</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#classModifiers()">classModifiers</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>abstract</code> modifier.</div>
+        <div class="jd-descrdiv">Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a class.</div>
   
   </td></tr>
 
@@ -383,12 +391,51 @@ layout: api
             
             static
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isFinal(int)">isFinal</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#constructorModifiers()">constructorModifiers</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>final</code> modifier.</div>
+        <div class="jd-descrdiv">Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a constructor.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#fieldModifiers()">fieldModifiers</a></span>()
+        
+        <div class="jd-descrdiv">Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a field.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#interfaceModifiers()">interfaceModifiers</a></span>()
+        
+        <div class="jd-descrdiv">Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to an interface.</div>
   
   </td></tr>
 
@@ -404,9 +451,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isInterface(int)">isInterface</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isAbstract(int)">isAbstract</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>interface</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>abstract</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -422,9 +470,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isNative(int)">isNative</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isFinal(int)">isFinal</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>native</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>final</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -440,9 +489,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isPrivate(int)">isPrivate</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isInterface(int)">isInterface</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>private</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>interface</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -458,9 +508,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isProtected(int)">isProtected</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isNative(int)">isNative</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>protected</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>native</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -476,9 +527,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isPublic(int)">isPublic</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isPrivate(int)">isPrivate</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>public</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>private</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -494,9 +546,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isStatic(int)">isStatic</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isProtected(int)">isProtected</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>static</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>protected</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -512,9 +565,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isStrict(int)">isStrict</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isPublic(int)">isPublic</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>strict</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>public</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -530,9 +584,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isSynchronized(int)">isSynchronized</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isStatic(int)">isStatic</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>synchronized</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>static</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -548,9 +603,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isTransient(int)">isTransient</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isStrict(int)">isStrict</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>transient</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>strictfp</code> modifier, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -566,9 +622,86 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isVolatile(int)">isVolatile</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isSynchronized(int)">isSynchronized</a></span>(int mod)
         
-        <div class="jd-descrdiv">Indicates whether or not the specified modifiers contain the <code>volatile</code> modifier.</div>
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>synchronized</code> modifier, <code>false</code> otherwise.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isTransient(int)">isTransient</a></span>(int mod)
+        
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>transient</code> modifier, <code>false</code> otherwise.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#isVolatile(int)">isVolatile</a></span>(int mod)
+        
+        <div class="jd-descrdiv">Return <code>true</code> if the integer argument includes the
+ <code>volatile</code> modifier, <code>false</code> otherwise.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#methodModifiers()">methodModifiers</a></span>()
+        
+        <div class="jd-descrdiv">Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a method.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#parameterModifiers()">parameterModifiers</a></span>()
+        
+        <div class="jd-descrdiv">Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a parameter.</div>
   
   </td></tr>
 
@@ -584,10 +717,10 @@ layout: api
             <a href="../../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#toString(int)">toString</a></span>(int modifiers)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/Modifier.html#toString(int)">toString</a></span>(int mod)
         
-        <div class="jd-descrdiv">Returns a string containing the string representation of all modifiers
- present in the specified modifiers.</div>
+        <div class="jd-descrdiv">Return a string describing the access modifier flags in
+ the specified modifier.</div>
   
   </td></tr>
 
@@ -930,7 +1063,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>final</code> modifier.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>final</code>
+ modifier.
 </p></div>
 
     
@@ -1013,7 +1147,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>native</code> modifier.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>native</code>
+ modifier.
 </p></div>
 
     
@@ -1180,7 +1315,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>static</code> modifier.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>static</code>
+ modifier.
 </p></div>
 
     
@@ -1221,7 +1357,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>strict</code> modifier.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>int</code> value representing the <code>strictfp</code>
+ modifier.
 </p></div>
 
     
@@ -1403,8 +1540,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Modifier</code> instance.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -1425,6 +1561,154 @@ From class
 
 
 
+<a id="classModifiers()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">classModifiers</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a class.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="constructorModifiers()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">constructorModifiers</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a constructor.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a constructor.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="fieldModifiers()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">fieldModifiers</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a field.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="interfaceModifiers()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">interfaceModifiers</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to an interface.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to an interface.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="isAbstract(int)"></a>
 
 <div class="jd-details api apilevel-">
@@ -1438,7 +1722,7 @@ From class
         boolean
       </span>
       <span class="sympad">isAbstract</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1450,19 +1734,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>abstract</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>abstract</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>abstract</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>abstract</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1483,7 +1769,7 @@ From class
         boolean
       </span>
       <span class="sympad">isFinal</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1495,19 +1781,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>final</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>final</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>final</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>final</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1528,7 +1816,7 @@ From class
         boolean
       </span>
       <span class="sympad">isInterface</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1540,19 +1828,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>interface</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>interface</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>interface</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>interface</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1573,7 +1863,7 @@ From class
         boolean
       </span>
       <span class="sympad">isNative</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1585,19 +1875,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>native</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>native</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>native</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>native</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1618,7 +1910,7 @@ From class
         boolean
       </span>
       <span class="sympad">isPrivate</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1630,19 +1922,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>private</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>private</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>private</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>private</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1663,7 +1957,7 @@ From class
         boolean
       </span>
       <span class="sympad">isProtected</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1675,19 +1969,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>protected</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>protected</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>protected</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>protected</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1708,7 +2004,7 @@ From class
         boolean
       </span>
       <span class="sympad">isPublic</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1720,19 +2016,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>public</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>public</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>public</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>public</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1753,7 +2051,7 @@ From class
         boolean
       </span>
       <span class="sympad">isStatic</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1765,19 +2063,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>static</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>static</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>static</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>static</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1798,7 +2098,7 @@ From class
         boolean
       </span>
       <span class="sympad">isStrict</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1810,19 +2110,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>strict</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>strictfp</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>strict</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>strictfp</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1843,7 +2145,7 @@ From class
         boolean
       </span>
       <span class="sympad">isSynchronized</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1855,19 +2157,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>synchronized</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>synchronized</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>synchronized</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>synchronized</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1888,7 +2192,7 @@ From class
         boolean
       </span>
       <span class="sympad">isTransient</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1900,19 +2204,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>transient</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>transient</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>transient</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>transient</code> modifier; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1933,7 +2239,7 @@ From class
         boolean
       </span>
       <span class="sympad">isVolatile</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1945,20 +2251,96 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified modifiers contain the <code>volatile</code> modifier.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>true</code> if the integer argument includes the
+ <code>volatile</code> modifier, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to test</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified modifiers contain the <code>volatile</code> modifier, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if <code>mod</code> includes the
+ <code>volatile</code> modifier; <code>false</code> otherwise.
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="methodModifiers()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">methodModifiers</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a method.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="parameterModifiers()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">parameterModifiers</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a parameter.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an <code>int</code> value OR-ing together the source language
+ modifiers that can be applied to a parameter.</li></ul>
   </div>
 
     </div>
@@ -1978,7 +2360,7 @@ From class
         <a href="../../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
-      <span class="normal">(int modifiers)</span>
+      <span class="normal">(int mod)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1990,23 +2372,43 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing the string representation of all modifiers
- present in the specified modifiers. Modifiers appear in the order
- specified by the Java Language Specification:
+  <div class="jd-tagdata jd-tagdescr"><p>Return a string describing the access modifier flags in
+ the specified modifier. For example:
+ <blockquote><pre>
+    public final synchronized strictfp
+ </pre></blockquote>
+ The modifier names are returned in an order consistent with the
+ suggested modifier orderings given in sections 8.1.1, 8.3.1, 8.4.3, 8.8.3, and 9.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.
+ The full modifier ordering used by this method is:
+ <blockquote> <code>public protected private abstract static final transient
+ volatile synchronized native strictfp
+ interface </code> </blockquote>
+ The <code>interface</code> modifier discussed in this class is
+ not a true modifier in the Java language and it appears after
+ all other modifiers listed by this method.  This method may
+ return a string of modifiers that are not valid modifiers of a
+ Java entity; in other words, no checking is done on the
+ possible validity of the combination of modifiers represented
+ by the input.
 
- <code>public private protected abstract static final transient volatile native synchronized interface strict</code></p></div>
+ Note that to perform such checking for a known kind of entity,
+ such as a constructor or method, first AND the argument of
+ <code>toString</code> with the appropriate mask from a method like
+ <code><a href="reference/java/lang/reflect/Modifier.html#constructorModifiers()">constructorModifiers()</a></code> or <code><a href="reference/java/lang/reflect/Modifier.html#methodModifiers()">methodModifiers()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>modifiers</th>
-          <td>the modifiers to print</td>
+          <th>mod</th>
+          <td>a set of modifiers</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of the modifiers
+      <ul class="nolist"><li>a string representation of the set of modifiers
+ represented by <code>mod</code>
 </li></ul>
   </div>
 

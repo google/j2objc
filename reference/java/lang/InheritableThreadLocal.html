@@ -186,18 +186,24 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A thread-local variable whose value is passed from parent to child thread. By
- default, the value of an inheritable thread-local variable of a child thread
- is initialized with the value of the parent thread's variable at thread
- creation time. However, subclasses may override {code #childValue(Object)}
- to provide an arbitrary function for passing the value of a parent's
- thread-local variable to the child's thread-local variable.</p>
+<p>This class extends <tt>ThreadLocal</tt> to provide inheritance of values
+ from parent thread to child thread: when a child thread is created, the
+ child receives initial values for all inheritable thread-local variables
+ for which the parent has values.  Normally the child's values will be
+ identical to the parent's; however, the child's value can be made an
+ arbitrary function of the parent's by overriding the <tt>childValue</tt>
+ method in this class.
+
+ <p>Inheritable thread-local variables are used in preference to
+ ordinary thread-local variables when the per-thread-attribute being
+ maintained in the variable (e.g., User ID, Transaction ID) must be
+ automatically transmitted to any child threads that are created.</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li><li><code><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a></code></li>
       </ul>
   </div>
 
@@ -264,8 +270,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/InheritableThreadLocal.html#InheritableThreadLocal()">InheritableThreadLocal</a></span>()
         
-        <div class="jd-descrdiv">Creates a new inheritable thread-local variable.</div>
-  
   </td></tr>
 
 
@@ -297,8 +301,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/InheritableThreadLocal.html#childValue(T)">childValue</a></span>(T parentValue)
         
-        <div class="jd-descrdiv">Computes the initial value of this thread-local variable for the child
- thread given the parent thread's value.</div>
+        <div class="jd-descrdiv">Computes the child's initial value for this inheritable thread-local
+ variable as a function of the parent's value at the time the child
+ thread is created.</div>
   
   </td></tr>
 
@@ -348,7 +353,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#get()">get</a></span>()
         
-        <div class="jd-descrdiv">Returns the value of this variable for the current thread.</div>
+        <div class="jd-descrdiv">Returns the value in the current thread's copy of this
+ thread-local variable.</div>
   
   </td></tr>
 
@@ -366,7 +372,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#initialValue()">initialValue</a></span>()
         
-        <div class="jd-descrdiv">Provides the initial value of this variable for the current thread.</div>
+        <div class="jd-descrdiv">Returns the current thread's "initial value" for this
+ thread-local variable.</div>
   
   </td></tr>
 
@@ -384,7 +391,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#remove()">remove</a></span>()
         
-        <div class="jd-descrdiv">Removes the entry for this variable in the current thread.</div>
+        <div class="jd-descrdiv">Removes the current thread's value for this thread-local
+ variable.</div>
   
   </td></tr>
 
@@ -402,7 +410,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#set(T)">set</a></span>(T value)
         
-        <div class="jd-descrdiv">Sets the value of this variable for the current thread.</div>
+        <div class="jd-descrdiv">Sets the current thread's copy of this thread-local variable
+ to the specified value.</div>
   
   </td></tr>
 
@@ -702,8 +711,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new inheritable thread-local variable.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -753,22 +761,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Computes the initial value of this thread-local variable for the child
- thread given the parent thread's value. Called from the parent thread when
- creating a child thread. The default implementation returns the parent
- thread's value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Computes the child's initial value for this inheritable thread-local
+ variable as a function of the parent's value at the time the child
+ thread is created.  This method is called from within the parent
+ thread before the child is started.
+ <p>
+ This method merely returns its input argument, and should be overridden
+ if a different behavior is desired.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>parentValue</th>
-          <td>the value of the variable in the parent thread.</td>
+          <td>the parent thread's value</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the initial value of the variable for the child thread.
+      <ul class="nolist"><li>the child thread's initial value
 </li></ul>
   </div>
 

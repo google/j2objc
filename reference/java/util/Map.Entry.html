@@ -164,11 +164,11 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">A key-value mapping with mutable values.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An Entry maintaining a key and a value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">An immutable key-value mapping.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An Entry maintaining an immutable key and value.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -180,11 +180,22 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>Map.Entry</code> is a key/value mapping contained in a <code>Map</code>.
-</p>
+<p>A map entry (key-value pair).  The <code>Map.entrySet</code> method returns
+ a collection-view of the map, whose elements are of this class.  The
+ <i>only</i> way to obtain a reference to a map entry is from the
+ iterator of this collection-view.  These <code>Map.Entry</code> objects are
+ valid <i>only</i> for the duration of the iteration; more formally,
+ the behavior of a map entry is undefined if the backing map has been
+ modified after the entry was returned by the iterator, except through
+ the <code>setValue</code> operation on the map entry.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Map.html#entrySet()">entrySet()</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -246,15 +257,88 @@ layout: api
             abstract
             
             
+            static
+            &lt;K,&nbsp;V&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#comparingByKey(java.util.Comparator<? super K>)">comparingByKey</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;K&gt; cmp)
+        
+        <div class="jd-descrdiv">Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> by key using the given
+ <code><a href="reference/java/util/Comparator.html">Comparator</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;K&gt;,&nbsp;V&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#comparingByKey()">comparingByKey</a></span>()
+        
+        <div class="jd-descrdiv">Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> in natural order on key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;K,&nbsp;V&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#comparingByValue(java.util.Comparator<? super V>)">comparingByValue</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;V&gt; cmp)
+        
+        <div class="jd-descrdiv">Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> by value using the given
+ <code><a href="reference/java/util/Comparator.html">Comparator</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;K,&nbsp;V&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;V&gt;&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#comparingByValue()">comparingByValue</a></span>()
+        
+        <div class="jd-descrdiv">Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> in natural order on value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
             
             
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this <code>Map.Entry</code> and returns if they
- are equal.</div>
+        <div class="jd-descrdiv">Compares the specified object with this entry for equality.</div>
   
   </td></tr>
 
@@ -272,7 +356,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#getKey()">getKey</a></span>()
         
-        <div class="jd-descrdiv">Returns the key.</div>
+        <div class="jd-descrdiv">Returns the key corresponding to this entry.</div>
   
   </td></tr>
 
@@ -290,7 +374,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#getValue()">getValue</a></span>()
         
-        <div class="jd-descrdiv">Returns the value.</div>
+        <div class="jd-descrdiv">Returns the value corresponding to this entry.</div>
   
   </td></tr>
 
@@ -308,7 +392,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this map entry.</div>
   
   </td></tr>
 
@@ -324,10 +408,10 @@ layout: api
             V
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#setValue(V)">setValue</a></span>(V object)
+        <span class="sympad"><a href="../../../reference/java/util/Map.Entry.html#setValue(V)">setValue</a></span>(V value)
         
-        <div class="jd-descrdiv">Sets the value of this entry to the specified value, replacing any
- existing value.</div>
+        <div class="jd-descrdiv">Replaces the value corresponding to this entry with the specified
+ value (optional operation).</div>
   
   </td></tr>
 
@@ -380,6 +464,186 @@ layout: api
 
 
 
+<a id="comparingByKey(java.util.Comparator<? super K>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+      </span>
+      <span class="sympad">comparingByKey</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;K&gt; cmp)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> by key using the given
+ <code><a href="reference/java/util/Comparator.html">Comparator</a></code>.
+
+ <p>The returned comparator is serializable if the specified comparator
+ is also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>cmp</th>
+          <td>the key <code><a href="reference/java/util/Comparator.html">Comparator</a></code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> by the key.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparingByKey()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+      </span>
+      <span class="sympad">comparingByKey</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> in natural order on key.
+
+ <p>The returned comparator is serializable and throws <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> when comparing an entry with a null key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> in natural order on key.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparingByValue(java.util.Comparator<? super V>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+      </span>
+      <span class="sympad">comparingByValue</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;V&gt; cmp)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> by value using the given
+ <code><a href="reference/java/util/Comparator.html">Comparator</a></code>.
+
+ <p>The returned comparator is serializable if the specified comparator
+ is also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>cmp</th>
+          <td>the value <code><a href="reference/java/util/Comparator.html">Comparator</a></code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> by the value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparingByValue()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+      </span>
+      <span class="sympad">comparingByValue</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> in natural order on value.
+
+ <p>The returned comparator is serializable and throws <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> when comparing an entry with null values.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> in natural order on value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="equals(java.lang.Object)"></a>
 
 <div class="jd-details api apilevel-">
@@ -393,7 +657,7 @@ layout: api
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -405,27 +669,32 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object to this <code>Map.Entry</code> and returns if they
- are equal. To be equal, the object must be an instance of <code>Map.Entry</code> and have the
- same key and value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object with this entry for equality.
+ Returns <code>true</code> if the given object is also a map entry and
+ the two entries represent the same mapping.  More formally, two
+ entries <code>e1</code> and <code>e2</code> represent the same mapping
+ if<pre>
+     (e1.getKey()==null ?
+      e2.getKey()==null : e1.getKey().equals(e2.getKey()))  &amp;&amp;
+     (e1.getValue()==null ?
+      e2.getValue()==null : e1.getValue().equals(e2.getValue()))
+ </pre>
+ This ensures that the <code>equals</code> method works properly across
+ different implementations of the <code>Map.Entry</code> interface.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the <code>Object</code> to compare with this <code>Object</code>.</td>
+          <th>o</th>
+          <td>object to be compared for equality with this map entry</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified <code>Object</code> is equal to this
-         <code>Map.Entry</code>, <code>false</code> otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Map.Entry.html#hashCode()">hashCode()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if the specified object is equal to this map
+         entry
+</li></ul>
   </div>
 
     </div>
@@ -457,11 +726,22 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the key.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the key corresponding to this entry.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the key
-</li></ul>
+      <ul class="nolist"><li>the key corresponding to this entry</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>implementations may, but are not
+         required to, throw this exception if the entry has been
+         removed from the backing map.
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -493,11 +773,24 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value corresponding to this entry.  If the mapping
+ has been removed from the backing map (by the iterator's
+ <code>remove</code> operation), the results of this call are undefined.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value
-</li></ul>
+      <ul class="nolist"><li>the value corresponding to this entry</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>implementations may, but are not
+         required to, throw this exception if the entry has been
+         removed from the backing map.
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -529,15 +822,22 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for the receiver. <code>Object</code> which are
- equal return the same value for this method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code value for this map entry.  The hash code
+ of a map entry <code>e</code> is defined to be: <pre>
+     (e.getKey()==null   ? 0 : e.getKey().hashCode()) ^
+     (e.getValue()==null ? 0 : e.getValue().hashCode())
+ </pre>
+ This ensures that <code>e1.equals(e2)</code> implies that
+ <code>e1.hashCode()==e2.hashCode()</code> for any two Entries
+ <code>e1</code> and <code>e2</code>, as required by the general
+ contract of <code>Object.hashCode</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the receiver's hash code.</li></ul>
+      <ul class="nolist"><li>the hash code value for this map entry</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Map.Entry.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li><li><code><a href="../../../reference/java/util/Map.Entry.html#equals(java.lang.Object)">equals(Object)</a></code></li>
       </ul>
   </div>
 
@@ -558,7 +858,7 @@ layout: api
         V
       </span>
       <span class="sympad">setValue</span>
-      <span class="normal">(V object)</span>
+      <span class="normal">(V value)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -570,21 +870,54 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of this entry to the specified value, replacing any
- existing value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces the value corresponding to this entry with the specified
+ value (optional operation).  (Writes through to the map.)  The
+ behavior of this call is undefined if the mapping has already been
+ removed from the map (by the iterator's <code>remove</code> operation).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the new value to set.</td>
+          <th>value</th>
+          <td>new value to be stored in this entry</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>object the replaced value of this entry.
-</li></ul>
+      <ul class="nolist"><li>old value corresponding to the entry</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td>if the <code>put</code> operation
+         is not supported by the backing map</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified value
+         prevents it from being stored in the backing map</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the backing map does not permit
+         null values, and the specified value is null</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of this value
+         prevents it from being stored in the backing map</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>implementations may, but are not
+         required to, throw this exception if the entry has been
+         removed from the backing map.
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>

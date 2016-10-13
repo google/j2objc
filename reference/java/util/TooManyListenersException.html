@@ -212,13 +212,27 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>TooManyListenersException</code> is thrown when an attempt is made to add
- more than one listener to an event source which only supports a single
- listener. It is also thrown when the same listener is added more than once.
-</p>
+<p><p>
+ The <code> TooManyListenersException </code> Exception is used as part of
+ the Java Event model to annotate and implement a unicast special case of
+ a multicast Event Source.
+ </p>
+ <p>
+ The presence of a "throws TooManyListenersException" clause on any given
+ concrete implementation of the normally multicast "void addXyzEventListener"
+ event listener registration pattern is used to annotate that interface as
+ implementing a unicast Listener special case, that is, that one and only
+ one Listener may be registered on the particular event listener source
+ concurrently.
+ </p></p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/EventObject.html">EventObject</a></code></li><li><code><a href="../../../reference/java/util/EventListener.html">EventListener</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -283,8 +297,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/TooManyListenersException.html#TooManyListenersException()">TooManyListenersException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>TooManyListenersException</code> with the current stack
- trace filled in.</div>
+        <div class="jd-descrdiv">Constructs a TooManyListenersException with no detail message.</div>
   
   </td></tr>
 
@@ -300,10 +313,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/TooManyListenersException.html#TooManyListenersException(java.lang.String)">TooManyListenersException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/util/TooManyListenersException.html#TooManyListenersException(java.lang.String)">TooManyListenersException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>TooManyListenersException</code> with the stack trace
- and message filled in.</div>
+        <div class="jd-descrdiv">Constructs a TooManyListenersException with the specified detail message.</div>
   
   </td></tr>
 
@@ -537,6 +549,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -837,8 +868,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>TooManyListenersException</code> with the current stack
- trace filled in.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a TooManyListenersException with no detail message.
+ A detail message is a String that describes this particular exception.
 </p></div>
 
     </div>
@@ -858,7 +889,7 @@ From class
         
       </span>
       <span class="sympad">TooManyListenersException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -870,14 +901,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>TooManyListenersException</code> with the stack trace
- and message filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a TooManyListenersException with the specified detail message.
+ A detail message is a String that describes this particular exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for the exception.
+          <th>s</th>
+          <td>the detail message
 </td>
         </tr>
       </table>

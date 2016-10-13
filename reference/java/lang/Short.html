@@ -203,7 +203,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The wrapper for the primitive type <code>short</code>.</p>
+<p>The <code>Short</code> class wraps a value of primitive type <code>short</code> in an object.  An object of type <code>Short</code> contains a
+ single field whose type is <code>short</code>.
+
+ <p>In addition, this class provides several methods for converting
+ a <code>short</code> to a <code>String</code> and a <code>String</code> to a
+ <code>short</code>, as well as other constants and methods useful when
+ dealing with a <code>short</code>.</p>
 
 
 
@@ -254,24 +260,34 @@ layout: api
 
     
     <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">short</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#MAX_VALUE">MAX_VALUE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the maximum <code>short</code> value, 2<sup>15</sup>-1.</td>
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#BYTES">BYTES</a></td>
+        <td class="jd-descrcol" width="100%">The number of bytes used to represent a <code>short</code> value in two's
+ complement binary form.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">short</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#MIN_VALUE">MIN_VALUE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the minimum <code>short</code> value, -2<sup>15</sup>.</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#MAX_VALUE">MAX_VALUE</a></td>
+        <td class="jd-descrcol" width="100%">A constant holding the maximum value a <code>short</code> can
+ have, 2<sup>15</sup>-1.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#MIN_VALUE">MIN_VALUE</a></td>
+        <td class="jd-descrcol" width="100%">A constant holding the minimum value a <code>short</code> can
+ have, -2<sup>15</sup>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#SIZE">SIZE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the number of bits needed to represent a <code>short</code> in
- two's complement form.</td>
+        <td class="jd-descrcol" width="100%">The number of bits used to represent a <code>short</code> value in two's
+ complement binary form.</td>
     </tr>
     
     
@@ -296,7 +312,8 @@ layout: api
           final
           <a href="../../../reference/java/lang/Class.html">Class</a>&lt;<a href="../../../reference/java/lang/Short.html">Short</a>&gt;</td>
           <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html#TYPE">TYPE</a></td>
-          <td class="jd-descrcol" width="100%">The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>short</code>.</td>
+          <td class="jd-descrcol" width="100%">The <code>Class</code> instance representing the primitive type
+ <code>short</code>.</td>
       </tr>
       
     
@@ -325,9 +342,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#Short(java.lang.String)">Short</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#Short(short)">Short</a></span>(short value)
         
-        <div class="jd-descrdiv">Constructs a new <code>Short</code> from the specified string.</div>
+        <div class="jd-descrdiv">Constructs a newly allocated <code>Short</code> object that
+ represents the specified <code>short</code> value.</div>
   
   </td></tr>
 
@@ -343,9 +361,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#Short(short)">Short</a></span>(short value)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#Short(java.lang.String)">Short</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>Short</code> with the specified primitive short value.</div>
+        <div class="jd-descrdiv">Constructs a newly allocated <code>Short</code> object that
+ represents the <code>short</code> value indicated by the
+ <code>String</code> parameter.</div>
   
   </td></tr>
 
@@ -376,6 +396,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#byteValue()">byteValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Short</code> as a
+ <code>byte</code>.</div>
+  
   </td></tr>
 
 
@@ -390,9 +413,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#compare(short, short)">compare</a></span>(short lhs, short rhs)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#compare(short, short)">compare</a></span>(short x, short y)
         
-        <div class="jd-descrdiv">Compares two <code>short</code> values.</div>
+        <div class="jd-descrdiv">Compares two <code>short</code> values numerically.</div>
   
   </td></tr>
 
@@ -408,10 +431,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#compareTo(java.lang.Short)">compareTo</a></span>(<a href="../../../reference/java/lang/Short.html">Short</a> object)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#compareTo(java.lang.Short)">compareTo</a></span>(<a href="../../../reference/java/lang/Short.html">Short</a> anotherShort)
         
-        <div class="jd-descrdiv">Compares this object to the specified short object to determine their
- relative order.</div>
+        <div class="jd-descrdiv">Compares two <code>Short</code> objects numerically.</div>
   
   </td></tr>
 
@@ -427,10 +449,9 @@ layout: api
             <a href="../../../reference/java/lang/Short.html">Short</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#decode(java.lang.String)">decode</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#decode(java.lang.String)">decode</a></span>(<a href="../../../reference/java/lang/String.html">String</a> nm)
         
-        <div class="jd-descrdiv">Parses the specified string and returns a <code>Short</code> instance if the
- string can be decoded into a short value.</div>
+        <div class="jd-descrdiv">Decodes a <code>String</code> into a <code>Short</code>.</div>
   
   </td></tr>
 
@@ -448,6 +469,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#doubleValue()">doubleValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Short</code> as a
+ <code>double</code>.</div>
+  
   </td></tr>
 
 
@@ -462,10 +486,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
- are equal.</div>
+        <div class="jd-descrdiv">Compares this object to the specified object.</div>
   
   </td></tr>
 
@@ -483,11 +506,33 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#floatValue()">floatValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Short</code> as a
+ <code>float</code>.</div>
+  
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#hashCode(short)">hashCode</a></span>(short value)
+        
+        <div class="jd-descrdiv">Returns a hash code for a <code>short</code> value; compatible with
+ <code>Short.hashCode()</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -499,13 +544,14 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+        <div class="jd-descrdiv">Returns a hash code for this <code>Short</code>; equal to the result
+ of invoking <code>intValue()</code>.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -517,11 +563,14 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#intValue()">intValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Short</code> as an
+ <code>int</code>.</div>
+  
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -533,23 +582,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#longValue()">longValue</a></span>()
         
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            short
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String)">parseShort</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
-        
-        <div class="jd-descrdiv">Parses the specified string as a signed decimal short value.</div>
+        <div class="jd-descrdiv">Returns the value of this <code>Short</code> as a
+ <code>long</code>.</div>
   
   </td></tr>
 
@@ -565,10 +599,9 @@ layout: api
             short
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String)">parseShort</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Parses the specified string as a signed short value using the specified
- radix.</div>
+        <div class="jd-descrdiv">Parses the string argument as a signed decimal <code>short</code>.</div>
   
   </td></tr>
 
@@ -584,15 +617,35 @@ layout: api
             short
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#reverseBytes(short)">reverseBytes</a></span>(short s)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)
         
-        <div class="jd-descrdiv">Reverses the bytes of the specified short.</div>
+        <div class="jd-descrdiv">Parses the string argument as a signed <code>short</code> in the
+ radix specified by the second argument.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            short
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#reverseBytes(short)">reverseBytes</a></span>(short i)
+        
+        <div class="jd-descrdiv">Returns the value obtained by reversing the order of the bytes in the
+ two's complement representation of the specified <code>short</code> value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -604,13 +657,14 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#shortValue()">shortValue</a></span>()
         
-        <div class="jd-descrdiv">Gets the primitive value of this short.</div>
+        <div class="jd-descrdiv">Returns the value of this <code>Short</code> as a
+ <code>short</code>.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -620,16 +674,16 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#toString(short)">toString</a></span>(short value)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#toString(short)">toString</a></span>(short s)
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of the
- specified short value with radix 10.</div>
+        <div class="jd-descrdiv">Returns a new <code>String</code> object representing the
+ specified <code>short</code>.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -641,26 +695,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Short.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            <a href="../../../reference/java/lang/Short.html">Short</a>
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
-        
-        <div class="jd-descrdiv">Parses the specified string as a signed decimal short value.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> object representing this
+ <code>Short</code>'s value.</div>
   
   </td></tr>
 
@@ -676,9 +712,10 @@ layout: api
             <a href="../../../reference/java/lang/Short.html">Short</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#valueOf(short)">valueOf</a></span>(short s)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Returns a <code>Short</code> instance for the specified short value.</div>
+        <div class="jd-descrdiv">Returns a <code>Short</code> object holding the
+ value given by the specified <code>String</code>.</div>
   
   </td></tr>
 
@@ -694,10 +731,30 @@ layout: api
             <a href="../../../reference/java/lang/Short.html">Short</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Short.html#valueOf(java.lang.String, int)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#valueOf(short)">valueOf</a></span>(short s)
         
-        <div class="jd-descrdiv">Parses the specified string as a signed short value using the specified
- radix.</div>
+        <div class="jd-descrdiv">Returns a <code>Short</code> instance representing the specified
+ <code>short</code> value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Short.html">Short</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Short.html#valueOf(java.lang.String, int)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)
+        
+        <div class="jd-descrdiv">Returns a <code>Short</code> object holding the value
+ extracted from the specified <code>String</code> when parsed
+ with the radix given by the second argument.</div>
   
   </td></tr>
 
@@ -1100,10 +1157,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Short.html">Short</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Short.html">Short</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -1143,6 +1199,47 @@ From interface
 
 
 
+<a id="BYTES"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        int
+      </span>
+        BYTES
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The number of bytes used to represent a <code>short</code> value in two's
+ complement binary form.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                2
+                (0x00000002)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
 <a id="MAX_VALUE"></a>
 
 <div class="jd-details api apilevel-">
@@ -1165,7 +1262,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the maximum <code>short</code> value, 2<sup>15</sup>-1.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the maximum value a <code>short</code> can
+ have, 2<sup>15</sup>-1.
 </p></div>
 
     
@@ -1206,7 +1304,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the minimum <code>short</code> value, -2<sup>15</sup>.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the minimum value a <code>short</code> can
+ have, -2<sup>15</sup>.
 </p></div>
 
     
@@ -1247,8 +1346,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the number of bits needed to represent a <code>short</code> in
- two's complement form.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The number of bits used to represent a <code>short</code> value in two's
+ complement binary form.</p></div>
 
     
         <div class="jd-tagdata">
@@ -1298,7 +1397,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>short</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>Class</code> instance representing the primitive type
+ <code>short</code>.
 </p></div>
 
     
@@ -1314,60 +1414,6 @@ From interface
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <h2>Public Constructors</h2>
 
-
-
-<a id="Short(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">Short</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Short</code> from the specified string.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>string</th>
-          <td>the string representation of a short value.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a short value.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String)">parseShort(String)</a></code></li>
-      </ul>
-  </div>
-
-    </div>
-</div>
 
 
 <a id="Short(short)"></a>
@@ -1395,16 +1441,78 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Short</code> with the specified primitive short value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a newly allocated <code>Short</code> object that
+ represents the specified <code>short</code> value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the primitive short value to store in the new instance.
+          <td>the value to be represented by the
+                  <code>Short</code>.
 </td>
         </tr>
       </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="Short(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Short</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a newly allocated <code>Short</code> object that
+ represents the <code>short</code> value indicated by the
+ <code>String</code> parameter. The string is converted to a
+ <code>short</code> value in exactly the manner used by the
+ <code>parseShort</code> method for radix 10.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>s</th>
+          <td>the <code>String</code> to be converted to a
+          <code>Short</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td>If the <code>String</code>
+          does not contain a parsable <code>short</code>.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort(java.lang.String, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1451,7 +1559,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Short</code> as a
+ <code>byte</code>.
+</p></div>
 
     </div>
 </div>
@@ -1470,7 +1580,7 @@ From interface
         int
       </span>
       <span class="sympad">compare</span>
-      <span class="normal">(short lhs, short rhs)</span>
+      <span class="normal">(short x, short y)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1482,10 +1592,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>short</code> values.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>short</code> values numerically.
+ The value returned is identical to what would be returned by:
+ <pre>
+    Short.valueOf(x).compareTo(Short.valueOf(y))
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first <code>short</code> to compare</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second <code>short</code> to compare</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.</li></ul>
+      <ul class="nolist"><li>the value <code>0</code> if <code>x == y</code>;
+         a value less than <code>0</code> if <code>x &lt; y</code>; and
+         a value greater than <code>0</code> if <code>x &gt; y</code></li></ul>
   </div>
 
     </div>
@@ -1505,7 +1634,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Short.html">Short</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Short.html">Short</a> anotherShort)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1517,37 +1646,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified short object to determine their
- relative order.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>Short</code> objects numerically.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the short object to compare this object to.</td>
+          <th>anotherShort</th>
+          <td>the <code>Short</code> to be compared.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a negative value if the value of this short is less than the
-         value of <code>object</code>; 0 if the value of this short and the
-         value of <code>object</code> are equal; a positive value if the value
-         of this short is greater than the value of <code>object</code>.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>object</code> is null.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the value <code>0</code> if this <code>Short</code> is
+          equal to the argument <code>Short</code>; a value less than
+          <code>0</code> if this <code>Short</code> is numerically less
+          than the argument <code>Short</code>; and a value greater than
+           <code>0</code> if this <code>Short</code> is numerically
+           greater than the argument <code>Short</code> (signed
+           comparison).</li></ul>
   </div>
 
     </div>
@@ -1567,7 +1684,7 @@ From interface
         <a href="../../../reference/java/lang/Short.html">Short</a>
       </span>
       <span class="sympad">decode</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> nm)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1579,33 +1696,65 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string and returns a <code>Short</code> instance if the
- string can be decoded into a short value. The string may be an optional
- minus sign "-" followed by a hexadecimal ("0x..." or "#..."), octal
- ("0..."), or decimal ("...") representation of a short.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Decodes a <code>String</code> into a <code>Short</code>.
+ Accepts decimal, hexadecimal, and octal numbers given by
+ the following grammar:
+
+ <blockquote>
+ <dl>
+ <dt><i>DecodableString:</i>
+ <dd><i>Sign<sub>opt</sub> DecimalNumeral</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>0x</code> <i>HexDigits</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>0X</code> <i>HexDigits</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>#</code> <i>HexDigits</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>0</code> <i>OctalDigits</i>
+ <p>
+ <dt><i>Sign:</i>
+ <dd><code>-</code>
+ <dd><code>+</code>
+ </dl>
+ </blockquote>
+
+ <i>DecimalNumeral</i>, <i>HexDigits</i>, and <i>OctalDigits</i>
+ are as defined in section 3.10.1 of
+ <cite>The Java&trade; Language Specification</cite>,
+ except that underscores are not accepted between digits.
+
+ <p>The sequence of characters following an optional
+ sign and/or radix specifier ("<code>0x</code>", "<code>0X</code>",
+ "<code>#</code>", or leading zero) is parsed as by the <code>Short.parseShort</code> method with the indicated radix (10, 16, or
+ 8).  This sequence of characters must represent a positive
+ value or a <code><a href="reference/java/lang/NumberFormatException.html">NumberFormatException</a></code> will be thrown.  The
+ result is negated if first character of the specified <code>String</code> is the minus sign.  No whitespace characters are
+ permitted in the <code>String</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>a string representation of a short value.</td>
+          <th>nm</th>
+          <td>the <code>String</code> to decode.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Short</code> containing the value represented by
-         <code>string</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Short</code> object holding the <code>short</code>
+            value represented by <code>nm</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a short value.
-</td>
+            <td>if the <code>String</code> does not
+            contain a parsable <code>short</code>.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort(java.lang.String, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1637,7 +1786,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Short</code> as a
+ <code>double</code>.
+</p></div>
 
     </div>
 </div>
@@ -1656,7 +1807,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1668,22 +1819,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
- are equal. In order to be equal, <code>object</code> must be an instance of
- <code>Short</code> and have the same short value as this object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified object.  The result is
+ <code>true</code> if and only if the argument is not
+ <code>null</code> and is a <code>Short</code> object that
+ contains the same <code>short</code> value as this object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to compare this short with.</td>
+          <th>obj</th>
+          <td>the object to compare with</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this
-         <code>Short</code>; <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the objects are the same;
+                  <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1716,7 +1868,54 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Short</code> as a
+ <code>float</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="hashCode(short)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">hashCode</span>
+      <span class="normal">(short value)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for a <code>short</code> value; compatible with
+ <code>Short.hashCode()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>the value to hash</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a hash code value for a <code>short</code> value.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1747,20 +1946,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
- objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
- the same hash code value. This means that subclasses of <code>Object</code>
- usually override both methods or neither method.
-
- <p>Note that hash values must not change over time unless information used in equals
- comparisons also changes.
-
- <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
- <code>hashCode</code> method</a>
- if you intend implementing your own <code>hashCode</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this <code>Short</code>; equal to the result
+ of invoking <code>intValue()</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's hash code.</li></ul>
+      <ul class="nolist"><li>a hash code value for this <code>Short</code>
+</li></ul>
   </div>
 
     </div>
@@ -1792,7 +1983,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Short</code> as an
+ <code>int</code>.
+</p></div>
 
     </div>
 </div>
@@ -1823,7 +2016,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Short</code> as a
+ <code>long</code>.
+</p></div>
 
     </div>
 </div>
@@ -1842,7 +2037,7 @@ From interface
         short
       </span>
       <span class="sympad">parseShort</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1854,27 +2049,35 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed decimal short value. The ASCII
- character - ('-') is recognized as the minus sign.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the string argument as a signed decimal <code>short</code>. The characters in the string must all be decimal
+ digits, except that the first character may be an ASCII minus
+ sign <code>'-'</code> (<code>'&#92;u002D'</code>) to indicate a
+ negative value or an ASCII plus sign <code>'+'</code>
+ (<code>'&#92;u002B'</code>) to indicate a positive value.  The
+ resulting <code>short</code> value is returned, exactly as if the
+ argument and the radix 10 were given as arguments to the <code><a href="reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort(java.lang.String, int)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a short value.</td>
+          <th>s</th>
+          <td>a <code>String</code> containing the <code>short</code>
+          representation to be parsed</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the primitive short value represented by <code>string</code>.</li></ul>
+      <ul class="nolist"><li>the <code>short</code> value represented by the
+          argument in decimal.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a short value.
+            <td>If the string does not
+          contain a parsable <code>short</code>.
 </td>
         </tr>
       </table>
@@ -1897,7 +2100,7 @@ From interface
         short
       </span>
       <span class="sympad">parseShort</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1909,34 +2112,59 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed short value using the specified
- radix. The ASCII character - ('-') is recognized as the minus sign.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the string argument as a signed <code>short</code> in the
+ radix specified by the second argument. The characters in the
+ string must all be digits, of the specified radix (as
+ determined by whether <code><a href="reference/java/lang/Character.html#digit(char, int)">digit(char, int)</a></code> returns a nonnegative value) except that the first
+ character may be an ASCII minus sign <code>'-'</code>
+ (<code>'&#92;u002D'</code>) to indicate a negative value or an
+ ASCII plus sign <code>'+'</code> (<code>'&#92;u002B'</code>) to
+ indicate a positive value.  The resulting <code>short</code> value
+ is returned.
+
+ <p>An exception of type <code>NumberFormatException</code> is
+ thrown if any of the following situations occurs:
+ <ul>
+ <li> The first argument is <code>null</code> or is a string of
+ length zero.
+
+ <li> The radix is either smaller than <code><a href="reference/java/lang/Character.html#MIN_RADIX">MIN_RADIX</a></code> or larger than <code><a href="reference/java/lang/Character.html#MAX_RADIX">MAX_RADIX</a></code>.
+
+ <li> Any character of the string is not a digit of the
+ specified radix, except that the first character may be a minus
+ sign <code>'-'</code> (<code>'&#92;u002D'</code>) or plus sign
+ <code>'+'</code> (<code>'&#92;u002B'</code>) provided that the
+ string is longer than length 1.
+
+ <li> The value represented by the string is not a value of type
+ <code>short</code>.
+ </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a short value.</td>
+          <th>s</th>
+          <td>the <code>String</code> containing the
+                  <code>short</code> representation to be parsed</td>
         </tr>
         <tr>
           <th>radix</th>
-          <td>the radix to use when parsing.</td>
+          <td>the radix to be used while parsing <code>s</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the primitive short value represented by <code>string</code> using
-         <code>radix</code>.</li></ul>
+      <ul class="nolist"><li>the <code>short</code> represented by the string
+                  argument in the specified radix.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a short value, or
-             <code>radix < Character.MIN_RADIX ||
-             radix > Character.MAX_RADIX</code>.
+            <td>If the <code>String</code>
+                  does not contain a parsable <code>short</code>.
 </td>
         </tr>
       </table>
@@ -1959,7 +2187,7 @@ From interface
         short
       </span>
       <span class="sympad">reverseBytes</span>
-      <span class="normal">(short s)</span>
+      <span class="normal">(short i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1971,19 +2199,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reverses the bytes of the specified short.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>s</th>
-          <td>the short value for which to reverse bytes.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value obtained by reversing the order of the bytes in the
+ two's complement representation of the specified <code>short</code> value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the reversed value.</li></ul>
+      <ul class="nolist"><li>the value obtained by reversing (or, equivalently, swapping)
+     the bytes in the specified <code>short</code> value.</li></ul>
   </div>
 
     </div>
@@ -2015,12 +2236,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the primitive value of this short.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's primitive value.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Short</code> as a
+ <code>short</code>.
+</p></div>
 
     </div>
 </div>
@@ -2039,7 +2257,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
-      <span class="normal">(short value)</span>
+      <span class="normal">(short s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2051,21 +2269,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of the
- specified short value with radix 10.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>String</code> object representing the
+ specified <code>short</code>. The radix is assumed to be 10.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>value</th>
-          <td>the short to convert to a string.</td>
+          <th>s</th>
+          <td>the <code>short</code> to be converted</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of <code>value</code>.
-</li></ul>
+      <ul class="nolist"><li>the string representation of the specified <code>short</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html#toString(int)">toString(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2097,18 +2319,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- object. Subclasses are encouraged to override this method and provide an
- implementation that takes into account the object's type and data. The
- default implementation is equivalent to the following expression:
- <pre>
-   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
- <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
- <code>toString</code> method</a>
- if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> object representing this
+ <code>Short</code>'s value.  The value is converted to signed
+ decimal representation and returned as a string, exactly as if
+ the <code>short</code> value were given as an argument to the
+ <code><a href="reference/java/lang/Short.html#toString(short)">toString(short)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
+      <ul class="nolist"><li>a string representation of the value of this object in
+          base&nbsp;10.
 </li></ul>
   </div>
 
@@ -2129,7 +2348,7 @@ From interface
         <a href="../../../reference/java/lang/Short.html">Short</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2141,34 +2360,44 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed decimal short value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Short</code> object holding the
+ value given by the specified <code>String</code>. The argument
+ is interpreted as representing a signed decimal
+ <code>short</code>, exactly as if the argument were given to
+ the <code><a href="reference/java/lang/Short.html#parseShort(java.lang.String)">parseShort(java.lang.String)</a></code> method. The result is
+ a <code>Short</code> object that represents the
+ <code>short</code> value specified by the string.
+
+ <p>In other words, this method returns a <code>Short</code> object
+ equal to the value of:
+
+ <blockquote>
+  <code>new Short(Short.parseShort(s))</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a short value.</td>
+          <th>s</th>
+          <td>the string to be parsed</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Short</code> instance containing the short value represented
-         by <code>string</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Short</code> object holding the value
+          represented by the string argument</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a short value.</td>
+            <td>If the <code>String</code> does
+          not contain a parsable <code>short</code>.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String)">parseShort(String)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2200,23 +2429,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Short</code> instance for the specified short value.
- <p>
- If it is not necessary to get a new <code>Short</code> instance, it is
- recommended to use this method instead of the constructor, since it
- maintains a cache of instances which may result in better performance.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Short</code> instance representing the specified
+ <code>short</code> value.
+ If a new <code>Short</code> instance is not required, this method
+ should generally be used in preference to the constructor
+ <code><a href="reference/java/lang/Short.html#Short(short)">Short(short)</a></code>, as this method is likely to yield
+ significantly better space and time performance by caching
+ frequently requested values.
+
+ This method will always cache values in the range -128 to 127,
+ inclusive, and may cache other values outside of this range.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the short value to store in the instance.</td>
+          <td>a short value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Short</code> instance containing <code>s</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Short</code> instance representing <code>s</code>.</li></ul>
   </div>
 
     </div>
@@ -2236,7 +2470,7 @@ From interface
         <a href="../../../reference/java/lang/Short.html">Short</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2248,41 +2482,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed short value using the specified
- radix.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Short</code> object holding the value
+ extracted from the specified <code>String</code> when parsed
+ with the radix given by the second argument. The first argument
+ is interpreted as representing a signed <code>short</code> in
+ the radix specified by the second argument, exactly as if the
+ argument were given to the <code><a href="reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort(java.lang.String, int)</a></code> method. The result is a <code>Short</code> object that
+ represents the <code>short</code> value specified by the string.
+
+ <p>In other words, this method returns a <code>Short</code> object
+ equal to the value of:
+
+ <blockquote>
+  <code>new Short(Short.parseShort(s, radix))</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a short value.</td>
+          <th>s</th>
+          <td>the string to be parsed</td>
         </tr>
         <tr>
           <th>radix</th>
-          <td>the radix to use when parsing.</td>
+          <td>the radix to be used in interpreting <code>s</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Short</code> instance containing the short value represented
-         by <code>string</code> using <code>radix</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Short</code> object holding the value
+                  represented by the string argument in the
+                  specified radix.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a short value, or
-             <code>radix < Character.MIN_RADIX ||
-             radix > Character.MAX_RADIX</code>.</td>
+            <td>If the <code>String</code> does
+                  not contain a parsable <code>short</code>.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Short.html#parseShort(java.lang.String, int)">parseShort(String, int)</a></code></li>
-      </ul>
   </div>
 
     </div>

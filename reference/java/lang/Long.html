@@ -203,21 +203,21 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The wrapper for the primitive type <code>long</code>.
- <p>
- Implementation note: The "bit twiddling" methods in this class use techniques
- described in <a href="http://www.hackersdelight.org/">Henry S. Warren,
- Jr.'s Hacker's Delight, (Addison Wesley, 2002)</a> and <a href=
- "http://graphics.stanford.edu/~seander/bithacks.html">Sean Anderson's
- Bit Twiddling Hacks.</a></p>
+<p>The <code>Long</code> class wraps a value of the primitive type <code>long</code> in an object. An object of type <code>Long</code> contains a
+ single field whose type is <code>long</code>.
+
+ <p> In addition, this class provides several methods for converting
+ a <code>long</code> to a <code>String</code> and a <code>String</code> to a <code>long</code>, as well as other constants and methods useful when dealing
+ with a <code>long</code>.
+
+ <p>Implementation note: The implementations of the "bit twiddling"
+ methods (such as <code><a href="reference/java/lang/Long.html#highestOneBit(long)">highestOneBit</a></code> and
+ <code><a href="reference/java/lang/Long.html#numberOfTrailingZeros(long)">numberOfTrailingZeros</a></code>) are
+ based on material from Henry S. Warren, Jr.'s <i>Hacker's
+ Delight</i>, (Addison Wesley, 2002).</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html">Integer</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -260,24 +260,34 @@ layout: api
 
     
     <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">long</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#MAX_VALUE">MAX_VALUE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the maximum <code>long</code> value, 2<sup>63</sup>-1.</td>
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#BYTES">BYTES</a></td>
+        <td class="jd-descrcol" width="100%">The number of bytes used to represent a <code>long</code> value in two's
+ complement binary form.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">long</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#MIN_VALUE">MIN_VALUE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the minimum <code>long</code> value, -2<sup>63</sup>.</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#MAX_VALUE">MAX_VALUE</a></td>
+        <td class="jd-descrcol" width="100%">A constant holding the maximum value a <code>long</code> can
+ have, 2<sup>63</sup>-1.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">long</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#MIN_VALUE">MIN_VALUE</a></td>
+        <td class="jd-descrcol" width="100%">A constant holding the minimum value a <code>long</code> can
+ have, -2<sup>63</sup>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#SIZE">SIZE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the number of bits needed to represent a <code>long</code> in
- two's complement form.</td>
+        <td class="jd-descrcol" width="100%">The number of bits used to represent a <code>long</code> value in two's
+ complement binary form.</td>
     </tr>
     
     
@@ -302,7 +312,8 @@ layout: api
           final
           <a href="../../../reference/java/lang/Class.html">Class</a>&lt;<a href="../../../reference/java/lang/Long.html">Long</a>&gt;</td>
           <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html#TYPE">TYPE</a></td>
-          <td class="jd-descrcol" width="100%">The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>long</code>.</td>
+          <td class="jd-descrcol" width="100%">The <code>Class</code> instance representing the primitive type
+ <code>long</code>.</td>
       </tr>
       
     
@@ -333,7 +344,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#Long(long)">Long</a></span>(long value)
         
-        <div class="jd-descrdiv">Constructs a new <code>Long</code> with the specified primitive long value.</div>
+        <div class="jd-descrdiv">Constructs a newly allocated <code>Long</code> object that
+ represents the specified <code>long</code> argument.</div>
   
   </td></tr>
 
@@ -349,9 +361,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#Long(java.lang.String)">Long</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#Long(java.lang.String)">Long</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>Long</code> from the specified string.</div>
+        <div class="jd-descrdiv">Constructs a newly allocated <code>Long</code> object that
+ represents the <code>long</code> value indicated by the
+ <code>String</code> parameter.</div>
   
   </td></tr>
 
@@ -380,10 +394,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#bitCount(long)">bitCount</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#bitCount(long)">bitCount</a></span>(long i)
         
-        <div class="jd-descrdiv">Counts the number of 1 bits in the specified long value; this is also
- referred to as population count.</div>
+        <div class="jd-descrdiv">Returns the number of one-bits in the two's complement binary
+ representation of the specified <code>long</code> value.</div>
   
   </td></tr>
 
@@ -401,6 +415,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#byteValue()">byteValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Long</code> as a
+ <code>byte</code>.</div>
+  
   </td></tr>
 
 
@@ -415,9 +432,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#compare(long, long)">compare</a></span>(long lhs, long rhs)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#compare(long, long)">compare</a></span>(long x, long y)
         
-        <div class="jd-descrdiv">Compares two <code>long</code> values.</div>
+        <div class="jd-descrdiv">Compares two <code>long</code> values numerically.</div>
   
   </td></tr>
 
@@ -433,10 +450,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#compareTo(java.lang.Long)">compareTo</a></span>(<a href="../../../reference/java/lang/Long.html">Long</a> object)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#compareTo(java.lang.Long)">compareTo</a></span>(<a href="../../../reference/java/lang/Long.html">Long</a> anotherLong)
         
-        <div class="jd-descrdiv">Compares this object to the specified long object to determine their
- relative order.</div>
+        <div class="jd-descrdiv">Compares two <code>Long</code> objects numerically.</div>
   
   </td></tr>
 
@@ -452,10 +468,9 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#decode(java.lang.String)">decode</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#decode(java.lang.String)">decode</a></span>(<a href="../../../reference/java/lang/String.html">String</a> nm)
         
-        <div class="jd-descrdiv">Parses the specified string and returns a <code>Long</code> instance if the
- string can be decoded into a long value.</div>
+        <div class="jd-descrdiv">Decodes a <code>String</code> into a <code>Long</code>.</div>
   
   </td></tr>
 
@@ -473,6 +488,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#doubleValue()">doubleValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Long</code> as a
+ <code>double</code>.</div>
+  
   </td></tr>
 
 
@@ -487,10 +505,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
- are equal.</div>
+        <div class="jd-descrdiv">Compares this object to the specified object.</div>
   
   </td></tr>
 
@@ -508,6 +525,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#floatValue()">floatValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Long</code> as a
+ <code>float</code>.</div>
+  
   </td></tr>
 
 
@@ -522,10 +542,10 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#getLong(java.lang.String, java.lang.Long)">getLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string, <a href="../../../reference/java/lang/Long.html">Long</a> defaultValue)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#getLong(java.lang.String, java.lang.Long)">getLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> nm, <a href="../../../reference/java/lang/Long.html">Long</a> val)
         
-        <div class="jd-descrdiv">Returns the <code>Long</code> value of the system property identified by
- <code>string</code>.</div>
+        <div class="jd-descrdiv">Returns the <code>long</code> value of the system property with
+ the specified name.</div>
   
   </td></tr>
 
@@ -541,10 +561,10 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#getLong(java.lang.String)">getLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#getLong(java.lang.String)">getLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> nm)
         
-        <div class="jd-descrdiv">Returns the <code>Long</code> value of the system property identified by
- <code>string</code>.</div>
+        <div class="jd-descrdiv">Determines the <code>long</code> value of the system property
+ with the specified name.</div>
   
   </td></tr>
 
@@ -560,10 +580,10 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#getLong(java.lang.String, long)">getLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string, long defaultValue)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#getLong(java.lang.String, long)">getLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> nm, long val)
         
-        <div class="jd-descrdiv">Returns the <code>Long</code> value of the system property identified by
- <code>string</code>.</div>
+        <div class="jd-descrdiv">Determines the <code>long</code> value of the system property
+ with the specified name.</div>
   
   </td></tr>
 
@@ -581,7 +601,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+        <div class="jd-descrdiv">Returns a hash code for this <code>Long</code>.</div>
   
   </td></tr>
 
@@ -594,19 +614,39 @@ layout: api
             
             static
             
-            long
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#highestOneBit(long)">highestOneBit</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#hashCode(long)">hashCode</a></span>(long value)
         
-        <div class="jd-descrdiv">Determines the highest (leftmost) bit of the specified long value that is
- 1 and returns the bit mask value for that bit.</div>
+        <div class="jd-descrdiv">Returns a hash code for a <code>long</code> value; compatible with
+ <code>Long.hashCode()</code>.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#highestOneBit(long)">highestOneBit</a></span>(long i)
+        
+        <div class="jd-descrdiv">Returns a <code>long</code> value with at most a single one-bit, in the
+ position of the highest-order ("leftmost") one-bit in the specified
+ <code>long</code> value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -618,11 +658,14 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#intValue()">intValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Long</code> as an
+ <code>int</code>.</div>
+  
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -634,7 +677,28 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#longValue()">longValue</a></span>()
         
-        <div class="jd-descrdiv">Gets the primitive value of this long.</div>
+        <div class="jd-descrdiv">Returns the value of this <code>Long</code> as a
+ <code>long</code> value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#lowestOneBit(long)">lowestOneBit</a></span>(long i)
+        
+        <div class="jd-descrdiv">Returns a <code>long</code> value with at most a single one-bit, in the
+ position of the lowest-order ("rightmost") one-bit in the specified
+ <code>long</code> value.</div>
   
   </td></tr>
 
@@ -650,10 +714,49 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#lowestOneBit(long)">lowestOneBit</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#max(long, long)">max</a></span>(long a, long b)
         
-        <div class="jd-descrdiv">Determines the lowest (rightmost) bit of the specified long value that is
- 1 and returns the bit mask value for that bit.</div>
+        <div class="jd-descrdiv">Returns the greater of two <code>long</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#max(long, long)">Math.max</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#min(long, long)">min</a></span>(long a, long b)
+        
+        <div class="jd-descrdiv">Returns the smaller of two <code>long</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#min(long, long)">Math.min</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#numberOfLeadingZeros(long)">numberOfLeadingZeros</a></span>(long i)
+        
+        <div class="jd-descrdiv">Returns the number of zero bits preceding the highest-order
+ ("leftmost") one-bit in the two's complement binary representation
+ of the specified <code>long</code> value.</div>
   
   </td></tr>
 
@@ -669,10 +772,11 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#numberOfLeadingZeros(long)">numberOfLeadingZeros</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#numberOfTrailingZeros(long)">numberOfTrailingZeros</a></span>(long i)
         
-        <div class="jd-descrdiv">Determines the number of leading zeros in the specified long value prior
- to the <code><a href="reference/java/lang/Long.html#highestOneBit(long)">highest one bit</a></code>.</div>
+        <div class="jd-descrdiv">Returns the number of zero bits following the lowest-order ("rightmost")
+ one-bit in the two's complement binary representation of the specified
+ <code>long</code> value.</div>
   
   </td></tr>
 
@@ -685,13 +789,12 @@ layout: api
             
             static
             
-            int
+            long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#numberOfTrailingZeros(long)">numberOfTrailingZeros</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String)">parseLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Determines the number of trailing zeros in the specified long value after
- the <code><a href="reference/java/lang/Long.html#lowestOneBit(long)">lowest one bit</a></code>.</div>
+        <div class="jd-descrdiv">Parses the string argument as a signed decimal <code>long</code>.</div>
   
   </td></tr>
 
@@ -707,9 +810,10 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String)">parseLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)
         
-        <div class="jd-descrdiv">Parses the specified string as a signed decimal long value.</div>
+        <div class="jd-descrdiv">Parses the string argument as a signed <code>long</code> in the
+ radix specified by the second argument.</div>
   
   </td></tr>
 
@@ -725,118 +829,10 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#reverse(long)">reverse</a></span>(long i)
         
-        <div class="jd-descrdiv">Parses the specified string as a signed long value using the specified
- radix.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            long
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#reverse(long)">reverse</a></span>(long v)
-        
-        <div class="jd-descrdiv">Reverses the order of the bits of the specified long value.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            long
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#reverseBytes(long)">reverseBytes</a></span>(long v)
-        
-        <div class="jd-descrdiv">Reverses the order of the bytes of the specified long value.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            long
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#rotateLeft(long, int)">rotateLeft</a></span>(long v, int distance)
-        
-        <div class="jd-descrdiv">Rotates the bits of the specified long value to the left by the specified
- number of bits.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            long
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#rotateRight(long, int)">rotateRight</a></span>(long v, int distance)
-        
-        <div class="jd-descrdiv">Rotates the bits of the specified long value to the right by the
- specified number of bits.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            short
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#shortValue()">shortValue</a></span>()
-        
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            int
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#signum(long)">signum</a></span>(long v)
-        
-        <div class="jd-descrdiv">Returns the value of the <code>signum</code> function for the specified long
+        <div class="jd-descrdiv">Returns the value obtained by reversing the order of the bits in the
+ two's complement binary representation of the specified <code>long</code>
  value.</div>
   
   </td></tr>
@@ -850,12 +846,13 @@ layout: api
             
             static
             
-            <a href="../../../reference/java/lang/String.html">String</a>
+            long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toBinaryString(long)">toBinaryString</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#reverseBytes(long)">reverseBytes</a></span>(long i)
         
-        <div class="jd-descrdiv">Converts the specified long value into its binary string representation.</div>
+        <div class="jd-descrdiv">Returns the value obtained by reversing the order of the bytes in the
+ two's complement representation of the specified <code>long</code> value.</div>
   
   </td></tr>
 
@@ -868,13 +865,89 @@ layout: api
             
             static
             
-            <a href="../../../reference/java/lang/String.html">String</a>
+            long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toHexString(long)">toHexString</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#rotateLeft(long, int)">rotateLeft</a></span>(long i, int distance)
         
-        <div class="jd-descrdiv">Converts the specified long value into its hexadecimal string
- representation.</div>
+        <div class="jd-descrdiv">Returns the value obtained by rotating the two's complement binary
+ representation of the specified <code>long</code> value left by the
+ specified number of bits.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#rotateRight(long, int)">rotateRight</a></span>(long i, int distance)
+        
+        <div class="jd-descrdiv">Returns the value obtained by rotating the two's complement binary
+ representation of the specified <code>long</code> value right by the
+ specified number of bits.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            short
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#shortValue()">shortValue</a></span>()
+        
+        <div class="jd-descrdiv">Returns the value of this <code>Long</code> as a
+ <code>short</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#signum(long)">signum</a></span>(long i)
+        
+        <div class="jd-descrdiv">Returns the signum function of the specified <code>long</code> value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#sum(long, long)">sum</a></span>(long a, long b)
+        
+        <div class="jd-descrdiv">Adds two <code>long</code> values together as per the + operator.</div>
   
   </td></tr>
 
@@ -890,9 +963,10 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toOctalString(long)">toOctalString</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toBinaryString(long)">toBinaryString</a></span>(long i)
         
-        <div class="jd-descrdiv">Converts the specified long value into its octal string representation.</div>
+        <div class="jd-descrdiv">Returns a string representation of the <code>long</code>
+ argument as an unsigned integer in base&nbsp;2.</div>
   
   </td></tr>
 
@@ -908,10 +982,48 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toString(long, int)">toString</a></span>(long v, int radix)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toHexString(long)">toHexString</a></span>(long i)
         
-        <div class="jd-descrdiv">Converts the specified signed long value into a string representation based on
- the specified radix.</div>
+        <div class="jd-descrdiv">Returns a string representation of the <code>long</code>
+ argument as an unsigned integer in base&nbsp;16.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toOctalString(long)">toOctalString</a></span>(long i)
+        
+        <div class="jd-descrdiv">Returns a string representation of the <code>long</code>
+ argument as an unsigned integer in base&nbsp;8.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toString(long, int)">toString</a></span>(long i, int radix)
+        
+        <div class="jd-descrdiv">Returns a string representation of the first argument in the
+ radix specified by the second argument.</div>
   
   </td></tr>
 
@@ -929,8 +1041,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Long.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> object representing this
+ <code>Long</code>'s value.</div>
   
   </td></tr>
 
@@ -946,9 +1058,10 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toString(long)">toString</a></span>(long n)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#toString(long)">toString</a></span>(long i)
         
-        <div class="jd-descrdiv">Converts the specified long value into its decimal string representation.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> object representing the specified
+ <code>long</code>.</div>
   
   </td></tr>
 
@@ -964,9 +1077,10 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Parses the specified string as a signed decimal long value.</div>
+        <div class="jd-descrdiv">Returns a <code>Long</code> object holding the value
+ of the specified <code>String</code>.</div>
   
   </td></tr>
 
@@ -982,10 +1096,11 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#valueOf(java.lang.String, int)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#valueOf(java.lang.String, int)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)
         
-        <div class="jd-descrdiv">Parses the specified string as a signed long value using the specified
- radix.</div>
+        <div class="jd-descrdiv">Returns a <code>Long</code> object holding the value
+ extracted from the specified <code>String</code> when parsed
+ with the radix given by the second argument.</div>
   
   </td></tr>
 
@@ -1001,9 +1116,10 @@ layout: api
             <a href="../../../reference/java/lang/Long.html">Long</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Long.html#valueOf(long)">valueOf</a></span>(long v)
+        <span class="sympad"><a href="../../../reference/java/lang/Long.html#valueOf(long)">valueOf</a></span>(long l)
         
-        <div class="jd-descrdiv">Returns a <code>Long</code> instance for the specified long value.</div>
+        <div class="jd-descrdiv">Returns a <code>Long</code> instance representing the specified
+ <code>long</code> value.</div>
   
   </td></tr>
 
@@ -1406,10 +1522,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Long.html">Long</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Long.html">Long</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -1449,6 +1564,47 @@ From interface
 
 
 
+<a id="BYTES"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        int
+      </span>
+        BYTES
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The number of bytes used to represent a <code>long</code> value in two's
+ complement binary form.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                8
+                (0x00000008)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
 <a id="MAX_VALUE"></a>
 
 <div class="jd-details api apilevel-">
@@ -1471,7 +1627,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the maximum <code>long</code> value, 2<sup>63</sup>-1.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the maximum value a <code>long</code> can
+ have, 2<sup>63</sup>-1.
 </p></div>
 
     
@@ -1512,7 +1669,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the minimum <code>long</code> value, -2<sup>63</sup>.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the minimum value a <code>long</code> can
+ have, -2<sup>63</sup>.
 </p></div>
 
     
@@ -1553,8 +1711,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the number of bits needed to represent a <code>long</code> in
- two's complement form.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The number of bits used to represent a <code>long</code> value in two's
+ complement binary form.</p></div>
 
     
         <div class="jd-tagdata">
@@ -1604,8 +1762,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>long</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>Class</code> instance representing the primitive type
+ <code>long</code>.</p></div>
 
     
     </div>
@@ -1647,13 +1805,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Long</code> with the specified primitive long value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a newly allocated <code>Long</code> object that
+ represents the specified <code>long</code> argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the primitive long value to store in the new instance.
+          <td>the value to be represented by the
+          <code>Long</code> object.
 </td>
         </tr>
       </table>
@@ -1676,7 +1836,7 @@ From interface
         
       </span>
       <span class="sympad">Long</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1688,13 +1848,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Long</code> from the specified string.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a newly allocated <code>Long</code> object that
+ represents the <code>long</code> value indicated by the
+ <code>String</code> parameter. The string is converted to a
+ <code>long</code> value in exactly the manner used by the
+ <code>parseLong</code> method for radix 10.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a long value.</td>
+          <th>s</th>
+          <td>the <code>String</code> to be converted to a
+             <code>Long</code>.</td>
         </tr>
       </table>
   </div>
@@ -1703,13 +1868,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a long value.</td>
+            <td>if the <code>String</code> does not
+             contain a parsable <code>long</code>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String)">parseLong(String)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong(java.lang.String, int)</a></code></li>
       </ul>
   </div>
 
@@ -1745,7 +1911,7 @@ From interface
         int
       </span>
       <span class="sympad">bitCount</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1757,20 +1923,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Counts the number of 1 bits in the specified long value; this is also
- referred to as population count.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long to examine.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of one-bits in the two's complement binary
+ representation of the specified <code>long</code> value.  This function is
+ sometimes referred to as the <i>population count</i>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of 1 bits in <code>v</code>.</li></ul>
+      <ul class="nolist"><li>the number of one-bits in the two's complement binary
+     representation of the specified <code>long</code> value.</li></ul>
   </div>
 
     </div>
@@ -1802,7 +1961,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Long</code> as a
+ <code>byte</code>.
+</p></div>
 
     </div>
 </div>
@@ -1821,7 +1982,7 @@ From interface
         int
       </span>
       <span class="sympad">compare</span>
-      <span class="normal">(long lhs, long rhs)</span>
+      <span class="normal">(long x, long y)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1833,10 +1994,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>long</code> values.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>long</code> values numerically.
+ The value returned is identical to what would be returned by:
+ <pre>
+    Long.valueOf(x).compareTo(Long.valueOf(y))
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first <code>long</code> to compare</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second <code>long</code> to compare</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.</li></ul>
+      <ul class="nolist"><li>the value <code>0</code> if <code>x == y</code>;
+         a value less than <code>0</code> if <code>x &lt; y</code>; and
+         a value greater than <code>0</code> if <code>x &gt; y</code></li></ul>
   </div>
 
     </div>
@@ -1856,7 +2036,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Long.html">Long</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Long.html">Long</a> anotherLong)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1868,28 +2048,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified long object to determine their
- relative order.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>Long</code> objects numerically.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the long object to compare this object to.</td>
+          <th>anotherLong</th>
+          <td>the <code>Long</code> to be compared.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a negative value if the value of this long is less than the value
-         of <code>object</code>; 0 if the value of this long and the value of
-         <code>object</code> are equal; a positive value if the value of this
-         long is greater than the value of <code>object</code>.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the value <code>0</code> if this <code>Long</code> is
+          equal to the argument <code>Long</code>; a value less than
+          <code>0</code> if this <code>Long</code> is numerically less
+          than the argument <code>Long</code>; and a value greater
+          than <code>0</code> if this <code>Long</code> is numerically
+           greater than the argument <code>Long</code> (signed
+           comparison).</li></ul>
   </div>
 
     </div>
@@ -1909,7 +2086,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">decode</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> nm)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1921,32 +2098,66 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string and returns a <code>Long</code> instance if the
- string can be decoded into a long value. The string may be an optional
- optional sign character ("-" or "+") followed by a hexadecimal ("0x..."
- or "#..."), octal ("0..."), or decimal ("...") representation of a long.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Decodes a <code>String</code> into a <code>Long</code>.
+ Accepts decimal, hexadecimal, and octal numbers given by the
+ following grammar:
+
+ <blockquote>
+ <dl>
+ <dt><i>DecodableString:</i>
+ <dd><i>Sign<sub>opt</sub> DecimalNumeral</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>0x</code> <i>HexDigits</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>0X</code> <i>HexDigits</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>#</code> <i>HexDigits</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>0</code> <i>OctalDigits</i>
+ <p>
+ <dt><i>Sign:</i>
+ <dd><code>-</code>
+ <dd><code>+</code>
+ </dl>
+ </blockquote>
+
+ <i>DecimalNumeral</i>, <i>HexDigits</i>, and <i>OctalDigits</i>
+ are as defined in section 3.10.1 of
+ <cite>The Java&trade; Language Specification</cite>,
+ except that underscores are not accepted between digits.
+
+ <p>The sequence of characters following an optional
+ sign and/or radix specifier ("<code>0x</code>", "<code>0X</code>",
+ "<code>#</code>", or leading zero) is parsed as by the <code>Long.parseLong</code> method with the indicated radix (10, 16, or 8).
+ This sequence of characters must represent a positive value or
+ a <code><a href="reference/java/lang/NumberFormatException.html">NumberFormatException</a></code> will be thrown.  The result is
+ negated if first character of the specified <code>String</code> is
+ the minus sign.  No whitespace characters are permitted in the
+ <code>String</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>a string representation of a long value.</td>
+          <th>nm</th>
+          <td>the <code>String</code> to decode.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Long</code> containing the value represented by <code>string</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Long</code> object holding the <code>long</code>
+            value represented by <code>nm</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a long value.
-</td>
+            <td>if the <code>String</code> does not
+            contain a parsable <code>long</code>.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong(String, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1978,7 +2189,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Long</code> as a
+ <code>double</code>.
+</p></div>
 
     </div>
 </div>
@@ -1997,7 +2210,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2009,22 +2222,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
- are equal. In order to be equal, <code>o</code> must be an instance of
- <code>Long</code> and have the same long value as this object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified object.  The result is
+ <code>true</code> if and only if the argument is not
+ <code>null</code> and is a <code>Long</code> object that
+ contains the same <code>long</code> value as this object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>o</th>
-          <td>the object to compare this long with.</td>
+          <th>obj</th>
+          <td>the object to compare with.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this
-         <code>Long</code>; <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the objects are the same;
+          <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -2057,7 +2271,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Long</code> as a
+ <code>float</code>.
+</p></div>
 
     </div>
 </div>
@@ -2076,7 +2292,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">getLong</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string, <a href="../../../reference/java/lang/Long.html">Long</a> defaultValue)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> nm, <a href="../../../reference/java/lang/Long.html">Long</a> val)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2088,29 +2304,60 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Long</code> value of the system property identified by
- <code>string</code>. Returns the specified default value if <code>string</code> is
- <code>null</code> or empty, if the property can not be found or if its value
- can not be parsed as a long.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>long</code> value of the system property with
+ the specified name.  The first argument is treated as the name
+ of a system property.  System properties are accessible through
+ the <code><a href="reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code>
+ method. The string value of this property is then interpreted
+ as a <code>long</code> value, as per the
+ <code>Long.decode</code> method, and a <code>Long</code> object
+ representing this value is returned.
+
+ <ul>
+ <li>If the property value begins with the two ASCII characters
+ <code>0x</code> or the ASCII character <code>#</code>, not followed by
+ a minus sign, then the rest of it is parsed as a hexadecimal integer
+ exactly as for the method <code><a href="reference/java/lang/Long.html#valueOf(java.lang.String, int)">valueOf(java.lang.String, int)</a></code>
+ with radix 16.
+ <li>If the property value begins with the ASCII character
+ <code>0</code> followed by another character, it is parsed as
+ an octal integer exactly as by the method <code><a href="reference/java/lang/Long.html#valueOf(java.lang.String, int)">valueOf(java.lang.String, int)</a></code> with radix 8.
+ <li>Otherwise the property value is parsed as a decimal
+ integer exactly as by the method
+ <code><a href="reference/java/lang/Long.html#valueOf(java.lang.String, int)">valueOf(java.lang.String, int)</a></code> with radix 10.
+ </ul>
+
+ <p>Note that, in every case, neither <code>L</code>
+ (<code>'&#92;u004C'</code>) nor <code>l</code>
+ (<code>'&#92;u006C'</code>) is permitted to appear at the end
+ of the property value as a type indicator, as would be
+ permitted in Java programming language source code.
+
+ <p>The second argument is the default value. The default value is
+ returned if there is no property of the specified name, if the
+ property does not have the correct numeric format, or if the
+ specified name is empty or <code>null</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the name of the requested system property.</td>
+          <th>nm</th>
+          <td>property name.</td>
         </tr>
         <tr>
-          <th>defaultValue</th>
-          <td>the default value that is returned if there is no long system
-            property with the requested name.</td>
+          <th>val</th>
+          <td>default value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the requested property's value as a <code>Long</code> or the default
-         value.
-</li></ul>
+      <ul class="nolist"><li>the <code>Long</code> value of the property.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String, java.lang.String)">getProperty(java.lang.String, java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/Long.html#decode(java.lang.String)">decode(String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2130,7 +2377,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">getLong</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> nm)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2142,23 +2389,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Long</code> value of the system property identified by
- <code>string</code>. Returns <code>null</code> if <code>string</code> is <code>null</code>
- or empty, if the property can not be found or if its value can not be
- parsed as a long.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Determines the <code>long</code> value of the system property
+ with the specified name.
+
+ <p>The first argument is treated as the name of a system property.
+ System properties are accessible through the <code><a href="reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code> method. The
+ string value of this property is then interpreted as a
+ <code>long</code> value and a <code>Long</code> object
+ representing this value is returned.  Details of possible
+ numeric formats can be found with the definition of
+ <code>getProperty</code>.
+
+ <p>If there is no property with the specified name, if the
+ specified name is empty or <code>null</code>, or if the
+ property does not have the correct numeric format, then
+ <code>null</code> is returned.
+
+ <p>In other words, this method returns a <code>Long</code> object equal to
+ the value of:
+
+ <blockquote>
+  <code>getLong(nm, null)</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the name of the requested system property.</td>
+          <th>nm</th>
+          <td>property name.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the requested property's value as a <code>Long</code> or <code>null</code>.
-</li></ul>
+      <ul class="nolist"><li>the <code>Long</code> value of the property.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String, java.lang.String)">getProperty(java.lang.String, java.lang.String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2178,7 +2447,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">getLong</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string, long defaultValue)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> nm, long val)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2190,29 +2459,59 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Long</code> value of the system property identified by
- <code>string</code>. Returns the specified default value if <code>string</code> is
- <code>null</code> or empty, if the property can not be found or if its value
- can not be parsed as a long.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Determines the <code>long</code> value of the system property
+ with the specified name.
+
+ <p>The first argument is treated as the name of a system property.
+ System properties are accessible through the <code><a href="reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code> method. The
+ string value of this property is then interpreted as a
+ <code>long</code> value and a <code>Long</code> object
+ representing this value is returned.  Details of possible
+ numeric formats can be found with the definition of
+ <code>getProperty</code>.
+
+ <p>The second argument is the default value. A <code>Long</code> object
+ that represents the value of the second argument is returned if there
+ is no property of the specified name, if the property does not have
+ the correct numeric format, or if the specified name is empty or null.
+
+ <p>In other words, this method returns a <code>Long</code> object equal
+ to the value of:
+
+ <blockquote>
+  <code>getLong(nm, new Long(val))</code>
+ </blockquote>
+
+ but in practice it may be implemented in a manner such as:
+
+ <blockquote><pre>
+ Long result = getLong(nm, null);
+ return (result == null) ? new Long(val) : result;
+ </pre></blockquote>
+
+ to avoid the unnecessary allocation of a <code>Long</code> object when
+ the default value is not needed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the name of the requested system property.</td>
+          <th>nm</th>
+          <td>property name.</td>
         </tr>
         <tr>
-          <th>defaultValue</th>
-          <td>the default value that is returned if there is no long system
-            property with the requested name.</td>
+          <th>val</th>
+          <td>default value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the requested property's value as a <code>Long</code> or the default
-         value.
-</li></ul>
+      <ul class="nolist"><li>the <code>Long</code> value of the property.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String, java.lang.String)">getProperty(java.lang.String, java.lang.String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2244,20 +2543,63 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
- objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
- the same hash code value. This means that subclasses of <code>Object</code>
- usually override both methods or neither method.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this <code>Long</code>. The result is
+ the exclusive OR of the two halves of the primitive
+ <code>long</code> value held by this <code>Long</code>
+ object. That is, the hashcode is the value of the expression:
 
- <p>Note that hash values must not change over time unless information used in equals
- comparisons also changes.
-
- <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
- <code>hashCode</code> method</a>
- if you intend implementing your own <code>hashCode</code> method.</p></div>
+ <blockquote>
+  <code>(int)(this.longValue()^(this.longValue()&gt;&gt;&gt;32))</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's hash code.</li></ul>
+      <ul class="nolist"><li>a hash code value for this object.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="hashCode(long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">hashCode</span>
+      <span class="normal">(long value)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for a <code>long</code> value; compatible with
+ <code>Long.hashCode()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>the value to hash</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a hash code value for a <code>long</code> value.</li></ul>
   </div>
 
     </div>
@@ -2277,7 +2619,7 @@ From interface
         long
       </span>
       <span class="sympad">highestOneBit</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2289,22 +2631,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Determines the highest (leftmost) bit of the specified long value that is
- 1 and returns the bit mask value for that bit. This is also referred to
- as the Most Significant 1 Bit. Returns zero if the specified long is
- zero.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long to examine.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>long</code> value with at most a single one-bit, in the
+ position of the highest-order ("leftmost") one-bit in the specified
+ <code>long</code> value.  Returns zero if the specified value has no
+ one-bits in its two's complement binary representation, that is, if it
+ is equal to zero.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the bit mask indicating the highest 1 bit in <code>v</code>.</li></ul>
+      <ul class="nolist"><li>a <code>long</code> value with a single one-bit, in the position
+     of the highest-order one-bit in the specified value, or zero if
+     the specified value is itself equal to zero.</li></ul>
   </div>
 
     </div>
@@ -2336,7 +2672,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Long</code> as an
+ <code>int</code>.
+</p></div>
 
     </div>
 </div>
@@ -2367,12 +2705,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the primitive value of this long.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's primitive value.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Long</code> as a
+ <code>long</code> value.
+</p></div>
 
     </div>
 </div>
@@ -2391,7 +2726,7 @@ From interface
         long
       </span>
       <span class="sympad">lowestOneBit</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2403,22 +2738,124 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Determines the lowest (rightmost) bit of the specified long value that is
- 1 and returns the bit mask value for that bit. This is also referred to
- as the Least Significant 1 Bit. Returns zero if the specified long is
- zero.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>long</code> value with at most a single one-bit, in the
+ position of the lowest-order ("rightmost") one-bit in the specified
+ <code>long</code> value.  Returns zero if the specified value has no
+ one-bits in its two's complement binary representation, that is, if it
+ is equal to zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a <code>long</code> value with a single one-bit, in the position
+     of the lowest-order one-bit in the specified value, or zero if
+     the specified value is itself equal to zero.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="max(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">max</span>
+      <span class="normal">(long a, long b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greater of two <code>long</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#max(long, long)">Math.max</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the long to examine.</td>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the bit mask indicating the lowest 1 bit in <code>v</code>.</li></ul>
+      <ul class="nolist"><li>the greater of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="min(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">min</span>
+      <span class="normal">(long a, long b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smaller of two <code>long</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#min(long, long)">Math.min</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smaller of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2438,7 +2875,7 @@ From interface
         int
       </span>
       <span class="sympad">numberOfLeadingZeros</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2450,20 +2887,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Determines the number of leading zeros in the specified long value prior
- to the <code><a href="reference/java/lang/Long.html#highestOneBit(long)">highest one bit</a></code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long to examine.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of zero bits preceding the highest-order
+ ("leftmost") one-bit in the two's complement binary representation
+ of the specified <code>long</code> value.  Returns 64 if the
+ specified value has no one-bits in its two's complement representation,
+ in other words if it is equal to zero.
+
+ <p>Note that this method is closely related to the logarithm base 2.
+ For all positive <code>long</code> values x:
+ <ul>
+ <li>floor(log<sub>2</sub>(x)) = <code>63 - numberOfLeadingZeros(x)</code>
+ <li>ceil(log<sub>2</sub>(x)) = <code>64 - numberOfLeadingZeros(x - 1)</code>
+ </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of leading zeros in <code>v</code>.</li></ul>
+      <ul class="nolist"><li>the number of zero bits preceding the highest-order
+     ("leftmost") one-bit in the two's complement binary representation
+     of the specified <code>long</code> value, or 64 if the value
+     is equal to zero.</li></ul>
   </div>
 
     </div>
@@ -2483,7 +2924,7 @@ From interface
         int
       </span>
       <span class="sympad">numberOfTrailingZeros</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2495,20 +2936,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Determines the number of trailing zeros in the specified long value after
- the <code><a href="reference/java/lang/Long.html#lowestOneBit(long)">lowest one bit</a></code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long to examine.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of zero bits following the lowest-order ("rightmost")
+ one-bit in the two's complement binary representation of the specified
+ <code>long</code> value.  Returns 64 if the specified value has no
+ one-bits in its two's complement representation, in other words if it is
+ equal to zero.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of trailing zeros in <code>v</code>.</li></ul>
+      <ul class="nolist"><li>the number of zero bits following the lowest-order ("rightmost")
+     one-bit in the two's complement binary representation of the
+     specified <code>long</code> value, or 64 if the value is equal
+     to zero.</li></ul>
   </div>
 
     </div>
@@ -2528,7 +2966,7 @@ From interface
         long
       </span>
       <span class="sympad">parseLong</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2540,28 +2978,42 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed decimal long value. The ASCII
- characters - ('-') and + ('+') are recognized as the minus and
- plus signs.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the string argument as a signed decimal <code>long</code>.
+ The characters in the string must all be decimal digits, except
+ that the first character may be an ASCII minus sign <code>'-'</code>
+ (<code>&#92;u002D'</code>) to indicate a negative value or an
+ ASCII plus sign <code>'+'</code> (<code>'&#92;u002B'</code>) to
+ indicate a positive value. The resulting <code>long</code> value is
+ returned, exactly as if the argument and the radix <code>10</code>
+ were given as arguments to the <code><a href="reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong(java.lang.String, int)</a></code> method.
+
+ <p>Note that neither the character <code>L</code>
+ (<code>'&#92;u004C'</code>) nor <code>l</code>
+ (<code>'&#92;u006C'</code>) is permitted to appear at the end
+ of the string as a type indicator, as would be permitted in
+ Java programming language source code.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a long value.</td>
+          <th>s</th>
+          <td>a <code>String</code> containing the <code>long</code>
+             representation to be parsed</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the primitive long value represented by <code>string</code>.</li></ul>
+      <ul class="nolist"><li>the <code>long</code> represented by the argument in
+             decimal.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a long value.
+            <td>if the string does not contain a
+             parsable <code>long</code>.
 </td>
         </tr>
       </table>
@@ -2584,7 +3036,7 @@ From interface
         long
       </span>
       <span class="sympad">parseLong</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2596,35 +3048,80 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed long value using the specified
- radix. The ASCII characters - ('-') and + ('+') are recognized
- as the minus and plus signs.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the string argument as a signed <code>long</code> in the
+ radix specified by the second argument. The characters in the
+ string must all be digits of the specified radix (as determined
+ by whether <code><a href="reference/java/lang/Character.html#digit(char, int)">digit(char, int)</a></code> returns
+ a nonnegative value), except that the first character may be an
+ ASCII minus sign <code>'-'</code> (<code>'&#92;u002D'</code>) to
+ indicate a negative value or an ASCII plus sign <code>'+'</code>
+ (<code>'&#92;u002B'</code>) to indicate a positive value. The
+ resulting <code>long</code> value is returned.
+
+ <p>Note that neither the character <code>L</code>
+ (<code>'&#92;u004C'</code>) nor <code>l</code>
+ (<code>'&#92;u006C'</code>) is permitted to appear at the end
+ of the string as a type indicator, as would be permitted in
+ Java programming language source code - except that either
+ <code>L</code> or <code>l</code> may appear as a digit for a
+ radix greater than 22.
+
+ <p>An exception of type <code>NumberFormatException</code> is
+ thrown if any of the following situations occurs:
+ <ul>
+
+ <li>The first argument is <code>null</code> or is a string of
+ length zero.
+
+ <li>The <code>radix</code> is either smaller than <code><a href="reference/java/lang/Character.html#MIN_RADIX">MIN_RADIX</a></code> or larger than <code><a href="reference/java/lang/Character.html#MAX_RADIX">MAX_RADIX</a></code>.
+
+ <li>Any character of the string is not a digit of the specified
+ radix, except that the first character may be a minus sign
+ <code>'-'</code> (<code>'&#92;u002d'</code>) or plus sign <code>'+'</code> (<code>'&#92;u002B'</code>) provided that the string is
+ longer than length 1.
+
+ <li>The value represented by the string is not a value of type
+      <code>long</code>.
+ </ul>
+
+ <p>Examples:
+ <blockquote><pre>
+ parseLong("0", 10) returns 0L
+ parseLong("473", 10) returns 473L
+ parseLong("+42", 10) returns 42L
+ parseLong("-0", 10) returns 0L
+ parseLong("-FF", 16) returns -255L
+ parseLong("1100110", 2) returns 102L
+ parseLong("99", 8) throws a NumberFormatException
+ parseLong("Hazelnut", 10) throws a NumberFormatException
+ parseLong("Hazelnut", 36) returns 1356099454469L
+ </pre></blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a long value.</td>
+          <th>s</th>
+          <td>the <code>String</code> containing the
+                     <code>long</code> representation to be parsed.</td>
         </tr>
         <tr>
           <th>radix</th>
-          <td>the radix to use when parsing.</td>
+          <td>the radix to be used while parsing <code>s</code>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the primitive long value represented by <code>string</code> using
-         <code>radix</code>.</li></ul>
+      <ul class="nolist"><li>the <code>long</code> represented by the string argument in
+             the specified radix.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a long value, or
-             <code>radix < Character.MIN_RADIX ||
-             radix > Character.MAX_RADIX</code>.
+            <td>if the string does not contain a
+             parsable <code>long</code>.
 </td>
         </tr>
       </table>
@@ -2647,7 +3144,7 @@ From interface
         long
       </span>
       <span class="sympad">reverse</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2659,19 +3156,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reverses the order of the bits of the specified long value.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long value for which to reverse the bit order.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value obtained by reversing the order of the bits in the
+ two's complement binary representation of the specified <code>long</code>
+ value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the reversed value.</li></ul>
+      <ul class="nolist"><li>the value obtained by reversing order of the bits in the
+     specified <code>long</code> value.</li></ul>
   </div>
 
     </div>
@@ -2691,7 +3182,7 @@ From interface
         long
       </span>
       <span class="sympad">reverseBytes</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2703,19 +3194,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reverses the order of the bytes of the specified long value.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long value for which to reverse the byte order.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value obtained by reversing the order of the bytes in the
+ two's complement representation of the specified <code>long</code> value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the reversed value.</li></ul>
+      <ul class="nolist"><li>the value obtained by reversing the bytes in the specified
+     <code>long</code> value.</li></ul>
   </div>
 
     </div>
@@ -2735,7 +3219,7 @@ From interface
         long
       </span>
       <span class="sympad">rotateLeft</span>
-      <span class="normal">(long v, int distance)</span>
+      <span class="normal">(long i, int distance)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2747,24 +3231,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Rotates the bits of the specified long value to the left by the specified
- number of bits.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long value to rotate left.</td>
-        </tr>
-        <tr>
-          <th>distance</th>
-          <td>the number of bits to rotate.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value obtained by rotating the two's complement binary
+ representation of the specified <code>long</code> value left by the
+ specified number of bits.  (Bits shifted out of the left hand, or
+ high-order, side reenter on the right, or low-order.)
+
+ <p>Note that left rotation with a negative distance is equivalent to
+ right rotation: <code>rotateLeft(val, -distance) == rotateRight(val,
+ distance)</code>.  Note also that rotation by any multiple of 64 is a
+ no-op, so all but the last six bits of the rotation distance can be
+ ignored, even if the distance is negative: <code>rotateLeft(val,
+ distance) == rotateLeft(val, distance &amp; 0x3F)</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the rotated value.</li></ul>
+      <ul class="nolist"><li>the value obtained by rotating the two's complement binary
+     representation of the specified <code>long</code> value left by the
+     specified number of bits.</li></ul>
   </div>
 
     </div>
@@ -2784,7 +3266,7 @@ From interface
         long
       </span>
       <span class="sympad">rotateRight</span>
-      <span class="normal">(long v, int distance)</span>
+      <span class="normal">(long i, int distance)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2796,24 +3278,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Rotates the bits of the specified long value to the right by the
- specified number of bits.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>v</th>
-          <td>the long value to rotate right.</td>
-        </tr>
-        <tr>
-          <th>distance</th>
-          <td>the number of bits to rotate.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value obtained by rotating the two's complement binary
+ representation of the specified <code>long</code> value right by the
+ specified number of bits.  (Bits shifted out of the right hand, or
+ low-order, side reenter on the left, or high-order.)
+
+ <p>Note that right rotation with a negative distance is equivalent to
+ left rotation: <code>rotateRight(val, -distance) == rotateLeft(val,
+ distance)</code>.  Note also that rotation by any multiple of 64 is a
+ no-op, so all but the last six bits of the rotation distance can be
+ ignored, even if the distance is negative: <code>rotateRight(val,
+ distance) == rotateRight(val, distance &amp; 0x3F)</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the rotated value.</li></ul>
+      <ul class="nolist"><li>the value obtained by rotating the two's complement binary
+     representation of the specified <code>long</code> value right by the
+     specified number of bits.</li></ul>
   </div>
 
     </div>
@@ -2845,7 +3325,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Long</code> as a
+ <code>short</code>.
+</p></div>
 
     </div>
 </div>
@@ -2864,7 +3346,7 @@ From interface
         int
       </span>
       <span class="sympad">signum</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2876,21 +3358,65 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the <code>signum</code> function for the specified long
- value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the specified <code>long</code> value.  (The
+ return value is -1 if the specified value is negative; 0 if the
+ specified value is zero; and 1 if the specified value is positive.)</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the signum function of the specified <code>long</code> value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="sum(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">sum</span>
+      <span class="normal">(long a, long b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds two <code>long</code> values together as per the + operator.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the long value to check.</td>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>-1 if <code>v</code> is negative, 1 if <code>v</code> is positive, 0 if
-         <code>v</code> is zero.</li></ul>
+      <ul class="nolist"><li>the sum of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2910,7 +3436,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toBinaryString</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2922,21 +3448,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified long value into its binary string representation.
- The returned string is a concatenation of '0' and '1' characters.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the <code>long</code>
+ argument as an unsigned integer in base&nbsp;2.
+
+ <p>The unsigned <code>long</code> value is the argument plus
+ 2<sup>64</sup> if the argument is negative; otherwise, it is
+ equal to the argument.  This value is converted to a string of
+ ASCII digits in binary (base&nbsp;2) with no extra leading
+ <code>0</code>s.  If the unsigned magnitude is zero, it is
+ represented by a single zero character <code>'0'</code>
+ (<code>'&#92;u0030'</code>); otherwise, the first character of
+ the representation of the unsigned magnitude will not be the
+ zero character. The characters <code>'0'</code>
+ (<code>'&#92;u0030'</code>) and <code>'1'</code>
+ (<code>'&#92;u0031'</code>) are used as binary digits.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the long value to convert.</td>
+          <th>i</th>
+          <td>a <code>long</code> to be converted to a string.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the binary string representation of <code>v</code>.
-</li></ul>
+      <ul class="nolist"><li>the string representation of the unsigned <code>long</code>
+          value represented by the argument in binary (base&nbsp;2).</li></ul>
   </div>
 
     </div>
@@ -2956,7 +3494,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toHexString</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2968,22 +3506,47 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified long value into its hexadecimal string
- representation. The returned string is a concatenation of characters from
- '0' to '9' and 'a' to 'f'.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the <code>long</code>
+ argument as an unsigned integer in base&nbsp;16.
+
+ <p>The unsigned <code>long</code> value is the argument plus
+ 2<sup>64</sup> if the argument is negative; otherwise, it is
+ equal to the argument.  This value is converted to a string of
+ ASCII digits in hexadecimal (base&nbsp;16) with no extra
+ leading <code>0</code>s.  If the unsigned magnitude is zero, it
+ is represented by a single zero character <code>'0'</code>
+ (<code>'&#92;u0030'</code>); otherwise, the first character of
+ the representation of the unsigned magnitude will not be the
+ zero character. The following characters are used as
+ hexadecimal digits:
+
+ <blockquote>
+  <code>0123456789abcdef</code>
+ </blockquote>
+
+ These are the characters <code>'&#92;u0030'</code> through
+ <code>'&#92;u0039'</code> and  <code>'&#92;u0061'</code> through
+ <code>'&#92;u0066'</code>.  If uppercase letters are desired,
+ the <code><a href="reference/java/lang/String.html#toUpperCase()">toUpperCase()</a></code> method may be called
+ on the result:
+
+ <blockquote>
+  <code>Long.toHexString(n).toUpperCase()</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the long value to convert.</td>
+          <th>i</th>
+          <td>a <code>long</code> to be converted to a string.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the hexadecimal string representation of <code>l</code>.
-</li></ul>
+      <ul class="nolist"><li>the string representation of the unsigned <code>long</code>
+          value represented by the argument in hexadecimal
+          (base&nbsp;16).</li></ul>
   </div>
 
     </div>
@@ -3003,7 +3566,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toOctalString</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3015,21 +3578,41 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified long value into its octal string representation.
- The returned string is a concatenation of characters from '0' to '7'.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the <code>long</code>
+ argument as an unsigned integer in base&nbsp;8.
+
+ <p>The unsigned <code>long</code> value is the argument plus
+ 2<sup>64</sup> if the argument is negative; otherwise, it is
+ equal to the argument.  This value is converted to a string of
+ ASCII digits in octal (base&nbsp;8) with no extra leading
+ <code>0</code>s.
+
+ <p>If the unsigned magnitude is zero, it is represented by a
+ single zero character <code>'0'</code>
+ (<code>'&#92;u0030'</code>); otherwise, the first character of
+ the representation of the unsigned magnitude will not be the
+ zero character. The following characters are used as octal
+ digits:
+
+ <blockquote>
+  <code>01234567</code>
+ </blockquote>
+
+ These are the characters <code>'&#92;u0030'</code> through
+ <code>'&#92;u0037'</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the long value to convert.</td>
+          <th>i</th>
+          <td>a <code>long</code> to be converted to a string.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the octal string representation of <code>l</code>.
-</li></ul>
+      <ul class="nolist"><li>the string representation of the unsigned <code>long</code>
+          value represented by the argument in octal (base&nbsp;8).</li></ul>
   </div>
 
     </div>
@@ -3049,7 +3632,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
-      <span class="normal">(long v, int radix)</span>
+      <span class="normal">(long i, int radix)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3061,34 +3644,63 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified signed long value into a string representation based on
- the specified radix. The returned string is a concatenation of a minus
- sign if the number is negative and characters from '0' to '9' and 'a' to
- 'z', depending on the radix. If <code>radix</code> is not in the interval
- defined by <code>Character.MIN_RADIX</code> and <code>Character.MAX_RADIX</code>
- then 10 is used as the base for the conversion.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the first argument in the
+ radix specified by the second argument.
 
- <p>This method treats its argument as signed. If you want to convert an
- unsigned value to one of the common non-decimal bases, you may find
- <code><a href="reference/java/lang/Long.html#toBinaryString(long)">toBinaryString(long)</a></code>, <code>#toHexString</code>, or <code><a href="reference/java/lang/Long.html#toOctalString(long)">toOctalString(long)</a></code>
- more convenient.</p></div>
+ <p>If the radix is smaller than <code>Character.MIN_RADIX</code>
+ or larger than <code>Character.MAX_RADIX</code>, then the radix
+ <code>10</code> is used instead.
+
+ <p>If the first argument is negative, the first element of the
+ result is the ASCII minus sign <code>'-'</code>
+ (<code>'&#92;u002d'</code>). If the first argument is not
+ negative, no sign character appears in the result.
+
+ <p>The remaining characters of the result represent the magnitude
+ of the first argument. If the magnitude is zero, it is
+ represented by a single zero character <code>'0'</code>
+ (<code>'&#92;u0030'</code>); otherwise, the first character of
+ the representation of the magnitude will not be the zero
+ character.  The following ASCII characters are used as digits:
+
+ <blockquote>
+   <code>0123456789abcdefghijklmnopqrstuvwxyz</code>
+ </blockquote>
+
+ These are <code>'&#92;u0030'</code> through
+ <code>'&#92;u0039'</code> and <code>'&#92;u0061'</code> through
+ <code>'&#92;u007a'</code>. If <code>radix</code> is
+ <var>N</var>, then the first <var>N</var> of these characters
+ are used as radix-<var>N</var> digits in the order shown. Thus,
+ the digits for hexadecimal (radix 16) are
+ <code>0123456789abcdef</code>. If uppercase letters are
+ desired, the <code><a href="reference/java/lang/String.html#toUpperCase()">toUpperCase()</a></code> method may
+ be called on the result:
+
+ <blockquote>
+  <code>Long.toString(n, 16).toUpperCase()</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the signed long to convert.</td>
+          <th>i</th>
+          <td>a <code>long</code> to be converted to a string.</td>
         </tr>
         <tr>
           <th>radix</th>
-          <td>the base to use for the conversion.</td>
+          <td>the radix to use in the string representation.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the string representation of <code>v</code>.
-</li></ul>
+      <ul class="nolist"><li>a string representation of the argument in the specified radix.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Character.html#MAX_RADIX">MAX_RADIX</a></code></li><li><code><a href="../../../reference/java/lang/Character.html#MIN_RADIX">MIN_RADIX</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3120,18 +3732,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- object. Subclasses are encouraged to override this method and provide an
- implementation that takes into account the object's type and data. The
- default implementation is equivalent to the following expression:
- <pre>
-   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
- <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
- <code>toString</code> method</a>
- if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> object representing this
+ <code>Long</code>'s value.  The value is converted to signed
+ decimal representation and returned as a string, exactly as if
+ the <code>long</code> value were given as an argument to the
+ <code><a href="reference/java/lang/Long.html#toString(long)">toString(long)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
+      <ul class="nolist"><li>a string representation of the value of this object in
+          base&nbsp;10.
 </li></ul>
   </div>
 
@@ -3152,7 +3761,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
-      <span class="normal">(long n)</span>
+      <span class="normal">(long i)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3164,21 +3773,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified long value into its decimal string representation.
- The returned string is a concatenation of a minus sign if the number is
- negative and characters from '0' to '9'.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> object representing the specified
+ <code>long</code>.  The argument is converted to signed decimal
+ representation and returned as a string, exactly as if the
+ argument and the radix 10 were given as arguments to the <code><a href="reference/java/lang/Long.html#toString(long, int)">toString(long, int)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>n</th>
-          <td>the long to convert.</td>
+          <th>i</th>
+          <td>a <code>long</code> to be converted.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the decimal string representation of <code>l</code>.
+      <ul class="nolist"><li>a string representation of the argument in base&nbsp;10.
 </li></ul>
   </div>
 
@@ -3199,7 +3809,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3211,34 +3821,43 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed decimal long value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Long</code> object holding the value
+ of the specified <code>String</code>. The argument is
+ interpreted as representing a signed decimal <code>long</code>,
+ exactly as if the argument were given to the <code><a href="reference/java/lang/Long.html#parseLong(java.lang.String)">parseLong(java.lang.String)</a></code> method. The result is a
+ <code>Long</code> object that represents the integer value
+ specified by the string.
+
+ <p>In other words, this method returns a <code>Long</code> object
+ equal to the value of:
+
+ <blockquote>
+  <code>new Long(Long.parseLong(s))</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a long value.</td>
+          <th>s</th>
+          <td>the string to be parsed.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Long</code> instance containing the long value represented by
-         <code>string</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Long</code> object holding the value
+             represented by the string argument.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a long value.</td>
+            <td>If the string cannot be parsed
+             as a <code>long</code>.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String)">parseLong(String)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -3258,7 +3877,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string, int radix)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, int radix)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3270,41 +3889,50 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed long value using the specified
- radix.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Long</code> object holding the value
+ extracted from the specified <code>String</code> when parsed
+ with the radix given by the second argument.  The first
+ argument is interpreted as representing a signed
+ <code>long</code> in the radix specified by the second
+ argument, exactly as if the arguments were given to the <code><a href="reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong(java.lang.String, int)</a></code> method. The result is a
+ <code>Long</code> object that represents the <code>long</code>
+ value specified by the string.
+
+ <p>In other words, this method returns a <code>Long</code> object equal
+ to the value of:
+
+ <blockquote>
+  <code>new Long(Long.parseLong(s, radix))</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a long value.</td>
+          <th>s</th>
+          <td>the string to be parsed</td>
         </tr>
         <tr>
           <th>radix</th>
-          <td>the radix to use when parsing.</td>
+          <td>the radix to be used in interpreting <code>s</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Long</code> instance containing the long value represented by
-         <code>string</code> using <code>radix</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Long</code> object holding the value
+             represented by the string argument in the specified
+             radix.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a long value, or
-             <code>radix < Character.MIN_RADIX ||
-             radix > Character.MAX_RADIX</code>.</td>
+            <td>If the <code>String</code> does not
+             contain a parsable <code>long</code>.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#parseLong(java.lang.String, int)">parseLong(String, int)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -3324,7 +3952,7 @@ From interface
         <a href="../../../reference/java/lang/Long.html">Long</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(long v)</span>
+      <span class="normal">(long l)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3336,23 +3964,30 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Long</code> instance for the specified long value.
- <p>
- If it is not necessary to get a new <code>Long</code> instance, it is
- recommended to use this method instead of the constructor, since it
- maintains a cache of instances which may result in better performance.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Long</code> instance representing the specified
+ <code>long</code> value.
+ If a new <code>Long</code> instance is not required, this method
+ should generally be used in preference to the constructor
+ <code><a href="reference/java/lang/Long.html#Long(long)">Long(long)</a></code>, as this method is likely to yield
+ significantly better space and time performance by caching
+ frequently requested values.
+
+ Note that unlike the {@linkplain Integer#valueOf(int)
+ corresponding method} in the <code>Integer</code> class, this method
+ is <em>not</em> required to cache values within a particular
+ range.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>v</th>
-          <td>the long value to store in the instance.</td>
+          <th>l</th>
+          <td>a long value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Long</code> instance containing <code>v</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Long</code> instance representing <code>l</code>.</li></ul>
   </div>
 
     </div>

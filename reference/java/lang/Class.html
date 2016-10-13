@@ -398,14 +398,31 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Class.html#getAnnotations()">getAnnotations</a></span>()
         
-        <div class="jd-descrdiv">Returns, for this element, an array containing all annotations (including
- inherited annotations).</div>
+        <div class="jd-descrdiv">Returns annotations that are <em>present</em> on this element.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Class.html#getAnnotationsByType(java.lang.Class<T>)">getAnnotationsByType</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
+        
+        <div class="jd-descrdiv">Returns annotations that are <em>associated</em> with this element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -421,7 +438,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -437,7 +454,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -453,7 +470,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -469,7 +486,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -485,7 +502,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -497,6 +514,25 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Class.html#getConstructors()">getConstructors</a></span>()
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt;
+            T
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Class.html#getDeclaredAnnotation(java.lang.Class<T>)">getDeclaredAnnotation</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
+        
+        <div class="jd-descrdiv">Returns this element's annotation for the specified type if
+ such an annotation is <em>directly present</em>, else null.</div>
+  
   </td></tr>
 
 
@@ -513,14 +549,33 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Class.html#getDeclaredAnnotations()">getDeclaredAnnotations</a></span>()
         
-        <div class="jd-descrdiv">Returns, for this element, all annotations that are explicitly declared
- (not inherited).</div>
+        <div class="jd-descrdiv">Returns annotations that are <em>directly present</em> on this element.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Class.html#getDeclaredAnnotationsByType(java.lang.Class<T>)">getDeclaredAnnotationsByType</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
+        
+        <div class="jd-descrdiv">Returns this element's annotation(s) for the specified type if
+ such annotations are either <em>directly present</em> or
+ <em>indirectly present</em>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -536,7 +591,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -552,7 +607,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -568,7 +623,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -584,7 +639,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -600,7 +655,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -616,7 +671,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -632,7 +687,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -648,7 +703,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -664,7 +719,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -680,7 +735,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -696,7 +751,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -712,7 +767,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -728,7 +783,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -744,7 +799,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -760,7 +815,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -776,7 +831,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -792,7 +847,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -808,7 +863,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -824,7 +879,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -840,7 +895,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -856,7 +911,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -872,7 +927,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -888,7 +943,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -904,7 +959,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -920,7 +975,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -936,7 +991,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -952,7 +1007,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -963,6 +1018,22 @@ layout: api
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Class.html#getSuperclass()">getSuperclass</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Class.html#getTypeName()">getTypeName</a></span>()
         
   </td></tr>
 
@@ -1014,8 +1085,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Class.html#isAnnotationPresent(java.lang.Class<? extends java.lang.annotation.Annotation>)">isAnnotationPresent</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt; annotationType)
         
-        <div class="jd-descrdiv">Indicates whether or not this element has an annotation with the
- specified annotation type (including inherited annotations).</div>
+        <div class="jd-descrdiv">Returns true if an annotation for the specified type
+ is <em>present</em> on this element, else false.</div>
   
   </td></tr>
 
@@ -1198,6 +1269,22 @@ layout: api
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Class.html#toGenericString()">toGenericString</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1490,11 +1577,10 @@ From interface
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getAnnotation(java.lang.Class<T>)">getAnnotation</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationType)
+        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getAnnotation(java.lang.Class<T>)">getAnnotation</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
         
-        <div class="jd-descrdiv">Returns, for this element, the annotation with the specified type, or
- <code>null</code> if no annotation with the specified type is present
- (including inherited annotations).</div>
+        <div class="jd-descrdiv">Returns this element's annotation for the specified type if
+ such an annotation is <em>present</em>, else null.</div>
   
   </td></tr>
 
@@ -1512,8 +1598,44 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getAnnotations()">getAnnotations</a></span>()
         
-        <div class="jd-descrdiv">Returns, for this element, an array containing all annotations (including
- inherited annotations).</div>
+        <div class="jd-descrdiv">Returns annotations that are <em>present</em> on this element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getAnnotationsByType(java.lang.Class<T>)">getAnnotationsByType</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
+        
+        <div class="jd-descrdiv">Returns annotations that are <em>associated</em> with this element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt;
+            T
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getDeclaredAnnotation(java.lang.Class<T>)">getDeclaredAnnotation</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
+        
+        <div class="jd-descrdiv">Returns this element's annotation for the specified type if
+ such an annotation is <em>directly present</em>, else null.</div>
   
   </td></tr>
 
@@ -1531,8 +1653,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getDeclaredAnnotations()">getDeclaredAnnotations</a></span>()
         
-        <div class="jd-descrdiv">Returns, for this element, all annotations that are explicitly declared
- (not inherited).</div>
+        <div class="jd-descrdiv">Returns annotations that are <em>directly present</em> on this element.</div>
   
   </td></tr>
 
@@ -1544,14 +1665,34 @@ From interface
             
             
             
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#getDeclaredAnnotationsByType(java.lang.Class<T>)">getDeclaredAnnotationsByType</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)
+        
+        <div class="jd-descrdiv">Returns this element's annotation(s) for the specified type if
+ such annotations are either <em>directly present</em> or
+ <em>indirectly present</em>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
             
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#isAnnotationPresent(java.lang.Class<? extends java.lang.annotation.Annotation>)">isAnnotationPresent</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt; annotationType)
+        <span class="sympad"><a href="../../../reference/java/lang/reflect/AnnotatedElement.html#isAnnotationPresent(java.lang.Class<? extends java.lang.annotation.Annotation>)">isAnnotationPresent</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt; annotationClass)
         
-        <div class="jd-descrdiv">Indicates whether or not this element has an annotation with the
- specified annotation type (including inherited annotations).</div>
+        <div class="jd-descrdiv">Returns true if an annotation for the specified type
+ is <em>present</em> on this element, else false.</div>
   
   </td></tr>
 
@@ -1918,13 +2059,74 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns, for this element, an array containing all annotations (including
- inherited annotations). If there are no annotations present, this method
- returns a zero length array.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns annotations that are <em>present</em> on this element.
+
+ If there are no annotations <em>present</em> on this element, the return
+ value is an array of length 0.
+
+ The caller of this method is free to modify the returned array; it will
+ have no effect on the arrays returned to other callers.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of all annotations for this element
-</li></ul>
+      <ul class="nolist"><li>annotations present on this element</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getAnnotationsByType(java.lang.Class<T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        T[]
+      </span>
+      <span class="sympad">getAnnotationsByType</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns annotations that are <em>associated</em> with this element.
+
+ If there are no annotations <em>associated</em> with this element, the return
+ value is an array of length 0.
+
+ The difference between this method and <code><a href="reference/java/lang/reflect/AnnotatedElement.html#getAnnotation(java.lang.Class<T>)">getAnnotation(Class)</a></code>
+ is that this method detects if its argument is a <em>repeatable
+ annotation type</em> (JLS 9.6), and if so, attempts to find one or
+ more annotations of that type by "looking through" a container
+ annotation.
+
+ The caller of this method is free to modify the returned array; it will
+ have no effect on the arrays returned to other callers.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>annotationClass</th>
+          <td>the Class object corresponding to the
+        annotation type</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>all this element's annotations for the specified annotation type if
+     associated with this element, else an array of length zero</li></ul>
   </div>
 
     </div>
@@ -2139,6 +2341,56 @@ From interface
 </div>
 
 
+<a id="getDeclaredAnnotation(java.lang.Class<T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        T
+      </span>
+      <span class="sympad">getDeclaredAnnotation</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this element's annotation for the specified type if
+ such an annotation is <em>directly present</em>, else null.
+
+ This method ignores inherited annotations. (Returns null if no
+ annotations are directly present on this element.)</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>annotationClass</th>
+          <td>the Class object corresponding to the
+        annotation type</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this element's annotation for the specified annotation type if
+     directly present on this element, else null</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="getDeclaredAnnotations()"></a>
 
 <div class="jd-details api apilevel-">
@@ -2164,13 +2416,78 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns, for this element, all annotations that are explicitly declared
- (not inherited). If there are no declared annotations present, this
- method returns a zero length array.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns annotations that are <em>directly present</em> on this element.
+ This method ignores inherited annotations.
+
+ If there are no annotations <em>directly present</em> on this element,
+ the return value is an array of length 0.
+
+ The caller of this method is free to modify the returned array; it will
+ have no effect on the arrays returned to other callers.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of annotations declared for this element
-</li></ul>
+      <ul class="nolist"><li>annotations directly present on this element</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getDeclaredAnnotationsByType(java.lang.Class<T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        T[]
+      </span>
+      <span class="sympad">getDeclaredAnnotationsByType</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; annotationClass)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this element's annotation(s) for the specified type if
+ such annotations are either <em>directly present</em> or
+ <em>indirectly present</em>. This method ignores inherited
+ annotations.
+
+ If there are no specified annotations directly or indirectly
+ present on this element, the return value is an array of length
+ 0.
+
+ The difference between this method and <code><a href="reference/java/lang/reflect/AnnotatedElement.html#getDeclaredAnnotation(java.lang.Class<T>)">getDeclaredAnnotation(Class)</a></code> is that this method detects if its
+ argument is a <em>repeatable annotation type</em> (JLS 9.6), and if so,
+ attempts to find one or more annotations of that type by "looking
+ through" a container annotation if one is present.
+
+ The caller of this method is free to modify the returned array; it will
+ have no effect on the arrays returned to other callers.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>annotationClass</th>
+          <td>the Class object corresponding to the
+        annotation type</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>all this element's annotations for the specified annotation type if
+     directly or indirectly present on this element, else an array of length zero</li></ul>
   </div>
 
     </div>
@@ -3164,6 +3481,37 @@ From interface
 </div>
 
 
+<a id="getTypeName()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getTypeName</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
 <a id="getTypeParameters()"></a>
 
 <div class="jd-details api apilevel-">
@@ -3256,20 +3604,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not this element has an annotation with the
- specified annotation type (including inherited annotations).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if an annotation for the specified type
+ is <em>present</em> on this element, else false.  This method
+ is designed primarily for convenient access to marker annotations.
+
+ <p>The truth value returned by this method is equivalent to:
+ <code>getAnnotation(annotationClass) != null</code>
+
+ <p>The body of the default method is specified to be the code
+ above.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>annotationType</th>
-          <td>the type of the annotation to search for</td>
+          <td>the Class object corresponding to the
+        annotation type</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the annotation exists, <code>false</code> otherwise</li></ul>
+      <ul class="nolist"><li>true if an annotation for the specified annotation
+     type is present on this element, else false</li></ul>
   </div>
 
     </div>
@@ -3625,6 +3982,37 @@ From interface
         </tr>
       </table>
   </div>
+
+    </div>
+</div>
+
+
+<a id="toGenericString()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">toGenericString</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>

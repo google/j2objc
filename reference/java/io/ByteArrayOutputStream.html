@@ -117,6 +117,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -200,18 +207,18 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A specialized <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> for class for writing content to an
- (internal) byte array. As bytes are written to this stream, the byte array
- may be expanded to hold more bytes. When the writing is considered to be
- finished, a copy of the byte array can be requested from the class.</p>
+<p>This class implements an output stream in which the data is
+ written into a byte array. The buffer automatically grows as data
+ is written to it.
+ The data can be retrieved using <code>toByteArray()</code> and
+ <code>toString()</code>.
+ <p>
+ Closing a <tt>ByteArrayOutputStream</tt> has no effect. The methods in
+ this class can be called after the stream has been closed without
+ generating an <tt>IOException</tt>.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -265,7 +272,7 @@ layout: api
           
           byte[]</td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/ByteArrayOutputStream.html#buf">buf</a></td>
-          <td class="jd-descrcol" width="100%">The byte array containing the bytes written.</td>
+          <td class="jd-descrcol" width="100%">The buffer where data is stored.</td>
       </tr>
       
     
@@ -276,7 +283,7 @@ layout: api
           
           int</td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/ByteArrayOutputStream.html#count">count</a></td>
-          <td class="jd-descrcol" width="100%">The number of bytes written.</td>
+          <td class="jd-descrcol" width="100%">The number of valid bytes in the buffer.</td>
       </tr>
       
     
@@ -307,7 +314,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#ByteArrayOutputStream()">ByteArrayOutputStream</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new ByteArrayOutputStream with a default size of 32 bytes.</div>
+        <div class="jd-descrdiv">Creates a new byte array output stream.</div>
   
   </td></tr>
 
@@ -325,8 +332,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#ByteArrayOutputStream(int)">ByteArrayOutputStream</a></span>(int size)
         
-        <div class="jd-descrdiv">Constructs a new <code>ByteArrayOutputStream</code> with a default size of
- <code>size</code> bytes.</div>
+        <div class="jd-descrdiv">Creates a new byte array output stream, with a buffer capacity of
+ the specified size, in bytes.</div>
   
   </td></tr>
 
@@ -357,7 +364,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closing a <tt>ByteArrayOutputStream</tt> has no effect.</div>
   
   </td></tr>
 
@@ -375,7 +382,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this stream to the beginning of the underlying byte array.</div>
+        <div class="jd-descrdiv">Resets the <code>count</code> field of this byte array output
+ stream to zero, so that all currently accumulated output in the
+ output stream is discarded.</div>
   
   </td></tr>
 
@@ -384,7 +393,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -393,7 +402,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the total number of bytes written to this stream so far.</div>
+        <div class="jd-descrdiv">Returns the current size of the buffer.</div>
   
   </td></tr>
 
@@ -411,7 +420,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#toByteArray()">toByteArray</a></span>()
         
-        <div class="jd-descrdiv">Returns the contents of this ByteArrayOutputStream as a byte array.</div>
+        <div class="jd-descrdiv">Creates a newly allocated byte array.</div>
   
   </td></tr>
 
@@ -420,7 +429,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -429,8 +438,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#toString(java.lang.String)">toString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> charsetName)
         
-        <div class="jd-descrdiv">Returns the contents of this ByteArrayOutputStream as a string converted
- according to the encoding declared in <code>charsetName</code>.</div>
+        <div class="jd-descrdiv">Converts the buffer's contents into a string by decoding the bytes using
+ the specified <code><a href="reference/java/nio/charset/Charset.html">charsetName</a></code>.</div>
   
   </td></tr>
 
@@ -439,7 +448,7 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -448,7 +457,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the contents of this ByteArrayOutputStream as a string.</div>
+        <div class="jd-descrdiv">Converts the buffer's contents into a string decoding bytes using the
+ platform's default character set.</div>
   
   </td></tr>
 
@@ -457,7 +467,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -469,8 +479,11 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/io/ByteArrayOutputStream.html#toString()">toString()</a></code> instead.
-</em></div>
+      This method does not properly convert bytes into characters.
+ As of JDK&nbsp;1.1, the preferred way to do this is via the
+ <code>toString(String enc)</code> method, which takes an encoding-name
+ argument, or the <code>toString()</code> method, which uses the
+ platform's default character encoding.</em></div>
   
   </td></tr>
 
@@ -486,10 +499,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#write(byte[], int, int)">write</a></span>(byte[] buffer, int offset, int len)
+        <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#write(byte[], int, int)">write</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- offset <code>index</code> to this stream.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> bytes from the specified byte array
+ starting at offset <code>off</code> to this byte array output stream.</div>
   
   </td></tr>
 
@@ -505,9 +518,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#write(int)">write</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#write(int)">write</a></span>(int b)
         
-        <div class="jd-descrdiv">Writes the specified byte <code>oneByte</code> to the OutputStream.</div>
+        <div class="jd-descrdiv">Writes the specified byte to this byte array output stream.</div>
   
   </td></tr>
 
@@ -525,8 +538,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/ByteArrayOutputStream.html#writeTo(java.io.OutputStream)">writeTo</a></span>(<a href="../../../reference/java/io/OutputStream.html">OutputStream</a> out)
         
-        <div class="jd-descrdiv">Takes the contents of this stream and writes it to the output stream
- <code>out</code>.</div>
+        <div class="jd-descrdiv">Writes the complete contents of this byte array output stream to
+ the specified output stream argument, as if by calling the output
+ stream's write method using <code>out.write(buf, 0, count)</code>.</div>
   
   </td></tr>
 
@@ -578,7 +592,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this output stream and releases any system resources
+ associated with this stream.</div>
   
   </td></tr>
 
@@ -596,7 +611,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes this stream.</div>
+        <div class="jd-descrdiv">Flushes this output stream and forces any buffered output bytes
+ to be written out.</div>
   
   </td></tr>
 
@@ -612,9 +628,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[])">write</a></span>(byte[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[])">write</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Equivalent to <code>write(buffer, 0, buffer.length)</code>.</div>
+        <div class="jd-descrdiv">Writes <code>b.length</code> bytes from the specified byte array
+ to this output stream.</div>
   
   </td></tr>
 
@@ -630,10 +647,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write</a></span>(byte[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(byte[], int, int)">write</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- position <code>offset</code> to this stream.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> bytes from the specified byte array
+ starting at offset <code>off</code> to this output stream.</div>
   
   </td></tr>
 
@@ -649,9 +666,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(int)">write</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/OutputStream.html#write(int)">write</a></span>(int b)
         
-        <div class="jd-descrdiv">Writes a single byte to this stream.</div>
+        <div class="jd-descrdiv">Writes the specified byte to this output stream.</div>
   
   </td></tr>
 
@@ -924,7 +941,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
   
   </td></tr>
 
@@ -967,8 +985,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Flushable.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes the object by writing out any buffered data to the underlying
- output.</div>
+        <div class="jd-descrdiv">Flushes this stream by writing any buffered output to the underlying
+ stream.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1033,7 +1094,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The byte array containing the bytes written.
+  <div class="jd-tagdata jd-tagdescr"><p>The buffer where data is stored.
 </p></div>
 
     
@@ -1064,7 +1125,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The number of bytes written.
+  <div class="jd-tagdata jd-tagdescr"><p>The number of valid bytes in the buffer.
 </p></div>
 
     
@@ -1107,9 +1168,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new ByteArrayOutputStream with a default size of 32 bytes.
- If more than 32 bytes are written to this instance, the underlying byte
- array will expand.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new byte array output stream. The buffer capacity is
+ initially 32 bytes, though its size increases if necessary.
 </p></div>
 
     </div>
@@ -1141,16 +1201,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ByteArrayOutputStream</code> with a default size of
- <code>size</code> bytes. If more than <code>size</code> bytes are written to this
- instance, the underlying byte array will expand.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new byte array output stream, with a buffer capacity of
+ the specified size, in bytes.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>size</th>
-          <td>initial size for the underlying byte array, must be
-            non-negative.</td>
+          <td>the initial size.</td>
         </tr>
       </table>
   </div>
@@ -1159,7 +1217,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>size</code> < 0.
+            <td>if size is negative.
 </td>
         </tr>
       </table>
@@ -1209,14 +1267,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes this stream. This releases system resources used for this stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closing a <tt>ByteArrayOutputStream</tt> has no effect. The methods in
+ this class can be called after the stream has been closed without
+ generating an <tt>IOException</tt>.
+ <p>
+
+</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while attempting to close this stream.
-</td>
+            <td></td>
         </tr>
       </table>
   </div>
@@ -1250,10 +1312,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Resets this stream to the beginning of the underlying byte array. All
- subsequent writes will overwrite any bytes previously stored in this
- stream.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Resets the <code>count</code> field of this byte array output
+ stream to zero, so that all currently accumulated output in the
+ output stream is discarded. The output stream can be used again,
+ reusing the already allocated buffer space.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ByteArrayInputStream.html#count">count</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -1268,7 +1335,7 @@ From interface
         
         
         
-        
+        synchronized
         int
       </span>
       <span class="sympad">size</span>
@@ -1284,11 +1351,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the total number of bytes written to this stream so far.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the current size of the buffer.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of bytes written to this stream.
-</li></ul>
+      <ul class="nolist"><li>the value of the <code>count</code> field, which is the number
+          of valid bytes in this output stream.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ByteArrayOutputStream.html#count">count</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1320,13 +1392,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the contents of this ByteArrayOutputStream as a byte array. Any
- changes made to the receiver after returning will not be reflected in the
- byte array returned to the caller.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a newly allocated byte array. Its size is the current
+ size of this output stream and the valid contents of the buffer
+ have been copied into it.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream's current contents as a byte array.
-</li></ul>
+      <ul class="nolist"><li>the current contents of this output stream, as a byte array.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ByteArrayOutputStream.html#size()">size()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1342,7 +1418,7 @@ From interface
         
         
         
-        
+        synchronized
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
@@ -1358,29 +1434,34 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the contents of this ByteArrayOutputStream as a string converted
- according to the encoding declared in <code>charsetName</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the buffer's contents into a string by decoding the bytes using
+ the specified <code><a href="reference/java/nio/charset/Charset.html">charsetName</a></code>. The length of
+ the new <tt>String</tt> is a function of the charset, and hence may not be
+ equal to the length of the byte array.
+
+ <p> This method always replaces malformed-input and unmappable-character
+ sequences with this charset's default replacement string. The <code><a href="reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a></code> class should be used when more control
+ over the decoding process is required.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>charsetName</th>
-          <td>a string representing the encoding to use when translating
-            this stream to a string.</td>
+          <td>the name of a supported
+              {@linkplain java.nio.charset.Charset </code>charset<code>}</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream's current contents as an encoded string.</li></ul>
+      <ul class="nolist"><li>String decoded from the buffer's contents.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
-            <td>if the provided encoding is not supported.
-</td>
+            <td>If the named charset is not supported</td>
         </tr>
       </table>
   </div>
@@ -1398,7 +1479,7 @@ From interface
         
         
         
-        
+        synchronized
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
@@ -1414,13 +1495,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the contents of this ByteArrayOutputStream as a string. Any
- changes made to the receiver after returning will not be reflected in the
- string returned to the caller.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the buffer's contents into a string decoding bytes using the
+ platform's default character set. The length of the new <tt>String</tt>
+ is a function of the character set, and hence may not be equal to the
+ size of the buffer.
+
+ <p> This method always replaces malformed-input and unmappable-character
+ sequences with the default replacement string for the platform's
+ default character set. The {@linkplain java.nio.charset.CharsetDecoder}
+ class should be used when more control over the decoding process is
+ required.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream's current contents as a string.
-</li></ul>
+      <ul class="nolist"><li>String decoded from the buffer's contents.</li></ul>
   </div>
 
     </div>
@@ -1436,7 +1523,7 @@ From interface
         
         
         
-        
+        synchronized
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
@@ -1454,15 +1541,20 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/io/ByteArrayOutputStream.html#toString()">toString()</a></code> instead.
-
+  This method is deprecated.</strong><br/> This method does not properly convert bytes into characters.
+ As of JDK&nbsp;1.1, the preferred way to do this is via the
+ <code>toString(String enc)</code> method, which takes an encoding-name
+ argument, or the <code>toString()</code> method, which uses the
+ platform's default character encoding.
   </p>
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the contents of this ByteArrayOutputStream as a string. Each byte
- <code>b</code> in this stream is converted to a character <code>c</code> using the
- following function:
- <code>c == (char)(((hibyte & 0xff) << 8) | (b & 0xff))</code>. This method is
- deprecated and either <code><a href="reference/java/io/ByteArrayOutputStream.html#toString()">toString()</a></code> or <code><a href="reference/java/io/ByteArrayOutputStream.html#toString(java.lang.String)">toString(String)</a></code>
- should be used.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a newly allocated string. Its size is the current size of
+ the output stream and the valid contents of the buffer have been
+ copied into it. Each character <i>c</i> in the resulting string is
+ constructed from the corresponding element <i>b</i> in the byte
+ array such that:
+ <blockquote><pre>
+     c == (char)(((hibyte &amp; 0xff) &lt;&lt; 8) | (b &amp; 0xff))
+ </pre></blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1474,8 +1566,12 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this stream's current contents as a string with the high byte set
-         to <code>hibyte</code>.</li></ul>
+      <ul class="nolist"><li>the current contents of the output stream, as a string.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ByteArrayOutputStream.html#size()">size()</a></code></li><li><code><a href="../../../reference/java/io/ByteArrayOutputStream.html#toString(java.lang.String)">toString(String)</a></code></li><li><code><a href="../../../reference/java/io/ByteArrayOutputStream.html#toString()">toString()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1495,7 +1591,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(byte[] buffer, int offset, int len)</span>
+      <span class="normal">(byte[] b, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1507,37 +1603,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
- offset <code>index</code> to this stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>len</code> bytes from the specified byte array
+ starting at offset <code>off</code> to this byte array output stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the buffer to be written.</td>
+          <th>b</th>
+          <td>the data.</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the initial position in <code>buffer</code> to retrieve bytes.</td>
+          <th>off</th>
+          <td>the start offset in the data.</td>
         </tr>
         <tr>
           <th>len</th>
-          <td>the number of bytes of <code>buffer</code> to write.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>buffer</code> is <code>null</code>.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>len < 0</code>, or if
-             <code>offset + len</code> is greater than the length of
-             <code>buffer</code>.
+          <td>the number of bytes to write.
 </td>
         </tr>
       </table>
@@ -1560,7 +1641,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(int oneByte)</span>
+      <span class="normal">(int b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1572,13 +1653,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes the specified byte <code>oneByte</code> to the OutputStream. Only the
- low order byte of <code>oneByte</code> is written.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the specified byte to this byte array output stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>oneByte</th>
+          <th>b</th>
           <td>the byte to be written.
 </td>
         </tr>
@@ -1614,14 +1694,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Takes the contents of this stream and writes it to the output stream
- <code>out</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the complete contents of this byte array output stream to
+ the specified output stream argument, as if by calling the output
+ stream's write method using <code>out.write(buf, 0, count)</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>out</th>
-          <td>an OutputStream on which to write the contents of this stream.</td>
+          <td>the output stream to which to write the data.</td>
         </tr>
       </table>
   </div>
@@ -1630,7 +1711,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while writing to <code>out</code>.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>

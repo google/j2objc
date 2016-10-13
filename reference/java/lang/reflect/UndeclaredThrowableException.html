@@ -235,14 +235,35 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This class provides a wrapper for an undeclared, checked exception thrown by
- an InvocationHandler.</p>
+<p>Thrown by a method invocation on a proxy instance if its invocation
+ handler's <code><a href="reference/java/lang/reflect/InvocationHandler.html#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])">invoke</a></code> method throws a
+ checked exception (a <code>Throwable</code> that is not assignable
+ to <code>RuntimeException</code> or <code>Error</code>) that
+ is not assignable to any of the exception types declared in the
+ <code>throws</code> clause of the method that was invoked on the
+ proxy instance and dispatched to the invocation handler.
+
+ <p>An <code>UndeclaredThrowableException</code> instance contains
+ the undeclared checked exception that was thrown by the invocation
+ handler, and it can be retrieved with the
+ <code>getUndeclaredThrowable()</code> method.
+ <code>UndeclaredThrowableException</code> extends
+ <code>RuntimeException</code>, so it is an unchecked exception
+ that wraps a checked exception.
+
+ <p>As of release 1.4, this exception has been retrofitted to
+ conform to the general purpose exception-chaining mechanism.  The
+ "undeclared checked exception that was thrown by the invocation
+ handler" that may be provided at construction time and accessed via
+ the <code><a href="reference/java/lang/reflect/UndeclaredThrowableException.html#getUndeclaredThrowable()">getUndeclaredThrowable()</a></code> method is now known as the
+ <i>cause</i>, and may be accessed via the <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method, as well as the aforementioned "legacy
+ method."</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/InvocationHandler.html#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])">invoke(Object, Method, Object[])</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a></code></li>
       </ul>
   </div>
 
@@ -307,10 +328,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html#UndeclaredThrowableException(java.lang.Throwable)">UndeclaredThrowableException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html#UndeclaredThrowableException(java.lang.Throwable)">UndeclaredThrowableException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> undeclaredThrowable)
         
-        <div class="jd-descrdiv">Constructs a new <code>UndeclaredThrowableException</code> instance with the
- undeclared, checked exception that occurred.</div>
+        <div class="jd-descrdiv">Constructs an <code>UndeclaredThrowableException</code> with the
+ specified <code>Throwable</code>.</div>
   
   </td></tr>
 
@@ -326,10 +347,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html#UndeclaredThrowableException(java.lang.Throwable, java.lang.String)">UndeclaredThrowableException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception, <a href="../../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html#UndeclaredThrowableException(java.lang.Throwable, java.lang.String)">UndeclaredThrowableException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> undeclaredThrowable, <a href="../../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>UndeclaredThrowableException</code> instance with the
- undeclared, checked exception that occurred and a message.</div>
+        <div class="jd-descrdiv">Constructs an <code>UndeclaredThrowableException</code> with the
+ specified <code>Throwable</code> and a detail message.</div>
   
   </td></tr>
 
@@ -360,8 +381,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html#getCause()">getCause</a></span>()
         
-        <div class="jd-descrdiv">Returns the undeclared, checked exception that occurred, which may be
- <code>null</code>.</div>
+        <div class="jd-descrdiv">Returns the cause of this exception (the <code>Throwable</code>
+ instance wrapped in this <code>UndeclaredThrowableException</code>,
+ which may be <code>null</code>).</div>
   
   </td></tr>
 
@@ -379,8 +401,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html#getUndeclaredThrowable()">getUndeclaredThrowable</a></span>()
         
-        <div class="jd-descrdiv">Returns the undeclared, checked exception that occurred, which may be
- <code>null</code>.</div>
+        <div class="jd-descrdiv">Returns the <code>Throwable</code> instance wrapped in this
+ <code>UndeclaredThrowableException</code>, which may be <code>null</code>.</div>
   
   </td></tr>
 
@@ -612,6 +634,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -900,7 +941,7 @@ From class
         
       </span>
       <span class="sympad">UndeclaredThrowableException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> undeclaredThrowable)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -912,14 +953,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UndeclaredThrowableException</code> instance with the
- undeclared, checked exception that occurred.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>UndeclaredThrowableException</code> with the
+ specified <code>Throwable</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>exception</th>
-          <td>the undeclared, checked exception that occurred
+          <th>undeclaredThrowable</th>
+          <td>the undeclared checked exception
+          that was thrown
 </td>
         </tr>
       </table>
@@ -942,7 +984,7 @@ From class
         
       </span>
       <span class="sympad">UndeclaredThrowableException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception, <a href="../../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> undeclaredThrowable, <a href="../../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -954,19 +996,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UndeclaredThrowableException</code> instance with the
- undeclared, checked exception that occurred and a message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>UndeclaredThrowableException</code> with the
+ specified <code>Throwable</code> and a detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>exception</th>
-          <td>the undeclared, checked exception that occurred
-</td>
+          <th>undeclaredThrowable</th>
+          <td>the undeclared checked exception
+          that was thrown</td>
         </tr>
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for the exception</td>
+          <th>s</th>
+          <td>the detail message
+</td>
         </tr>
       </table>
   </div>
@@ -1015,12 +1058,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the undeclared, checked exception that occurred, which may be
- <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this exception (the <code>Throwable</code>
+ instance wrapped in this <code>UndeclaredThrowableException</code>,
+ which may be <code>null</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the undeclared, checked exception that occurred
-</li></ul>
+      <ul class="nolist"><li>the cause of this exception.</li></ul>
   </div>
 
     </div>
@@ -1052,11 +1095,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the undeclared, checked exception that occurred, which may be
- <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Throwable</code> instance wrapped in this
+ <code>UndeclaredThrowableException</code>, which may be <code>null</code>.
+
+ <p>This method predates the general-purpose exception chaining facility.
+ The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method is now the preferred means of
+ obtaining this information.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the undeclared, checked exception that occurred
+      <ul class="nolist"><li>the undeclared checked exception that was thrown
 </li></ul>
   </div>
 

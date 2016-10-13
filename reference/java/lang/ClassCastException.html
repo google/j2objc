@@ -235,9 +235,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program attempts to cast a an object to a type with which it is
- not compatible.
-</p>
+<p>Thrown to indicate that the code has attempted to cast an object
+ to a subclass of which it is not an instance. For example, the
+ following code generates a <code>ClassCastException</code>:
+ <p><blockquote><pre>
+     Object x = new Integer(0);
+     System.out.println((String)x);
+ </pre></blockquote></p>
 
 
 
@@ -305,8 +309,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassCastException.html#ClassCastException()">ClassCastException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>ClassCastException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>ClassCastException</code> with no detail message.</div>
   
   </td></tr>
 
@@ -322,10 +325,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassCastException.html#ClassCastException(java.lang.String)">ClassCastException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassCastException.html#ClassCastException(java.lang.String)">ClassCastException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>ClassCastException</code> with the current stack trace
- and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>ClassCastException</code> with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -561,6 +564,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -861,8 +883,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ClassCastException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>ClassCastException</code> with no detail message.
 </p></div>
 
     </div>
@@ -882,7 +903,7 @@ From class
         
       </span>
       <span class="sympad">ClassCastException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -894,14 +915,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ClassCastException</code> with the current stack trace
- and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>ClassCastException</code> with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

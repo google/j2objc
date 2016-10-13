@@ -156,12 +156,36 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An ListIterator is used to sequence over a List of objects. ListIterator can
- move backwards or forwards through the list.
-</p>
+<p>An iterator for lists that allows the programmer
+ to traverse the list in either direction, modify
+ the list during iteration, and obtain the iterator's
+ current position in the list. A <code>ListIterator</code>
+ has no current element; its <I>cursor position</I> always
+ lies between the element that would be returned by a call
+ to <code>previous()</code> and the element that would be
+ returned by a call to <code>next()</code>.
+ An iterator for a list of length <code>n</code> has <code>n+1</code> possible
+ cursor positions, as illustrated by the carets (<code>^</code>) below:
+ <PRE>
+                      Element(0)   Element(1)   Element(2)   ... Element(n-1)
+ cursor positions:  ^            ^            ^            ^                  ^
+ </PRE>
+ Note that the <code><a href="reference/java/util/ListIterator.html#remove()">remove()</a></code> and <code><a href="reference/java/util/ListIterator.html#set(E)">set(Object)</a></code> methods are
+ <i>not</i> defined in terms of the cursor position;  they are defined to
+ operate on the last element returned by a call to <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> or
+ <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code>.
+
+ <p>This interface is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html">Collection</a></code></li><li><code><a href="../../../reference/java/util/List.html">List</a></code></li><li><code><a href="../../../reference/java/util/Iterator.html">Iterator</a></code></li><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li><li><code><a href="../../../reference/java/util/List.html#listIterator()">listIterator()</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -228,10 +252,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Inserts the specified object into the list between <code>next</code> and
- <code>previous</code>.</div>
+        <div class="jd-descrdiv">Inserts the specified element into the list (optional operation).</div>
   
   </td></tr>
 
@@ -249,7 +272,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#hasNext()">hasNext</a></span>()
         
-        <div class="jd-descrdiv">Returns whether there are more elements to iterate.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this list iterator has more elements when
+ traversing the list in the forward direction.</div>
   
   </td></tr>
 
@@ -267,7 +291,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#hasPrevious()">hasPrevious</a></span>()
         
-        <div class="jd-descrdiv">Returns whether there are previous elements to iterate.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this list iterator has more elements when
+ traversing the list in the reverse direction.</div>
   
   </td></tr>
 
@@ -285,7 +310,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#next()">next</a></span>()
         
-        <div class="jd-descrdiv">Returns the next object in the iteration.</div>
+        <div class="jd-descrdiv">Returns the next element in the list and advances the cursor position.</div>
   
   </td></tr>
 
@@ -303,7 +328,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#nextIndex()">nextIndex</a></span>()
         
-        <div class="jd-descrdiv">Returns the index of the next object in the iteration.</div>
+        <div class="jd-descrdiv">Returns the index of the element that would be returned by a
+ subsequent call to <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code>.</div>
   
   </td></tr>
 
@@ -321,7 +347,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#previous()">previous</a></span>()
         
-        <div class="jd-descrdiv">Returns the previous object in the iteration.</div>
+        <div class="jd-descrdiv">Returns the previous element in the list and moves the cursor
+ position backwards.</div>
   
   </td></tr>
 
@@ -339,7 +366,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#previousIndex()">previousIndex</a></span>()
         
-        <div class="jd-descrdiv">Returns the index of the previous object in the iteration.</div>
+        <div class="jd-descrdiv">Returns the index of the element that would be returned by a
+ subsequent call to <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code>.</div>
   
   </td></tr>
 
@@ -357,8 +385,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#remove()">remove</a></span>()
         
-        <div class="jd-descrdiv">Removes the last object returned by <code>next</code> or <code>previous</code> from
- the list.</div>
+        <div class="jd-descrdiv">Removes from the list the last element that was returned by <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> or <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code> (optional operation).</div>
   
   </td></tr>
 
@@ -374,10 +401,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#set(E)">set</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/ListIterator.html#set(E)">set</a></span>(E e)
         
-        <div class="jd-descrdiv">Replaces the last object returned by <code>next</code> or <code>previous</code>
- with the specified object.</div>
+        <div class="jd-descrdiv">Replaces the last element returned by <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> or
+ <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code> with the specified element (optional operation).</div>
   
   </td></tr>
 
@@ -424,12 +451,13 @@ From interface
             
             
             
-            boolean
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#hasNext()">hasNext</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#forEachRemaining(java.util.function.Consumer<? super E>)">forEachRemaining</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;E&gt; action)
         
-        <div class="jd-descrdiv">Returns true if there is at least one more element, false otherwise.</div>
+        <div class="jd-descrdiv">Performs the given action for each remaining element until all elements
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -442,12 +470,12 @@ From interface
             
             
             
-            E
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#next()">next</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#hasNext()">hasNext</a></span>()
         
-        <div class="jd-descrdiv">Returns the next object and advances the iterator.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the iteration has more elements.</div>
   
   </td></tr>
 
@@ -460,12 +488,31 @@ From interface
             
             
             
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#next()">next</a></span>()
+        
+        <div class="jd-descrdiv">Returns the next element in the iteration.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             void
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Iterator.html#remove()">remove</a></span>()
         
-        <div class="jd-descrdiv">Removes the last object returned by <code>next</code> from the collection.</div>
+        <div class="jd-descrdiv">Removes from the underlying collection the last element returned
+ by this iterator (optional operation).</div>
   
   </td></tr>
 
@@ -531,7 +578,7 @@ From interface
         void
       </span>
       <span class="sympad">add</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -543,14 +590,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified object into the list between <code>next</code> and
- <code>previous</code>. The object inserted will be the previous object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into the list (optional operation).
+ The element is inserted immediately before the element that
+ would be returned by <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code>, if any, and after the element
+ that would be returned by <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code>, if any.  (If the
+ list contains no elements, the new element becomes the sole element
+ on the list.)  The new element is inserted before the implicit
+ cursor: a subsequent call to <code>next</code> would be unaffected, and a
+ subsequent call to <code>previous</code> would return the new element.
+ (This call increases by one the value that would be returned by a
+ call to <code>nextIndex</code> or <code>previousIndex</code>.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to insert.</td>
+          <th>e</th>
+          <td>the element to insert</td>
         </tr>
       </table>
   </div>
@@ -559,15 +614,18 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if adding is not supported by the list being iterated.</td>
+            <td>if the <code>add</code> method is
+         not supported by this list iterator</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the class of the object is inappropriate for the list.</td>
+            <td>if the class of the specified element
+         prevents it from being added to this list</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the object cannot be added to the list.
+            <td>if some aspect of this element
+         prevents it from being added to this list
 </td>
         </tr>
       </table>
@@ -602,15 +660,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether there are more elements to iterate.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this list iterator has more elements when
+ traversing the list in the forward direction. (In other words,
+ returns <code>true</code> if <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> would return an element rather
+ than throwing an exception.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if there are more elements, <code>false</code> otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html#next()">next()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if the list iterator has more elements when
+         traversing the list in the forward direction
+</li></ul>
   </div>
 
     </div>
@@ -642,16 +700,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether there are previous elements to iterate.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this list iterator has more elements when
+ traversing the list in the reverse direction.  (In other words,
+ returns <code>true</code> if <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code> would return an element
+ rather than throwing an exception.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if there are previous elements, <code>false</code>
-         otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html#previous()">previous()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if the list iterator has more elements when
+         traversing the list in the reverse direction
+</li></ul>
   </div>
 
     </div>
@@ -683,24 +740,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next object in the iteration.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the next element in the list and advances the cursor position.
+ This method may be called repeatedly to iterate through the list,
+ or intermixed with calls to <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code> to go back and forth.
+ (Note that alternating calls to <code>next</code> and <code>previous</code>
+ will return the same element repeatedly.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the next object.</li></ul>
+      <ul class="nolist"><li>the next element in the list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if there are no more elements.</td>
+            <td>if the iteration has no next element
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html#hasNext()">hasNext()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -732,25 +789,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the next object in the iteration.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the element that would be returned by a
+ subsequent call to <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code>. (Returns list size if the list
+ iterator is at the end of the list.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the next object, or the size of the list if the
-         iterator is at the end.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if there are no more elements.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html#next()">next()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the index of the element that would be returned by a
+         subsequent call to <code>next</code>, or list size if the list
+         iterator is at the end of the list
+</li></ul>
   </div>
 
     </div>
@@ -782,24 +829,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the previous object in the iteration.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the previous element in the list and moves the cursor
+ position backwards.  This method may be called repeatedly to
+ iterate through the list backwards, or intermixed with calls to
+ <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> to go back and forth.  (Note that alternating calls
+ to <code>next</code> and <code>previous</code> will return the same
+ element repeatedly.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the previous object.</li></ul>
+      <ul class="nolist"><li>the previous element in the list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if there are no previous elements.</td>
+            <td>if the iteration has no previous
+         element
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html#hasPrevious()">hasPrevious()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -831,25 +880,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the previous object in the iteration.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the element that would be returned by a
+ subsequent call to <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code>. (Returns -1 if the list
+ iterator is at the beginning of the list.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the previous object, or -1 if the iterator is at the
-         beginning.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if there are no previous elements.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html#previous()">previous()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the index of the element that would be returned by a
+         subsequent call to <code>previous</code>, or -1 if the list
+         iterator is at the beginning of the list
+</li></ul>
   </div>
 
     </div>
@@ -881,20 +920,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the last object returned by <code>next</code> or <code>previous</code> from
- the list.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes from the list the last element that was returned by <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> or <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code> (optional operation).  This call can
+ only be made once per call to <code>next</code> or <code>previous</code>.
+ It can be made only if <code><a href="reference/java/util/ListIterator.html#add(E)">add(E)</a></code> has not been
+ called after the last call to <code>next</code> or <code>previous</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if removing is not supported by the list being iterated.</td>
+            <td>if the <code>remove</code>
+         operation is not supported by this list iterator</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
-            <td>if <code>next</code> or <code>previous</code> have not been called, or
-             <code>remove</code> or <code>add</code> have already been called after
-             the last call to <code>next</code> or <code>previous</code>.
+            <td>if neither <code>next</code> nor
+         <code>previous</code> have been called, or <code>remove</code> or
+         <code>add</code> have been called after the last call to
+         <code>next</code> or <code>previous</code>
 </td>
         </tr>
       </table>
@@ -917,7 +960,7 @@ From interface
         void
       </span>
       <span class="sympad">set</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -929,14 +972,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Replaces the last object returned by <code>next</code> or <code>previous</code>
- with the specified object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces the last element returned by <code><a href="reference/java/util/ListIterator.html#next()">next()</a></code> or
+ <code><a href="reference/java/util/ListIterator.html#previous()">previous()</a></code> with the specified element (optional operation).
+ This call can be made only if neither <code><a href="reference/java/util/ListIterator.html#remove()">remove()</a></code> nor <code><a href="reference/java/util/ListIterator.html#add(E)">add(E)</a></code> have been called after the last call to <code>next</code> or
+ <code>previous</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to set.</td>
+          <th>e</th>
+          <td>the element with which to replace the last element returned by
+          <code>next</code> or <code>previous</code></td>
         </tr>
       </table>
   </div>
@@ -945,21 +991,25 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if setting is not supported by the list being iterated</td>
+            <td>if the <code>set</code> operation
+         is not supported by this list iterator</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the class of the object is inappropriate for the list.</td>
+            <td>if the class of the specified element
+         prevents it from being added to this list</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the object cannot be added to the list.</td>
+            <td>if some aspect of the specified
+         element prevents it from being added to this list</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
-            <td>if <code>next</code> or <code>previous</code> have not been called, or
-             <code>remove</code> or <code>add</code> have already been called after
-             the last call to <code>next</code> or <code>previous</code>.
+            <td>if neither <code>next</code> nor
+         <code>previous</code> have been called, or <code>remove</code> or
+         <code>add</code> have been called after the last call to
+         <code>next</code> or <code>previous</code>
 </td>
         </tr>
       </table>

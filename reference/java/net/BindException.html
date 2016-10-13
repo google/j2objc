@@ -260,12 +260,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>BindException</code> is thrown when a process cannot bind a local
- address/port, either because it is already bound or reserved by the OS.
-
- <p>Most applications <strong>should not</strong> catch this exception; it is
- more robust to catch the superclass <code>SocketException</code>.
-</p>
+<p>Signals that an error occurred while attempting to bind a
+ socket to a local address and port.  Typically, the port is
+ in use, or the requested local address could not be assigned.</p>
 
 
 
@@ -331,9 +328,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/BindException.html#BindException()">BindException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/net/BindException.html#BindException(java.lang.String)">BindException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance.</div>
+        <div class="jd-descrdiv">Constructs a new BindException with the specified detail
+ message as to why the bind error occurred.</div>
   
   </td></tr>
 
@@ -349,9 +347,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/BindException.html#BindException(java.lang.String)">BindException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/net/BindException.html#BindException()">BindException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance with the given detail message.</div>
+        <div class="jd-descrdiv">Construct a new BindException with no detailed message.</div>
   
   </td></tr>
 
@@ -589,6 +587,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -864,6 +881,50 @@ From class
 
 
 
+<a id="BindException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">BindException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new BindException with the specified detail
+ message as to why the bind error occurred.
+ A detail message is a String that gives a specific
+ description of this error.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="BindException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -889,39 +950,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance.
-</p></div>
-
-    </div>
-</div>
-
-
-<a id="BindException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">BindException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the given detail message.
+  <div class="jd-tagdata jd-tagdescr"><p>Construct a new BindException with no detailed message.
 </p></div>
 
     </div>

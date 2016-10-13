@@ -179,7 +179,7 @@ layout: api
  buffer gets a freshly emptied one when it needs it, handing off the
  filled one to the thread emptying the buffer.
   <pre> <code>class FillAndEmpty {
-   Exchanger<DataBuffer> exchanger = new Exchanger<DataBuffer>();
+   Exchanger&lt;DataBuffer&gt; exchanger = new Exchanger&lt;DataBuffer&gt;();
    DataBuffer initialEmptyBuffer = ... a made-up type
    DataBuffer initialFullBuffer = ...
 
@@ -191,7 +191,7 @@ layout: api
            addToBuffer(currentBuffer);
            if (currentBuffer.isFull())
              currentBuffer = exchanger.exchange(currentBuffer);
-         </code>
+         }
        } catch (InterruptedException ex) { ... handle ... }
      }
    }
@@ -213,7 +213,7 @@ layout: api
      new Thread(new FillingLoop()).start();
      new Thread(new EmptyingLoop()).start();
    }
- }}</pre>
+ }</code></pre>
 
  <p>Memory consistency effects: For each pair of threads that
  successfully exchange objects via an <code>Exchanger</code>, actions

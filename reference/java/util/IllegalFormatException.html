@@ -171,11 +171,6 @@ layout: api
 
   
   
-      implements
-      
-        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
-      
-  
   
 
 
@@ -301,61 +296,56 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></td>
-              <td class="jd-descrcol" width="100%">The unchecked exception will be thrown out if there are duplicate flags given
- out in the format specifier.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when duplicate flags are provided in the format
+ specifier.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>FormatFlagsConversionMismatchException</code> will be thrown if a
- conversion and the flags are incompatible.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a conversion and flag are incompatible.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatCodePointException</code> will be thrown if an invalid
- Unicode code point (defined by <code><a href="reference/java/lang/Character.html#isValidCodePoint(int)">isValidCodePoint(int)</a></code>) is
- passed as a parameter to a Formatter.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a character with an invalid Unicode code
+ point as defined by <code><a href="reference/java/lang/Character.html#isValidCodePoint(int)">isValidCodePoint(int)</a></code> is passed to the
+ <code><a href="reference/java/util/Formatter.html">Formatter</a></code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatConversionException</code> will be thrown when the parameter
- is incompatible with the corresponding format specifier.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the argument corresponding to the format
+ specifier is of an incompatible type.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatFlagsException</code> will be thrown if the combination of
- the format flags is illegal.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an illegal combination flags is given.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatPrecisionException</code> will be thrown if the precision is
- a negative other than -1 or in other cases where precision is not supported.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the precision is a negative value other than
+ <tt>-1</tt>, the conversion does not support a precision, or the value is
+ otherwise unsupported.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatWidthException</code> will be thrown if the width is a
- negative value other than -1 or in other cases where a width is not
- supported.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the format width is a negative value other
+ than <tt>-1</tt> or is otherwise unsupported.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>MissingFormatArgumentException</code> will be thrown if there is no
- corresponding argument with the specified conversion or an argument index
- that refers to a missing argument.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when there is a format specifier which does not
+ have a corresponding argument or if an argument index refers to an argument
+ that does not exist.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>MissingFormatWidthException</code> will be thrown if the format width is
- missing but is required.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the format width is required.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnknownFormatConversionException</code> will be thrown if the format
- conversion is unknown.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an unknown conversion is given.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnknownFormatFlagsException</code> will be thrown if there is
- an unknown flag.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an unknown flag is given.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -369,18 +359,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An <code>IllegalFormatException</code> is thrown when a format string that
- contains either an illegal syntax or format specifier is transferred as a
- parameter. Only subclasses inheriting explicitly from this exception are
- allowed to be instantiated.</p>
+<p>Unchecked exception thrown when a format string contains an illegal syntax
+ or a format specifier that is incompatible with the given arguments.  Only
+ explicit subtypes of this exception which correspond to specific errors
+ should be instantiated.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -656,6 +641,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 

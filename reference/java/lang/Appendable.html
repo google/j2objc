@@ -190,12 +190,12 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Writer.html">Writer</a></code> and <em>buffers</em> the output.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Writes text to a character-output stream, buffering characters so as to
+ provide for the efficient writing of single characters, arrays, and strings.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> for class for writing content to an (internal)
- char array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements a character buffer that can be used as an Writer.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a></td>
@@ -213,8 +213,7 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Writer.html">Writer</a></code> and performs some transformation on the
- output data while it is being written.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Abstract class for writing filtered character streams.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></td>
@@ -222,18 +221,17 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></td>
-              <td class="jd-descrcol" width="100%">Places information on a communications pipe.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Piped character-output streams.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and provides convenience methods for
- writing common data types in a human readable format.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code>PrintStream</code> adds functionality to another output stream,
+ namely the ability to print representations of various data values
+ conveniently.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></td>
-              <td class="jd-descrcol" width="100%">Wraps either an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> or an existing <code><a href="reference/java/io/Writer.html">Writer</a></code>
- and provides convenience methods for printing common data types in a human
- readable format.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Prints formatted representations of objects to a text-output stream.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/android/text/SpannableStringBuilder.html">SpannableStringBuilder</a></td>
@@ -251,12 +249,12 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> that writes characters to a <code>StringBuffer</code>
- in a sequential manner, appending them in the process.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A character stream that collects its output in a string buffer, which can
+ then be used to construct a string.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/Writer.html">Writer</a></td>
-              <td class="jd-descrcol" width="100%">The base class for all writers.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Abstract class for writing to character streams.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -268,19 +266,22 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Declares methods to append characters or character sequences. Any class that
- implements this interface can receive data formatted by a
- <code><a href="reference/java/util/Formatter.html">Formatter</a></code>. The appended character or character sequence
- should be valid according to the rules described in
- <code><a href="reference/java/lang/Character.html">Unicode Character Representation</a></code>.
- <p>
- <code>Appendable</code> itself does not guarantee thread safety. This
- responsibility is up to the implementing class.
- <p>
- Implementing classes can choose different exception handling mechanism. They
- can choose to throw exceptions other than <code>IOException</code> or they do not
- throw any exceptions at all and use error codes instead.
-</p>
+<p>An object to which <tt>char</tt> sequences and values can be appended.  The
+ <tt>Appendable</tt> interface must be implemented by any class whose
+ instances are intended to receive formatted output from a <code><a href="reference/java/util/Formatter.html">Formatter</a></code>.
+
+ <p> The characters to be appended should be valid Unicode characters as
+ described in <a href="Character.html#unicode">Unicode Character
+ Representation</a>.  Note that supplementary characters may be composed of
+ multiple 16-bit <tt>char</tt> values.
+
+ <p> Appendables are not necessarily safe for multithreaded access.  Thread
+ safety is the responsibility of classes that extend and implement this
+ interface.
+
+ <p> Since this interface may be implemented by existing classes
+ with different styles of error handling there is no guarantee that
+ errors will be propagated to the invoker.</p>
 
 
 
@@ -352,7 +353,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the specified character.</div>
+        <div class="jd-descrdiv">Appends the specified character to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -370,7 +371,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this
+ <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -388,7 +390,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -466,26 +468,26 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character to this <tt>Appendable</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the character to append.</td>
+          <td>The character to append</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this <code>Appendable</code>.</li></ul>
+      <ul class="nolist"><li>A reference to this <tt>Appendable</tt></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -520,46 +522,52 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends a subsequence of <code>csq</code>.
- <p>
- If <code>csq</code> is not <code>null</code> then calling this method is equivalent
- to calling <code>append(csq.subSequence(start, end))</code>.
- <p>
- If <code>csq</code> is <code>null</code>, the characters "null" are appended.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends a subsequence of the specified character sequence to this
+ <tt>Appendable</tt>.
+
+ <p> An invocation of this method of the form <tt>out.append(csq, start,
+ end)</tt> when <tt>csq</tt> is not <tt>null</tt>, behaves in
+ exactly the same way as the invocation
+
+ <pre>
+     out.append(csq.subSequence(start, end)) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>csq</th>
-          <td>the character sequence to append.</td>
+          <td>The character sequence from which a subsequence will be
+         appended.  If <tt>csq</tt> is <tt>null</tt>, then characters
+         will be appended as if <tt>csq</tt> contained the four
+         characters <tt>"null"</tt>.</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the first index of the subsequence of <code>csq</code> that is
-            appended.</td>
+          <td>The index of the first character in the subsequence</td>
         </tr>
         <tr>
           <th>end</th>
-          <td>the last index of the subsequence of <code>csq</code> that is
-            appended.</td>
+          <td>The index of the character following the last character in the
+         subsequence</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this <code>Appendable</code>.</li></ul>
+      <ul class="nolist"><li>A reference to this <tt>Appendable</tt></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>start < 0</code>, <code>end < 0</code>, <code>start > end</code>
-             or <code>end</code> is greater than the length of <code>csq</code>.</td>
+            <td>If <tt>start</tt> or <tt>end</tt> are negative, <tt>start</tt>
+          is greater than <tt>end</tt>, or <tt>end</tt> is greater than
+          <tt>csq.length()</tt></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -594,30 +602,33 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends the character sequence <code>csq</code>. Implementation classes may
- not append the whole sequence, for example if the target is a buffer with
- limited size.
- <p>
- If <code>csq</code> is <code>null</code>, the characters "null" are appended.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character sequence to this <tt>Appendable</tt>.
+
+ <p> Depending on which class implements the character sequence
+ <tt>csq</tt>, the entire sequence may not be appended.  For
+ instance, if <tt>csq</tt> is a <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code> then
+ the subsequence to append is defined by the buffer's position and limit.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>csq</th>
-          <td>the character sequence to append.</td>
+          <td>The character sequence to append.  If <tt>csq</tt> is
+         <tt>null</tt>, then the four characters <tt>"null"</tt> are
+         appended to this Appendable.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this <code>Appendable</code>.</li></ul>
+      <ul class="nolist"><li>A reference to this <tt>Appendable</tt></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>

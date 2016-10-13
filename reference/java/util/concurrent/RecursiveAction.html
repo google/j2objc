@@ -211,13 +211,13 @@ layout: api
    final long[] array; final int lo, hi;
    SortTask(long[] array, int lo, int hi) {
      this.array = array; this.lo = lo; this.hi = hi;
-   </code>
+   }
    SortTask(long[] array) { this(array, 0, array.length); }
    protected void compute() {
-     if (hi - lo < THRESHOLD)
+     if (hi - lo &lt; THRESHOLD)
        sortSequentially(lo, hi);
      else {
-       int mid = (lo + hi) >>> 1;
+       int mid = (lo + hi) &gt;&gt;&gt; 1;
        invokeAll(new SortTask(array, lo, mid),
                  new SortTask(array, mid, hi));
        merge(lo, mid, hi);
@@ -230,11 +230,11 @@ layout: api
    }
    void merge(int lo, int mid, int hi) {
      long[] buf = Arrays.copyOfRange(array, lo, mid);
-     for (int i = 0, j = lo, k = mid; i < buf.length; j++)
-       array[j] = (k == hi || buf[i] < array[k]) ?
+     for (int i = 0, j = lo, k = mid; i &lt; buf.length; j++)
+       array[j] = (k == hi || buf[i] &lt; array[k]) ?
          buf[i++] : array[k++];
    }
- }}</pre>
+ }</code></pre>
 
  You could then sort <code>anArray</code> by creating <code>new
  SortTask(anArray)</code> and invoking it in a ForkJoinPool.  As a more
@@ -244,19 +244,19 @@ layout: api
    final long[] array; final int lo, hi;
    IncrementTask(long[] array, int lo, int hi) {
      this.array = array; this.lo = lo; this.hi = hi;
-   </code>
+   }
    protected void compute() {
-     if (hi - lo < THRESHOLD) {
-       for (int i = lo; i < hi; ++i)
+     if (hi - lo &lt; THRESHOLD) {
+       for (int i = lo; i &lt; hi; ++i)
          array[i]++;
      }
      else {
-       int mid = (lo + hi) >>> 1;
+       int mid = (lo + hi) &gt;&gt;&gt; 1;
        invokeAll(new IncrementTask(array, lo, mid),
                  new IncrementTask(array, mid, hi));
      }
    }
- }}</pre>
+ }</code></pre>
 
  <p>The following example illustrates some refinements and idioms
  that may lead to better performance: RecursiveActions need not be
@@ -275,7 +275,7 @@ layout: api
    Applyer a = new Applyer(array, 0, n, null);
    pool.invoke(a);
    return a.result;
- </code>
+ }
 
  class Applyer extends RecursiveAction {
    final double[] array;
@@ -289,7 +289,7 @@ layout: api
 
    double atLeaf(int l, int h) {
      double sum = 0;
-     for (int i = l; i < h; ++i) // perform leftmost base step
+     for (int i = l; i &lt; h; ++i) // perform leftmost base step
        sum += array[i] * array[i];
      return sum;
    }
@@ -298,8 +298,8 @@ layout: api
      int l = lo;
      int h = hi;
      Applyer right = null;
-     while (h - l > 1 && getSurplusQueuedTaskCount() <= 3) {
-       int mid = (l + h) >>> 1;
+     while (h - l &gt; 1 &amp;&amp; getSurplusQueuedTaskCount() &lt;= 3) {
+       int mid = (l + h) &gt;&gt;&gt; 1;
        right = new Applyer(array, mid, h, right);
        right.fork();
        h = mid;
@@ -316,7 +316,7 @@ layout: api
      }
      result = sum;
    }
- }}</pre></p>
+ }</code></pre></p>
 
 
 

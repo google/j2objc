@@ -274,10 +274,20 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>Stack</code> is a Last-In/First-Out(LIFO) data structure which represents a
- stack of objects. It enables users to pop to and push from the stack,
- including null objects. There is no limit to the size of the stack.
-</p>
+<p>The <code>Stack</code> class represents a last-in-first-out
+ (LIFO) stack of objects. It extends class <tt>Vector</tt> with five
+ operations that allow a vector to be treated as a stack. The usual
+ <tt>push</tt> and <tt>pop</tt> operations are provided, as well as a
+ method to <tt>peek</tt> at the top item on the stack, a method to test
+ for whether the stack is <tt>empty</tt>, and a method to <tt>search</tt>
+ the stack for an item and discover how far it is from the top.
+ <p>
+ When a stack is first created, it contains no items.
+
+ <p>A more complete and consistent set of LIFO stack operations is
+ provided by the <code><a href="reference/java/util/Deque.html">Deque</a></code> interface and its implementations, which
+ should be used in preference to this class.  For example:
+ <pre>   <code>Deque&lt;Integer&gt; stack = new ArrayDeque&lt;Integer&gt;();</code></pre></p>
 
 
 
@@ -354,8 +364,8 @@ layout: api
           
           int</td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html#capacityIncrement">capacityIncrement</a></td>
-          <td class="jd-descrcol" width="100%">How many elements should be added to the vector when it is detected that
- it needs to grow to accommodate extra entries.</td>
+          <td class="jd-descrcol" width="100%">The amount by which the capacity of the vector is automatically
+ incremented when its size becomes greater than its capacity.</td>
       </tr>
       
     
@@ -366,7 +376,7 @@ layout: api
           
           int</td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html#elementCount">elementCount</a></td>
-          <td class="jd-descrcol" width="100%">The number of elements or the size of the vector.</td>
+          <td class="jd-descrcol" width="100%">The number of valid components in this <code>Vector</code> object.</td>
       </tr>
       
     
@@ -377,7 +387,8 @@ layout: api
           
           <a href="../../../reference/java/lang/Object.html">Object[]</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html#elementData">elementData</a></td>
-          <td class="jd-descrcol" width="100%">The elements of the vector.</td>
+          <td class="jd-descrcol" width="100%">The array buffer into which the components of the vector are
+ stored.</td>
       </tr>
       
     
@@ -411,7 +422,7 @@ layout: api
           
           int</td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractList.html#modCount">modCount</a></td>
-          <td class="jd-descrcol" width="100%">A counter for changes to the list.</td>
+          <td class="jd-descrcol" width="100%">The number of times this list has been <i>structurally modified</i>.</td>
       </tr>
       
     
@@ -460,7 +471,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Stack.html#Stack()">Stack</a></span>()
         
-        <div class="jd-descrdiv">Constructs a stack with the default size of <code>Vector</code>.</div>
+        <div class="jd-descrdiv">Creates an empty Stack.</div>
   
   </td></tr>
 
@@ -491,7 +502,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Stack.html#empty()">empty</a></span>()
         
-        <div class="jd-descrdiv">Returns whether the stack is empty or not.</div>
+        <div class="jd-descrdiv">Tests if this stack is empty.</div>
   
   </td></tr>
 
@@ -509,7 +520,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Stack.html#peek()">peek</a></span>()
         
-        <div class="jd-descrdiv">Returns the element at the top of the stack without removing it.</div>
+        <div class="jd-descrdiv">Looks at the object at the top of this stack without removing it
+ from the stack.</div>
   
   </td></tr>
 
@@ -527,7 +539,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Stack.html#pop()">pop</a></span>()
         
-        <div class="jd-descrdiv">Returns the element at the top of the stack and removes it.</div>
+        <div class="jd-descrdiv">Removes the object at the top of this stack and returns that
+ object as the value of this function.</div>
   
   </td></tr>
 
@@ -543,9 +556,9 @@ layout: api
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Stack.html#push(E)">push</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Stack.html#push(E)">push</a></span>(E item)
         
-        <div class="jd-descrdiv">Pushes the specified object onto the top of the stack.</div>
+        <div class="jd-descrdiv">Pushes an item onto the top of this stack.</div>
   
   </td></tr>
 
@@ -563,8 +576,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Stack.html#search(java.lang.Object)">search</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns the index of the first occurrence of the object, starting from
- the top of the stack.</div>
+        <div class="jd-descrdiv">Returns the 1-based position where an object is on this stack.</div>
   
   </td></tr>
 
@@ -607,24 +619,6 @@ From class
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            synchronized
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#add(E)">add</a></span>(E object)
-        
-        <div class="jd-descrdiv">Adds the specified object at the end of this vector.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
             
             
             
@@ -632,27 +626,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Adds the specified object into this vector at the specified location.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            synchronized
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
-        
-        <div class="jd-descrdiv">Adds the objects in the specified collection to the end of this vector.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this Vector.</div>
   
   </td></tr>
 
@@ -668,10 +644,48 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified collection at the specified location
- in this vector.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this Vector.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
+        
+        <div class="jd-descrdiv">Inserts all of the elements in the specified Collection into this
+ Vector at the specified position.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
+        
+        <div class="jd-descrdiv">Appends all of the elements in the specified Collection to the end of
+ this Vector, in the order that they are returned by the specified
+ Collection's Iterator.</div>
   
   </td></tr>
 
@@ -687,9 +701,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#addElement(E)">addElement</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#addElement(E)">addElement</a></span>(E obj)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this vector.</div>
+        <div class="jd-descrdiv">Adds the specified component to the end of this vector,
+ increasing its size by one.</div>
   
   </td></tr>
 
@@ -707,7 +722,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#capacity()">capacity</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements this vector can hold without growing.</div>
+        <div class="jd-descrdiv">Returns the current capacity of this vector.</div>
   
   </td></tr>
 
@@ -725,7 +740,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this vector, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this Vector.</div>
   
   </td></tr>
 
@@ -743,8 +758,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv">Returns a new vector with the same elements, size, capacity and capacity
- increment as this vector.</div>
+        <div class="jd-descrdiv">Returns a clone of this vector.</div>
   
   </td></tr>
 
@@ -760,9 +774,9 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this vector for the specified object.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this vector contains the specified element.</div>
   
   </td></tr>
 
@@ -778,9 +792,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Searches this vector for all objects in the specified collection.</div>
+        <div class="jd-descrdiv">Returns true if this Vector contains all of the elements in the
+ specified Collection.</div>
   
   </td></tr>
 
@@ -796,10 +811,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#copyInto(java.lang.Object[])">copyInto</a></span>(<a href="../../../reference/java/lang/Object.html">Object[]</a> elements)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#copyInto(java.lang.Object[])">copyInto</a></span>(<a href="../../../reference/java/lang/Object.html">Object[]</a> anArray)
         
-        <div class="jd-descrdiv">Attempts to copy elements contained by this <code>Vector</code> into the
- corresponding elements of the supplied <code>Object</code> array.</div>
+        <div class="jd-descrdiv">Copies the components of this vector into the specified array.</div>
   
   </td></tr>
 
@@ -815,9 +829,9 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#elementAt(int)">elementAt</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#elementAt(int)">elementAt</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this vector.</div>
+        <div class="jd-descrdiv">Returns the component at the specified index.</div>
   
   </td></tr>
 
@@ -835,7 +849,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#elements()">elements</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration on the elements of this vector.</div>
+        <div class="jd-descrdiv">Returns an enumeration of the components of this vector.</div>
   
   </td></tr>
 
@@ -851,10 +865,11 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#ensureCapacity(int)">ensureCapacity</a></span>(int minimumCapacity)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#ensureCapacity(int)">ensureCapacity</a></span>(int minCapacity)
         
-        <div class="jd-descrdiv">Ensures that this vector can hold the specified number of elements
- without growing.</div>
+        <div class="jd-descrdiv">Increases the capacity of this vector, if necessary, to ensure
+ that it can hold at least the number of components specified by
+ the minimum capacity argument.</div>
   
   </td></tr>
 
@@ -870,10 +885,9 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this vector and returns if they are
- equal.</div>
+        <div class="jd-descrdiv">Compares the specified Object with this Vector for equality.</div>
   
   </td></tr>
 
@@ -891,79 +905,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#firstElement()">firstElement</a></span>()
         
-        <div class="jd-descrdiv">Returns the first element in this vector.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            E
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#get(int)">get</a></span>(int location)
-        
-        <div class="jd-descrdiv">Returns the element at the specified location in this vector.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            synchronized
-            
-            
-            
-            int
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#hashCode()">hashCode</a></span>()
-        
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            int
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
-        
-        <div class="jd-descrdiv">Searches in this vector for the index of the specified object.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            synchronized
-            
-            
-            
-            int
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#indexOf(java.lang.Object, int)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object, int location)
-        
-        <div class="jd-descrdiv">Searches in this vector for the index of the specified object.</div>
+        <div class="jd-descrdiv">Returns the first component (the item at index <code>0</code>) of
+ this vector.</div>
   
   </td></tr>
 
@@ -979,9 +922,82 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#insertElementAt(E, int)">insertElementAt</a></span>(E object, int location)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#forEach(java.util.function.Consumer<? super E>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;E&gt; action)
         
-        <div class="jd-descrdiv">Inserts the specified object into this vector at the specified location.</div>
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#get(int)">get</a></span>(int index)
+        
+        <div class="jd-descrdiv">Returns the element at the specified position in this Vector.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#hashCode()">hashCode</a></span>()
+        
+        <div class="jd-descrdiv">Returns the hash code value for this Vector.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element
+ in this vector, or -1 if this vector does not contain the element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#indexOf(java.lang.Object, int)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o, int index)
+        
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element in
+ this vector, searching forwards from <code>index</code>, or returns -1 if
+ the element is not found.</div>
   
   </td></tr>
 
@@ -994,12 +1010,49 @@ From class
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#insertElementAt(E, int)">insertElementAt</a></span>(E obj, int index)
+        
+        <div class="jd-descrdiv">Inserts the specified object as a component in this vector at the
+ specified <code>index</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this vector has no elements, a size of zero.</div>
+        <div class="jd-descrdiv">Tests if this vector has no components.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#iterator()">iterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns an iterator over the elements in this list in proper sequence.</div>
   
   </td></tr>
 
@@ -1017,7 +1070,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#lastElement()">lastElement</a></span>()
         
-        <div class="jd-descrdiv">Returns the last element in this vector.</div>
+        <div class="jd-descrdiv">Returns the last component of the vector.</div>
   
   </td></tr>
 
@@ -1033,9 +1086,10 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches in this vector for the index of the specified object.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element
+ in this vector, or -1 if this vector does not contain the element.</div>
   
   </td></tr>
 
@@ -1051,15 +1105,74 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#lastIndexOf(java.lang.Object, int)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object, int location)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#lastIndexOf(java.lang.Object, int)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o, int index)
         
-        <div class="jd-descrdiv">Searches in this vector for the index of the specified object.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element in
+ this vector, searching backwards from <code>index</code>, or returns -1 if
+ the element is not found.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#listIterator(int)">listIterator</a></span>(int index)
+        
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence), starting at the specified position in the list.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#listIterator()">listIterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element in this Vector
+ If the Vector does not contain the element, it is unchanged.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             synchronized
@@ -1069,28 +1182,9 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this vector.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
-        
-        <div class="jd-descrdiv">Removes the first occurrence, starting at the beginning and moving
- towards the end, of the specified object from this vector.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this Vector.</div>
   
   </td></tr>
 
@@ -1106,10 +1200,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this vector of each object in the specified
- Collection.</div>
+        <div class="jd-descrdiv">Removes from this Vector all of its elements that are contained in the
+ specified Collection.</div>
   
   </td></tr>
 
@@ -1127,8 +1221,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeAllElements()">removeAllElements</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this vector, leaving the size zero and the
- capacity unchanged.</div>
+        <div class="jd-descrdiv">Removes all components from this vector and sets its size to zero.</div>
   
   </td></tr>
 
@@ -1144,10 +1237,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeElement(java.lang.Object)">removeElement</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeElement(java.lang.Object)">removeElement</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Removes the first occurrence, starting at the beginning and moving
- towards the end, of the specified object from this vector.</div>
+        <div class="jd-descrdiv">Removes the first (lowest-indexed) occurrence of the argument
+ from this vector.</div>
   
   </td></tr>
 
@@ -1163,10 +1256,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeElementAt(int)">removeElementAt</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeElementAt(int)">removeElementAt</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the element found at index position <code>location</code> from
- this <code>Vector</code>.</div>
+        <div class="jd-descrdiv">Deletes the component at the specified index.</div>
   
   </td></tr>
 
@@ -1175,17 +1267,55 @@ From class
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
+            synchronized
             
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
             
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeRange(int, int)">removeRange</a></span>(int start, int end)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#removeRange(int, int)">removeRange</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Removes the objects in the specified range from the start to the, but not
- including, end index.</div>
+        <div class="jd-descrdiv">Removes from this list all of the elements whose index is between
+ <code>fromIndex</code>, inclusive, and <code>toIndex</code>, exclusive.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#replaceAll(java.util.function.UnaryOperator<E>)">replaceAll</a></span>(<a href="../../../reference/java/util/function/UnaryOperator.html">UnaryOperator</a>&lt;E&gt; operator)
+        
+        <div class="jd-descrdiv">Replaces each element of this list with the result of applying the
+ operator to that element.</div>
   
   </td></tr>
 
@@ -1201,10 +1331,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this vector that are not contained in the
- specified collection.</div>
+        <div class="jd-descrdiv">Retains only the elements in this Vector that are contained in the
+ specified Collection.</div>
   
   </td></tr>
 
@@ -1220,10 +1350,10 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this vector with the
- specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this Vector with the
+ specified element.</div>
   
   </td></tr>
 
@@ -1239,10 +1369,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#setElementAt(E, int)">setElementAt</a></span>(E object, int location)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#setElementAt(E, int)">setElementAt</a></span>(E obj, int index)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this vector with the
- specified object.</div>
+        <div class="jd-descrdiv">Sets the component at the specified <code>index</code> of this
+ vector to be the specified object.</div>
   
   </td></tr>
 
@@ -1258,9 +1388,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#setSize(int)">setSize</a></span>(int length)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#setSize(int)">setSize</a></span>(int newSize)
         
-        <div class="jd-descrdiv">Sets the size of this vector to the specified size.</div>
+        <div class="jd-descrdiv">Sets the size of this vector.</div>
   
   </td></tr>
 
@@ -1278,7 +1408,45 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this vector.</div>
+        <div class="jd-descrdiv">Returns the number of components in this vector.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#sort(java.util.Comparator<? super E>)">sort</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; c)
+        
+        <div class="jd-descrdiv">Sorts this list using the supplied <code>Comparator</code> to compare elements.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <em><a href="Spliterator.html#binding">late-binding</a></em>
+ and <em>fail-fast</em> <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this
+ list.</div>
   
   </td></tr>
 
@@ -1294,10 +1462,10 @@ From class
             <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#subList(int, int)">subList</a></span>(int start, int end)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#subList(int, int)">subList</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Returns a List of the specified portion of this vector from the start
- index to one less than the end index.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this List between fromIndex,
+ inclusive, and toIndex, exclusive.</div>
   
   </td></tr>
 
@@ -1315,7 +1483,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this vector.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this Vector
+ in the correct order.</div>
   
   </td></tr>
 
@@ -1331,9 +1500,11 @@ From class
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Vector.html#toArray(T[])">toArray</a></span>(T[] contents)
+        <span class="sympad"><a href="../../../reference/java/util/Vector.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this vector.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this Vector in the
+ correct order; the runtime type of the returned array is that of the
+ specified array.</div>
   
   </td></tr>
 
@@ -1351,7 +1522,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this vector.</div>
+        <div class="jd-descrdiv">Returns a string representation of this Vector, containing
+ the String representation of each element.</div>
   
   </td></tr>
 
@@ -1369,7 +1541,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Vector.html#trimToSize()">trimToSize</a></span>()
         
-        <div class="jd-descrdiv">Sets the capacity of this vector to be the same as the size.</div>
+        <div class="jd-descrdiv">Trims the capacity of this vector to be the vector's current
+ size.</div>
   
   </td></tr>
 
@@ -1410,9 +1583,13 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Inserts the specified object into this List at the specified location.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this list
+ (optional operation).
+
+ <p>This implementation always throws an
+ <code>UnsupportedOperationException</code>.</div>
   
   </td></tr>
 
@@ -1428,9 +1605,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this List.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1446,10 +1624,15 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified Collection at the specified location
- in this List.</div>
+        <div class="jd-descrdiv">Inserts all of the elements in the specified collection into this
+ list at the specified position (optional operation).
+
+ <p>This implementation gets an iterator over the specified collection
+ and iterates over it, inserting the elements obtained from the
+ iterator into this list at the appropriate position, one at a time,
+ using <code>add(int, E)</code>.</div>
   
   </td></tr>
 
@@ -1467,7 +1650,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this list, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this list (optional operation).</div>
   
   </td></tr>
 
@@ -1483,10 +1666,9 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this list and return true if they are
- equal.</div>
+        <div class="jd-descrdiv">Compares the specified object with this list for equality.</div>
   
   </td></tr>
 
@@ -1502,9 +1684,9 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#get(int)">get</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#get(int)">get</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this list.</div>
+        <div class="jd-descrdiv">Returns the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -1522,7 +1704,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code of this list.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this list.</div>
   
   </td></tr>
 
@@ -1538,10 +1720,13 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this list for the specified object and returns the index of the
- first occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.
+
+ <p>This implementation first gets a list iterator (with
+ <code>listIterator()</code>).</div>
   
   </td></tr>
 
@@ -1559,7 +1744,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this list in proper sequence.</div>
   
   </td></tr>
 
@@ -1575,10 +1760,13 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this list for the specified object and returns the index of the
- last occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.
+
+ <p>This implementation first gets a list iterator that points to the end
+ of the list (with <code>listIterator(size())</code>).</div>
   
   </td></tr>
 
@@ -1594,9 +1782,14 @@ From class
             <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#listIterator(int)">listIterator</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#listIterator(int)">listIterator</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns a list iterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence), starting at the specified position in the list.
+
+ <p>This implementation returns a straightforward implementation of the
+ <code>ListIterator</code> interface that extends the implementation of the
+ <code>Iterator</code> interface returned by the <code>iterator()</code> method.</div>
   
   </td></tr>
 
@@ -1614,7 +1807,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#listIterator()">listIterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a ListIterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence).
+
+ <p>This implementation returns <code>listIterator(0)</code>.</div>
   
   </td></tr>
 
@@ -1630,9 +1826,13 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this list.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this list (optional
+ operation).
+
+ <p>This implementation always throws an
+ <code>UnsupportedOperationException</code>.</div>
   
   </td></tr>
 
@@ -1648,10 +1848,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#removeRange(int, int)">removeRange</a></span>(int start, int end)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#removeRange(int, int)">removeRange</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Removes the objects in the specified range from the start to the end
- index minus one.</div>
+        <div class="jd-descrdiv">Removes from this list all of the elements whose index is between
+ <code>fromIndex</code>, inclusive, and <code>toIndex</code>, exclusive.</div>
   
   </td></tr>
 
@@ -1667,10 +1867,13 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this list with the
- specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this list with the
+ specified element (optional operation).
+
+ <p>This implementation always throws an
+ <code>UnsupportedOperationException</code>.</div>
   
   </td></tr>
 
@@ -1686,9 +1889,13 @@ From class
             <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#subList(int, int)">subList</a></span>(int start, int end)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#subList(int, int)">subList</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Returns a part of consecutive elements of this list as a view.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this list between the specified
+ <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.
+
+ <p>This implementation returns a list that subclasses
+ <code>AbstractList</code>.</div>
   
   </td></tr>
 
@@ -1729,10 +1936,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -1748,10 +1958,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -1769,7 +1982,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -1785,9 +2001,12 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -1803,10 +2022,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -1824,7 +2047,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -1842,8 +2067,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -1859,10 +2083,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -1878,10 +2105,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1897,10 +2128,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1918,7 +2153,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -1936,7 +2171,12 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1954,7 +2194,11 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1972,7 +2216,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -2243,9 +2487,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -2261,9 +2506,10 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Inserts the specified object into this <code>List</code> at the specified location.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this list
+ (optional operation).</div>
   
   </td></tr>
 
@@ -2279,9 +2525,11 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Adds the objects in the specified collection to the end of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Appends all of the elements in the specified collection to the end of
+ this list, in the order that they are returned by the specified
+ collection's iterator (optional operation).</div>
   
   </td></tr>
 
@@ -2297,10 +2545,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified collection at the specified location
- in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Inserts all of the elements in the specified collection into this
+ list at the specified position (optional operation).</div>
   
   </td></tr>
 
@@ -2318,7 +2566,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>List</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this list (optional operation).</div>
   
   </td></tr>
 
@@ -2334,9 +2582,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>List</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this list contains the specified element.</div>
   
   </td></tr>
 
@@ -2352,9 +2600,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>List</code> contains all objects contained in the
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this list contains all of the elements of the
  specified collection.</div>
   
   </td></tr>
@@ -2371,10 +2619,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the given object with the <code>List</code>, and returns true if they
- represent the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this list for equality.</div>
   
   </td></tr>
 
@@ -2390,9 +2637,9 @@ From interface
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#get(int)">get</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#get(int)">get</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -2410,7 +2657,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this list.</div>
   
   </td></tr>
 
@@ -2426,10 +2673,10 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this <code>List</code> for the specified object and returns the index of the
- first occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.</div>
   
   </td></tr>
 
@@ -2447,7 +2694,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this <code>List</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this list contains no elements.</div>
   
   </td></tr>
 
@@ -2465,7 +2712,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this list in proper sequence.</div>
   
   </td></tr>
 
@@ -2481,10 +2728,10 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this <code>List</code> for the specified object and returns the index of the
- last occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.</div>
   
   </td></tr>
 
@@ -2500,9 +2747,10 @@ From interface
             <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#listIterator(int)">listIterator</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#listIterator(int)">listIterator</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns a list iterator on the elements of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence), starting at the specified position in the list.</div>
   
   </td></tr>
 
@@ -2520,7 +2768,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#listIterator()">listIterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>List</code> iterator on the elements of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence).</div>
   
   </td></tr>
 
@@ -2536,9 +2785,10 @@ From interface
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this <code>List</code>.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -2554,9 +2804,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the first occurrence of the specified object from this <code>List</code>.</div>
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element from this list,
+ if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -2572,10 +2823,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>List</code> of each object in the specified
- collection.</div>
+        <div class="jd-descrdiv">Removes from this list all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -2588,19 +2839,38 @@ From interface
             
             
             
-            boolean
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#replaceAll(java.util.function.UnaryOperator<E>)">replaceAll</a></span>(<a href="../../../reference/java/util/function/UnaryOperator.html">UnaryOperator</a>&lt;E&gt; operator)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>List</code> that are not contained in the
- specified collection.</div>
+        <div class="jd-descrdiv">Replaces each element of this list with the result of applying the
+ operator to that element.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this list that are contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -2610,16 +2880,16 @@ From interface
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this <code>List</code> with the
- specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this list with the
+ specified element (optional operation).</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -2631,26 +2901,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this <code>List</code>.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#subList(int, int)">subList</a></span>(int start, int end)
-        
-        <div class="jd-descrdiv">Returns a <code>List</code> of the specified portion of this <code>List</code> from the given start
- index to the end index minus one.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this list.</div>
   
   </td></tr>
 
@@ -2663,12 +2914,12 @@ From interface
             
             
             
-            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray()">toArray</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/List.html#sort(java.util.Comparator<? super E>)">sort</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Sorts this list using the supplied <code>Comparator</code> to compare elements.</div>
   
   </td></tr>
 
@@ -2680,13 +2931,71 @@ From interface
             
             
             
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this list.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#subList(int, int)">subList</a></span>(int fromIndex, int toIndex)
+        
+        <div class="jd-descrdiv">Returns a view of the portion of this list between the specified
+ <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray()">toArray</a></span>()
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this list in proper
+ sequence (from first to last element).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
             &lt;T&gt;
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this list in
+ proper sequence (from first to last element); the runtime type of
+ the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -2733,10 +3042,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -2752,10 +3061,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -2773,7 +3082,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -2789,9 +3098,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -2807,10 +3116,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -2826,10 +3135,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -2847,7 +3155,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -2865,7 +3173,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -2883,8 +3191,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -2897,13 +3204,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -2919,10 +3226,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -2938,10 +3245,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -2959,7 +3304,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -2975,9 +3356,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -2995,7 +3377,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -3033,6 +3415,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -3040,6 +3438,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -3108,7 +3522,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a stack with the default size of <code>Vector</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an empty Stack.
 </p></div>
 
     </div>
@@ -3155,10 +3569,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether the stack is empty or not.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if this stack is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the stack is empty, <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if and only if this stack contains
+          no items; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -3191,24 +3606,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the element at the top of the stack without removing it.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Looks at the object at the top of this stack without removing it
+ from the stack.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the element at the top of the stack.</li></ul>
+      <ul class="nolist"><li>the object at the top of this stack (the last item
+          of the <tt>Vector</tt> object).</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></td>
-            <td>if the stack is empty.</td>
+            <td>if this stack is empty.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Stack.html#pop()">pop()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -3240,24 +3653,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the element at the top of the stack and removes it.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the object at the top of this stack and returns that
+ object as the value of this function.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the element at the top of the stack.</li></ul>
+      <ul class="nolist"><li>The object at the top of this stack (the last item
+          of the <tt>Vector</tt> object).</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></td>
-            <td>if the stack is empty.</td>
+            <td>if this stack is empty.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Stack.html#peek()">peek()</a></code></li><li><code><a href="../../../reference/java/util/Stack.html#push(E)">push(E)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -3277,7 +3688,7 @@ From interface
         E
       </span>
       <span class="sympad">push</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E item)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3289,23 +3700,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Pushes the specified object onto the top of the stack.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Pushes an item onto the top of this stack. This has exactly
+ the same effect as:
+ <blockquote><pre>
+ addElement(item)</pre></blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>The object to be added on top of the stack.</td>
+          <th>item</th>
+          <td>the item to be pushed onto this stack.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the object argument.</li></ul>
+      <ul class="nolist"><li>the <code>item</code> argument.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Stack.html#peek()">peek()</a></code></li><li><code><a href="../../../reference/java/util/Stack.html#pop()">pop()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Vector.html#addElement(E)">addElement(E)</a></code></li>
       </ul>
   </div>
 
@@ -3338,22 +3752,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first occurrence of the object, starting from
- the top of the stack.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the 1-based position where an object is on this stack.
+ If the object <tt>o</tt> occurs as an item in this stack, this
+ method returns the distance from the top of the stack of the
+ occurrence nearest the top of the stack; the topmost item on the
+ stack is considered to be at distance <tt>1</tt>. The <tt>equals</tt>
+ method is used to compare <tt>o</tt> to the
+ items in this stack.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>o</th>
-          <td>the object to be searched.
-</td>
+          <td>the desired object.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the first occurrence of the object, assuming that
-         the topmost object on the stack has a distance of one.</li></ul>
+      <ul class="nolist"><li>the 1-based position from the top of the stack where
+          the object is located; the return value <code>-1</code>
+          indicates that the object is not on the stack.
+</li></ul>
   </div>
 
     </div>

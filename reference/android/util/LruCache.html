@@ -181,18 +181,18 @@ layout: api
  <code><a href="reference/android/util/LruCache.html#sizeOf(K, V)">sizeOf(K, V)</a></code> to size the cache in different units. For example, this cache
  is limited to 4MiB of bitmaps:
  <pre>   <code>int cacheSize = 4 * 1024 * 1024; // 4MiB
-   LruCache<String, Bitmap> bitmapCache = new LruCache<String, Bitmap>(cacheSize) {
+   LruCache&lt;String, Bitmap&gt; bitmapCache = new LruCache&lt;String, Bitmap&gt;(cacheSize) {
        protected int sizeOf(String key, Bitmap value) {
            return value.getByteCount();
-       </code>
-   }}</pre>
+       }
+   }</code></pre>
 
  <p>This class is thread-safe. Perform multiple cache operations atomically by
  synchronizing on the cache: <pre>   <code>synchronized (cache) {
      if (cache.get(key) == null) {
          cache.put(key, value);
-     </code>
-   }}</pre>
+     }
+   }</code></pre>
 
  <p>This class does not allow null to be used as a key or value. A return
  value of null from <code><a href="reference/android/util/LruCache.html#get(K)">get(K)</a></code>, <code><a href="reference/android/util/LruCache.html#put(K, V)">put(K, V)</a></code> or <code><a href="reference/android/util/LruCache.html#remove(K)">remove(K)</a></code> is

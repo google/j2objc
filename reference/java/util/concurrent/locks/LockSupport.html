@@ -204,7 +204,7 @@ layout: api
  useful for most concurrency control applications.  The <code>park</code>
  method is designed for use only in constructions of the form:
 
-  <pre> <code>while (!canProceed()) { ... LockSupport.park(this); </code>}</pre>
+  <pre> <code>while (!canProceed()) { ... LockSupport.park(this); }</code></pre>
 
  where neither <code>canProceed</code> nor any other actions prior to the
  call to <code>park</code> entail locking or blocking.  Because only one
@@ -215,8 +215,8 @@ layout: api
  non-reentrant lock class:
   <pre> <code>class FIFOMutex {
    private final AtomicBoolean locked = new AtomicBoolean(false);
-   private final Queue<Thread> waiters
-     = new ConcurrentLinkedQueue<Thread>();
+   private final Queue&lt;Thread&gt; waiters
+     = new ConcurrentLinkedQueue&lt;Thread&gt;();
 
    public void lock() {
      boolean wasInterrupted = false;
@@ -229,7 +229,7 @@ layout: api
         LockSupport.park(this);
         if (Thread.interrupted()) // ignore interrupts while waiting
           wasInterrupted = true;
-     </code>
+     }
 
      waiters.remove();
      if (wasInterrupted)          // reassert interrupt status on exit
@@ -240,7 +240,7 @@ layout: api
      locked.set(false);
      LockSupport.unpark(waiters.peek());
    }
- }}</pre>
+ }</code></pre>
 </p>
 
 

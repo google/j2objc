@@ -269,16 +269,16 @@ layout: api
  a <code>CustomTask</code> class instead of the default <code>FutureTask</code>:
   <pre> <code>public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 
-   static class CustomTask<V> implements RunnableFuture<V> {...</code>
+   static class CustomTask&lt;V&gt; implements RunnableFuture&lt;V&gt; {...}
 
-   protected <V> RunnableFuture<V> newTaskFor(Callable<V> c) {
-       return new CustomTask<V>(c);
+   protected &lt;V&gt; RunnableFuture&lt;V&gt; newTaskFor(Callable&lt;V&gt; c) {
+       return new CustomTask&lt;V&gt;(c);
    }
-   protected <V> RunnableFuture<V> newTaskFor(Runnable r, V v) {
-       return new CustomTask<V>(r, v);
+   protected &lt;V&gt; RunnableFuture&lt;V&gt; newTaskFor(Runnable r, V v) {
+       return new CustomTask&lt;V&gt;(r, v);
    }
    // ... add constructors, etc.
- }}</pre></p>
+ }</code></pre></p>
 
 
 

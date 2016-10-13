@@ -188,7 +188,7 @@ layout: api
 
    class Worker implements Runnable {
      int myRow;
-     Worker(int row) { myRow = row; </code>
+     Worker(int row) { myRow = row; }
      public void run() {
        while (!done()) {
          processRow(myRow);
@@ -213,12 +213,12 @@ layout: api
                                      mergeRows(...);
                                    }
                                  });
-     for (int i = 0; i < N; ++i)
+     for (int i = 0; i &lt; N; ++i)
        new Thread(new Worker(i)).start();
 
      waitUntilDone();
    }
- }}</pre>
+ }</code></pre>
 
  Here, each worker thread processes a row of the matrix then waits at the
  barrier until all rows have been processed. When all rows are processed
@@ -235,7 +235,7 @@ layout: api
  example:
   <pre> <code>if (barrier.await() == 0) {
    // log the completion of this iteration
- </code>}</pre>
+ }</code></pre>
 
  <p>The <code>CyclicBarrier</code> uses an all-or-none breakage model
  for failed synchronization attempts: If a thread leaves a barrier

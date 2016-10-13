@@ -260,20 +260,22 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Signals that the <code><a href="reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code> method has detected
- an exception marker in the input stream. This marker indicates that exception
- occurred when the object was serialized, and this marker was inserted instead
- of the original object. It is a way to "propagate" an exception from the code
- that attempted to write the object to the code that is attempting to read the
- object.</p>
+<p>Signals that one of the ObjectStreamExceptions was thrown during a
+ write operation.  Thrown during a read operation when one of the
+ ObjectStreamExceptions was thrown during a write operation.  The
+ exception that terminated the write can be found in the detail
+ field. The stream is reset to it's initial state and all references
+ to objects already deserialized are discarded.
+
+ <p>As of release 1.4, this exception has been retrofitted to conform to
+ the general purpose exception-chaining mechanism.  The "exception causing
+ the abort" that is provided at construction time and
+ accessed via the public <code><a href="reference/java/io/WriteAbortedException.html#detail">detail</a></code> field is now known as the
+ <i>cause</i>, and may be accessed via the <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code>
+ method, as well as the aforementioned "legacy field."</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -327,8 +329,7 @@ layout: api
           
           <a href="../../../reference/java/lang/Exception.html">Exception</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/WriteAbortedException.html#detail">detail</a></td>
-          <td class="jd-descrcol" width="100%">The exception that occured when writeObject() was attempting to serialize
- the object.</td>
+          <td class="jd-descrcol" width="100%">Exception that was caught while writing the ObjectStream.</td>
       </tr>
       
     
@@ -357,11 +358,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/WriteAbortedException.html#WriteAbortedException(java.lang.String, java.lang.Exception)">WriteAbortedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Exception.html">Exception</a> rootCause)
+        <span class="sympad"><a href="../../../reference/java/io/WriteAbortedException.html#WriteAbortedException(java.lang.String, java.lang.Exception)">WriteAbortedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/Exception.html">Exception</a> ex)
         
-        <div class="jd-descrdiv">Constructs a new <code>WriteAbortedException</code> with its stack trace,
- detail message and the exception which caused the underlying problem when
- serializing the object filled in.</div>
+        <div class="jd-descrdiv">Constructs a WriteAbortedException with a string describing
+ the exception and the exception causing the abort.</div>
   
   </td></tr>
 
@@ -392,7 +392,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/WriteAbortedException.html#getCause()">getCause</a></span>()
         
-        <div class="jd-descrdiv">Gets the cause of this exception or <code>null</code> if there is no cause.</div>
+        <div class="jd-descrdiv">Returns the exception that terminated the operation (the <i>cause</i>).</div>
   
   </td></tr>
 
@@ -410,8 +410,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/WriteAbortedException.html#getMessage()">getMessage</a></span>()
         
-        <div class="jd-descrdiv">Gets the extra information message which was provided when this exception
- was created.</div>
+        <div class="jd-descrdiv">Produce the message and include the message from the nested
+ exception, if there is one.</div>
   
   </td></tr>
 
@@ -645,6 +645,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -940,9 +959,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The exception that occured when writeObject() was attempting to serialize
- the object.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Exception that was caught while writing the ObjectStream.
+
+ <p>This field predates the general-purpose exception chaining facility.
+ The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method is now the preferred means of
+ obtaining this information.</p></div>
 
     
     </div>
@@ -972,7 +993,7 @@ From class
         
       </span>
       <span class="sympad">WriteAbortedException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Exception.html">Exception</a> rootCause)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/Exception.html">Exception</a> ex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -984,19 +1005,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>WriteAbortedException</code> with its stack trace,
- detail message and the exception which caused the underlying problem when
- serializing the object filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a WriteAbortedException with a string describing
+ the exception and the exception causing the abort.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.</td>
+          <th>s</th>
+          <td>String describing the exception.</td>
         </tr>
         <tr>
-          <th>rootCause</th>
-          <td>the exception that was thrown when serializing the object.
+          <th>ex</th>
+          <td>Exception causing the abort.
 </td>
         </tr>
       </table>
@@ -1046,11 +1066,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the cause of this exception or <code>null</code> if there is no cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception that terminated the operation (the <i>cause</i>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the exception cause.
-</li></ul>
+      <ul class="nolist"><li>the exception that terminated the operation (the <i>cause</i>),
+          which may be null.</li></ul>
   </div>
 
     </div>
@@ -1082,14 +1102,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the extra information message which was provided when this exception
- was created. Returns <code>null</code> if no message was provided at creation
- time.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the exception message.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Produce the message and include the message from the nested
+ exception, if there is one.
+</p></div>
 
     </div>
 </div>

@@ -165,11 +165,42 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>Collections</code> contains static methods which operate on
- <code>Collection</code> classes.</p>
+<p>This class consists exclusively of static methods that operate on or return
+ collections.  It contains polymorphic algorithms that operate on
+ collections, "wrappers", which return a new collection backed by a
+ specified collection, and a few other odds and ends.
+
+ <p>The methods of this class all throw a <tt>NullPointerException</tt>
+ if the collections or class objects provided to them are null.
+
+ <p>The documentation for the polymorphic algorithms contained in this class
+ generally includes a brief description of the <i>implementation</i>.  Such
+ descriptions should be regarded as <i>implementation notes</i>, rather than
+ parts of the <i>specification</i>.  Implementors should feel free to
+ substitute other algorithms, so long as the specification itself is adhered
+ to.  (For example, the algorithm used by <tt>sort</tt> does not have to be
+ a mergesort, but it does have to be <i>stable</i>.)
+
+ <p>The "destructive" algorithms contained in this class, that is, the
+ algorithms that modify the collection on which they operate, are specified
+ to throw <tt>UnsupportedOperationException</tt> if the collection does not
+ support the appropriate mutation primitive(s), such as the <tt>set</tt>
+ method.  These algorithms may, but are not required to, throw this
+ exception if an invocation would have no effect on the collection.  For
+ example, invoking the <tt>sort</tt> method on an unmodifiable list that is
+ already sorted may or may not throw <tt>UnsupportedOperationException</tt>.
+
+ <p>This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html">Collection</a></code></li><li><code><a href="../../../reference/java/util/Set.html">Set</a></code></li><li><code><a href="../../../reference/java/util/List.html">List</a></code></li><li><code><a href="../../../reference/java/util/Map.html">Map</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -223,7 +254,7 @@ layout: api
           final
           <a href="../../../reference/java/util/List.html">List</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Collections.html#EMPTY_LIST">EMPTY_LIST</a></td>
-          <td class="jd-descrcol" width="100%">An empty immutable instance of <code><a href="reference/java/util/List.html">List</a></code>.</td>
+          <td class="jd-descrcol" width="100%">The empty list (immutable).</td>
       </tr>
       
     
@@ -234,7 +265,7 @@ layout: api
           final
           <a href="../../../reference/java/util/Map.html">Map</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Collections.html#EMPTY_MAP">EMPTY_MAP</a></td>
-          <td class="jd-descrcol" width="100%">An empty immutable instance of <code><a href="reference/java/util/Map.html">Map</a></code>.</td>
+          <td class="jd-descrcol" width="100%">The empty map (immutable).</td>
       </tr>
       
     
@@ -245,7 +276,7 @@ layout: api
           final
           <a href="../../../reference/java/util/Set.html">Set</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/Collections.html#EMPTY_SET">EMPTY_SET</a></td>
-          <td class="jd-descrcol" width="100%">An empty immutable instance of <code><a href="reference/java/util/Set.html">Set</a></code>.</td>
+          <td class="jd-descrcol" width="100%">The empty set (immutable).</td>
       </tr>
       
     
@@ -278,9 +309,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#addAll(java.util.Collection<? super T>, T...)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;super&nbsp;T&gt; c, T... a)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#addAll(java.util.Collection<? super T>, T...)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;super&nbsp;T&gt; c, T... elements)
         
-        <div class="jd-descrdiv">Adds all the specified elements to the specified collection.</div>
+        <div class="jd-descrdiv">Adds all of the specified elements to the specified collection.</div>
   
   </td></tr>
 
@@ -298,7 +329,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#asLifoQueue(java.util.Deque<T>)">asLifoQueue</a></span>(<a href="../../../reference/java/util/Deque.html">Deque</a>&lt;T&gt; deque)
         
-        <div class="jd-descrdiv">Returns a last-in, first-out queue as a view of <code>deque</code>.</div>
+        <div class="jd-descrdiv">Returns a view of a <code><a href="reference/java/util/Deque.html">Deque</a></code> as a Last-in-first-out (Lifo)
+ <code><a href="reference/java/util/Queue.html">Queue</a></code>.</div>
   
   </td></tr>
 
@@ -314,10 +346,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#binarySearch(java.util.List<? extends T>, T, java.util.Comparator<? super T>)">binarySearch</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; list, T object, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#binarySearch(java.util.List<? extends T>, T, java.util.Comparator<? super T>)">binarySearch</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; list, T key, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; c)
         
-        <div class="jd-descrdiv">Performs a binary search for the specified element in the specified
- sorted list using the specified comparator.</div>
+        <div class="jd-descrdiv">Searches the specified list for the specified object using the binary
+ search algorithm.</div>
   
   </td></tr>
 
@@ -333,10 +365,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#binarySearch(java.util.List<? extends java.lang.Comparable<? super T>>, T)">binarySearch</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;T&gt;&gt; list, T object)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#binarySearch(java.util.List<? extends java.lang.Comparable<? super T>>, T)">binarySearch</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;T&gt;&gt; list, T key)
         
-        <div class="jd-descrdiv">Performs a binary search for the specified element in the specified
- sorted list.</div>
+        <div class="jd-descrdiv">Searches the specified list for the specified object using the binary
+ search algorithm.</div>
   
   </td></tr>
 
@@ -460,9 +492,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#copy(java.util.List<? super T>, java.util.List<? extends T>)">copy</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; destination, <a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; source)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#copy(java.util.List<? super T>, java.util.List<? extends T>)">copy</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; dest, <a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; src)
         
-        <div class="jd-descrdiv">Copies the elements from the source list to the destination list.</div>
+        <div class="jd-descrdiv">Copies all of the elements from one list into another.</div>
   
   </td></tr>
 
@@ -480,7 +512,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#disjoint(java.util.Collection<?>, java.util.Collection<?>)">disjoint</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c1, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c2)
         
-        <div class="jd-descrdiv">Returns whether the specified collections have no elements in common.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the two specified collections have no
+ elements in common.</div>
   
   </td></tr>
 
@@ -498,7 +531,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#emptyEnumeration()">emptyEnumeration</a></span>()
         
-        <div class="jd-descrdiv">Returns an enumeration containing no elements.</div>
+        <div class="jd-descrdiv">Returns an enumeration that has no elements.</div>
   
   </td></tr>
 
@@ -516,7 +549,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#emptyIterator()">emptyIterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator containing no elements.</div>
+        <div class="jd-descrdiv">Returns an iterator that has no elements.</div>
   
   </td></tr>
 
@@ -534,7 +567,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#emptyList()">emptyList</a></span>()
         
-        <div class="jd-descrdiv">Returns a type-safe empty, immutable <code><a href="reference/java/util/List.html">List</a></code>.</div>
+        <div class="jd-descrdiv">Returns an empty list (immutable).</div>
   
   </td></tr>
 
@@ -552,7 +585,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#emptyListIterator()">emptyListIterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a list iterator containing no elements.</div>
+        <div class="jd-descrdiv">Returns a list iterator that has no elements.</div>
   
   </td></tr>
 
@@ -570,7 +603,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#emptyMap()">emptyMap</a></span>()
         
-        <div class="jd-descrdiv">Returns a type-safe empty, immutable <code><a href="reference/java/util/Map.html">Map</a></code>.</div>
+        <div class="jd-descrdiv">Returns an empty map (immutable).</div>
   
   </td></tr>
 
@@ -588,7 +621,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#emptySet()">emptySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a type-safe empty, immutable <code><a href="reference/java/util/Set.html">Set</a></code>.</div>
+        <div class="jd-descrdiv">Returns an empty set (immutable).</div>
   
   </td></tr>
 
@@ -604,9 +637,9 @@ layout: api
             <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#enumeration(java.util.Collection<T>)">enumeration</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#enumeration(java.util.Collection<T>)">enumeration</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; c)
         
-        <div class="jd-descrdiv">Returns an <code>Enumeration</code> on the specified collection.</div>
+        <div class="jd-descrdiv">Returns an enumeration over the specified collection.</div>
   
   </td></tr>
 
@@ -622,9 +655,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#fill(java.util.List<? super T>, T)">fill</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; list, T object)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#fill(java.util.List<? super T>, T)">fill</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; list, T obj)
         
-        <div class="jd-descrdiv">Fills the specified list with the specified element.</div>
+        <div class="jd-descrdiv">Replaces all of the elements of the specified list with the specified
+ element.</div>
   
   </td></tr>
 
@@ -642,8 +676,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#frequency(java.util.Collection<?>, java.lang.Object)">frequency</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c, <a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns the number of elements in the <code>Collection</code> that match the
- <code>Object</code> passed.</div>
+        <div class="jd-descrdiv">Returns the number of elements in the specified collection equal to the
+ specified object.</div>
   
   </td></tr>
 
@@ -659,10 +693,11 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#indexOfSubList(java.util.List<?>, java.util.List<?>)">indexOfSubList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; sublist)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#indexOfSubList(java.util.List<?>, java.util.List<?>)">indexOfSubList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; source, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; target)
         
-        <div class="jd-descrdiv">Searches the <code>list</code> for <code>sublist</code> and returns the beginning
- index of the first occurrence.</div>
+        <div class="jd-descrdiv">Returns the starting position of the first occurrence of the specified
+ target list within the specified source list, or -1 if there is no
+ such occurrence.</div>
   
   </td></tr>
 
@@ -678,10 +713,11 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#lastIndexOfSubList(java.util.List<?>, java.util.List<?>)">lastIndexOfSubList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; sublist)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#lastIndexOfSubList(java.util.List<?>, java.util.List<?>)">lastIndexOfSubList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; source, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; target)
         
-        <div class="jd-descrdiv">Searches the <code>list</code> for <code>sublist</code> and returns the beginning
- index of the last occurrence.</div>
+        <div class="jd-descrdiv">Returns the starting position of the last occurrence of the specified
+ target list within the specified source list, or -1 if there is no such
+ occurrence.</div>
   
   </td></tr>
 
@@ -697,9 +733,11 @@ layout: api
             <a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#list(java.util.Enumeration<T>)">list</a></span>(<a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;T&gt; enumeration)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#list(java.util.Enumeration<T>)">list</a></span>(<a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;T&gt; e)
         
-        <div class="jd-descrdiv">Returns an <code>ArrayList</code> with all the elements in the <code>enumeration</code>.</div>
+        <div class="jd-descrdiv">Returns an array list containing the elements returned by the
+ specified enumeration in the order they are returned by the
+ enumeration.</div>
   
   </td></tr>
 
@@ -715,10 +753,10 @@ layout: api
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#max(java.util.Collection<? extends T>, java.util.Comparator<? super T>)">max</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#max(java.util.Collection<? extends T>, java.util.Comparator<? super T>)">max</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comp)
         
-        <div class="jd-descrdiv">Searches the specified collection for the maximum element using the
- specified comparator.</div>
+        <div class="jd-descrdiv">Returns the maximum element of the given collection, according to the
+ order induced by the specified comparator.</div>
   
   </td></tr>
 
@@ -734,9 +772,10 @@ layout: api
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#max(java.util.Collection<? extends T>)">max</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#max(java.util.Collection<? extends T>)">max</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll)
         
-        <div class="jd-descrdiv">Searches the specified collection for the maximum element.</div>
+        <div class="jd-descrdiv">Returns the maximum element of the given collection, according to the
+ <i>natural ordering</i> of its elements.</div>
   
   </td></tr>
 
@@ -752,9 +791,10 @@ layout: api
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#min(java.util.Collection<? extends T>)">min</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#min(java.util.Collection<? extends T>)">min</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll)
         
-        <div class="jd-descrdiv">Searches the specified collection for the minimum element.</div>
+        <div class="jd-descrdiv">Returns the minimum element of the given collection, according to the
+ <i>natural ordering</i> of its elements.</div>
   
   </td></tr>
 
@@ -770,10 +810,10 @@ layout: api
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#min(java.util.Collection<? extends T>, java.util.Comparator<? super T>)">min</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#min(java.util.Collection<? extends T>, java.util.Comparator<? super T>)">min</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comp)
         
-        <div class="jd-descrdiv">Searches the specified collection for the minimum element using the
- specified comparator.</div>
+        <div class="jd-descrdiv">Returns the minimum element of the given collection, according to the
+ order induced by the specified comparator.</div>
   
   </td></tr>
 
@@ -789,9 +829,10 @@ layout: api
             <a href="../../../reference/java/util/List.html">List</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#nCopies(int, T)">nCopies</a></span>(int length, T object)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#nCopies(int, T)">nCopies</a></span>(int n, T o)
         
-        <div class="jd-descrdiv">Returns a list containing the specified number of the specified element.</div>
+        <div class="jd-descrdiv">Returns an immutable list consisting of <tt>n</tt> copies of the
+ specified object.</div>
   
   </td></tr>
 
@@ -809,7 +850,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#newSetFromMap(java.util.Map<E, java.lang.Boolean>)">newSetFromMap</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;E,&nbsp;<a href="../../../reference/java/lang/Boolean.html">Boolean</a>&gt; map)
         
-        <div class="jd-descrdiv">Returns a set backed by <code>map</code>.</div>
+        <div class="jd-descrdiv">Returns a set backed by the specified map.</div>
   
   </td></tr>
 
@@ -825,10 +866,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#replaceAll(java.util.List<T>, T, T)">replaceAll</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, T obj, T obj2)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#replaceAll(java.util.List<T>, T, T)">replaceAll</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, T oldVal, T newVal)
         
-        <div class="jd-descrdiv">Replaces all occurrences of Object <code>obj</code> in <code>list</code> with
- <code>newObj</code>.</div>
+        <div class="jd-descrdiv">Replaces all occurrences of one specified value in a list with another.</div>
   
   </td></tr>
 
@@ -846,8 +886,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#reverse(java.util.List<?>)">reverse</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list)
         
-        <div class="jd-descrdiv">Modifies the specified <code>List</code> by reversing the order of the
- elements.</div>
+        <div class="jd-descrdiv">Reverses the order of the elements in the specified list.</div>
   
   </td></tr>
 
@@ -865,7 +904,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#reverseOrder()">reverseOrder</a></span>()
         
-        <div class="jd-descrdiv">A comparator which reverses the natural order of the elements.</div>
+        <div class="jd-descrdiv">Returns a comparator that imposes the reverse of the <em>natural
+ ordering</em> on a collection of objects that implement the
+ <code>Comparable</code> interface.</div>
   
   </td></tr>
 
@@ -881,10 +922,10 @@ layout: api
             <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#reverseOrder(java.util.Comparator<T>)">reverseOrder</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt; c)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#reverseOrder(java.util.Comparator<T>)">reverseOrder</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt; cmp)
         
-        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Comparator.html">Comparator</a></code> that reverses the order of the
- <code>Comparator</code> passed.</div>
+        <div class="jd-descrdiv">Returns a comparator that imposes the reverse ordering of the specified
+ comparator.</div>
   
   </td></tr>
 
@@ -900,11 +941,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#rotate(java.util.List<?>, int)">rotate</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; lst, int dist)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#rotate(java.util.List<?>, int)">rotate</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, int distance)
         
-        <div class="jd-descrdiv">Rotates the elements in <code>list</code> by the distance <code>dist</code>
- <p>
- e.g.</div>
+        <div class="jd-descrdiv">Rotates the elements in the specified list by the specified distance.</div>
   
   </td></tr>
 
@@ -920,10 +959,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#shuffle(java.util.List<?>, java.util.Random)">shuffle</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/Random.html">Random</a> random)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#shuffle(java.util.List<?>, java.util.Random)">shuffle</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/Random.html">Random</a> rnd)
         
-        <div class="jd-descrdiv">Moves every element of the list to a random new position in the list
- using the specified random number generator.</div>
+        <div class="jd-descrdiv">Randomly permute the specified list using the specified source of
+ randomness.</div>
   
   </td></tr>
 
@@ -941,7 +980,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#shuffle(java.util.List<?>)">shuffle</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list)
         
-        <div class="jd-descrdiv">Moves every element of the list to a random new position in the list.</div>
+        <div class="jd-descrdiv">Randomly permutes the specified list using a default source of
+ randomness.</div>
   
   </td></tr>
 
@@ -957,9 +997,9 @@ layout: api
             <a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#singleton(E)">singleton</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#singleton(E)">singleton</a></span>(E o)
         
-        <div class="jd-descrdiv">Returns a set containing the specified element.</div>
+        <div class="jd-descrdiv">Returns an immutable set containing only the specified object.</div>
   
   </td></tr>
 
@@ -975,9 +1015,9 @@ layout: api
             <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#singletonList(E)">singletonList</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#singletonList(E)">singletonList</a></span>(E o)
         
-        <div class="jd-descrdiv">Returns a list containing the specified element.</div>
+        <div class="jd-descrdiv">Returns an immutable list containing only the specified object.</div>
   
   </td></tr>
 
@@ -995,7 +1035,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#singletonMap(K, V)">singletonMap</a></span>(K key, V value)
         
-        <div class="jd-descrdiv">Returns a Map containing the specified key and value.</div>
+        <div class="jd-descrdiv">Returns an immutable map, mapping only the specified key to the
+ specified value.</div>
   
   </td></tr>
 
@@ -1013,7 +1054,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#sort(java.util.List<T>)">sort</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list)
         
-        <div class="jd-descrdiv">Sorts the given list in ascending natural order.</div>
+        <div class="jd-descrdiv">Sorts the specified list into ascending order, according to the
+ {@linkplain Comparable natural ordering} of its elements.</div>
   
   </td></tr>
 
@@ -1029,9 +1071,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#sort(java.util.List<T>, java.util.Comparator<? super T>)">sort</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#sort(java.util.List<T>, java.util.Comparator<? super T>)">sort</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; c)
         
-        <div class="jd-descrdiv">Sorts the given list using the given comparator.</div>
+        <div class="jd-descrdiv">Sorts the specified list according to the order induced by the
+ specified comparator.</div>
   
   </td></tr>
 
@@ -1047,10 +1090,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#swap(java.util.List<?>, int, int)">swap</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, int index1, int index2)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#swap(java.util.List<?>, int, int)">swap</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, int i, int j)
         
-        <div class="jd-descrdiv">Swaps the elements of list <code>list</code> at indices <code>index1</code> and
- <code>index2</code>.</div>
+        <div class="jd-descrdiv">Swaps the elements at the specified positions in the specified list.</div>
   
   </td></tr>
 
@@ -1066,10 +1108,10 @@ layout: api
             <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedCollection(java.util.Collection<T>)">synchronizedCollection</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedCollection(java.util.Collection<T>)">synchronizedCollection</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; c)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified collection which synchronizes all
- access to the collection.</div>
+        <div class="jd-descrdiv">Returns a synchronized (thread-safe) collection backed by the specified
+ collection.</div>
   
   </td></tr>
 
@@ -1087,8 +1129,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedList(java.util.List<T>)">synchronizedList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified List which synchronizes all access to
- the List.</div>
+        <div class="jd-descrdiv">Returns a synchronized (thread-safe) list backed by the specified
+ list.</div>
   
   </td></tr>
 
@@ -1104,10 +1146,10 @@ layout: api
             <a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedMap(java.util.Map<K, V>)">synchronizedMap</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedMap(java.util.Map<K, V>)">synchronizedMap</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified map which synchronizes all access to
- the map.</div>
+        <div class="jd-descrdiv">Returns a synchronized (thread-safe) map backed by the specified
+ map.</div>
   
   </td></tr>
 
@@ -1119,14 +1161,14 @@ layout: api
             
             
             static
-            &lt;E&gt;
-            <a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedSet(java.util.Set<E>)">synchronizedSet</a></span>(<a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt; set)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedSet(java.util.Set<T>)">synchronizedSet</a></span>(<a href="../../../reference/java/util/Set.html">Set</a>&lt;T&gt; s)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified set which synchronizes all access to
- the set.</div>
+        <div class="jd-descrdiv">Returns a synchronized (thread-safe) set backed by the specified
+ set.</div>
   
   </td></tr>
 
@@ -1142,10 +1184,10 @@ layout: api
             <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedSortedMap(java.util.SortedMap<K, V>)">synchronizedSortedMap</a></span>(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedSortedMap(java.util.SortedMap<K, V>)">synchronizedSortedMap</a></span>(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified sorted map which synchronizes all
- access to the sorted map.</div>
+        <div class="jd-descrdiv">Returns a synchronized (thread-safe) sorted map backed by the specified
+ sorted map.</div>
   
   </td></tr>
 
@@ -1157,14 +1199,14 @@ layout: api
             
             
             static
-            &lt;E&gt;
-            <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
+            &lt;T&gt;
+            <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedSortedSet(java.util.SortedSet<E>)">synchronizedSortedSet</a></span>(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt; set)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#synchronizedSortedSet(java.util.SortedSet<T>)">synchronizedSortedSet</a></span>(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt; s)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified sorted set which synchronizes all
- access to the sorted set.</div>
+        <div class="jd-descrdiv">Returns a synchronized (thread-safe) sorted set backed by the specified
+ sorted set.</div>
   
   </td></tr>
 
@@ -1176,15 +1218,13 @@ layout: api
             
             
             static
-            &lt;E&gt;
-            <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableCollection(java.util.Collection<? extends E>)">unmodifiableCollection</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableCollection(java.util.Collection<? extends T>)">unmodifiableCollection</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; c)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified collection which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the collection.</div>
+        <div class="jd-descrdiv">Returns an unmodifiable view of the specified collection.</div>
   
   </td></tr>
 
@@ -1196,15 +1236,13 @@ layout: api
             
             
             static
-            &lt;E&gt;
-            <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
+            &lt;T&gt;
+            <a href="../../../reference/java/util/List.html">List</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableList(java.util.List<? extends E>)">unmodifiableList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;E&gt; list)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableList(java.util.List<? extends T>)">unmodifiableList</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; list)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified list which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the list.</div>
+        <div class="jd-descrdiv">Returns an unmodifiable view of the specified list.</div>
   
   </td></tr>
 
@@ -1220,11 +1258,9 @@ layout: api
             <a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableMap(java.util.Map<? extends K, ? extends V>)">unmodifiableMap</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableMap(java.util.Map<? extends K, ? extends V>)">unmodifiableMap</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified map which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the map.</div>
+        <div class="jd-descrdiv">Returns an unmodifiable view of the specified map.</div>
   
   </td></tr>
 
@@ -1236,15 +1272,13 @@ layout: api
             
             
             static
-            &lt;E&gt;
-            <a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableSet(java.util.Set<? extends E>)">unmodifiableSet</a></span>(<a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;E&gt; set)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableSet(java.util.Set<? extends T>)">unmodifiableSet</a></span>(<a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;T&gt; s)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified set which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the set.</div>
+        <div class="jd-descrdiv">Returns an unmodifiable view of the specified set.</div>
   
   </td></tr>
 
@@ -1260,11 +1294,9 @@ layout: api
             <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableSortedMap(java.util.SortedMap<K, ? extends V>)">unmodifiableSortedMap</a></span>(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableSortedMap(java.util.SortedMap<K, ? extends V>)">unmodifiableSortedMap</a></span>(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified sorted map which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the sorted map.</div>
+        <div class="jd-descrdiv">Returns an unmodifiable view of the specified sorted map.</div>
   
   </td></tr>
 
@@ -1276,15 +1308,13 @@ layout: api
             
             
             static
-            &lt;E&gt;
-            <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
+            &lt;T&gt;
+            <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableSortedSet(java.util.SortedSet<E>)">unmodifiableSortedSet</a></span>(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt; set)
+        <span class="sympad"><a href="../../../reference/java/util/Collections.html#unmodifiableSortedSet(java.util.SortedSet<T>)">unmodifiableSortedSet</a></span>(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt; s)
         
-        <div class="jd-descrdiv">Returns a wrapper on the specified sorted set which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the sorted set.</div>
+        <div class="jd-descrdiv">Returns an unmodifiable view of the specified sorted set.</div>
   
   </td></tr>
 
@@ -1588,8 +1618,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>An empty immutable instance of <code><a href="reference/java/util/List.html">List</a></code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The empty list (immutable).  This list is serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collections.html#emptyList()">emptyList()</a></code></li>
+      </ul>
+  </div>
 
     
     </div>
@@ -1619,8 +1653,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>An empty immutable instance of <code><a href="reference/java/util/Map.html">Map</a></code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The empty map (immutable).  This map is serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collections.html#emptyMap()">emptyMap()</a></code></li>
+      </ul>
+  </div>
 
     
     </div>
@@ -1650,8 +1688,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>An empty immutable instance of <code><a href="reference/java/util/Set.html">Set</a></code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The empty set (immutable).  This set is serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collections.html#emptySet()">emptySet()</a></code></li>
+      </ul>
+  </div>
 
     
     </div>
@@ -1689,7 +1731,7 @@ From class
         boolean
       </span>
       <span class="sympad">addAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;super&nbsp;T&gt; c, T... a)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;super&nbsp;T&gt; c, T... elements)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1701,44 +1743,59 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds all the specified elements to the specified collection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Adds all of the specified elements to the specified collection.
+ Elements to be added may be specified individually or as an array.
+ The behavior of this convenience method is identical to that of
+ <tt>c.addAll(Arrays.asList(elements))</tt>, but this method is likely
+ to run significantly faster under most implementations.
+
+ <p>When elements are specified individually, this method provides a
+ convenient way to add a few elements to an existing collection:
+ <pre>
+     Collections.addAll(flavors, "Peaches 'n Plutonium", "Rocky Racoon");
+ </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the collection the elements are to be inserted into.</td>
+          <td>the collection into which <tt>elements</tt> are to be inserted</td>
         </tr>
         <tr>
-          <th>a</th>
-          <td>the elements to insert.</td>
+          <th>elements</th>
+          <td>the elements to insert into <tt>c</tt></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true if the collection changed during insertion.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if the collection changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when the method is not supported.</td>
+            <td>if <tt>c</tt> does not support
+         the <tt>add</tt> operation</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>when <code>c</code> or <code>a</code> is <code>null</code>, or <code>a</code>
-             contains one or more <code>null</code> elements and <code>c</code>
-             doesn't support <code>null</code> elements.</td>
+            <td>if <tt>elements</tt> contains one or more
+         null values and <tt>c</tt> does not permit null elements, or
+         if <tt>c</tt> or <tt>elements</tt> are <tt>null</tt></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if at least one of the elements can't be inserted into the
-             collection.
-</td>
+            <td>if some property of a value in
+         <tt>elements</tt> prevents it from being added to <tt>c</tt></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll(Collection)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1770,7 +1827,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a last-in, first-out queue as a view of <code>deque</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of a <code><a href="reference/java/util/Deque.html">Deque</a></code> as a Last-in-first-out (Lifo)
+ <code><a href="reference/java/util/Queue.html">Queue</a></code>. Method <tt>add</tt> is mapped to <tt>push</tt>,
+ <tt>remove</tt> is mapped to <tt>pop</tt> and so on. This
+ view can be useful when you would like to use a method
+ requiring a <tt>Queue</tt> but you need Lifo ordering.
+
+ <p>Each method invocation on the queue returned by this method
+ results in exactly one method invocation on the backing deque, with
+ one exception.  The <code><a href="reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></code> method is
+ implemented as a sequence of <code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst</a></code>
+ invocations on the backing deque.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>deque</th>
+          <td>the deque</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the queue</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1789,7 +1869,7 @@ From class
         int
       </span>
       <span class="sympad">binarySearch</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; list, T object, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; list, T key, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1801,41 +1881,59 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Performs a binary search for the specified element in the specified
- sorted list using the specified comparator. The list needs to be already
- sorted according to the comparator passed. Searching in an unsorted array
- has an undefined result. It's also undefined which element is found if
- there are multiple occurrences of the same element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Searches the specified list for the specified object using the binary
+ search algorithm.  The list must be sorted into ascending order
+ according to the specified comparator (as by the
+ <code><a href="reference/java/util/Collections.html#sort(java.util.List<T>, java.util.Comparator<? super T>)">sort(List, Comparator)</a></code>
+ method), prior to making this call.  If it is
+ not sorted, the results are undefined.  If the list contains multiple
+ elements equal to the specified object, there is no guarantee which one
+ will be found.
+
+ <p>This method runs in log(n) time for a "random access" list (which
+ provides near-constant-time positional access).  If the specified list
+ does not implement the <code><a href="reference/java/util/RandomAccess.html">RandomAccess</a></code> interface and is large,
+ this method will do an iterator-based binary search that performs
+ O(n) link traversals and O(log n) element comparisons.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the sorted List to search.</td>
+          <td>the list to be searched.</td>
         </tr>
         <tr>
-          <th>object</th>
-          <td>the element to find.</td>
+          <th>key</th>
+          <td>the key to be searched for.</td>
         </tr>
         <tr>
-          <th>comparator</th>
-          <td>the comparator. If the comparator is <code>null</code> then the
-            search uses the objects' natural ordering.</td>
+          <th>c</th>
+          <td>the comparator by which the list is ordered.
+         A <tt>null</tt> value indicates that the elements'
+         {@linkplain Comparable natural ordering} should be used.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the non-negative index of the element, or a negative index which
-         is the <code>-index - 1</code> where the element would be inserted.</li></ul>
+      <ul class="nolist"><li>the index of the search key, if it is contained in the list;
+         otherwise, <tt>(-(<i>insertion point</i>) - 1)</tt>.  The
+         <i>insertion point</i> is defined as the point at which the
+         key would be inserted into the list: the index of the first
+         element greater than the key, or <tt>list.size()</tt> if all
+         elements in the list are less than the specified key.  Note
+         that this guarantees that the return value will be &gt;= 0 if
+         and only if the key is found.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when an element in the list and the searched element cannot
-             be compared to each other using the comparator.
+            <td>if the list contains elements that are not
+         <i>mutually comparable</i> using the specified comparator,
+         or the search key is not mutually comparable with the
+         elements of the list using this comparator.
 </td>
         </tr>
       </table>
@@ -1858,7 +1956,7 @@ From class
         int
       </span>
       <span class="sympad">binarySearch</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;T&gt;&gt; list, T object)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;T&gt;&gt; list, T key)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1870,36 +1968,52 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Performs a binary search for the specified element in the specified
- sorted list. The list needs to be already sorted in natural sorting
- order. Searching in an unsorted array has an undefined result. It's also
- undefined which element is found if there are multiple occurrences of the
- same element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Searches the specified list for the specified object using the binary
+ search algorithm.  The list must be sorted into ascending order
+ according to the {@linkplain Comparable natural ordering} of its
+ elements (as by the <code><a href="reference/java/util/Collections.html#sort(java.util.List<T>)">sort(List)</a></code> method) prior to making this
+ call.  If it is not sorted, the results are undefined.  If the list
+ contains multiple elements equal to the specified object, there is no
+ guarantee which one will be found.
+
+ <p>This method runs in log(n) time for a "random access" list (which
+ provides near-constant-time positional access).  If the specified list
+ does not implement the <code><a href="reference/java/util/RandomAccess.html">RandomAccess</a></code> interface and is large,
+ this method will do an iterator-based binary search that performs
+ O(n) link traversals and O(log n) element comparisons.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the sorted list to search.</td>
+          <td>the list to be searched.</td>
         </tr>
         <tr>
-          <th>object</th>
-          <td>the element to find.</td>
+          <th>key</th>
+          <td>the key to be searched for.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the non-negative index of the element, or a negative index which
-         is the <code>-index - 1</code> where the element would be inserted</li></ul>
+      <ul class="nolist"><li>the index of the search key, if it is contained in the list;
+         otherwise, <tt>(-(<i>insertion point</i>) - 1)</tt>.  The
+         <i>insertion point</i> is defined as the point at which the
+         key would be inserted into the list: the index of the first
+         element greater than the key, or <tt>list.size()</tt> if all
+         elements in the list are less than the specified key.  Note
+         that this guarantees that the return value will be &gt;= 0 if
+         and only if the key is found.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if an element in the List or the search element does not
-             implement Comparable, or cannot be compared to each other.
+            <td>if the list contains elements that are not
+         <i>mutually comparable</i> (for example, strings and
+         integers), or the search key is not mutually comparable
+         with the elements of the list.
 </td>
         </tr>
       </table>
@@ -1934,27 +2048,73 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified collection. Trying
- to insert an element of the wrong type into this collection throws a
- <code>ClassCastException</code>. At creation time the types in <code>c</code> are
- not checked for correct type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified collection.
+ Any attempt to insert an element of the wrong type will result in an
+ immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>.  Assuming a collection
+ contains no incorrectly typed elements prior to the time a
+ dynamically typesafe view is generated, and that all subsequent
+ access to the collection takes place through the view, it is
+ <i>guaranteed</i> that the collection cannot contain an incorrectly
+ typed element.
+
+ <p>The generics mechanism in the language provides compile-time
+ (static) type checking, but it is possible to defeat this mechanism
+ with unchecked casts.  Usually this is not a problem, as the compiler
+ issues warnings on all such unchecked operations.  There are, however,
+ times when static type checking alone is not sufficient.  For example,
+ suppose a collection is passed to a third-party library and it is
+ imperative that the library code not corrupt the collection by
+ inserting an element of the wrong type.
+
+ <p>Another use of dynamically typesafe views is debugging.  Suppose a
+ program fails with a <code>ClassCastException</code>, indicating that an
+ incorrectly typed element was put into a parameterized collection.
+ Unfortunately, the exception can occur at any time after the erroneous
+ element is inserted, so it typically provides little or no information
+ as to the real source of the problem.  If the problem is reproducible,
+ one can quickly determine its source by temporarily modifying the
+ program to wrap the collection with a dynamically typesafe view.
+ For example, this declaration:
+  <pre> <code>Collection&lt;String&gt; c = new HashSet&lt;&gt;();
+ </code></pre>
+ may be replaced temporarily by this one:
+  <pre> <code>Collection&lt;String&gt; c = Collections.checkedCollection(
+         new HashSet&lt;&gt;(), String.class);
+ </code></pre>
+ Running the program again will cause it to fail at the point where
+ an incorrectly typed element is inserted into the collection, clearly
+ identifying the source of the problem.  Once the problem is fixed, the
+ modified declaration may be reverted back to the original.
+
+ <p>The returned collection does <i>not</i> pass the hashCode and equals
+ operations through to the backing collection, but relies on
+ <code>Object</code>'s <code>equals</code> and <code>hashCode</code> methods.  This
+ is necessary to preserve the contracts of these operations in the case
+ that the backing collection is a set or a list.
+
+ <p>The returned collection will be serializable if the specified
+ collection is serializable.
+
+ <p>Since <code>null</code> is considered to be a value of any reference
+ type, the returned collection permits insertion of null elements
+ whenever the backing collection does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the collection to be wrapped in a typesafe collection.</td>
+          <td>the collection for which a dynamically typesafe view is to be
+          returned</td>
         </tr>
         <tr>
           <th>type</th>
-          <td>the type of the elements permitted to insert.</td>
+          <td>the type of element that <code>c</code> is permitted to hold</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a typesafe collection.
-</li></ul>
+      <ul class="nolist"><li>a dynamically typesafe view of the specified collection</li></ul>
   </div>
 
     </div>
@@ -1986,27 +2146,40 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified list. Trying to
- insert an element of the wrong type into this list throws a
- <code>ClassCastException</code>. At creation time the types in <code>list</code>
- are not checked for correct type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified list.
+ Any attempt to insert an element of the wrong type will result in
+ an immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>.  Assuming a list contains
+ no incorrectly typed elements prior to the time a dynamically typesafe
+ view is generated, and that all subsequent access to the list
+ takes place through the view, it is <i>guaranteed</i> that the
+ list cannot contain an incorrectly typed element.
+
+ <p>A discussion of the use of dynamically typesafe views may be
+ found in the documentation for the <code><a href="reference/java/util/Collections.html#checkedCollection(java.util.Collection<E>, java.lang.Class<E>)">checkedCollection</a></code> method.
+
+ <p>The returned list will be serializable if the specified list
+ is serializable.
+
+ <p>Since <code>null</code> is considered to be a value of any reference
+ type, the returned list permits insertion of null elements whenever
+ the backing list does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to be wrapped in a typesafe list.</td>
+          <td>the list for which a dynamically typesafe view is to be
+             returned</td>
         </tr>
         <tr>
           <th>type</th>
-          <td>the type of the elements permitted to insert.</td>
+          <td>the type of element that <code>list</code> is permitted to hold</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a typesafe list.
-</li></ul>
+      <ul class="nolist"><li>a dynamically typesafe view of the specified list</li></ul>
   </div>
 
     </div>
@@ -2038,31 +2211,51 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified map. Trying to
- insert an element of the wrong type into this map throws a
- <code>ClassCastException</code>. At creation time the types in <code>m</code> are
- not checked for correct type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified map.
+ Any attempt to insert a mapping whose key or value have the wrong
+ type will result in an immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>.
+ Similarly, any attempt to modify the value currently associated with
+ a key will result in an immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>,
+ whether the modification is attempted directly through the map
+ itself, or through a <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> instance obtained from the
+ map's <code><a href="reference/java/util/Map.html#entrySet()">entry set</a></code> view.
+
+ <p>Assuming a map contains no incorrectly typed keys or values
+ prior to the time a dynamically typesafe view is generated, and
+ that all subsequent access to the map takes place through the view
+ (or one of its collection views), it is <i>guaranteed</i> that the
+ map cannot contain an incorrectly typed key or value.
+
+ <p>A discussion of the use of dynamically typesafe views may be
+ found in the documentation for the <code><a href="reference/java/util/Collections.html#checkedCollection(java.util.Collection<E>, java.lang.Class<E>)">checkedCollection</a></code> method.
+
+ <p>The returned map will be serializable if the specified map is
+ serializable.
+
+ <p>Since <code>null</code> is considered to be a value of any reference
+ type, the returned map permits insertion of null keys or values
+ whenever the backing map does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>m</th>
-          <td>the map to be wrapped in a typesafe map.</td>
+          <td>the map for which a dynamically typesafe view is to be
+          returned</td>
         </tr>
         <tr>
           <th>keyType</th>
-          <td>the type of the keys permitted to insert.</td>
+          <td>the type of key that <code>m</code> is permitted to hold</td>
         </tr>
         <tr>
           <th>valueType</th>
-          <td>the type of the values permitted to insert.</td>
+          <td>the type of value that <code>m</code> is permitted to hold</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a typesafe map.
-</li></ul>
+      <ul class="nolist"><li>a dynamically typesafe view of the specified map</li></ul>
   </div>
 
     </div>
@@ -2094,27 +2287,40 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified set. Trying to
- insert an element of the wrong type into this set throws a
- <code>ClassCastException</code>. At creation time the types in <code>s</code> are
- not checked for correct type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified set.
+ Any attempt to insert an element of the wrong type will result in
+ an immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>.  Assuming a set contains
+ no incorrectly typed elements prior to the time a dynamically typesafe
+ view is generated, and that all subsequent access to the set
+ takes place through the view, it is <i>guaranteed</i> that the
+ set cannot contain an incorrectly typed element.
+
+ <p>A discussion of the use of dynamically typesafe views may be
+ found in the documentation for the <code><a href="reference/java/util/Collections.html#checkedCollection(java.util.Collection<E>, java.lang.Class<E>)">checkedCollection</a></code> method.
+
+ <p>The returned set will be serializable if the specified set is
+ serializable.
+
+ <p>Since <code>null</code> is considered to be a value of any reference
+ type, the returned set permits insertion of null elements whenever
+ the backing set does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the set to be wrapped in a typesafe set.</td>
+          <td>the set for which a dynamically typesafe view is to be
+          returned</td>
         </tr>
         <tr>
           <th>type</th>
-          <td>the type of the elements permitted to insert.</td>
+          <td>the type of element that <code>s</code> is permitted to hold</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a typesafe set.
-</li></ul>
+      <ul class="nolist"><li>a dynamically typesafe view of the specified set</li></ul>
   </div>
 
     </div>
@@ -2146,31 +2352,51 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified sorted map. Trying
- to insert an element of the wrong type into this sorted map throws a
- <code>ClassCastException</code>. At creation time the types in <code>m</code> are
- not checked for correct type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified sorted map.
+ Any attempt to insert a mapping whose key or value have the wrong
+ type will result in an immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>.
+ Similarly, any attempt to modify the value currently associated with
+ a key will result in an immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>,
+ whether the modification is attempted directly through the map
+ itself, or through a <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code> instance obtained from the
+ map's <code><a href="reference/java/util/Map.html#entrySet()">entry set</a></code> view.
+
+ <p>Assuming a map contains no incorrectly typed keys or values
+ prior to the time a dynamically typesafe view is generated, and
+ that all subsequent access to the map takes place through the view
+ (or one of its collection views), it is <i>guaranteed</i> that the
+ map cannot contain an incorrectly typed key or value.
+
+ <p>A discussion of the use of dynamically typesafe views may be
+ found in the documentation for the <code><a href="reference/java/util/Collections.html#checkedCollection(java.util.Collection<E>, java.lang.Class<E>)">checkedCollection</a></code> method.
+
+ <p>The returned map will be serializable if the specified map is
+ serializable.
+
+ <p>Since <code>null</code> is considered to be a value of any reference
+ type, the returned map permits insertion of null keys or values
+ whenever the backing map does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>m</th>
-          <td>the sorted map to be wrapped in a typesafe sorted map.</td>
+          <td>the map for which a dynamically typesafe view is to be
+          returned</td>
         </tr>
         <tr>
           <th>keyType</th>
-          <td>the type of the keys permitted to insert.</td>
+          <td>the type of key that <code>m</code> is permitted to hold</td>
         </tr>
         <tr>
           <th>valueType</th>
-          <td>the type of the values permitted to insert.</td>
+          <td>the type of value that <code>m</code> is permitted to hold</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a typesafe sorted map.
-</li></ul>
+      <ul class="nolist"><li>a dynamically typesafe view of the specified map</li></ul>
   </div>
 
     </div>
@@ -2202,27 +2428,41 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified sorted set. Trying
- to insert an element of the wrong type into this sorted set throws a
- <code>ClassCastException</code>. At creation time the types in <code>s</code> are
- not checked for correct type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a dynamically typesafe view of the specified sorted set.
+ Any attempt to insert an element of the wrong type will result in an
+ immediate <code><a href="reference/java/lang/ClassCastException.html">ClassCastException</a></code>.  Assuming a sorted set
+ contains no incorrectly typed elements prior to the time a
+ dynamically typesafe view is generated, and that all subsequent
+ access to the sorted set takes place through the view, it is
+ <i>guaranteed</i> that the sorted set cannot contain an incorrectly
+ typed element.
+
+ <p>A discussion of the use of dynamically typesafe views may be
+ found in the documentation for the <code><a href="reference/java/util/Collections.html#checkedCollection(java.util.Collection<E>, java.lang.Class<E>)">checkedCollection</a></code> method.
+
+ <p>The returned sorted set will be serializable if the specified sorted
+ set is serializable.
+
+ <p>Since <code>null</code> is considered to be a value of any reference
+ type, the returned sorted set permits insertion of null elements
+ whenever the backing sorted set does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the sorted set to be wrapped in a typesafe sorted set.</td>
+          <td>the sorted set for which a dynamically typesafe view is to be
+          returned</td>
         </tr>
         <tr>
           <th>type</th>
-          <td>the type of the elements permitted to insert.</td>
+          <td>the type of element that <code>s</code> is permitted to hold</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a typesafe sorted set.
-</li></ul>
+      <ul class="nolist"><li>a dynamically typesafe view of the specified sorted set</li></ul>
   </div>
 
     </div>
@@ -2242,7 +2482,7 @@ From class
         void
       </span>
       <span class="sympad">copy</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; destination, <a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; source)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; dest, <a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; src)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2254,20 +2494,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Copies the elements from the source list to the destination list. At the
- end both lists will have the same objects at the same index. If the
- destination array is larger than the source list, the elements in the
- destination list with <code>index >= source.size()</code> will be unchanged.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Copies all of the elements from one list into another.  After the
+ operation, the index of each copied element in the destination list
+ will be identical to its index in the source list.  The destination
+ list must be at least as long as the source list.  If it is longer, the
+ remaining elements in the destination list are unaffected. <p>
+
+ This method runs in linear time.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>destination</th>
-          <td>the list whose elements are set from the source list.</td>
+          <th>dest</th>
+          <td>The destination list.</td>
         </tr>
         <tr>
-          <th>source</th>
-          <td>the list with the elements to be copied into the destination.</td>
+          <th>src</th>
+          <td>The source list.</td>
         </tr>
       </table>
   </div>
@@ -2276,12 +2519,13 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>when the destination list is smaller than the source list.</td>
+            <td>if the destination list is too small
+         to contain the entire source List.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when replacing an element in the destination list is not
-             supported.
+            <td>if the destination list's
+         list-iterator does not support the <tt>set</tt> operation.
 </td>
         </tr>
       </table>
@@ -2316,32 +2560,65 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether the specified collections have no elements in common.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the two specified collections have no
+ elements in common.
+
+ <p>Care must be exercised if this method is used on collections that
+ do not comply with the general contract for <code>Collection</code>.
+ Implementations may elect to iterate over either collection and test
+ for containment in the other collection (or to perform any equivalent
+ computation).  If either collection uses a nonstandard equality test
+ (as does a <code><a href="reference/java/util/SortedSet.html">SortedSet</a></code> whose ordering is not <em>compatible with
+ equals</em>, or the key set of an <code><a href="reference/java/util/IdentityHashMap.html">IdentityHashMap</a></code>), both
+ collections must use the same nonstandard equality test, or the
+ result of this method is undefined.
+
+ <p>Care must also be exercised when using collections that have
+ restrictions on the elements that they may contain. Collection
+ implementations are allowed to throw exceptions for any operation
+ involving elements they deem ineligible. For absolute safety the
+ specified collections should contain only elements which are
+ eligible elements for both collections.
+
+ <p>Note that it is permissible to pass the same collection in both
+ parameters, in which case the method will return <code>true</code> if and
+ only if the collection is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c1</th>
-          <td>the first collection.</td>
+          <td>a collection</td>
         </tr>
         <tr>
           <th>c2</th>
-          <td>the second collection.</td>
+          <td>a collection</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the collections have no elements in common,
-         <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if the two specified collections have no
+ elements in common.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if one of the collections is <code>null</code>.
-</td>
+            <td>if either collection is <code>null</code>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if one collection contains a <code>null</code>
+ element and <code>null</code> is not an eligible element for the other collection.
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if one collection contains an element that is
+ of a type which is ineligible for the other collection.
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
         </tr>
       </table>
   </div>
@@ -2375,7 +2652,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration containing no elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration that has no elements.  More precisely,
+
+ <ul>
+ <li><code><a href="reference/java/util/Enumeration.html#hasMoreElements()">hasMoreElements</a></code> always
+ returns <code>false</code>.</li>
+ <li> <code><a href="reference/java/util/Enumeration.html#nextElement()">nextElement</a></code> always throws
+ <code><a href="reference/java/util/NoSuchElementException.html">NoSuchElementException</a></code>.</li>
+ </ul>
+
+ <p>Implementations of this method are permitted, but not
+ required, to return the same object from multiple invocations.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an empty enumeration</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2406,7 +2697,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator containing no elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator that has no elements.  More precisely,
+
+ <ul>
+ <li><code><a href="reference/java/util/Iterator.html#hasNext()">hasNext</a></code> always returns <code>false</code>.</li>
+ <li><code><a href="reference/java/util/Iterator.html#next()">next</a></code> always throws <code><a href="reference/java/util/NoSuchElementException.html">NoSuchElementException</a></code>.</li>
+ <li><code><a href="reference/java/util/Iterator.html#remove()">remove</a></code> always throws <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code>.</li>
+ </ul>
+
+ <p>Implementations of this method are permitted, but not
+ required, to return the same object from multiple invocations.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an empty iterator</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2437,10 +2741,19 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a type-safe empty, immutable <code><a href="reference/java/util/List.html">List</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an empty list (immutable).  This list is serializable.
+
+ <p>This example illustrates the type-safe way to obtain an empty list:
+ <pre>
+     List&lt;String&gt; s = Collections.emptyList();
+ </pre>
+ Implementation note:  Implementations of this method need not
+ create a separate <tt>List</tt> object for each call.   Using this
+ method is likely to have comparable cost to using the like-named
+ field.  (Unlike this method, the field does not provide type safety.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an empty <code><a href="reference/java/util/List.html">List</a></code>.</li></ul>
+      <ul class="nolist"><li>an empty immutable list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
@@ -2477,7 +2790,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a list iterator containing no elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a list iterator that has no elements.  More precisely,
+
+ <ul>
+ <li><code><a href="reference/java/util/Iterator.html#hasNext()">hasNext</a></code> and <code><a href="reference/java/util/ListIterator.html#hasPrevious()">hasPrevious</a></code> always return <code>false</code>.</li>
+ <li><code><a href="reference/java/util/Iterator.html#next()">next</a></code> and <code><a href="reference/java/util/ListIterator.html#previous()">previous</a></code> always throw <code><a href="reference/java/util/NoSuchElementException.html">NoSuchElementException</a></code>.</li>
+ <li><code><a href="reference/java/util/Iterator.html#remove()">remove</a></code> and <code><a href="reference/java/util/ListIterator.html#set(E)">set</a></code> always throw <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code>.</li>
+ <li><code><a href="reference/java/util/ListIterator.html#add(E)">add</a></code> always throws <code><a href="reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></code>.</li>
+ <li><code><a href="reference/java/util/ListIterator.html#nextIndex()">nextIndex</a></code> always returns
+ <code>0</code>.</li>
+ <li><code><a href="reference/java/util/ListIterator.html#previousIndex()">previousIndex</a></code> always
+ returns <code>-1</code>.</li>
+ </ul>
+
+ <p>Implementations of this method are permitted, but not
+ required, to return the same object from multiple invocations.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an empty list iterator</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2508,10 +2839,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a type-safe empty, immutable <code><a href="reference/java/util/Map.html">Map</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an empty map (immutable).  This map is serializable.
+
+ <p>This example illustrates the type-safe way to obtain an empty map:
+ <pre>
+     Map&lt;String, Date&gt; s = Collections.emptyMap();
+ </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an empty <code><a href="reference/java/util/Map.html">Map</a></code>.</li></ul>
+      <ul class="nolist"><li>an empty map</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
@@ -2548,10 +2884,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a type-safe empty, immutable <code><a href="reference/java/util/Set.html">Set</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an empty set (immutable).  This set is serializable.
+ Unlike the like-named field, this method is parameterized.
+
+ <p>This example illustrates the type-safe way to obtain an empty set:
+ <pre>
+     Set&lt;String&gt; s = Collections.emptySet();
+ </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an empty <code><a href="reference/java/util/Set.html">Set</a></code>.</li></ul>
+      <ul class="nolist"><li>the empty set</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
@@ -2576,7 +2918,7 @@ From class
         <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;T&gt;
       </span>
       <span class="sympad">enumeration</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2588,20 +2930,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>Enumeration</code> on the specified collection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration over the specified collection.  This provides
+ interoperability with legacy APIs that require an enumeration
+ as input.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection to enumerate.</td>
+          <th>c</th>
+          <td>the collection for which an enumeration is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an Enumeration.
-</li></ul>
+      <ul class="nolist"><li>an enumeration over the specified collection.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2621,7 +2969,7 @@ From class
         void
       </span>
       <span class="sympad">fill</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; list, T object)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;super&nbsp;T&gt; list, T obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2633,17 +2981,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Fills the specified list with the specified element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces all of the elements of the specified list with the specified
+ element. <p>
+
+ This method runs in linear time.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to fill.</td>
+          <td>the list to be filled with the specified element.</td>
         </tr>
         <tr>
-          <th>object</th>
-          <td>the element to fill the list with.</td>
+          <th>obj</th>
+          <td>The element with which to fill the specified list.</td>
         </tr>
       </table>
   </div>
@@ -2652,7 +3003,8 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when replacing an element in the List is not supported.
+            <td>if the specified list or its
+         list-iterator does not support the <tt>set</tt> operation.
 </td>
         </tr>
       </table>
@@ -2687,32 +3039,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in the <code>Collection</code> that match the
- <code>Object</code> passed. If the <code>Object</code> is <code>null</code>, then the
- number of <code>null</code> elements is returned.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in the specified collection equal to the
+ specified object.  More formally, returns the number of elements
+ <tt>e</tt> in the collection such that
+ <tt>(o == null ? e == null : o.equals(e))</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the <code>Collection</code> to search.</td>
+          <td>the collection in which to determine the frequency
+     of <tt>o</tt></td>
         </tr>
         <tr>
           <th>o</th>
-          <td>the <code>Object</code> to search for.</td>
+          <td>the object whose frequency is to be determined</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of matching elements.</li></ul>
+      <ul class="nolist"><li>the number of elements in <code>c</code> equal to <code>o</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if the <code>Collection</code> parameter is <code>null</code>.</td>
+            <td>if <tt>c</tt> is null</td>
         </tr>
       </table>
   </div>
@@ -2734,7 +3088,7 @@ From class
         int
       </span>
       <span class="sympad">indexOfSubList</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; sublist)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; source, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; target)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2746,28 +3100,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches the <code>list</code> for <code>sublist</code> and returns the beginning
- index of the first occurrence.
- <p>
- -1 is returned if the <code>sublist</code> does not exist in <code>list</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the starting position of the first occurrence of the specified
+ target list within the specified source list, or -1 if there is no
+ such occurrence.  More formally, returns the lowest index <tt>i</tt>
+ such that <code>source.subList(i, i+target.size()).equals(target)</code>,
+ or -1 if there is no such index.  (Returns -1 if
+ <code>target.size() &gt; source.size()</code>)
+
+ <p>This implementation uses the "brute force" technique of scanning
+ over the source list, looking for a match with the target at each
+ location in turn.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>list</th>
-          <td>the List to search <code>sublist</code> in.</td>
+          <th>source</th>
+          <td>the list in which to search for the first occurrence
+        of <tt>target</tt>.</td>
         </tr>
         <tr>
-          <th>sublist</th>
-          <td>the List to search in <code>list</code>.</td>
+          <th>target</th>
+          <td>the list to search for as a subList of <tt>source</tt>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the beginning index of the first occurrence of <code>sublist</code> in
-         <code>list</code>, or -1.
-</li></ul>
+      <ul class="nolist"><li>the starting position of the first occurrence of the specified
+         target list within the specified source list, or -1 if there
+         is no such occurrence.</li></ul>
   </div>
 
     </div>
@@ -2787,7 +3148,7 @@ From class
         int
       </span>
       <span class="sympad">lastIndexOfSubList</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; sublist)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; source, <a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; target)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2799,28 +3160,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches the <code>list</code> for <code>sublist</code> and returns the beginning
- index of the last occurrence.
- <p>
- -1 is returned if the <code>sublist</code> does not exist in <code>list</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the starting position of the last occurrence of the specified
+ target list within the specified source list, or -1 if there is no such
+ occurrence.  More formally, returns the highest index <tt>i</tt>
+ such that <code>source.subList(i, i+target.size()).equals(target)</code>,
+ or -1 if there is no such index.  (Returns -1 if
+ <code>target.size() &gt; source.size()</code>)
+
+ <p>This implementation uses the "brute force" technique of iterating
+ over the source list, looking for a match with the target at each
+ location in turn.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>list</th>
-          <td>the list to search <code>sublist</code> in.</td>
+          <th>source</th>
+          <td>the list in which to search for the last occurrence
+        of <tt>target</tt>.</td>
         </tr>
         <tr>
-          <th>sublist</th>
-          <td>the list to search in <code>list</code>.</td>
+          <th>target</th>
+          <td>the list to search for as a subList of <tt>source</tt>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the beginning index of the last occurrence of <code>sublist</code> in
-         <code>list</code>, or -1.
-</li></ul>
+      <ul class="nolist"><li>the starting position of the last occurrence of the specified
+         target list within the specified source list, or -1 if there
+         is no such occurrence.</li></ul>
   </div>
 
     </div>
@@ -2840,7 +3208,7 @@ From class
         <a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;T&gt;
       </span>
       <span class="sympad">list</span>
-      <span class="normal">(<a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;T&gt; enumeration)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;T&gt; e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2852,21 +3220,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>ArrayList</code> with all the elements in the <code>enumeration</code>. The elements in the returned <code>ArrayList</code> are in the
- same order as in the <code>enumeration</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array list containing the elements returned by the
+ specified enumeration in the order they are returned by the
+ enumeration.  This method provides interoperability between
+ legacy APIs that return enumerations and new APIs that require
+ collections.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>enumeration</th>
-          <td>the source <code><a href="reference/java/util/Enumeration.html">Enumeration</a></code>.</td>
+          <th>e</th>
+          <td>enumeration providing elements for the returned
+          array list</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an <code>ArrayList</code> from <code>enumeration</code>.
-</li></ul>
+      <ul class="nolist"><li>an array list containing the elements returned
+         by the specified enumeration.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Enumeration.html">Enumeration</a></code></li><li><code><a href="../../../reference/java/util/ArrayList.html">ArrayList</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2886,7 +3263,7 @@ From class
         T
       </span>
       <span class="sympad">max</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comp)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2898,35 +3275,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches the specified collection for the maximum element using the
- specified comparator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum element of the given collection, according to the
+ order induced by the specified comparator.  All elements in the
+ collection must be <i>mutually comparable</i> by the specified
+ comparator (that is, <tt>comp.compare(e1, e2)</tt> must not throw a
+ <tt>ClassCastException</tt> for any elements <tt>e1</tt> and
+ <tt>e2</tt> in the collection).<p>
+
+ This method iterates over the entire collection, hence it requires
+ time proportional to the size of the collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection to search.</td>
+          <th>coll</th>
+          <td>the collection whose maximum element is to be determined.</td>
         </tr>
         <tr>
-          <th>comparator</th>
-          <td>the comparator.</td>
+          <th>comp</th>
+          <td>the comparator with which to determine the maximum element.
+         A <tt>null</tt> value indicates that the elements' <i>natural
+        ordering</i> should be used.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the maximum element in the Collection.</li></ul>
+      <ul class="nolist"><li>the maximum element of the given collection, according
+         to the specified comparator.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when elements in the collection cannot be compared to each
-             other using the <code>Comparator</code>.
-</td>
+            <td>if the collection contains elements that are
+         not <i>mutually comparable</i> using the specified comparator.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if the collection is empty.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2946,7 +3341,7 @@ From class
         T
       </span>
       <span class="sympad">max</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2958,31 +3353,49 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches the specified collection for the maximum element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum element of the given collection, according to the
+ <i>natural ordering</i> of its elements.  All elements in the
+ collection must implement the <tt>Comparable</tt> interface.
+ Furthermore, all elements in the collection must be <i>mutually
+ comparable</i> (that is, <tt>e1.compareTo(e2)</tt> must not throw a
+ <tt>ClassCastException</tt> for any elements <tt>e1</tt> and
+ <tt>e2</tt> in the collection).<p>
+
+ This method iterates over the entire collection, hence it requires
+ time proportional to the size of the collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection to search.</td>
+          <th>coll</th>
+          <td>the collection whose maximum element is to be determined.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the maximum element in the Collection.</li></ul>
+      <ul class="nolist"><li>the maximum element of the given collection, according
+         to the <i>natural ordering</i> of its elements.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when an element in the collection does not implement
-             <code>Comparable</code> or elements cannot be compared to each
-             other.
-</td>
+            <td>if the collection contains elements that are
+         not <i>mutually comparable</i> (for example, strings and
+         integers).</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if the collection is empty.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3002,7 +3415,7 @@ From class
         T
       </span>
       <span class="sympad">min</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3014,31 +3427,49 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches the specified collection for the minimum element.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the minimum element of the given collection, according to the
+ <i>natural ordering</i> of its elements.  All elements in the
+ collection must implement the <tt>Comparable</tt> interface.
+ Furthermore, all elements in the collection must be <i>mutually
+ comparable</i> (that is, <tt>e1.compareTo(e2)</tt> must not throw a
+ <tt>ClassCastException</tt> for any elements <tt>e1</tt> and
+ <tt>e2</tt> in the collection).<p>
+
+ This method iterates over the entire collection, hence it requires
+ time proportional to the size of the collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection to search.</td>
+          <th>coll</th>
+          <td>the collection whose minimum element is to be determined.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the minimum element in the collection.</li></ul>
+      <ul class="nolist"><li>the minimum element of the given collection, according
+         to the <i>natural ordering</i> of its elements.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when an element in the collection does not implement
-             <code>Comparable</code> or elements cannot be compared to each
-             other.
-</td>
+            <td>if the collection contains elements that are
+         not <i>mutually comparable</i> (for example, strings and
+         integers).</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if the collection is empty.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3058,7 +3489,7 @@ From class
         T
       </span>
       <span class="sympad">min</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; collection, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; coll, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comp)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3070,35 +3501,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches the specified collection for the minimum element using the
- specified comparator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the minimum element of the given collection, according to the
+ order induced by the specified comparator.  All elements in the
+ collection must be <i>mutually comparable</i> by the specified
+ comparator (that is, <tt>comp.compare(e1, e2)</tt> must not throw a
+ <tt>ClassCastException</tt> for any elements <tt>e1</tt> and
+ <tt>e2</tt> in the collection).<p>
+
+ This method iterates over the entire collection, hence it requires
+ time proportional to the size of the collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection to search.</td>
+          <th>coll</th>
+          <td>the collection whose minimum element is to be determined.</td>
         </tr>
         <tr>
-          <th>comparator</th>
-          <td>the comparator.</td>
+          <th>comp</th>
+          <td>the comparator with which to determine the minimum element.
+         A <tt>null</tt> value indicates that the elements' <i>natural
+         ordering</i> should be used.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the minimum element in the collection.</li></ul>
+      <ul class="nolist"><li>the minimum element of the given collection, according
+         to the specified comparator.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when elements in the collection cannot be compared to each
-             other using the <code>Comparator</code>.
-</td>
+            <td>if the collection contains elements that are
+         not <i>mutually comparable</i> using the specified comparator.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if the collection is empty.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3118,7 +3567,7 @@ From class
         <a href="../../../reference/java/util/List.html">List</a>&lt;T&gt;
       </span>
       <span class="sympad">nCopies</span>
-      <span class="normal">(int length, T object)</span>
+      <span class="normal">(int n, T o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3130,34 +3579,42 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a list containing the specified number of the specified element.
- The list cannot be modified. The list is serializable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an immutable list consisting of <tt>n</tt> copies of the
+ specified object.  The newly allocated data object is tiny (it contains
+ a single reference to the data object).  This method is useful in
+ combination with the <tt>List.addAll</tt> method to grow lists.
+ The returned list is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>length</th>
-          <td>the size of the returned list.</td>
+          <th>n</th>
+          <td>the number of elements in the returned list.</td>
         </tr>
         <tr>
-          <th>object</th>
-          <td>the element to be added <code>length</code> times to a list.</td>
+          <th>o</th>
+          <td>the element to appear repeatedly in the returned list.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a list containing <code>length</code> copies of the element.</li></ul>
+      <ul class="nolist"><li>an immutable list consisting of <tt>n</tt> copies of the
+         specified object.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>when <code>length < 0</code>.
-</td>
+            <td>if <code>n &lt; 0</code></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/List.html#addAll(java.util.Collection<? extends E>)">addAll(Collection)</a></code></li><li><code><a href="../../../reference/java/util/List.html#addAll(int, java.util.Collection<? extends E>)">addAll(int, Collection)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3189,13 +3646,46 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a set backed by <code>map</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a set backed by the specified map.  The resulting set displays
+ the same ordering, concurrency, and performance characteristics as the
+ backing map.  In essence, this factory method provides a <code><a href="reference/java/util/Set.html">Set</a></code>
+ implementation corresponding to any <code><a href="reference/java/util/Map.html">Map</a></code> implementation.  There
+ is no need to use this method on a <code><a href="reference/java/util/Map.html">Map</a></code> implementation that
+ already has a corresponding <code><a href="reference/java/util/Set.html">Set</a></code> implementation (such as <code><a href="reference/java/util/HashMap.html">HashMap</a></code> or <code><a href="reference/java/util/TreeMap.html">TreeMap</a></code>).
+
+ <p>Each method invocation on the set returned by this method results in
+ exactly one method invocation on the backing map or its <tt>keySet</tt>
+ view, with one exception.  The <tt>addAll</tt> method is implemented
+ as a sequence of <tt>put</tt> invocations on the backing map.
+
+ <p>The specified map must be empty at the time this method is invoked,
+ and should not be accessed directly after this method returns.  These
+ conditions are ensured if the map is created empty, passed directly
+ to this method, and no reference to the map is retained, as illustrated
+ in the following code fragment:
+ <pre>
+    Set&lt;Object&gt; weakHashSet = Collections.newSetFromMap(
+        new WeakHashMap&lt;Object, Boolean&gt;());
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>map</th>
+          <td>the backing map</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the set backed by the map</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the map is not empty</td>
+            <td>if <tt>map</tt> is not empty</td>
         </tr>
       </table>
   </div>
@@ -3217,7 +3707,7 @@ From class
         boolean
       </span>
       <span class="sympad">replaceAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, T obj, T obj2)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, T oldVal, T newVal)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3229,39 +3719,42 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Replaces all occurrences of Object <code>obj</code> in <code>list</code> with
- <code>newObj</code>. If the <code>obj</code> is <code>null</code>, then all
- occurrences of <code>null</code> are replaced with <code>newObj</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces all occurrences of one specified value in a list with another.
+ More formally, replaces with <tt>newVal</tt> each element <tt>e</tt>
+ in <tt>list</tt> such that
+ <tt>(oldVal==null ? e==null : oldVal.equals(e))</tt>.
+ (This method has no effect on the size of the list.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to modify.</td>
+          <td>the list in which replacement is to occur.</td>
         </tr>
         <tr>
-          <th>obj</th>
-          <td>the object to find and replace occurrences of.</td>
+          <th>oldVal</th>
+          <td>the old value to be replaced.</td>
         </tr>
         <tr>
-          <th>obj2</th>
-          <td>the object to replace all occurrences of <code>obj</code> in
-            <code>list</code>.</td>
+          <th>newVal</th>
+          <td>the new value with which <tt>oldVal</tt> is to be
+        replaced.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true, if at least one occurrence of <code>obj</code> has been found in
-         <code>list</code>.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if <tt>list</tt> contained one or more elements
+         <tt>e</tt> such that
+         <tt>(oldVal==null ?  e==null : oldVal.equals(e))</tt>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if the list does not support setting elements.
-</td>
+            <td>if the specified list or
+         its list-iterator does not support the <tt>set</tt> operation.</td>
         </tr>
       </table>
   </div>
@@ -3295,14 +3788,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Modifies the specified <code>List</code> by reversing the order of the
- elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reverses the order of the elements in the specified list.<p>
+
+ This method runs in linear time.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to reverse.</td>
+          <td>the list whose elements are to be reversed.</td>
         </tr>
       </table>
   </div>
@@ -3311,7 +3805,8 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when replacing an element in the List is not supported.
+            <td>if the specified list or
+         its list-iterator does not support the <tt>set</tt> operation.
 </td>
         </tr>
       </table>
@@ -3346,12 +3841,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>A comparator which reverses the natural order of the elements. The
- <code>Comparator</code> that's returned is <code><a href="reference/java/io/Serializable.html">Serializable</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that imposes the reverse of the <em>natural
+ ordering</em> on a collection of objects that implement the
+ <code>Comparable</code> interface.  (The natural ordering is the ordering
+ imposed by the objects' own <code>compareTo</code> method.)  This enables a
+ simple idiom for sorting (or maintaining) collections (or arrays) of
+ objects that implement the <code>Comparable</code> interface in
+ reverse-natural-order.  For example, suppose <code>a</code> is an array of
+ strings. Then: <pre>
+          Arrays.sort(a, Collections.reverseOrder());
+ </pre> sorts the array in reverse-lexicographic (alphabetical) order.<p>
+
+ The returned comparator is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Comparator</code> instance.
-</li></ul>
+      <ul class="nolist"><li>A comparator that imposes the reverse of the <i>natural
+         ordering</i> on a collection of objects that implement
+         the <tt>Comparable</tt> interface.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3371,7 +3882,7 @@ From class
         <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
       </span>
       <span class="sympad">reverseOrder</span>
-      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt; c)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt; cmp)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3383,24 +3894,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Comparator.html">Comparator</a></code> that reverses the order of the
- <code>Comparator</code> passed. If the <code>Comparator</code> passed is
- <code>null</code>, then this method is equivalent to <code><a href="reference/java/util/Collections.html#reverseOrder()">reverseOrder()</a></code>.
- <p>
- The <code>Comparator</code> that's returned is <code><a href="reference/java/io/Serializable.html">Serializable</a></code> if the
- <code>Comparator</code> passed is serializable or <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that imposes the reverse ordering of the specified
+ comparator.  If the specified comparator is <code>null</code>, this method is
+ equivalent to <code><a href="reference/java/util/Collections.html#reverseOrder()">reverseOrder()</a></code> (in other words, it returns a
+ comparator that imposes the reverse of the <em>natural ordering</em> on
+ a collection of objects that implement the Comparable interface).
+
+ <p>The returned comparator is serializable (assuming the specified
+ comparator is also serializable or <code>null</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>c</th>
-          <td>the <code>Comparator</code> to reverse or <code>null</code>.</td>
+          <th>cmp</th>
+          <td>a comparator who's ordering is to be reversed by the returned
+ comparator or <code>null</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Comparator</code> instance.</li></ul>
+      <ul class="nolist"><li>A comparator that imposes the reverse ordering of the
+         specified comparator.</li></ul>
   </div>
 
     </div>
@@ -3420,7 +3935,7 @@ From class
         void
       </span>
       <span class="sympad">rotate</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; lst, int dist)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, int distance)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3432,23 +3947,72 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Rotates the elements in <code>list</code> by the distance <code>dist</code>
- <p>
- e.g. for a given list with elements [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
- calling rotate(list, 3) or rotate(list, -7) would modify the list to look
- like this: [8, 9, 0, 1, 2, 3, 4, 5, 6, 7]</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Rotates the elements in the specified list by the specified distance.
+ After calling this method, the element at index <tt>i</tt> will be
+ the element previously at index <tt>(i - distance)</tt> mod
+ <tt>list.size()</tt>, for all values of <tt>i</tt> between <tt>0</tt>
+ and <tt>list.size()-1</tt>, inclusive.  (This method has no effect on
+ the size of the list.)
+
+ <p>For example, suppose <tt>list</tt> comprises<tt> [t, a, n, k, s]</tt>.
+ After invoking <tt>Collections.rotate(list, 1)</tt> (or
+ <tt>Collections.rotate(list, -4)</tt>), <tt>list</tt> will comprise
+ <tt>[s, t, a, n, k]</tt>.
+
+ <p>Note that this method can usefully be applied to sublists to
+ move one or more elements within a list while preserving the
+ order of the remaining elements.  For example, the following idiom
+ moves the element at index <tt>j</tt> forward to position
+ <tt>k</tt> (which must be greater than or equal to <tt>j</tt>):
+ <pre>
+     Collections.rotate(list.subList(j, k+1), -1);
+ </pre>
+ To make this concrete, suppose <tt>list</tt> comprises
+ <tt>[a, b, c, d, e]</tt>.  To move the element at index <tt>1</tt>
+ (<tt>b</tt>) forward two positions, perform the following invocation:
+ <pre>
+     Collections.rotate(l.subList(1, 4), -1);
+ </pre>
+ The resulting list is <tt>[a, c, d, b, e]</tt>.
+
+ <p>To move more than one element forward, increase the absolute value
+ of the rotation distance.  To move elements backward, use a positive
+ shift distance.
+
+ <p>If the specified list is small or implements the <code><a href="reference/java/util/RandomAccess.html">RandomAccess</a></code> interface, this implementation exchanges the first
+ element into the location it should go, and then repeatedly exchanges
+ the displaced element into the location it should go until a displaced
+ element is swapped into the first element.  If necessary, the process
+ is repeated on the second and successive elements, until the rotation
+ is complete.  If the specified list is large and doesn't implement the
+ <tt>RandomAccess</tt> interface, this implementation breaks the
+ list into two sublist views around index <tt>-distance mod size</tt>.
+ Then the <code><a href="reference/java/util/Collections.html#reverse(java.util.List<?>)">reverse(List)</a></code> method is invoked on each sublist view,
+ and finally it is invoked on the entire list.  For a more complete
+ description of both algorithms, see Section 2.3 of Jon Bentley's
+ <i>Programming Pearls</i> (Addison-Wesley, 1986).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>lst</th>
-          <td>the list whose elements are to be rotated.</td>
+          <th>list</th>
+          <td>the list to be rotated.</td>
         </tr>
         <tr>
-          <th>dist</th>
-          <td>is the distance the list is rotated. This can be any valid
-            integer. Negative values rotate the list backwards.
-</td>
+          <th>distance</th>
+          <td>the distance to rotate the list.  There are no
+        constraints on this value; it may be zero, negative, or
+        greater than <tt>list.size()</tt>.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td>if the specified list or
+         its list-iterator does not support the <tt>set</tt> operation.</td>
         </tr>
       </table>
   </div>
@@ -3470,7 +4034,7 @@ From class
         void
       </span>
       <span class="sympad">shuffle</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/Random.html">Random</a> random)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, <a href="../../../reference/java/util/Random.html">Random</a> rnd)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3482,18 +4046,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Moves every element of the list to a random new position in the list
- using the specified random number generator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Randomly permute the specified list using the specified source of
+ randomness.  All permutations occur with equal likelihood
+ assuming that the source of randomness is fair.<p>
+
+ This implementation traverses the list backwards, from the last element
+ up to the second, repeatedly swapping a randomly selected element into
+ the "current position".  Elements are randomly selected from the
+ portion of the list that runs from the first element to the current
+ position, inclusive.<p>
+
+ This method runs in linear time.  If the specified list does not
+ implement the <code><a href="reference/java/util/RandomAccess.html">RandomAccess</a></code> interface and is large, this
+ implementation dumps the specified list into an array before shuffling
+ it, and dumps the shuffled array back into the list.  This avoids the
+ quadratic behavior that would result from shuffling a "sequential
+ access" list in place.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to shuffle.</td>
+          <td>the list to be shuffled.</td>
         </tr>
         <tr>
-          <th>random</th>
-          <td>the random number generator.</td>
+          <th>rnd</th>
+          <td>the source of randomness to use to shuffle the list.</td>
         </tr>
       </table>
   </div>
@@ -3502,7 +4080,8 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when replacing an element in the list is not supported.
+            <td>if the specified list or its
+         list-iterator does not support the <tt>set</tt> operation.
 </td>
         </tr>
       </table>
@@ -3537,13 +4116,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Moves every element of the list to a random new position in the list.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Randomly permutes the specified list using a default source of
+ randomness.  All permutations occur with approximately equal
+ likelihood.
+
+ <p>The hedge "approximately" is used in the foregoing description because
+ default source of randomness is only approximately an unbiased source
+ of independently chosen bits. If it were a perfect source of randomly
+ chosen bits, then the algorithm would choose permutations with perfect
+ uniformity.
+
+ <p>This implementation traverses the list backwards, from the last
+ element up to the second, repeatedly swapping a randomly selected element
+ into the "current position".  Elements are randomly selected from the
+ portion of the list that runs from the first element to the current
+ position, inclusive.
+
+ <p>This method runs in linear time.  If the specified list does not
+ implement the <code><a href="reference/java/util/RandomAccess.html">RandomAccess</a></code> interface and is large, this
+ implementation dumps the specified list into an array before shuffling
+ it, and dumps the shuffled array back into the list.  This avoids the
+ quadratic behavior that would result from shuffling a "sequential
+ access" list in place.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the List to shuffle.</td>
+          <td>the list to be shuffled.</td>
         </tr>
       </table>
   </div>
@@ -3552,7 +4152,8 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when replacing an element in the List is not supported.
+            <td>if the specified list or
+         its list-iterator does not support the <tt>set</tt> operation.
 </td>
         </tr>
       </table>
@@ -3575,7 +4176,7 @@ From class
         <a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;
       </span>
       <span class="sympad">singleton</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3587,20 +4188,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a set containing the specified element. The set cannot be
- modified. The set is serializable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an immutable set containing only the specified object.
+ The returned set is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the element.</td>
+          <th>o</th>
+          <td>the sole object to be stored in the returned set.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a set containing the element.
+      <ul class="nolist"><li>an immutable set containing only the specified object.
 </li></ul>
   </div>
 
@@ -3621,7 +4222,7 @@ From class
         <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
       </span>
       <span class="sympad">singletonList</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3633,21 +4234,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a list containing the specified element. The list cannot be
- modified. The list is serializable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an immutable list containing only the specified object.
+ The returned list is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the element.</td>
+          <th>o</th>
+          <td>the sole object to be stored in the returned list.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a list containing the element.
-</li></ul>
+      <ul class="nolist"><li>an immutable list containing only the specified object.</li></ul>
   </div>
 
     </div>
@@ -3679,25 +4279,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a Map containing the specified key and value. The map cannot be
- modified. The map is serializable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an immutable map, mapping only the specified key to the
+ specified value.  The returned map is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key.</td>
+          <td>the sole key to be stored in the returned map.</td>
         </tr>
         <tr>
           <th>value</th>
-          <td>the value.</td>
+          <td>the value to which the returned map maps <tt>key</tt>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a Map containing the key and value.
-</li></ul>
+      <ul class="nolist"><li>an immutable map containing only the specified key-value
+         mapping.</li></ul>
   </div>
 
     </div>
@@ -3729,15 +4329,74 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sorts the given list in ascending natural order. The algorithm is
- stable which means equal elements don't get reordered.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sorts the specified list into ascending order, according to the
+ {@linkplain Comparable natural ordering} of its elements.
+ All elements in the list must implement the <code><a href="reference/java/lang/Comparable.html">Comparable</a></code>
+ interface.  Furthermore, all elements in the list must be
+ <i>mutually comparable</i> (that is, <code>e1.compareTo(e2)</code>
+ must not throw a <code>ClassCastException</code> for any elements
+ <code>e1</code> and <code>e2</code> in the list).
+
+ <p>This sort is guaranteed to be <i>stable</i>:  equal elements will
+ not be reordered as a result of the sort.
+
+ <p>The specified list must be modifiable, but need not be resizable.
+
+ <p>Implementation note: This implementation is a stable, adaptive,
+ iterative mergesort that requires far fewer than n lg(n) comparisons
+ when the input array is partially sorted, while offering the
+ performance of a traditional mergesort when the input array is
+ randomly ordered.  If the input array is nearly sorted, the
+ implementation requires approximately n comparisons.  Temporary
+ storage requirements vary from a small constant for nearly sorted
+ input arrays to n/2 object references for randomly ordered input
+ arrays.
+
+ <p>The implementation takes equal advantage of ascending and
+ descending order in its input array, and can take advantage of
+ ascending and descending order in different parts of the same
+ input array.  It is well-suited to merging two or more sorted arrays:
+ simply concatenate the arrays and sort the resulting array.
+
+ <p>The implementation was adapted from Tim Peters's list sort for Python
+ (<a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">
+ TimSort</a>).  It uses techniques from Peter McIlroy's "Optimistic
+ Sorting and Information Theoretic Complexity", in Proceedings of the
+ Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp 467-474,
+ January 1993.
+
+ <p>This implementation dumps the specified list into an array, sorts
+ the array, and iterates over the list resetting each element
+ from the corresponding position in the array.  This avoids the
+ n<sup>2</sup> log(n) performance that would result from attempting
+ to sort a linked list in place.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>list</th>
+          <td>the list to be sorted.</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if any element does not implement <code>Comparable</code>,
-     or if <code>compareTo</code> throws for any pair of elements.
+            <td>if the list contains elements that are not
+         <i>mutually comparable</i> (for example, strings and integers).</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td>if the specified list's
+         list-iterator does not support the <code>set</code> operation.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>(optional) if the implementation
+         detects that the natural ordering of the list elements is
+         found to violate the <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> contract
 </td>
         </tr>
       </table>
@@ -3760,7 +4419,7 @@ From class
         void
       </span>
       <span class="sympad">sort</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3772,15 +4431,77 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sorts the given list using the given comparator. The algorithm is
- stable which means equal elements don't get reordered.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sorts the specified list according to the order induced by the
+ specified comparator.  All elements in the list must be <i>mutually
+ comparable</i> using the specified comparator (that is,
+ <code>c.compare(e1, e2)</code> must not throw a <code>ClassCastException</code>
+ for any elements <code>e1</code> and <code>e2</code> in the list).
+
+ <p>This sort is guaranteed to be <i>stable</i>:  equal elements will
+ not be reordered as a result of the sort.
+
+ <p>The specified list must be modifiable, but need not be resizable.
+
+ <p>Implementation note: This implementation is a stable, adaptive,
+ iterative mergesort that requires far fewer than n lg(n) comparisons
+ when the input array is partially sorted, while offering the
+ performance of a traditional mergesort when the input array is
+ randomly ordered.  If the input array is nearly sorted, the
+ implementation requires approximately n comparisons.  Temporary
+ storage requirements vary from a small constant for nearly sorted
+ input arrays to n/2 object references for randomly ordered input
+ arrays.
+
+ <p>The implementation takes equal advantage of ascending and
+ descending order in its input array, and can take advantage of
+ ascending and descending order in different parts of the same
+ input array.  It is well-suited to merging two or more sorted arrays:
+ simply concatenate the arrays and sort the resulting array.
+
+ <p>The implementation was adapted from Tim Peters's list sort for Python
+ (<a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">
+ TimSort</a>).  It uses techniques from Peter McIlroy's "Optimistic
+ Sorting and Information Theoretic Complexity", in Proceedings of the
+ Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp 467-474,
+ January 1993.
+
+ <p>This implementation dumps the specified list into an array, sorts
+ the array, and iterates over the list resetting each element
+ from the corresponding position in the array.  This avoids the
+ n<sup>2</sup> log(n) performance that would result from attempting
+ to sort a linked list in place.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>list</th>
+          <td>the list to be sorted.</td>
+        </tr>
+        <tr>
+          <th>c</th>
+          <td>the comparator to determine the order of the list.  A
+        <code>null</code> value indicates that the elements' <i>natural
+        ordering</i> should be used.</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if any element does not implement <code>Comparable</code>,
-     or if <code>compareTo</code> throws for any pair of elements.
+            <td>if the list contains elements that are not
+         <i>mutually comparable</i> using the specified comparator.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td>if the specified list's
+         list-iterator does not support the <code>set</code> operation.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>(optional) if the comparator is
+         found to violate the <code><a href="reference/java/util/Comparator.html">Comparator</a></code> contract
 </td>
         </tr>
       </table>
@@ -3803,7 +4524,7 @@ From class
         void
       </span>
       <span class="sympad">swap</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, int index1, int index2)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&gt; list, int i, int j)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3815,23 +4536,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Swaps the elements of list <code>list</code> at indices <code>index1</code> and
- <code>index2</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Swaps the elements at the specified positions in the specified list.
+ (If the specified positions are equal, invoking this method leaves
+ the list unchanged.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to manipulate.</td>
+          <td>The list in which to swap elements.</td>
         </tr>
         <tr>
-          <th>index1</th>
-          <td>position of the first element to swap with the element in
-            index2.</td>
+          <th>i</th>
+          <td>the index of one element to be swapped.</td>
         </tr>
         <tr>
-          <th>index2</th>
-          <td>position of the other element.</td>
+          <th>j</th>
+          <td>the index of the other element to be swapped.</td>
         </tr>
       </table>
   </div>
@@ -3840,7 +4561,9 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if index1 or index2 is out of range of this list.</td>
+            <td>if either <tt>i</tt> or <tt>j</tt>
+         is out of range (i &lt; 0 || i &gt;= list.size()
+         || j &lt; 0 || j &gt;= list.size()).</td>
         </tr>
       </table>
   </div>
@@ -3862,7 +4585,7 @@ From class
         <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt;
       </span>
       <span class="sympad">synchronizedCollection</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3874,20 +4597,45 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified collection which synchronizes all
- access to the collection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a synchronized (thread-safe) collection backed by the specified
+ collection.  In order to guarantee serial access, it is critical that
+ <strong>all</strong> access to the backing collection is accomplished
+ through the returned collection.<p>
+
+ It is imperative that the user manually synchronize on the returned
+ collection when traversing it via <code><a href="reference/java/util/Iterator.html">Iterator</a></code>, <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code>
+ or <code><a href="reference/java/util/stream/Stream.html">Stream</a></code>:
+ <pre>
+  Collection c = Collections.synchronizedCollection(myCollection);
+     ...
+  synchronized (c) {
+      Iterator i = c.iterator(); // Must be in the synchronized block
+      while (i.hasNext())
+         foo(i.next());
+  }
+ </pre>
+ Failure to follow this advice may result in non-deterministic behavior.
+
+ <p>The returned collection does <i>not</i> pass the <code>hashCode</code>
+ and <code>equals</code> operations through to the backing collection, but
+ relies on <code>Object</code>'s equals and hashCode methods.  This is
+ necessary to preserve the contracts of these operations in the case
+ that the backing collection is a set or a list.<p>
+
+ The returned collection will be serializable if the specified collection
+ is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the Collection to wrap in a synchronized collection.</td>
+          <th>c</th>
+          <td>the collection to be "wrapped" in a synchronized collection.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a synchronized Collection.
+      <ul class="nolist"><li>a synchronized view of the specified collection.
 </li></ul>
   </div>
 
@@ -3920,20 +4668,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified List which synchronizes all access to
- the List.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a synchronized (thread-safe) list backed by the specified
+ list.  In order to guarantee serial access, it is critical that
+ <strong>all</strong> access to the backing list is accomplished
+ through the returned list.<p>
+
+ It is imperative that the user manually synchronize on the returned
+ list when iterating over it:
+ <pre>
+  List list = Collections.synchronizedList(new ArrayList());
+      ...
+  synchronized (list) {
+      Iterator i = list.iterator(); // Must be in synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ Failure to follow this advice may result in non-deterministic behavior.
+
+ <p>The returned list will be serializable if the specified list is
+ serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the List to wrap in a synchronized list.</td>
+          <td>the list to be "wrapped" in a synchronized list.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a synchronized List.
+      <ul class="nolist"><li>a synchronized view of the specified list.
 </li></ul>
   </div>
 
@@ -3954,7 +4720,7 @@ From class
         <a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;
       </span>
       <span class="sympad">synchronizedMap</span>
-      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt; map)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt; m)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3966,20 +4732,40 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified map which synchronizes all access to
- the map.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a synchronized (thread-safe) map backed by the specified
+ map.  In order to guarantee serial access, it is critical that
+ <strong>all</strong> access to the backing map is accomplished
+ through the returned map.<p>
+
+ It is imperative that the user manually synchronize on the returned
+ map when iterating over any of its collection views:
+ <pre>
+  Map m = Collections.synchronizedMap(new HashMap());
+      ...
+  Set s = m.keySet();  // Needn't be in synchronized block
+      ...
+  synchronized (m) {  // Synchronizing on m, not s!
+      Iterator i = s.iterator(); // Must be in synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ Failure to follow this advice may result in non-deterministic behavior.
+
+ <p>The returned map will be serializable if the specified map is
+ serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>map</th>
-          <td>the map to wrap in a synchronized map.</td>
+          <th>m</th>
+          <td>the map to be "wrapped" in a synchronized map.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a synchronized Map.
+      <ul class="nolist"><li>a synchronized view of the specified map.
 </li></ul>
   </div>
 
@@ -3987,7 +4773,7 @@ From class
 </div>
 
 
-<a id="synchronizedSet(java.util.Set<E>)"></a>
+<a id="synchronizedSet(java.util.Set<T>)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -3997,10 +4783,10 @@ From class
         
         
         
-        <a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;
+        <a href="../../../reference/java/util/Set.html">Set</a>&lt;T&gt;
       </span>
       <span class="sympad">synchronizedSet</span>
-      <span class="normal">(<a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt; set)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Set.html">Set</a>&lt;T&gt; s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4012,20 +4798,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified set which synchronizes all access to
- the set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a synchronized (thread-safe) set backed by the specified
+ set.  In order to guarantee serial access, it is critical that
+ <strong>all</strong> access to the backing set is accomplished
+ through the returned set.<p>
+
+ It is imperative that the user manually synchronize on the returned
+ set when iterating over it:
+ <pre>
+  Set s = Collections.synchronizedSet(new HashSet());
+      ...
+  synchronized (s) {
+      Iterator i = s.iterator(); // Must be in the synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ Failure to follow this advice may result in non-deterministic behavior.
+
+ <p>The returned set will be serializable if the specified set is
+ serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>set</th>
-          <td>the set to wrap in a synchronized set.</td>
+          <th>s</th>
+          <td>the set to be "wrapped" in a synchronized set.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a synchronized set.
+      <ul class="nolist"><li>a synchronized view of the specified set.
 </li></ul>
   </div>
 
@@ -4046,7 +4850,7 @@ From class
         <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
       </span>
       <span class="sympad">synchronizedSortedMap</span>
-      <span class="normal">(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt; map)</span>
+      <span class="normal">(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt; m)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4058,20 +4862,55 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified sorted map which synchronizes all
- access to the sorted map.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a synchronized (thread-safe) sorted map backed by the specified
+ sorted map.  In order to guarantee serial access, it is critical that
+ <strong>all</strong> access to the backing sorted map is accomplished
+ through the returned sorted map (or its views).<p>
+
+ It is imperative that the user manually synchronize on the returned
+ sorted map when iterating over any of its collection views, or the
+ collections views of any of its <tt>subMap</tt>, <tt>headMap</tt> or
+ <tt>tailMap</tt> views.
+ <pre>
+  SortedMap m = Collections.synchronizedSortedMap(new TreeMap());
+      ...
+  Set s = m.keySet();  // Needn't be in synchronized block
+      ...
+  synchronized (m) {  // Synchronizing on m, not s!
+      Iterator i = s.iterator(); // Must be in synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ or:
+ <pre>
+  SortedMap m = Collections.synchronizedSortedMap(new TreeMap());
+  SortedMap m2 = m.subMap(foo, bar);
+      ...
+  Set s2 = m2.keySet();  // Needn't be in synchronized block
+      ...
+  synchronized (m) {  // Synchronizing on m, not m2 or s2!
+      Iterator i = s.iterator(); // Must be in synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ Failure to follow this advice may result in non-deterministic behavior.
+
+ <p>The returned sorted map will be serializable if the specified
+ sorted map is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>map</th>
-          <td>the sorted map to wrap in a synchronized sorted map.</td>
+          <th>m</th>
+          <td>the sorted map to be "wrapped" in a synchronized sorted map.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a synchronized sorted map.
+      <ul class="nolist"><li>a synchronized view of the specified sorted map.
 </li></ul>
   </div>
 
@@ -4079,7 +4918,7 @@ From class
 </div>
 
 
-<a id="synchronizedSortedSet(java.util.SortedSet<E>)"></a>
+<a id="synchronizedSortedSet(java.util.SortedSet<T>)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -4089,10 +4928,10 @@ From class
         
         
         
-        <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
+        <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt;
       </span>
       <span class="sympad">synchronizedSortedSet</span>
-      <span class="normal">(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt; set)</span>
+      <span class="normal">(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt; s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4104,20 +4943,50 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified sorted set which synchronizes all
- access to the sorted set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a synchronized (thread-safe) sorted set backed by the specified
+ sorted set.  In order to guarantee serial access, it is critical that
+ <strong>all</strong> access to the backing sorted set is accomplished
+ through the returned sorted set (or its views).<p>
+
+ It is imperative that the user manually synchronize on the returned
+ sorted set when iterating over it or any of its <tt>subSet</tt>,
+ <tt>headSet</tt>, or <tt>tailSet</tt> views.
+ <pre>
+  SortedSet s = Collections.synchronizedSortedSet(new TreeSet());
+      ...
+  synchronized (s) {
+      Iterator i = s.iterator(); // Must be in the synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ or:
+ <pre>
+  SortedSet s = Collections.synchronizedSortedSet(new TreeSet());
+  SortedSet s2 = s.headSet(foo);
+      ...
+  synchronized (s) {  // Note: s, not s2!!!
+      Iterator i = s2.iterator(); // Must be in the synchronized block
+      while (i.hasNext())
+          foo(i.next());
+  }
+ </pre>
+ Failure to follow this advice may result in non-deterministic behavior.
+
+ <p>The returned sorted set will be serializable if the specified
+ sorted set is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>set</th>
-          <td>the sorted set to wrap in a synchronized sorted set.</td>
+          <th>s</th>
+          <td>the sorted set to be "wrapped" in a synchronized sorted set.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a synchronized sorted set.
+      <ul class="nolist"><li>a synchronized view of the specified sorted set.
 </li></ul>
   </div>
 
@@ -4125,7 +4994,7 @@ From class
 </div>
 
 
-<a id="unmodifiableCollection(java.util.Collection<? extends E>)"></a>
+<a id="unmodifiableCollection(java.util.Collection<? extends T>)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -4135,10 +5004,10 @@ From class
         
         
         
-        <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;
+        <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt;
       </span>
       <span class="sympad">unmodifiableCollection</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;T&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4150,21 +5019,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified collection which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the collection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an unmodifiable view of the specified collection.  This method
+ allows modules to provide users with "read-only" access to internal
+ collections.  Query operations on the returned collection "read through"
+ to the specified collection, and attempts to modify the returned
+ collection, whether direct or via its iterator, result in an
+ <tt>UnsupportedOperationException</tt>.<p>
+
+ The returned collection does <i>not</i> pass the hashCode and equals
+ operations through to the backing collection, but relies on
+ <tt>Object</tt>'s <tt>equals</tt> and <tt>hashCode</tt> methods.  This
+ is necessary to preserve the contracts of these operations in the case
+ that the backing collection is a set or a list.<p>
+
+ The returned collection will be serializable if the specified collection
+ is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection to wrap in an unmodifiable collection.</td>
+          <th>c</th>
+          <td>the collection for which an unmodifiable view is to be
+         returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an unmodifiable collection.
+      <ul class="nolist"><li>an unmodifiable view of the specified collection.
 </li></ul>
   </div>
 
@@ -4172,7 +5054,7 @@ From class
 </div>
 
 
-<a id="unmodifiableList(java.util.List<? extends E>)"></a>
+<a id="unmodifiableList(java.util.List<? extends T>)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -4182,10 +5064,10 @@ From class
         
         
         
-        <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
+        <a href="../../../reference/java/util/List.html">List</a>&lt;T&gt;
       </span>
       <span class="sympad">unmodifiableList</span>
-      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;E&gt; list)</span>
+      <span class="normal">(<a href="../../../reference/java/util/List.html">List</a>&lt;?&nbsp;extends&nbsp;T&gt; list)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4197,21 +5079,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified list which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the list.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an unmodifiable view of the specified list.  This method allows
+ modules to provide users with "read-only" access to internal
+ lists.  Query operations on the returned list "read through" to the
+ specified list, and attempts to modify the returned list, whether
+ direct or via its iterator, result in an
+ <tt>UnsupportedOperationException</tt>.<p>
+
+ The returned list will be serializable if the specified list
+ is serializable. Similarly, the returned list will implement
+ <code><a href="reference/java/util/RandomAccess.html">RandomAccess</a></code> if the specified list does.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>list</th>
-          <td>the list to wrap in an unmodifiable list.</td>
+          <td>the list for which an unmodifiable view is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an unmodifiable List.
+      <ul class="nolist"><li>an unmodifiable view of the specified list.
 </li></ul>
   </div>
 
@@ -4232,7 +5121,7 @@ From class
         <a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;
       </span>
       <span class="sympad">unmodifiableMap</span>
-      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4244,21 +5133,27 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified map which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the map.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an unmodifiable view of the specified map.  This method
+ allows modules to provide users with "read-only" access to internal
+ maps.  Query operations on the returned map "read through"
+ to the specified map, and attempts to modify the returned
+ map, whether direct or via its collection views, result in an
+ <tt>UnsupportedOperationException</tt>.<p>
+
+ The returned map will be serializable if the specified map
+ is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>map</th>
-          <td>the map to wrap in an unmodifiable map.</td>
+          <th>m</th>
+          <td>the map for which an unmodifiable view is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a unmodifiable map.
+      <ul class="nolist"><li>an unmodifiable view of the specified map.
 </li></ul>
   </div>
 
@@ -4266,7 +5161,7 @@ From class
 </div>
 
 
-<a id="unmodifiableSet(java.util.Set<? extends E>)"></a>
+<a id="unmodifiableSet(java.util.Set<? extends T>)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -4276,10 +5171,10 @@ From class
         
         
         
-        <a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;
+        <a href="../../../reference/java/util/Set.html">Set</a>&lt;T&gt;
       </span>
       <span class="sympad">unmodifiableSet</span>
-      <span class="normal">(<a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;E&gt; set)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;T&gt; s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4291,21 +5186,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified set which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an unmodifiable view of the specified set.  This method allows
+ modules to provide users with "read-only" access to internal sets.
+ Query operations on the returned set "read through" to the specified
+ set, and attempts to modify the returned set, whether direct or via its
+ iterator, result in an <tt>UnsupportedOperationException</tt>.<p>
+
+ The returned set will be serializable if the specified set
+ is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>set</th>
-          <td>the set to wrap in an unmodifiable set.</td>
+          <th>s</th>
+          <td>the set for which an unmodifiable view is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a unmodifiable set
+      <ul class="nolist"><li>an unmodifiable view of the specified set.
 </li></ul>
   </div>
 
@@ -4326,7 +5226,7 @@ From class
         <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
       </span>
       <span class="sympad">unmodifiableSortedMap</span>
-      <span class="normal">(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)</span>
+      <span class="normal">(<a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4338,21 +5238,29 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified sorted map which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the sorted map.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an unmodifiable view of the specified sorted map.  This method
+ allows modules to provide users with "read-only" access to internal
+ sorted maps.  Query operations on the returned sorted map "read through"
+ to the specified sorted map.  Attempts to modify the returned
+ sorted map, whether direct, via its collection views, or via its
+ <tt>subMap</tt>, <tt>headMap</tt>, or <tt>tailMap</tt> views, result in
+ an <tt>UnsupportedOperationException</tt>.<p>
+
+ The returned sorted map will be serializable if the specified sorted map
+ is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>map</th>
-          <td>the sorted map to wrap in an unmodifiable sorted map.</td>
+          <th>m</th>
+          <td>the sorted map for which an unmodifiable view is to be
+        returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a unmodifiable sorted map
+      <ul class="nolist"><li>an unmodifiable view of the specified sorted map.
 </li></ul>
   </div>
 
@@ -4360,7 +5268,7 @@ From class
 </div>
 
 
-<a id="unmodifiableSortedSet(java.util.SortedSet<E>)"></a>
+<a id="unmodifiableSortedSet(java.util.SortedSet<T>)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -4370,10 +5278,10 @@ From class
         
         
         
-        <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;
+        <a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt;
       </span>
       <span class="sympad">unmodifiableSortedSet</span>
-      <span class="normal">(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt; set)</span>
+      <span class="normal">(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;T&gt; s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4385,21 +5293,29 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a wrapper on the specified sorted set which throws an
- <code>UnsupportedOperationException</code> whenever an attempt is made to
- modify the sorted set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an unmodifiable view of the specified sorted set.  This method
+ allows modules to provide users with "read-only" access to internal
+ sorted sets.  Query operations on the returned sorted set "read
+ through" to the specified sorted set.  Attempts to modify the returned
+ sorted set, whether direct, via its iterator, or via its
+ <tt>subSet</tt>, <tt>headSet</tt>, or <tt>tailSet</tt> views, result in
+ an <tt>UnsupportedOperationException</tt>.<p>
+
+ The returned sorted set will be serializable if the specified sorted set
+ is serializable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>set</th>
-          <td>the sorted set to wrap in an unmodifiable sorted set.</td>
+          <th>s</th>
+          <td>the sorted set for which an unmodifiable view is to be
+        returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a unmodifiable sorted set.
+      <ul class="nolist"><li>an unmodifiable view of the specified sorted set.
 </li></ul>
   </div>
 

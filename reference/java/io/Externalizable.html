@@ -154,12 +154,39 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Defines an interface for classes that want to be serializable, but have their
- own binary representation.
-</p>
+<p>Only the identity of the class of an Externalizable instance is
+ written in the serialization stream and it is the responsibility
+ of the class to save and restore the contents of its instances.
+
+ The writeExternal and readExternal methods of the Externalizable
+ interface are implemented by a class to give the class complete
+ control over the format and contents of the stream for an object
+ and its supertypes. These methods must explicitly
+ coordinate with the supertype to save its state. These methods supersede
+ customized implementations of writeObject and readObject methods.<br>
+
+ Object Serialization uses the Serializable and Externalizable
+ interfaces.  Object persistence mechanisms can use them as well.  Each
+ object to be stored is tested for the Externalizable interface. If
+ the object supports Externalizable, the writeExternal method is called. If the
+ object does not support Externalizable and does implement
+ Serializable, the object is saved using
+ ObjectOutputStream. <br> When an Externalizable object is
+ reconstructed, an instance is created using the public no-arg
+ constructor, then the readExternal method called.  Serializable
+ objects are restored by reading them from an ObjectInputStream.<br>
+
+ An Externalizable instance can designate a substitution object via
+ the writeReplace and readResolve methods documented in the Serializable
+ interface.<br></p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></code></li><li><code><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></code></li><li><code><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></code></li><li><code><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></code></li><li><code><a href="../../../reference/java/io/Serializable.html">Serializable</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -226,9 +253,11 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Externalizable.html#readExternal(java.io.ObjectInput)">readExternal</a></span>(<a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a> input)
+        <span class="sympad"><a href="../../../reference/java/io/Externalizable.html#readExternal(java.io.ObjectInput)">readExternal</a></span>(<a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a> in)
         
-        <div class="jd-descrdiv">Reads the next object from the ObjectInput <code>input</code>.</div>
+        <div class="jd-descrdiv">The object implements the readExternal method to restore its
+ contents by calling the methods of DataInput for primitive
+ types and readObject for objects, strings and arrays.</div>
   
   </td></tr>
 
@@ -244,9 +273,12 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Externalizable.html#writeExternal(java.io.ObjectOutput)">writeExternal</a></span>(<a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a> output)
+        <span class="sympad"><a href="../../../reference/java/io/Externalizable.html#writeExternal(java.io.ObjectOutput)">writeExternal</a></span>(<a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a> out)
         
-        <div class="jd-descrdiv">Writes the receiver to the ObjectOutput <code>output</code>.</div>
+        <div class="jd-descrdiv">The object implements the writeExternal method to save its contents
+ by calling the methods of DataOutput for its primitive values or
+ calling the writeObject method of ObjectOutput for objects, strings,
+ and arrays.</div>
   
   </td></tr>
 
@@ -312,7 +344,7 @@ layout: api
         void
       </span>
       <span class="sympad">readExternal</span>
-      <span class="normal">(<a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a> input)</span>
+      <span class="normal">(<a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a> in)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -324,13 +356,17 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads the next object from the ObjectInput <code>input</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The object implements the readExternal method to restore its
+ contents by calling the methods of DataInput for primitive
+ types and readObject for objects, strings and arrays.  The
+ readExternal method must read the values in the same sequence
+ and with the same types as were written by writeExternal.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>input</th>
-          <td>the ObjectInput from which the next object is read.</td>
+          <th>in</th>
+          <td>the stream to read data from in order to restore the object</td>
         </tr>
       </table>
   </div>
@@ -339,11 +375,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs attempting to read from <code>input</code>.</td>
+            <td>if I/O errors occur</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
-            <td>if the class of the instance being loaded cannot be found.
+            <td>If the class for an object being
+              restored cannot be found.
 </td>
         </tr>
       </table>
@@ -366,7 +403,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeExternal</span>
-      <span class="normal">(<a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a> output)</span>
+      <span class="normal">(<a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a> out)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -378,13 +415,16 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes the receiver to the ObjectOutput <code>output</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The object implements the writeExternal method to save its contents
+ by calling the methods of DataOutput for its primitive values or
+ calling the writeObject method of ObjectOutput for objects, strings,
+ and arrays.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>output</th>
-          <td>the ObjectOutput to write the object to.</td>
+          <th>out</th>
+          <td>the stream to write the object to</td>
         </tr>
       </table>
   </div>
@@ -393,7 +433,7 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs attempting to write to <code>output</code>.
+            <td>Includes any I/O exceptions that may occur
 </td>
         </tr>
       </table>

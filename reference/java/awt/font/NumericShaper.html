@@ -175,11 +175,102 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The Class NumericShaper provides methods to convert latin character codes
- to unicode character codes.
- For tables of the character codes used,
- see <a href="http://www.unicode.org/Public/UNIDATA/">unicode.org</a>.
-</p>
+<p>The <code>NumericShaper</code> class is used to convert Latin-1 (European)
+ digits to other Unicode decimal digits.  Users of this class will
+ primarily be people who wish to present data using
+ national digit shapes, but find it more convenient to represent the
+ data internally using Latin-1 (European) digits.  This does not
+ interpret the deprecated numeric shape selector character (U+206E).
+ <p>
+ Instances of <code>NumericShaper</code> are typically applied
+ as attributes to text with the
+ <code><a href="reference/java/awt/font/TextAttribute.html#NUMERIC_SHAPING">NUMERIC_SHAPING</a></code> attribute
+ of the <code>TextAttribute</code> class.
+ For example, this code snippet causes a <code>TextLayout</code> to
+ shape European digits to Arabic in an Arabic context:<br>
+ <blockquote><pre>
+ Map map = new HashMap();
+ map.put(TextAttribute.NUMERIC_SHAPING,
+     NumericShaper.getContextualShaper(NumericShaper.ARABIC));
+ FontRenderContext frc = ...;
+ TextLayout layout = new TextLayout(text, map, frc);
+ layout.draw(g2d, x, y);
+ </pre></blockquote>
+ <br>
+ It is also possible to perform numeric shaping explicitly using instances
+ of <code>NumericShaper</code>, as this code snippet demonstrates:<br>
+ <blockquote><pre>
+ char[] text = ...;
+ // shape all EUROPEAN digits (except zero) to ARABIC digits
+ NumericShaper shaper = NumericShaper.getShaper(NumericShaper.ARABIC);
+ shaper.shape(text, start, count);
+
+ // shape European digits to ARABIC digits if preceding text is Arabic, or
+ // shape European digits to TAMIL digits if preceding text is Tamil, or
+ // leave European digits alone if there is no preceding text, or
+ // preceding text is neither Arabic nor Tamil
+ NumericShaper shaper =
+     NumericShaper.getContextualShaper(NumericShaper.ARABIC |
+                                         NumericShaper.TAMIL,
+                                       NumericShaper.EUROPEAN);
+ shaper.shape(text, start, count);
+ </pre></blockquote>
+
+ <p><b>Bit mask- and enum-based Unicode ranges</b></p>
+
+ <p>This class supports two different programming interfaces to
+ represent Unicode ranges for script-specific digits: bit
+ mask-based ones, such as <code><a href="reference/java/awt/font/NumericShaper.html#ARABIC">NumericShaper.ARABIC</a></code>, and
+ enum-based ones, such as <code><a href="reference/java/awt/font/NumericShaper.Range.html#ARABIC">ARABIC</a></code>.
+ Multiple ranges can be specified by ORing bit mask-based constants,
+ such as:
+ <blockquote><pre>
+ NumericShaper.ARABIC | NumericShaper.TAMIL
+ </pre></blockquote>
+ or creating a <code>Set</code> with the <code><a href="reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a></code>
+ constants, such as:
+ <blockquote><pre>
+ EnumSet.of(NumericShaper.Scirpt.ARABIC, NumericShaper.Range.TAMIL)
+ </pre></blockquote>
+ The enum-based ranges are a super set of the bit mask-based ones.
+
+ <p>If the two interfaces are mixed (including serialization),
+ Unicode range values are mapped to their counterparts where such
+ mapping is possible, such as <code>NumericShaper.Range.ARABIC</code>
+ from/to <code>NumericShaper.ARABIC</code>.  If any unmappable range
+ values are specified, such as <code>NumericShaper.Range.BALINESE</code>,
+ those ranges are ignored.
+
+ <p><b>Decimal Digits Precedence</b></p>
+
+ <p>A Unicode range may have more than one set of decimal digits. If
+ multiple decimal digits sets are specified for the same Unicode
+ range, one of the sets will take precedence as follows.
+
+ <table border=1 cellspacing=3 cellpadding=0 summary="NumericShaper constants precedence.">
+    <tr>
+       <th class="TableHeadingColor">Unicode Range</th>
+       <th class="TableHeadingColor"><code>NumericShaper</code> Constants</th>
+       <th class="TableHeadingColor">Precedence</th>
+    </tr>
+    <tr>
+       <td rowspan="2">Arabic</td>
+       <td><code><a href="reference/java/awt/font/NumericShaper.html#ARABIC">NumericShaper.ARABIC</a></code><br>
+           <code><a href="reference/java/awt/font/NumericShaper.html#EASTERN_ARABIC">NumericShaper.EASTERN_ARABIC</a></code></td>
+       <td><code><a href="reference/java/awt/font/NumericShaper.html#EASTERN_ARABIC">NumericShaper.EASTERN_ARABIC</a></code></td>
+    </tr>
+    <tr>
+       <td><code><a href="reference/java/awt/font/NumericShaper.Range.html#ARABIC">ARABIC</a></code><br>
+           <code><a href="reference/java/awt/font/NumericShaper.Range.html#EASTERN_ARABIC">EASTERN_ARABIC</a></code></td>
+       <td><code><a href="reference/java/awt/font/NumericShaper.Range.html#EASTERN_ARABIC">EASTERN_ARABIC</a></code></td>
+    </tr>
+    <tr>
+       <td>Tai Tham</td>
+       <td><code><a href="reference/java/awt/font/NumericShaper.Range.html#TAI_THAM_HORA">TAI_THAM_HORA</a></code><br>
+           <code><a href="reference/java/awt/font/NumericShaper.Range.html#TAI_THAM_THAM">TAI_THAM_THAM</a></code></td>
+       <td><code><a href="reference/java/awt/font/NumericShaper.Range.html#TAI_THAM_THAM">TAI_THAM_THAM</a></code></td>
+    </tr>
+ </table></p>
 
 
 
@@ -209,6 +300,28 @@ layout: api
 
 
 
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<table id="nestedclasses" class="jd-sumtable"><tr><th colspan="12">Nested Classes</th></tr>
+
+
+  
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        enum</td>
+      <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a></td>
+      <td class="jd-descrcol" width="100%">A <code>NumericShaper.Range</code> represents a Unicode range of a
+ script having its own decimal digits.&nbsp;</td>
+    </tr>
+    
+    
+
+</table>
+
+
 
 
 
@@ -227,144 +340,141 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#ALL_RANGES">ALL_RANGES</a></td>
-        <td class="jd-descrcol" width="100%">The Constant ALL_RANGES indicates all ranges.</td>
+        <td class="jd-descrcol" width="100%">Identifies all ranges, for full contextual shaping.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#ARABIC">ARABIC</a></td>
-        <td class="jd-descrcol" width="100%">The Constant ARABIC indicates the ARABIC range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the ARABIC range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#BENGALI">BENGALI</a></td>
-        <td class="jd-descrcol" width="100%">The Constant BENGALI indicates the BENGALI range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the BENGALI range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#DEVANAGARI">DEVANAGARI</a></td>
-        <td class="jd-descrcol" width="100%">The Constant DEVANAGARI indicates the DEVANAGARI range and
- decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the DEVANAGARI range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#EASTERN_ARABIC">EASTERN_ARABIC</a></td>
-        <td class="jd-descrcol" width="100%">The Constant EASTERN_ARABIC indicates the ARABIC range and
- ARABIC_EXTENDED decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the ARABIC range and ARABIC_EXTENDED decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#ETHIOPIC">ETHIOPIC</a></td>
-        <td class="jd-descrcol" width="100%">The Constant ETHIOPIC indicates the ETHIOPIC range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the ETHIOPIC range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#EUROPEAN">EUROPEAN</a></td>
-        <td class="jd-descrcol" width="100%">The Constant EUROPEAN indicates the latin and extended range,
- and latin decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the Latin-1 (European) and extended range, and
+  Latin-1 (European) decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#GUJARATI">GUJARATI</a></td>
-        <td class="jd-descrcol" width="100%">The Constant GUJARATI indicates the GUJARATI range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the GUJARATI range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#GURMUKHI">GURMUKHI</a></td>
-        <td class="jd-descrcol" width="100%">The Constant GURMUKHI indicates the GURMUKHI range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the GURMUKHI range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#KANNADA">KANNADA</a></td>
-        <td class="jd-descrcol" width="100%">The Constant KANNADA indicates the KANNADA range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the KANNADA range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#KHMER">KHMER</a></td>
-        <td class="jd-descrcol" width="100%">The Constant KHMER indicates the KHMER range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the KHMER range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#LAO">LAO</a></td>
-        <td class="jd-descrcol" width="100%">The Constant LAO indicates the LAO range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the LAO range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#MALAYALAM">MALAYALAM</a></td>
-        <td class="jd-descrcol" width="100%">The Constant MALAYALAM indicates the MALAYALAM range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the MALAYALAM range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#MONGOLIAN">MONGOLIAN</a></td>
-        <td class="jd-descrcol" width="100%">The Constant MONGOLIAN indicates the MONGOLIAN range and
- decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the MONGOLIAN range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#MYANMAR">MYANMAR</a></td>
-        <td class="jd-descrcol" width="100%">The Constant MYANMAR indicates the MYANMAR range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the MYANMAR range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#ORIYA">ORIYA</a></td>
-        <td class="jd-descrcol" width="100%">The Constant ORIYA indicates the ORIYA range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the ORIYA range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#TAMIL">TAMIL</a></td>
-        <td class="jd-descrcol" width="100%">The Constant TAMIL indicates the TAMIL range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the TAMIL range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#TELUGU">TELUGU</a></td>
-        <td class="jd-descrcol" width="100%">The Constant TELUGU indicates the TELUGU range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the TELUGU range and decimal base.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#THAI">THAI</a></td>
-        <td class="jd-descrcol" width="100%">The Constant THAI indicates the THAI range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the THAI range and decimal base.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/NumericShaper.html#TIBETAN">TIBETAN</a></td>
-        <td class="jd-descrcol" width="100%">The Constant TIBETAN indicates the TIBETAN range and decimal base.</td>
+        <td class="jd-descrcol" width="100%">Identifies the TIBETAN range and decimal base.</td>
     </tr>
     
     
@@ -402,10 +512,12 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> obj)
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
- are equal.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the specified object is an instance of
+ <code>NumericShaper</code> and shapes identically to this one,
+ regardless of the range representations, the bit mask or the
+ enum.</div>
   
   </td></tr>
 
@@ -421,10 +533,46 @@ layout: api
             <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
         </td>
         <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getContextualShaper(java.util.Set<java.awt.font.NumericShaper.Range>)">getContextualShaper</a></span>(<a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>&gt; ranges)
+        
+        <div class="jd-descrdiv">Returns a contextual shaper for the provided Unicode
+ range(s).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getContextualShaper(int, int)">getContextualShaper</a></span>(int ranges, int defaultContext)
         
-        <div class="jd-descrdiv">Gets the NumericShaper for the specified unicode ranges
- and default unicode range.</div>
+        <div class="jd-descrdiv">Returns a contextual shaper for the provided unicode range(s).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getContextualShaper(java.util.Set<java.awt.font.NumericShaper.Range>, java.awt.font.NumericShaper.Range)">getContextualShaper</a></span>(<a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>&gt; ranges, <a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a> defaultContext)
+        
+        <div class="jd-descrdiv">Returns a contextual shaper for the provided Unicode range(s).</div>
   
   </td></tr>
 
@@ -442,7 +590,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getContextualShaper(int)">getContextualShaper</a></span>(int ranges)
         
-        <div class="jd-descrdiv">Gets the NumericShaper for the specified unicode ranges.</div>
+        <div class="jd-descrdiv">Returns a contextual shaper for the provided unicode range(s).</div>
   
   </td></tr>
 
@@ -455,15 +603,50 @@ layout: api
             
             
             
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getRangeSet()">getRangeSet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code>Set</code> representing all the Unicode ranges in
+ this <code>NumericShaper</code> that will be shaped.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
             int
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getRanges()">getRanges</a></span>()
         
-        <div class="jd-descrdiv">Gets the masks for all of the ranges supported by this NumericShaper,
- packed into an int value using the logical OR logical operation
- for multiple ranges:
- NumericShaper.DEVANAGARI | NumericShaper.BENGALI.</div>
+        <div class="jd-descrdiv">Returns an <code>int</code> that ORs together the values for
+ all the ranges that will be shaped.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getShaper(int)">getShaper</a></span>(int singleRange)
+        
+        <div class="jd-descrdiv">Returns a shaper for the provided unicode range.</div>
   
   </td></tr>
 
@@ -479,9 +662,10 @@ layout: api
             <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getShaper(int)">getShaper</a></span>(int singleRange)
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#getShaper(java.awt.font.NumericShaper.Range)">getShaper</a></span>(<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a> singleRange)
         
-        <div class="jd-descrdiv">Gets a NumericShaper for the specified unicode range.</div>
+        <div class="jd-descrdiv">Returns a shaper for the provided Unicode
+ range.</div>
   
   </td></tr>
 
@@ -499,7 +683,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+        <div class="jd-descrdiv">Returns a hash code for this shaper.</div>
   
   </td></tr>
 
@@ -517,8 +701,45 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#isContextual()">isContextual</a></span>()
         
-        <div class="jd-descrdiv">Checks if this NumericShaper is contextual (supporting
- multiple script ranges) or not.</div>
+        <div class="jd-descrdiv">Returns a <code>boolean</code> indicating whether or not
+ this shaper shapes contextually.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#shape(char[], int, int)">shape</a></span>(char[] text, int start, int count)
+        
+        <div class="jd-descrdiv">Converts the digits in the text that occur between start and
+ start + count.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#shape(char[], int, int, java.awt.font.NumericShaper.Range)">shape</a></span>(char[] text, int start, int count, <a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a> context)
+        
+        <div class="jd-descrdiv">Converts the digits in the text that occur between <code>start</code> and <code>start + count</code>, using the provided <code>context</code>.</div>
   
   </td></tr>
 
@@ -536,9 +757,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#shape(char[], int, int, int)">shape</a></span>(char[] text, int start, int count, int context)
         
-        <div class="jd-descrdiv">Transforms the encoding of the text, starting from the character
- at index start and transforming count characters,
- using the specified context.</div>
+        <div class="jd-descrdiv">Converts the digits in the text that occur between start and
+ start + count, using the provided context.</div>
   
   </td></tr>
 
@@ -551,32 +771,12 @@ layout: api
             
             
             
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#shape(char[], int, int)">shape</a></span>(char[] text, int start, int count)
-        
-        <div class="jd-descrdiv">Transforms the encoding of the text, starting from the character
- at index start and transforming count characters.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
             <a href="../../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/awt/font/NumericShaper.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> that describes this shaper.</div>
   
   </td></tr>
 
@@ -879,7 +1079,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant ALL_RANGES indicates all ranges. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies all ranges, for full contextual shaping.
+
+ <p>This constant specifies all of the bit mask-based
+ ranges. Use <code>EmunSet.allOf(NumericShaper.Range.class)</code> to
+ specify all of the enum-based ranges.
+</p></div>
 
     
         <div class="jd-tagdata">
@@ -919,7 +1124,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant ARABIC indicates the ARABIC range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the ARABIC range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -959,7 +1164,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant BENGALI indicates the BENGALI range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the BENGALI range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -999,9 +1204,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant DEVANAGARI indicates the DEVANAGARI range and
- decimal base.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the DEVANAGARI range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1041,9 +1244,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant EASTERN_ARABIC indicates the ARABIC range and
- ARABIC_EXTENDED decimal base.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the ARABIC range and ARABIC_EXTENDED decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1083,8 +1284,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant ETHIOPIC indicates the ETHIOPIC range and decimal base.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the ETHIOPIC range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1124,8 +1324,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant EUROPEAN indicates the latin and extended range,
- and latin decimal base.
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the Latin-1 (European) and extended range, and
+  Latin-1 (European) decimal base.
 </p></div>
 
     
@@ -1166,7 +1366,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant GUJARATI indicates the GUJARATI range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the GUJARATI range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1206,7 +1406,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant GURMUKHI indicates the GURMUKHI range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the GURMUKHI range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1246,7 +1446,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant KANNADA indicates the KANNADA range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the KANNADA range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1286,7 +1486,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant KHMER indicates the KHMER range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the KHMER range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1326,7 +1526,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant LAO indicates the LAO range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the LAO range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1366,8 +1566,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant MALAYALAM indicates the MALAYALAM range and decimal base.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the MALAYALAM range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1407,9 +1606,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant MONGOLIAN indicates the MONGOLIAN range and
- decimal base.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the MONGOLIAN range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1449,7 +1646,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant MYANMAR indicates the MYANMAR range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the MYANMAR range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1489,7 +1686,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant ORIYA indicates the ORIYA range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the ORIYA range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1529,7 +1726,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant TAMIL indicates the TAMIL range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the TAMIL range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1569,7 +1766,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant TELUGU indicates the TELUGU range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the TELUGU range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1609,7 +1806,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant THAI indicates the THAI range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the THAI range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1649,7 +1846,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The Constant TIBETAN indicates the TIBETAN range and decimal base. </p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Identifies the TIBETAN range and decimal base. </p></div>
 
     
         <div class="jd-tagdata">
@@ -1700,7 +1897,7 @@ From class
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/Object.html">Object</a> obj)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1712,33 +1909,96 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
- are equal. In order to be equal, <code>o</code> must represent the same object
- as this instance using a class-specific comparison. The general contract
- is that this comparison should be reflexive, symmetric, and transitive.
- Also, no object reference other than null is equal to null.
-
- <p>The default implementation returns <code>true</code> only if <code>this ==
- o</code>. See <a href="../../../../reference/java/lang/Object.html#writing_equals">Writing a correct
- <code>equals</code> method</a>
- if you intend implementing your own <code>equals</code> method.
-
- <p>The general contract for the <code>equals</code> and <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code> methods is that if <code>equals</code> returns <code>true</code> for
- any two objects, then <code>hashCode()</code> must return the same value for
- these objects. This means that subclasses of <code>Object</code> usually
- override either both methods or neither of them.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the specified object is an instance of
+ <code>NumericShaper</code> and shapes identically to this one,
+ regardless of the range representations, the bit mask or the
+ enum. For example, the following code produces <code>"true"</code>.
+ <blockquote><pre>
+ NumericShaper ns1 = NumericShaper.getShaper(NumericShaper.ARABIC);
+ NumericShaper ns2 = NumericShaper.getShaper(NumericShaper.Range.ARABIC);
+ System.out.println(ns1.equals(ns2));
+ </pre></blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>obj</th>
-          <td>the object to compare this instance with.</td>
+          <th>o</th>
+          <td>the specified object to compare to this
+          <code>NumericShaper</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this <code>Object</code>; <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if <code>o</code> is an instance
+         of <code>NumericShaper</code> and shapes in the same way;
+         <code>false</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(java.lang.Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getContextualShaper(java.util.Set<java.awt.font.NumericShaper.Range>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
+      </span>
+      <span class="sympad">getContextualShaper</span>
+      <span class="normal">(<a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>&gt; ranges)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a contextual shaper for the provided Unicode
+ range(s). The Latin-1 (EUROPEAN) digits are converted to the
+ decimal digits corresponding to the range of the preceding
+ text, if the range is one of the provided ranges.
+
+ <p>The shaper assumes EUROPEAN as the starting context, that
+ is, if EUROPEAN digits are encountered before any strong
+ directional text in the string, the context is presumed to be
+ EUROPEAN, and so the digits will not shape.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>ranges</th>
+          <td>the specified Unicode ranges</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a contextual shaper for the specified ranges</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>ranges</code> is <code>null</code>.</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1770,32 +2030,102 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the NumericShaper for the specified unicode ranges
- and default unicode range. The defaultContext parameter
- is used as the starting context (which indicates the
- language/script being used). The OR logical operation
- should be used for multiple ranges:
- NumericShaper.DEVANAGARI | NumericShaper.BENGALI.
- The NumericShaper returned by this method is contextual
- in that it supports multiple character ranges, depending
- on the context.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a contextual shaper for the provided unicode range(s).
+ Latin-1 (EUROPEAN) digits will be converted to the decimal digits
+ corresponding to the range of the preceding text, if the
+ range is one of the provided ranges.  Multiple ranges are
+ represented by or-ing the values together, for example,
+ <code>NumericShaper.ARABIC | NumericShaper.THAI</code>.  The
+ shaper uses defaultContext as the starting context.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>ranges</th>
-          <td>the unicode ranges.</td>
+          <td>the specified Unicode ranges</td>
         </tr>
         <tr>
           <th>defaultContext</th>
-          <td>the default, starting context.</td>
+          <td>the starting context, such as
+ <code>NumericShaper.EUROPEAN</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the NumericShaper for the specified ranges.
-</li></ul>
+      <ul class="nolist"><li>a shaper for the specified Unicode ranges.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if the specified
+ <code>defaultContext</code> is not a single valid range.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getContextualShaper(java.util.Set<java.awt.font.NumericShaper.Range>, java.awt.font.NumericShaper.Range)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
+      </span>
+      <span class="sympad">getContextualShaper</span>
+      <span class="normal">(<a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>&gt; ranges, <a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a> defaultContext)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a contextual shaper for the provided Unicode range(s).
+ The Latin-1 (EUROPEAN) digits will be converted to the decimal
+ digits corresponding to the range of the preceding text, if the
+ range is one of the provided ranges. The shaper uses <code>defaultContext</code> as the starting context.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>ranges</th>
+          <td>the specified Unicode ranges</td>
+        </tr>
+        <tr>
+          <th>defaultContext</th>
+          <td>the starting context, such as
+                       <code>NumericShaper.Range.EUROPEAN</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a contextual shaper for the specified Unicode ranges.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>ranges</code> or <code>defaultContext</code> is <code>null</code></td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1827,25 +2157,65 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the NumericShaper for the specified unicode ranges.
- The OR logical operation should be used for multiple ranges:
- NumericShaper.DEVANAGARI | NumericShaper.BENGALI.
- The NumericShaper returned by this method is contextual
- in that it supports multiple character ranges, depending
- on the context.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a contextual shaper for the provided unicode range(s).
+ Latin-1 (EUROPEAN) digits are converted to the decimal digits
+ corresponding to the range of the preceding text, if the
+ range is one of the provided ranges.  Multiple ranges are
+ represented by or-ing the values together, such as,
+ <code>NumericShaper.ARABIC | NumericShaper.THAI</code>.  The
+ shaper assumes EUROPEAN as the starting context, that is, if
+ EUROPEAN digits are encountered before any strong directional
+ text in the string, the context is presumed to be EUROPEAN, and
+ so the digits will not shape.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>ranges</th>
-          <td>the unicode ranges.</td>
+          <td>the specified Unicode ranges</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the NumericShaper for the specified ranges.
+      <ul class="nolist"><li>a shaper for the specified ranges
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getRangeSet()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a>&gt;
+      </span>
+      <span class="sympad">getRangeSet</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Set</code> representing all the Unicode ranges in
+ this <code>NumericShaper</code> that will be shaped.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>all the Unicode ranges to be shaped.</li></ul>
   </div>
 
     </div>
@@ -1877,13 +2247,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the masks for all of the ranges supported by this NumericShaper,
- packed into an int value using the logical OR logical operation
- for multiple ranges:
- NumericShaper.DEVANAGARI | NumericShaper.BENGALI.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>int</code> that ORs together the values for
+ all the ranges that will be shaped.
+ <p>
+ For example, to check if a shaper shapes to Arabic, you would use the
+ following:
+ <blockquote>
+   <code>if ((shaper.getRanges() & shaper.ARABIC) != 0) { ... </code>
+ </blockquote>
+
+ <p>Note that this method supports only the bit mask-based
+ ranges. Call <code><a href="reference/java/awt/font/NumericShaper.html#getRangeSet()">getRangeSet()</a></code> for the enum-based ranges.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>all ranges of this NumericShaper.
+      <ul class="nolist"><li>the values for all the ranges to be shaped.
 </li></ul>
   </div>
 
@@ -1916,22 +2293,86 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets a NumericShaper for the specified unicode range.
- The NumericShaper supports only a single range and
- hence is not contextual.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a shaper for the provided unicode range.  All
+ Latin-1 (EUROPEAN) digits are converted
+ to the corresponding decimal unicode digits.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>singleRange</th>
-          <td>the specified unicode single range.</td>
+          <td>the specified Unicode range</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the NumericShaper for the specified unicode range.
-</li></ul>
+      <ul class="nolist"><li>a non-contextual numeric shaper</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if the range is not a single range
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getShaper(java.awt.font.NumericShaper.Range)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/awt/font/NumericShaper.html">NumericShaper</a>
+      </span>
+      <span class="sympad">getShaper</span>
+      <span class="normal">(<a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a> singleRange)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a shaper for the provided Unicode
+ range. All Latin-1 (EUROPEAN) digits are converted to the
+ corresponding decimal digits of the specified Unicode range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>singleRange</th>
+          <td>the Unicode range given by a <code><a href="reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a></code> constant.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a non-contextual <code>NumericShaper</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>singleRange</code> is <code>null</code></td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1963,20 +2404,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
- objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
- the same hash code value. This means that subclasses of <code>Object</code>
- usually override both methods or neither method.
-
- <p>Note that hash values must not change over time unless information used in equals
- comparisons also changes.
-
- <p>See <a href="../../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
- <code>hashCode</code> method</a>
- if you intend implementing your own <code>hashCode</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this shaper.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's hash code.</li></ul>
+      <ul class="nolist"><li>this shaper's hash code.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2008,67 +2444,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Checks if this NumericShaper is contextual (supporting
- multiple script ranges) or not.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>boolean</code> indicating whether or not
+ this shaper shapes contextually.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true, if this NumericShaper is contextual, false otherwise.
+      <ul class="nolist"><li><code>true</code> if this shaper is contextual;
+         <code>false</code> otherwise.
 </li></ul>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="shape(char[], int, int, int)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        void
-      </span>
-      <span class="sympad">shape</span>
-      <span class="normal">(char[] text, int start, int count, int context)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Transforms the encoding of the text, starting from the character
- at index start and transforming count characters,
- using the specified context.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>text</th>
-          <td>the text to be shaped.</td>
-        </tr>
-        <tr>
-          <th>start</th>
-          <td>the start offset of the text.</td>
-        </tr>
-        <tr>
-          <th>count</th>
-          <td>the number of characters to be shaped.</td>
-        </tr>
-        <tr>
-          <th>context</th>
-          <td>the context to be used for shaping.
-</td>
-        </tr>
-      </table>
   </div>
 
     </div>
@@ -2100,22 +2482,184 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Transforms the encoding of the text, starting from the character
- at index start and transforming count characters.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the digits in the text that occur between start and
+ start + count.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>text</th>
-          <td>the text to be shaped.</td>
+          <td>an array of characters to convert</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the start offset of the text.</td>
+          <td>the index into <code>text</code> to start
+        converting</td>
         </tr>
         <tr>
           <th>count</th>
-          <td>the number of characters to be shaped.
+          <td>the number of characters in <code>text</code>
+        to convert</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>if start or start + count is
+        out of bounds</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if text is null
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="shape(char[], int, int, java.awt.font.NumericShaper.Range)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">shape</span>
+      <span class="normal">(char[] text, int start, int count, <a href="../../../../reference/java/awt/font/NumericShaper.Range.html">NumericShaper.Range</a> context)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the digits in the text that occur between <code>start</code> and <code>start + count</code>, using the provided <code>context</code>. <code>Context</code> is ignored if the shaper is not a
+ contextual shaper.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>text</th>
+          <td>a <code>char</code> array</td>
+        </tr>
+        <tr>
+          <th>start</th>
+          <td>the index into <code>text</code> to start converting</td>
+        </tr>
+        <tr>
+          <th>count</th>
+          <td>the number of <code>char</code>s in <code>text</code>
+              to convert</td>
+        </tr>
+        <tr>
+          <th>context</th>
+          <td>the context to which to convert the characters,
+                such as <code>NumericShaper.Range.EUROPEAN</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>if <code>start</code> or <code>start + count</code> is out of bounds</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>text</code> or <code>context</code> is null</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="shape(char[], int, int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">shape</span>
+      <span class="normal">(char[] text, int start, int count, int context)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the digits in the text that occur between start and
+ start + count, using the provided context.
+ Context is ignored if the shaper is not a contextual shaper.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>text</th>
+          <td>an array of characters</td>
+        </tr>
+        <tr>
+          <th>start</th>
+          <td>the index into <code>text</code> to start
+        converting</td>
+        </tr>
+        <tr>
+          <th>count</th>
+          <td>the number of characters in <code>text</code>
+        to convert</td>
+        </tr>
+        <tr>
+          <th>context</th>
+          <td>the context to which to convert the
+        characters, such as <code>NumericShaper.EUROPEAN</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>if start or start + count is
+        out of bounds</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if text is null</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if this is a contextual shaper
+ and the specified <code>context</code> is not a single valid
+ range.
 </td>
         </tr>
       </table>
@@ -2150,18 +2694,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- object. Subclasses are encouraged to override this method and provide an
- implementation that takes into account the object's type and data. The
- default implementation is equivalent to the following expression:
- <pre>
-   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
- <p>See <a href="../../../../reference/java/lang/Object.html#writing_toString">Writing a useful
- <code>toString</code> method</a>
- if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> that describes this shaper. This method
+ is used for debugging purposes only.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
+      <ul class="nolist"><li>a <code>String</code> describing this shaper.
 </li></ul>
   </div>
 

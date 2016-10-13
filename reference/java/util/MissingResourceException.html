@@ -235,15 +235,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>MissingResourceException</code> is thrown by ResourceBundle when a
- resource bundle cannot be found or a resource is missing from a resource
- bundle.</p>
+<p>Signals that a resource is missing.</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></code></li><li><code><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Exception.html">Exception</a></code></li><li><code><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></code></li>
       </ul>
   </div>
 
@@ -308,11 +306,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/MissingResourceException.html#MissingResourceException(java.lang.String, java.lang.String, java.lang.String)">MissingResourceException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/String.html">String</a> className, <a href="../../../reference/java/lang/String.html">String</a> resourceName)
+        <span class="sympad"><a href="../../../reference/java/util/MissingResourceException.html#MissingResourceException(java.lang.String, java.lang.String, java.lang.String)">MissingResourceException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/String.html">String</a> className, <a href="../../../reference/java/lang/String.html">String</a> key)
         
-        <div class="jd-descrdiv">Constructs a new <code>MissingResourceException</code> with the stack trace,
- message, the class name of the resource bundle and the name of the
- missing resource filled in.</div>
+        <div class="jd-descrdiv">Constructs a MissingResourceException with the specified information.</div>
   
   </td></tr>
 
@@ -343,9 +339,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/MissingResourceException.html#getClassName()">getClassName</a></span>()
         
-        <div class="jd-descrdiv">Returns the class name of the resource bundle from which a resource could
- not be found, or in the case of a missing resource, the name of the
- missing resource bundle.</div>
+        <div class="jd-descrdiv">Gets parameter passed by constructor.</div>
   
   </td></tr>
 
@@ -363,8 +357,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/MissingResourceException.html#getKey()">getKey</a></span>()
         
-        <div class="jd-descrdiv">Returns the name of the missing resource, or an empty string if the
- resource bundle is missing.</div>
+        <div class="jd-descrdiv">Gets parameter passed by constructor.</div>
   
   </td></tr>
 
@@ -596,6 +589,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -884,7 +896,7 @@ From class
         
       </span>
       <span class="sympad">MissingResourceException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/String.html">String</a> className, <a href="../../../reference/java/lang/String.html">String</a> resourceName)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/String.html">String</a> className, <a href="../../../reference/java/lang/String.html">String</a> key)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -896,23 +908,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>MissingResourceException</code> with the stack trace,
- message, the class name of the resource bundle and the name of the
- missing resource filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a MissingResourceException with the specified information.
+ A detail message is a String that describes this particular exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for the exception.</td>
+          <th>s</th>
+          <td>the detail message</td>
         </tr>
         <tr>
           <th>className</th>
-          <td>the class name of the resource bundle.</td>
+          <td>the name of the resource class</td>
         </tr>
         <tr>
-          <th>resourceName</th>
-          <td>the name of the missing resource.
+          <th>key</th>
+          <td>the key for the missing resource.
 </td>
         </tr>
       </table>
@@ -962,12 +973,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the class name of the resource bundle from which a resource could
- not be found, or in the case of a missing resource, the name of the
- missing resource bundle.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets parameter passed by constructor.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the class name of the resource bundle.
+      <ul class="nolist"><li>the name of the resource class
 </li></ul>
   </div>
 
@@ -1000,11 +1009,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the missing resource, or an empty string if the
- resource bundle is missing.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets parameter passed by constructor.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the name of the missing resource.
+      <ul class="nolist"><li>the key for the missing resource
 </li></ul>
   </div>
 

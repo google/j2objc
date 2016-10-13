@@ -194,54 +194,54 @@ layout: api
  could write this as:
 
  <pre> <code>void solve(Executor e,
-            Collection<Callable<Result>> solvers)
+            Collection&lt;Callable&lt;Result&gt;&gt; solvers)
      throws InterruptedException, ExecutionException {
-     CompletionService<Result> ecs
-         = new ExecutorCompletionService<Result>(e);
-     for (Callable<Result> s : solvers)
+     CompletionService&lt;Result&gt; ecs
+         = new ExecutorCompletionService&lt;Result&gt;(e);
+     for (Callable&lt;Result&gt; s : solvers)
          ecs.submit(s);
      int n = solvers.size();
-     for (int i = 0; i < n; ++i) {
+     for (int i = 0; i &lt; n; ++i) {
          Result r = ecs.take().get();
          if (r != null)
              use(r);
-     </code>
- }}</pre>
+     }
+ }</code></pre>
 
  Suppose instead that you would like to use the first non-null result
  of the set of tasks, ignoring any that encounter exceptions,
  and cancelling all other tasks when the first one is ready:
 
  <pre> <code>void solve(Executor e,
-            Collection<Callable<Result>> solvers)
+            Collection&lt;Callable&lt;Result&gt;&gt; solvers)
      throws InterruptedException {
-     CompletionService<Result> ecs
-         = new ExecutorCompletionService<Result>(e);
+     CompletionService&lt;Result&gt; ecs
+         = new ExecutorCompletionService&lt;Result&gt;(e);
      int n = solvers.size();
-     List<Future<Result>> futures
-         = new ArrayList<Future<Result>>(n);
+     List&lt;Future&lt;Result&gt;&gt; futures
+         = new ArrayList&lt;Future&lt;Result&gt;&gt;(n);
      Result result = null;
      try {
-         for (Callable<Result> s : solvers)
+         for (Callable&lt;Result&gt; s : solvers)
              futures.add(ecs.submit(s));
-         for (int i = 0; i < n; ++i) {
+         for (int i = 0; i &lt; n; ++i) {
              try {
                  Result r = ecs.take().get();
                  if (r != null) {
                      result = r;
                      break;
-                 </code>
+                 }
              } catch (ExecutionException ignore) {}
          }
      }
      finally {
-         for (Future<Result> f : futures)
+         for (Future&lt;Result&gt; f : futures)
              f.cancel(true);
      }
 
      if (result != null)
          use(result);
- }}</pre>
+ }</code></pre>
 </p>
 
 

@@ -235,9 +235,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program attempts to store an element of an incompatible type in
- an array.
-</p>
+<p>Thrown to indicate that an attempt has been made to store the
+ wrong type of object into an array of objects. For example, the
+ following code generates an <code>ArrayStoreException</code>:
+ <p><blockquote><pre>
+     Object x[] = new String[3];
+     x[0] = new Integer(0);
+ </pre></blockquote></p>
 
 
 
@@ -305,8 +309,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ArrayStoreException.html#ArrayStoreException()">ArrayStoreException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>ArrayStoreException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>ArrayStoreException</code> with no detail message.</div>
   
   </td></tr>
 
@@ -322,10 +325,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ArrayStoreException.html#ArrayStoreException(java.lang.String)">ArrayStoreException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/ArrayStoreException.html#ArrayStoreException(java.lang.String)">ArrayStoreException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>ArrayStoreException</code> with the current stack trace
- and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>ArrayStoreException</code> with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -561,6 +564,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -861,8 +883,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ArrayStoreException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>ArrayStoreException</code> with no detail message.
 </p></div>
 
     </div>
@@ -882,7 +903,7 @@ From class
         
       </span>
       <span class="sympad">ArrayStoreException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -894,14 +915,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ArrayStoreException</code> with the current stack trace
- and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>ArrayStoreException</code> with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

@@ -212,9 +212,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>CoderMalfunctionError</code> is thrown when the encoder/decoder is
- malfunctioning.
-</p>
+<p>Error thrown when the <code><a href="reference/java/nio/charset/CharsetDecoder.html#decodeLoop(java.nio.ByteBuffer, java.nio.CharBuffer)">decodeLoop</a></code> method of
+ a <code><a href="reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a></code>, or the <code><a href="reference/java/nio/charset/CharsetEncoder.html#encodeLoop(java.nio.CharBuffer, java.nio.ByteBuffer)">encodeLoop</a></code> method of a <code><a href="reference/java/nio/charset/CharsetEncoder.html">CharsetEncoder</a></code>, throws an unexpected
+ exception.</p>
 
 
 
@@ -280,9 +280,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/nio/charset/CoderMalfunctionError.html#CoderMalfunctionError(java.lang.Exception)">CoderMalfunctionError</a></span>(<a href="../../../../reference/java/lang/Exception.html">Exception</a> ex)
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CoderMalfunctionError.html#CoderMalfunctionError(java.lang.Exception)">CoderMalfunctionError</a></span>(<a href="../../../../reference/java/lang/Exception.html">Exception</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>CoderMalfunctionError</code>.</div>
+        <div class="jd-descrdiv">Initializes an instance of this class.</div>
   
   </td></tr>
 
@@ -516,6 +516,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -804,7 +823,7 @@ From class
         
       </span>
       <span class="sympad">CoderMalfunctionError</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/Exception.html">Exception</a> ex)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/Exception.html">Exception</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -816,13 +835,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>CoderMalfunctionError</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Initializes an instance of this class.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>ex</th>
-          <td>the original exception thrown by the encoder/decoder.
+          <th>cause</th>
+          <td>The unexpected exception that was thrown
 </td>
         </tr>
       </table>

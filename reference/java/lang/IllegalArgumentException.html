@@ -241,6 +241,8 @@ layout: api
               >
           
             
+              <a href="../../../reference/java/nio/channels/IllegalChannelGroupException.html">IllegalChannelGroupException</a>,
+            
               <a href="../../../reference/java/nio/charset/IllegalCharsetNameException.html">IllegalCharsetNameException</a>,
             
               <a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a>,
@@ -268,55 +270,62 @@ layout: api
               >
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/IllegalChannelGroupException.html">IllegalChannelGroupException</a></td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an attempt is made to open a channel
+ in a group that was not created by the same provider.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/IllegalCharsetNameException.html">IllegalCharsetNameException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalCharsetNameException</code> is thrown when an illegal charset name
- is encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a string that is not a
+ <a href=Charset.html#names>legal charset name</a> is used as such.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatException</code> is thrown when a format string that
- contains either an illegal syntax or format specifier is transferred as a
- parameter.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a format string contains an illegal syntax
+ or a format specifier that is incompatible with the given arguments.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalSelectorException</code> is thrown when a call is made to register
- a channel on a selector that has been created by a different provider.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an attempt is made to register a channel
+ with a selector that was not created by the provider that created the
+ channel.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an operation is attempted which is not possible given the state
- that the executing thread is in.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
-              <td class="jd-descrcol" width="100%"><code>InvalidParameterException</code> indicates exceptional conditions, caused by
- invalid parameters.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that a thread is not in an appropriate state
+ for the requested operation.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an invalid value is passed to a string-to-number conversion
- method.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
+              <td class="jd-descrcol" width="100%">This exception, designed for use by the JCA/JCE engine classes,
+ is thrown when an invalid parameter is passed
+ to a method.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that the application has attempted to convert
+ a string to one of the numeric types, but that the string does not
+ have the appropriate format.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/regex/PatternSyntaxException.html">PatternSyntaxException</a></td>
               <td class="jd-descrcol" width="100%">Encapsulates a syntax error that occurred during the compilation of a
  <code><a href="reference/java/util/regex/Pattern.html">Pattern</a></code>.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnresolvedAddressException</code> is thrown when trying to use an
- unresolved network address in a network operation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an attempt is made to invoke a network
+ operation upon an unresolved socket address.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an attempt is made to bind or connect
+ to a socket address of a type that is not supported.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnsupportedAddressTypeException</code> is thrown when connecting or
- binding to an unsupported address type.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/UnsupportedCharsetException.html">UnsupportedCharsetException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnsupportedCharsetException</code> is thrown when an unsupported charset
- name is encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when no support is available
+ for a requested charset.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -368,61 +377,56 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></td>
-              <td class="jd-descrcol" width="100%">The unchecked exception will be thrown out if there are duplicate flags given
- out in the format specifier.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when duplicate flags are provided in the format
+ specifier.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>FormatFlagsConversionMismatchException</code> will be thrown if a
- conversion and the flags are incompatible.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a conversion and flag are incompatible.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatCodePointException</code> will be thrown if an invalid
- Unicode code point (defined by <code><a href="reference/java/lang/Character.html#isValidCodePoint(int)">isValidCodePoint(int)</a></code>) is
- passed as a parameter to a Formatter.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a character with an invalid Unicode code
+ point as defined by <code><a href="reference/java/lang/Character.html#isValidCodePoint(int)">isValidCodePoint(int)</a></code> is passed to the
+ <code><a href="reference/java/util/Formatter.html">Formatter</a></code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatConversionException</code> will be thrown when the parameter
- is incompatible with the corresponding format specifier.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the argument corresponding to the format
+ specifier is of an incompatible type.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatFlagsException</code> will be thrown if the combination of
- the format flags is illegal.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an illegal combination flags is given.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatPrecisionException</code> will be thrown if the precision is
- a negative other than -1 or in other cases where precision is not supported.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the precision is a negative value other than
+ <tt>-1</tt>, the conversion does not support a precision, or the value is
+ otherwise unsupported.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalFormatWidthException</code> will be thrown if the width is a
- negative value other than -1 or in other cases where a width is not
- supported.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the format width is a negative value other
+ than <tt>-1</tt> or is otherwise unsupported.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>MissingFormatArgumentException</code> will be thrown if there is no
- corresponding argument with the specified conversion or an argument index
- that refers to a missing argument.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when there is a format specifier which does not
+ have a corresponding argument or if an argument index refers to an argument
+ that does not exist.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>MissingFormatWidthException</code> will be thrown if the format width is
- missing but is required.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when the format width is required.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnknownFormatConversionException</code> will be thrown if the format
- conversion is unknown.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an unknown conversion is given.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnknownFormatFlagsException</code> will be thrown if there is
- an unknown flag.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when an unknown flag is given.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -434,12 +438,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a method is invoked with an argument which it can not reasonably
- deal with.
-</p>
+<p>Thrown to indicate that a method has been passed an illegal or
+ inappropriate argument.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#setPriority(int)">setPriority(int)</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -504,8 +512,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IllegalArgumentException.html#IllegalArgumentException()">IllegalArgumentException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalArgumentException</code> that includes the
- current stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>IllegalArgumentException</code> with no
+ detail message.</div>
   
   </td></tr>
 
@@ -521,10 +529,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/IllegalArgumentException.html#IllegalArgumentException(java.lang.String)">IllegalArgumentException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/IllegalArgumentException.html#IllegalArgumentException(java.lang.String)">IllegalArgumentException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalArgumentException</code> with the current stack
- trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>IllegalArgumentException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -542,8 +550,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IllegalArgumentException.html#IllegalArgumentException(java.lang.String, java.lang.Throwable)">IllegalArgumentException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalArgumentException</code> with the current stack
- trace, the specified detail message and the specified cause.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified detail message and
+ cause.</div>
   
   </td></tr>
 
@@ -561,8 +569,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IllegalArgumentException.html#IllegalArgumentException(java.lang.Throwable)">IllegalArgumentException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalArgumentException</code> with the current stack
- trace and the specified cause.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified cause and a detail
+ message of <tt>(cause==null ? null : cause.toString())</tt> (which
+ typically contains the class and detail message of <tt>cause</tt>).</div>
   
   </td></tr>
 
@@ -798,6 +807,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -1098,8 +1126,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalArgumentException</code> that includes the
- current stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IllegalArgumentException</code> with no
+ detail message.
 </p></div>
 
     </div>
@@ -1119,7 +1147,7 @@ From class
         
       </span>
       <span class="sympad">IllegalArgumentException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1131,14 +1159,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalArgumentException</code> with the current stack
- trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IllegalArgumentException</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>
@@ -1173,18 +1201,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalArgumentException</code> with the current stack
- trace, the specified detail message and the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified detail message and
+ cause.
+
+ <p>Note that the detail message associated with <code>cause</code> is
+ <i>not</i> automatically incorporated in this exception's detail
+ message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+         by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the cause of this exception, may be <code>null</code>.</td>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value
+         is permitted, and indicates that the cause is nonexistent or
+         unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1218,14 +1254,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalArgumentException</code> with the current stack
- trace and the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified cause and a detail
+ message of <tt>(cause==null ? null : cause.toString())</tt> (which
+ typically contains the class and detail message of <tt>cause</tt>).
+ This constructor is useful for exceptions that are little more than
+ wrappers for other throwables (for example, <code><a href="reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the cause of this exception, may be <code>null</code>.</td>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value is
+         permitted, and indicates that the cause is nonexistent or
+         unknown.)</td>
         </tr>
       </table>
   </div>

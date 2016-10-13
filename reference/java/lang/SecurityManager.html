@@ -166,10 +166,6 @@ layout: api
 
 <h2>Class Overview</h2>
 <p>Legacy security code; do not use.
-
- <p>Security managers do <strong>not</strong> provide a
- secure environment for executing untrusted code. Untrusted code cannot be
- safely isolated within the Dalvik VM.
 </p>
 
 
@@ -230,7 +226,7 @@ layout: api
           <td class="jd-descrcol" width="100%">
       <em>
   This field is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></td>
       </tr>
       
@@ -305,7 +301,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkAccess(java.lang.Thread)">checkAccess</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread</a> thread)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkAccess(java.lang.Thread)">checkAccess</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread</a> t)
         
   </td></tr>
 
@@ -321,7 +317,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkAccess(java.lang.ThreadGroup)">checkAccess</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> group)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkAccess(java.lang.ThreadGroup)">checkAccess</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> g)
         
   </td></tr>
 
@@ -449,7 +445,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkLink(java.lang.String)">checkLink</a></span>(<a href="../../../reference/java/lang/String.html">String</a> libName)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkLink(java.lang.String)">checkLink</a></span>(<a href="../../../reference/java/lang/String.html">String</a> lib)
         
   </td></tr>
 
@@ -481,7 +477,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkMemberAccess(java.lang.Class<?>, int)">checkMemberAccess</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; cls, int type)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkMemberAccess(java.lang.Class<?>, int)">checkMemberAccess</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; clazz, int which)
         
   </td></tr>
 
@@ -497,7 +493,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPackageAccess(java.lang.String)">checkPackageAccess</a></span>(<a href="../../../reference/java/lang/String.html">String</a> packageName)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkMulticast(java.net.InetAddress)">checkMulticast</a></span>(<a href="../../../reference/java/net/InetAddress.html">InetAddress</a> maddr)
         
   </td></tr>
 
@@ -513,7 +509,45 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPackageDefinition(java.lang.String)">checkPackageDefinition</a></span>(<a href="../../../reference/java/lang/String.html">String</a> packageName)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkMulticast(java.net.InetAddress, byte)">checkMulticast</a></span>(<a href="../../../reference/java/net/InetAddress.html">InetAddress</a> maddr, byte ttl)
+        
+        <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      use <code><a href="reference/java/lang/SecurityManager.html#checkMulticast(java.net.InetAddress)">checkMulticast(java.net.InetAddress)</a></code> instead.
+</em></div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPackageAccess(java.lang.String)">checkPackageAccess</a></span>(<a href="../../../reference/java/lang/String.html">String</a> pkg)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPackageDefinition(java.lang.String)">checkPackageDefinition</a></span>(<a href="../../../reference/java/lang/String.html">String</a> pkg)
         
   </td></tr>
 
@@ -529,7 +563,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission, java.lang.Object)">checkPermission</a></span>(<a href="../../../reference/java/security/Permission.html">Permission</a> permission, <a href="../../../reference/java/lang/Object.html">Object</a> context)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission, java.lang.Object)">checkPermission</a></span>(<a href="../../../reference/java/security/Permission.html">Permission</a> perm, <a href="../../../reference/java/lang/Object.html">Object</a> context)
         
   </td></tr>
 
@@ -545,7 +579,7 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission</a></span>(<a href="../../../reference/java/security/Permission.html">Permission</a> permission)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission</a></span>(<a href="../../../reference/java/security/Permission.html">Permission</a> perm)
         
   </td></tr>
 
@@ -758,7 +792,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -825,7 +859,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -847,7 +881,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -869,7 +903,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -891,7 +925,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -929,7 +963,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -951,7 +985,7 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>
+      Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 </em></div>
   
   </td></tr>
@@ -1256,7 +1290,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This field is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>
+  This field is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -1366,7 +1400,7 @@ From class
         void
       </span>
       <span class="sympad">checkAccess</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Thread.html">Thread</a> thread)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Thread.html">Thread</a> t)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1397,7 +1431,7 @@ From class
         void
       </span>
       <span class="sympad">checkAccess</span>
-      <span class="normal">(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> group)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> g)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1645,7 +1679,7 @@ From class
         void
       </span>
       <span class="sympad">checkLink</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> libName)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> lib)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1707,7 +1741,7 @@ From class
         void
       </span>
       <span class="sympad">checkMemberAccess</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; cls, int type)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; clazz, int which)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1719,6 +1753,73 @@ From class
       </div>
     <div class="jd-details-descr">
       
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<a id="checkMulticast(java.net.InetAddress)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">checkMulticast</span>
+      <span class="normal">(<a href="../../../reference/java/net/InetAddress.html">InetAddress</a> maddr)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<a id="checkMulticast(java.net.InetAddress, byte)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">checkMulticast</span>
+      <span class="normal">(<a href="../../../reference/java/net/InetAddress.html">InetAddress</a> maddr, byte ttl)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> use <code><a href="reference/java/lang/SecurityManager.html#checkMulticast(java.net.InetAddress)">checkMulticast(java.net.InetAddress)</a></code> instead.
+
+  </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
@@ -1738,7 +1839,7 @@ From class
         void
       </span>
       <span class="sympad">checkPackageAccess</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> packageName)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> pkg)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1769,7 +1870,7 @@ From class
         void
       </span>
       <span class="sympad">checkPackageDefinition</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> packageName)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> pkg)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1800,7 +1901,7 @@ From class
         void
       </span>
       <span class="sympad">checkPermission</span>
-      <span class="normal">(<a href="../../../reference/java/security/Permission.html">Permission</a> permission, <a href="../../../reference/java/lang/Object.html">Object</a> context)</span>
+      <span class="normal">(<a href="../../../reference/java/security/Permission.html">Permission</a> perm, <a href="../../../reference/java/lang/Object.html">Object</a> context)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1831,7 +1932,7 @@ From class
         void
       </span>
       <span class="sympad">checkPermission</span>
-      <span class="normal">(<a href="../../../reference/java/security/Permission.html">Permission</a> permission)</span>
+      <span class="normal">(<a href="../../../reference/java/security/Permission.html">Permission</a> perm)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2248,7 +2349,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -2356,7 +2457,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -2392,7 +2493,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -2428,7 +2529,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -2464,7 +2565,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -2531,7 +2632,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>.
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>
@@ -2567,7 +2668,7 @@ From class
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code>
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/SecurityManager.html#checkPermission(java.security.Permission)">checkPermission(Permission)</a></code> instead.
 
   </p>
   <div class="jd-tagdata jd-tagdescr"><p></p></div>

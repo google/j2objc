@@ -149,8 +149,8 @@ layout: api
      = new AtomicLong(0);
    public long next() {
      return sequenceNumber.getAndIncrement();
-   </code>
- }}</pre>
+   }
+ }</code></pre>
 
  <p>It is straightforward to define new utility functions that, like
  <code>getAndIncrement</code>, apply a function to a value atomically.
@@ -165,8 +165,8 @@ layout: api
      if (var.compareAndSet(current, next))
          return current;
          // return next; for transformAndGet
-   </code>
- }}</pre>
+   }
+ }</code></pre>
 
  <p>The memory effects for accesses and updates of atomics generally
  follow the rules for volatiles, as stated in

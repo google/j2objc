@@ -159,7 +159,7 @@ layout: api
         
             <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
         
-        <td colspan="1" class="jd-inheritance-class-cell">java.util.EventListenerProxy</td>
+        <td colspan="1" class="jd-inheritance-class-cell">java.util.EventListenerProxy&lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/util/EventListener.html">java.util.EventListener</a>&gt;</td>
     </tr>
     
 
@@ -191,8 +191,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html">PropertyChangeListenerProxy</a></td>
-              <td class="jd-descrcol" width="100%">The implementation of this listener proxy just delegates the received events
- to its listener.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A class which extends the <code>EventListenerProxy</code>
+ specifically for adding a <code>PropertyChangeListener</code>
+ with a "bound" property.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -206,8 +207,27 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This abstract class provides a simple wrapper for objects of type <code>EventListener</code>.
-</p>
+<p>An abstract wrapper class for an <code>EventListener</code> class
+ which associates a set of additional parameters with the listener.
+ Subclasses must provide the storage and accessor methods
+ for the additional arguments or parameters.
+ <p>
+ For example, a bean which supports named properties
+ would have a two argument method signature for adding
+ a <code>PropertyChangeListener</code> for a property:
+ <pre>
+ public void addPropertyChangeListener(String propertyName,
+                                       PropertyChangeListener listener)
+ </pre>
+ If the bean also implemented the zero argument get listener method:
+ <pre>
+ public PropertyChangeListener[] getPropertyChangeListeners()
+ </pre>
+ then the array may contain inner <code>PropertyChangeListeners</code>
+ which are also <code>PropertyChangeListenerProxy</code> objects.
+ <p>
+ If the calling method is interested in retrieving the named property
+ then it would have to test the element to see if it is a proxy class.</p>
 
 
 
@@ -273,9 +293,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/EventListenerProxy.html#EventListenerProxy(java.util.EventListener)">EventListenerProxy</a></span>(<a href="../../../reference/java/util/EventListener.html">EventListener</a> listener)
+        <span class="sympad"><a href="../../../reference/java/util/EventListenerProxy.html#EventListenerProxy(T)">EventListenerProxy</a></span>(T listener)
         
-        <div class="jd-descrdiv">Creates a new <code>EventListener</code> proxy instance.</div>
+        <div class="jd-descrdiv">Creates a proxy for the specified listener.</div>
   
   </td></tr>
 
@@ -301,12 +321,12 @@ layout: api
             
             
             
-            <a href="../../../reference/java/util/EventListener.html">EventListener</a>
+            T
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EventListenerProxy.html#getListener()">getListener</a></span>()
         
-        <div class="jd-descrdiv">Returns the wrapped <code>EventListener</code>.</div>
+        <div class="jd-descrdiv">Returns the listener associated with the proxy.</div>
   
   </td></tr>
 
@@ -592,7 +612,7 @@ From class
 
 
 
-<a id="EventListenerProxy(java.util.EventListener)"></a>
+<a id="EventListenerProxy(T)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -605,7 +625,7 @@ From class
         
       </span>
       <span class="sympad">EventListenerProxy</span>
-      <span class="normal">(<a href="../../../reference/java/util/EventListener.html">EventListener</a> listener)</span>
+      <span class="normal">(T listener)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -617,13 +637,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>EventListener</code> proxy instance.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a proxy for the specified listener.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>listener</th>
-          <td>the listener wrapped by this proxy.
+          <td>the listener object
 </td>
         </tr>
       </table>
@@ -658,7 +678,7 @@ From class
         
         
         
-        <a href="../../../reference/java/util/EventListener.html">EventListener</a>
+        T
       </span>
       <span class="sympad">getListener</span>
       <span class="normal">()</span>
@@ -673,10 +693,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the wrapped <code>EventListener</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the listener associated with the proxy.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the wrapped <code>EventListener</code>.
+      <ul class="nolist"><li>the listener associated with the proxy
 </li></ul>
   </div>
 

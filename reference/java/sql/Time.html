@@ -203,8 +203,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Java representation of an SQL <code>TIME</code> value. Provides utilities to
- format and parse the time's representation as a String in JDBC escape format.
+<p><P>A thin wrapper around the <code>java.util.Date</code> class that allows the JDBC
+ API to identify this as an SQL <code>TIME</code> value. The <code>Time</code>
+ class adds formatting and
+ parsing operations to support the JDBC escape syntax for time
+ values.
+ <p>The date components should be set to the "zero epoch"
+ value of January 1, 1970 and should not be accessed.
 </p>
 
 
@@ -271,12 +276,14 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Time.html#Time(int, int, int)">Time</a></span>(int theHour, int theMinute, int theSecond)
+        <span class="sympad"><a href="../../../reference/java/sql/Time.html#Time(int, int, int)">Time</a></span>(int hour, int minute, int second)
         
         <div class="jd-descrdiv">
       <em>
   This constructor is deprecated.
-      Use the constructor <code><a href="reference/java/sql/Time.html#Time(long)">Time(long)</a></code> instead.</em></div>
+      Use the constructor that takes a milliseconds value
+             in place of this constructor
+</em></div>
   
   </td></tr>
 
@@ -292,10 +299,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Time.html#Time(long)">Time</a></span>(long theTime)
+        <span class="sympad"><a href="../../../reference/java/sql/Time.html#Time(long)">Time</a></span>(long time)
         
-        <div class="jd-descrdiv">Constructs a <code>Time</code> object using a supplied time specified in
- milliseconds.</div>
+        <div class="jd-descrdiv">Constructs a <code>Time</code> object using a milliseconds time value.</div>
   
   </td></tr>
 
@@ -329,8 +335,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a date component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a date component.</em></div>
   
   </td></tr>
 
@@ -351,8 +357,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a day component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a day component.</em></div>
   
   </td></tr>
 
@@ -373,8 +379,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a month component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a month component.</em></div>
   
   </td></tr>
 
@@ -395,8 +401,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a year component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a year component.</em></div>
   
   </td></tr>
 
@@ -417,8 +423,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a date component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a date component.</em></div>
   
   </td></tr>
 
@@ -439,8 +445,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a month component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a month component.</em></div>
   
   </td></tr>
 
@@ -458,8 +464,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Time.html#setTime(long)">setTime</a></span>(long time)
         
-        <div class="jd-descrdiv">Sets the time for this <code>Time</code> object to the supplied milliseconds
- value.</div>
+        <div class="jd-descrdiv">Sets a <code>Time</code> object using a milliseconds time value.</div>
   
   </td></tr>
 
@@ -480,8 +485,8 @@ layout: api
         <div class="jd-descrdiv">
       <em>
   This method is deprecated.
-      This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a year component.</em></div>
+      This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a year component.</em></div>
   
   </td></tr>
 
@@ -499,7 +504,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Time.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Formats the <code>Time</code> as a String in JDBC escape format: <code>hh:mm:ss</code>.</div>
+        <div class="jd-descrdiv">Formats a time in JDBC time escape format.</div>
   
   </td></tr>
 
@@ -515,10 +520,9 @@ layout: api
             <a href="../../../reference/java/sql/Time.html">Time</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Time.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> timeString)
+        <span class="sympad"><a href="../../../reference/java/sql/Time.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Creates a <code>Time</code> object from a string holding a time represented in
- JDBC escape format: <code>hh:mm:ss</code>.</div>
+        <div class="jd-descrdiv">Converts a string in JDBC time escape format to a <code>Time</code> value.</div>
   
   </td></tr>
 
@@ -1390,10 +1394,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -1451,7 +1454,7 @@ From interface
         
       </span>
       <span class="sympad">Time</span>
-      <span class="normal">(int theHour, int theMinute, int theSecond)</span>
+      <span class="normal">(int hour, int minute, int second)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1465,32 +1468,32 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This constructor is deprecated.</strong><br/> Use the constructor <code><a href="reference/java/sql/Time.html#Time(long)">Time(long)</a></code> instead.
+  This constructor is deprecated.</strong><br/> Use the constructor that takes a milliseconds value
+             in place of this constructor
+
   </p>
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>Time</code> object using the supplied values for <i>Hour</i>,
- <i>Minute</i> and <i>Second</i>. The <i>Year</i>, <i>Month</i> and
- <i>Day</i> elements of the <code>Time</code> object are set to the date
- of the Epoch (January 1, 1970).
- <p>
- Any attempt to access the <i>Year</i>, <i>Month</i> or <i>Day</i>
- elements of a <code>Time</code> object will result in an <code>IllegalArgumentException</code>.
- <p>
- The result is undefined if any argument is out of bounds.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>Time</code> object initialized with the
+ given values for the hour, minute, and second.
+ The driver sets the date components to January 1, 1970.
+ Any method that attempts to access the date components of a
+ <code>Time</code> object will throw a
+ <code>java.lang.IllegalArgumentException</code>.
+ <P>
+ The result is undefined if a given argument is out of bounds.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theHour</th>
-          <td>a value in the range <code>[0,23]</code>.</td>
+          <th>hour</th>
+          <td>0 to 23</td>
         </tr>
         <tr>
-          <th>theMinute</th>
-          <td>a value in the range <code>[0,59]</code>.</td>
+          <th>minute</th>
+          <td>0 to 59</td>
         </tr>
         <tr>
-          <th>theSecond</th>
-          <td>a value in the range <code>[0,59]</code>.
-</td>
+          <th>second</th>
+          <td>0 to 59</td>
         </tr>
       </table>
   </div>
@@ -1512,7 +1515,7 @@ From interface
         
       </span>
       <span class="sympad">Time</span>
-      <span class="normal">(long theTime)</span>
+      <span class="normal">(long time)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1524,15 +1527,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>Time</code> object using a supplied time specified in
- milliseconds.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>Time</code> object using a milliseconds time value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTime</th>
-          <td>a <code>Time</code> specified in milliseconds since the
-            <i>Epoch</i> (January 1st 1970, 00:00:00.000).
+          <th>time</th>
+          <td>milliseconds since January 1, 1970, 00:00:00 GMT;
+             a negative number is milliseconds before
+               January 1, 1970, 00:00:00 GMT
 </td>
         </tr>
       </table>
@@ -1584,23 +1587,28 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a date component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a date component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Returns the gregorian calendar day of the month for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>does not return anything.</li></ul>
+      <ul class="nolist"><li>the day of the month.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this
+           method is invoked</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html#setDate(int)">setDate(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1634,20 +1642,21 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a day component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a day component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Returns the gregorian calendar day of the week for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>does not return anything.</li></ul>
+      <ul class="nolist"><li>the day of the week.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
+            <td>if this
+           method is invoked
 </td>
         </tr>
       </table>
@@ -1684,23 +1693,28 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a month component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a month component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Returns the gregorian calendar month for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>does not return anything.</li></ul>
+      <ul class="nolist"><li>the month.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this
+           method is invoked</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html#setMonth(int)">setMonth(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1734,23 +1748,28 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a year component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a year component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Returns the gregorian calendar year since 1900 for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>does not return anything.</li></ul>
+      <ul class="nolist"><li>the year - 1900.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this
+           method is invoked</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html#setYear(int)">setYear(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1784,8 +1803,8 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a date component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a date component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Sets the gregorian calendar day of the month for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
@@ -1802,10 +1821,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this
+           method is invoked</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html#getDate()">getDate()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1839,8 +1863,8 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a month component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a month component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Sets the gregorian calendar month for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
@@ -1857,10 +1881,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this
+           method is invoked</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html#getMonth()">getMonth()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1892,16 +1921,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the time for this <code>Time</code> object to the supplied milliseconds
- value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets a <code>Time</code> object using a milliseconds time value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>time</th>
-          <td>A time value expressed as milliseconds since the <i>Epoch</i>.
-            Negative values are milliseconds before the Epoch. The Epoch
-            is January 1 1970, 00:00:00.000.
+          <td>milliseconds since January 1, 1970, 00:00:00 GMT;
+             a negative number is milliseconds before
+               January 1, 1970, 00:00:00 GMT
 </td>
         </tr>
       </table>
@@ -1938,8 +1966,8 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This method is deprecated.</strong><br/> This method is deprecated and must not be used. An SQL
-             <code>Time</code> object does not have a year component.
+  This method is deprecated.</strong><br/> This method is deprecated and should not be used because SQL <code>TIME</code>
+ values do not have a year component.
   </p>
   <div class="jd-tagdata jd-tagdescr"><p>Sets the gregorian calendar year since 1900 for this <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
@@ -1956,10 +1984,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this
+           method is invoked</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html#getYear()">getYear()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1991,11 +2024,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Formats the <code>Time</code> as a String in JDBC escape format: <code>hh:mm:ss</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Formats a time in JDBC time escape format.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>A String representing the <code>Time</code> value in JDBC escape
-         format: <code>HH:mm:ss</code>
+      <ul class="nolist"><li>a <code>String</code> in hh:mm:ss format
 </li></ul>
   </div>
 
@@ -2016,7 +2048,7 @@ From interface
         <a href="../../../reference/java/sql/Time.html">Time</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> timeString)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2028,34 +2060,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>Time</code> object from a string holding a time represented in
- JDBC escape format: <code>hh:mm:ss</code>.
- <p>
- An exception occurs if the input string does not comply with this format.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts a string in JDBC time escape format to a <code>Time</code> value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>timeString</th>
-          <td>A String representing the time value in JDBC escape format:
-            <code>hh:mm:ss</code>.</td>
+          <th>s</th>
+          <td>time in format "hh:mm:ss"</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>The <code>Time</code> object set to a time corresponding to the given
-         time.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the supplied time string is not in JDBC escape format.
-</td>
-        </tr>
-      </table>
+      <ul class="nolist"><li>a corresponding <code>Time</code> object
+</li></ul>
   </div>
 
     </div>

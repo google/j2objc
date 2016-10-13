@@ -177,23 +177,17 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>ThreadGroup</code> is a means of organizing <code><a href="reference/java/lang/Thread.html">Thread</a></code>s into a
- hierarchical structure. A <code>ThreadGroup</code> can contain zero or more
- <code>Thread</code>s and zero or more other <code>ThreadGroup</code>s. Each <code>Thread</code> and each <code>ThreadGroup</code> (except the root group) has a unique
- parent <code>ThreadGroup</code>. The result is a tree whose inner nodes are
- <code>ThreadGroup</code>s and whose leaf nodes are <code>Threads</code>. The unique
- root of the tree is a <code>ThreadGroup</code> that is created at VM startup and
- has the name "system". The benefit of using <code>ThreadGroup</code>s, in addition
- to the mere housekeeping aspect, is that all <code>Thread</code>s in a <code>ThreadGroup</code> can be manipulated together, that is, the <code>ThreadGroup</code>
- has methods that delegate to all its all <code>Thread</code>s.</p>
+<p>A thread group represents a set of threads. In addition, a thread
+ group can also include other thread groups. The thread groups form
+ a tree in which every thread group except the initial thread group
+ has a parent.
+ <p>
+ A thread is allowed to access information about its own thread
+ group, but not to access information about its thread group's
+ parent thread group or any other thread groups.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li><li><code><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -258,7 +252,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#ThreadGroup(java.lang.String)">ThreadGroup</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Constructs a new ThreadGroup with the name provided.</div>
+        <div class="jd-descrdiv">Constructs a new thread group.</div>
   
   </td></tr>
 
@@ -276,8 +270,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#ThreadGroup(java.lang.ThreadGroup, java.lang.String)">ThreadGroup</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> parent, <a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Constructs a new ThreadGroup with the name provided, as child of the
- ThreadGroup <code>parent</code></div>
+        <div class="jd-descrdiv">Creates a new thread group.</div>
   
   </td></tr>
 
@@ -308,8 +301,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#activeCount()">activeCount</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of Threads which are children of the receiver,
- directly or indirectly and are running.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of active threads in this thread
+ group and its subgroups.</div>
   
   </td></tr>
 
@@ -327,8 +320,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#activeGroupCount()">activeGroupCount</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of ThreadGroups which are children of the receiver,
- directly or indirectly.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of active groups in this
+ thread group and its subgroups.</div>
   
   </td></tr>
 
@@ -346,8 +339,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess</a></span>()
         
-        <div class="jd-descrdiv">Checks the accessibility of the ThreadGroup from the perspective of the
- caller.</div>
+        <div class="jd-descrdiv">Determines if the currently running thread has permission to
+ modify this thread group.</div>
   
   </td></tr>
 
@@ -365,7 +358,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#destroy()">destroy</a></span>()
         
-        <div class="jd-descrdiv">Destroys the receiver and recursively all its subgroups.</div>
+        <div class="jd-descrdiv">Destroys this thread group and all of its subgroups.</div>
   
   </td></tr>
 
@@ -381,10 +374,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.ThreadGroup[])">enumerate</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> groups)
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.ThreadGroup[])">enumerate</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> list)
         
-        <div class="jd-descrdiv">Iterates over all thread groups in this group (and its sub-groups) and
- and stores the groups in the given array.</div>
+        <div class="jd-descrdiv">Copies into the specified array references to every active
+ subgroup in this thread group and its subgroups.</div>
   
   </td></tr>
 
@@ -400,10 +393,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.ThreadGroup[], boolean)">enumerate</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> groups, boolean recurse)
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.ThreadGroup[], boolean)">enumerate</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> list, boolean recurse)
         
-        <div class="jd-descrdiv">Iterates over all thread groups in this group (and, optionally, its
- sub-groups) and stores the groups in the given array.</div>
+        <div class="jd-descrdiv">Copies into the specified array references to every active
+ subgroup in this thread group.</div>
   
   </td></tr>
 
@@ -419,10 +412,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.Thread[])">enumerate</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> threads)
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.Thread[])">enumerate</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> list)
         
-        <div class="jd-descrdiv">Iterates over all active threads in this group (and its sub-groups) and
- stores the threads in the given array.</div>
+        <div class="jd-descrdiv">Copies into the specified array every active thread in this
+ thread group and its subgroups.</div>
   
   </td></tr>
 
@@ -438,10 +431,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.Thread[], boolean)">enumerate</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> threads, boolean recurse)
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.Thread[], boolean)">enumerate</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> list, boolean recurse)
         
-        <div class="jd-descrdiv">Iterates over all active threads in this group (and, optionally, its
- sub-groups) and stores the threads in the given array.</div>
+        <div class="jd-descrdiv">Copies into the specified array every active thread in this
+ thread group.</div>
   
   </td></tr>
 
@@ -459,7 +452,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#getMaxPriority()">getMaxPriority</a></span>()
         
-        <div class="jd-descrdiv">Returns the maximum allowed priority for a Thread in the receiver.</div>
+        <div class="jd-descrdiv">Returns the maximum priority of this thread group.</div>
   
   </td></tr>
 
@@ -477,7 +470,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#getName()">getName</a></span>()
         
-        <div class="jd-descrdiv">Returns the name of the receiver.</div>
+        <div class="jd-descrdiv">Returns the name of this thread group.</div>
   
   </td></tr>
 
@@ -495,7 +488,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#getParent()">getParent</a></span>()
         
-        <div class="jd-descrdiv">Returns the receiver's parent ThreadGroup.</div>
+        <div class="jd-descrdiv">Returns the parent of this thread group.</div>
   
   </td></tr>
 
@@ -505,6 +498,42 @@ layout: api
         <td class="jd-typecol">
             
             
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#interrupt()">interrupt</a></span>()
+        
+        <div class="jd-descrdiv">Interrupts all threads in this thread group.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#isDaemon()">isDaemon</a></span>()
+        
+        <div class="jd-descrdiv">Tests if this thread group is a daemon thread group.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            synchronized
             
             
             
@@ -513,7 +542,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#isDestroyed()">isDestroyed</a></span>()
         
-        <div class="jd-descrdiv">Checks whether the receiver has already been destroyed.</div>
+        <div class="jd-descrdiv">Tests if this thread group has been destroyed.</div>
   
   </td></tr>
 
@@ -531,8 +560,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#list()">list</a></span>()
         
-        <div class="jd-descrdiv">Outputs to <code>System.out</code> a text representation of the
- hierarchy of Threads and ThreadGroups in the receiver (and recursively).</div>
+        <div class="jd-descrdiv">Prints information about this thread group to the standard
+ output.</div>
   
   </td></tr>
 
@@ -550,8 +579,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#parentOf(java.lang.ThreadGroup)">parentOf</a></span>(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> g)
         
-        <div class="jd-descrdiv">Checks whether the receiver is a direct or indirect parent group of a
- given ThreadGroup.</div>
+        <div class="jd-descrdiv">Tests if this thread group is either the thread group
+ argument or one of its ancestor thread groups.</div>
   
   </td></tr>
 
@@ -567,10 +596,98 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#setMaxPriority(int)">setMaxPriority</a></span>(int newMax)
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#resume()">resume</a></span>()
         
-        <div class="jd-descrdiv">Configures the maximum allowed priority for a Thread in the receiver and
- recursively in all its subgroups.</div>
+        <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      This method is used solely in conjunction with
+      <tt>Thread.suspend</tt> and <tt>ThreadGroup.suspend</tt>,
+       both of which have been deprecated, as they are inherently
+       deadlock-prone.  See <code><a href="reference/java/lang/Thread.html#suspend()">suspend()</a></code> for details.
+</em></div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#setDaemon(boolean)">setDaemon</a></span>(boolean daemon)
+        
+        <div class="jd-descrdiv">Changes the daemon status of this thread group.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#setMaxPriority(int)">setMaxPriority</a></span>(int pri)
+        
+        <div class="jd-descrdiv">Sets the maximum priority of the group.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#stop()">stop</a></span>()
+        
+        <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      This method is inherently unsafe.  See
+     <code><a href="reference/java/lang/Thread.html#stop()">stop()</a></code> for details.
+</em></div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#suspend()">suspend</a></span>()
+        
+        <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      This method is inherently deadlock-prone.  See
+     <code><a href="reference/java/lang/Thread.html#suspend()">suspend()</a></code> for details.
+</em></div>
   
   </td></tr>
 
@@ -588,8 +705,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of the
- receiver.</div>
+        <div class="jd-descrdiv">Returns a string representation of this Thread group.</div>
   
   </td></tr>
 
@@ -607,7 +723,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#uncaughtException(java.lang.Thread, java.lang.Throwable)">uncaughtException</a></span>(<a href="../../../reference/java/lang/Thread.html">Thread</a> t, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> e)
         
-        <div class="jd-descrdiv">Handles uncaught exceptions.</div>
+        <div class="jd-descrdiv">Called by the Java Virtual Machine when a thread in this
+ thread group stops because of an uncaught exception, and the thread
+ does not have a specific <code><a href="reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></code>
+ installed.</div>
   
   </td></tr>
 
@@ -957,15 +1076,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new ThreadGroup with the name provided. The new ThreadGroup
- will be child of the ThreadGroup to which the
- <code>Thread.currentThread()</code> belongs.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new thread group. The parent of this new group is
+ the thread group of the currently running thread.
+ <p>
+ The <code>checkAccess</code> method of the parent thread group is
+ called with no arguments; this may result in a security exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>name</th>
-          <td>Name for the ThreadGroup being created</td>
+          <td>the name of the new thread group.</td>
         </tr>
       </table>
   </div>
@@ -974,14 +1095,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
-            <td>if <code>checkAccess()</code> for the parent
-         group fails with a SecurityException</td>
+            <td>if the current thread cannot create a
+               thread in the specified thread group.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#currentThread()">currentThread()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
       </ul>
   </div>
 
@@ -1014,18 +1135,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new ThreadGroup with the name provided, as child of the
- ThreadGroup <code>parent</code></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new thread group. The parent of this new group is the
+ specified thread group.
+ <p>
+ The <code>checkAccess</code> method of the parent thread group is
+ called with no arguments; this may result in a security exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>parent</th>
-          <td>Parent ThreadGroup</td>
+          <td>the parent thread group.</td>
         </tr>
         <tr>
           <th>name</th>
-          <td>Name for the ThreadGroup being created</td>
+          <td>the name of the new thread group.</td>
         </tr>
       </table>
   </div>
@@ -1034,21 +1158,20 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>parent</code> is
-         <code>null</code></td>
+            <td>if the thread group argument is
+               <code>null</code>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
-            <td>if <code>checkAccess()</code> for the parent
-         group fails with a SecurityException</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
-            <td>if <code>parent</code> has been
-         destroyed already
-</td>
+            <td>if the current thread cannot create a
+               thread in the specified thread group.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1095,12 +1218,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of Threads which are children of the receiver,
- directly or indirectly and are running.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of active threads in this thread
+ group and its subgroups. Recursively iterates over all subgroups in
+ this thread group.
+
+ <p> The value returned is only an estimate because the number of
+ threads may change dynamically while this method traverses internal
+ data structures, and might be affected by the presence of certain
+ system threads. This method is intended primarily for debugging
+ and monitoring purposes.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of children Threads
-</li></ul>
+      <ul class="nolist"><li>an estimate of the number of active threads in this thread
+          group and in any other thread group that has this thread
+          group as an ancestor</li></ul>
   </div>
 
     </div>
@@ -1132,12 +1263,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of ThreadGroups which are children of the receiver,
- directly or indirectly.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of active groups in this
+ thread group and its subgroups. Recursively iterates over
+ all subgroups in this thread group.
+
+ <p> The value returned is only an estimate because the number of
+ thread groups may change dynamically while this method traverses
+ internal data structures. This method is intended primarily for
+ debugging and monitoring purposes.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of children ThreadGroups
-</li></ul>
+      <ul class="nolist"><li>the number of active thread groups with this thread group as
+          an ancestor</li></ul>
   </div>
 
     </div>
@@ -1169,11 +1306,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Checks the accessibility of the ThreadGroup from the perspective of the
- caller. If there is a SecurityManager installed, calls
- <code>checkAccess</code> with the receiver as a parameter, otherwise does
- nothing.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Determines if the currently running thread has permission to
+ modify this thread group.
+ <p>
+ If there is a security manager, its <code>checkAccess</code> method
+ is called with this thread group as its argument. This may result
+ in throwing a <code>SecurityException</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread is not allowed to
+               access this thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/SecurityManager.html#checkAccess(java.lang.ThreadGroup)">checkAccess(java.lang.ThreadGroup)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -1204,24 +1357,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Destroys the receiver and recursively all its subgroups. It is only legal
- to destroy a ThreadGroup that has no Threads in it.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Destroys this thread group and all of its subgroups. This thread
+ group must be empty, indicating that all threads that had been in
+ this thread group have since stopped.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
-            <td>if the receiver or any of its
-         subgroups has been destroyed already or if it still contains
-         threads.</td>
+            <td>if the thread group is not
+               empty or if the thread group has already been destroyed.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
-            <td>if <code>this.checkAccess()</code> fails with
-         a SecurityException
-</td>
+            <td>if the current thread cannot modify this
+               thread group.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1241,7 +1401,7 @@ From interface
         int
       </span>
       <span class="sympad">enumerate</span>
-      <span class="normal">(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> groups)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> list)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1253,23 +1413,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all thread groups in this group (and its sub-groups) and
- and stores the groups in the given array. Returns when the array is full
- or no more groups remain, whichever happens first.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Copies into the specified array references to every active
+ subgroup in this thread group and its subgroups.
+
+ <p> An invocation of this method behaves in exactly the same
+ way as the invocation
+
+ <blockquote>
+ {@linkplain #enumerate(ThreadGroup[], boolean) enumerate}<code>(list, true)</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>groups</th>
-          <td>the array into which the ThreadGroups will be copied</td>
+          <th>list</th>
+          <td>an array into which to put the list of thread groups</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of ThreadGroups that were copied
-
-</li></ul>
+      <ul class="nolist"><li>the number of thread groups put into the array</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if {@linkplain #checkAccess checkAccess} determines that
+          the current thread cannot access this thread group</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1289,7 +1463,7 @@ From interface
         int
       </span>
       <span class="sympad">enumerate</span>
-      <span class="normal">(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> groups, boolean recurse)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> list, boolean recurse)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1301,28 +1475,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all thread groups in this group (and, optionally, its
- sub-groups) and stores the groups in the given array. Returns when
- the array is full or no more groups remain, whichever happens first.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Copies into the specified array references to every active
+ subgroup in this thread group. If <code>recurse</code> is
+ <code>true</code>, this method recursively enumerates all subgroups of this
+ thread group and references to every active thread group in these
+ subgroups are also included.
+
+ <p> An application might use the
+ {@linkplain #activeGroupCount activeGroupCount} method to
+ get an estimate of how big the array should be, however <i>if the
+ array is too short to hold all the thread groups, the extra thread
+ groups are silently ignored.</i>  If it is critical to obtain every
+ active subgroup in this thread group, the caller should verify that
+ the returned int value is strictly less than the length of
+ <code>list</code>.
+
+ <p> Due to the inherent race condition in this method, it is recommended
+ that the method only be used for debugging and monitoring purposes.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>groups</th>
-          <td>the array into which the ThreadGroups will be copied</td>
+          <th>list</th>
+          <td>an array into which to put the list of thread groups</td>
         </tr>
         <tr>
           <th>recurse</th>
-          <td>indicates whether ThreadGroups in subgroups should be
-        recursively copied as well or not</td>
+          <td>if <code>true</code>, recursively enumerate all subgroups</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of ThreadGroups that were copied
-
-</li></ul>
+      <ul class="nolist"><li>the number of thread groups put into the array</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if {@linkplain #checkAccess checkAccess} determines that
+          the current thread cannot access this thread group</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1342,7 +1537,7 @@ From interface
         int
       </span>
       <span class="sympad">enumerate</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> threads)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> list)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1354,22 +1549,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all active threads in this group (and its sub-groups) and
- stores the threads in the given array. Returns when the array is full or
- no more threads remain, whichever happens first.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Copies into the specified array every active thread in this
+ thread group and its subgroups.
+
+ <p> An invocation of this method behaves in exactly the same
+ way as the invocation
+
+ <blockquote>
+ {@linkplain #enumerate(Thread[], boolean) enumerate}<code>(list, true)</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>threads</th>
-          <td>the array into which the Threads will be copied</td>
+          <th>list</th>
+          <td>an array into which to put the list of threads</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of Threads that were copied
-</li></ul>
+      <ul class="nolist"><li>the number of threads put into the array</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if {@linkplain #checkAccess checkAccess} determines that
+          the current thread cannot access this thread group</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1389,7 +1599,7 @@ From interface
         int
       </span>
       <span class="sympad">enumerate</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> threads, boolean recurse)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Thread.html">Thread[]</a> list, boolean recurse)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1401,27 +1611,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all active threads in this group (and, optionally, its
- sub-groups) and stores the threads in the given array. Returns when the
- array is full or no more threads remain, whichever happens first.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Copies into the specified array every active thread in this
+ thread group. If <code>recurse</code> is <code>true</code>,
+ this method recursively enumerates all subgroups of this
+ thread group and references to every active thread in these
+ subgroups are also included. If the array is too short to
+ hold all the threads, the extra threads are silently ignored.
+
+ <p> An application might use the {@linkplain #activeCount activeCount}
+ method to get an estimate of how big the array should be, however
+ <i>if the array is too short to hold all the threads, the extra threads
+ are silently ignored.</i>  If it is critical to obtain every active
+ thread in this thread group, the caller should verify that the returned
+ int value is strictly less than the length of <code>list</code>.
+
+ <p> Due to the inherent race condition in this method, it is recommended
+ that the method only be used for debugging and monitoring purposes.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>threads</th>
-          <td>the array into which the Threads will be copied</td>
+          <th>list</th>
+          <td>an array into which to put the list of threads</td>
         </tr>
         <tr>
           <th>recurse</th>
-          <td>indicates whether Threads in subgroups should be
-        recursively copied as well</td>
+          <td>if <code>true</code>, recursively enumerate all subgroups of this
+         thread group</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of Threads that were copied
-</li></ul>
+      <ul class="nolist"><li>the number of threads put into the array</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if {@linkplain #checkAccess checkAccess} determines that
+          the current thread cannot access this thread group</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1453,10 +1685,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum allowed priority for a Thread in the receiver.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum priority of this thread group. Threads that are
+ part of this group cannot have a higher priority than the maximum
+ priority.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the maximum priority</li></ul>
+      <ul class="nolist"><li>the maximum priority that a thread in this thread group
+          can have.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
@@ -1493,11 +1728,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the receiver.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of this thread group.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the receiver's name
-</li></ul>
+      <ul class="nolist"><li>the name of this thread group.</li></ul>
   </div>
 
     </div>
@@ -1529,13 +1763,121 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the receiver's parent ThreadGroup. It can be <code>null</code>  if the
- receiver is the the root ThreadGroup.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the parent of this thread group.
+ <p>
+ First, if the parent is not <code>null</code>, the
+ <code>checkAccess</code> method of the parent thread group is
+ called with no arguments; this may result in a security exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the parent ThreadGroup
+      <ul class="nolist"><li>the parent of this thread group. The top-level thread group
+          is the only thread group whose parent is <code>null</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread cannot modify
+               this thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/RuntimePermission.html">RuntimePermission</a></code></li>
+      </ul>
+  </div>
 
-</li></ul>
+    </div>
+</div>
+
+
+<a id="interrupt()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad">interrupt</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Interrupts all threads in this thread group.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.
+ <p>
+ This method then calls the <code>interrupt</code> method on all the
+ threads in this thread group and in all of its subgroups.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread is not allowed
+               to access this thread group or any of the threads in
+               the thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#interrupt()">interrupt()</a></code></li><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="isDaemon()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isDaemon</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if this thread group is a daemon thread group. A
+ daemon thread group is automatically destroyed when its last
+ thread is stopped or its last thread group is destroyed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if this thread group is a daemon thread group;
+          <code>false</code> otherwise.</li></ul>
   </div>
 
     </div>
@@ -1551,7 +1893,7 @@ From interface
         
         
         
-        
+        synchronized
         boolean
       </span>
       <span class="sympad">isDestroyed</span>
@@ -1567,15 +1909,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Checks whether the receiver has already been destroyed.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if this thread group has been destroyed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true if (and only if) the receiver has already been destroyed</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#destroy()">destroy()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>true if this object is destroyed</li></ul>
   </div>
 
     </div>
@@ -1607,11 +1944,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Outputs to <code>System.out</code> a text representation of the
- hierarchy of Threads and ThreadGroups in the receiver (and recursively).
- Proper indentation is done to suggest the nesting of groups inside groups
- and threads inside groups.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Prints information about this thread group to the standard
+ output. This method is useful only for debugging.</p></div>
 
     </div>
 </div>
@@ -1642,22 +1976,146 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Checks whether the receiver is a direct or indirect parent group of a
- given ThreadGroup.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if this thread group is either the thread group
+ argument or one of its ancestor thread groups.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>g</th>
-          <td>the potential child ThreadGroup</td>
+          <td>a thread group.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true if (and only if) the receiver is parent of <code>g</code>
+      <ul class="nolist"><li><code>true</code> if this thread group is the thread group
+          argument or one of its ancestor thread groups;
+          <code>false</code> otherwise.</li></ul>
+  </div>
 
-</li></ul>
+    </div>
+</div>
+
+
+<a id="resume()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad">resume</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> This method is used solely in conjunction with
+      <tt>Thread.suspend</tt> and <tt>ThreadGroup.suspend</tt>,
+       both of which have been deprecated, as they are inherently
+       deadlock-prone.  See <code><a href="reference/java/lang/Thread.html#suspend()">suspend()</a></code> for details.
+
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Resumes all threads in this thread group.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.
+ <p>
+ This method then calls the <code>resume</code> method on all the
+ threads in this thread group and in all of its sub groups.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread is not allowed to
+               access this thread group or any of the threads in the
+               thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html#resume()">resume()</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setDaemon(boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad">setDaemon</span>
+      <span class="normal">(boolean daemon)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Changes the daemon status of this thread group.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.
+ <p>
+ A daemon thread group is automatically destroyed when its last
+ thread is stopped or its last thread group is destroyed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>daemon</th>
+          <td>if <code>true</code>, marks this thread group as
+                      a daemon thread group; otherwise, marks this
+                      thread group as normal.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread cannot modify
+               this thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1677,7 +2135,7 @@ From interface
         void
       </span>
       <span class="sympad">setMaxPriority</span>
-      <span class="normal">(int newMax)</span>
+      <span class="normal">(int pri)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1689,18 +2147,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Configures the maximum allowed priority for a Thread in the receiver and
- recursively in all its subgroups.
-
- One can never change the maximum priority of a ThreadGroup to be higher
- than it was. Such an attempt will not result in an exception, it will
- simply leave the ThreadGroup with its current maximum priority.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the maximum priority of the group. Threads in the thread
+ group that already have a higher priority are not affected.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.
+ <p>
+ If the <code>pri</code> argument is less than
+ <code><a href="reference/java/lang/Thread.html#MIN_PRIORITY">MIN_PRIORITY</a></code> or greater than
+ <code><a href="reference/java/lang/Thread.html#MAX_PRIORITY">MAX_PRIORITY</a></code>, it is clamped to those values.
+ <p>
+ Otherwise, the priority of this ThreadGroup object is set to the
+ smaller of the specified <code>pri</code> and the maximum permitted
+ priority of the parent of this thread group. (If this thread group
+ is the system thread group, which has no parent, then its maximum
+ priority is simply set to <code>pri</code>.) Then this method is
+ called recursively, with <code>pri</code> as its argument, for
+ every thread group that belongs to this thread group.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>newMax</th>
-          <td>the new maximum priority to be set</td>
+          <th>pri</th>
+          <td>the new priority of the thread group.</td>
         </tr>
       </table>
   </div>
@@ -1709,19 +2178,132 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
-            <td>if <code>checkAccess()</code> fails with a
-         SecurityException</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the new priority is greater than
-         Thread.MAX_PRIORITY or less than Thread.MIN_PRIORITY</td>
+            <td>if the current thread cannot modify
+               this thread group.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#getMaxPriority()">getMaxPriority()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#getMaxPriority()">getMaxPriority()</a></code></li><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="stop()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad">stop</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> This method is inherently unsafe.  See
+     <code><a href="reference/java/lang/Thread.html#stop()">stop()</a></code> for details.
+
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Stops all threads in this thread group.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.
+ <p>
+ This method then calls the <code>stop</code> method on all the
+ threads in this thread group and in all of its subgroups.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread is not allowed
+               to access this thread group or any of the threads in
+               the thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html#stop()">stop()</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="suspend()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad">suspend</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> This method is inherently deadlock-prone.  See
+     <code><a href="reference/java/lang/Thread.html#suspend()">suspend()</a></code> for details.
+
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Suspends all threads in this thread group.
+ <p>
+ First, the <code>checkAccess</code> method of this thread group is
+ called with no arguments; this may result in a security exception.
+ <p>
+ This method then calls the <code>suspend</code> method on all the
+ threads in this thread group and in all of its subgroups.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td>if the current thread is not allowed
+               to access this thread group or any of the threads in
+               the thread group.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#suspend()">suspend()</a></code></li><li><code><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></code></li><li><code><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess()</a></code></li>
       </ul>
   </div>
 
@@ -1754,12 +2336,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of the
- receiver.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this Thread group.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of the ThreadGroup
-</li></ul>
+      <ul class="nolist"><li>a string representation of this thread group.</li></ul>
   </div>
 
     </div>
@@ -1791,28 +2371,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Handles uncaught exceptions. Any uncaught exception in any Thread
- is forwarded (by the VM) to the Thread's ThreadGroup by sending this
- message (uncaughtException). This allows users to define custom
- ThreadGroup classes and custom behavior for when a Thread has an
- uncaughtException or when it does (ThreadDeath).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Called by the Java Virtual Machine when a thread in this
+ thread group stops because of an uncaught exception, and the thread
+ does not have a specific <code><a href="reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></code>
+ installed.
+ <p>
+ The <code>uncaughtException</code> method of
+ <code>ThreadGroup</code> does the following:
+ <ul>
+ <li>If this thread group has a parent thread group, the
+     <code>uncaughtException</code> method of that parent is called
+     with the same two arguments.
+ <li>Otherwise, this method checks to see if there is a
+     {@linkplain Thread#getDefaultUncaughtExceptionHandler default
+     uncaught exception handler} installed, and if so, its
+     <code>uncaughtException</code> method is called with the same
+     two arguments.
+ <li>Otherwise, this method determines if the <code>Throwable</code>
+     argument is an instance of <code><a href="reference/java/lang/ThreadDeath.html">ThreadDeath</a></code>. If so, nothing
+     special is done. Otherwise, a message containing the
+     thread's name, as returned from the thread's <code><a href="reference/java/lang/Thread.html#getName()">getName</a></code> method, and a stack backtrace,
+     using the <code>Throwable</code>'s <code><a href="reference/java/lang/Throwable.html#printStackTrace()">printStackTrace</a></code> method, is
+     printed to the {@linkplain System#err standard error stream}.
+ </ul>
+ <p>
+ Applications can override this method in subclasses of
+ <code>ThreadGroup</code> to provide alternative handling of
+ uncaught exceptions.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>t</th>
-          <td>the Thread that terminated with an uncaught exception</td>
+          <td>the thread that is about to exit.</td>
         </tr>
         <tr>
           <th>e</th>
-          <td>the uncaught exception itself</td>
+          <td>the uncaught exception.</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></code></li>
-      </ul>
   </div>
 
     </div>

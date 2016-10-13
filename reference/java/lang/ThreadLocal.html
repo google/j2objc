@@ -181,7 +181,10 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>&lt;T&gt;</td>
-              <td class="jd-descrcol" width="100%">A thread-local variable whose value is passed from parent to child thread.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class extends <tt>ThreadLocal</tt> to provide inheritance of values
+ from parent thread to child thread: when a child thread is created, the
+ child receives initial values for all inheritable thread-local variables
+ for which the parent has values.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -195,19 +198,46 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Implements a thread-local storage, that is, a variable for which each thread
- has its own value. All threads share the same <code>ThreadLocal</code> object,
- but each sees a different value when accessing it, and changes made by one
- thread do not affect the other threads. The implementation supports
- <code>null</code> values.</p>
+<p>This class provides thread-local variables.  These variables differ from
+ their normal counterparts in that each thread that accesses one (via its
+ <tt>get</tt> or <tt>set</tt> method) has its own, independently initialized
+ copy of the variable.  <tt>ThreadLocal</tt> instances are typically private
+ static fields in classes that wish to associate state with a thread (e.g.,
+ a user ID or Transaction ID).
+
+ <p>For example, the class below generates unique identifiers local to each
+ thread.
+ A thread's id is assigned the first time it invokes <tt>ThreadId.get()</tt>
+ and remains unchanged on subsequent calls.
+ <pre>
+ import java.util.concurrent.atomic.AtomicInteger;
+
+ public class ThreadId {
+     // Atomic integer containing the next thread ID to be assigned
+     private static final AtomicInteger nextId = new AtomicInteger(0);
+
+     // Thread local variable containing each thread's ID
+     private static final ThreadLocal&lt;Integer> threadId =
+         new ThreadLocal&lt;Integer>() {
+             &#64;Override protected Integer initialValue() {
+                 return nextId.getAndIncrement();
+         }
+     };
+
+     // Returns the current thread's unique ID, assigning it if necessary
+     public static int get() {
+         return threadId.get();
+     }
+ }
+ </pre>
+ <p>Each thread holds an implicit reference to its copy of a thread-local
+ variable as long as the thread is alive and the <tt>ThreadLocal</tt>
+ instance is accessible; after a thread goes away, all of its copies of
+ thread-local instances are subject to garbage collection (unless other
+ references to these copies exist).</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -272,7 +302,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#ThreadLocal()">ThreadLocal</a></span>()
         
-        <div class="jd-descrdiv">Creates a new thread-local variable.</div>
+        <div class="jd-descrdiv">Creates a thread local variable.</div>
   
   </td></tr>
 
@@ -303,7 +333,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#get()">get</a></span>()
         
-        <div class="jd-descrdiv">Returns the value of this variable for the current thread.</div>
+        <div class="jd-descrdiv">Returns the value in the current thread's copy of this
+ thread-local variable.</div>
   
   </td></tr>
 
@@ -321,7 +352,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#remove()">remove</a></span>()
         
-        <div class="jd-descrdiv">Removes the entry for this variable in the current thread.</div>
+        <div class="jd-descrdiv">Removes the current thread's value for this thread-local
+ variable.</div>
   
   </td></tr>
 
@@ -339,7 +371,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#set(T)">set</a></span>(T value)
         
-        <div class="jd-descrdiv">Sets the value of this variable for the current thread.</div>
+        <div class="jd-descrdiv">Sets the current thread's copy of this thread-local variable
+ to the specified value.</div>
   
   </td></tr>
 
@@ -368,7 +401,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ThreadLocal.html#initialValue()">initialValue</a></span>()
         
-        <div class="jd-descrdiv">Provides the initial value of this variable for the current thread.</div>
+        <div class="jd-descrdiv">Returns the current thread's "initial value" for this
+ thread-local variable.</div>
   
   </td></tr>
 
@@ -675,7 +709,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new thread-local variable.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a thread local variable.
 </p></div>
 
     </div>
@@ -722,13 +756,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this variable for the current thread. If an entry
- doesn't yet exist for this variable on this thread, this method will
- create an entry, populating the value with the result of
- <code><a href="reference/java/lang/ThreadLocal.html#initialValue()">initialValue()</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value in the current thread's copy of this
+ thread-local variable.  If the variable has no value for the
+ current thread, it is first initialized to the value returned
+ by an invocation of the <code><a href="reference/java/lang/ThreadLocal.html#initialValue()">initialValue()</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the current value of the variable for the calling thread.
+      <ul class="nolist"><li>the current thread's value of this thread-local
 </li></ul>
   </div>
 
@@ -761,10 +795,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the entry for this variable in the current thread. If this call
- is followed by a <code><a href="reference/java/lang/ThreadLocal.html#get()">get()</a></code> before a <code><a href="reference/java/lang/ThreadLocal.html#set(T)">set(T)</a></code>,
- <code>#get()</code> will call <code><a href="reference/java/lang/ThreadLocal.html#initialValue()">initialValue()</a></code> and create a new
- entry with the resulting value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the current thread's value for this thread-local
+ variable.  If this thread-local variable is subsequently
+ {@linkplain #get read} by the current thread, its value will be
+ reinitialized by invoking its <code><a href="reference/java/lang/ThreadLocal.html#initialValue()">initialValue()</a></code> method,
+ unless its value is {@linkplain #set set} by the current thread
+ in the interim.  This may result in multiple invocations of the
+ <tt>initialValue</tt> method in the current thread.</p></div>
 
     </div>
 </div>
@@ -795,15 +832,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of this variable for the current thread. If set to
- <code>null</code>, the value will be set to null and the underlying entry will
- still be present.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the current thread's copy of this thread-local variable
+ to the specified value.  Most subclasses will have no need to
+ override this method, relying solely on the <code><a href="reference/java/lang/ThreadLocal.html#initialValue()">initialValue()</a></code>
+ method to set the values of thread-locals.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the new value of the variable for the caller thread.
+          <td>the value to be stored in the current thread's copy of
+        this thread-local.
 </td>
         </tr>
       </table>
@@ -847,11 +886,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Provides the initial value of this variable for the current thread.
- The default implementation returns <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the current thread's "initial value" for this
+ thread-local variable.  This method will be invoked the first
+ time a thread accesses the variable with the <code><a href="reference/java/lang/ThreadLocal.html#get()">get()</a></code>
+ method, unless the thread previously invoked the <code><a href="reference/java/lang/ThreadLocal.html#set(T)">set(T)</a></code>
+ method, in which case the <tt>initialValue</tt> method will not
+ be invoked for the thread.  Normally, this method is invoked at
+ most once per thread, but it may be invoked again in case of
+ subsequent invocations of <code><a href="reference/java/lang/ThreadLocal.html#remove()">remove()</a></code> followed by <code><a href="reference/java/lang/ThreadLocal.html#get()">get()</a></code>.
+
+ <p>This implementation simply returns <tt>null</tt>; if the
+ programmer desires thread-local variables to have an initial
+ value other than <tt>null</tt>, <tt>ThreadLocal</tt> must be
+ subclassed, and this method overridden.  Typically, an
+ anonymous inner class will be used.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the initial value of the variable.
+      <ul class="nolist"><li>the initial value for this thread-local
 </li></ul>
   </div>
 

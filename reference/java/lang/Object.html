@@ -715,14 +715,14 @@ layout: api
       
   <div class="jd-tagdata jd-tagdescr"><p>Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
  object's class. Note that <code>getClass()</code> is a special case in that it
- actually returns <code>Class<? extends Foo></code> where <code>Foo</code> is the
+ actually returns <code>Class&lt;? extends Foo&gt;</code> where <code>Foo</code> is the
  erasure of the type of the expression <code>getClass()</code> was called upon.
  <p>
  As an example, the following code actually compiles, although one might
  think it shouldn't:
  <p>
- <pre><code>List<Integer> l = new ArrayList<Integer>();
-   Class<? extends List> c = l.getClass();</code></pre></p></div>
+ <pre><code>List&lt;Integer&gt; l = new ArrayList&lt;Integer&gt;();
+   Class&lt;? extends List&gt; c = l.getClass();</code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>this object's <code>Class</code> instance.
@@ -999,7 +999,7 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>millis < 0</code>, <code>nanos < 0</code> or <code>nanos >
+            <td>if <code>millis &lt; 0</code>, <code>nanos &lt; 0</code> or <code>nanos &gt;
              999999</code>.</td>
         </tr>
         <tr>
@@ -1080,7 +1080,7 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>millis < 0</code>.</td>
+            <td>if <code>millis &lt; 0</code>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>

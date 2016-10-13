@@ -260,9 +260,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when the VM notices that a program tries to reference,
- on a class or object, a method that does not exist.
-</p>
+<p>Thrown if an application tries to call a specified method of a
+ class (either static or instance), and that class no longer has a
+ definition of that method.
+ <p>
+ Normally, this error is caught by the compiler; this error can
+ only occur at run time if the definition of a class has
+ incompatibly changed.</p>
 
 
 
@@ -330,8 +334,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/NoSuchMethodError.html#NoSuchMethodError()">NoSuchMethodError</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>NoSuchMethodError</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>NoSuchMethodError</code> with no detail message.</div>
   
   </td></tr>
 
@@ -347,10 +350,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/NoSuchMethodError.html#NoSuchMethodError(java.lang.String)">NoSuchMethodError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/NoSuchMethodError.html#NoSuchMethodError(java.lang.String)">NoSuchMethodError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>NoSuchMethodError</code> with the current stack trace
- and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>NoSuchMethodError</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -588,6 +591,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -888,8 +910,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>NoSuchMethodError</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>NoSuchMethodError</code> with no detail message.
 </p></div>
 
     </div>
@@ -909,7 +930,7 @@ From class
         
       </span>
       <span class="sympad">NoSuchMethodError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -921,14 +942,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>NoSuchMethodError</code> with the current stack trace
- and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>NoSuchMethodError</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

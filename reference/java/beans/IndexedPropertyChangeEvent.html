@@ -216,9 +216,17 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A type of <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> that indicates that an indexed property
- has changed.
-</p>
+<p>An "IndexedPropertyChange" event gets delivered whenever a component that
+ conforms to the JavaBeans&trade; specification (a "bean") changes a bound
+ indexed property. This class is an extension of <code>PropertyChangeEvent</code>
+ but contains the index of the property that has changed.
+ <P>
+ Null values may be provided for the old and the new values if their
+ true values are not known.
+ <P>
+ An event source may send a null object as the name to indicate that an
+ arbitrary set of if its properties have changed.  In this case the
+ old and new values should also be null.</p>
 
 
 
@@ -334,8 +342,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/IndexedPropertyChangeEvent.html#IndexedPropertyChangeEvent(java.lang.Object, java.lang.String, java.lang.Object, java.lang.Object, int)">IndexedPropertyChangeEvent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> source, <a href="../../../reference/java/lang/String.html">String</a> propertyName, <a href="../../../reference/java/lang/Object.html">Object</a> oldValue, <a href="../../../reference/java/lang/Object.html">Object</a> newValue, int index)
         
-        <div class="jd-descrdiv">Creates a new property changed event with an indication of the property
- index.</div>
+        <div class="jd-descrdiv">Constructs a new <code>IndexedPropertyChangeEvent</code> object.</div>
   
   </td></tr>
 
@@ -366,7 +373,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/IndexedPropertyChangeEvent.html#getIndex()">getIndex</a></span>()
         
-        <div class="jd-descrdiv">Returns the index of the property that was changed in this event.</div>
+        <div class="jd-descrdiv">Gets the index of the property that was changed.</div>
   
   </td></tr>
 
@@ -418,7 +425,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getNewValue()">getNewValue</a></span>()
         
-        <div class="jd-descrdiv">Returns the new value that the property now has.</div>
+        <div class="jd-descrdiv">Gets the new value for the property, expressed as an Object.</div>
   
   </td></tr>
 
@@ -436,7 +443,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getOldValue()">getOldValue</a></span>()
         
-        <div class="jd-descrdiv">Returns the old value that the property had.</div>
+        <div class="jd-descrdiv">Gets the old value for the property, expressed as an Object.</div>
   
   </td></tr>
 
@@ -454,7 +461,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getPropagationId()">getPropagationId</a></span>()
         
-        <div class="jd-descrdiv">Returns the propagationId object.</div>
+        <div class="jd-descrdiv">The "propagationId" field is reserved for future use.</div>
   
   </td></tr>
 
@@ -472,7 +479,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getPropertyName()">getPropertyName</a></span>()
         
-        <div class="jd-descrdiv">Returns the name of the property that has changed.</div>
+        <div class="jd-descrdiv">Gets the programmatic name of the property that was changed.</div>
   
   </td></tr>
 
@@ -490,7 +497,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#setPropagationId(java.lang.Object)">setPropagationId</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> propagationId)
         
-        <div class="jd-descrdiv">Sets the propagationId object.</div>
+        <div class="jd-descrdiv">Sets the propagationId object for the event.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string representation of the object.</div>
   
   </td></tr>
 
@@ -853,35 +878,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new property changed event with an indication of the property
- index.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IndexedPropertyChangeEvent</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>source</th>
-          <td>the changed bean.</td>
+          <td>The bean that fired the event.</td>
         </tr>
         <tr>
           <th>propertyName</th>
-          <td>the changed property, or <code>null</code> to indicate an
-            unspecified set of the properties has changed.</td>
+          <td>The programmatic name of the property that
+             was changed.</td>
         </tr>
         <tr>
           <th>oldValue</th>
-          <td>the previous value of the property, or <code>null</code> if
-            the <code>propertyName</code> is <code>null</code> or the
-            previous value is unknown.</td>
+          <td>The old value of the property.</td>
         </tr>
         <tr>
           <th>newValue</th>
-          <td>the new value of the property, or <code>null</code> if the
-            <code>propertyName</code> is <code>null</code> or the new
-            value is unknown..</td>
+          <td>The new value of the property.</td>
         </tr>
         <tr>
           <th>index</th>
-          <td>the index of the property.
+          <td>index of the property element that was changed.
 </td>
         </tr>
       </table>
@@ -931,8 +951,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the property that was changed in this event.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the index of the property that was changed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The index specifying the property element that was
+         changed.
+</li></ul>
+  </div>
 
     </div>
 </div>

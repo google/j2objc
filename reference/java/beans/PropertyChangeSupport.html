@@ -175,17 +175,56 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Manages a list of listeners to be notified when a property changes. Listeners
- subscribe to be notified of all property changes, or of changes to a single
- named property.
+<p>This is a utility class that can be used by beans that support bound
+ properties.  It manages a list of listeners and dispatches
+ <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code>s to them.  You can use an instance of this class
+ as a member field of your bean and delegate these types of work to it.
+ The <code><a href="reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a></code> can be registered for all properties
+ or for a property specified by name.
+ <p>
+ Here is an example of <code>PropertyChangeSupport</code> usage that follows
+ the rules and recommendations laid out in the JavaBeans&trade; specification:
+ <pre>
+ public class MyBean {
+     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
- <p>This class is thread safe. No locking is necessary when subscribing or
- unsubscribing listeners, or when publishing events. Callers should be careful
- when publishing events because listeners may not be thread safe.
-</p>
+     public void addPropertyChangeListener(PropertyChangeListener listener) {
+         this.pcs.addPropertyChangeListener(listener);
+     }
+
+     public void removePropertyChangeListener(PropertyChangeListener listener) {
+         this.pcs.removePropertyChangeListener(listener);
+     }
+
+     private String value;
+
+     public String getValue() {
+         return this.value;
+     }
+
+     public void setValue(String newValue) {
+         String oldValue = this.value;
+         this.value = newValue;
+         this.pcs.firePropertyChange("value", oldValue, newValue);
+     }
+
+     [...]
+ }
+ </pre>
+ <p>
+ A <code>PropertyChangeSupport</code> instance is thread-safe.
+ <p>
+ This class is serializable.  When it is serialized it will save
+ (and restore) any listeners that are themselves serializable.  Any
+ non-serializable listeners will be skipped during serialization.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../">ERROR(/VetoableChangeSupport)</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -250,7 +289,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#PropertyChangeSupport(java.lang.Object)">PropertyChangeSupport</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> sourceBean)
         
-        <div class="jd-descrdiv">Creates a new instance that uses the source bean as source for any event.</div>
+        <div class="jd-descrdiv">Constructs a <code>PropertyChangeSupport</code> object.</div>
   
   </td></tr>
 
@@ -281,7 +320,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#addPropertyChangeListener(java.beans.PropertyChangeListener)">addPropertyChangeListener</a></span>(<a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> listener)
         
-        <div class="jd-descrdiv">Subscribes <code>listener</code> to change notifications for all properties.</div>
+        <div class="jd-descrdiv">Add a PropertyChangeListener to the listener list.</div>
   
   </td></tr>
 
@@ -299,8 +338,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)">addPropertyChangeListener</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, <a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> listener)
         
-        <div class="jd-descrdiv">Subscribes <code>listener</code> to change notifications for the property
- named <code>propertyName</code>.</div>
+        <div class="jd-descrdiv">Add a PropertyChangeListener for a specific property.</div>
   
   </td></tr>
 
@@ -318,7 +356,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#fireIndexedPropertyChange(java.lang.String, int, boolean, boolean)">fireIndexedPropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, int index, boolean oldValue, boolean newValue)
         
-        <div class="jd-descrdiv">Fires a property change of a boolean property with the given name.</div>
+        <div class="jd-descrdiv">Reports a boolean bound indexed property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -336,7 +376,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#fireIndexedPropertyChange(java.lang.String, int, int, int)">fireIndexedPropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, int index, int oldValue, int newValue)
         
-        <div class="jd-descrdiv">Fires a property change of an integer property with the given name.</div>
+        <div class="jd-descrdiv">Reports an integer bound indexed property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -354,8 +396,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#fireIndexedPropertyChange(java.lang.String, int, java.lang.Object, java.lang.Object)">fireIndexedPropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, int index, <a href="../../../reference/java/lang/Object.html">Object</a> oldValue, <a href="../../../reference/java/lang/Object.html">Object</a> newValue)
         
-        <div class="jd-descrdiv">Fires an <code><a href="reference/java/beans/IndexedPropertyChangeEvent.html">IndexedPropertyChangeEvent</a></code> with the given name, old
- value, new value and index.</div>
+        <div class="jd-descrdiv">Reports a bound indexed property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -373,8 +416,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, java.lang.Object, java.lang.Object)">firePropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, <a href="../../../reference/java/lang/Object.html">Object</a> oldValue, <a href="../../../reference/java/lang/Object.html">Object</a> newValue)
         
-        <div class="jd-descrdiv">Fires a <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> with the given name, old value and
- new value.</div>
+        <div class="jd-descrdiv">Reports a bound property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -392,7 +436,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.beans.PropertyChangeEvent)">firePropertyChange</a></span>(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> event)
         
-        <div class="jd-descrdiv">Publishes a property change event to all listeners of that property.</div>
+        <div class="jd-descrdiv">Fires a property change event to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -408,9 +454,11 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, boolean, boolean)">firePropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, boolean oldValue, boolean newValue)
+        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, int, int)">firePropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, int oldValue, int newValue)
         
-        <div class="jd-descrdiv">Fires a property change of a boolean property with the given name.</div>
+        <div class="jd-descrdiv">Reports an integer bound property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -426,9 +474,11 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, int, int)">firePropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, int oldValue, int newValue)
+        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, boolean, boolean)">firePropertyChange</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, boolean oldValue, boolean newValue)
         
-        <div class="jd-descrdiv">Fires a property change of an integer property with the given name.</div>
+        <div class="jd-descrdiv">Reports a boolean bound property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.</div>
   
   </td></tr>
 
@@ -446,7 +496,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#getPropertyChangeListeners(java.lang.String)">getPropertyChangeListeners</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName)
         
-        <div class="jd-descrdiv">Returns the subscribers to be notified when <code>propertyName</code> changes.</div>
+        <div class="jd-descrdiv">Returns an array of all the listeners which have been associated
+ with the named property.</div>
   
   </td></tr>
 
@@ -464,7 +515,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#getPropertyChangeListeners()">getPropertyChangeListeners</a></span>()
         
-        <div class="jd-descrdiv">Returns all subscribers.</div>
+        <div class="jd-descrdiv">Returns an array of all the listeners that were added to the
+ PropertyChangeSupport object with addPropertyChangeListener().</div>
   
   </td></tr>
 
@@ -482,8 +534,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#hasListeners(java.lang.String)">hasListeners</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName)
         
-        <div class="jd-descrdiv">Returns true if there are listeners registered to the property with the
- given name.</div>
+        <div class="jd-descrdiv">Check if there are any listeners for a specific property, including
+ those registered on all properties.</div>
   
   </td></tr>
 
@@ -501,8 +553,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#removePropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)">removePropertyChangeListener</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, <a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> listener)
         
-        <div class="jd-descrdiv">Unsubscribes <code>listener</code> from change notifications for the property
- named <code>propertyName</code>.</div>
+        <div class="jd-descrdiv">Remove a PropertyChangeListener for a specific property.</div>
   
   </td></tr>
 
@@ -520,8 +571,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeSupport.html#removePropertyChangeListener(java.beans.PropertyChangeListener)">removePropertyChangeListener</a></span>(<a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> listener)
         
-        <div class="jd-descrdiv">Unsubscribes <code>listener</code> from change notifications for all
- properties.</div>
+        <div class="jd-descrdiv">Remove a PropertyChangeListener from the listener list.</div>
   
   </td></tr>
 
@@ -832,13 +882,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new instance that uses the source bean as source for any event.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>PropertyChangeSupport</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sourceBean</th>
-          <td>the bean used as source for all events.
+          <td>The bean to be given as the source for any events.
 </td>
         </tr>
       </table>
@@ -888,10 +938,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Subscribes <code>listener</code> to change notifications for all properties.
- If the listener is already subscribed, it will receive an additional
- notification. If the listener is null, this method silently does nothing.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Add a PropertyChangeListener to the listener list.
+ The listener is registered for all properties.
+ The same listener object may be added more than once, and will be called
+ as many times as it is added.
+ If <code>listener</code> is null, no exception is thrown and no action
+ is taken.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>listener</th>
+          <td>The PropertyChangeListener to be added
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -922,11 +984,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Subscribes <code>listener</code> to change notifications for the property
- named <code>propertyName</code>. If the listener is already subscribed, it
- will receive an additional notification when the property changes. If the
- property name or listener is null, this method silently does nothing.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Add a PropertyChangeListener for a specific property.  The listener
+ will be invoked only when a call on firePropertyChange names that
+ specific property.
+ The same listener object may be added more than once.  For each
+ property,  the listener will be invoked the number of times it was added
+ for that property.
+ If <code>propertyName</code> or <code>listener</code> is null, no
+ exception is thrown and no action is taken.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>propertyName</th>
+          <td>The name of the property to listen on.</td>
+        </tr>
+        <tr>
+          <th>listener</th>
+          <td>The PropertyChangeListener to be added
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -957,28 +1036,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Fires a property change of a boolean property with the given name. If the
- old value and the new value are not null and equal the event will not be
- fired.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reports a boolean bound indexed property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if old and new values are equal.
+ <p>
+ This is merely a convenience wrapper around the more general
+ <code><a href="reference/java/beans/PropertyChangeSupport.html#fireIndexedPropertyChange(java.lang.String, int, java.lang.Object, java.lang.Object)">fireIndexedPropertyChange(String, int, Object, Object)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the property name</td>
+          <td>the programmatic name of the property that was changed</td>
         </tr>
         <tr>
           <th>index</th>
-          <td>the index of the changed property</td>
+          <td>the index of the property element that was changed</td>
         </tr>
         <tr>
           <th>oldValue</th>
-          <td>the old value</td>
+          <td>the old value of the property</td>
         </tr>
         <tr>
           <th>newValue</th>
-          <td>the new value
-</td>
+          <td>the new value of the property</td>
         </tr>
       </table>
   </div>
@@ -1012,28 +1095,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Fires a property change of an integer property with the given name. If
- the old value and the new value are not null and equal the event will not
- be fired.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reports an integer bound indexed property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if old and new values are equal.
+ <p>
+ This is merely a convenience wrapper around the more general
+ <code><a href="reference/java/beans/PropertyChangeSupport.html#fireIndexedPropertyChange(java.lang.String, int, java.lang.Object, java.lang.Object)">fireIndexedPropertyChange(String, int, Object, Object)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the property name</td>
+          <td>the programmatic name of the property that was changed</td>
         </tr>
         <tr>
           <th>index</th>
-          <td>the index of the changed property</td>
+          <td>the index of the property element that was changed</td>
         </tr>
         <tr>
           <th>oldValue</th>
-          <td>the old value</td>
+          <td>the old value of the property</td>
         </tr>
         <tr>
           <th>newValue</th>
-          <td>the new value
-</td>
+          <td>the new value of the property</td>
         </tr>
       </table>
   </div>
@@ -1067,20 +1154,24 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Fires an <code><a href="reference/java/beans/IndexedPropertyChangeEvent.html">IndexedPropertyChangeEvent</a></code> with the given name, old
- value, new value and index. As source the bean used to initialize this
- instance is used. If the old value and the new value are not null and
- equal the event will not be fired.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reports a bound indexed property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if old and new values are equal and non-null.
+ <p>
+ This is merely a convenience wrapper around the more general
+ <code><a href="reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.beans.PropertyChangeEvent)">firePropertyChange(PropertyChangeEvent)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the name of the property</td>
+          <td>the programmatic name of the property that was changed</td>
         </tr>
         <tr>
           <th>index</th>
-          <td>the index</td>
+          <td>the index of the property element that was changed</td>
         </tr>
         <tr>
           <th>oldValue</th>
@@ -1088,8 +1179,7 @@ From class
         </tr>
         <tr>
           <th>newValue</th>
-          <td>the new value of the property
-</td>
+          <td>the new value of the property</td>
         </tr>
       </table>
   </div>
@@ -1123,16 +1213,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Fires a <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> with the given name, old value and
- new value. As source the bean used to initialize this instance is used.
- If the old value and the new value are not null and equal the event will
- not be fired.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reports a bound property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if old and new values are equal and non-null.
+ <p>
+ This is merely a convenience wrapper around the more general
+ <code><a href="reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.beans.PropertyChangeEvent)">firePropertyChange(PropertyChangeEvent)</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the name of the property</td>
+          <td>the programmatic name of the property that was changed</td>
         </tr>
         <tr>
           <th>oldValue</th>
@@ -1175,57 +1269,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Publishes a property change event to all listeners of that property. If
- the event's old and new values are equal (but non-null), no event will be
- published.
-</p></div>
-
-    </div>
-</div>
-
-
-<a id="firePropertyChange(java.lang.String, boolean, boolean)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        void
-      </span>
-      <span class="sympad">firePropertyChange</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> propertyName, boolean oldValue, boolean newValue)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Fires a property change of a boolean property with the given name. If the
- old value and the new value are not null and equal the event will not be
- fired.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Fires a property change event to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if the given event's old and new values are equal and non-null.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>propertyName</th>
-          <td>the property name</td>
-        </tr>
-        <tr>
-          <th>oldValue</th>
-          <td>the old value</td>
-        </tr>
-        <tr>
-          <th>newValue</th>
-          <td>the new value
+          <th>event</th>
+          <td>the <code>PropertyChangeEvent</code> to be fired
 </td>
         </tr>
       </table>
@@ -1260,23 +1314,84 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Fires a property change of an integer property with the given name. If
- the old value and the new value are not null and equal the event will not
- be fired.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reports an integer bound property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if old and new values are equal.
+ <p>
+ This is merely a convenience wrapper around the more general
+ <code><a href="reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, java.lang.Object, java.lang.Object)">firePropertyChange(String, Object, Object)</a></code>  method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the property name</td>
+          <td>the programmatic name of the property that was changed</td>
         </tr>
         <tr>
           <th>oldValue</th>
-          <td>the old value</td>
+          <td>the old value of the property</td>
         </tr>
         <tr>
           <th>newValue</th>
-          <td>the new value
+          <td>the new value of the property
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="firePropertyChange(java.lang.String, boolean, boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">firePropertyChange</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> propertyName, boolean oldValue, boolean newValue)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reports a boolean bound property update to listeners
+ that have been registered to track updates of
+ all properties or a property with the specified name.
+ <p>
+ No event is fired if old and new values are equal.
+ <p>
+ This is merely a convenience wrapper around the more general
+ <code><a href="reference/java/beans/PropertyChangeSupport.html#firePropertyChange(java.lang.String, java.lang.Object, java.lang.Object)">firePropertyChange(String, Object, Object)</a></code>  method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>propertyName</th>
+          <td>the programmatic name of the property that was changed</td>
+        </tr>
+        <tr>
+          <th>oldValue</th>
+          <td>the old value of the property</td>
+        </tr>
+        <tr>
+          <th>newValue</th>
+          <td>the new value of the property
 </td>
         </tr>
       </table>
@@ -1311,10 +1426,24 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the subscribers to be notified when <code>propertyName</code> changes.
- This includes both listeners subscribed to all property changes and
- listeners subscribed to the named property only.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array of all the listeners which have been associated
+ with the named property.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>propertyName</th>
+          <td>The name of the property being listened to</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>all of the <code>PropertyChangeListeners</code> associated with
+         the named property.  If no such listeners have been added,
+         or if <code>propertyName</code> is null, an empty array is
+         returned.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1345,9 +1474,40 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns all subscribers. This includes both listeners subscribed to all
- property changes and listeners subscribed to a single property.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array of all the listeners that were added to the
+ PropertyChangeSupport object with addPropertyChangeListener().
+ <p>
+ If some listeners have been added with a named property, then
+ the returned array will be a mixture of PropertyChangeListeners
+ and <code>PropertyChangeListenerProxy</code>s. If the calling
+ method is interested in distinguishing the listeners then it must
+ test each element to see if it's a
+ <code>PropertyChangeListenerProxy</code>, perform the cast, and examine
+ the parameter.
+
+ <pre>
+ PropertyChangeListener[] listeners = bean.getPropertyChangeListeners();
+ for (int i = 0; i < listeners.length; i++) {
+   if (listeners[i] instanceof PropertyChangeListenerProxy) {
+     PropertyChangeListenerProxy proxy =
+                    (PropertyChangeListenerProxy)listeners[i];
+     if (proxy.getPropertyName().equals("foo")) {
+       // proxy is a PropertyChangeListener which was associated
+       // with the property named "foo"
+     }
+   }
+ }
+</pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>all of the <code>PropertyChangeListeners</code> added or an
+         empty array if no listeners have been added</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html">PropertyChangeListenerProxy</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -1378,21 +1538,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if there are listeners registered to the property with the
- given name.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Check if there are any listeners for a specific property, including
+ those registered on all properties.  If <code>propertyName</code>
+ is null, only check for listeners registered on all properties.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the name of the property</td>
+          <td>the property name.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true if there are listeners registered to that property, false
-         otherwise.
+      <ul class="nolist"><li>true if there are one or more listeners for the given property
 </li></ul>
   </div>
 
@@ -1425,11 +1585,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Unsubscribes <code>listener</code> from change notifications for the property
- named <code>propertyName</code>. If multiple subscriptions exist for <code>listener</code>, it will receive one fewer notifications when the property
- changes. If the property name or listener is null or not subscribed, this
- method silently does nothing.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Remove a PropertyChangeListener for a specific property.
+ If <code>listener</code> was added more than once to the same event
+ source for the specified property, it will be notified one less time
+ after being removed.
+ If <code>propertyName</code> is null,  no exception is thrown and no
+ action is taken.
+ If <code>listener</code> is null, or was never added for the specified
+ property, no exception is thrown and no action is taken.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>propertyName</th>
+          <td>The name of the property that was listened on.</td>
+        </tr>
+        <tr>
+          <th>listener</th>
+          <td>The PropertyChangeListener to be removed
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1460,11 +1637,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Unsubscribes <code>listener</code> from change notifications for all
- properties. If the listener has multiple subscriptions, it will receive
- one fewer notification when properties change. If the property name or
- listener is null or not subscribed, this method silently does nothing.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Remove a PropertyChangeListener from the listener list.
+ This removes a PropertyChangeListener that was registered
+ for all properties.
+ If <code>listener</code> was added more than once to the same event
+ source, it will be notified one less time after being removed.
+ If <code>listener</code> is null, or was never added, no exception is
+ thrown and no action is taken.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>listener</th>
+          <td>The PropertyChangeListener to be removed
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

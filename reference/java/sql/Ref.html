@@ -144,22 +144,35 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This interface represents an SQL Ref - a data object containing a cursor
- or pointer to a result table.
+<p>The mapping in the Java programming language of an SQL <code>REF</code>
+ value, which is a reference to an SQL structured type value in the database.
+ <P>
+ SQL <code>REF</code> values are stored in a table that contains
+ instances of a referenceable SQL structured type, and each <code>REF</code>
+ value is a unique identifier for one instance in that table.
+ An SQL <code>REF</code> value may be used in place of the
+ SQL structured type it references, either as a column value in a
+ table or an attribute value in a structured type.
+ <P>
+ Because an SQL <code>REF</code> value is a logical pointer to an
+ SQL structured type, a <code>Ref</code> object is by default also a logical
+ pointer. Thus, retrieving an SQL <code>REF</code> value as
+ a <code>Ref</code> object does not materialize
+ the attributes of the structured type on the client.
+ <P>
+ A <code>Ref</code> object can be stored in the database using the
+ <code>PreparedStatement.setRef</code> method.
  <p>
- The data structure identified by an instance of Ref is held in the
- database, so the data is not necessarily read and converted
- into a Java object until <code>getObject</code> is called. However, if
- the database supports the <code>Ref</code> type, it is not typically
- necessary to get the underlying object before using it in a method call -
- the <code>Ref</code> object can be used in place of the data structure.
- <p>
- A <code>Ref</code> object is stored into the database using the
- <code><a href="reference/java/sql/PreparedStatement.html#setRef(int, java.sql.Ref)">setRef(int, Ref)</a></code> method.
-</p>
+ All methods on the <code>Ref</code> interface must be fully implemented if the
+ JDBC driver supports the data type.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Struct.html">Struct</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -228,8 +241,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Ref.html#getBaseTypeName()">getBaseTypeName</a></span>()
         
-        <div class="jd-descrdiv">Gets the fully-qualified SQL name of the SQL structured type that this
- <code>Ref</code> references.</div>
+        <div class="jd-descrdiv">Retrieves the fully-qualified SQL name of the SQL structured type that
+ this <code>Ref</code> object references.</div>
   
   </td></tr>
 
@@ -247,7 +260,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Ref.html#getObject()">getObject</a></span>()
         
-        <div class="jd-descrdiv">Gets the SQL structured type instance referenced by this <code>Ref</code>.</div>
+        <div class="jd-descrdiv">Retrieves the SQL structured type instance referenced by
+ this <code>Ref</code> object.</div>
   
   </td></tr>
 
@@ -265,8 +279,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Ref.html#getObject(java.util.Map<java.lang.String, java.lang.Class<?>>)">getObject</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;&gt; map)
         
-        <div class="jd-descrdiv">Returns the associated object and uses the relevant mapping to convert it
- to a Java type.</div>
+        <div class="jd-descrdiv">Retrieves the referenced object and maps it to a Java type
+ using the given type map.</div>
   
   </td></tr>
 
@@ -284,8 +298,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Ref.html#setObject(java.lang.Object)">setObject</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Sets the value of the structured type that this <code>Ref</code> references to
- a supplied object.</div>
+        <div class="jd-descrdiv">Sets the structured type value that this <code>Ref</code>
+ object references to the given instance of <code>Object</code>.</div>
   
   </td></tr>
 
@@ -363,19 +377,23 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the fully-qualified SQL name of the SQL structured type that this
- <code>Ref</code> references.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the fully-qualified SQL name of the SQL structured type that
+ this <code>Ref</code> object references.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the fully qualified name of the SQL structured type.</li></ul>
+      <ul class="nolist"><li>the fully-qualified SQL name of the referenced SQL structured type</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -409,21 +427,35 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the SQL structured type instance referenced by this <code>Ref</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the SQL structured type instance referenced by
+ this <code>Ref</code> object.  If the connection's type map has an entry
+ for the structured type, the instance will be custom mapped to
+ the Java class indicated in the type map.  Otherwise, the
+ structured type instance will be mapped to a <code>Struct</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a Java object whose type is defined by the mapping for the SQL
-         structured type.</li></ul>
+      <ul class="nolist"><li>a Java <code>Object</code> that is the mapping for
+          the SQL structured type to which this <code>Ref</code>
+          object refers</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Ref.html#setObject(java.lang.Object)">setObject(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -455,31 +487,45 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the associated object and uses the relevant mapping to convert it
- to a Java type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the referenced object and maps it to a Java type
+ using the given type map.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>map</th>
-          <td>the mapping for type conversion.</td>
+          <td>a <code>java.util.Map</code> object that contains
+        the mapping to use (the fully-qualified name of the SQL
+        structured type being referenced and the class object for
+        <code>SQLData</code> implementation to which the SQL
+        structured type will be mapped)</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a Java object whose type is defined by the mapping for the SQL
-         structured type.</li></ul>
+      <ul class="nolist"><li>a Java <code>Object</code> that is the custom mapping for
+          the SQL structured type to which this <code>Ref</code>
+          object refers</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Ref.html#setObject(java.lang.Object)">setObject(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -511,15 +557,18 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the structured type that this <code>Ref</code> references to
- a supplied object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the structured type value that this <code>Ref</code>
+ object references to the given instance of <code>Object</code>.
+ The driver converts this to an SQL structured type when it
+ sends it to the database.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the <code>Object</code> representing the new SQL structured type
-            that this <code>Ref</code> references.</td>
+          <td>an <code>Object</code> representing the SQL
+        structured type instance that this
+        <code>Ref</code> object will reference</td>
         </tr>
       </table>
   </div>
@@ -528,10 +577,19 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Ref.html#getObject()">getObject()</a></code></li><li><code><a href="../../../reference/java/sql/Ref.html#getObject(java.util.Map<java.lang.String, java.lang.Class<?>>)">getObject(Map)</a></code></li><li><code><a href="../../../reference/java/sql/PreparedStatement.html#setObject(int, java.lang.Object)">setObject(int, Object)</a></code></li><li><code><a href="../../../reference/java/sql/CallableStatement.html#setObject(java.lang.String, java.lang.Object)">setObject(String, Object)</a></code></li>
+      </ul>
   </div>
 
     </div>

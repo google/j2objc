@@ -204,14 +204,14 @@ layout: api
      CountDownLatch startSignal = new CountDownLatch(1);
      CountDownLatch doneSignal = new CountDownLatch(N);
 
-     for (int i = 0; i < N; ++i) // create and start threads
+     for (int i = 0; i &lt; N; ++i) // create and start threads
        new Thread(new Worker(startSignal, doneSignal)).start();
 
      doSomethingElse();            // don't let run yet
      startSignal.countDown();      // let all threads proceed
      doSomethingElse();
      doneSignal.await();           // wait for all to finish
-   </code>
+   }
  }
 
  class Worker implements Runnable {
@@ -230,7 +230,7 @@ layout: api
    }
 
    void doWork() { ... }
- }}</pre>
+ }</code></pre>
 
  <p>Another typical usage would be to divide a problem into N parts,
  describe each part with a Runnable that executes that portion and
@@ -244,11 +244,11 @@ layout: api
      CountDownLatch doneSignal = new CountDownLatch(N);
      Executor e = ...
 
-     for (int i = 0; i < N; ++i) // create and start threads
+     for (int i = 0; i &lt; N; ++i) // create and start threads
        e.execute(new WorkerRunnable(doneSignal, i));
 
      doneSignal.await();           // wait for all to finish
-   </code>
+   }
  }
 
  class WorkerRunnable implements Runnable {
@@ -266,7 +266,7 @@ layout: api
    }
 
    void doWork() { ... }
- }}</pre>
+ }</code></pre>
 
  <p>Memory consistency effects: Until the count reaches
  zero, actions in a thread prior to calling

@@ -235,17 +235,22 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An <code>InvalidPropertiesFormatException</code> is thrown if loading the XML
- document defining the properties does not follow the <code>Properties</code>
- specification.
+<p>Thrown to indicate that an operation could not complete because
+ the input did not conform to the appropriate XML document type
+ for a collection of properties, as per the <code><a href="reference/java/util/Properties.html">Properties</a></code>
+ specification.<p>
 
- Even though this Exception inherits the <code>Serializable</code> interface, it is not
- serializable. The methods used for serialization throw
- <code>NotSerializableException</code>s.
-</p>
+ Note, that although InvalidPropertiesFormatException inherits Serializable
+ interface from Exception, it is not intended to be Serializable. Appropriate
+ serialization methods are implemented to throw NotSerializableException.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Properties.html">Properties</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -308,10 +313,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html#InvalidPropertiesFormatException(java.lang.String)">InvalidPropertiesFormatException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> m)
+        <span class="sympad"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html#InvalidPropertiesFormatException(java.lang.Throwable)">InvalidPropertiesFormatException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>InvalidPropertiesFormatException</code> with the
- current stack trace and message filled in.</div>
+        <div class="jd-descrdiv">Constructs an InvalidPropertiesFormatException with the specified
+ cause.</div>
   
   </td></tr>
 
@@ -327,10 +332,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html#InvalidPropertiesFormatException(java.lang.Throwable)">InvalidPropertiesFormatException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> c)
+        <span class="sympad"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html#InvalidPropertiesFormatException(java.lang.String)">InvalidPropertiesFormatException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Constructs a new <code>InvalidPropertiesFormatException</code> with the cause
- for the Exception.</div>
+        <div class="jd-descrdiv">Constructs an InvalidPropertiesFormatException with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -566,6 +571,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -841,48 +865,6 @@ From class
 
 
 
-<a id="InvalidPropertiesFormatException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">InvalidPropertiesFormatException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> m)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvalidPropertiesFormatException</code> with the
- current stack trace and message filled in.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>m</th>
-          <td>the detail message for the exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="InvalidPropertiesFormatException(java.lang.Throwable)"></a>
 
 <div class="jd-details api apilevel-">
@@ -896,7 +878,7 @@ From class
         
       </span>
       <span class="sympad">InvalidPropertiesFormatException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> c)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -908,14 +890,58 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvalidPropertiesFormatException</code> with the cause
- for the Exception.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidPropertiesFormatException with the specified
+ cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>c</th>
-          <td>the cause for the Exception.
+          <th>cause</th>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="InvalidPropertiesFormatException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">InvalidPropertiesFormatException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidPropertiesFormatException with the specified
+ detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the detail message. The detail message is saved for
+          later retrieval by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method.
 </td>
         </tr>
       </table>

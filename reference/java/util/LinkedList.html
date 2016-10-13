@@ -141,17 +141,17 @@ layout: api
   
 
   
+  
+  
+  
+
+  
+  
+  
+  
+
+  
    
-  
-  
-  
-  
-
-  
-  
-  
-  
-
   
   
   
@@ -213,8 +213,6 @@ layout: api
         <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
       
         <a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;
-      
-        <a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;
       
         <a href="../../../reference/java/lang/Cloneable.html">Cloneable</a>
       
@@ -294,18 +292,57 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>LinkedList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by a doubly-linked list.
- All optional operations including adding, removing, and replacing elements are supported.
+<p>Doubly-linked list implementation of the <code>List</code> and <code>Deque</code>
+ interfaces.  Implements all optional list operations, and permits all
+ elements (including <code>null</code>).
 
- <p>All elements are permitted, including null.
+ <p>All of the operations perform as could be expected for a doubly-linked
+ list.  Operations that index into the list will traverse the list from
+ the beginning or the end, whichever is closer to the specified index.
 
- <p>This class is primarily useful if you need queue-like behavior. It may also be useful
- as a list if you expect your lists to contain zero or one element, but still require the
- ability to scale to slightly larger numbers of elements. In general, though, you should
- probably use <code><a href="reference/java/util/ArrayList.html">ArrayList</a></code> if you don't need the queue-like behavior.</p>
+ <p><strong>Note that this implementation is not synchronized.</strong>
+ If multiple threads access a linked list concurrently, and at least
+ one of the threads modifies the list structurally, it <i>must</i> be
+ synchronized externally.  (A structural modification is any operation
+ that adds or deletes one or more elements; merely setting the value of
+ an element is not a structural modification.)  This is typically
+ accomplished by synchronizing on some object that naturally
+ encapsulates the list.
+
+ If no such object exists, the list should be "wrapped" using the
+ <code><a href="reference/java/util/Collections.html#synchronizedList(java.util.List<T>)">Collections.synchronizedList</a></code>
+ method.  This is best done at creation time, to prevent accidental
+ unsynchronized access to the list:<pre>
+   List list = Collections.synchronizedList(new LinkedList(...));</pre>
+
+ <p>The iterators returned by this class's <code>iterator</code> and
+ <code>listIterator</code> methods are <i>fail-fast</i>: if the list is
+ structurally modified at any time after the iterator is created, in
+ any way except through the Iterator's own <code>remove</code> or
+ <code>add</code> methods, the iterator will throw a <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>.  Thus, in the face of concurrent
+ modification, the iterator fails quickly and cleanly, rather than
+ risking arbitrary, non-deterministic behavior at an undetermined
+ time in the future.
+
+ <p>Note that the fail-fast behavior of an iterator cannot be guaranteed
+ as it is, generally speaking, impossible to make any hard guarantees in the
+ presence of unsynchronized concurrent modification.  Fail-fast iterators
+ throw <code>ConcurrentModificationException</code> on a best-effort basis.
+ Therefore, it would be wrong to write a program that depended on this
+ exception for its correctness:   <i>the fail-fast behavior of iterators
+ should be used only to detect bugs.</i>
+
+ <p>This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/List.html">List</a></code></li><li><code><a href="../../../reference/java/util/ArrayList.html">ArrayList</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -381,7 +418,7 @@ layout: api
           
           int</td>
           <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractList.html#modCount">modCount</a></td>
-          <td class="jd-descrcol" width="100%">A counter for changes to the list.</td>
+          <td class="jd-descrcol" width="100%">The number of times this list has been <i>structurally modified</i>.</td>
       </tr>
       
     
@@ -432,7 +469,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#LinkedList()">LinkedList</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new empty instance of <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Constructs an empty list.</div>
   
   </td></tr>
 
@@ -448,10 +485,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#LinkedList(java.util.Collection<? extends E>)">LinkedList</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#LinkedList(java.util.Collection<? extends E>)">LinkedList</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>LinkedList</code> that holds all of the
- elements contained in the specified <code>collection</code>.</div>
+        <div class="jd-descrdiv">Constructs a list containing the elements of the specified
+ collection, in the order they are returned by the collection's
+ iterator.</div>
   
   </td></tr>
 
@@ -480,9 +518,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this list.</div>
   
   </td></tr>
 
@@ -498,10 +536,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Inserts the specified object into this <code>LinkedList</code> at the
- specified location.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -517,9 +554,11 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Adds the objects in the specified Collection to this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Appends all of the elements in the specified collection to the end of
+ this list, in the order that they are returned by the specified
+ collection's iterator.</div>
   
   </td></tr>
 
@@ -535,10 +574,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified collection at the specified location
- in this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Inserts all of the elements in the specified collection into this
+ list, starting at the specified position.</div>
   
   </td></tr>
 
@@ -554,9 +593,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addFirst(E)">addFirst</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addFirst(E)">addFirst</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the beginning of this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the beginning of this list.</div>
   
   </td></tr>
 
@@ -572,9 +611,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addLast(E)">addLast</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#addLast(E)">addLast</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this list.</div>
   
   </td></tr>
 
@@ -592,7 +631,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>LinkedList</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this list.</div>
   
   </td></tr>
 
@@ -610,8 +649,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv">Returns a new <code>LinkedList</code> with the same elements and size as this
- <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Returns a shallow copy of this <code>LinkedList</code>.</div>
   
   </td></tr>
 
@@ -627,9 +665,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this <code>LinkedList</code> for the specified object.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this list contains the specified element.</div>
   
   </td></tr>
 
@@ -666,8 +704,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#element()">element</a></span>()
         
-        <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
- this deque (in other words, the first element of this deque).</div>
+        <div class="jd-descrdiv">Retrieves, but does not remove, the head (first element) of this list.</div>
   
   </td></tr>
 
@@ -683,9 +720,9 @@ layout: api
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#get(int)">get</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#get(int)">get</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this list.</div>
+        <div class="jd-descrdiv">Returns the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -703,7 +740,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#getFirst()">getFirst</a></span>()
         
-        <div class="jd-descrdiv">Returns the first element in this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Returns the first element in this list.</div>
   
   </td></tr>
 
@@ -721,7 +758,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#getLast()">getLast</a></span>()
         
-        <div class="jd-descrdiv">Returns the last element in this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Returns the last element in this list.</div>
   
   </td></tr>
 
@@ -737,10 +774,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this list for the specified object and returns the index of the
- first occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.</div>
   
   </td></tr>
 
@@ -756,10 +793,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this <code>LinkedList</code> for the specified object and returns the
- index of the last occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.</div>
   
   </td></tr>
 
@@ -775,9 +812,10 @@ layout: api
             <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#listIterator(int)">listIterator</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#listIterator(int)">listIterator</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns a ListIterator on the elements of this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Returns a list-iterator of the elements in this list (in proper
+ sequence), starting at the specified position in the list.</div>
   
   </td></tr>
 
@@ -793,13 +831,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#offer(E)">offer</a></span>(E o)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#offer(E)">offer</a></span>(E e)
         
-        <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
- (in other words, at the tail of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and <tt>false</tt> if no space is currently
- available.</div>
+        <div class="jd-descrdiv">Adds the specified element as the tail (last element) of this list.</div>
   
   </td></tr>
 
@@ -817,8 +851,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#offerFirst(E)">offerFirst</a></span>(E e)
         
-        <div class="jd-descrdiv">Inserts the specified element at the front of this deque unless it would
- violate capacity restrictions.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the front of this list.</div>
   
   </td></tr>
 
@@ -836,8 +869,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#offerLast(E)">offerLast</a></span>(E e)
         
-        <div class="jd-descrdiv">Inserts the specified element at the end of this deque unless it would
- violate capacity restrictions.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the end of this list.</div>
   
   </td></tr>
 
@@ -855,9 +887,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#peek()">peek</a></span>()
         
-        <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
- this deque (in other words, the first element of this deque), or
- returns <tt>null</tt> if this deque is empty.</div>
+        <div class="jd-descrdiv">Retrieves, but does not remove, the head (first element) of this list.</div>
   
   </td></tr>
 
@@ -875,8 +905,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#peekFirst()">peekFirst</a></span>()
         
-        <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+        <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this list,
+ or returns <code>null</code> if this list is empty.</div>
   
   </td></tr>
 
@@ -894,8 +924,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#peekLast()">peekLast</a></span>()
         
-        <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+        <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this list,
+ or returns <code>null</code> if this list is empty.</div>
   
   </td></tr>
 
@@ -913,9 +943,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#poll()">poll</a></span>()
         
-        <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
- (in other words, the first element of this deque), or returns
- <tt>null</tt> if this deque is empty.</div>
+        <div class="jd-descrdiv">Retrieves and removes the head (first element) of this list.</div>
   
   </td></tr>
 
@@ -933,8 +961,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#pollFirst()">pollFirst</a></span>()
         
-        <div class="jd-descrdiv">Retrieves and removes the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+        <div class="jd-descrdiv">Retrieves and removes the first element of this list,
+ or returns <code>null</code> if this list is empty.</div>
   
   </td></tr>
 
@@ -952,8 +980,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#pollLast()">pollLast</a></span>()
         
-        <div class="jd-descrdiv">Retrieves and removes the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+        <div class="jd-descrdiv">Retrieves and removes the last element of this list,
+ or returns <code>null</code> if this list is empty.</div>
   
   </td></tr>
 
@@ -971,7 +999,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#pop()">pop</a></span>()
         
-        <div class="jd-descrdiv">Pops an element from the stack represented by this deque.</div>
+        <div class="jd-descrdiv">Pops an element from the stack represented by this list.</div>
   
   </td></tr>
 
@@ -989,11 +1017,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#push(E)">push</a></span>(E e)
         
-        <div class="jd-descrdiv">Pushes an element onto the stack represented by this deque (in other
- words, at the head of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.</div>
+        <div class="jd-descrdiv">Pushes an element onto the stack represented by this list.</div>
   
   </td></tr>
 
@@ -1009,9 +1033,9 @@ layout: api
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -1029,8 +1053,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#remove()">remove</a></span>()
         
-        <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
- (in other words, the first element of this deque).</div>
+        <div class="jd-descrdiv">Retrieves and removes the head (first element) of this list.</div>
   
   </td></tr>
 
@@ -1046,10 +1069,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element from this list,
+ if it is present.</div>
   
   </td></tr>
 
@@ -1067,7 +1090,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#removeFirst()">removeFirst</a></span>()
         
-        <div class="jd-descrdiv">Removes the first object from this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Removes and returns the first element from this list.</div>
   
   </td></tr>
 
@@ -1085,7 +1108,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#removeFirstOccurrence(java.lang.Object)">removeFirstOccurrence</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the first occurrence of the specified element from this deque.</div>
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element in this
+ list (when traversing the list from head to tail).</div>
   
   </td></tr>
 
@@ -1103,7 +1127,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#removeLast()">removeLast</a></span>()
         
-        <div class="jd-descrdiv">Removes the last object from this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Removes and returns the last element from this list.</div>
   
   </td></tr>
 
@@ -1121,7 +1145,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#removeLastOccurrence(java.lang.Object)">removeLastOccurrence</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the last occurrence of the specified element from this deque.</div>
+        <div class="jd-descrdiv">Removes the last occurrence of the specified element in this
+ list (when traversing the list from head to tail).</div>
   
   </td></tr>
 
@@ -1137,10 +1162,10 @@ layout: api
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this <code>LinkedList</code>
- with the specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this list with the
+ specified element.</div>
   
   </td></tr>
 
@@ -1158,7 +1183,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this list.</div>
   
   </td></tr>
 
@@ -1171,13 +1196,14 @@ layout: api
             
             
             
-            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#toArray()">toArray</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#spliterator()">spliterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this
- <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Creates a <em><a href="Spliterator.html#binding">late-binding</a></em>
+ and <em>fail-fast</em> <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this
+ list.</div>
   
   </td></tr>
 
@@ -1189,14 +1215,34 @@ layout: api
             
             
             
+            
+            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#toArray()">toArray</a></span>()
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this list
+ in proper sequence (from first to last element).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
             &lt;T&gt;
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#toArray(T[])">toArray</a></span>(T[] contents)
+        <span class="sympad"><a href="../../../reference/java/util/LinkedList.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this
- <code>LinkedList</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this list in
+ proper sequence (from first to last element); the runtime type of
+ the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -1273,9 +1319,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Inserts the specified object into this List at the specified location.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this list
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1291,10 +1338,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified Collection at the specified location
- in this List.</div>
+        <div class="jd-descrdiv">Inserts all of the elements in the specified collection into this
+ list at the specified position (optional operation).</div>
   
   </td></tr>
 
@@ -1310,9 +1357,9 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#get(int)">get</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#get(int)">get</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this list.</div>
+        <div class="jd-descrdiv">Returns the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -1330,7 +1377,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this list (in proper
+ sequence).</div>
   
   </td></tr>
 
@@ -1346,9 +1394,10 @@ From class
             <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#listIterator(int)">listIterator</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#listIterator(int)">listIterator</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns a list iterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence).</div>
   
   </td></tr>
 
@@ -1364,9 +1413,10 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this list.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1382,10 +1432,10 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSequentialList.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this list with the
- specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this list with the
+ specified element (optional operation).</div>
   
   </td></tr>
 
@@ -1426,9 +1476,13 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Inserts the specified object into this List at the specified location.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this list
+ (optional operation).
+
+ <p>This implementation always throws an
+ <code>UnsupportedOperationException</code>.</div>
   
   </td></tr>
 
@@ -1444,9 +1498,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this List.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1462,10 +1517,15 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified Collection at the specified location
- in this List.</div>
+        <div class="jd-descrdiv">Inserts all of the elements in the specified collection into this
+ list at the specified position (optional operation).
+
+ <p>This implementation gets an iterator over the specified collection
+ and iterates over it, inserting the elements obtained from the
+ iterator into this list at the appropriate position, one at a time,
+ using <code>add(int, E)</code>.</div>
   
   </td></tr>
 
@@ -1483,7 +1543,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this list, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this list (optional operation).</div>
   
   </td></tr>
 
@@ -1499,10 +1559,9 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this list and return true if they are
- equal.</div>
+        <div class="jd-descrdiv">Compares the specified object with this list for equality.</div>
   
   </td></tr>
 
@@ -1518,9 +1577,9 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#get(int)">get</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#get(int)">get</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this list.</div>
+        <div class="jd-descrdiv">Returns the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -1538,7 +1597,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code of this list.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this list.</div>
   
   </td></tr>
 
@@ -1554,10 +1613,13 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this list for the specified object and returns the index of the
- first occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.
+
+ <p>This implementation first gets a list iterator (with
+ <code>listIterator()</code>).</div>
   
   </td></tr>
 
@@ -1575,7 +1637,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this list in proper sequence.</div>
   
   </td></tr>
 
@@ -1591,10 +1653,13 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this list for the specified object and returns the index of the
- last occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.
+
+ <p>This implementation first gets a list iterator that points to the end
+ of the list (with <code>listIterator(size())</code>).</div>
   
   </td></tr>
 
@@ -1610,9 +1675,14 @@ From class
             <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#listIterator(int)">listIterator</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#listIterator(int)">listIterator</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns a list iterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence), starting at the specified position in the list.
+
+ <p>This implementation returns a straightforward implementation of the
+ <code>ListIterator</code> interface that extends the implementation of the
+ <code>Iterator</code> interface returned by the <code>iterator()</code> method.</div>
   
   </td></tr>
 
@@ -1630,7 +1700,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#listIterator()">listIterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a ListIterator on the elements of this list.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence).
+
+ <p>This implementation returns <code>listIterator(0)</code>.</div>
   
   </td></tr>
 
@@ -1646,9 +1719,13 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this list.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this list (optional
+ operation).
+
+ <p>This implementation always throws an
+ <code>UnsupportedOperationException</code>.</div>
   
   </td></tr>
 
@@ -1664,10 +1741,10 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#removeRange(int, int)">removeRange</a></span>(int start, int end)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#removeRange(int, int)">removeRange</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Removes the objects in the specified range from the start to the end
- index minus one.</div>
+        <div class="jd-descrdiv">Removes from this list all of the elements whose index is between
+ <code>fromIndex</code>, inclusive, and <code>toIndex</code>, exclusive.</div>
   
   </td></tr>
 
@@ -1683,10 +1760,13 @@ From class
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this list with the
- specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this list with the
+ specified element (optional operation).
+
+ <p>This implementation always throws an
+ <code>UnsupportedOperationException</code>.</div>
   
   </td></tr>
 
@@ -1702,9 +1782,13 @@ From class
             <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#subList(int, int)">subList</a></span>(int start, int end)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractList.html#subList(int, int)">subList</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Returns a part of consecutive elements of this list as a view.</div>
+        <div class="jd-descrdiv">Returns a view of the portion of this list between the specified
+ <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.
+
+ <p>This implementation returns a list that subclasses
+ <code>AbstractList</code>.</div>
   
   </td></tr>
 
@@ -1745,10 +1829,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -1764,10 +1851,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -1785,7 +1875,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -1801,9 +1894,12 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -1819,10 +1915,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -1840,7 +1940,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -1858,8 +1960,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -1875,10 +1976,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -1894,10 +1998,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1913,10 +2021,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1934,7 +2046,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -1952,7 +2064,12 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1970,7 +2087,11 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -1988,7 +2109,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -2259,9 +2380,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object at the end of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Appends the specified element to the end of this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -2277,9 +2399,10 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#add(int, E)">add</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#add(int, E)">add</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Inserts the specified object into this <code>List</code> at the specified location.</div>
+        <div class="jd-descrdiv">Inserts the specified element at the specified position in this list
+ (optional operation).</div>
   
   </td></tr>
 
@@ -2295,9 +2418,11 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Adds the objects in the specified collection to the end of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Appends all of the elements in the specified collection to the end of
+ this list, in the order that they are returned by the specified
+ collection's iterator (optional operation).</div>
   
   </td></tr>
 
@@ -2313,10 +2438,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#addAll(int, java.util.Collection<? extends E>)">addAll</a></span>(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Inserts the objects in the specified collection at the specified location
- in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Inserts all of the elements in the specified collection into this
+ list at the specified position (optional operation).</div>
   
   </td></tr>
 
@@ -2334,7 +2459,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>List</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this list (optional operation).</div>
   
   </td></tr>
 
@@ -2350,9 +2475,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>List</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this list contains the specified element.</div>
   
   </td></tr>
 
@@ -2368,9 +2493,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>List</code> contains all objects contained in the
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this list contains all of the elements of the
  specified collection.</div>
   
   </td></tr>
@@ -2387,10 +2512,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the given object with the <code>List</code>, and returns true if they
- represent the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this list for equality.</div>
   
   </td></tr>
 
@@ -2406,9 +2530,9 @@ From interface
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#get(int)">get</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#get(int)">get</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the element at the specified location in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns the element at the specified position in this list.</div>
   
   </td></tr>
 
@@ -2426,7 +2550,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this list.</div>
   
   </td></tr>
 
@@ -2442,10 +2566,10 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#indexOf(java.lang.Object)">indexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this <code>List</code> for the specified object and returns the index of the
- first occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the first occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.</div>
   
   </td></tr>
 
@@ -2463,7 +2587,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this <code>List</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this list contains no elements.</div>
   
   </td></tr>
 
@@ -2481,7 +2605,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this list in proper sequence.</div>
   
   </td></tr>
 
@@ -2497,10 +2621,10 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#lastIndexOf(java.lang.Object)">lastIndexOf</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this <code>List</code> for the specified object and returns the index of the
- last occurrence.</div>
+        <div class="jd-descrdiv">Returns the index of the last occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.</div>
   
   </td></tr>
 
@@ -2516,9 +2640,10 @@ From interface
             <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#listIterator(int)">listIterator</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#listIterator(int)">listIterator</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns a list iterator on the elements of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence), starting at the specified position in the list.</div>
   
   </td></tr>
 
@@ -2536,7 +2661,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#listIterator()">listIterator</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>List</code> iterator on the elements of this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns a list iterator over the elements in this list (in proper
+ sequence).</div>
   
   </td></tr>
 
@@ -2552,9 +2678,10 @@ From interface
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(int)">remove</a></span>(int location)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(int)">remove</a></span>(int index)
         
-        <div class="jd-descrdiv">Removes the object at the specified location from this <code>List</code>.</div>
+        <div class="jd-descrdiv">Removes the element at the specified position in this list (optional
+ operation).</div>
   
   </td></tr>
 
@@ -2570,9 +2697,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the first occurrence of the specified object from this <code>List</code>.</div>
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element from this list,
+ if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -2588,10 +2716,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>List</code> of each object in the specified
- collection.</div>
+        <div class="jd-descrdiv">Removes from this list all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -2604,19 +2732,38 @@ From interface
             
             
             
-            boolean
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#replaceAll(java.util.function.UnaryOperator<E>)">replaceAll</a></span>(<a href="../../../reference/java/util/function/UnaryOperator.html">UnaryOperator</a>&lt;E&gt; operator)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>List</code> that are not contained in the
- specified collection.</div>
+        <div class="jd-descrdiv">Replaces each element of this list with the result of applying the
+ operator to that element.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this list that are contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -2626,16 +2773,16 @@ From interface
             E
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#set(int, E)">set</a></span>(int location, E object)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#set(int, E)">set</a></span>(int index, E element)
         
-        <div class="jd-descrdiv">Replaces the element at the specified location in this <code>List</code> with the
- specified object.</div>
+        <div class="jd-descrdiv">Replaces the element at the specified position in this list with the
+ specified element (optional operation).</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -2647,26 +2794,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/List.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this <code>List</code>.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#subList(int, int)">subList</a></span>(int start, int end)
-        
-        <div class="jd-descrdiv">Returns a <code>List</code> of the specified portion of this <code>List</code> from the given start
- index to the end index minus one.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this list.</div>
   
   </td></tr>
 
@@ -2679,12 +2807,12 @@ From interface
             
             
             
-            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray()">toArray</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/List.html#sort(java.util.Comparator<? super E>)">sort</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Sorts this list using the supplied <code>Comparator</code> to compare elements.</div>
   
   </td></tr>
 
@@ -2696,13 +2824,71 @@ From interface
             
             
             
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this list.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#subList(int, int)">subList</a></span>(int fromIndex, int toIndex)
+        
+        <div class="jd-descrdiv">Returns a view of the portion of this list between the specified
+ <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray()">toArray</a></span>()
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this list in proper
+ sequence (from first to last element).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
             &lt;T&gt;
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/List.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>List</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this list in
+ proper sequence (from first to last element); the runtime type of
+ the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -2743,10 +2929,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -2762,10 +2948,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -2783,7 +2969,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -2799,9 +2985,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -2817,10 +3003,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -2836,10 +3022,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -2857,7 +3042,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -2875,7 +3060,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -2893,8 +3078,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -2907,13 +3091,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -2929,10 +3113,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -2948,10 +3132,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -2969,7 +3191,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -2985,9 +3243,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -3005,7 +3264,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -3051,8 +3310,8 @@ From interface
         <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
  (in other words, at the tail of this deque) if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.</div>
+ <code>true</code> upon success and throwing an
+ <code>IllegalStateException</code> if no space is currently available.</div>
   
   </td></tr>
 
@@ -3071,7 +3330,9 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#addFirst(E)">addFirst</a></span>(E e)
         
         <div class="jd-descrdiv">Inserts the specified element at the front of this deque if it is
- possible to do so immediately without violating capacity restrictions.</div>
+ possible to do so immediately without violating capacity restrictions,
+ throwing an <code>IllegalStateException</code> if no space is currently
+ available.</div>
   
   </td></tr>
 
@@ -3090,7 +3351,9 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#addLast(E)">addLast</a></span>(E e)
         
         <div class="jd-descrdiv">Inserts the specified element at the end of this deque if it is
- possible to do so immediately without violating capacity restrictions.</div>
+ possible to do so immediately without violating capacity restrictions,
+ throwing an <code>IllegalStateException</code> if no space is currently
+ available.</div>
   
   </td></tr>
 
@@ -3108,7 +3371,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns <tt>true</tt> if this deque contains the specified element.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this deque contains the specified element.</div>
   
   </td></tr>
 
@@ -3221,7 +3484,7 @@ From interface
         <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
  (in other words, at the tail of this deque) if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and <tt>false</tt> if no space is currently
+ <code>true</code> upon success and <code>false</code> if no space is currently
  available.</div>
   
   </td></tr>
@@ -3280,7 +3543,7 @@ From interface
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
  this deque (in other words, the first element of this deque), or
- returns <tt>null</tt> if this deque is empty.</div>
+ returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -3299,7 +3562,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#peekFirst()">peekFirst</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -3318,7 +3581,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#peekLast()">peekLast</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -3338,7 +3601,7 @@ From interface
         
         <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
  (in other words, the first element of this deque), or returns
- <tt>null</tt> if this deque is empty.</div>
+ <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -3357,7 +3620,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#pollFirst()">pollFirst</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -3376,7 +3639,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Deque.html#pollLast()">pollLast</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</div>
+ or returns <code>null</code> if this deque is empty.</div>
   
   </td></tr>
 
@@ -3414,9 +3677,8 @@ From interface
         
         <div class="jd-descrdiv">Pushes an element onto the stack represented by this deque (in other
  words, at the head of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.</div>
+ immediately without violating capacity restrictions, throwing an
+ <code>IllegalStateException</code> if no space is currently available.</div>
   
   </td></tr>
 
@@ -3555,6 +3817,85 @@ From interface
 
 
 
+
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Iterable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Iterable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/Iterable.html">java.lang.Iterable</a>
+
+<div id="inherited-methods-java.lang.Iterable">
+  <div id="inherited-methods-java.lang.Iterable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Iterable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#iterator()">iterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
 <tr class="api apilevel-" >
 <td colspan="12">
   <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.util.Queue" class="jd-expando-trigger closed"
@@ -3588,7 +3929,7 @@ From interface
         
         <div class="jd-descrdiv">Inserts the specified element into this queue if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt>
+ <code>true</code> upon success and throwing an <code>IllegalStateException</code>
  if no space is currently available.</div>
   
   </td></tr>
@@ -3645,7 +3986,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Queue.html#peek()">peek</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the head of this queue,
- or returns <tt>null</tt> if this queue is empty.</div>
+ or returns <code>null</code> if this queue is empty.</div>
   
   </td></tr>
 
@@ -3664,7 +4005,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Queue.html#poll()">poll</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the head of this queue,
- or returns <tt>null</tt> if this queue is empty.</div>
+ or returns <code>null</code> if this queue is empty.</div>
   
   </td></tr>
 
@@ -3683,53 +4024,6 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Queue.html#remove()">remove</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the head of this queue.</div>
-  
-  </td></tr>
-
-
-</table>
-  </div>
-</div>
-</td></tr>
-
-
-
-
-
-
-
-<tr class="api apilevel-" >
-<td colspan="12">
-  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Iterable" class="jd-expando-trigger closed"
-          ><a id="inherited-methods-java.lang.Iterable-trigger"
-          class="jd-expando-trigger-img" /></a>
-From interface
-
-  <a href="../../../reference/java/lang/Iterable.html">java.lang.Iterable</a>
-
-<div id="inherited-methods-java.lang.Iterable">
-  <div id="inherited-methods-java.lang.Iterable-list"
-        class="jd-inheritedlinks">
-  </div>
-  <div id="inherited-methods-java.lang.Iterable-summary" style="display: none;">
-    <table class="jd-sumtable-expando">
-    
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#iterator()">iterator</a></span>()
-        
-        <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
   </td></tr>
 
@@ -3799,7 +4093,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new empty instance of <code>LinkedList</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an empty list.
 </p></div>
 
     </div>
@@ -3819,7 +4113,7 @@ From interface
         
       </span>
       <span class="sympad">LinkedList</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3831,16 +4125,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>LinkedList</code> that holds all of the
- elements contained in the specified <code>collection</code>. The order of the
- elements in this new <code>LinkedList</code> will be determined by the
- iteration order of <code>collection</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a list containing the elements of the specified
+ collection, in the order they are returned by the collection's
+ iterator.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of elements to add.
+          <th>c</th>
+          <td>the collection whose elements are to be placed into this list</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified collection is null
 </td>
         </tr>
       </table>
@@ -3878,7 +4180,7 @@ From interface
         boolean
       </span>
       <span class="sympad">add</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3890,19 +4192,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified object at the end of this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified element to the end of this list.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/LinkedList.html#addLast(E)">addLast(E)</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to add.</td>
+          <th>e</th>
+          <td>element to be appended to this list</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>always true
+      <ul class="nolist"><li><code>true</code> (as specified by <code><a href="reference/java/util/Collection.html#add(E)">add(E)</a></code>)
 </li></ul>
   </div>
 
@@ -3923,7 +4227,7 @@ From interface
         void
       </span>
       <span class="sympad">add</span>
-      <span class="normal">(int location, E object)</span>
+      <span class="normal">(int index, E element)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3935,20 +4239,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified object into this <code>LinkedList</code> at the
- specified location. The object is inserted before any previous element at
- the specified location. If the location is equal to the size of this
- <code>LinkedList</code>, the object is added at the end.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the specified position in this list.
+ Shifts the element currently at that position (if any) and any
+ subsequent elements to the right (adds one to their indices).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>location</th>
-          <td>the index at which to insert.</td>
+          <th>index</th>
+          <td>index at which the specified element is to be inserted</td>
         </tr>
         <tr>
-          <th>object</th>
-          <td>the object to add.</td>
+          <th>element</th>
+          <td>element to be inserted</td>
         </tr>
       </table>
   </div>
@@ -3957,7 +4260,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>location < 0 || location > size()</code>
+            <td>
 </td>
         </tr>
       </table>
@@ -3980,7 +4283,7 @@ From interface
         boolean
       </span>
       <span class="sympad">addAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3992,21 +4295,34 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the objects in the specified Collection to this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends all of the elements in the specified collection to the end of
+ this list, in the order that they are returned by the specified
+ collection's iterator.  The behavior of this operation is undefined if
+ the specified collection is modified while the operation is in
+ progress.  (Note that this will occur if the specified collection is
+ this list, and it's nonempty.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects.</td>
+          <th>c</th>
+          <td>collection containing elements to be added to this list</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>LinkedList</code> is modified,
-         <code>false</code> otherwise.
-</li></ul>
+      <ul class="nolist"><li><code>true</code> if this list changed as a result of the call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified collection is null
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -4026,7 +4342,7 @@ From interface
         boolean
       </span>
       <span class="sympad">addAll</span>
-      <span class="normal">(int location, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)</span>
+      <span class="normal">(int index, <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4038,41 +4354,40 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the objects in the specified collection at the specified location
- in this <code>LinkedList</code>. The objects are added in the order they are
- returned from the collection's iterator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts all of the elements in the specified collection into this
+ list, starting at the specified position.  Shifts the element
+ currently at that position (if any) and any subsequent elements to
+ the right (increases their indices).  The new elements will appear
+ in the list in the order that they are returned by the
+ specified collection's iterator.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>location</th>
-          <td>the index at which to insert.</td>
+          <th>index</th>
+          <td>index at which to insert the first element
+              from the specified collection</td>
         </tr>
         <tr>
-          <th>collection</th>
-          <td>the collection of objects</td>
+          <th>c</th>
+          <td>collection containing elements to be added to this list</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>LinkedList</code> is modified,
-         <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if this list changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the class of an object is inappropriate for this list.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if an object cannot be added to this list.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>location < 0 || location > size()</code>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified collection is null
 </td>
         </tr>
       </table>
@@ -4095,7 +4410,7 @@ From interface
         void
       </span>
       <span class="sympad">addFirst</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4107,13 +4422,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified object at the beginning of this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the beginning of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to add.
+          <th>e</th>
+          <td>the element to add
 </td>
         </tr>
       </table>
@@ -4136,7 +4451,7 @@ From interface
         void
       </span>
       <span class="sympad">addLast</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4148,13 +4463,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified object at the end of this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified element to the end of this list.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/LinkedList.html#add(E)">add(E)</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to add.
+          <th>e</th>
+          <td>the element to add
 </td>
         </tr>
       </table>
@@ -4189,12 +4506,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all elements from this <code>LinkedList</code>, leaving it empty.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/List.html#isEmpty()">isEmpty()</a></code></li><li><code><a href="../../../reference/java/util/LinkedList.html#size()">size()</a></code></li>
-      </ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the elements from this list.
+ The list will be empty after this call returns.
+</p></div>
 
     </div>
 </div>
@@ -4225,16 +4539,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>LinkedList</code> with the same elements and size as this
- <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a shallow copy of this <code>LinkedList</code>. (The elements
+ themselves are not cloned.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a shallow copy of this <code>LinkedList</code>.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></code></li>
-      </ul>
+      <ul class="nolist"><li>a shallow copy of this <code>LinkedList</code> instance
+</li></ul>
   </div>
 
     </div>
@@ -4254,7 +4564,7 @@ From interface
         boolean
       </span>
       <span class="sympad">contains</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4266,20 +4576,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches this <code>LinkedList</code> for the specified object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this list contains the specified element.
+ More formally, returns <code>true</code> if and only if this list contains
+ at least one element <code>e</code> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to search for.</td>
+          <th>o</th>
+          <td>element whose presence in this list is to be tested</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if <code>object</code> is an element of this
-         <code>LinkedList</code>, <code>false</code> otherwise
+      <ul class="nolist"><li><code>true</code> if this list contains the specified element
 </li></ul>
   </div>
 
@@ -4321,11 +4633,6 @@ From interface
  sequence
 </li></ul>
   </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#descendingIterator()">descendingIterator()</a></code></li>
-      </ul>
-  </div>
 
     </div>
 </div>
@@ -4356,15 +4663,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head of the queue represented by
- this deque (in other words, the first element of this deque).
- This method differs from <code><a href="reference/java/util/Deque.html#peek()">peek</a></code> only in that it throws an
- exception if this deque is empty.
-
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#getFirst()">getFirst()</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head (first element) of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of the queue represented by this deque</li></ul>
+      <ul class="nolist"><li>the head of this list</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this list is empty</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -4384,7 +4695,7 @@ From interface
         E
       </span>
       <span class="sympad">get</span>
-      <span class="normal">(int location)</span>
+      <span class="normal">(int index)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4396,19 +4707,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the element at the specified location in this list.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the element at the specified position in this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>location</th>
-          <td>the index of the element to return.</td>
+          <th>index</th>
+          <td>index of the element to return</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the element at the specified index.</li></ul>
+      <ul class="nolist"><li>the element at the specified position in this list</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -4440,17 +4761,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the first element in this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the first element in this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the first element.</li></ul>
+      <ul class="nolist"><li>the first element in this list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if this <code>LinkedList</code> is empty.
+            <td>if this list is empty
 </td>
         </tr>
       </table>
@@ -4485,17 +4806,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the last element in this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the last element in this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the last element</li></ul>
+      <ul class="nolist"><li>the last element in this list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if this <code>LinkedList</code> is empty
+            <td>if this list is empty
 </td>
         </tr>
       </table>
@@ -4518,7 +4839,7 @@ From interface
         int
       </span>
       <span class="sympad">indexOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4530,21 +4851,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches this list for the specified object and returns the index of the
- first occurrence.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.
+ More formally, returns the lowest index <code>i</code> such that
+ <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+ or -1 if there is no such index.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to search for.</td>
+          <th>o</th>
+          <td>element to search for</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the first occurrence of the object, or -1 if it was
-         not found.
+      <ul class="nolist"><li>the index of the first occurrence of the specified element in
+         this list, or -1 if this list does not contain the element
 </li></ul>
   </div>
 
@@ -4565,7 +4889,7 @@ From interface
         int
       </span>
       <span class="sympad">lastIndexOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4577,21 +4901,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches this <code>LinkedList</code> for the specified object and returns the
- index of the last occurrence.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the last occurrence of the specified element
+ in this list, or -1 if this list does not contain the element.
+ More formally, returns the highest index <code>i</code> such that
+ <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+ or -1 if there is no such index.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to search for</td>
+          <th>o</th>
+          <td>element to search for</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the last occurrence of the object, or -1 if it was
-         not found.
+      <ul class="nolist"><li>the index of the last occurrence of the specified element in
+         this list, or -1 if this list does not contain the element
 </li></ul>
   </div>
 
@@ -4612,7 +4939,7 @@ From interface
         <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;
       </span>
       <span class="sympad">listIterator</span>
-      <span class="normal">(int location)</span>
+      <span class="normal">(int index)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4624,34 +4951,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a ListIterator on the elements of this <code>LinkedList</code>. The
- elements are iterated in the same order that they occur in the
- <code>LinkedList</code>. The iteration starts at the specified location.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a list-iterator of the elements in this list (in proper
+ sequence), starting at the specified position in the list.
+ Obeys the general contract of <code>List.listIterator(int)</code>.<p>
+
+ The list-iterator is <i>fail-fast</i>: if the list is structurally
+ modified at any time after the Iterator is created, in any way except
+ through the list-iterator's own <code>remove</code> or <code>add</code>
+ methods, the list-iterator will throw a
+ <code>ConcurrentModificationException</code>.  Thus, in the face of
+ concurrent modification, the iterator fails quickly and cleanly, rather
+ than risking arbitrary, non-deterministic behavior at an undetermined
+ time in the future.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>location</th>
-          <td>the index at which to start the iteration</td>
+          <th>index</th>
+          <td>index of the first element to be returned from the
+              list-iterator (by a call to <code>next</code>)</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a ListIterator on the elements of this <code>LinkedList</code></li></ul>
+      <ul class="nolist"><li>a ListIterator of the elements in this list (in proper
+         sequence), starting at the specified position in the list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>location < 0 || location > size()</code></td>
+            <td></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/ListIterator.html">ListIterator</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/List.html#listIterator(int)">listIterator(int)</a></code></li>
       </ul>
   </div>
 
@@ -4672,7 +5010,7 @@ From interface
         boolean
       </span>
       <span class="sympad">offer</span>
-      <span class="normal">(E o)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -4684,28 +5022,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into the queue represented by this deque
- (in other words, at the tail of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and <tt>false</tt> if no space is currently
- available.  When using a capacity-restricted deque, this method is
- generally preferable to the <code><a href="reference/java/util/Deque.html#add(E)">add(E)</a></code> method, which can fail to
- insert an element only by throwing an exception.
-
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#offerLast(E)">offerLast(E)</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified element as the tail (last element) of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>o</th>
+          <th>e</th>
           <td>the element to add</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><tt>true</tt> if the element was added to this deque, else
-         <tt>false</tt></li></ul>
+      <ul class="nolist"><li><code>true</code> (as specified by <code><a href="reference/java/util/Queue.html#offer(E)">offer(E)</a></code>)</li></ul>
   </div>
 
     </div>
@@ -4737,28 +5066,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the front of this deque unless it would
- violate capacity restrictions.  When using a capacity-restricted deque,
- this method is generally preferable to the <code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(E)</a></code> method,
- which can fail to insert an element only by throwing an exception.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the front of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e</th>
-          <td>the element to add</td>
+          <td>the element to insert</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><tt>true</tt> if the element was added to this deque, else
-         <tt>false</tt></li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#offerFirst(E)">offerFirst(java.lang.Object)</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> (as specified by <code><a href="reference/java/util/Deque.html#offerFirst(E)">offerFirst(E)</a></code>)</li></ul>
   </div>
 
     </div>
@@ -4790,28 +5110,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the end of this deque unless it would
- violate capacity restrictions.  When using a capacity-restricted deque,
- this method is generally preferable to the <code><a href="reference/java/util/Deque.html#addLast(E)">addLast(E)</a></code> method,
- which can fail to insert an element only by throwing an exception.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the end of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e</th>
-          <td>the element to add</td>
+          <td>the element to insert</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><tt>true</tt> if the element was added to this deque, else
-         <tt>false</tt></li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#offerLast(E)">offerLast(java.lang.Object)</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> (as specified by <code><a href="reference/java/util/Deque.html#offerLast(E)">offerLast(E)</a></code>)</li></ul>
   </div>
 
     </div>
@@ -4843,16 +5154,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head of the queue represented by
- this deque (in other words, the first element of this deque), or
- returns <tt>null</tt> if this deque is empty.
-
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#peekFirst()">peekFirst()</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head (first element) of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of the queue represented by this deque, or
-         <tt>null</tt> if this deque is empty
-</li></ul>
+      <ul class="nolist"><li>the head of this list, or <code>null</code> if this list is empty</li></ul>
   </div>
 
     </div>
@@ -4884,17 +5189,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the first element of this list,
+ or returns <code>null</code> if this list is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of this deque, or <tt>null</tt> if this deque is empty
-</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#peekFirst()">peekFirst()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the first element of this list, or <code>null</code>
+         if this list is empty</li></ul>
   </div>
 
     </div>
@@ -4926,17 +5226,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the last element of this list,
+ or returns <code>null</code> if this list is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the tail of this deque, or <tt>null</tt> if this deque is empty
-</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#peekLast()">peekLast()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the last element of this list, or <code>null</code>
+         if this list is empty</li></ul>
   </div>
 
     </div>
@@ -4968,16 +5263,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head of the queue represented by this deque
- (in other words, the first element of this deque), or returns
- <tt>null</tt> if this deque is empty.
-
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#pollFirst()">pollFirst()</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head (first element) of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the first element of this deque, or <tt>null</tt> if
-         this deque is empty
-</li></ul>
+      <ul class="nolist"><li>the head of this list, or <code>null</code> if this list is empty</li></ul>
   </div>
 
     </div>
@@ -5009,17 +5298,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the first element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the first element of this list,
+ or returns <code>null</code> if this list is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of this deque, or <tt>null</tt> if this deque is empty
-</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#pollFirst()">pollFirst()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the first element of this list, or <code>null</code> if
+     this list is empty</li></ul>
   </div>
 
     </div>
@@ -5051,17 +5335,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the last element of this deque,
- or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the last element of this list,
+ or returns <code>null</code> if this list is empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the tail of this deque, or <tt>null</tt> if this deque is empty
-</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#pollLast()">pollLast()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the last element of this list, or <code>null</code> if
+     this list is empty</li></ul>
   </div>
 
     </div>
@@ -5093,19 +5372,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Pops an element from the stack represented by this deque.  In other
- words, removes and returns the first element of this deque.
+  <div class="jd-tagdata jd-tagdescr"><p>Pops an element from the stack represented by this list.  In other
+ words, removes and returns the first element of this list.
 
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code>.</p></div>
+ <p>This method is equivalent to <code><a href="reference/java/util/LinkedList.html#removeFirst()">removeFirst()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the element at the front of this deque (which is the top
-         of the stack represented by this deque)</li></ul>
+      <ul class="nolist"><li>the element at the front of this list (which is the top
+         of the stack represented by this list)</li></ul>
   </div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#pop()">pop()</a></code></li>
-      </ul>
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this list is empty</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -5137,13 +5420,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Pushes an element onto the stack represented by this deque (in other
- words, at the head of this deque) if it is possible to do so
- immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an
- <tt>IllegalStateException</tt> if no space is currently available.
+  <div class="jd-tagdata jd-tagdescr"><p>Pushes an element onto the stack represented by this list.  In other
+ words, inserts the element at the front of this list.
 
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(E)</a></code>.</p></div>
+ <p>This method is equivalent to <code><a href="reference/java/util/LinkedList.html#addFirst(E)">addFirst(E)</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -5152,11 +5432,6 @@ From interface
           <td>the element to push</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#push(E)">push(java.lang.Object)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -5176,7 +5451,7 @@ From interface
         E
       </span>
       <span class="sympad">remove</span>
-      <span class="normal">(int location)</span>
+      <span class="normal">(int index)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -5188,26 +5463,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the object at the specified location from this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the element at the specified position in this list.  Shifts any
+ subsequent elements to the left (subtracts one from their indices).
+ Returns the element that was removed from the list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>location</th>
-          <td>the index of the object to remove</td>
+          <th>index</th>
+          <td>the index of the element to be removed</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the removed object</li></ul>
+      <ul class="nolist"><li>the element previously at the specified position</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>location < 0 || location >= size()</code>
+            <td>
 </td>
         </tr>
       </table>
@@ -5242,15 +5519,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head of the queue represented by this deque
- (in other words, the first element of this deque).
- This method differs from <code><a href="reference/java/util/Deque.html#poll()">poll</a></code> only in that it throws an
- exception if this deque is empty.
-
- <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head (first element) of this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of the queue represented by this deque</li></ul>
+      <ul class="nolist"><li>the head of this list</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this list is empty</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -5270,7 +5551,7 @@ From interface
         boolean
       </span>
       <span class="sympad">remove</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -5282,29 +5563,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional). This implementation iterates over this
- <code>Collection</code> and tests for each element <code>e</code> returned by the iterator,
- whether <code>e</code> is equal to the given object. If <code>object != null</code>
- then this test is performed using <code>object.equals(e)</code>, otherwise
- using <code>object == null</code>. If an element equal to the given object is
- found, then the <code>remove</code> method is called on the iterator and
- <code>true</code> is returned, <code>false</code> otherwise. If the iterator does
- not support removing elements, an <code>UnsupportedOperationException</code>
- is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the first occurrence of the specified element from this list,
+ if it is present.  If this list does not contain the element, it is
+ unchanged.  More formally, removes the element with the lowest index
+ <code>i</code> such that
+ <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>
+ (if such an element exists).  Returns <code>true</code> if this list
+ contained the specified element (or equivalently, if this list
+ changed as a result of the call).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to remove.</td>
+          <th>o</th>
+          <td>element to be removed from this list, if present</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> is modified, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if this list contained the specified element
+</li></ul>
   </div>
 
     </div>
@@ -5336,17 +5615,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the first object from this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes and returns the first element from this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the removed object.</li></ul>
+      <ul class="nolist"><li>the first element from this list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if this <code>LinkedList</code> is empty.
+            <td>if this list is empty
 </td>
         </tr>
       </table>
@@ -5381,30 +5660,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the first occurrence of the specified element from this deque.
- If the deque does not contain the element, it is unchanged.
- More formally, removes the first element <tt>e</tt> such that
- <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>
- (if such an element exists).
- Returns <tt>true</tt> if this deque contained the specified element
- (or equivalently, if this deque changed as a result of the call).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the first occurrence of the specified element in this
+ list (when traversing the list from head to tail).  If the list
+ does not contain the element, it is unchanged.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>o</th>
-          <td>element to be removed from this deque, if present</td>
+          <td>element to be removed from this list, if present</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><tt>true</tt> if an element was removed as a result of this call</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#removeFirstOccurrence(java.lang.Object)">removeFirstOccurrence(java.lang.Object)</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if the list contained the specified element</li></ul>
   </div>
 
     </div>
@@ -5436,17 +5706,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the last object from this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes and returns the last element from this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the removed object.</li></ul>
+      <ul class="nolist"><li>the last element from this list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if this <code>LinkedList</code> is empty.
+            <td>if this list is empty
 </td>
         </tr>
       </table>
@@ -5481,30 +5751,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the last occurrence of the specified element from this deque.
- If the deque does not contain the element, it is unchanged.
- More formally, removes the last element <tt>e</tt> such that
- <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>
- (if such an element exists).
- Returns <tt>true</tt> if this deque contained the specified element
- (or equivalently, if this deque changed as a result of the call).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the last occurrence of the specified element in this
+ list (when traversing the list from head to tail).  If the list
+ does not contain the element, it is unchanged.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>o</th>
-          <td>element to be removed from this deque, if present</td>
+          <td>element to be removed from this list, if present</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><tt>true</tt> if an element was removed as a result of this call</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Deque.html#removeLastOccurrence(java.lang.Object)">removeLastOccurrence(java.lang.Object)</a></code></li>
-      </ul>
+      <ul class="nolist"><li><code>true</code> if the list contained the specified element</li></ul>
   </div>
 
     </div>
@@ -5524,7 +5785,7 @@ From interface
         E
       </span>
       <span class="sympad">set</span>
-      <span class="normal">(int location, E object)</span>
+      <span class="normal">(int index, E element)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -5536,39 +5797,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Replaces the element at the specified location in this <code>LinkedList</code>
- with the specified object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces the element at the specified position in this list with the
+ specified element.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>location</th>
-          <td>the index at which to put the specified object.</td>
+          <th>index</th>
+          <td>index of the element to replace</td>
         </tr>
         <tr>
-          <th>object</th>
-          <td>the object to add.</td>
+          <th>element</th>
+          <td>element to be stored at the specified position</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the previous element at the index.</li></ul>
+      <ul class="nolist"><li>the element previously at the specified position</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the class of an object is inappropriate for this list.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if an object cannot be added to this list.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>location < 0 || location >= size()</code>
+            <td>
 </td>
         </tr>
       </table>
@@ -5603,11 +5856,52 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this list.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of elements in this <code>LinkedList</code>.
+      <ul class="nolist"><li>the number of elements in this list
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="spliterator()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad">spliterator</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <em><a href="Spliterator.html#binding">late-binding</a></em>
+ and <em>fail-fast</em> <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this
+ list.
+
+ <p>The <code>Spliterator</code> reports <code><a href="reference/java/util/Spliterator.html#SIZED">SIZED</a></code> and
+ <code><a href="reference/java/util/Spliterator.html#ORDERED">ORDERED</a></code>.  Overriding implementations should document
+ the reporting of additional characteristic values.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a <code>Spliterator</code> over the elements in this list</li></ul>
   </div>
 
     </div>
@@ -5639,11 +5933,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new array containing all elements contained in this
- <code>LinkedList</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this list
+ in proper sequence (from first to last element).
+
+ <p>The returned array will be "safe" in that no references to it are
+ maintained by this list.  (In other words, this method must allocate
+ a new array).  The caller is thus free to modify the returned array.
+
+ <p>This method acts as bridge between array-based and collection-based
+ APIs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of the elements from this <code>LinkedList</code>.
+      <ul class="nolist"><li>an array containing all of the elements in this list
+         in proper sequence
 </li></ul>
   </div>
 
@@ -5664,7 +5966,7 @@ From interface
         T[]
       </span>
       <span class="sympad">toArray</span>
-      <span class="normal">(T[] contents)</span>
+      <span class="normal">(T[] a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -5676,32 +5978,60 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all elements contained in this
- <code>LinkedList</code>. If the specified array is large enough to hold the
- elements, the specified array is used, otherwise an array of the same
- type is created. If the specified array is used and is larger than this
- <code>LinkedList</code>, the array element following the collection elements
- is set to null.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this list in
+ proper sequence (from first to last element); the runtime type of
+ the returned array is that of the specified array.  If the list fits
+ in the specified array, it is returned therein.  Otherwise, a new
+ array is allocated with the runtime type of the specified array and
+ the size of this list.
+
+ <p>If the list fits in the specified array with room to spare (i.e.,
+ the array has more elements than the list), the element in the array
+ immediately following the end of the list is set to <code>null</code>.
+ (This is useful in determining the length of the list <i>only</i> if
+ the caller knows that the list does not contain any null elements.)
+
+ <p>Like the <code><a href="reference/java/util/LinkedList.html#toArray()">toArray()</a></code> method, this method acts as bridge between
+ array-based and collection-based APIs.  Further, this method allows
+ precise control over the runtime type of the output array, and may,
+ under certain circumstances, be used to save allocation costs.
+
+ <p>Suppose <code>x</code> is a list known to contain only strings.
+ The following code can be used to dump the list into a newly
+ allocated array of <code>String</code>:
+
+ <pre>
+     String[] y = x.toArray(new String[0]);</pre>
+
+ Note that <code>toArray(new Object[0])</code> is identical in function to
+ <code>toArray()</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>contents</th>
-          <td>the array.</td>
+          <th>a</th>
+          <td>the array into which the elements of the list are to
+          be stored, if it is big enough; otherwise, a new array of the
+          same runtime type is allocated for this purpose.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of the elements from this <code>LinkedList</code>.</li></ul>
+      <ul class="nolist"><li>an array containing the elements of the list</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></td>
-            <td>if the type of an element in this <code>LinkedList</code> cannot
-             be stored in the type of the specified array.
+            <td>if the runtime type of the specified array
+         is not a supertype of the runtime type of every element in
+         this list</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified array is null
 </td>
         </tr>
       </table>

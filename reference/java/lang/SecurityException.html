@@ -251,8 +251,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a></td>
-              <td class="jd-descrcol" width="100%"><code>AccessControlException</code> is thrown if the access control infrastructure
- denies protected access due to missing permissions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p> This exception is thrown by the AccessController to indicate
+ that a requested access (to a critical system resource such as the
+ file system or the network) is denied.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -266,11 +267,15 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a security manager check fails.
-</p>
+<p>Thrown by the security manager to indicate a security violation.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -335,8 +340,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/SecurityException.html#SecurityException()">SecurityException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>SecurityException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>SecurityException</code> with no detail  message.</div>
   
   </td></tr>
 
@@ -352,10 +356,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/SecurityException.html#SecurityException(java.lang.String)">SecurityException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/SecurityException.html#SecurityException(java.lang.String)">SecurityException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>SecurityException</code> with the current stack trace
- and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>SecurityException</code> with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -373,8 +377,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/SecurityException.html#SecurityException(java.lang.String, java.lang.Throwable)">SecurityException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>SecurityException</code> with the current stack trace,
- the specified detail message and the specified cause.</div>
+        <div class="jd-descrdiv">Creates a <code>SecurityException</code> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -392,8 +396,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/SecurityException.html#SecurityException(java.lang.Throwable)">SecurityException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>SecurityException</code> with the current stack trace
- and the specified cause.</div>
+        <div class="jd-descrdiv">Creates a <code>SecurityException</code> with the specified cause
+ and a detail message of <tt>(cause==null ? null : cause.toString())</tt>
+ (which typically contains the class and detail message of
+ <tt>cause</tt>).</div>
   
   </td></tr>
 
@@ -629,6 +635,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -929,8 +954,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SecurityException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SecurityException</code> with no detail  message.
 </p></div>
 
     </div>
@@ -950,7 +974,7 @@ From class
         
       </span>
       <span class="sympad">SecurityException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -962,14 +986,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SecurityException</code> with the current stack trace
- and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SecurityException</code> with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>
@@ -1004,18 +1028,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SecurityException</code> with the current stack trace,
- the specified detail message and the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>SecurityException</code> with the specified
+ detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+        by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the optional cause of this exception, may be <code>null</code>.</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1049,14 +1076,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SecurityException</code> with the current stack trace
- and the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>SecurityException</code> with the specified cause
+ and a detail message of <tt>(cause==null ? null : cause.toString())</tt>
+ (which typically contains the class and detail message of
+ <tt>cause</tt>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the optional cause of this exception, may be <code>null</code>.</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>

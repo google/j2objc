@@ -287,17 +287,11 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An <code>IllegalFormatWidthException</code> will be thrown if the width is a
- negative value other than -1 or in other cases where a width is not
- supported.</p>
+<p>Unchecked exception thrown when the format width is a negative value other
+ than <tt>-1</tt> or is otherwise unsupported.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -362,8 +356,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllegalFormatWidthException.html#IllegalFormatWidthException(int)">IllegalFormatWidthException</a></span>(int w)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalFormatWidthException</code> with specified
- width.</div>
+        <div class="jd-descrdiv">Constructs an instance of this class with the specified width.</div>
   
   </td></tr>
 
@@ -410,7 +403,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllegalFormatWidthException.html#getWidth()">getWidth</a></span>()
         
-        <div class="jd-descrdiv">Returns the width associated with the exception.</div>
+        <div class="jd-descrdiv">Returns the width</div>
   
   </td></tr>
 
@@ -646,6 +639,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -946,14 +958,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalFormatWidthException</code> with specified
- width.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance of this class with the specified width.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>w</th>
-          <td>the width.
+          <td>The width
 </td>
         </tr>
       </table>
@@ -1034,10 +1045,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the width associated with the exception.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the width</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the width.
+      <ul class="nolist"><li>The width
 </li></ul>
   </div>
 

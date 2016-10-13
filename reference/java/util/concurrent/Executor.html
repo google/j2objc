@@ -234,8 +234,8 @@ layout: api
   <pre> <code>class DirectExecutor implements Executor {
    public void execute(Runnable r) {
      r.run();
-   </code>
- }}</pre>
+   }
+ }</code></pre>
 
  More typically, tasks are executed in some thread other
  than the caller's thread.  The executor below spawns a new thread
@@ -244,8 +244,8 @@ layout: api
   <pre> <code>class ThreadPerTaskExecutor implements Executor {
    public void execute(Runnable r) {
      new Thread(r).start();
-   </code>
- }}</pre>
+   }
+ }</code></pre>
 
  Many <code>Executor</code> implementations impose some sort of
  limitation on how and when tasks are scheduled.  The executor below
@@ -253,13 +253,13 @@ layout: api
  illustrating a composite executor.
 
   <pre> <code>class SerialExecutor implements Executor {
-   final Queue<Runnable> tasks = new ArrayDeque<>();
+   final Queue&lt;Runnable&gt; tasks = new ArrayDeque&lt;&gt;();
    final Executor executor;
    Runnable active;
 
    SerialExecutor(Executor executor) {
      this.executor = executor;
-   </code>
+   }
 
    public synchronized void execute(final Runnable r) {
      tasks.add(new Runnable() {
@@ -281,7 +281,7 @@ layout: api
        executor.execute(active);
      }
    }
- }}</pre>
+ }</code></pre>
 
  The <code>Executor</code> implementations provided in this package
  implement <code><a href="reference/java/util/concurrent/ExecutorService.html">ExecutorService</a></code>, which is a more extensive

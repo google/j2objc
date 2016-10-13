@@ -177,48 +177,137 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A service-provider loader.
+<p>A simple service-provider loading facility.
 
- <p>A service provider is a factory for creating all known implementations of a particular
- class or interface <code>S</code>. The known implementations are read from a configuration file in
- <code>META-INF/services/</code>. The file's name should match the class' binary name (such as
- <code>java.util.Outer$Inner</code>).
+ <p> A <i>service</i> is a well-known set of interfaces and (usually
+ abstract) classes.  A <i>service provider</i> is a specific implementation
+ of a service.  The classes in a provider typically implement the interfaces
+ and subclass the classes defined in the service itself.  Service providers
+ can be installed in an implementation of the Java platform in the form of
+ extensions, that is, jar files placed into any of the usual extension
+ directories.  Providers can also be made available by adding them to the
+ application's class path or by some other platform-specific means.
 
- <p>The file format is as follows.
- The file's character encoding must be UTF-8.
- Whitespace is ignored, and <code>#</code> is used to begin a comment that continues to the
- next newline.
- Lines that are empty after comment removal and whitespace trimming are ignored.
- Otherwise, each line contains the binary name of one implementation class.
- Duplicate entries are ignored, but entries are otherwise returned in order (that is, the file
- is treated as an ordered set).
+ <p> For the purpose of loading, a service is represented by a single type,
+ that is, a single interface or abstract class.  (A concrete class can be
+ used, but this is not recommended.)  A provider of a given service contains
+ one or more concrete classes that extend this <i>service type</i> with data
+ and code specific to the provider.  The <i>provider class</i> is typically
+ not the entire provider itself but rather a proxy which contains enough
+ information to decide whether the provider is able to satisfy a particular
+ request together with code that can create the actual provider on demand.
+ The details of provider classes tend to be highly service-specific; no
+ single class or interface could possibly unify them, so no such type is
+ defined here.  The only requirement enforced by this facility is that
+ provider classes must have a zero-argument constructor so that they can be
+ instantiated during loading.
 
- <p>Given these classes:
- <pre>
- package a.b.c;
- public interface MyService { ... }
- public class MyImpl1 implements MyService { ... }
- public class MyImpl2 implements MyService { ... }
- </pre>
- And this configuration file (stored as <code>META-INF/services/a.b.c.MyService</code>):
- <pre>
- # Known MyService providers.
- a.b.c.MyImpl1  # The original implementation for handling "bar"s.
- a.b.c.MyImpl2  # A later implementation for "foo"s.
- </pre>
- You might use <code>ServiceProvider</code> something like this:
- <pre>
-   for (MyService service : ServiceLoader<MyService>.load(MyService.class)) {
-     if (service.supports(o)) {
-       return service.handle(o);
+ <p><a name="format"> A service provider is identified by placing a
+ <i>provider-configuration file</i> in the resource directory
+ <tt>META-INF/services</tt>.  The file's name is the fully-qualified <a
+ href="../lang/ClassLoader.html#name">binary name</a> of the service's type.
+ The file contains a list of fully-qualified binary names of concrete
+ provider classes, one per line.  Space and tab characters surrounding each
+ name, as well as blank lines, are ignored.  The comment character is
+ <tt>'#'</tt> (<tt>'&#92;u0023'</tt>, <font size="-1">NUMBER SIGN</font>); on
+ each line all characters following the first comment character are ignored.
+ The file must be encoded in UTF-8.
+
+ <p> If a particular concrete provider class is named in more than one
+ configuration file, or is named in the same configuration file more than
+ once, then the duplicates are ignored.  The configuration file naming a
+ particular provider need not be in the same jar file or other distribution
+ unit as the provider itself.  The provider must be accessible from the same
+ class loader that was initially queried to locate the configuration file;
+ note that this is not necessarily the class loader from which the file was
+ actually loaded.
+
+ <p> Providers are located and instantiated lazily, that is, on demand.  A
+ service loader maintains a cache of the providers that have been loaded so
+ far.  Each invocation of the <code><a href="reference/java/util/ServiceLoader.html#iterator()">iterator</a></code> method returns an
+ iterator that first yields all of the elements of the cache, in
+ instantiation order, and then lazily locates and instantiates any remaining
+ providers, adding each one to the cache in turn.  The cache can be cleared
+ via the <code><a href="reference/java/util/ServiceLoader.html#reload()">reload</a></code> method.
+
+ <p> Service loaders always execute in the security context of the caller.
+ Trusted system code should typically invoke the methods in this class, and
+ the methods of the iterators which they return, from within a privileged
+ security context.
+
+ <p> Instances of this class are not safe for use by multiple concurrent
+ threads.
+
+ <p> Unless otherwise specified, passing a <tt>null</tt> argument to any
+ method in this class will cause a <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> to be thrown.
+
+
+ <p><span style="font-weight: bold; padding-right: 1em">Example</span>
+ Suppose we have a service type <tt>com.example.CodecSet</tt> which is
+ intended to represent sets of encoder/decoder pairs for some protocol.  In
+ this case it is an abstract class with two abstract methods:
+
+ <blockquote><pre>
+ public abstract Encoder getEncoder(String encodingName);
+ public abstract Decoder getDecoder(String encodingName);</pre></blockquote>
+
+ Each method returns an appropriate object or <tt>null</tt> if the provider
+ does not support the given encoding.  Typical providers support more than
+ one encoding.
+
+ <p> If <tt>com.example.impl.StandardCodecs</tt> is an implementation of the
+ <tt>CodecSet</tt> service then its jar file also contains a file named
+
+ <blockquote><pre>
+ META-INF/services/com.example.CodecSet</pre></blockquote>
+
+ <p> This file contains the single line:
+
+ <blockquote><pre>
+ com.example.impl.StandardCodecs    # Standard codecs</pre></blockquote>
+
+ <p> The <tt>CodecSet</tt> class creates and saves a single service instance
+ at initialization:
+
+ <blockquote><pre>
+ private static ServiceLoader&lt;CodecSet&gt; codecSetLoader
+     = ServiceLoader.load(CodecSet.class);</pre></blockquote>
+
+ <p> To locate an encoder for a given encoding name it defines a static
+ factory method which iterates through the known and available providers,
+ returning only when it has located a suitable encoder or has run out of
+ providers.
+
+ <blockquote><pre>
+ public static Encoder getEncoder(String encodingName) {
+     for (CodecSet cp : codecSetLoader) {
+         Encoder enc = cp.getEncoder(encodingName);
+         if (enc != null)
+             return enc;
      }
-   }
- </pre>
+     return null;
+ }</pre></blockquote>
 
- <p>Note that each iteration creates new instances of the various service implementations, so
- any heavily-used code will likely want to cache the known implementations itself and reuse them.
- Note also that the candidate classes are instantiated lazily as you call <code>next</code> on the
- iterator: construction of the iterator itself does not instantiate any of the providers.</p>
+ <p> A <tt>getDecoder</tt> method is defined similarly.
+
+
+ <p><span style="font-weight: bold; padding-right: 1em">Usage Note</span> If
+ the class path of a class loader that is used for provider loading includes
+ remote network URLs then those URLs will be dereferenced in the process of
+ searching for provider-configuration files.
+
+ <p> This activity is normal, although it may cause puzzling entries to be
+ created in web-server logs.  If a web server is not configured correctly,
+ however, then this activity may cause the provider-loading algorithm to fail
+ spuriously.
+
+ <p> A web server should return an HTTP 404 (Not Found) response when a
+ requested resource does not exist.  Sometimes, however, web servers are
+ erroneously configured to return an HTTP 200 (OK) response along with a
+ helpful HTML error page in such cases.  This will cause a <code><a href="reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></code> to be thrown when this class attempts to parse
+ the HTML page as a provider-configuration file.  The best solution to this
+ problem is to fix the misconfigured web server to return the correct
+ response code (HTTP 404) along with the HTML error page.</p>
 
 
 
@@ -290,7 +379,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator over all the service providers offered by this service loader.</div>
+        <div class="jd-descrdiv">Lazily loads the available providers of this loader's service.</div>
   
   </td></tr>
 
@@ -308,7 +397,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#load(java.lang.Class<S>)">load</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;S&gt; service)
         
-        <div class="jd-descrdiv">Constructs a service loader, using the current thread's context class loader.</div>
+        <div class="jd-descrdiv">Creates a new service loader for the given service type, using the
+ current thread's {@linkplain java.lang.Thread#getContextClassLoader
+ context class loader}.</div>
   
   </td></tr>
 
@@ -324,9 +415,10 @@ layout: api
             <a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#load(java.lang.Class<S>, java.lang.ClassLoader)">load</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;S&gt; service, <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a> classLoader)
+        <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#load(java.lang.Class<S>, java.lang.ClassLoader)">load</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;S&gt; service, <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a> loader)
         
-        <div class="jd-descrdiv">Constructs a service loader.</div>
+        <div class="jd-descrdiv">Creates a new service loader for the given service type and class
+ loader.</div>
   
   </td></tr>
 
@@ -344,7 +436,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#loadInstalled(java.lang.Class<S>)">loadInstalled</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;S&gt; service)
         
-        <div class="jd-descrdiv">Constructs a service loader, using the extension class loader.</div>
+        <div class="jd-descrdiv">Creates a new service loader for the given service type, using the
+ extension class loader.</div>
   
   </td></tr>
 
@@ -362,7 +455,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#reload()">reload</a></span>()
         
-        <div class="jd-descrdiv">Invalidates the cache of known service provider class names.</div>
+        <div class="jd-descrdiv">Clear this loader's provider cache so that all providers will be
+ reloaded.</div>
   
   </td></tr>
 
@@ -380,8 +474,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/ServiceLoader.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.</div>
+        <div class="jd-descrdiv">Returns a string describing this service.</div>
   
   </td></tr>
 
@@ -658,6 +751,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;S&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -665,6 +774,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;S&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -741,18 +866,44 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over all the service providers offered by this service loader.
- Note that <code>hasNext</code> and <code>next</code> may throw if the configuration is invalid.
+  <div class="jd-tagdata jd-tagdescr"><p>Lazily loads the available providers of this loader's service.
 
- <p>Each iterator will return new instances of the classes it iterates over, so callers
- may want to cache the results of a single call to this method rather than call it
- repeatedly.
+ <p> The iterator returned by this method first yields all of the
+ elements of the provider cache, in instantiation order.  It then lazily
+ loads and instantiates any remaining providers, adding each one to the
+ cache in turn.
 
- <p>The returned iterator does not support <code>remove</code>.
-</p></div>
+ <p> To achieve laziness the actual work of parsing the available
+ provider-configuration files and instantiating providers must be done by
+ the iterator itself.  Its <code><a href="reference/java/util/Iterator.html#hasNext()">hasNext</a></code> and
+ <code><a href="reference/java/util/Iterator.html#next()">next</a></code> methods can therefore throw a
+ <code><a href="reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></code> if a provider-configuration file
+ violates the specified format, or if it names a provider class that
+ cannot be found and instantiated, or if the result of instantiating the
+ class is not assignable to the service type, or if any other kind of
+ exception or error is thrown as the next provider is located and
+ instantiated.  To write robust code it is only necessary to catch <code><a href="reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></code> when using a service iterator.
+
+ <p> If such an error is thrown then subsequent invocations of the
+ iterator will make a best effort to locate and instantiate the next
+ available provider, but in general such recovery cannot be guaranteed.
+
+ <blockquote style="font-size: smaller; line-height: 1.2"><span
+ style="padding-right: 1em; font-weight: bold">Design Note</span>
+ Throwing an error in these cases may seem extreme.  The rationale for
+ this behavior is that a malformed provider-configuration file, like a
+ malformed class file, indicates a serious problem with the way the Java
+ virtual machine is configured or is being used.  As such it is
+ preferable to throw an error rather than try to recover or, even worse,
+ fail silently.</blockquote>
+
+ <p> The iterator returned by this method does not support removal.
+ Invoking its <code><a href="reference/java/util/Iterator.html#remove()">remove</a></code> method will
+ cause an <code><a href="reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></code> to be thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>An <code>Iterator</code> instance.
+      <ul class="nolist"><li>An iterator that lazily loads providers for this loader's
+          service
 </li></ul>
   </div>
 
@@ -785,19 +936,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a service loader, using the current thread's context class loader.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new service loader for the given service type, using the
+ current thread's {@linkplain java.lang.Thread#getContextClassLoader
+ context class loader}.
+
+ <p> An invocation of this convenience method of the form
+
+ <blockquote><pre>
+ ServiceLoader.load(<i>service</i>)</pre></blockquote>
+
+ is equivalent to
+
+ <blockquote><pre>
+ ServiceLoader.load(<i>service</i>,
+                    Thread.currentThread().getContextClassLoader())</pre></blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>service</th>
-          <td>the service class or interface</td>
+          <td>The interface or abstract class representing the service</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new ServiceLoader
+      <ul class="nolist"><li>A new service loader
 </li></ul>
   </div>
 
@@ -818,7 +982,7 @@ From interface
         <a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;
       </span>
       <span class="sympad">load</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;S&gt; service, <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a> classLoader)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;S&gt; service, <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a> loader)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -830,24 +994,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a service loader. If <code>classLoader</code> is null, the system class loader
- is used.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new service loader for the given service type and class
+ loader.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>service</th>
-          <td>the service class or interface</td>
+          <td>The interface or abstract class representing the service</td>
         </tr>
         <tr>
-          <th>classLoader</th>
-          <td>the class loader</td>
+          <th>loader</th>
+          <td>The class loader to be used to load provider-configuration files
+         and provider classes, or <tt>null</tt> if the system class
+         loader (or, failing that, the bootstrap class loader) is to be
+         used</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new ServiceLoader
+      <ul class="nolist"><li>A new service loader
 </li></ul>
   </div>
 
@@ -880,19 +1047,35 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a service loader, using the extension class loader.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new service loader for the given service type, using the
+ extension class loader.
+
+ <p> This convenience method simply locates the extension class loader,
+ call it <tt><i>extClassLoader</i></tt>, and then returns
+
+ <blockquote><pre>
+ ServiceLoader.load(<i>service</i>, <i>extClassLoader</i>)</pre></blockquote>
+
+ <p> If the extension class loader cannot be found then the system class
+ loader is used; if there is no system class loader then the bootstrap
+ class loader is used.
+
+ <p> This method is intended for use when only installed providers are
+ desired.  The resulting service will only find and load providers that
+ have been installed into the current Java virtual machine; providers on
+ the application's class path will be ignored.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>service</th>
-          <td>the service class or interface</td>
+          <td>The interface or abstract class representing the service</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new ServiceLoader
+      <ul class="nolist"><li>A new service loader
 </li></ul>
   </div>
 
@@ -925,7 +1108,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Invalidates the cache of known service provider class names.
+  <div class="jd-tagdata jd-tagdescr"><p>Clear this loader's provider cache so that all providers will be
+ reloaded.
+
+ <p> After invoking this method, subsequent invocations of the <code><a href="reference/java/util/ServiceLoader.html#iterator()">iterator</a></code> method will lazily look up and instantiate
+ providers from scratch, just as is done by a newly-created loader.
+
+ <p> This method is intended for use in situations in which new providers
+ can be installed into a running Java virtual machine.
 </p></div>
 
     </div>
@@ -957,18 +1147,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- object. Subclasses are encouraged to override this method and provide an
- implementation that takes into account the object's type and data. The
- default implementation is equivalent to the following expression:
- <pre>
-   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
- <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
- <code>toString</code> method</a>
- if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string describing this service.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
+      <ul class="nolist"><li>A descriptive string
 </li></ul>
   </div>
 

@@ -110,6 +110,44 @@ layout: api
 <div id="jd-content" class="api apilevel-">
 
 
+  <div class="jd-descr">
+    Provides classes that are fundamental to the design of the Java
+ programming language. The most important classes are <code>Object</code>, which is the root of the class hierarchy, and <code>Class</code>, instances of which represent classes at run time.
+
+ <p>Frequently it is necessary to represent a value of primitive
+ type as if it were an object. The wrapper classes <code>Boolean</code>,
+ <code>Character</code>, <code>Integer</code>, <code>Long</code>, <code>Float</code>,
+ and <code>Double</code> serve this purpose.  An object of type <code>Double</code>, for example, contains a field whose type is double,
+ representing that value in such a way that a reference to it can be
+ stored in a variable of reference type.  These classes also provide
+ a number of methods for converting among primitive values, as well
+ as supporting such standard methods as equals and hashCode.  The
+ <code>Void</code> class is a non-instantiable class that holds a
+ reference to a <code>Class</code> object representing the type void.
+
+ <p>The class <code>Math</code> provides commonly used mathematical
+ functions such as sine, cosine, and square root. The classes <code>String</code>, <code>StringBuffer</code>, and <code>StringBuilder</code> similarly
+ provide commonly used operations on character strings.
+
+ <p>Classes <code>ClassLoader</code>, <code>Process</code>, <code>ProcessBuilder</code>, <code>Runtime</code>, <code>SecurityManager</code>, and
+ <code>System</code> provide "system operations" that manage the dynamic
+ loading of classes, creation of external processes, host
+ environment inquiries such as the time of day, and enforcement of
+ security policies.
+
+ <p>Class <code>Throwable</code> encompasses objects that may be thrown
+ by the <code>throw</code> statement. Subclasses of <code>Throwable</code>
+ represent errors and exceptions.
+
+ <a name="charenc"></a>
+ <h3>Character Encodings</h3>
+
+ The specification of the <code><a href="reference/java/nio/charset/Charset.html">java.nio.charset.Charset</a></code> class describes the naming conventions
+ for character encodings as well as the set of standard encodings
+ that must be supported by every implementation of the Java
+ platform.
+  </div>
+
 
 
 
@@ -121,38 +159,40 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Appendable.html">Appendable</a></td>
-              <td class="jd-descrcol" width="100%">Declares methods to append characters or character sequences.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An object to which <tt>char</tt> sequences and values can be appended.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/CharSequence.html">CharSequence</a></td>
-              <td class="jd-descrcol" width="100%">This interface represents an ordered set of characters and defines the
- methods to probe them.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/AutoCloseable.html">AutoCloseable</a></td>
+              <td class="jd-descrcol" width="100%">A resource that must be closed when it is no longer needed.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/CharSequence.html">CharSequence</a></td>
+              <td class="jd-descrcol" width="100%">A <tt>CharSequence</tt> is a readable sequence of <code>char</code> values.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></td>
               <td class="jd-descrcol" width="100%">This (empty) interface must be implemented by all classes that wish to
  support cloning.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;T&gt;</td>
-              <td class="jd-descrcol" width="100%">This interface should be implemented by all classes that wish to define a
- <em>natural order</em> of their instances.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This interface imposes a total ordering on the objects of each class that
+ implements it.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Iterable.html">Iterable</a>&lt;T&gt;</td>
-              <td class="jd-descrcol" width="100%">Instances of classes that implement this interface can be used with
- the enhanced for loop.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/Readable.html">Readable</a></td>
-              <td class="jd-descrcol" width="100%">Represents a sequence of characters that can be incrementally read (copied)
- into a <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Stub implementation of java.lang.Iterable.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/Runnable.html">Runnable</a></td>
-              <td class="jd-descrcol" width="100%">Represents a command that can be executed.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Readable.html">Readable</a></td>
+              <td class="jd-descrcol" width="100%">A <tt>Readable</tt> is a source of characters.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Runnable.html">Runnable</a></td>
+              <td class="jd-descrcol" width="100%">The <code>Runnable</code> interface should be implemented by any
+ class whose instances are intended to be executed by a thread.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></td>
               <td class="jd-descrcol" width="100%">&nbsp;</td>
           </tr>
@@ -168,23 +208,28 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Boolean.html">Boolean</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>boolean</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The Boolean class wraps a value of the primitive type
+ <code>boolean</code> in an object.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Byte.html">Byte</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>byte</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Byte</code> class wraps a value of primitive type <code>byte</code>
+ in an object.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Character.html">Character</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>char</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Character</code> class wraps a value of the primitive
+ type <code>char</code> in an object.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Character.Subset.html">Character.Subset</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Instances of this class represent particular subsets of the Unicode
+ character set.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Character.UnicodeBlock.html">Character.UnicodeBlock</a></td>
-              <td class="jd-descrcol" width="100%">Represents a block of Unicode characters.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A family of character subsets representing the character blocks in the
+ Unicode specification.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt;</td>
@@ -192,114 +237,127 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a></td>
-              <td class="jd-descrcol" width="100%">Loads classes and resources from a repository.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A class loader is an object that is responsible for loading classes.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html">Double</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>double</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Double</code> class wraps a value of the primitive type
+ <code>double</code> in an object.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">The superclass of all enumerated types.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the common base class of all Java language enumeration types.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Float.html">Float</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>float</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Float</code> class wraps a value of primitive type
+ <code>float</code> in an object.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/FloatingDecimal.html">FloatingDecimal</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>&lt;T&gt;</td>
-              <td class="jd-descrcol" width="100%">A thread-local variable whose value is passed from parent to child thread.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class extends <tt>ThreadLocal</tt> to provide inheritance of values
+ from parent thread to child thread: when a child thread is created, the
+ child receives initial values for all inheritable thread-local variables
+ for which the parent has values.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Integer.html">Integer</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>int</code>.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html">Long</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>long</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Integer</code> class wraps a value of the primitive type
+ <code>int</code> in an object.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/Math.html">Math</a></td>
-              <td class="jd-descrcol" width="100%">Class Math provides basic math constants and operations such as trigonometric
- functions, hyperbolic functions, exponential, logarithms, etc.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html">Long</a></td>
+              <td class="jd-descrcol" width="100%">The <code>Long</code> class wraps a value of the primitive type <code>long</code> in an object.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Math.html">Math</a></td>
+              <td class="jd-descrcol" width="100%">The class <code>Math</code> contains methods for performing basic
+ numeric operations such as the elementary exponential, logarithm,
+ square root, and trigonometric functions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Number.html">Number</a></td>
               <td class="jd-descrcol" width="100%">Stub implementation of java.lang.Number.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Object.html">Object</a></td>
               <td class="jd-descrcol" width="100%">The root class of the Java class hierarchy.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/Package.html">Package</a></td>
-              <td class="jd-descrcol" width="100%">Contains information about a Java package.&nbsp;</td>
-          </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Package.html">Package</a></td>
+              <td class="jd-descrcol" width="100%"><code>Package</code> objects contain version information
+ about the implementation and specification of a Java package.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Runtime.html">Runtime</a></td>
               <td class="jd-descrcol" width="100%">Simple iOS version of java.lang.Runtime.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/RuntimePermission.html">RuntimePermission</a></td>
               <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></td>
               <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html">Short</a></td>
-              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>short</code>.&nbsp;</td>
-          </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html">Short</a></td>
+              <td class="jd-descrcol" width="100%">The <code>Short</code> class wraps a value of primitive type <code>short</code> in an object.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement</a></td>
               <td class="jd-descrcol" width="100%">Simple iOS version of java.lang.StackTraceElement.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/StrictMath.html">StrictMath</a></td>
-              <td class="jd-descrcol" width="100%">Class StrictMath provides basic math constants and operations such as
- trigonometric functions, hyperbolic functions, exponential, logarithms, etc.&nbsp;</td>
-          </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/StrictMath.html">StrictMath</a></td>
+              <td class="jd-descrcol" width="100%">The class <code>StrictMath</code> contains methods for performing basic
+ numeric operations such as the elementary exponential, logarithm,
+ square root, and trigonometric functions.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/String.html">String</a></td>
               <td class="jd-descrcol" width="100%">Stub implementation of java.lang.String.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a></td>
               <td class="jd-descrcol" width="100%">A modifiable <code><a href="reference/java/lang/CharSequence.html">sequence of characters</a></code> for use in creating
  strings, where all accesses are synchronized.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/StringBuilder.html">StringBuilder</a></td>
               <td class="jd-descrcol" width="100%">A modifiable <code><a href="reference/java/lang/CharSequence.html">sequence of characters</a></code> for use in creating
  strings.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/System.html">System</a></td>
               <td class="jd-descrcol" width="100%">Simple iOS version of java.lang.System.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Thread.html">Thread</a></td>
               <td class="jd-descrcol" width="100%">Simplified iOS version of java.lang.Thread, based on Apache Harmony source
  (both luni-kernel and vmcore).&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a></td>
-              <td class="jd-descrcol" width="100%">A <code>ThreadGroup</code> is a means of organizing <code><a href="reference/java/lang/Thread.html">Thread</a></code>s into a
- hierarchical structure.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A thread group represents a set of threads.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a>&lt;T&gt;</td>
+              <td class="jd-descrcol" width="100%">This class provides thread-local variables.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a>&lt;T&gt;</td>
-              <td class="jd-descrcol" width="100%">Implements a thread-local storage, that is, a variable for which each thread
- has its own value.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Throwable.html">Throwable</a></td>
               <td class="jd-descrcol" width="100%">The superclass of all classes which can be thrown by the VM.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Void.html">Void</a></td>
-              <td class="jd-descrcol" width="100%">Placeholder class for the Java keyword <code>void</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Void</code> class is an uninstantiable placeholder class to hold a
+ reference to the <code>Class</code> object representing the Java keyword
+ void.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -312,6 +370,12 @@ layout: api
     
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Character.UnicodeScript.html">Character.UnicodeScript</a></td>
+              <td class="jd-descrcol" width="100%">A family of character subsets representing the character scripts
+ defined in the <a href="http://www.unicode.org/reports/tr24/">
+ <i>Unicode Standard Annex #24: Script Names</i></a>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Thread.State.html">Thread.State</a></td>
               <td class="jd-descrcol" width="100%">A representation of a thread's state.&nbsp;</td>
           </tr>
@@ -327,132 +391,146 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the an invalid arithmetic operation is attempted.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an exceptional arithmetic condition has occurred.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the an array is indexed with a value less than zero, or greater
- than or equal to the size of the array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that an array has been accessed with an
+ illegal index.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to store an element of an incompatible type in
- an array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that an attempt has been made to store the
+ wrong type of object into an array of objects.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to cast a an object to a type with which it is
- not compatible.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that the code has attempted to cast an object
+ to a subclass of which it is not an instance.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a class loader is unable to find a class.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to load in a class through its
+ string name using:
+ <ul>
+ <li>The <code>forName</code> method in class <code>Class</code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to clone an object which does not support the
- <code><a href="reference/java/lang/Cloneable.html">Cloneable</a></code> interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that the <code>clone</code> method in class
+ <code>Object</code> has been called to clone an object, but that
+ the object's class does not implement the <code>Cloneable</code>
+ interface.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/EnumConstantNotPresentException.html">EnumConstantNotPresentException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to access an enum constant by name
+ and the enum type contains no constant with the specified name.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Exception.html">Exception</a></td>
-              <td class="jd-descrcol" width="100%"><code>Exception</code> is the superclass of all classes that represent recoverable
- exceptions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The class <code>Exception</code> and its subclasses are a form of
+ <code>Throwable</code> that indicates conditions that a reasonable
+ application might want to catch.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a field or method which is not
- accessible from the location where the reference is made.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An IllegalAccessException is thrown when an application tries
+ to reflectively create an instance (other than an array),
+ set or get a field, or invoke a method, but the currently
+ executing method does not have access to the definition of
+ the specified class, field, method or constructor.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a method is invoked with an argument which it can not reasonably
- deal with.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that a method has been passed an illegal or
+ inappropriate argument.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a monitor operation is attempted when the monitor is not in the
- correct state, for example when a thread attempts to exit a monitor which it
- does not own.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that a thread has attempted to wait on an
+ object's monitor or to notify other threads waiting on an object's
+ monitor without owning the specified monitor.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an action is attempted at a time when the VM is not
- in the correct state.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that a method has been invoked at an illegal or
+ inappropriate time.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an operation is attempted which is not possible given the state
- that the executing thread is in.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that a thread is not in an appropriate state
+ for the requested operation.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a value in an indexable collection
- using a value which is outside of the range of valid indices.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that an index of some sort (such as to an array, to a
+ string, or to a vector) is out of range.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a constructor which is not
- accessible from the location where the reference is made.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to create an instance of a class
+ using the <code>newInstance</code> method in class
+ <code>Class</code>, but the specified class object cannot be
+ instantiated.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a waiting thread is activated before the condition it was waiting
- for has been satisfied.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a thread is waiting, sleeping, or otherwise occupied,
+ and the thread is interrupted, either before or during the activity.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an attempt is made to create an array with a size of less than
- zero.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to create an array with negative size.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a field that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that the class doesn't have a field of a specified name.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a method that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a particular method cannot be found.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program tries to access a field or method of an object or an
- element of an array when there is no instance or array to use, that is if the
- object or array points to <code>null</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application attempts to use <code>null</code> in a
+ case where an object is required.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an invalid value is passed to a string-to-number conversion
- method.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that the application has attempted to convert
+ a string to one of the numeric types, but that the string does not
+ have the appropriate format.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a></td>
-              <td class="jd-descrcol" width="100%">Superclass of exceptions related to reflection.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Common superclass of exceptions thrown by reflective operations in
+ core reflection.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></td>
-              <td class="jd-descrcol" width="100%"><code>RuntimeException</code> is the superclass of all classes that represent
- exceptional conditions which occur as a result of executing an application in
- the VM.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><code>RuntimeException</code> is the superclass of those
+ exceptions that can be thrown during the normal operation of the
+ Java Virtual Machine.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a security manager check fails.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the a string is indexed with a value less than zero, or greater
- than or equal to the size of the array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown by the security manager to indicate a security violation.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program tries to access a class, interface, enum or annotation
- type through a string that contains the type's name and the type cannot be
- found.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown by <code>String</code> methods to indicate that an index
+ is either negative or greater than the size of the string.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to access a type using a string
+ representing the type's name, but no definition for the type with
+ the specified name can be found.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an unsupported operation is attempted.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that the requested operation is not supported.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -466,79 +544,119 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown by the VM when an abstract method is called.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to call an abstract method.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/AssertionError.html">AssertionError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an assertion has failed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that an assertion has failed.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassCircularityError.html">ClassCircularityError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine detects a circularity in the
+ superclass hierarchy of a class being loaded.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown by a class loader when a class file has an illegal format or if the
- data that it contains can not be interpreted as a class.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine attempts to read a class
+ file and determines that the file is malformed or otherwise cannot
+ be interpreted as a class file.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/Error.html">Error</a></td>
-              <td class="jd-descrcol" width="100%"><code>Error</code> is the superclass of all classes that represent unrecoverable
- errors.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an exception occurs during class initialization.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An <code>Error</code> is a subclass of <code>Throwable</code>
+ that indicates serious problems that a reasonable application
+ should not try to catch.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries access a field
- which is not accessible from where it is referenced.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></td>
+              <td class="jd-descrcol" width="100%">Signals that an unexpected exception has occurred in a static initializer.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown if an application attempts to access or modify a field, or
+ to call a method that it does not have access to.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></td>
-              <td class="jd-descrcol" width="100%"><code>IncompatibleClassChangeError</code> is the superclass of all classes which
- represent errors that occur when inconsistent class files are loaded into
- the same running image.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an incompatible class change has occurred to some class
+ definition.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/InstantiationError.html">InstantiationError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to use the Java <code>new</code>
+ construct to instantiate an abstract class or an interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InternalError.html">InternalError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that it has gotten into an undefined state.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate some unexpected internal error has occurred in
+ the Java Virtual Machine.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/LinkageError.html">LinkageError</a></td>
-              <td class="jd-descrcol" width="100%"><code>LinkageError</code> is the superclass of all error classes that occur when
- loading and linking class files.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Subclasses of <code>LinkageError</code> indicate that a class has
+ some dependency on another class; however, the latter class has
+ incompatibly changed after the compilation of the former class.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM is unable to locate a class which it has been
- asked to load.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if the Java Virtual Machine or a <code>ClassLoader</code> instance
+ tries to load in the definition of a class (as part of a normal method call
+ or as part of creating a new instance using the <code>new</code> expression)
+ and no definition of the class could be found.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a field that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to access or modify a specified
+ field of an object, and that object no longer has that field.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a method that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to call a specified method of a
+ class (either static or instance), and that class no longer has a
+ definition of that method.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a request for memory is made that can not be satisfied using the
- available platform resources.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine cannot allocate an object
+ because it is out of memory, and no more memory could be made
+ available by the garbage collector.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the depth of the stack of the running program exceeds some
- platform or VM specific limit.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a stack overflow occurs because an application
+ recurses too deeply.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></td>
-              <td class="jd-descrcol" width="100%">ThreadDeath is thrown when a thread stops executing.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An instance of <code>ThreadDeath</code> is thrown in the victim thread
+ when the (deprecated) <code><a href="reference/java/lang/Thread.html#stop()">stop()</a></code> method is invoked.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnknownError.html">UnknownError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an unknown but serious exception has occurred in the
+ Java Virtual Machine.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnsatisfiedLinkError.html">UnsatisfiedLinkError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown if the Java Virtual Machine cannot find an appropriate
+ native-language definition of a method declared <code>native</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnsupportedClassVersionError.html">UnsupportedClassVersionError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine attempts to read a class
+ file and determines that the major and minor version numbers
+ in the file are not supported.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/VerifyError.html">VerifyError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the "verifier" detects that a class file,
+ though well formed, contains some sort of internal inconsistency
+ or security problem.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/VirtualMachineError.html">VirtualMachineError</a></td>
-              <td class="jd-descrcol" width="100%"><code>VirtualMachineError</code> is the superclass of all error classes that occur
- during the operation of the VM.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that the Java Virtual Machine is broken or has
+ run out of resources necessary for it to continue operating.&nbsp;</td>
           </tr>
   </table>
     </div>

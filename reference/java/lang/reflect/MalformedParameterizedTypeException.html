@@ -235,8 +235,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Indicates that a malformed parameterized type has been encountered by a
- reflective method.</p>
+<p>Thrown when a semantically malformed parameterized type is
+ encountered by a reflective method that needs to instantiate it.
+ For example, if the number of type arguments to a parameterized type
+ is wrong.</p>
 
 
 
@@ -304,8 +306,6 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/MalformedParameterizedTypeException.html#MalformedParameterizedTypeException()">MalformedParameterizedTypeException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>MalformedParameterizedTypeException</code> instance.</div>
-  
   </td></tr>
 
 
@@ -540,6 +540,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -840,8 +859,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>MalformedParameterizedTypeException</code> instance.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>

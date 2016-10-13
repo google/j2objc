@@ -144,25 +144,26 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The interface for an output stream used to write attributes of an SQL <i>User
- Defined Type</i> (UDT) to the database. This interface is used for custom
- mapping of types and is called by the JDBC driver. It is not intended to be
- used by applications.
- <p>
- When an object which implements the <code>SQLData</code> interface is used as an
- argument to an SQL statement, the JDBC driver calls the method <code>SQLData.getSQLType</code> to establish the type of the SQL UDT that is being
- passed. The driver then creates an <code>SQLOutput</code> stream and passes it to
- the <code>SQLData.writeSQL</code> method, which in turn uses the appropriate
- <code>SQLOutput</code> writer methods to write the data from the <code>SQLData</code>
- object into the stream according to the defined mapping.</p>
+<p>The output stream for writing the attributes of a user-defined
+ type back to the database.  This interface, used
+ only for custom mapping, is used by the driver, and its
+ methods are never directly invoked by a programmer.
+ <p>When an object of a class implementing the interface
+ <code>SQLData</code> is passed as an argument to an SQL statement, the
+ JDBC driver calls the method <code>SQLData.getSQLType</code> to
+ determine the  kind of SQL
+ datum being passed to the database.
+ The driver then creates an instance of <code>SQLOutput</code> and
+ passes it to the method <code>SQLData.writeSQL</code>.
+ The method <code>writeSQL</code> in turn calls the
+ appropriate <code>SQLOutput</code> <i>writer</i> methods
+ <code>writeBoolean</code>, <code>writeCharacterStream</code>, and so on)
+ to write data from the <code>SQLData</code> object to
+ the <code>SQLOutput</code> output stream as the
+ representation of an SQL user-defined type.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/SQLData.html">SQLData</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -229,9 +230,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeArray(java.sql.Array)">writeArray</a></span>(<a href="../../../reference/java/sql/Array.html">Array</a> theArray)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeArray(java.sql.Array)">writeArray</a></span>(<a href="../../../reference/java/sql/Array.html">Array</a> x)
         
-        <div class="jd-descrdiv">Write an SQL <code>Array</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>ARRAY</code> value to the stream.</div>
   
   </td></tr>
 
@@ -247,9 +248,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeAsciiStream(java.io.InputStream)">writeAsciiStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> theStream)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeAsciiStream(java.io.InputStream)">writeAsciiStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> x)
         
-        <div class="jd-descrdiv">Write a stream of ASCII characters into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a stream of ASCII characters.</div>
   
   </td></tr>
 
@@ -265,9 +266,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBigDecimal(java.math.BigDecimal)">writeBigDecimal</a></span>(<a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> theBigDecimal)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBigDecimal(java.math.BigDecimal)">writeBigDecimal</a></span>(<a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> x)
         
-        <div class="jd-descrdiv">Write a <code>java.math.BigDecimal</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a java.math.BigDecimal object.</div>
   
   </td></tr>
 
@@ -283,9 +284,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBinaryStream(java.io.InputStream)">writeBinaryStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> theStream)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBinaryStream(java.io.InputStream)">writeBinaryStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> x)
         
-        <div class="jd-descrdiv">Write a stream of uninterpreted bytes into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a stream of uninterpreted
+ bytes.</div>
   
   </td></tr>
 
@@ -301,9 +303,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBlob(java.sql.Blob)">writeBlob</a></span>(<a href="../../../reference/java/sql/Blob.html">Blob</a> theBlob)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBlob(java.sql.Blob)">writeBlob</a></span>(<a href="../../../reference/java/sql/Blob.html">Blob</a> x)
         
-        <div class="jd-descrdiv">Write an SQL <code>Blob</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>BLOB</code> value to the stream.</div>
   
   </td></tr>
 
@@ -319,9 +321,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBoolean(boolean)">writeBoolean</a></span>(boolean theFlag)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBoolean(boolean)">writeBoolean</a></span>(boolean x)
         
-        <div class="jd-descrdiv">Write a <code>boolean</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java boolean.</div>
   
   </td></tr>
 
@@ -337,9 +339,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeByte(byte)">writeByte</a></span>(byte theByte)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeByte(byte)">writeByte</a></span>(byte x)
         
-        <div class="jd-descrdiv">Write a <code>byte</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java byte.</div>
   
   </td></tr>
 
@@ -355,9 +357,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBytes(byte[])">writeBytes</a></span>(byte[] theBytes)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeBytes(byte[])">writeBytes</a></span>(byte[] x)
         
-        <div class="jd-descrdiv">Write an array of bytes into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as an array of bytes.</div>
   
   </td></tr>
 
@@ -373,9 +375,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeCharacterStream(java.io.Reader)">writeCharacterStream</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> theStream)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeCharacterStream(java.io.Reader)">writeCharacterStream</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> x)
         
-        <div class="jd-descrdiv">Write a stream of unicode characters into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a stream of Unicode characters.</div>
   
   </td></tr>
 
@@ -391,9 +393,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeClob(java.sql.Clob)">writeClob</a></span>(<a href="../../../reference/java/sql/Clob.html">Clob</a> theClob)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeClob(java.sql.Clob)">writeClob</a></span>(<a href="../../../reference/java/sql/Clob.html">Clob</a> x)
         
-        <div class="jd-descrdiv">Write an SQL <code>Clob</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>CLOB</code> value to the stream.</div>
   
   </td></tr>
 
@@ -409,9 +411,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeDate(java.sql.Date)">writeDate</a></span>(<a href="../../../reference/java/sql/Date.html">Date</a> theDate)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeDate(java.sql.Date)">writeDate</a></span>(<a href="../../../reference/java/sql/Date.html">Date</a> x)
         
-        <div class="jd-descrdiv">Write a <code>java.sql.Date</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a java.sql.Date object.</div>
   
   </td></tr>
 
@@ -427,9 +429,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeDouble(double)">writeDouble</a></span>(double theDouble)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeDouble(double)">writeDouble</a></span>(double x)
         
-        <div class="jd-descrdiv">Write a <code>double</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java double.</div>
   
   </td></tr>
 
@@ -445,9 +447,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeFloat(float)">writeFloat</a></span>(float theFloat)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeFloat(float)">writeFloat</a></span>(float x)
         
-        <div class="jd-descrdiv">Write a <code>float</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java float.</div>
   
   </td></tr>
 
@@ -463,9 +465,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeInt(int)">writeInt</a></span>(int theInt)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeInt(int)">writeInt</a></span>(int x)
         
-        <div class="jd-descrdiv">Write an <code>int</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java int.</div>
   
   </td></tr>
 
@@ -481,9 +483,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeLong(long)">writeLong</a></span>(long theLong)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeLong(long)">writeLong</a></span>(long x)
         
-        <div class="jd-descrdiv">Write a <code>long</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java long.</div>
   
   </td></tr>
 
@@ -499,9 +501,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeNClob(java.sql.NClob)">writeNClob</a></span>(<a href="../../../reference/java/sql/NClob.html">NClob</a> theNClob)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeNClob(java.sql.NClob)">writeNClob</a></span>(<a href="../../../reference/java/sql/NClob.html">NClob</a> x)
         
-        <div class="jd-descrdiv">Write a <code>Clob</code> into the output stream as an SQL NCLOB.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>NCLOB</code> value to the stream.</div>
   
   </td></tr>
 
@@ -517,10 +519,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeNString(java.lang.String)">writeNString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> theString)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeNString(java.lang.String)">writeNString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> x)
         
-        <div class="jd-descrdiv">Write a <code>String</code> into the output stream as an SQL NCHAR, NVARCHAR,
- or LONGNVARCHAR.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</div>
   
   </td></tr>
 
@@ -536,9 +538,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeObject(java.sql.SQLData)">writeObject</a></span>(<a href="../../../reference/java/sql/SQLData.html">SQLData</a> theObject)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeObject(java.sql.SQLData)">writeObject</a></span>(<a href="../../../reference/java/sql/SQLData.html">SQLData</a> x)
         
-        <div class="jd-descrdiv">Write an <code>SQLData</code> object into the output stream.</div>
+        <div class="jd-descrdiv">Writes to the stream the data contained in the given
+ <code>SQLData</code> object.</div>
   
   </td></tr>
 
@@ -554,9 +557,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeRef(java.sql.Ref)">writeRef</a></span>(<a href="../../../reference/java/sql/Ref.html">Ref</a> theRef)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeRef(java.sql.Ref)">writeRef</a></span>(<a href="../../../reference/java/sql/Ref.html">Ref</a> x)
         
-        <div class="jd-descrdiv">Write an SQL <code>Ref</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>REF</code> value to the stream.</div>
   
   </td></tr>
 
@@ -572,9 +575,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeRowId(java.sql.RowId)">writeRowId</a></span>(<a href="../../../reference/java/sql/RowId.html">RowId</a> theRowId)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeRowId(java.sql.RowId)">writeRowId</a></span>(<a href="../../../reference/java/sql/RowId.html">RowId</a> x)
         
-        <div class="jd-descrdiv">Write a <code>RowId</code> into the output stream as an SQL ROWID.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>ROWID</code> value to the stream.</div>
   
   </td></tr>
 
@@ -590,9 +593,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeSQLXML(java.sql.SQLXML)">writeSQLXML</a></span>(<a href="../../../reference/java/sql/SQLXML.html">SQLXML</a> theXml)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeSQLXML(java.sql.SQLXML)">writeSQLXML</a></span>(<a href="../../../reference/java/sql/SQLXML.html">SQLXML</a> x)
         
-        <div class="jd-descrdiv">Write a <code>SQLXML</code> into the output stream as an SQL XML.</div>
+        <div class="jd-descrdiv">Writes an SQL <code>XML</code> value to the stream.</div>
   
   </td></tr>
 
@@ -608,9 +611,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeShort(short)">writeShort</a></span>(short theShort)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeShort(short)">writeShort</a></span>(short x)
         
-        <div class="jd-descrdiv">Write a <code>short</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a Java short.</div>
   
   </td></tr>
 
@@ -626,9 +629,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeString(java.lang.String)">writeString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> theString)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeString(java.lang.String)">writeString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> x)
         
-        <div class="jd-descrdiv">Write a <code>String</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</div>
   
   </td></tr>
 
@@ -644,9 +648,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeStruct(java.sql.Struct)">writeStruct</a></span>(<a href="../../../reference/java/sql/Struct.html">Struct</a> theStruct)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeStruct(java.sql.Struct)">writeStruct</a></span>(<a href="../../../reference/java/sql/Struct.html">Struct</a> x)
         
-        <div class="jd-descrdiv">Write an SQL <code>Struct</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes an SQL structured type value to the stream.</div>
   
   </td></tr>
 
@@ -662,9 +666,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeTime(java.sql.Time)">writeTime</a></span>(<a href="../../../reference/java/sql/Time.html">Time</a> theTime)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeTime(java.sql.Time)">writeTime</a></span>(<a href="../../../reference/java/sql/Time.html">Time</a> x)
         
-        <div class="jd-descrdiv">Write a <code>java.sql.Time</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a java.sql.Time object.</div>
   
   </td></tr>
 
@@ -680,9 +684,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeTimestamp(java.sql.Timestamp)">writeTimestamp</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeTimestamp(java.sql.Timestamp)">writeTimestamp</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> x)
         
-        <div class="jd-descrdiv">Write a <code>java.sql.Timestamp</code> value into the output stream.</div>
+        <div class="jd-descrdiv">Writes the next attribute to the stream as a java.sql.Timestamp object.</div>
   
   </td></tr>
 
@@ -698,9 +702,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeURL(java.net.URL)">writeURL</a></span>(<a href="../../../reference/java/net/URL.html">URL</a> theURL)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLOutput.html#writeURL(java.net.URL)">writeURL</a></span>(<a href="../../../reference/java/net/URL.html">URL</a> x)
         
-        <div class="jd-descrdiv">Write a <code>URL</code> into the output stream as an SQL DATALINK.</div>
+        <div class="jd-descrdiv">Writes a SQL <code>DATALINK</code> value to the stream.</div>
   
   </td></tr>
 
@@ -766,7 +770,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeArray</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Array.html">Array</a> theArray)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Array.html">Array</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -778,13 +782,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an SQL <code>Array</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>ARRAY</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theArray</th>
-          <td>the <code>java.sql.Array</code> object to write.</td>
+          <th>x</th>
+          <td>an <code>Array</code> object representing data of an SQL
+ <code>ARRAY</code> type</td>
         </tr>
       </table>
   </div>
@@ -793,14 +798,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Array.html">Array</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -820,7 +825,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeAsciiStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> theStream)</span>
+      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -832,13 +837,13 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a stream of ASCII characters into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a stream of ASCII characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theStream</th>
-          <td>the stream of ASCII characters to write, as a <code>java.io.InputStream</code> object</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -847,8 +852,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -870,7 +879,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeBigDecimal</span>
-      <span class="normal">(<a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> theBigDecimal)</span>
+      <span class="normal">(<a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -882,13 +891,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>java.math.BigDecimal</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a java.math.BigDecimal object.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theBigDecimal</th>
-          <td>the <code>BigDecimal</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -897,8 +908,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -920,7 +935,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeBinaryStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> theStream)</span>
+      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -932,14 +947,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a stream of uninterpreted bytes into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a stream of uninterpreted
+ bytes.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theStream</th>
-          <td>the stream of bytes to write, as a <code>java.io.InputStream</code>
-            object</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -948,8 +963,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -971,7 +990,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeBlob</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Blob.html">Blob</a> theBlob)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Blob.html">Blob</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -983,13 +1002,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an SQL <code>Blob</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>BLOB</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theBlob</th>
-          <td>the <code>java.sql.Blob</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>Blob</code> object representing data of an SQL
+ <code>BLOB</code> value</td>
         </tr>
       </table>
   </div>
@@ -998,14 +1018,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html">Blob</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1025,7 +1045,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeBoolean</span>
-      <span class="normal">(boolean theFlag)</span>
+      <span class="normal">(boolean x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1037,13 +1057,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>boolean</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java boolean.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theFlag</th>
-          <td>the <code>boolean</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1052,8 +1074,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1075,7 +1101,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeByte</span>
-      <span class="normal">(byte theByte)</span>
+      <span class="normal">(byte x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1087,13 +1113,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>byte</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java byte.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theByte</th>
-          <td>the <code>byte</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1102,8 +1130,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1125,7 +1157,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeBytes</span>
-      <span class="normal">(byte[] theBytes)</span>
+      <span class="normal">(byte[] x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1137,13 +1169,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an array of bytes into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as an array of bytes.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theBytes</th>
-          <td>the array of bytes to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1152,8 +1186,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1175,7 +1213,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeCharacterStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/Reader.html">Reader</a> theStream)</span>
+      <span class="normal">(<a href="../../../reference/java/io/Reader.html">Reader</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1187,13 +1225,13 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a stream of unicode characters into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a stream of Unicode characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theStream</th>
-          <td>the stream of unicode characters to write, as a <code>java.io.Reader</code> object.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1202,8 +1240,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1225,7 +1267,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeClob</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Clob.html">Clob</a> theClob)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Clob.html">Clob</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1237,13 +1279,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an SQL <code>Clob</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>CLOB</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theClob</th>
-          <td>the <code>java.sql.Clob</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>Clob</code> object representing data of an SQL
+ <code>CLOB</code> value</td>
         </tr>
       </table>
   </div>
@@ -1252,14 +1295,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Clob.html">Clob</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1279,7 +1322,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeDate</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Date.html">Date</a> theDate)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Date.html">Date</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1291,13 +1334,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>java.sql.Date</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a java.sql.Date object.
+ Writes the next attribute to the stream as a <code>java.sql.Date</code> object
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theDate</th>
-          <td>the <code>Date</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1306,14 +1351,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Date.html">Date</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1333,7 +1378,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeDouble</span>
-      <span class="normal">(double theDouble)</span>
+      <span class="normal">(double x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1345,13 +1390,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>double</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java double.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theDouble</th>
-          <td>the <code>double</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1360,8 +1407,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1383,7 +1434,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeFloat</span>
-      <span class="normal">(float theFloat)</span>
+      <span class="normal">(float x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1395,13 +1446,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>float</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java float.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theFloat</th>
-          <td>the <code>float</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1410,8 +1463,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1433,7 +1490,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeInt</span>
-      <span class="normal">(int theInt)</span>
+      <span class="normal">(int x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1445,13 +1502,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an <code>int</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java int.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theInt</th>
-          <td>the <code>int</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1460,8 +1519,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1483,7 +1546,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeLong</span>
-      <span class="normal">(long theLong)</span>
+      <span class="normal">(long x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1495,13 +1558,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>long</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java long.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theLong</th>
-          <td>the <code>long</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1510,8 +1575,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1533,7 +1602,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeNClob</span>
-      <span class="normal">(<a href="../../../reference/java/sql/NClob.html">NClob</a> theNClob)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/NClob.html">NClob</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1545,13 +1614,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>Clob</code> into the output stream as an SQL NCLOB.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>NCLOB</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theNClob</th>
-          <td>the <code>java.sql.Clob</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>NClob</code> object representing data of an SQL
+ <code>NCLOB</code> value</td>
         </tr>
       </table>
   </div>
@@ -1560,8 +1630,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1583,7 +1657,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeNString</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> theString)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1595,14 +1669,19 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>String</code> into the output stream as an SQL NCHAR, NVARCHAR,
- or LONGNVARCHAR.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language. The driver converts this to a
+ SQL <code>NCHAR</code> or
+ <code>NVARCHAR</code> or <code>LONGNVARCHAR</code> value
+ (depending on the argument's
+ size relative to the driver's limits on <code>NVARCHAR</code> values)
+ when it sends it to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theString</th>
-          <td>the <code>String</code> to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1611,8 +1690,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1634,7 +1717,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeObject</span>
-      <span class="normal">(<a href="../../../reference/java/sql/SQLData.html">SQLData</a> theObject)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/SQLData.html">SQLData</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1646,21 +1729,27 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an <code>SQLData</code> object into the output stream.
- <p>
- If the <code>SQLData</code> object is null, writes <code>NULL</code> to the stream.
- <p>
- Otherwise, calls the <code>SQLData.writeSQL</code> method of the object, which
- writes the object's attributes to the stream by calling the appropriate
- SQLOutput writer methods for each attribute, in order. The order of the
- attributes is the order they are listed in the SQL definition of the User
- Defined Type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes to the stream the data contained in the given
+ <code>SQLData</code> object.
+ When the <code>SQLData</code> object is <code>null</code>, this
+ method writes an SQL <code>NULL</code> to the stream.
+ Otherwise, it calls the <code>SQLData.writeSQL</code>
+ method of the given object, which
+ writes the object's attributes to the stream.
+ The implementation of the method <code>SQLData.writeSQ</code>
+ calls the appropriate <code>SQLOutput</code> writer method(s)
+ for writing each of the object's attributes in order.
+ The attributes must be read from an <code>SQLInput</code>
+ input stream and written to an <code>SQLOutput</code>
+ output stream in the same order in which they were
+ listed in the SQL definition of the user-defined type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theObject</th>
-          <td>the <code>SQLData</code> object to write.</td>
+          <th>x</th>
+          <td>the object representing data of an SQL structured or
+ distinct type</td>
         </tr>
       </table>
   </div>
@@ -1669,14 +1758,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/SQLData.html">SQLData</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1696,7 +1785,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeRef</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Ref.html">Ref</a> theRef)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Ref.html">Ref</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1708,13 +1797,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an SQL <code>Ref</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>REF</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theRef</th>
-          <td>the <code>java.sql.Ref</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>Ref</code> object representing data of an SQL
+ <code>REF</code> value</td>
         </tr>
       </table>
   </div>
@@ -1723,14 +1813,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Ref.html">Ref</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1750,7 +1840,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeRowId</span>
-      <span class="normal">(<a href="../../../reference/java/sql/RowId.html">RowId</a> theRowId)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/RowId.html">RowId</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1762,13 +1852,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>RowId</code> into the output stream as an SQL ROWID.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>ROWID</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theRowId</th>
-          <td>the <code>java.sql.RowId</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>RowId</code> object representing data of an SQL
+ <code>ROWID</code> value</td>
         </tr>
       </table>
   </div>
@@ -1777,8 +1868,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1800,7 +1895,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeSQLXML</span>
-      <span class="normal">(<a href="../../../reference/java/sql/SQLXML.html">SQLXML</a> theXml)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/SQLXML.html">SQLXML</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1812,13 +1907,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>SQLXML</code> into the output stream as an SQL XML.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL <code>XML</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theXml</th>
-          <td>the <code>java.sql.SQLXML</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>SQLXML</code> object representing data of an SQL
+ <code>XML</code> value</td>
         </tr>
       </table>
   </div>
@@ -1827,8 +1923,17 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs,
+ the <code>java.xml.transform.Result</code>,
+  <code>Writer</code> or <code>OutputStream</code> has not been closed for the <code>SQLXML</code> object or
+  if there is an error processing the XML value.  The <code>getCause</code> method
+  of the exception may provide a more detailed exception, for example, if the
+  stream does not contain valid XML.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1850,7 +1955,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeShort</span>
-      <span class="normal">(short theShort)</span>
+      <span class="normal">(short x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1862,13 +1967,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>short</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a Java short.
+ Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theShort</th>
-          <td>the <code>short</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1877,8 +1984,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1900,7 +2011,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeString</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> theString)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1912,13 +2023,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>String</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a <code>String</code>
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theString</th>
-          <td>the <code>String</code> to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -1927,8 +2039,12 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1950,7 +2066,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeStruct</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Struct.html">Struct</a> theStruct)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Struct.html">Struct</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1962,13 +2078,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write an SQL <code>Struct</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an SQL structured type value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theStruct</th>
-          <td>the <code>java.sql.Struct</code> object to write.</td>
+          <th>x</th>
+          <td>a <code>Struct</code> object representing data of an SQL
+ structured type</td>
         </tr>
       </table>
   </div>
@@ -1977,14 +2094,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Struct.html">Struct</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2004,7 +2121,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeTime</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Time.html">Time</a> theTime)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Time.html">Time</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2016,13 +2133,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>java.sql.Time</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a java.sql.Time object.
+ Writes the next attribute to the stream as a <code>java.sql.Date</code> object
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTime</th>
-          <td>the <code>Time</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -2031,14 +2150,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html">Time</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2058,7 +2177,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeTimestamp</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2070,13 +2189,15 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>java.sql.Timestamp</code> value into the output stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the next attribute to the stream as a java.sql.Timestamp object.
+ Writes the next attribute to the stream as a <code>java.sql.Date</code> object
+ in the Java programming language.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTimestamp</th>
-          <td>the <code>Timestamp</code> value to write.</td>
+          <th>x</th>
+          <td>the value to pass to the database</td>
         </tr>
       </table>
   </div>
@@ -2085,14 +2206,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2112,7 +2233,7 @@ layout: api
         void
       </span>
       <span class="sympad">writeURL</span>
-      <span class="normal">(<a href="../../../reference/java/net/URL.html">URL</a> theURL)</span>
+      <span class="normal">(<a href="../../../reference/java/net/URL.html">URL</a> x)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2124,13 +2245,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Write a <code>URL</code> into the output stream as an SQL DATALINK.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a SQL <code>DATALINK</code> value to the stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theURL</th>
-          <td>the datalink value as a <code>java.net.URL</code> to write.</td>
+          <th>x</th>
+          <td>a <code>java.net.URL</code> object representing the data
+ of SQL DATALINK type</td>
         </tr>
       </table>
   </div>
@@ -2139,14 +2261,14 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/net/URL.html">URL</a></code></li>
-      </ul>
   </div>
 
     </div>

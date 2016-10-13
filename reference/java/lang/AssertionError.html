@@ -212,7 +212,17 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when an assertion has failed.</p>
+<p>Thrown to indicate that an assertion has failed.
+
+ <p>The seven one-argument public constructors provided by this
+ class ensure that the assertion error returned by the invocation:
+ <pre>
+     new AssertionError(<i>expression</i>)
+ </pre>
+ has as its detail message the <i>string conversion</i> of
+ <i>expression</i> (as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>),
+ regardless of the type of <i>expression</i>.</p>
 
 
 
@@ -280,31 +290,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError()">AssertionError</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with no message.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with no detail message.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(java.lang.String, java.lang.Throwable)">AssertionError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
-        
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with the given detail message and cause.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -316,14 +308,16 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(java.lang.Object)">AssertionError</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> detailMessage)
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(java.lang.Object)">valueOf(Object)</a></code> with the specified object.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified object, which is converted to a string as
+ defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -335,14 +329,16 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(boolean)">AssertionError</a></span>(boolean detailMessage)
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(boolean)">valueOf(boolean)</a></code> with the specified boolean value.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified <code>boolean</code>, which is converted to
+ a string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -354,14 +350,16 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(char)">AssertionError</a></span>(char detailMessage)
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(char)">valueOf(char)</a></code> with the specified character value.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified <code>char</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -373,27 +371,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(int)">AssertionError</a></span>(int detailMessage)
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(int)">valueOf(int)</a></code> with the specified integer value.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(long)">AssertionError</a></span>(long detailMessage)
-        
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(long)">valueOf(long)</a></code> with the specified long value.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified <code>int</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
   
   </td></tr>
 
@@ -409,10 +390,12 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(float)">AssertionError</a></span>(float detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(long)">AssertionError</a></span>(long detailMessage)
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(float)">valueOf(float)</a></code> with the specified float value.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified <code>long</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
   
   </td></tr>
 
@@ -428,10 +411,52 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(float)">AssertionError</a></span>(float detailMessage)
+        
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified <code>float</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(double)">AssertionError</a></span>(double detailMessage)
         
-        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(double)">valueOf(double)</a></code> with the specified double value.</div>
+        <div class="jd-descrdiv">Constructs an AssertionError with its detail message derived
+ from the specified <code>double</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AssertionError.html#AssertionError(java.lang.String, java.lang.Throwable)">AssertionError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        
+        <div class="jd-descrdiv">Constructs a new <code>AssertionError</code> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -665,6 +690,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -965,39 +1009,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with no message.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with no detail message.
 </p></div>
-
-    </div>
-</div>
-
-
-<a id="AssertionError(java.lang.String, java.lang.Throwable)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">AssertionError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with the given detail message and cause.</p></div>
 
     </div>
 </div>
@@ -1028,20 +1041,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(java.lang.Object)">valueOf(Object)</a></code> with the specified object. If the object
- is an instance of <code><a href="reference/java/lang/Throwable.html">Throwable</a></code>, then it also becomes the cause of
- this error.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified object, which is converted to a string as
+ defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.
+<p>
+ If the specified object is an instance of <code>Throwable</code>, it
+ becomes the <i>cause</i> of the newly constructed assertion error.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the object to be converted into the detail message and
-            optionally the cause.
-</td>
+          <td>value to be used in constructing detail message</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Throwable.html#getCause()">getCause()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1073,14 +1092,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(boolean)">valueOf(boolean)</a></code> with the specified boolean value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified <code>boolean</code>, which is converted to
+ a string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the value to be converted into the message.
+          <td>value to be used in constructing detail message
 </td>
         </tr>
       </table>
@@ -1115,14 +1136,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(char)">valueOf(char)</a></code> with the specified character value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified <code>char</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the value to be converted into the message.
+          <td>value to be used in constructing detail message
 </td>
         </tr>
       </table>
@@ -1157,14 +1180,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(int)">valueOf(int)</a></code> with the specified integer value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified <code>int</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the value to be converted into the message.
+          <td>value to be used in constructing detail message
 </td>
         </tr>
       </table>
@@ -1199,14 +1224,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(long)">valueOf(long)</a></code> with the specified long value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified <code>long</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the value to be converted into the message.
+          <td>value to be used in constructing detail message
 </td>
         </tr>
       </table>
@@ -1241,14 +1268,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(float)">valueOf(float)</a></code> with the specified float value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified <code>float</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the value to be converted into the message.
+          <td>value to be used in constructing detail message
 </td>
         </tr>
       </table>
@@ -1283,15 +1312,66 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with a message based on calling
- <code><a href="reference/java/lang/String.html#valueOf(double)">valueOf(double)</a></code> with the specified double value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AssertionError with its detail message derived
+ from the specified <code>double</code>, which is converted to a
+ string as defined in section 15.18.1.1 of
+ <cite>The Java&trade; Language Specification</cite>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detailMessage</th>
-          <td>the value to be converted into the message.
+          <td>value to be used in constructing detail message
 </td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="AssertionError(java.lang.String, java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">AssertionError</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>AssertionError</code> with the specified
+ detail message and cause.
+
+ <p>Note that the detail message associated with
+ <code>cause</code> is <i>not</i> automatically incorporated in
+ this error's detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the detail message, may be <code>null</code></td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause, may be <code>null</code></td>
         </tr>
       </table>
   </div>

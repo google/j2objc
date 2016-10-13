@@ -209,8 +209,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/IndexedPropertyChangeEvent.html">IndexedPropertyChangeEvent</a></td>
-              <td class="jd-descrcol" width="100%">A type of <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> that indicates that an indexed property
- has changed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An "IndexedPropertyChange" event gets delivered whenever a component that
+ conforms to the JavaBeans&trade; specification (a "bean") changes a bound
+ indexed property.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -224,8 +225,21 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An event that indicates that a constraint or a boundary of a property has
- changed.
+<p>A "PropertyChange" event gets delivered whenever a bean changes a "bound"
+ or "constrained" property.  A PropertyChangeEvent object is sent as an
+ argument to the PropertyChangeListener and VetoableChangeListener methods.
+ <P>
+ Normally PropertyChangeEvents are accompanied by the name and the old
+ and new value of the changed property.  If the new value is a primitive
+ type (such as int or boolean) it must be wrapped as the
+ corresponding java.lang.* Object type (such as Integer or Boolean).
+ <P>
+ Null values may be provided for the old and the new values if their
+ true values are not known.
+ <P>
+ An event source may send a null object as the name to indicate that an
+ arbitrary set of if its properties have changed.  In this case the
+ old and new values should also be null.
 </p>
 
 
@@ -340,7 +354,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#PropertyChangeEvent(java.lang.Object, java.lang.String, java.lang.Object, java.lang.Object)">PropertyChangeEvent</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> source, <a href="../../../reference/java/lang/String.html">String</a> propertyName, <a href="../../../reference/java/lang/Object.html">Object</a> oldValue, <a href="../../../reference/java/lang/Object.html">Object</a> newValue)
         
-        <div class="jd-descrdiv">The constructor used to create a new <code>PropertyChangeEvent</code>.</div>
+        <div class="jd-descrdiv">Constructs a new <code>PropertyChangeEvent</code>.</div>
   
   </td></tr>
 
@@ -371,7 +385,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getNewValue()">getNewValue</a></span>()
         
-        <div class="jd-descrdiv">Returns the new value that the property now has.</div>
+        <div class="jd-descrdiv">Gets the new value for the property, expressed as an Object.</div>
   
   </td></tr>
 
@@ -389,7 +403,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getOldValue()">getOldValue</a></span>()
         
-        <div class="jd-descrdiv">Returns the old value that the property had.</div>
+        <div class="jd-descrdiv">Gets the old value for the property, expressed as an Object.</div>
   
   </td></tr>
 
@@ -407,7 +421,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getPropagationId()">getPropagationId</a></span>()
         
-        <div class="jd-descrdiv">Returns the propagationId object.</div>
+        <div class="jd-descrdiv">The "propagationId" field is reserved for future use.</div>
   
   </td></tr>
 
@@ -425,7 +439,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#getPropertyName()">getPropertyName</a></span>()
         
-        <div class="jd-descrdiv">Returns the name of the property that has changed.</div>
+        <div class="jd-descrdiv">Gets the programmatic name of the property that was changed.</div>
   
   </td></tr>
 
@@ -443,7 +457,25 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#setPropagationId(java.lang.Object)">setPropagationId</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> propagationId)
         
-        <div class="jd-descrdiv">Sets the propagationId object.</div>
+        <div class="jd-descrdiv">Sets the propagationId object for the event.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeEvent.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string representation of the object.</div>
   
   </td></tr>
 
@@ -815,30 +847,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The constructor used to create a new <code>PropertyChangeEvent</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PropertyChangeEvent</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>source</th>
-          <td>the changed bean.</td>
+          <td>The bean that fired the event.</td>
         </tr>
         <tr>
           <th>propertyName</th>
-          <td>the changed property, or <code>null</code> to indicate an
-            unspecified set of the properties has changed.</td>
+          <td>The programmatic name of the property
+          that was changed.</td>
         </tr>
         <tr>
           <th>oldValue</th>
-          <td>the previous value of the property, or <code>null</code> if
-            the <code>propertyName</code> is <code>null</code> or the
-            previous value is unknown.</td>
+          <td>The old value of the property.</td>
         </tr>
         <tr>
           <th>newValue</th>
-          <td>the new value of the property, or <code>null</code> if the
-            <code>propertyName</code> is <code>null</code> or the new
-            value is unknown.
+          <td>The new value of the property.
 </td>
         </tr>
       </table>
@@ -888,11 +916,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the new value that the property now has. If the new value is
- unknown this method returns null.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the new value for the property, expressed as an Object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the old property value or null.
+      <ul class="nolist"><li>The new value for the property, expressed as an Object.
+          May be null if multiple properties have changed.
 </li></ul>
   </div>
 
@@ -925,11 +953,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the old value that the property had. If the old value is unknown
- this method returns null.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the old value for the property, expressed as an Object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the old property value or null.
+      <ul class="nolist"><li>The old value for the property, expressed as an Object.
+          May be null if multiple properties have changed.
 </li></ul>
   </div>
 
@@ -962,13 +990,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the propagationId object. This is reserved for future use. Beans
- 1.0 demands that a listener receiving this property and then sending its
- own PropertyChangeEvent sets the received propagationId on the new
- PropertyChangeEvent's propagationId field.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The "propagationId" field is reserved for future use.  In Beans 1.0
+ the sole requirement is that if a listener catches a PropertyChangeEvent
+ and then fires a PropertyChangeEvent of its own, then it should
+ make sure that it propagates the propagationId field from its
+ incoming event to its outgoing event.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the propagationId object.
+      <ul class="nolist"><li>the propagationId object associated with a bound/constrained
+          property update.
 </li></ul>
   </div>
 
@@ -1001,11 +1031,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the property that has changed. If an unspecified set
- of properties has changed it returns null.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the programmatic name of the property that was changed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the name of the property that has changed, or null.
+      <ul class="nolist"><li>The programmatic name of the property that was changed.
+          May be null if multiple properties have changed.
 </li></ul>
   </div>
 
@@ -1038,11 +1068,51 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the propagationId object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the propagationId object for the event.</p></div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/beans/PropertyChangeEvent.html#getPropagationId()">getPropagationId()</a></code></li>
-      </ul>
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>propagationId</th>
+          <td>The propagationId object for the event.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toString()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">toString</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a string representation of the object</li></ul>
   </div>
 
     </div>

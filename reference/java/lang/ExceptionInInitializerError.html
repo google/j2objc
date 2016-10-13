@@ -235,8 +235,17 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when an exception occurs during class initialization.
-</p>
+<p>Signals that an unexpected exception has occurred in a static initializer.
+ An <code>ExceptionInInitializerError</code> is thrown to indicate that an
+ exception occurred during evaluation of a static initializer or the
+ initializer for a static variable.
+
+ <p>As of release 1.4, this exception has been retrofitted to conform to
+ the general purpose exception-chaining mechanism.  The "saved throwable
+ object" that may be provided at construction time and accessed via
+ the <code><a href="reference/java/lang/ExceptionInInitializerError.html#getException()">getException()</a></code> method is now known as the <i>cause</i>,
+ and may be accessed via the <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method, as well
+ as the aforementioned "legacy method."</p>
 
 
 
@@ -304,8 +313,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#ExceptionInInitializerError()">ExceptionInInitializerError</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>ExceptionInInitializerError</code> that includes the
- current stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>ExceptionInInitializerError</code> with
+ <code>null</code> as its detail message string and with no saved
+ throwable object.</div>
   
   </td></tr>
 
@@ -321,10 +331,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#ExceptionInInitializerError(java.lang.String)">ExceptionInInitializerError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#ExceptionInInitializerError(java.lang.Throwable)">ExceptionInInitializerError</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> thrown)
         
-        <div class="jd-descrdiv">Constructs a new <code>ExceptionInInitializerError</code> with the current
- stack trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>ExceptionInInitializerError</code> class by
+ saving a reference to the <code>Throwable</code> object thrown for
+ later retrieval by the <code><a href="reference/java/lang/ExceptionInInitializerError.html#getException()">getException()</a></code> method.</div>
   
   </td></tr>
 
@@ -340,10 +351,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#ExceptionInInitializerError(java.lang.Throwable)">ExceptionInInitializerError</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> exception)
+        <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#ExceptionInInitializerError(java.lang.String)">ExceptionInInitializerError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>ExceptionInInitializerError</code> with the current
- stack trace and the specified cause.</div>
+        <div class="jd-descrdiv">Constructs an ExceptionInInitializerError with the specified detail
+ message string.</div>
   
   </td></tr>
 
@@ -374,7 +385,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#getCause()">getCause</a></span>()
         
-        <div class="jd-descrdiv">Returns the cause of this error, or <code>null</code> if there is no cause.</div>
+        <div class="jd-descrdiv">Returns the cause of this error (the exception that occurred
+ during a static initialization that caused this error to be created).</div>
   
   </td></tr>
 
@@ -392,7 +404,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ExceptionInInitializerError.html#getException()">getException</a></span>()
         
-        <div class="jd-descrdiv">Returns the exception that is the cause of this error.</div>
+        <div class="jd-descrdiv">Returns the exception that occurred during a static initialization that
+ caused this error to be created.</div>
   
   </td></tr>
 
@@ -624,6 +637,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -924,51 +956,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ExceptionInInitializerError</code> that includes the
- current stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>ExceptionInInitializerError</code> with
+ <code>null</code> as its detail message string and with no saved
+ throwable object.
+ A detail message is a String that describes this particular exception.
 </p></div>
-
-    </div>
-</div>
-
-
-<a id="ExceptionInInitializerError(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">ExceptionInInitializerError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ExceptionInInitializerError</code> with the current
- stack trace and the specified detail message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this error.
-</td>
-        </tr>
-      </table>
-  </div>
 
     </div>
 </div>
@@ -987,7 +979,7 @@ From class
         
       </span>
       <span class="sympad">ExceptionInInitializerError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> exception)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> thrown)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -999,15 +991,61 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ExceptionInInitializerError</code> with the current
- stack trace and the specified cause. The exception should be the one
- which originally occurred in the class initialization code.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ExceptionInInitializerError</code> class by
+ saving a reference to the <code>Throwable</code> object thrown for
+ later retrieval by the <code><a href="reference/java/lang/ExceptionInInitializerError.html#getException()">getException()</a></code> method. The detail
+ message string is set to <code>null</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>exception</th>
-          <td>the exception that caused this error.
+          <th>thrown</th>
+          <td>The exception thrown
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="ExceptionInInitializerError(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">ExceptionInInitializerError</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an ExceptionInInitializerError with the specified detail
+ message string.  A detail message is a String that describes this
+ particular exception. The detail message string is saved for later
+ retrieval by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method. There is no
+ saved throwable object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>s</th>
+          <td>the detail message
 </td>
         </tr>
       </table>
@@ -1057,11 +1095,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this error, or <code>null</code> if there is no cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this error (the exception that occurred
+ during a static initialization that caused this error to be created).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the exception that caused this error.
-</li></ul>
+      <ul class="nolist"><li>the cause of this error or <code>null</code> if the
+          cause is nonexistent or unknown.</li></ul>
   </div>
 
     </div>
@@ -1093,10 +1132,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception that is the cause of this error.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception that occurred during a static initialization that
+ caused this error to be created.
+
+ <p>This method predates the general-purpose exception chaining facility.
+ The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method is now the preferred means of
+ obtaining this information.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the exception that caused this error.
+      <ul class="nolist"><li>the saved throwable object of this
+         <code>ExceptionInInitializerError</code>, or <code>null</code>
+         if this <code>ExceptionInInitializerError</code> has no saved
+         throwable object.
 </li></ul>
   </div>
 

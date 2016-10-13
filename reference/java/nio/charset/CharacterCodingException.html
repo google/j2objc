@@ -253,13 +253,15 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/MalformedInputException.html">MalformedInputException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>MalformedInputException</code> is thrown when a malformed input is
- encountered, for example if a byte sequence is illegal for the given charset.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception thrown when an input byte sequence is not legal for given
+ charset, or an input character sequence is not a legal sixteen-bit Unicode
+ sequence.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/UnmappableCharacterException.html">UnmappableCharacterException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnmappableCharacterException</code> is thrown when an unmappable
- character for the given charset is encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception thrown when an input character (or byte) sequence
+ is valid but cannot be mapped to an output byte (or character)
+ sequence.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -273,9 +275,8 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>CharacterCodingException</code> is thrown when an encoding or decoding
- error occurs.
-</p>
+<p>Checked exception thrown when a character encoding
+ or decoding error occurs.</p>
 
 
 
@@ -343,7 +344,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharacterCodingException.html#CharacterCodingException()">CharacterCodingException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>CharacterCodingException</code>.</div>
+        <div class="jd-descrdiv">Constructs an instance of this class.</div>
   
   </td></tr>
 
@@ -579,6 +580,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -879,7 +899,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>CharacterCodingException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance of this class.
 </p></div>
 
     </div>

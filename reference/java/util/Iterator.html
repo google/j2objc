@@ -154,6 +154,14 @@ layout: api
             
               <a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;,
             
+              <a href="../../../reference/java/util/PrimitiveIterator.html">PrimitiveIterator</a>&lt;T,&nbsp;T_CONS&gt;,
+            
+              <a href="../../../reference/java/util/PrimitiveIterator.OfDouble.html">PrimitiveIterator.OfDouble</a>,
+            
+              <a href="../../../reference/java/util/PrimitiveIterator.OfInt.html">PrimitiveIterator.OfInt</a>,
+            
+              <a href="../../../reference/java/util/PrimitiveIterator.OfLong.html">PrimitiveIterator.OfLong</a>,
+            
               <a href="../../../reference/java/util/Scanner.html">Scanner</a>,
             
               <a href="../../../reference/android/text/TextUtils.SimpleStringSplitter.html">TextUtils.SimpleStringSplitter</a>
@@ -166,7 +174,26 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">An ListIterator is used to sequence over a List of objects.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An iterator for lists that allows the programmer
+ to traverse the list in either direction, modify
+ the list during iteration, and obtain the iterator's
+ current position in the list.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PrimitiveIterator.html">PrimitiveIterator</a>&lt;T,&nbsp;T_CONS&gt;</td>
+              <td class="jd-descrcol" width="100%">A base type for primitive specializations of <code>Iterator</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PrimitiveIterator.OfDouble.html">PrimitiveIterator.OfDouble</a></td>
+              <td class="jd-descrcol" width="100%">An Iterator specialized for <code>double</code> values.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PrimitiveIterator.OfInt.html">PrimitiveIterator.OfInt</a></td>
+              <td class="jd-descrcol" width="100%">An Iterator specialized for <code>int</code> values.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PrimitiveIterator.OfLong.html">PrimitiveIterator.OfLong</a></td>
+              <td class="jd-descrcol" width="100%">An Iterator specialized for <code>long</code> values.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Scanner.html">Scanner</a></td>
@@ -187,19 +214,28 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An iterator over a sequence of objects, such as a collection.
+<p>An iterator over a collection.  <code>Iterator</code> takes the place of
+ <code><a href="reference/java/util/Enumeration.html">Enumeration</a></code> in the Java Collections Framework.  Iterators
+ differ from enumerations in two ways:
 
- <p>If a collection has been changed since the iterator was created,
- methods <code>next</code> and <code>hasNext()</code> may throw a <code>ConcurrentModificationException</code>.
- It is not possible to guarantee that this mechanism works in all cases of unsynchronized
- concurrent modification. It should only be used for debugging purposes. Iterators with this
- behavior are called fail-fast iterators.
+ <ul>
+      <li> Iterators allow the caller to remove elements from the
+           underlying collection during the iteration with well-defined
+           semantics.
+      <li> Method names have been improved.
+ </ul>
 
- <p>Implementing <code><a href="reference/java/lang/Iterable.html">Iterable</a></code> and returning an <code>Iterator</code> allows your
- class to be used as a collection with the enhanced for loop.</p>
+ <p>This interface is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html">Collection</a></code></li><li><code><a href="../../../reference/java/util/ListIterator.html">ListIterator</a></code></li><li><code><a href="../../../reference/java/lang/Iterable.html">Iterable</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -263,12 +299,13 @@ layout: api
             
             
             
-            boolean
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#hasNext()">hasNext</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#forEachRemaining(java.util.function.Consumer<? super E>)">forEachRemaining</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;E&gt; action)
         
-        <div class="jd-descrdiv">Returns true if there is at least one more element, false otherwise.</div>
+        <div class="jd-descrdiv">Performs the given action for each remaining element until all elements
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -281,12 +318,12 @@ layout: api
             
             
             
-            E
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#next()">next</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#hasNext()">hasNext</a></span>()
         
-        <div class="jd-descrdiv">Returns the next object and advances the iterator.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the iteration has more elements.</div>
   
   </td></tr>
 
@@ -299,12 +336,31 @@ layout: api
             
             
             
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Iterator.html#next()">next</a></span>()
+        
+        <div class="jd-descrdiv">Returns the next element in the iteration.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             void
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Iterator.html#remove()">remove</a></span>()
         
-        <div class="jd-descrdiv">Removes the last object returned by <code>next</code> from the collection.</div>
+        <div class="jd-descrdiv">Removes from the underlying collection the last element returned
+ by this iterator (optional operation).</div>
   
   </td></tr>
 
@@ -357,6 +413,58 @@ layout: api
 
 
 
+<a id="forEachRemaining(java.util.function.Consumer<? super E>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">forEachRemaining</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;E&gt; action)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Performs the given action for each remaining element until all elements
+ have been processed or the action throws an exception.  Actions are
+ performed in the order of iteration, if that order is specified.
+ Exceptions thrown by the action are relayed to the caller.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>action</th>
+          <td>The action to be performed for each element</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified action is null</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="hasNext()"></a>
 
 <div class="jd-details api apilevel-">
@@ -382,11 +490,13 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if there is at least one more element, false otherwise.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the iteration has more elements.
+ (In other words, returns <code>true</code> if <code><a href="reference/java/util/Iterator.html#next()">next()</a></code> would
+ return an element rather than throwing an exception.)</p></div>
   <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Iterator.html#next()">next()</a></code></li>
-      </ul>
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the iteration has more elements
+</li></ul>
   </div>
 
     </div>
@@ -418,24 +528,20 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next object and advances the iterator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the next element in the iteration.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the next object.</li></ul>
+      <ul class="nolist"><li>the next element in the iteration</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
-            <td>if there are no more elements.</td>
+            <td>if the iteration has no more elements
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Iterator.html#hasNext()">hasNext()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -467,20 +573,26 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the last object returned by <code>next</code> from the collection.
- This method can only be called once between each call to <code>next</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes from the underlying collection the last element returned
+ by this iterator (optional operation).  This method can be called
+ only once per call to <code><a href="reference/java/util/Iterator.html#next()">next()</a></code>.  The behavior of an iterator
+ is unspecified if the underlying collection is modified while the
+ iteration is in progress in any way other than by calling this
+ method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if removing is not supported by the collection being
-             iterated.</td>
+            <td>if the <code>remove</code>
+         operation is not supported by this iterator</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
-            <td>if <code>next</code> has not been called, or <code>remove</code> has
-             already been called after the last call to <code>next</code>.
+            <td>if the <code>next</code> method has not
+         yet been called, or the <code>remove</code> method has already
+         been called after the last call to the <code>next</code>
+         method
 </td>
         </tr>
       </table>

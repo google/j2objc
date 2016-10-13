@@ -119,6 +119,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -218,12 +225,23 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and adds functionality to "push back"
- bytes that have been read, so that they can be read again. Parsers may find
- this useful. The number of bytes which may be pushed back can be specified
- during construction. If the buffer of pushed back bytes is empty, bytes are
- read from the underlying input stream.
-</p>
+<p>A <code>PushbackInputStream</code> adds
+ functionality to another input stream, namely
+ the  ability to "push back" or "unread"
+ one byte. This is useful in situations where
+ it is  convenient for a fragment of code
+ to read an indefinite number of data bytes
+ that  are delimited by a particular byte
+ value; after reading the terminating byte,
+ the  code fragment can "unread" it, so that
+ the next read operation on the input stream
+ will reread the byte that was pushed back.
+ For example, bytes representing the  characters
+ constituting an identifier might be terminated
+ by a byte representing an  operator character;
+ a method whose job is to read just an identifier
+ can read until it  sees the operator and
+ then push the operator back to be re-read.</p>
 
 
 
@@ -280,7 +298,7 @@ layout: api
           
           byte[]</td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/PushbackInputStream.html#buf">buf</a></td>
-          <td class="jd-descrcol" width="100%">The buffer that contains pushed-back bytes.</td>
+          <td class="jd-descrcol" width="100%">The pushback buffer.</td>
       </tr>
       
     
@@ -291,7 +309,8 @@ layout: api
           
           int</td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/PushbackInputStream.html#pos">pos</a></td>
-          <td class="jd-descrcol" width="100%">The current position within <code>buf</code>.</td>
+          <td class="jd-descrcol" width="100%">The position within the pushback buffer from which the next byte will
+ be read.</td>
       </tr>
       
     
@@ -331,7 +350,7 @@ layout: api
           
           <a href="../../../reference/java/io/InputStream.html">InputStream</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/FilterInputStream.html#in">in</a></td>
-          <td class="jd-descrcol" width="100%">The source input stream that is filtered.</td>
+          <td class="jd-descrcol" width="100%">The input stream to be filtered.</td>
       </tr>
       
     
@@ -339,6 +358,8 @@ layout: api
   </div>
 </div>
 </td></tr>
+
+
 
 
 
@@ -368,10 +389,12 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#PushbackInputStream(java.io.InputStream)">PushbackInputStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#PushbackInputStream(java.io.InputStream, int)">PushbackInputStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in, int size)
         
-        <div class="jd-descrdiv">Constructs a new <code>PushbackInputStream</code> with the specified input
- stream as source.</div>
+        <div class="jd-descrdiv">Creates a <code>PushbackInputStream</code>
+ with a pushback buffer of the specified <code>size</code>,
+ and saves its  argument, the input stream
+ <code>in</code>, for later use.</div>
   
   </td></tr>
 
@@ -387,10 +410,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#PushbackInputStream(java.io.InputStream, int)">PushbackInputStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in, int size)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#PushbackInputStream(java.io.InputStream)">PushbackInputStream</a></span>(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)
         
-        <div class="jd-descrdiv">Constructs a new <code>PushbackInputStream</code> with <code>in</code> as source
- input stream.</div>
+        <div class="jd-descrdiv">Creates a <code>PushbackInputStream</code>
+ and saves its  argument, the input stream
+ <code>in</code>, for later use.</div>
   
   </td></tr>
 
@@ -421,8 +445,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#available()">available</a></span>()
         
-        <div class="jd-descrdiv">Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of bytes that can be read (or
+ skipped over) from this input stream without blocking by the next
+ invocation of a method for this input stream.</div>
   
   </td></tr>
 
@@ -431,7 +456,7 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -440,7 +465,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this input stream and releases any system resources
+ associated with the stream.</div>
   
   </td></tr>
 
@@ -449,7 +475,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -458,7 +484,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#mark(int)">mark</a></span>(int readlimit)
         
-        <div class="jd-descrdiv">Marks the current position in this stream.</div>
+        <div class="jd-descrdiv">Marks the current position in this input stream.</div>
   
   </td></tr>
 
@@ -476,8 +502,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#markSupported()">markSupported</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this stream supports the <code>mark(int)</code> and
- <code>reset()</code> methods.</div>
+        <div class="jd-descrdiv">Tests if this input stream supports the <code>mark</code> and
+ <code>reset</code> methods, which it does not.</div>
   
   </td></tr>
 
@@ -495,8 +521,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single byte from this stream and returns it as an integer in the
- range from 0 to 255.</div>
+        <div class="jd-descrdiv">Reads the next byte of data from this input stream.</div>
   
   </td></tr>
 
@@ -512,10 +537,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#read(byte[], int, int)">read</a></span>(byte[] buffer, int byteOffset, int byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#read(byte[], int, int)">read</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Reads up to <code>byteCount</code> bytes from this stream and stores them in
- the byte array <code>buffer</code> starting at <code>byteOffset</code>.</div>
+        <div class="jd-descrdiv">Reads up to <code>len</code> bytes of data from this input stream into
+ an array of bytes.</div>
   
   </td></tr>
 
@@ -524,7 +549,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -533,7 +558,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this stream to the last marked position.</div>
+        <div class="jd-descrdiv">Repositions this stream to the position at the time the
+ <code>mark</code> method was last called on this input stream.</div>
   
   </td></tr>
 
@@ -549,9 +575,10 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#skip(long)">skip</a></span>(long byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips <code>byteCount</code> bytes in this stream.</div>
+        <div class="jd-descrdiv">Skips over and discards <code>n</code> bytes of data from this
+ input stream.</div>
   
   </td></tr>
 
@@ -567,9 +594,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#unread(byte[], int, int)">unread</a></span>(byte[] buffer, int offset, int length)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#unread(byte[], int, int)">unread</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Pushes a subset of the bytes in <code>buffer</code> back to this stream.</div>
+        <div class="jd-descrdiv">Pushes back a portion of an array of bytes by copying it to the front
+ of the pushback buffer.</div>
   
   </td></tr>
 
@@ -585,9 +613,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#unread(int)">unread</a></span>(int oneByte)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#unread(int)">unread</a></span>(int b)
         
-        <div class="jd-descrdiv">Pushes the specified byte <code>oneByte</code> back to this stream.</div>
+        <div class="jd-descrdiv">Pushes back a byte by copying it to the front of the pushback buffer.</div>
   
   </td></tr>
 
@@ -603,9 +631,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#unread(byte[])">unread</a></span>(byte[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/PushbackInputStream.html#unread(byte[])">unread</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Pushes all the bytes in <code>buffer</code> back to this stream.</div>
+        <div class="jd-descrdiv">Pushes back an array of bytes by copying it to the front of the
+ pushback buffer.</div>
   
   </td></tr>
 
@@ -657,8 +686,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#available()">available</a></span>()
         
-        <div class="jd-descrdiv">Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of bytes that can be read (or
+ skipped over) from this input stream without blocking by the next
+ caller of a method for this input stream.</div>
   
   </td></tr>
 
@@ -676,7 +706,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this input stream and releases any system resources
+ associated with the stream.</div>
   
   </td></tr>
 
@@ -694,7 +725,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#mark(int)">mark</a></span>(int readlimit)
         
-        <div class="jd-descrdiv">Sets a mark position in this stream.</div>
+        <div class="jd-descrdiv">Marks the current position in this input stream.</div>
   
   </td></tr>
 
@@ -712,7 +743,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#markSupported()">markSupported</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this stream supports <code>mark()</code> and <code>reset()</code>.</div>
+        <div class="jd-descrdiv">Tests if this input stream supports the <code>mark</code>
+ and <code>reset</code> methods.</div>
   
   </td></tr>
 
@@ -730,8 +762,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single byte from the filtered stream and returns it as an integer
- in the range from 0 to 255.</div>
+        <div class="jd-descrdiv">Reads the next byte of data from this input stream.</div>
   
   </td></tr>
 
@@ -747,16 +778,35 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#read(byte[], int, int)">read</a></span>(byte[] buffer, int byteOffset, int byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#read(byte[], int, int)">read</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Reads up to <code>byteCount</code> bytes from this stream and stores them in
- the byte array <code>buffer</code> starting at <code>byteOffset</code>.</div>
+        <div class="jd-descrdiv">Reads up to <code>len</code> bytes of data from this input stream
+ into an array of bytes.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#read(byte[])">read</a></span>(byte[] b)
+        
+        <div class="jd-descrdiv">Reads up to <code>byte.length</code> bytes of data from this
+ input stream into an array of bytes.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             synchronized
@@ -768,13 +818,14 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this stream to the last marked location.</div>
+        <div class="jd-descrdiv">Repositions this stream to the position at the time the
+ <code>mark</code> method was last called on this input stream.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -784,9 +835,10 @@ From class
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#skip(long)">skip</a></span>(long byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/FilterInputStream.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips <code>byteCount</code> bytes in this stream.</div>
+        <div class="jd-descrdiv">Skips over and discards <code>n</code> bytes of data from the
+ input stream.</div>
   
   </td></tr>
 
@@ -829,8 +881,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#available()">available</a></span>()
         
-        <div class="jd-descrdiv">Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.</div>
+        <div class="jd-descrdiv">Returns an estimate of the number of bytes that can be read (or
+ skipped over) from this input stream without blocking by the next
+ invocation of a method for this input stream.</div>
   
   </td></tr>
 
@@ -848,7 +901,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this stream.</div>
+        <div class="jd-descrdiv">Closes this input stream and releases any system resources associated
+ with the stream.</div>
   
   </td></tr>
 
@@ -857,7 +911,7 @@ From class
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -866,7 +920,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#mark(int)">mark</a></span>(int readlimit)
         
-        <div class="jd-descrdiv">Sets a mark position in this InputStream.</div>
+        <div class="jd-descrdiv">Marks the current position in this input stream.</div>
   
   </td></tr>
 
@@ -884,8 +938,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#markSupported()">markSupported</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this stream supports the <code>mark()</code> and
- <code>reset()</code> methods.</div>
+        <div class="jd-descrdiv">Tests if this input stream supports the <code>mark</code> and
+ <code>reset</code> methods.</div>
   
   </td></tr>
 
@@ -903,8 +957,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single byte from this stream and returns it as an integer in the
- range from 0 to 255.</div>
+        <div class="jd-descrdiv">Reads the next byte of data from the input stream.</div>
   
   </td></tr>
 
@@ -920,10 +973,10 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[], int, int)">read</a></span>(byte[] buffer, int byteOffset, int byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[], int, int)">read</a></span>(byte[] b, int off, int len)
         
-        <div class="jd-descrdiv">Reads up to <code>byteCount</code> bytes from this stream and stores them in
- the byte array <code>buffer</code> starting at <code>byteOffset</code>.</div>
+        <div class="jd-descrdiv">Reads up to <code>len</code> bytes of data from the input stream into
+ an array of bytes.</div>
   
   </td></tr>
 
@@ -939,9 +992,10 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[])">read</a></span>(byte[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#read(byte[])">read</a></span>(byte[] b)
         
-        <div class="jd-descrdiv">Equivalent to <code>read(buffer, 0, buffer.length)</code>.</div>
+        <div class="jd-descrdiv">Reads some number of bytes from the input stream and stores them into
+ the buffer array <code>b</code>.</div>
   
   </td></tr>
 
@@ -959,7 +1013,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InputStream.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this stream to the last marked location.</div>
+        <div class="jd-descrdiv">Repositions this stream to the position at the time the
+ <code>mark</code> method was last called on this input stream.</div>
   
   </td></tr>
 
@@ -975,9 +1030,10 @@ From class
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#skip(long)">skip</a></span>(long byteCount)
+        <span class="sympad"><a href="../../../reference/java/io/InputStream.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips at most <code>byteCount</code> bytes in this stream.</div>
+        <div class="jd-descrdiv">Skips over and discards <code>n</code> bytes of data from this input
+ stream.</div>
   
   </td></tr>
 
@@ -1250,7 +1306,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1315,8 +1415,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The buffer that contains pushed-back bytes.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The pushback buffer.</p></div>
 
     
     </div>
@@ -1346,10 +1445,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The current position within <code>buf</code>. A value equal to
- <code>buf.length</code> indicates that no bytes are available. A value of 0
- indicates that the buffer is full.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The position within the pushback buffer from which the next byte will
+ be read.  When the buffer is empty, <code>pos</code> is equal to
+ <code>buf.length</code>; when the buffer is full, <code>pos</code> is
+ equal to zero.</p></div>
 
     
     </div>
@@ -1364,53 +1463,6 @@ From interface
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <h2>Public Constructors</h2>
 
-
-
-<a id="PushbackInputStream(java.io.InputStream)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">PushbackInputStream</span>
-      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PushbackInputStream</code> with the specified input
- stream as source. The size of the pushback buffer is set to the default
- value of 1 byte.
-
- <p><strong>Warning:</strong> passing a null source creates an invalid
- <code>PushbackInputStream</code>. All read operations on such a stream will
- fail.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>in</th>
-          <td>the source input stream.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
 
 
 <a id="PushbackInputStream(java.io.InputStream, int)"></a>
@@ -1438,18 +1490,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PushbackInputStream</code> with <code>in</code> as source
- input stream. The size of the pushback buffer is set to <code>size</code>.
-
- <p><strong>Warning:</strong> passing a null source creates an invalid
- <code>PushbackInputStream</code>. All read operations on such a stream will
- fail.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PushbackInputStream</code>
+ with a pushback buffer of the specified <code>size</code>,
+ and saves its  argument, the input stream
+ <code>in</code>, for later use. Initially,
+ there is no pushed-back byte  (the field
+ <code>pushBack</code> is initialized to
+ <code>-1</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>in</th>
-          <td>the source input stream.</td>
+          <td>the input stream from which bytes will be read.</td>
         </tr>
         <tr>
           <th>size</th>
@@ -1462,7 +1515,52 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>size</code> is negative.
+            <td>if size is <= 0</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="PushbackInputStream(java.io.InputStream)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">PushbackInputStream</span>
+      <span class="normal">(<a href="../../../reference/java/io/InputStream.html">InputStream</a> in)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PushbackInputStream</code>
+ and saves its  argument, the input stream
+ <code>in</code>, for later use. Initially,
+ there is no pushed-back byte  (the field
+ <code>pushBack</code> is initialized to
+ <code>-1</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>in</th>
+          <td>the input stream from which bytes will be read.
 </td>
         </tr>
       </table>
@@ -1512,50 +1610,34 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimated number of bytes that can be read or skipped without blocking for more
- input.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of bytes that can be read (or
+ skipped over) from this input stream without blocking by the next
+ invocation of a method for this input stream. The next invocation might be
+ the same thread or another thread.  A single read or skip of this
+ many bytes will not block, but may read or skip fewer bytes.
 
- <p>Note that this method provides such a weak guarantee that it is not very useful in
- practice.
-
- <p>Firstly, the guarantee is "without blocking for more input" rather than "without
- blocking": a read may still block waiting for I/O to complete&nbsp;&mdash; the guarantee is
- merely that it won't have to wait indefinitely for data to be written. The result of this
- method should not be used as a license to do I/O on a thread that shouldn't be blocked.
-
- <p>Secondly, the result is a
- conservative estimate and may be significantly smaller than the actual number of bytes
- available. In particular, an implementation that always returns 0 would be correct.
- In general, callers should only use this method if they'd be satisfied with
- treating the result as a boolean yes or no answer to the question "is there definitely
- data ready?".
-
- <p>Thirdly, the fact that a given number of bytes is "available" does not guarantee that a
- read or skip will actually read or skip that many bytes: they may read or skip fewer.
-
- <p>It is particularly important to realize that you <i>must not</i> use this method to
- size a container and assume that you can read the entirety of the stream without needing
- to resize the container. Such callers should probably write everything they read to a
- <code><a href="reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></code> and convert that to a byte array. Alternatively, if you're
- reading from a file, <code><a href="reference/java/io/File.html#length()">length()</a></code> returns the current length of the file (though
- assuming the file's length can't change may be incorrect, reading a file is inherently
- racy).
-
- <p>The default implementation of this method in <code>InputStream</code> always returns 0.
- Subclasses should override this method if they are able to indicate the number of bytes
- available.</p></div>
+ <p> The method returns the sum of the number of bytes that have been
+ pushed back and the value returned by <code><a href="reference/java/io/FilterInputStream.html#available()">available</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the estimated number of bytes available</li></ul>
+      <ul class="nolist"><li>the number of bytes that can be read (or skipped over) from
+             the input stream without blocking.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td></td>
+            <td>if this input stream has been closed by
+             invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method,
+             or an I/O error occurs.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/FilterInputStream.html#in">in</a></code></li><li><code><a href="../../../reference/java/io/InputStream.html#available()">available()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1571,7 +1653,7 @@ From interface
         
         
         
-        
+        synchronized
         void
       </span>
       <span class="sympad">close</span>
@@ -1587,14 +1669,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes this stream. This implementation closes the source stream
- and releases the pushback buffer.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this input stream and releases any system resources
+ associated with the stream.
+ Once the stream has been closed, further read(), unread(),
+ available(), reset(), or skip() invocations will throw an IOException.
+ Closing a previously closed stream has no effect.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while closing this stream.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1613,7 +1698,7 @@ From interface
         
         
         
-        
+        synchronized
         void
       </span>
       <span class="sympad">mark</span>
@@ -1629,18 +1714,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Marks the current position in this stream. Setting a mark is not
- supported in this class; this implementation does nothing.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Marks the current position in this input stream.
+
+ <p> The <code>mark</code> method of <code>PushbackInputStream</code>
+ does nothing.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>readlimit</th>
-          <td>the number of bytes that can be read from this stream before
-            the mark is invalidated; this parameter is ignored.
-</td>
+          <td>the maximum limit of bytes that can be read before
+                      the mark position becomes invalid.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/InputStream.html#reset()">reset()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1672,16 +1763,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this stream supports the <code>mark(int)</code> and
- <code>reset()</code> methods. <code>PushbackInputStream</code> does not support
- them, so it returns <code>false</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if this input stream supports the <code>mark</code> and
+ <code>reset</code> methods, which it does not.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>always <code>false</code>.</li></ul>
+      <ul class="nolist"><li><code>false</code>, since this class does not support the
+           <code>mark</code> and <code>reset</code> methods.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PushbackInputStream.html#mark(int)">mark(int)</a></code></li><li><code><a href="../../../reference/java/io/PushbackInputStream.html#reset()">reset()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/InputStream.html#mark(int)">mark(int)</a></code></li><li><code><a href="../../../reference/java/io/InputStream.html#reset()">reset()</a></code></li>
       </ul>
   </div>
 
@@ -1714,26 +1805,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads a single byte from this stream and returns it as an integer in the
- range from 0 to 255. If the pushback buffer does not contain any
- available bytes then a byte from the source input stream is returned.
- Blocks until one byte has been read, the end of the source stream is
- detected or an exception is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reads the next byte of data from this input stream. The value
+ byte is returned as an <code>int</code> in the range
+ <code>0</code> to <code>255</code>. If no byte is available
+ because the end of the stream has been reached, the value
+ <code>-1</code> is returned. This method blocks until input data
+ is available, the end of the stream is detected, or an exception
+ is thrown.
+
+ <p> This method returns the most recently pushed-back byte, if there is
+ one, and otherwise calls the <code>read</code> method of its underlying
+ input stream and returns whatever value that method returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the byte read or -1 if the end of the source stream has been
-         reached.</li></ul>
+      <ul class="nolist"><li>the next byte of data, or <code>-1</code> if the end of the
+             stream has been reached.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this stream is closed or an I/O error occurs while reading
-             from this stream.
-</td>
+            <td>if this input stream has been closed by
+             invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method,
+             or an I/O error occurs.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/InputStream.html#read()">read()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1753,7 +1855,7 @@ From interface
         int
       </span>
       <span class="sympad">read</span>
-      <span class="normal">(byte[] buffer, int byteOffset, int byteCount)</span>
+      <span class="normal">(byte[] b, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1765,30 +1867,60 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads up to <code>byteCount</code> bytes from this stream and stores them in
- the byte array <code>buffer</code> starting at <code>byteOffset</code>. Bytes are read
- from the pushback buffer first, then from the source stream if more bytes
- are required. Blocks until <code>byteCount</code> bytes have been read, the end of
- the source stream is detected or an exception is thrown. Returns the number of bytes read,
- or -1 if the end of the source stream has been reached.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reads up to <code>len</code> bytes of data from this input stream into
+ an array of bytes.  This method first reads any pushed-back bytes; after
+ that, if fewer than <code>len</code> bytes have been read then it
+ reads from the underlying input stream. If <code>len</code> is not zero, the method
+ blocks until at least 1 byte of input is available; otherwise, no
+ bytes are read and <code>0</code> is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>b</th>
+          <td>the buffer into which the data is read.</td>
+        </tr>
+        <tr>
+          <th>off</th>
+          <td>the start offset in the destination array <code>b</code></td>
+        </tr>
+        <tr>
+          <th>len</th>
+          <td>the maximum number of bytes read.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the total number of bytes read into the buffer, or
+             <code>-1</code> if there is no more data because the end of
+             the stream has been reached.</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>If <code>b</code> is <code>null</code>.</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>byteOffset < 0 || byteCount < 0 || byteOffset + byteCount > buffer.length</code>.</td>
+            <td>If <code>off</code> is negative,
+ <code>len</code> is negative, or <code>len</code> is greater than
+ <code>b.length - off</code></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this stream is closed or another I/O error occurs while
-             reading from this stream.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>buffer == null</code>.
-</td>
+            <td>if this input stream has been closed by
+             invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method,
+             or an I/O error occurs.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/InputStream.html#read(byte[], int, int)">read(byte[], int, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1804,7 +1936,7 @@ From interface
         
         
         
-        
+        synchronized
         void
       </span>
       <span class="sympad">reset</span>
@@ -1820,18 +1952,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Resets this stream to the last marked position. Resetting the stream is
- not supported in this class; this implementation always throws an
+  <div class="jd-tagdata jd-tagdescr"><p>Repositions this stream to the position at the time the
+ <code>mark</code> method was last called on this input stream.
+
+ <p> The method <code>reset</code> for class
+ <code>PushbackInputStream</code> does nothing except throw an
  <code>IOException</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this method is called.
-</td>
+            <td>if this method is invoked.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/InputStream.html#mark(int)">mark(int)</a></code></li><li><code><a href="../../../reference/java/io/IOException.html">IOException</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1851,7 +1990,7 @@ From interface
         long
       </span>
       <span class="sympad">skip</span>
-      <span class="normal">(long byteCount)</span>
+      <span class="normal">(long n)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1863,21 +2002,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Skips <code>byteCount</code> bytes in this stream. This implementation skips bytes
- in the pushback buffer first and then in the source stream if necessary.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Skips over and discards <code>n</code> bytes of data from this
+ input stream. The <code>skip</code> method may, for a variety of
+ reasons, end up skipping over some smaller number of bytes,
+ possibly zero.  If <code>n</code> is negative, no bytes are skipped.
+
+ <p> The <code>skip</code> method of <code>PushbackInputStream</code>
+ first skips over the bytes in the pushback buffer, if any.  It then
+ calls the <code>skip</code> method of the underlying input stream if
+ more bytes need to be skipped.  The actual number of bytes skipped
+ is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>n</th>
+          <td></td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of bytes actually skipped.</li></ul>
+      <ul class="nolist"><li>the actual number of bytes skipped.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this stream is closed or another I/O error occurs.
-</td>
+            <td>if the stream does not support seek,
+            or the stream has been closed by
+            invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method,
+            or an I/O error occurs.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/FilterInputStream.html#in">in</a></code></li><li><code><a href="../../../reference/java/io/InputStream.html#skip(long)">skip(long)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1897,7 +2060,7 @@ From interface
         void
       </span>
       <span class="sympad">unread</span>
-      <span class="normal">(byte[] buffer, int offset, int length)</span>
+      <span class="normal">(byte[] b, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1909,29 +2072,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Pushes a subset of the bytes in <code>buffer</code> back to this stream. The
- subset is defined by the start position <code>offset</code> within
- <code>buffer</code> and the number of bytes specified by <code>length</code>. The
- bytes are pushed back in such a way that the next byte read from this
- stream is <code>buffer[offset]</code>, then <code>buffer[1]</code> and so on.
- <p>
- If this stream's internal pushback buffer cannot store the selected
- subset of <code>buffer</code>, an <code>IOException</code> is thrown. Parts of
- <code>buffer</code> may have already been copied to the pushback buffer when
- the exception is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Pushes back a portion of an array of bytes by copying it to the front
+ of the pushback buffer.  After this method returns, the next byte to be
+ read will have the value <code>b[off]</code>, the byte after that will
+ have the value <code>b[off+1]</code>, and so forth.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the buffer containing the bytes to push back to this stream.</td>
+          <th>b</th>
+          <td>the byte array to push back.</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the index of the first byte in <code>buffer</code> to push back.</td>
+          <th>off</th>
+          <td>the start offset of the data.</td>
         </tr>
         <tr>
-          <th>length</th>
+          <th>len</th>
           <td>the number of bytes to push back.</td>
         </tr>
       </table>
@@ -1940,16 +2097,11 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>length < 0</code>, or if
-             <code>offset + length</code> is greater than the length of
-             <code>buffer</code>.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if the free space in the internal pushback buffer is not
-             sufficient to store the selected contents of <code>buffer</code>.
-</td>
+            <td>If there is not enough room in the pushback
+            buffer for the specified number of bytes,
+            or this input stream has been closed by
+            invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method.</td>
         </tr>
       </table>
   </div>
@@ -1971,7 +2123,7 @@ From interface
         void
       </span>
       <span class="sympad">unread</span>
-      <span class="normal">(int oneByte)</span>
+      <span class="normal">(int b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1983,19 +2135,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Pushes the specified byte <code>oneByte</code> back to this stream. Only the
- least significant byte of the integer <code>oneByte</code> is pushed back.
- This is done in such a way that the next byte read from this stream is
- <code>(byte) oneByte</code>.
- <p>
- If this stream's internal pushback buffer cannot store the byte, an
- <code>IOException</code> is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Pushes back a byte by copying it to the front of the pushback buffer.
+ After this method returns, the next byte to be read will have the value
+ <code>(byte)b</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>oneByte</th>
-          <td>the byte to push back to this stream.</td>
+          <th>b</th>
+          <td>the <code>int</code> value whose low-order
+                  byte is to be pushed back.</td>
         </tr>
       </table>
   </div>
@@ -2004,8 +2153,9 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this stream is closed or the internal pushback buffer is
-             full.
+            <td>If there is not enough room in the pushback
+            buffer for the byte, or this input stream has been closed by
+            invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method.
 </td>
         </tr>
       </table>
@@ -2028,7 +2178,7 @@ From interface
         void
       </span>
       <span class="sympad">unread</span>
-      <span class="normal">(byte[] buffer)</span>
+      <span class="normal">(byte[] b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2040,20 +2190,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Pushes all the bytes in <code>buffer</code> back to this stream. The bytes are
- pushed back in such a way that the next byte read from this stream is
- buffer[0], then buffer[1] and so on.
- <p>
- If this stream's internal pushback buffer cannot store the entire
- contents of <code>buffer</code>, an <code>IOException</code> is thrown. Parts of
- <code>buffer</code> may have already been copied to the pushback buffer when
- the exception is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Pushes back an array of bytes by copying it to the front of the
+ pushback buffer.  After this method returns, the next byte to be read
+ will have the value <code>b[0]</code>, the byte after that will have the
+ value <code>b[1]</code>, and so forth.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the buffer containing the bytes to push back to this stream.</td>
+          <th>b</th>
+          <td>the byte array to push back</td>
         </tr>
       </table>
   </div>
@@ -2062,9 +2208,10 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if the free space in the internal pushback buffer is not
-             sufficient to store the contents of <code>buffer</code>.
-</td>
+            <td>If there is not enough room in the pushback
+            buffer for the specified number of bytes,
+            or this input stream has been closed by
+            invoking its <code><a href="reference/java/io/PushbackInputStream.html#close()">close()</a></code> method.</td>
         </tr>
       </table>
   </div>

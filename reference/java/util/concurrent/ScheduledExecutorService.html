@@ -234,15 +234,15 @@ layout: api
 
    public void beepForAnHour() {
      final Runnable beeper = new Runnable() {
-       public void run() { System.out.println("beep"); </code>
+       public void run() { System.out.println("beep"); }
      };
-     final ScheduledFuture<?> beeperHandle =
+     final ScheduledFuture&lt;?&gt; beeperHandle =
        scheduler.scheduleAtFixedRate(beeper, 10, 10, SECONDS);
      scheduler.schedule(new Runnable() {
        public void run() { beeperHandle.cancel(true); }
      }, 60 * 60, SECONDS);
    }
- }}</pre></p>
+ }</code></pre></p>
 
 
 

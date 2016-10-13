@@ -236,10 +236,10 @@ layout: api
    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
    try {
      readStream(in);
-   </code> finally {
+   } finally {
      in.close();
    }
- }</pre>
+ </code></pre>
 
  <p><code>URLConnection</code> must be configured before it has connected to the
  remote resource. Instances of <code>URLConnection</code> are not reusable: you
@@ -3507,7 +3507,7 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>timeoutMillis &lt; 0</code>.
+            <td>if <code>timeoutMillis &amp;lt; 0</code>.
 </td>
         </tr>
       </table>

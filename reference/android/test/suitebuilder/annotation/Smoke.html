@@ -256,7 +256,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../../reference/java/lang/annotation/Annotation.html#annotationType()">annotationType</a></span>()
         
-        <div class="jd-descrdiv">Returns the type of this annotation.</div>
+        <div class="jd-descrdiv">Returns the annotation type of this annotation.</div>
   
   </td></tr>
 
@@ -274,8 +274,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../../reference/java/lang/annotation/Annotation.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Determines whether or not this annotation is equivalent to the annotation
- passed.</div>
+        <div class="jd-descrdiv">Returns true if the specified object represents an annotation
+ that is logically equivalent to this one.</div>
   
   </td></tr>
 
@@ -293,7 +293,24 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../../reference/java/lang/annotation/Annotation.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code of this annotation.</div>
+        <div class="jd-descrdiv">Returns the hash code of this annotation, as defined below:
+
+ <p>The hash code of an annotation is the sum of the hash codes
+ of its members (including those with default values), as defined
+ below:
+
+ The hash code of an annotation member is (127 times the hash code
+ of the member-name as computed by <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code>) XOR
+ the hash code of the member-value, as defined below:
+
+ <p>The hash code of a member-value depends on its type:
+ <ul>
+ <li>The hash code of a primitive value <tt><i>v</i></tt> is equal to
+     <tt><i>WrapperType</i>.valueOf(<i>v</i>).hashCode()</tt>, where
+     <tt><i>WrapperType</i></tt> is the wrapper type corresponding
+     to the primitive type of <tt><i>v</i></tt> (<code><a href="reference/java/lang/Byte.html">Byte</a></code>,
+     <code><a href="reference/java/lang/Character.html">Character</a></code>, <code><a href="reference/java/lang/Double.html">Double</a></code>, <code><a href="reference/java/lang/Float.html">Float</a></code>, <code><a href="reference/java/lang/Integer.html">Integer</a></code>,
+     <code><a href="reference/java/lang/Long.html">Long</a></code>, <code><a href="reference/java/lang/Short.html">Short</a></code>, or <code><a href="reference/java/lang/Boolean.html">Boolean</a></code>).</div>
   
   </td></tr>
 
@@ -311,7 +328,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../../reference/java/lang/annotation/Annotation.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>String</code> representation of this annotation.</div>
+        <div class="jd-descrdiv">Returns a string representation of this annotation.</div>
   
   </td></tr>
 

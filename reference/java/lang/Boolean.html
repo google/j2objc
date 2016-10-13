@@ -184,7 +184,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The wrapper for the primitive type <code>boolean</code>.</p>
+<p>The Boolean class wraps a value of the primitive type
+ <code>boolean</code> in an object. An object of type
+ <code>Boolean</code> contains a single field whose type is
+ <code>boolean</code>.
+ <p>
+ In addition, this class provides many methods for
+ converting a <code>boolean</code> to a <code>String</code> and a
+ <code>String</code> to a <code>boolean</code>, as well as other
+ constants and methods useful when dealing with a
+ <code>boolean</code>.</p>
 
 
 
@@ -241,8 +250,8 @@ layout: api
           final
           <a href="../../../reference/java/lang/Boolean.html">Boolean</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/lang/Boolean.html#FALSE">FALSE</a></td>
-          <td class="jd-descrcol" width="100%">The <code>Boolean</code> object that represents the primitive value
- <code>false</code>.</td>
+          <td class="jd-descrcol" width="100%">The <code>Boolean</code> object corresponding to the primitive
+ value <code>false</code>.</td>
       </tr>
       
     
@@ -253,8 +262,8 @@ layout: api
           final
           <a href="../../../reference/java/lang/Boolean.html">Boolean</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/lang/Boolean.html#TRUE">TRUE</a></td>
-          <td class="jd-descrcol" width="100%">The <code>Boolean</code> object that represents the primitive value
- <code>true</code>.</td>
+          <td class="jd-descrcol" width="100%">The <code>Boolean</code> object corresponding to the primitive
+ value <code>true</code>.</td>
       </tr>
       
     
@@ -265,7 +274,7 @@ layout: api
           final
           <a href="../../../reference/java/lang/Class.html">Class</a>&lt;<a href="../../../reference/java/lang/Boolean.html">Boolean</a>&gt;</td>
           <td class="jd-linkcol"><a href="../../../reference/java/lang/Boolean.html#TYPE">TYPE</a></td>
-          <td class="jd-descrcol" width="100%">The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>boolean</code>.</td>
+          <td class="jd-descrcol" width="100%">The Class object representing the primitive type boolean.</td>
       </tr>
       
     
@@ -294,10 +303,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#Boolean(java.lang.String)">Boolean</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#Boolean(boolean)">Boolean</a></span>(boolean value)
         
-        <div class="jd-descrdiv">Constructs a new <code>Boolean</code> with its boolean value specified by
- <code>string</code>.</div>
+        <div class="jd-descrdiv">Allocates a <code>Boolean</code> object representing the
+ <code>value</code> argument.</div>
   
   </td></tr>
 
@@ -313,10 +322,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#Boolean(boolean)">Boolean</a></span>(boolean value)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#Boolean(java.lang.String)">Boolean</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>Boolean</code> with the specified primitive boolean
- value.</div>
+        <div class="jd-descrdiv">Allocates a <code>Boolean</code> object representing the value
+ <code>true</code> if the string argument is not <code>null</code>
+ and is equal, ignoring case, to the string <code>"true"</code>.</div>
   
   </td></tr>
 
@@ -347,8 +357,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#booleanValue()">booleanValue</a></span>()
         
-        <div class="jd-descrdiv">Gets the primitive value of this boolean, either <code>true</code> or
- <code>false</code>.</div>
+        <div class="jd-descrdiv">Returns the value of this <code>Boolean</code> object as a boolean
+ primitive.</div>
   
   </td></tr>
 
@@ -364,7 +374,7 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#compare(boolean, boolean)">compare</a></span>(boolean lhs, boolean rhs)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#compare(boolean, boolean)">compare</a></span>(boolean x, boolean y)
         
         <div class="jd-descrdiv">Compares two <code>boolean</code> values.</div>
   
@@ -382,10 +392,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#compareTo(java.lang.Boolean)">compareTo</a></span>(<a href="../../../reference/java/lang/Boolean.html">Boolean</a> that)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#compareTo(java.lang.Boolean)">compareTo</a></span>(<a href="../../../reference/java/lang/Boolean.html">Boolean</a> b)
         
-        <div class="jd-descrdiv">Compares this object to the specified boolean object to determine their
- relative order.</div>
+        <div class="jd-descrdiv">Compares this <code>Boolean</code> instance with another.</div>
   
   </td></tr>
 
@@ -401,10 +410,11 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
- are equal.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if and only if the argument is not
+ <code>null</code> and is a <code>Boolean</code> object that
+ represents the same <code>boolean</code> value as this object.</div>
   
   </td></tr>
 
@@ -420,10 +430,11 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#getBoolean(java.lang.String)">getBoolean</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#getBoolean(java.lang.String)">getBoolean</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns the <code>boolean</code> value of the system property identified by
- <code>string</code>.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if and only if the system property
+ named by the argument exists and is equal to the string
+ <code>"true"</code>.</div>
   
   </td></tr>
 
@@ -441,7 +452,83 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this boolean.</div>
+        <div class="jd-descrdiv">Returns a hash code for this <code>Boolean</code> object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#hashCode(boolean)">hashCode</a></span>(boolean value)
+        
+        <div class="jd-descrdiv">Returns a hash code for a <code>boolean</code> value; compatible with
+ <code>Boolean.hashCode()</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#logicalAnd(boolean, boolean)">logicalAnd</a></span>(boolean a, boolean b)
+        
+        <div class="jd-descrdiv">Returns the result of applying the logical AND operator to the
+ specified <code>boolean</code> operands.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#logicalOr(boolean, boolean)">logicalOr</a></span>(boolean a, boolean b)
+        
+        <div class="jd-descrdiv">Returns the result of applying the logical OR operator to the
+ specified <code>boolean</code> operands.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#logicalXor(boolean, boolean)">logicalXor</a></span>(boolean a, boolean b)
+        
+        <div class="jd-descrdiv">Returns the result of applying the logical XOR operator to the
+ specified <code>boolean</code> operands.</div>
   
   </td></tr>
 
@@ -459,7 +546,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#parseBoolean(java.lang.String)">parseBoolean</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Parses the specified string as a <code>boolean</code>.</div>
+        <div class="jd-descrdiv">Parses the string argument as a boolean.</div>
   
   </td></tr>
 
@@ -477,8 +564,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- boolean.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> object representing this Boolean's
+ value.</div>
   
   </td></tr>
 
@@ -494,9 +581,10 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#toString(boolean)">toString</a></span>(boolean value)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#toString(boolean)">toString</a></span>(boolean b)
         
-        <div class="jd-descrdiv">Converts the specified boolean to its string representation.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> object representing the specified
+ boolean.</div>
   
   </td></tr>
 
@@ -512,9 +600,10 @@ layout: api
             <a href="../../../reference/java/lang/Boolean.html">Boolean</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Parses the specified string as a boolean value.</div>
+        <div class="jd-descrdiv">Returns a <code>Boolean</code> with a value represented by the
+ specified string.</div>
   
   </td></tr>
 
@@ -532,7 +621,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Boolean.html#valueOf(boolean)">valueOf</a></span>(boolean b)
         
-        <div class="jd-descrdiv">Returns a <code>Boolean</code> instance for the specified boolean value.</div>
+        <div class="jd-descrdiv">Returns a <code>Boolean</code> instance representing the specified
+ <code>boolean</code> value.</div>
   
   </td></tr>
 
@@ -814,10 +904,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Boolean.html">Boolean</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Boolean.html">Boolean</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -882,8 +971,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code>Boolean</code> object that represents the primitive value
- <code>false</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>Boolean</code> object corresponding to the primitive
+ value <code>false</code>.
 </p></div>
 
     
@@ -914,8 +1003,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code>Boolean</code> object that represents the primitive value
- <code>true</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>Boolean</code> object corresponding to the primitive
+ value <code>true</code>.
 </p></div>
 
     
@@ -946,8 +1035,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>boolean</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The Class object representing the primitive type boolean.</p></div>
 
     
     </div>
@@ -962,51 +1050,6 @@ From interface
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <h2>Public Constructors</h2>
 
-
-
-<a id="Boolean(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">Boolean</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Boolean</code> with its boolean value specified by
- <code>string</code>. If <code>string</code> is not <code>null</code> and is equal to
- "true" using a non-case sensitive comparison, the result will be a
- Boolean representing the primitive value <code>true</code>, otherwise it will
- be a Boolean representing the primitive value <code>false</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>string</th>
-          <td>the string representing a boolean value.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
 
 
 <a id="Boolean(boolean)"></a>
@@ -1034,14 +1077,68 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Boolean</code> with the specified primitive boolean
- value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Allocates a <code>Boolean</code> object representing the
+ <code>value</code> argument.
+
+ <p><b>Note: It is rarely appropriate to use this constructor.
+ Unless a <i>new</i> instance is required, the static factory
+ <code><a href="reference/java/lang/Boolean.html#valueOf(boolean)">valueOf(boolean)</a></code> is generally a better choice. It is
+ likely to yield significantly better space and time performance.</b></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the primitive boolean value, <code>true</code> or <code>false</code>.
+          <td>the value of the <code>Boolean</code>.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="Boolean(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Boolean</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allocates a <code>Boolean</code> object representing the value
+ <code>true</code> if the string argument is not <code>null</code>
+ and is equal, ignoring case, to the string <code>"true"</code>.
+ Otherwise, allocate a <code>Boolean</code> object representing the
+ value <code>false</code>. Examples:<p>
+ <code>new Boolean("True")</code> produces a <code>Boolean</code> object
+ that represents <code>true</code>.<br>
+ <code>new Boolean("yes")</code> produces a <code>Boolean</code> object
+ that represents <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>s</th>
+          <td>the string to be converted to a <code>Boolean</code>.
 </td>
         </tr>
       </table>
@@ -1091,11 +1188,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the primitive value of this boolean, either <code>true</code> or
- <code>false</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Boolean</code> object as a boolean
+ primitive.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's primitive value, <code>true</code> or <code>false</code>.
+      <ul class="nolist"><li>the primitive <code>boolean</code> value of this object.
 </li></ul>
   </div>
 
@@ -1116,7 +1213,7 @@ From interface
         int
       </span>
       <span class="sympad">compare</span>
-      <span class="normal">(boolean lhs, boolean rhs)</span>
+      <span class="normal">(boolean x, boolean y)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1128,11 +1225,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>boolean</code> values.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>boolean</code> values.
+ The value returned is identical to what would be returned by:
+ <pre>
+    Boolean.valueOf(x).compareTo(Boolean.valueOf(y))
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first <code>boolean</code> to compare</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second <code>boolean</code> to compare</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
-         (Where true &gt; false.)</li></ul>
+      <ul class="nolist"><li>the value <code>0</code> if <code>x == y</code>;
+         a value less than <code>0</code> if <code>!x &amp;&amp; y</code>; and
+         a value greater than <code>0</code> if <code>x &amp;&amp; !y</code></li></ul>
   </div>
 
     </div>
@@ -1152,7 +1267,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Boolean.html">Boolean</a> that)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Boolean.html">Boolean</a> b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1164,24 +1279,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified boolean object to determine their
- relative order.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>Boolean</code> instance with another.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>that</th>
-          <td>the boolean object to compare this object to.</td>
+          <th>b</th>
+          <td>the <code>Boolean</code> instance to be compared</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>0 if the value of this boolean and the value of <code>that</code> are
-         equal; a positive value if the value of this boolean is
-         <code>true</code> and the value of <code>that</code> is <code>false</code>; a
-         negative value if the value if this boolean is <code>false</code> and
-         the value of <code>that</code> is <code>true</code>.</li></ul>
+      <ul class="nolist"><li>zero if this object represents the same boolean value as the
+          argument; a positive value if this object represents true
+          and the argument represents false; and a negative value if
+          this object represents false and the argument represents true</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is <code>null</code></td>
+        </tr>
+      </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
@@ -1206,7 +1328,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1218,22 +1340,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
- are equal. In order to be equal, <code>o</code> must be an instance of
- <code>Boolean</code> and have the same boolean value as this object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if and only if the argument is not
+ <code>null</code> and is a <code>Boolean</code> object that
+ represents the same <code>boolean</code> value as this object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>o</th>
-          <td>the object to compare this boolean with.</td>
+          <th>obj</th>
+          <td>the object to compare with.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this
-         <code>Boolean</code>; <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the Boolean objects represent the
+          same value; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -1254,7 +1376,7 @@ From interface
         boolean
       </span>
       <span class="sympad">getBoolean</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> name)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1266,26 +1388,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>boolean</code> value of the system property identified by
- <code>string</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if and only if the system property
+ named by the argument exists and is equal to the string
+ <code>"true"</code>. (Beginning with version 1.0.2 of the
+ Java<small><sup>TM</sup></small> platform, the test of
+ this string is case insensitive.) A system property is accessible
+ through <code>getProperty</code>, a method defined by the
+ <code>System</code> class.
+ <p>
+ If there is no property with the specified name, or if the specified
+ name is empty or null, then <code>false</code> is returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the name of the requested system property.</td>
+          <th>name</th>
+          <td>the system property name.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the system property named by <code>string</code>
-         exists and it is equal to "true" using case insensitive
-         comparison, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li>the <code>boolean</code> value of the system property.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(String)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String)">getProperty(java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/System.html#getProperty(java.lang.String, java.lang.String)">getProperty(java.lang.String, java.lang.String)</a></code></li>
       </ul>
   </div>
 
@@ -1318,12 +1446,220 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this boolean.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this <code>Boolean</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this boolean's hash code, which is <code>1231</code> for <code>true</code>
-         values and <code>1237</code> for <code>false</code> values.
+      <ul class="nolist"><li>the integer <code>1231</code> if this object represents
+ <code>true</code>; returns the integer <code>1237</code> if this
+ object represents <code>false</code>.
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="hashCode(boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">hashCode</span>
+      <span class="normal">(boolean value)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for a <code>boolean</code> value; compatible with
+ <code>Boolean.hashCode()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>the value to hash</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a hash code value for a <code>boolean</code> value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="logicalAnd(boolean, boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">logicalAnd</span>
+      <span class="normal">(boolean a, boolean b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of applying the logical AND operator to the
+ specified <code>boolean</code> operands.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the logical AND of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="logicalOr(boolean, boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">logicalOr</span>
+      <span class="normal">(boolean a, boolean b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of applying the logical OR operator to the
+ specified <code>boolean</code> operands.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the logical OR of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="logicalXor(boolean, boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">logicalXor</span>
+      <span class="normal">(boolean a, boolean b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of applying the logical XOR operator to the
+ specified <code>boolean</code> operands.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the logical XOR of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1355,21 +1691,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a <code>boolean</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the string argument as a boolean.  The <code>boolean</code>
+ returned represents the value <code>true</code> if the string argument
+ is not <code>null</code> and is equal, ignoring case, to the string
+ <code>"true"</code>. <p>
+ Example: <code>Boolean.parseBoolean("True")</code> returns <code>true</code>.<br>
+ Example: <code>Boolean.parseBoolean("yes")</code> returns <code>false</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the string representation of a boolean value.</td>
+          <td>the <code>String</code> containing the boolean
+                 representation to be parsed</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if <code>s</code> is not <code>null</code> and is equal to
-         <code>"true"</code> using case insensitive comparison, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li>the boolean represented by the string argument</li></ul>
   </div>
 
     </div>
@@ -1401,12 +1741,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- boolean.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> object representing this Boolean's
+ value.  If this object represents the value <code>true</code>,
+ a string equal to <code>"true"</code> is returned. Otherwise, a
+ string equal to <code>"false"</code> is returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>"true" if the value of this boolean is <code>true</code>, "false"
-         otherwise.
+      <ul class="nolist"><li>a string representation of this object.
 </li></ul>
   </div>
 
@@ -1427,7 +1768,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
-      <span class="normal">(boolean value)</span>
+      <span class="normal">(boolean b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1439,20 +1780,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified boolean to its string representation.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> object representing the specified
+ boolean.  If the specified boolean is <code>true</code>, then
+ the string <code>"true"</code> will be returned, otherwise the
+ string <code>"false"</code> will be returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>value</th>
-          <td>the boolean to convert.</td>
+          <th>b</th>
+          <td>the boolean to be converted</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>"true" if <code>value</code> is <code>true</code>, "false" otherwise.
-</li></ul>
+      <ul class="nolist"><li>the string representation of the specified <code>boolean</code></li></ul>
   </div>
 
     </div>
@@ -1472,7 +1815,7 @@ From interface
         <a href="../../../reference/java/lang/Boolean.html">Boolean</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1484,25 +1827,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a boolean value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Boolean</code> with a value represented by the
+ specified string.  The <code>Boolean</code> returned represents a
+ true value if the string argument is not <code>null</code>
+ and is equal, ignoring case, to the string <code>"true"</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a boolean value.</td>
+          <th>s</th>
+          <td>a string.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>Boolean.TRUE</code> if <code>string</code> is equal to "true" using
-         case insensitive comparison, <code>Boolean.FALSE</code> otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Boolean.html#parseBoolean(java.lang.String)">parseBoolean(String)</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the <code>Boolean</code> value represented by the string.
+</li></ul>
   </div>
 
     </div>
@@ -1534,25 +1875,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Boolean</code> instance for the specified boolean value.
- <p>
- If it is not necessary to get a new <code>Boolean</code> instance, it is
- recommended to use this method instead of the constructor, since it
- returns its static instances, which results in better performance.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Boolean</code> instance representing the specified
+ <code>boolean</code> value.  If the specified <code>boolean</code> value
+ is <code>true</code>, this method returns <code>Boolean.TRUE</code>;
+ if it is <code>false</code>, this method returns <code>Boolean.FALSE</code>.
+ If a new <code>Boolean</code> instance is not required, this method
+ should generally be used in preference to the constructor
+ <code><a href="reference/java/lang/Boolean.html#Boolean(boolean)">Boolean(boolean)</a></code>, as this method is likely to yield
+ significantly better space and time performance.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>b</th>
-          <td>the boolean to convert to a <code>Boolean</code>.</td>
+          <td>a boolean value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>Boolean.TRUE</code> if <code>b</code> is equal to <code>true</code>,
-         <code>Boolean.FALSE</code> otherwise.
-</li></ul>
+      <ul class="nolist"><li>a <code>Boolean</code> instance representing <code>b</code>.</li></ul>
   </div>
 
     </div>

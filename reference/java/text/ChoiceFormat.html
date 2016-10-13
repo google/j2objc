@@ -226,7 +226,7 @@ layout: api
  messages. <code>ChoiceFormat</code> enables users to attach a format to a range of
  numbers. The choice is specified with an ascending list of doubles, where
  each item specifies a half-open interval up to the next item as in the
- following: X matches j if and only if <code>limit[j] <= X < limit[j+1]</code>.
+ following: X matches j if and only if <code>limit[j] &lt;= X &lt; limit[j+1]</code>.
  <p>
  If there is no match, then either the first or last index is used. The first
  or last index is used depending on whether the number is too low or too high.
@@ -1871,7 +1871,7 @@ From class
  and associated strings. When calling
  <code><a href="reference/java/text/ChoiceFormat.html#format(double, java.lang.StringBuffer, java.text.FieldPosition)">format</a></code> with a double
  value <code>d</code>, then the element <code>i</code> in <code>formats</code> is
- selected where <code>i</code> fulfills <code>limits[i] <= d < limits[i+1]</code>.
+ selected where <code>i</code> fulfills <code>limits[i] &lt;= d &lt; limits[i+1]</code>.
  <p>
  The length of the <code>limits</code> and <code>formats</code> arrays must be the
  same.</p></div>
@@ -2571,7 +2571,7 @@ From class
  calling <code><a href="reference/java/text/ChoiceFormat.html#format(double, java.lang.StringBuffer, java.text.FieldPosition)">format</a></code> with
  a double value <code>d</code>, then the element <code>i</code> in <code>formats</code>
  is selected where <code>i</code> fulfills
- <code>limits[i] <= d < limits[i+1]</code>.
+ <code>limits[i] &lt;= d &lt; limits[i+1]</code>.
  <p>
  The length of the <code>limits</code> and <code>formats</code> arrays must be the
  same.</p></div>

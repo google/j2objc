@@ -96,6 +96,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -125,6 +132,8 @@ layout: api
       implements
       
         <a href="../../../reference/java/sql/Wrapper.html">Wrapper</a>
+      
+        <a href="../../../reference/java/lang/AutoCloseable.html">AutoCloseable</a>
       
   
   
@@ -156,28 +165,60 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A connection represents a link from a Java application to a database. All SQL
- statements and results are returned within the context of a connection.
- Database statements that are executed within this context form a
- database session which forms one or more closed transactions. Especially in
- distributed applications, multiple concurrent connections may exist accessing
- the same values of the database. which may lead to the following phenomena
- (referred to as <i>transaction isolation levels</i>):
- <ul>
- <li><i>dirty reads</i>:<br>
- reading values from table rows that are not committed.</br></li>
- <li><i>non-repeatable reads</i>:<br>
- reading table rows more than once in a transaction but getting back different
- data because other transactions have altered the rows between the reads.</br></li>
- <li><i>phantom reads</i>:<br>
- retrieving additional "phantom" rows in the course of repeated table reads
- because other transactions have inserted additional rows that satisfy an
- SQL <code>WHERE</code> clause</br></li>
- </ul>
-</p>
+<p><P>A connection (session) with a specific
+ database. SQL statements are executed and results are returned
+ within the context of a connection.
+ <P>
+ A <code>Connection</code> object's database is able to provide information
+ describing its tables, its supported SQL grammar, its stored
+ procedures, the capabilities of this connection, and so on. This
+ information is obtained with the <code>getMetaData</code> method.
+
+ <P><B>Note:</B> When configuring a <code>Connection</code>, JDBC applications
+  should use the appropriate <code>Connection</code> method such as
+  <code>setAutoCommit</code> or <code>setTransactionIsolation</code>.
+  Applications should not invoke SQL commands directly to change the connection's
+   configuration when there is a JDBC method available.  By default a <code>Connection</code> object is in
+ auto-commit mode, which means that it automatically commits changes
+ after executing each statement. If auto-commit mode has been
+ disabled, the method <code>commit</code> must be called explicitly in
+ order to commit changes; otherwise, database changes will not be saved.
+ <P>
+ A new <code>Connection</code> object created using the JDBC 2.1 core API
+ has an initially empty type map associated with it. A user may enter a
+ custom mapping for a UDT in this type map.
+ When a UDT is retrieved from a data source with the
+ method <code>ResultSet.getObject</code>, the <code>getObject</code> method
+ will check the connection's type map to see if there is an entry for that
+ UDT.  If so, the <code>getObject</code> method will map the UDT to the
+ class indicated.  If there is no entry, the UDT will be mapped using the
+ standard mapping.
+ <p>
+ A user may create a new type map, which is a <code>java.util.Map</code>
+ object, make an entry in it, and pass it to the <code>java.sql</code>
+ methods that can perform custom mapping.  In this case, the method
+ will use the given type map instead of the one associated with
+ the connection.
+ <p>
+ For example, the following code fragment specifies that the SQL
+ type <code>ATHLETES</code> will be mapped to the class
+ <code>Athletes</code> in the Java programming language.
+ The code fragment retrieves the type map for the <code>Connection
+ </code> object <code>con</code>, inserts the entry into it, and then sets
+ the type map with the new entry as the connection's type map.
+ <pre>
+      java.util.Map map = con.getTypeMap();
+      map.put("mySchemaName.ATHLETES", Class.forName("Athletes"));
+      con.setTypeMap(map);
+ </pre></p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/DriverManager.html#getConnection(java.lang.String)">getConnection(String)</a></code></li><li><code><a href="../../../reference/java/sql/Statement.html">Statement</a></code></li><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li><li><code><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -229,45 +270,34 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html#TRANSACTION_READ_COMMITTED">TRANSACTION_READ_COMMITTED</a></td>
-        <td class="jd-descrcol" width="100%">No <i>dirty reads</i> are permitted, therefore transactions may not read
- a row containing uncommitted values - but does not prevent an application
- from <i>non-repeatable reads</i> and <i>phantom reads</i>.</td>
+        <td class="jd-descrcol" width="100%">A constant indicating that
+ dirty reads are prevented; non-repeatable reads and phantom
+ reads can occur.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html#TRANSACTION_READ_UNCOMMITTED">TRANSACTION_READ_UNCOMMITTED</a></td>
-        <td class="jd-descrcol" width="100%">In the case that reading uncommitted values is allowed, the following
- incidents may happen which may lead to an invalid results:
- <ul>
- <li><i>dirty reads</i></li>
- <li><i>non-repeatable reads</i></li>
- <li><i>phantom reads</i></li>
- </ul>
-</td>
+        <td class="jd-descrcol" width="100%">A constant indicating that
+ dirty reads, non-repeatable reads and phantom reads can occur.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html#TRANSACTION_REPEATABLE_READ">TRANSACTION_REPEATABLE_READ</a></td>
-        <td class="jd-descrcol" width="100%">A constant indicating that <i>dirty reads</i> and <i>non-repeatable
- reads</i> are <b>prevented</b> but <i>phantom reads</i> can occur.</td>
+        <td class="jd-descrcol" width="100%">A constant indicating that
+ dirty reads and non-repeatable reads are prevented; phantom
+ reads can occur.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html#TRANSACTION_SERIALIZABLE">TRANSACTION_SERIALIZABLE</a></td>
-        <td class="jd-descrcol" width="100%">The constant that indicates that the following incidents are <b>all
- prevented</b> (the opposite of <code><a href="reference/java/sql/Connection.html#TRANSACTION_READ_UNCOMMITTED">TRANSACTION_READ_UNCOMMITTED</a></code>):
- <ul>
- <li><i>dirty reads</i></li>
- <li><i>non-repeatable reads</i></li>
- <li><i>phantom reads</i></li>
- </ul>
-</td>
+        <td class="jd-descrcol" width="100%">A constant indicating that
+ dirty reads, non-repeatable reads and phantom reads are prevented.</td>
     </tr>
     
     
@@ -307,7 +337,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#clearWarnings()">clearWarnings</a></span>()
         
-        <div class="jd-descrdiv">Discards all warnings that may have arisen for this connection.</div>
+        <div class="jd-descrdiv">Clears all warnings reported for this <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -325,8 +355,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Causes the instant release of all database and driver connection
- resources associated with this object.</div>
+        <div class="jd-descrdiv">Releases this <code>Connection</code> object's database and JDBC resources
+ immediately instead of waiting for them to be automatically released.</div>
   
   </td></tr>
 
@@ -344,8 +374,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#commit()">commit</a></span>()
         
-        <div class="jd-descrdiv">Commits all of the changes made since the last <code>commit</code> or
- <code>rollback</code> of the associated transaction.</div>
+        <div class="jd-descrdiv">Makes all changes made since the previous
+ commit/rollback permanent and releases any database locks
+ currently held by this <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -363,7 +394,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createArrayOf(java.lang.String, java.lang.Object[])">createArrayOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> typeName, <a href="../../../reference/java/lang/Object.html">Object[]</a> elements)
         
-        <div class="jd-descrdiv">Returns a new <code><a href="reference/java/sql/Array.html">Array</a></code> containing the given <code>elements</code>.</div>
+        <div class="jd-descrdiv">Factory method for creating Array objects.</div>
   
   </td></tr>
 
@@ -381,7 +412,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createBlob()">createBlob</a></span>()
         
-        <div class="jd-descrdiv">Returns a new empty Blob.</div>
+        <div class="jd-descrdiv">Constructs an object that implements the <code>Blob</code> interface.</div>
   
   </td></tr>
 
@@ -399,7 +430,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createClob()">createClob</a></span>()
         
-        <div class="jd-descrdiv">Returns a new empty Clob.</div>
+        <div class="jd-descrdiv">Constructs an object that implements the <code>Clob</code> interface.</div>
   
   </td></tr>
 
@@ -417,7 +448,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createNClob()">createNClob</a></span>()
         
-        <div class="jd-descrdiv">Returns a new empty NClob.</div>
+        <div class="jd-descrdiv">Constructs an object that implements the <code>NClob</code> interface.</div>
   
   </td></tr>
 
@@ -435,7 +466,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createSQLXML()">createSQLXML</a></span>()
         
-        <div class="jd-descrdiv">Returns a new empty SQLXML.</div>
+        <div class="jd-descrdiv">Constructs an object that implements the <code>SQLXML</code> interface.</div>
   
   </td></tr>
 
@@ -453,8 +484,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createStatement(int, int)">createStatement</a></span>(int resultSetType, int resultSetConcurrency)
         
-        <div class="jd-descrdiv">Returns a new instance of <code>Statement</code> whose associated <code>ResultSet</code>s have the characteristics specified in the type and
- concurrency arguments.</div>
+        <div class="jd-descrdiv">Creates a <code>Statement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.</div>
   
   </td></tr>
 
@@ -472,8 +503,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createStatement()">createStatement</a></span>()
         
-        <div class="jd-descrdiv">Returns a new instance of <code>Statement</code> for issuing SQL commands to
- the remote database.</div>
+        <div class="jd-descrdiv">Creates a <code>Statement</code> object for sending
+ SQL statements to the database.</div>
   
   </td></tr>
 
@@ -491,9 +522,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createStatement(int, int, int)">createStatement</a></span>(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
         
-        <div class="jd-descrdiv">Returns a new instance of <code>Statement</code> whose associated
- <code>ResultSet</code>s will have the characteristics specified in the
- type, concurrency and holdability arguments.</div>
+        <div class="jd-descrdiv">Creates a <code>Statement</code> object that will generate
+ <code>ResultSet</code> objects with the given type, concurrency,
+ and holdability.</div>
   
   </td></tr>
 
@@ -511,7 +542,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#createStruct(java.lang.String, java.lang.Object[])">createStruct</a></span>(<a href="../../../reference/java/lang/String.html">String</a> typeName, <a href="../../../reference/java/lang/Object.html">Object[]</a> attributes)
         
-        <div class="jd-descrdiv">Returns a new <code><a href="reference/java/sql/Struct.html">Struct</a></code> containing the given <code>attributes</code>.</div>
+        <div class="jd-descrdiv">Factory method for creating Struct objects.</div>
   
   </td></tr>
 
@@ -529,8 +560,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getAutoCommit()">getAutoCommit</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>boolean</code> indicating whether or not this connection is in
- the <code>auto-commit</code> operating mode.</div>
+        <div class="jd-descrdiv">Retrieves the current auto-commit mode for this <code>Connection</code>
+ object.</div>
   
   </td></tr>
 
@@ -548,7 +579,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getCatalog()">getCatalog</a></span>()
         
-        <div class="jd-descrdiv">Gets this <code>Connection</code> object's current catalog name.</div>
+        <div class="jd-descrdiv">Retrieves this <code>Connection</code> object's current catalog name.</div>
   
   </td></tr>
 
@@ -566,7 +597,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getClientInfo(java.lang.String)">getClientInfo</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns the value corresponding to the given client info property, or null if unset.</div>
+        <div class="jd-descrdiv">Returns the value of the client info property specified by name.</div>
   
   </td></tr>
 
@@ -584,7 +615,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getClientInfo()">getClientInfo</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Properties.html">Properties</a></code> object containing all client info properties.</div>
+        <div class="jd-descrdiv">Returns a list containing the name and current value of each client info
+ property supported by the driver.</div>
   
   </td></tr>
 
@@ -602,8 +634,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getHoldability()">getHoldability</a></span>()
         
-        <div class="jd-descrdiv">Returns the holdability property that any <code>ResultSet</code> produced by
- this instance will have.</div>
+        <div class="jd-descrdiv">Retrieves the current holdability of <code>ResultSet</code> objects
+ created using this <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -621,7 +653,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getMetaData()">getMetaData</a></span>()
         
-        <div class="jd-descrdiv">Gets the metadata about the database referenced by this connection.</div>
+        <div class="jd-descrdiv">Retrieves a <code>DatabaseMetaData</code> object that contains
+ metadata about the database to which this
+ <code>Connection</code> object represents a connection.</div>
   
   </td></tr>
 
@@ -639,7 +673,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getTransactionIsolation()">getTransactionIsolation</a></span>()
         
-        <div class="jd-descrdiv">Returns the transaction isolation level for this connection.</div>
+        <div class="jd-descrdiv">Retrieves this <code>Connection</code> object's current
+ transaction isolation level.</div>
   
   </td></tr>
 
@@ -657,7 +692,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getTypeMap()">getTypeMap</a></span>()
         
-        <div class="jd-descrdiv">Returns the type mapping associated with this <code>Connection</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the <code>Map</code> object associated with this
+ <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -675,8 +711,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#getWarnings()">getWarnings</a></span>()
         
-        <div class="jd-descrdiv">Gets the first instance of any <code>SQLWarning</code> objects that may have
- been created in the use of this connection.</div>
+        <div class="jd-descrdiv">Retrieves the first warning reported by calls on this
+ <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -694,8 +730,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#isClosed()">isClosed</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>boolean</code> indicating whether or not this connection is in
- the <code>closed</code> state.</div>
+        <div class="jd-descrdiv">Retrieves whether this <code>Connection</code> object has been
+ closed.</div>
   
   </td></tr>
 
@@ -713,8 +749,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#isReadOnly()">isReadOnly</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>boolean</code> indicating whether or not this connection is
- currently in the <code>read-only</code> state.</div>
+        <div class="jd-descrdiv">Retrieves whether this <code>Connection</code>
+ object is in read-only mode.</div>
   
   </td></tr>
 
@@ -732,7 +768,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#isValid(int)">isValid</a></span>(int timeout)
         
-        <div class="jd-descrdiv">Returns true if this connection is still open and valid, false otherwise.</div>
+        <div class="jd-descrdiv">Returns true if the connection has not been closed and is still valid.</div>
   
   </td></tr>
 
@@ -750,9 +786,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#nativeSQL(java.lang.String)">nativeSQL</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql)
         
-        <div class="jd-descrdiv">Returns a string representation of the input SQL statement
- <code>sql</code> expressed in the underlying system's native SQL
- syntax.</div>
+        <div class="jd-descrdiv">Converts the given SQL statement into the system's native SQL grammar.</div>
   
   </td></tr>
 
@@ -770,8 +804,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareCall(java.lang.String, int, int)">prepareCall</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, int resultSetType, int resultSetConcurrency)
         
-        <div class="jd-descrdiv">Returns a new instance of <code>CallableStatement</code> that may be used for
- making stored procedure calls to the database.</div>
+        <div class="jd-descrdiv">Creates a <code>CallableStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.</div>
   
   </td></tr>
 
@@ -789,8 +823,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareCall(java.lang.String)">prepareCall</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql)
         
-        <div class="jd-descrdiv">Returns a new instance of <code>CallableStatement</code> that may be used for
- making stored procedure calls to the database.</div>
+        <div class="jd-descrdiv">Creates a <code>CallableStatement</code> object for calling
+ database stored procedures.</div>
   
   </td></tr>
 
@@ -808,8 +842,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareCall(java.lang.String, int, int, int)">prepareCall</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)
         
-        <div class="jd-descrdiv">Returns a new instance of <code>CallableStatement</code> that may be used for
- making stored procedure calls to the database.</div>
+        <div class="jd-descrdiv">Creates a <code>CallableStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.</div>
   
   </td></tr>
 
@@ -827,8 +861,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareStatement(java.lang.String, java.lang.String[])">prepareStatement</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, <a href="../../../reference/java/lang/String.html">String[]</a> columnNames)
         
-        <div class="jd-descrdiv">Creates a default <code>PreparedStatement</code> that can retrieve the
- auto-generated keys designated by a supplied array.</div>
+        <div class="jd-descrdiv">Creates a default <code>PreparedStatement</code> object capable
+ of returning the auto-generated keys designated by the given array.</div>
   
   </td></tr>
 
@@ -846,8 +880,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareStatement(java.lang.String, int, int, int)">prepareStatement</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)
         
-        <div class="jd-descrdiv">Creates a <code>PreparedStatement</code> that generates <code>ResultSet</code>s
- with the specified type, concurrency and holdability</div>
+        <div class="jd-descrdiv">Creates a <code>PreparedStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type, concurrency,
+ and holdability.</div>
   
   </td></tr>
 
@@ -865,8 +900,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareStatement(java.lang.String, int[])">prepareStatement</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, int[] columnIndexes)
         
-        <div class="jd-descrdiv">Creates a default <code>PreparedStatement</code> that can retrieve the
- auto-generated keys designated by a supplied array.</div>
+        <div class="jd-descrdiv">Creates a default <code>PreparedStatement</code> object capable
+ of returning the auto-generated keys designated by the given array.</div>
   
   </td></tr>
 
@@ -884,8 +919,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareStatement(java.lang.String)">prepareStatement</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql)
         
-        <div class="jd-descrdiv">Returns a new instance of <code>PreparedStatement</code> that may be used any
- number of times to execute parameterized requests on the database server.</div>
+        <div class="jd-descrdiv">Creates a <code>PreparedStatement</code> object for sending
+ parameterized SQL statements to the database.</div>
   
   </td></tr>
 
@@ -903,8 +938,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareStatement(java.lang.String, int)">prepareStatement</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, int autoGeneratedKeys)
         
-        <div class="jd-descrdiv">Creates a default <code>PreparedStatement</code> that can retrieve
- automatically generated keys.</div>
+        <div class="jd-descrdiv">Creates a default <code>PreparedStatement</code> object that has
+ the capability to retrieve auto-generated keys.</div>
   
   </td></tr>
 
@@ -922,8 +957,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#prepareStatement(java.lang.String, int, int)">prepareStatement</a></span>(<a href="../../../reference/java/lang/String.html">String</a> sql, int resultSetType, int resultSetConcurrency)
         
-        <div class="jd-descrdiv">Creates a <code>PreparedStatement</code> that generates <code>ResultSet</code>s
- with the specified values of <code>resultSetType</code> and <code>resultSetConcurrency</code>.</div>
+        <div class="jd-descrdiv">Creates a <code>PreparedStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.</div>
   
   </td></tr>
 
@@ -941,7 +976,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#releaseSavepoint(java.sql.Savepoint)">releaseSavepoint</a></span>(<a href="../../../reference/java/sql/Savepoint.html">Savepoint</a> savepoint)
         
-        <div class="jd-descrdiv">Releases the specified <code>savepoint</code> from the present transaction.</div>
+        <div class="jd-descrdiv">Removes the specified <code>Savepoint</code>  and subsequent <code>Savepoint</code> objects from the current
+ transaction.</div>
   
   </td></tr>
 
@@ -959,8 +995,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#rollback()">rollback</a></span>()
         
-        <div class="jd-descrdiv">Rolls back all updates made so far in this transaction and
- relinquishes all acquired database locks.</div>
+        <div class="jd-descrdiv">Undoes all changes made in the current transaction
+ and releases any database locks currently held
+ by this <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -978,8 +1015,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#rollback(java.sql.Savepoint)">rollback</a></span>(<a href="../../../reference/java/sql/Savepoint.html">Savepoint</a> savepoint)
         
-        <div class="jd-descrdiv">Undoes all changes made after the supplied <code>Savepoint</code> object was
- set.</div>
+        <div class="jd-descrdiv">Undoes all changes made after the given <code>Savepoint</code> object
+ was set.</div>
   
   </td></tr>
 
@@ -997,7 +1034,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setAutoCommit(boolean)">setAutoCommit</a></span>(boolean autoCommit)
         
-        <div class="jd-descrdiv">Sets this connection's auto-commit mode <code>on</code> or <code>off</code>.</div>
+        <div class="jd-descrdiv">Sets this connection's auto-commit mode to the given state.</div>
   
   </td></tr>
 
@@ -1015,7 +1052,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setCatalog(java.lang.String)">setCatalog</a></span>(<a href="../../../reference/java/lang/String.html">String</a> catalog)
         
-        <div class="jd-descrdiv">Sets the catalog name for this connection.</div>
+        <div class="jd-descrdiv">Sets the given catalog name in order to select
+ a subspace of this <code>Connection</code> object's database
+ in which to work.</div>
   
   </td></tr>
 
@@ -1033,7 +1072,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setClientInfo(java.util.Properties)">setClientInfo</a></span>(<a href="../../../reference/java/util/Properties.html">Properties</a> properties)
         
-        <div class="jd-descrdiv">Replaces all client info properties with the name/value pairs from <code>properties</code>.</div>
+        <div class="jd-descrdiv">Sets the value of the connection's client info properties.</div>
   
   </td></tr>
 
@@ -1051,7 +1090,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setClientInfo(java.lang.String, java.lang.String)">setClientInfo</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> value)
         
-        <div class="jd-descrdiv">Sets the client info property <code>name</code> to <code>value</code>.</div>
+        <div class="jd-descrdiv">Sets the value of the client info property specified by name to the
+ value specified by value.</div>
   
   </td></tr>
 
@@ -1069,7 +1109,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setHoldability(int)">setHoldability</a></span>(int holdability)
         
-        <div class="jd-descrdiv">Sets the holdability of the <code>ResultSet</code>s created by this Connection.</div>
+        <div class="jd-descrdiv">Changes the default holdability of <code>ResultSet</code> objects
+ created using this <code>Connection</code> object to the given
+ holdability.</div>
   
   </td></tr>
 
@@ -1087,7 +1129,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setReadOnly(boolean)">setReadOnly</a></span>(boolean readOnly)
         
-        <div class="jd-descrdiv">Sets this connection to read-only mode.</div>
+        <div class="jd-descrdiv">Puts this connection in read-only mode as a hint to the driver to enable
+ database optimizations.</div>
   
   </td></tr>
 
@@ -1105,7 +1148,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setSavepoint(java.lang.String)">setSavepoint</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Creates a named <code>Savepoint</code> in the current transaction.</div>
+        <div class="jd-descrdiv">Creates a savepoint with the given name in the current transaction
+ and returns the new <code>Savepoint</code> object that represents it.</div>
   
   </td></tr>
 
@@ -1123,7 +1167,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setSavepoint()">setSavepoint</a></span>()
         
-        <div class="jd-descrdiv">Creates an unnamed <code>Savepoint</code> in the current transaction.</div>
+        <div class="jd-descrdiv">Creates an unnamed savepoint in the current transaction and
+ returns the new <code>Savepoint</code> object that represents it.</div>
   
   </td></tr>
 
@@ -1141,7 +1186,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setTransactionIsolation(int)">setTransactionIsolation</a></span>(int level)
         
-        <div class="jd-descrdiv">Sets the transaction isolation level for this Connection.</div>
+        <div class="jd-descrdiv">Attempts to change the transaction isolation level for this
+ <code>Connection</code> object to the one given.</div>
   
   </td></tr>
 
@@ -1159,7 +1205,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Connection.html#setTypeMap(java.util.Map<java.lang.String, java.lang.Class<?>>)">setTypeMap</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;&gt; map)
         
-        <div class="jd-descrdiv">Sets the <code>TypeMap</code> for this connection.</div>
+        <div class="jd-descrdiv">Installs the given <code>TypeMap</code> object as the type map for
+ this <code>Connection</code> object.</div>
   
   </td></tr>
 
@@ -1211,8 +1258,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#isWrapperFor(java.lang.Class<?>)">isWrapperFor</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; iface)
         
-        <div class="jd-descrdiv">If the caller is a wrapper of the class or implements the given
- interface, the methods return false and vice versa.</div>
+        <div class="jd-descrdiv">Returns true if this either implements the interface argument or is directly or indirectly a wrapper
+ for an object that does.</div>
   
   </td></tr>
 
@@ -1230,7 +1277,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#unwrap(java.lang.Class<T>)">unwrap</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; iface)
         
-        <div class="jd-descrdiv">Returns an object that implements the given interface.</div>
+        <div class="jd-descrdiv">Returns an object that implements the given interface to allow access to
+ non-standard methods, or standard methods not exposed by the proxy.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1333,9 +1424,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>No <i>dirty reads</i> are permitted, therefore transactions may not read
- a row containing uncommitted values - but does not prevent an application
- from <i>non-repeatable reads</i> and <i>phantom reads</i>.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant indicating that
+ dirty reads are prevented; non-repeatable reads and phantom
+ reads can occur.  This level only prohibits a transaction
+ from reading a row with uncommitted changes in it.
 </p></div>
 
     
@@ -1376,13 +1468,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>In the case that reading uncommitted values is allowed, the following
- incidents may happen which may lead to an invalid results:
- <ul>
- <li><i>dirty reads</i></li>
- <li><i>non-repeatable reads</i></li>
- <li><i>phantom reads</i></li>
- </ul>
+  <div class="jd-tagdata jd-tagdescr"><p>A constant indicating that
+ dirty reads, non-repeatable reads and phantom reads can occur.
+ This level allows a row changed by one transaction to be read
+ by another transaction before any changes in that row have been
+ committed (a "dirty read").  If any of the changes are rolled back,
+ the second transaction will have retrieved an invalid row.
 </p></div>
 
     
@@ -1423,8 +1514,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>A constant indicating that <i>dirty reads</i> and <i>non-repeatable
- reads</i> are <b>prevented</b> but <i>phantom reads</i> can occur.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant indicating that
+ dirty reads and non-repeatable reads are prevented; phantom
+ reads can occur.  This level prohibits a transaction from
+ reading a row with uncommitted changes in it, and it also
+ prohibits the situation where one transaction reads a row,
+ a second transaction alters the row, and the first transaction
+ rereads the row, getting different values the second time
+ (a "non-repeatable read").
 </p></div>
 
     
@@ -1465,13 +1562,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The constant that indicates that the following incidents are <b>all
- prevented</b> (the opposite of <code><a href="reference/java/sql/Connection.html#TRANSACTION_READ_UNCOMMITTED">TRANSACTION_READ_UNCOMMITTED</a></code>):
- <ul>
- <li><i>dirty reads</i></li>
- <li><i>non-repeatable reads</i></li>
- <li><i>phantom reads</i></li>
- </ul>
+  <div class="jd-tagdata jd-tagdescr"><p>A constant indicating that
+ dirty reads, non-repeatable reads and phantom reads are prevented.
+ This level includes the prohibitions in
+ <code>TRANSACTION_REPEATABLE_READ</code> and further prohibits the
+ situation where one transaction reads all rows that satisfy
+ a <code>WHERE</code> condition, a second transaction inserts a row that
+ satisfies that <code>WHERE</code> condition, and the first transaction
+ rereads for the same condition, retrieving the additional
+ "phantom" row in the second read.
 </p></div>
 
     
@@ -1535,15 +1634,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Discards all warnings that may have arisen for this connection.
- Subsequent calls to <code><a href="reference/java/sql/Connection.html#getWarnings()">getWarnings()</a></code> will return <code>null</code>
- up until a new warning condition occurs.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Clears all warnings reported for this <code>Connection</code> object.
+ After a call to this method, the method <code>getWarnings</code>
+ returns <code>null</code> until a new warning is
+ reported for this <code>Connection</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
+            <td>SQLException if a database access error occurs
+ or this method is called on a closed connection
 </td>
         </tr>
       </table>
@@ -1578,22 +1679,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Causes the instant release of all database and driver connection
- resources associated with this object. Any subsequent invocations of this
- method have no effect.
- <p>
- It is strongly recommended that all connections are closed before they
- are dereferenced by the application ready for garbage collection.
- Although the <code>finalize</code> method of the connection closes the
- connection before garbage collection takes place, it is not advisable to
- leave the <code>close</code> operation to take place in this way. Mainly
- because undesired side-effects may appear.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Releases this <code>Connection</code> object's database and JDBC resources
+ immediately instead of waiting for them to be automatically released.
+ <P>
+ Calling the method <code>close</code> on a <code>Connection</code>
+ object that is already closed is a no-op.
+ <P>
+ It is <b>strongly recommended</b> that an application explicitly
+ commits or rolls back an active transaction prior to calling the
+ <code>close</code> method.  If the <code>close</code> method is called
+ and there is an active transaction, the results are implementation-defined.
+ <P></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
+            <td>SQLException if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1628,20 +1730,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Commits all of the changes made since the last <code>commit</code> or
- <code>rollback</code> of the associated transaction. All locks in the database
- held by this connection are also relinquished. Calling this operation on
- connection objects in <code>auto-commit</code> mode leads to an error.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Makes all changes made since the previous
+ commit/rollback permanent and releases any database locks
+ currently held by this <code>Connection</code> object.
+ This method should be
+ used only when auto-commit mode has been disabled.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database or if the target
-             connection instance is in auto-commit mode.
-</td>
+            <td>if a database access error occurs,
+ this method is called while participating in a distributed transaction,
+ if this method is called on a closed conection or this
+            <code>Connection</code> object is in auto-commit mode</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setAutoCommit(boolean)">setAutoCommit(boolean)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1673,28 +1782,50 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code><a href="reference/java/sql/Array.html">Array</a></code> containing the given <code>elements</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Factory method for creating Array objects.
+<p>
+ <b>Note: </b>When <code>createArrayOf</code> is used to create an array object
+ that maps to a primitive data type, then it is implementation-defined
+ whether the <code>Array</code> object is an array of that primitive
+ data type or an array of <code>Object</code>.
+ <p>
+ <b>Note: </b>The JDBC driver is responsible for mapping the elements
+ <code>Object</code> array to the default JDBC SQL type defined in
+ java.sql.Types for the given class of <code>Object</code>. The default
+ mapping is specified in Appendix B of the JDBC specification.  If the
+ resulting JDBC type is not the appropriate type for the given typeName then
+ it is implementation defined whether an <code>SQLException</code> is
+ thrown or the driver supports the resulting conversion.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>typeName</th>
-          <td>the SQL name of the type of the array elements</td>
+          <td>the SQL name of the type the elements of the array map to. The typeName is a
+ database-specific name which may be the name of a built-in type, a user-defined type or a standard  SQL type supported by this database. This
+  is the value returned by <code>Array.getBaseTypeName</code></td>
+        </tr>
+        <tr>
+          <th>elements</th>
+          <td>the elements that populate the returned object</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an Array object whose elements map to the specified SQL type</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-            <td>if this connection is closed, or there's a problem creating
- the array.
-</td>
+            <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td>if a database error occurs, the JDBC type is not
+  appropriate for the typeName and the conversion is not supported, the typeName is null or this method is called on a closed connection</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support this data type</td>
         </tr>
       </table>
   </div>
@@ -1728,14 +1859,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new empty Blob.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an object that implements the <code>Blob</code> interface. The object
+ returned initially contains no data.  The <code>setBinaryStream</code> and
+ <code>setBytes</code> methods of the <code>Blob</code> interface may be used to add data to
+ the <code>Blob</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An object that implements the <code>Blob</code> interface</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if this connection is closed, or there's a problem creating a new blob.
-</td>
+            <td>if an object that implements the
+ <code>Blob</code> interface can not be constructed, this method is
+ called on a closed connection or a database access error occurs.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this data type</td>
         </tr>
       </table>
   </div>
@@ -1769,14 +1913,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new empty Clob.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an object that implements the <code>Clob</code> interface. The object
+ returned initially contains no data.  The <code>setAsciiStream</code>,
+ <code>setCharacterStream</code> and <code>setString</code> methods of
+ the <code>Clob</code> interface may be used to add data to the <code>Clob</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An object that implements the <code>Clob</code> interface</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if this connection is closed, or there's a problem creating a new clob.
-</td>
+            <td>if an object that implements the
+ <code>Clob</code> interface can not be constructed, this method is
+ called on a closed connection or a database access error occurs.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this data type</td>
         </tr>
       </table>
   </div>
@@ -1810,14 +1967,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new empty NClob.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an object that implements the <code>NClob</code> interface. The object
+ returned initially contains no data.  The <code>setAsciiStream</code>,
+ <code>setCharacterStream</code> and <code>setString</code> methods of the <code>NClob</code> interface may
+ be used to add data to the <code>NClob</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An object that implements the <code>NClob</code> interface</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if this connection is closed, or there's a problem creating a new nclob.
-</td>
+            <td>if an object that implements the
+ <code>NClob</code> interface can not be constructed, this method is
+ called on a closed connection or a database access error occurs.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this data type</td>
         </tr>
       </table>
   </div>
@@ -1851,14 +2021,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new empty SQLXML.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an object that implements the <code>SQLXML</code> interface. The object
+ returned initially contains no data. The <code>createXmlStreamWriter</code> object and
+ <code>setString</code> method of the <code>SQLXML</code> interface may be used to add data to the <code>SQLXML</code>
+ object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An object that implements the <code>SQLXML</code> interface</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if this connection is closed, or there's a problem creating a new XML.
-</td>
+            <td>if an object that implements the <code>SQLXML</code> interface can not
+ be constructed, this method is
+ called on a closed connection or a database access error occurs.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this data type</td>
         </tr>
       </table>
   </div>
@@ -1892,42 +2075,52 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>Statement</code> whose associated <code>ResultSet</code>s have the characteristics specified in the type and
- concurrency arguments.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>Statement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.
+ This method is the same as the <code>createStatement</code> method
+ above, but it allows the default result set
+ type and concurrency to be overridden.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>resultSetType</th>
-          <td>one of the following type specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_SENSITIVE">TYPE_SCROLL_SENSITIVE</a></code> </li> <li>
-            <code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_INSENSITIVE">TYPE_SCROLL_INSENSITIVE</a></code> </li> <li>
-            <code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code></li>
-            </ul></td>
+          <td>a result set type; one of
+        <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+        <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+        <code>ResultSet.TYPE_SCROLL_SENSITIVE</code></td>
         </tr>
         <tr>
           <th>resultSetConcurrency</th>
-          <td>one of the following concurrency mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_UPDATABLE">CONCUR_UPDATABLE</a></code></li> <li>
-            <code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code></li>
-            </ul></td>
+          <td>a concurrency type; one of
+        <code>ResultSet.CONCUR_READ_ONLY</code> or
+        <code>ResultSet.CONCUR_UPDATABLE</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>Statement</code> capable of manufacturing
-         <code>ResultSet</code>s that satisfy the specified <code>resultSetType</code> and <code>resultSetConcurrency</code> values.</li></ul>
+      <ul class="nolist"><li>a new <code>Statement</code> object that will generate
+         <code>ResultSet</code> objects with the given type and
+         concurrency</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection
+         or the given parameters are not <code>ResultSet</code>
+         constants indicating type and concurrency</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method or this method is not supported for the specified result
+ set type and result set concurrency.</td>
         </tr>
       </table>
   </div>
@@ -1961,28 +2154,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>Statement</code> for issuing SQL commands to
- the remote database.
- <p>
- <code>ResultSets</code> generated by the returned statement will default to
- type <code>ResultSet.TYPE_FORWARD_ONLY</code> and concurrency level <code>ResultSet.CONCUR_READ_ONLY</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>Statement</code> object for sending
+ SQL statements to the database.
+ SQL statements without parameters are normally
+ executed using <code>Statement</code> objects. If the same SQL statement
+ is executed many times, it may be more efficient to use a
+ <code>PreparedStatement</code> object.
+ <P>
+ Result sets created using the returned <code>Statement</code>
+ object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Statement</code> object with default settings.</li></ul>
+      <ul class="nolist"><li>a new default <code>Statement</code> object</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2014,56 +2211,67 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>Statement</code> whose associated
- <code>ResultSet</code>s will have the characteristics specified in the
- type, concurrency and holdability arguments.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>Statement</code> object that will generate
+ <code>ResultSet</code> objects with the given type, concurrency,
+ and holdability.
+ This method is the same as the <code>createStatement</code> method
+ above, but it allows the default result set
+ type, concurrency, and holdability to be overridden.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>resultSetType</th>
-          <td>one of the following type specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_SENSITIVE">TYPE_SCROLL_SENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_INSENSITIVE">TYPE_SCROLL_INSENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+         <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+         <code>ResultSet.TYPE_SCROLL_SENSITIVE</code></td>
         </tr>
         <tr>
           <th>resultSetConcurrency</th>
-          <td>one of the following concurrency mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_UPDATABLE">CONCUR_UPDATABLE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.CONCUR_READ_ONLY</code> or
+         <code>ResultSet.CONCUR_UPDATABLE</code></td>
         </tr>
         <tr>
           <th>resultSetHoldability</th>
-          <td>one of the following holdability mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#HOLD_CURSORS_OVER_COMMIT">HOLD_CURSORS_OVER_COMMIT</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CLOSE_CURSORS_AT_COMMIT">CLOSE_CURSORS_AT_COMMIT</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.HOLD_CURSORS_OVER_COMMIT</code> or
+         <code>ResultSet.CLOSE_CURSORS_AT_COMMIT</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>Statement</code> capable of
-         manufacturing <code>ResultSet</code>s that satisfy the
-         specified <code>resultSetType</code>,
-         <code>resultSetConcurrency</code> and
-         <code>resultSetHoldability</code> values.</li></ul>
+      <ul class="nolist"><li>a new <code>Statement</code> object that will generate
+         <code>ResultSet</code> objects with the given type,
+         concurrency, and holdability</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection
+            or the given parameters are not <code>ResultSet</code>
+            constants indicating type, concurrency, and holdability</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method or this method is not supported for the specified result
+ set type, result set holdability and result set concurrency.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2095,28 +2303,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code><a href="reference/java/sql/Struct.html">Struct</a></code> containing the given <code>attributes</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Factory method for creating Struct objects.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>typeName</th>
-          <td>the SQL name of the type of the struct attributes</td>
+          <td>the SQL type name of the SQL structured type that this <code>Struct</code>
+ object maps to. The typeName is the name of  a user-defined type that
+ has been defined for this database. It is the value returned by
+ <code>Struct.getSQLTypeName</code>.</td>
+        </tr>
+        <tr>
+          <th>attributes</th>
+          <td>the attributes that populate the returned object</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a Struct object that maps to the given SQL type and is populated with the given attributes</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-            <td>if this connection is closed, or there's a problem creating
- the array.
-</td>
+            <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td>if a database error occurs, the typeName is null or this method is called on a closed connection</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support this data type</td>
         </tr>
       </table>
   </div>
@@ -2150,21 +2367,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>boolean</code> indicating whether or not this connection is in
- the <code>auto-commit</code> operating mode.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the current auto-commit mode for this <code>Connection</code>
+ object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if <code>auto-commit</code> is on, otherwise <code>false</code>.</li></ul>
+      <ul class="nolist"><li>the current state of this <code>Connection</code> object's
+         auto-commit mode</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setAutoCommit(boolean)">setAutoCommit(boolean)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2196,21 +2419,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets this <code>Connection</code> object's current catalog name.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves this <code>Connection</code> object's current catalog name.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the catalog name. <code>null</code> if there is no catalog
-         name.</li></ul>
+      <ul class="nolist"><li>the current catalog name or <code>null</code> if there is none</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setCatalog(java.lang.String)">setCatalog(String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2242,21 +2469,46 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the value corresponding to the given client info property, or null if unset.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the client info property specified by name.  This
+ method may return null if the specified client info property has not
+ been set and does not have a default value.  This method will also
+ return null if the specified client info property name is not supported
+ by the driver.
+ <p>
+ Applications may use the <code>DatabaseMetaData.getClientInfoProperties</code>
+ method to determine the client info properties supported by the driver.
+ <p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>name</th>
+          <td>The name of the client info property to retrieve
+ <p></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The value of the client info property specified
+ <p></li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-            <td>if this connection is closed, or there's a problem getting
- the property.
-</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <td>if the database server returns an error when
+                                                      fetching the client info value from the database
+or this method is called on a closed connection
+ <p></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/DatabaseMetaData.html#getClientInfoProperties()">getClientInfoProperties()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2288,19 +2540,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Properties.html">Properties</a></code> object containing all client info properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a list containing the name and current value of each client info
+ property supported by the driver.  The value of a client info property
+ may be null if the property has not been set and does not have a
+ default value.
+ <p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>A <code>Properties</code> object that contains the name and current value of
+                      each of the client info properties supported by the driver.
+ <p></li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-            <td>if this connection is closed, or there's a problem getting
- a property.
-</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <td>if the database server returns an error when
+                      fetching the client info values from the database
+ or this method is called on a closed connection
+ <p></td>
         </tr>
       </table>
   </div>
@@ -2334,25 +2593,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the holdability property that any <code>ResultSet</code> produced by
- this instance will have.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the current holdability of <code>ResultSet</code> objects
+ created using this <code>Connection</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>one of the following holdability mode specifiers:
-         <ul>
-         <li><code><a href="reference/java/sql/ResultSet.html#HOLD_CURSORS_OVER_COMMIT">HOLD_CURSORS_OVER_COMMIT</a></code></li> <li>
-         <code><a href="reference/java/sql/ResultSet.html#CLOSE_CURSORS_AT_COMMIT">CLOSE_CURSORS_AT_COMMIT</a></code></li>
-         </ul></li></ul>
+      <ul class="nolist"><li>the holdability, one of
+        <code>ResultSet.HOLD_CURSORS_OVER_COMMIT</code> or
+        <code>ResultSet.CLOSE_CURSORS_AT_COMMIT</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the a database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setHoldability(int)">setHoldability(int)</a></code></li><li><code><a href="../../../reference/java/sql/DatabaseMetaData.html#getResultSetHoldability()">getResultSetHoldability()</a></code></li><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2384,20 +2646,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the metadata about the database referenced by this connection. The
- returned <code>DatabaseMetaData</code> describes the database topography,
- available stored procedures, SQL syntax and so on.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a <code>DatabaseMetaData</code> object that contains
+ metadata about the database to which this
+ <code>Connection</code> object represents a connection.
+ The metadata includes information about the database's
+ tables, its supported SQL grammar, its stored
+ procedures, the capabilities of this connection, and so on.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>DatabaseMetaData</code> object containing the database
-         description.</li></ul>
+      <ul class="nolist"><li>a <code>DatabaseMetaData</code> object for this
+         <code>Connection</code> object</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the a database.
+            <td>if a database access error occurs
+ or this method is called on a closed connection
 </td>
         </tr>
       </table>
@@ -2432,23 +2698,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the transaction isolation level for this connection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves this <code>Connection</code> object's current
+ transaction isolation level.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the transaction isolation value.</li></ul>
+      <ul class="nolist"><li>the current transaction isolation level, which will be one
+         of the following constants:
+        <code>Connection.TRANSACTION_READ_UNCOMMITTED</code>,
+        <code>Connection.TRANSACTION_READ_COMMITTED</code>,
+        <code>Connection.TRANSACTION_REPEATABLE_READ</code>,
+        <code>Connection.TRANSACTION_SERIALIZABLE</code>, or
+        <code>Connection.TRANSACTION_NONE</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#TRANSACTION_NONE">TRANSACTION_NONE</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#TRANSACTION_READ_COMMITTED">TRANSACTION_READ_COMMITTED</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#TRANSACTION_READ_UNCOMMITTED">TRANSACTION_READ_UNCOMMITTED</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#TRANSACTION_REPEATABLE_READ">TRANSACTION_REPEATABLE_READ</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#TRANSACTION_SERIALIZABLE">TRANSACTION_SERIALIZABLE</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setTransactionIsolation(int)">setTransactionIsolation(int)</a></code></li>
       </ul>
   </div>
 
@@ -2481,21 +2755,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the type mapping associated with this <code>Connection</code> object.
- The type mapping must be set on the application level.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the <code>Map</code> object associated with this
+ <code>Connection</code> object.
+ Unless the application has added an entry, the type map returned
+ will be empty.
+ <p>
+ You must invoke <code>setTypeMap</code> after making changes to the
+ <code>Map</code> object returned from
+  <code>getTypeMap</code> as a JDBC driver may create an internal
+ copy of the <code>Map</code> object passed to <code>setTypeMap</code>:
+ <p>
+ <pre>
+      Map&lt;String,Class&lt;?&gt;&gt; myMap = con.getTypeMap();
+      myMap.put("mySchemaName.ATHLETES", Athletes.class);
+      con.setTypeMap(myMap);
+ </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the Type Map as a <code>java.util.Map</code>.</li></ul>
+      <ul class="nolist"><li>the <code>java.util.Map</code> object associated
+         with this <code>Connection</code> object</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setTypeMap(java.util.Map<java.lang.String, java.lang.Class<?>>)">setTypeMap(Map<String, Class<?>>)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2527,28 +2825,38 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the first instance of any <code>SQLWarning</code> objects that may have
- been created in the use of this connection. If at least one warning has
- occurred then this operation returns the first one reported. A <code>null</code> indicates that no warnings have occurred.
- <p>
- By invoking the <code><a href="reference/java/sql/SQLWarning.html#getNextWarning()">getNextWarning()</a></code> method of the
- returned <code>SQLWarning</code> object it is possible to obtain all of
- this connection's warning objects.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the first warning reported by calls on this
+ <code>Connection</code> object.  If there is more than one
+ warning, subsequent warnings will be chained to the first one
+ and can be retrieved by calling the method
+ <code>SQLWarning.getNextWarning</code> on the warning
+ that was retrieved previously.
+ <P>
+ This method may not be
+ called on a closed connection; doing so will cause an
+ <code>SQLException</code> to be thrown.
+
+ <P><B>Note:</B> Subsequent warnings will be chained to this
+ SQLWarning.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the first warning as an SQLWarning object (may be <code>null</code>).</li></ul>
+      <ul class="nolist"><li>the first <code>SQLWarning</code> object or <code>null</code>
+         if there are none</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database or if the call
-             has been made on a connection which has been previously
-             closed.
-</td>
+            <td>if a database access error occurs or
+            this method is called on a closed connection</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2580,21 +2888,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>boolean</code> indicating whether or not this connection is in
- the <code>closed</code> state. The <code>closed</code> state may be entered into as
- a consequence of a successful invocation of the <code><a href="reference/java/sql/Connection.html#close()">close()</a></code> method
- or else if an error has occurred that prevents the connection from
- functioning normally.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves whether this <code>Connection</code> object has been
+ closed.  A connection is closed if the method <code>close</code>
+ has been called on it or if certain fatal errors have occurred.
+ This method is guaranteed to return <code>true</code> only when
+ it is called after the method <code>Connection.close</code> has
+ been called.
+ <P>
+ This method generally cannot be called to determine whether a
+ connection to a database is valid or invalid.  A typical client
+ can determine that a connection is invalid by catching any
+ exceptions that might be thrown when an operation is attempted.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if closed, otherwise <code>false</code>.</li></ul>
+      <ul class="nolist"><li><code>true</code> if this <code>Connection</code> object
+         is closed; <code>false</code> if it is still open</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -2629,18 +2944,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>boolean</code> indicating whether or not this connection is
- currently in the <code>read-only</code> state.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves whether this <code>Connection</code>
+ object is in read-only mode.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if in read-only state, otherwise <code>false</code>.</li></ul>
+      <ul class="nolist"><li><code>true</code> if this <code>Connection</code> object
+         is read-only; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
+            <td>SQLException if a database access error occurs
+ or this method is called on a closed connection
 </td>
         </tr>
       </table>
@@ -2675,26 +2992,46 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this connection is still open and valid, false otherwise.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if the connection has not been closed and is still valid.
+ The driver shall submit a query on the connection or use some other
+ mechanism that positively verifies the connection is still valid when
+ this method is called.
+ <p>
+ The query submitted by the driver to validate the connection shall be
+ executed in the context of the current transaction.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>timeout</th>
-          <td>number of seconds to wait for a response before giving up and returning false,
- 0 to wait forever</td>
+          <td>-             The time in seconds to wait for the database operation
+                                              used to validate the connection to complete.  If
+                                              the timeout period expires before the operation
+                                              completes, this method returns false.  A value of
+                                              0 indicates a timeout is not applied to the
+                                              database operation.
+ <p></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>true if the connection is valid, false otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if <code>timeout < 0</code>
-</td>
+            <td>if the value supplied for <code>timeout</code>
+ is less then 0</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/DatabaseMetaData.html#getClientInfoProperties()">getClientInfoProperties()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2726,28 +3063,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the input SQL statement
- <code>sql</code> expressed in the underlying system's native SQL
- syntax.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the given SQL statement into the system's native SQL grammar.
+ A driver may convert the JDBC SQL grammar into its system's
+ native SQL grammar prior to sending it. This method returns the
+ native form of the statement that the driver would have sent.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the JDBC form of an SQL statement.</td>
+          <td>an SQL statement that may contain one or more '?'
+ parameter placeholders</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the SQL statement in native database format.</li></ul>
+      <ul class="nolist"><li>the native form of this statement</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database
+            <td>if a database access error occurs
+ or this method is called on a closed connection
 </td>
         </tr>
       </table>
@@ -2782,48 +3122,57 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>CallableStatement</code> that may be used for
- making stored procedure calls to the database. <code>ResultSet</code>s emitted
- from this <code>CallableStatement</code> will satisfy the specified <code>resultSetType</code> and <code>resultSetConcurrency</code> values.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CallableStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.
+ This method is the same as the <code>prepareCall</code> method
+ above, but it allows the default result set
+ type and concurrency to be overridden.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement</td>
+          <td>a <code>String</code> object that is the SQL statement to
+            be sent to the database; may contain on or more '?' parameters</td>
         </tr>
         <tr>
           <th>resultSetType</th>
-          <td>one of the following type specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_SENSITIVE">TYPE_SCROLL_SENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_INSENSITIVE">TYPE_SCROLL_INSENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code></li>
-            </ul></td>
+          <td>a result set type; one of
+         <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+         <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+         <code>ResultSet.TYPE_SCROLL_SENSITIVE</code></td>
         </tr>
         <tr>
           <th>resultSetConcurrency</th>
-          <td>one of the following concurrency mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_UPDATABLE">CONCUR_UPDATABLE</a></code></li>
-            </ul></td>
+          <td>a concurrency type; one of
+         <code>ResultSet.CONCUR_READ_ONLY</code> or
+         <code>ResultSet.CONCUR_UPDATABLE</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>CallableStatement</code> representing the
-         precompiled SQL statement. <code>ResultSet</code>s emitted from this
-         <code>CallableStatement</code> will satisfy the specified <code>resultSetType</code> and <code>resultSetConcurrency</code> values.</li></ul>
+      <ul class="nolist"><li>a new <code>CallableStatement</code> object containing the
+ pre-compiled SQL statement that will produce <code>ResultSet</code>
+ objects with the given type and concurrency</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database
-</td>
+            <td>if a database access error occurs, this method
+ is called on a closed connection
+         or the given parameters are not <code>ResultSet</code>
+         constants indicating type and concurrency</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method or this method is not supported for the specified result
+ set type and result set concurrency.</td>
         </tr>
       </table>
   </div>
@@ -2857,30 +3206,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>CallableStatement</code> that may be used for
- making stored procedure calls to the database.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CallableStatement</code> object for calling
+ database stored procedures.
+ The <code>CallableStatement</code> object provides
+ methods for setting up its IN and OUT parameters, and
+ methods for executing the call to a stored procedure.
+
+ <P><B>Note:</B> This method is optimized for handling stored
+ procedure call statements. Some drivers may send the call
+ statement to the database when the method <code>prepareCall</code>
+ is done; others
+ may wait until the <code>CallableStatement</code> object
+ is executed. This has no
+ direct effect on users; however, it does affect which method
+ throws certain SQLExceptions.
+ <P>
+ Result sets created using the returned <code>CallableStatement</code>
+ object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement that calls the stored function</td>
+          <td>an SQL statement that may contain one or more '?'
+ parameter placeholders. Typically this statement is specified using JDBC
+ call escape syntax.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>CallableStatement</code> representing the SQL
-         statement. <code>ResultSet</code>s emitted from this <code>CallableStatement</code> will default to type
-         <code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code> and concurrency
-         <code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code>.</li></ul>
+      <ul class="nolist"><li>a new default <code>CallableStatement</code> object containing the
+ pre-compiled SQL statement</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database.
+            <td>if a database access error occurs
+ or this method is called on a closed connection
 </td>
         </tr>
       </table>
@@ -2915,59 +3283,72 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>CallableStatement</code> that may be used for
- making stored procedure calls to the database. <code>ResultSet</code>s created
- from this <code>CallableStatement</code> will have characteristics determined
- by the specified type, concurrency and holdability arguments.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CallableStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.
+ This method is the same as the <code>prepareCall</code> method
+ above, but it allows the default result set
+ type, result set concurrency type and holdability to be overridden.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement</td>
+          <td>a <code>String</code> object that is the SQL statement to
+            be sent to the database; may contain on or more '?' parameters</td>
         </tr>
         <tr>
           <th>resultSetType</th>
-          <td>one of the following type specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_SENSITIVE">TYPE_SCROLL_SENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_INSENSITIVE">TYPE_SCROLL_INSENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+         <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+         <code>ResultSet.TYPE_SCROLL_SENSITIVE</code></td>
         </tr>
         <tr>
           <th>resultSetConcurrency</th>
-          <td>one of the following concurrency mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_UPDATABLE">CONCUR_UPDATABLE</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.CONCUR_READ_ONLY</code> or
+         <code>ResultSet.CONCUR_UPDATABLE</code></td>
         </tr>
         <tr>
           <th>resultSetHoldability</th>
-          <td>one of the following holdability mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#HOLD_CURSORS_OVER_COMMIT">HOLD_CURSORS_OVER_COMMIT</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CLOSE_CURSORS_AT_COMMIT">CLOSE_CURSORS_AT_COMMIT</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.HOLD_CURSORS_OVER_COMMIT</code> or
+         <code>ResultSet.CLOSE_CURSORS_AT_COMMIT</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>CallableStatement</code> representing the
-         precompiled SQL statement. <code>ResultSet</code>s emitted from this
-         <code>CallableStatement</code> will satisfy the specified <code>resultSetType</code>, <code>resultSetConcurrency</code> and <code>resultSetHoldability</code> values.</li></ul>
+      <ul class="nolist"><li>a new <code>CallableStatement</code> object, containing the
+         pre-compiled SQL statement, that will generate
+         <code>ResultSet</code> objects with the given type,
+         concurrency, and holdability</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database.
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection
+            or the given parameters are not <code>ResultSet</code>
+            constants indicating type, concurrency, and holdability</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method or this method is not supported for the specified result
+ set type, result set holdability and result set concurrency.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2999,47 +3380,68 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a default <code>PreparedStatement</code> that can retrieve the
- auto-generated keys designated by a supplied array. If <code>sql</code> is an
- SQL <code>INSERT</code> statement, <code>columnNames</code> is expected to hold the
- names of each column in the statement's associated database table
- containing the autogenerated-keys of interest. Otherwise <code>columnNames</code> is ignored.
- <p>
- Subject to JDBC driver support, this operation will attempt to send the
- precompiled version of the statement to the database. Alternatively, if
- the driver is not capable of handling precompiled statements, the
- statement will not reach the database server until it is executed. This
- will have a bearing on precisely <i>when</i> <code>SQLException</code>
- instances get raised.
- <p>
- By default, ResultSets from the returned object will be
- <code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code> type with a
- <code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code> concurrency mode.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a default <code>PreparedStatement</code> object capable
+ of returning the auto-generated keys designated by the given array.
+ This array contains the names of the columns in the target
+ table that contain the auto-generated keys that should be returned.
+ The driver will ignore the array if the SQL statement
+ is not an <code>INSERT</code> statement, or an SQL statement able to return
+ auto-generated keys (the list of such statements is vendor-specific).
+ <P>
+ An SQL statement with or without IN parameters can be
+ pre-compiled and stored in a <code>PreparedStatement</code> object. This
+ object can then be used to efficiently execute this statement
+ multiple times.
+ <P>
+ <B>Note:</B> This method is optimized for handling
+ parametric SQL statements that benefit from precompilation. If
+ the driver supports precompilation,
+ the method <code>prepareStatement</code> will send
+ the statement to the database for precompilation. Some drivers
+ may not support precompilation. In this case, the statement may
+ not be sent to the database until the <code>PreparedStatement</code>
+ object is executed.  This has no direct effect on users; however, it does
+ affect which methods throw certain SQLExceptions.
+ <P>
+ Result sets created using the returned <code>PreparedStatement</code>
+ object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement.</td>
+          <td>an SQL statement that may contain one or more '?' IN
+        parameter placeholders</td>
         </tr>
         <tr>
           <th>columnNames</th>
-          <td>the names of the columns for which auto-generated keys should
-            be made available.</td>
+          <td>an array of column names indicating the columns
+        that should be returned from the inserted row or rows</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the PreparedStatement containing the supplied SQL statement.</li></ul>
+      <ul class="nolist"><li>a new <code>PreparedStatement</code> object, containing the
+         pre-compiled statement, that is capable of returning the
+         auto-generated keys designated by the given array of column
+         names</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -3073,58 +3475,75 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PreparedStatement</code> that generates <code>ResultSet</code>s
- with the specified type, concurrency and holdability</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PreparedStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type, concurrency,
+ and holdability.
+ <P>
+ This method is the same as the <code>prepareStatement</code> method
+ above, but it allows the default result set
+ type, concurrency, and holdability to be overridden.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement. It can contain one or more <code>'?' IN</code>
-            parameter placeholders.</td>
+          <td>a <code>String</code> object that is the SQL statement to
+            be sent to the database; may contain one or more '?' IN
+            parameters</td>
         </tr>
         <tr>
           <th>resultSetType</th>
-          <td>one of the following type specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_SENSITIVE">TYPE_SCROLL_SENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_INSENSITIVE">TYPE_SCROLL_INSENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+         <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+         <code>ResultSet.TYPE_SCROLL_SENSITIVE</code></td>
         </tr>
         <tr>
           <th>resultSetConcurrency</th>
-          <td>one of the following concurrency mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_UPDATABLE">CONCUR_UPDATABLE</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.CONCUR_READ_ONLY</code> or
+         <code>ResultSet.CONCUR_UPDATABLE</code></td>
         </tr>
         <tr>
           <th>resultSetHoldability</th>
-          <td>one of the following holdability mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#HOLD_CURSORS_OVER_COMMIT">HOLD_CURSORS_OVER_COMMIT</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CLOSE_CURSORS_AT_COMMIT">CLOSE_CURSORS_AT_COMMIT</a></code></li>
-            </ul></td>
+          <td>one of the following <code>ResultSet</code>
+        constants:
+         <code>ResultSet.HOLD_CURSORS_OVER_COMMIT</code> or
+         <code>ResultSet.CLOSE_CURSORS_AT_COMMIT</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>PreparedStatement</code> containing the SQL
-         statement <code>sql</code>. <code>ResultSet</code>s emitted from this
-         <code>PreparedStatement</code> will satisfy the specified <code>resultSetType</code>, <code>resultSetConcurrency</code> and <code>resultSetHoldability</code> values.</li></ul>
+      <ul class="nolist"><li>a new <code>PreparedStatement</code> object, containing the
+         pre-compiled SQL statement, that will generate
+         <code>ResultSet</code> objects with the given type,
+         concurrency, and holdability</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database.
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection
+            or the given parameters are not <code>ResultSet</code>
+            constants indicating type, concurrency, and holdability</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method or this method is not supported for the specified result
+ set type, result set holdability and result set concurrency.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3156,47 +3575,68 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a default <code>PreparedStatement</code> that can retrieve the
- auto-generated keys designated by a supplied array. If <code>sql</code> is an
- SQL <code>INSERT</code> statement, the parameter <code>columnIndexes</code> is expected
- to hold the index values for each column in the statement's intended
- database table containing the autogenerated-keys of interest. Otherwise
- <code>columnIndexes</code> is ignored.
- <p>
- Subject to JDBC driver support, this operation will attempt to send the
- precompiled version of the statement to the database. If
- the driver does not support precompiled statements, the statement will
- not reach the database server until it is executed. This distinction
- determines the moment when <code>SQLException</code>s get raised.
- <p>
- By default, <code>ResultSet</code>s from the returned object will be
- <code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code> type with a
- <code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code> concurrency mode.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a default <code>PreparedStatement</code> object capable
+ of returning the auto-generated keys designated by the given array.
+ This array contains the indexes of the columns in the target
+ table that contain the auto-generated keys that should be made
+ available.  The driver will ignore the array if the SQL statement
+ is not an <code>INSERT</code> statement, or an SQL statement able to return
+ auto-generated keys (the list of such statements is vendor-specific).
+<p>
+ An SQL statement with or without IN parameters can be
+ pre-compiled and stored in a <code>PreparedStatement</code> object. This
+ object can then be used to efficiently execute this statement
+ multiple times.
+ <P>
+ <B>Note:</B> This method is optimized for handling
+ parametric SQL statements that benefit from precompilation. If
+ the driver supports precompilation,
+ the method <code>prepareStatement</code> will send
+ the statement to the database for precompilation. Some drivers
+ may not support precompilation. In this case, the statement may
+ not be sent to the database until the <code>PreparedStatement</code>
+ object is executed.  This has no direct effect on users; however, it does
+ affect which methods throw certain SQLExceptions.
+ <P>
+ Result sets created using the returned <code>PreparedStatement</code>
+ object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement.</td>
+          <td>an SQL statement that may contain one or more '?' IN
+        parameter placeholders</td>
         </tr>
         <tr>
           <th>columnIndexes</th>
-          <td>the indexes of the columns for which auto-generated keys
-            should be made available.</td>
+          <td>an array of column indexes indicating the columns
+        that should be returned from the inserted row or rows</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the PreparedStatement containing the supplied SQL statement.</li></ul>
+      <ul class="nolist"><li>a new <code>PreparedStatement</code> object, containing the
+         pre-compiled statement, that is capable of returning the
+         auto-generated keys designated by the given array of column
+         indexes</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -3230,38 +3670,51 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>PreparedStatement</code> that may be used any
- number of times to execute parameterized requests on the database server.
- <p>
- Subject to JDBC driver support, this operation will attempt to send the
- precompiled version of the statement to the database. If
- the driver does not support precompiled statements, the statement will
- not reach the database server until it is executed. This distinction
- determines the moment when <code>SQLException</code>s get raised.
- <p>
- By default, <code>ResultSet</code>s from the returned object will be
- <code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code> type with a
- <code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code> mode of concurrency.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PreparedStatement</code> object for sending
+ parameterized SQL statements to the database.
+ <P>
+ A SQL statement with or without IN parameters can be
+ pre-compiled and stored in a <code>PreparedStatement</code> object. This
+ object can then be used to efficiently execute this statement
+ multiple times.
+
+ <P><B>Note:</B> This method is optimized for handling
+ parametric SQL statements that benefit from precompilation. If
+ the driver supports precompilation,
+ the method <code>prepareStatement</code> will send
+ the statement to the database for precompilation. Some drivers
+ may not support precompilation. In this case, the statement may
+ not be sent to the database until the <code>PreparedStatement</code>
+ object is executed.  This has no direct effect on users; however, it does
+ affect which methods throw certain <code>SQLException</code> objects.
+ <P>
+ Result sets created using the returned <code>PreparedStatement</code>
+ object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement.</td>
+          <td>an SQL statement that may contain one or more '?' IN
+ parameter placeholders</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the <code>PreparedStatement</code> containing the supplied SQL
-         statement.</li></ul>
+      <ul class="nolist"><li>a new default <code>PreparedStatement</code> object containing the
+ pre-compiled SQL statement</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
+            <td>if a database access error occurs
+ or this method is called on a closed connection
 </td>
         </tr>
       </table>
@@ -3296,55 +3749,66 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a default <code>PreparedStatement</code> that can retrieve
- automatically generated keys. Parameter <code>autoGeneratedKeys</code> may be
- used to tell the driver whether such keys should be made accessible.
- This is only relevant when the <code>sql</code> statement is an <code>insert</code>
- statement.
- <p>
- An SQL statement which may have <code>IN</code> parameters can be stored and
- precompiled in a <code>PreparedStatement</code>. The <code>PreparedStatement</code>
- can then be then be used to execute the statement multiple times in an
- efficient way.
- <p>
- Subject to JDBC driver support, this operation will attempt to send the
- precompiled version of the statement to the database. If
- the driver does not support precompiled statements, the statement will
- not reach the database server until it is executed. This distinction
- determines the moment when <code>SQLException</code>s get raised.
- <p>
- By default, <code>ResultSet</code>s from the returned object will be
- <code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code> type with a
- <code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code> mode of concurrency.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a default <code>PreparedStatement</code> object that has
+ the capability to retrieve auto-generated keys. The given constant
+ tells the driver whether it should make auto-generated keys
+ available for retrieval.  This parameter is ignored if the SQL statement
+ is not an <code>INSERT</code> statement, or an SQL statement able to return
+ auto-generated keys (the list of such statements is vendor-specific).
+ <P>
+ <B>Note:</B> This method is optimized for handling
+ parametric SQL statements that benefit from precompilation. If
+ the driver supports precompilation,
+ the method <code>prepareStatement</code> will send
+ the statement to the database for precompilation. Some drivers
+ may not support precompilation. In this case, the statement may
+ not be sent to the database until the <code>PreparedStatement</code>
+ object is executed.  This has no direct effect on users; however, it does
+ affect which methods throw certain SQLExceptions.
+ <P>
+ Result sets created using the returned <code>PreparedStatement</code>
+ object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement.</td>
+          <td>an SQL statement that may contain one or more '?' IN
+        parameter placeholders</td>
         </tr>
         <tr>
           <th>autoGeneratedKeys</th>
-          <td>one of the following generated key options:
-            <ul>
-            <li><code><a href="reference/java/sql/Statement.html#RETURN_GENERATED_KEYS">RETURN_GENERATED_KEYS</a></code></li>
-            <li><code><a href="reference/java/sql/Statement.html#NO_GENERATED_KEYS">NO_GENERATED_KEYS</a></code></li>
-            </ul></td>
+          <td>a flag indicating whether auto-generated keys
+        should be returned; one of
+        <code>Statement.RETURN_GENERATED_KEYS</code> or
+        <code>Statement.NO_GENERATED_KEYS</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new <code>PreparedStatement</code> instance representing the input
-         SQL statement.</li></ul>
+      <ul class="nolist"><li>a new <code>PreparedStatement</code> object, containing the
+         pre-compiled SQL statement, that will have the capability of
+         returning auto-generated keys</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs, this
+  method is called on a closed connection
+         or the given parameter is not a <code>Statement</code>
+         constant indicating whether auto-generated keys should be
+         returned</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method with a constant of Statement.RETURN_GENERATED_KEYS</td>
         </tr>
       </table>
   </div>
@@ -3378,48 +3842,58 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PreparedStatement</code> that generates <code>ResultSet</code>s
- with the specified values of <code>resultSetType</code> and <code>resultSetConcurrency</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PreparedStatement</code> object that will generate
+ <code>ResultSet</code> objects with the given type and concurrency.
+ This method is the same as the <code>prepareStatement</code> method
+ above, but it allows the default result set
+ type and concurrency to be overridden.
+ The holdability of the created result sets can be determined by
+ calling <code><a href="reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>sql</th>
-          <td>the SQL statement. It can contain one or more <code>'?'</code>
-            <code>IN</code> parameter placeholders.</td>
+          <td>a <code>String</code> object that is the SQL statement to
+            be sent to the database; may contain one or more '?' IN
+            parameters</td>
         </tr>
         <tr>
           <th>resultSetType</th>
-          <td>one of the following type specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_SENSITIVE">TYPE_SCROLL_SENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_SCROLL_INSENSITIVE">TYPE_SCROLL_INSENSITIVE</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#TYPE_FORWARD_ONLY">TYPE_FORWARD_ONLY</a></code></li>
-            </ul></td>
+          <td>a result set type; one of
+         <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+         <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+         <code>ResultSet.TYPE_SCROLL_SENSITIVE</code></td>
         </tr>
         <tr>
           <th>resultSetConcurrency</th>
-          <td>one of the following concurrency mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_READ_ONLY">CONCUR_READ_ONLY</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#CONCUR_UPDATABLE">CONCUR_UPDATABLE</a></code></li>
-            </ul></td>
+          <td>a concurrency type; one of
+         <code>ResultSet.CONCUR_READ_ONLY</code> or
+         <code>ResultSet.CONCUR_UPDATABLE</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new instance of <code>PreparedStatement</code> containing the SQL
-         statement <code>sql</code>. <code>ResultSet</code>s emitted from this
-         <code>PreparedStatement</code> will satisfy the specified <code>resultSetType</code> and <code>resultSetConcurrency</code> values.</li></ul>
+      <ul class="nolist"><li>a new PreparedStatement object containing the
+ pre-compiled SQL statement that will produce <code>ResultSet</code>
+ objects with the given type and concurrency</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a problem occurs accessing the database.
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection
+         or the given parameters are not <code>ResultSet</code>
+         constants indicating type and concurrency</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method or this method is not supported for the specified result
+ set type and result set concurrency.</td>
         </tr>
       </table>
   </div>
@@ -3453,15 +3927,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Releases the specified <code>savepoint</code> from the present transaction. Once removed,
- the <code>Savepoint</code> is considered invalid and should not be referenced
- further.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the specified <code>Savepoint</code>  and subsequent <code>Savepoint</code> objects from the current
+ transaction. Any reference to the savepoint after it have been removed
+ will cause an <code>SQLException</code> to be thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>savepoint</th>
-          <td>the object targeted for removal.</td>
+          <td>the <code>Savepoint</code> object to be removed</td>
         </tr>
       </table>
   </div>
@@ -3470,10 +3944,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem with accessing the database or if
-             <code>savepoint</code> is considered not valid in this
-             transaction.
-</td>
+            <td>if a database access error occurs, this
+  method is called on a closed connection or
+            the given <code>Savepoint</code> object is not a valid
+            savepoint in the current transaction</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -3507,19 +3986,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Rolls back all updates made so far in this transaction and
- relinquishes all acquired database locks. It is an error to invoke this
- operation when in auto-commit mode.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Undoes all changes made in the current transaction
+ and releases any database locks currently held
+ by this <code>Connection</code> object. This method should be
+ used only when auto-commit mode has been disabled.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem with the database or if the method is
-             called while in auto-commit mode of operation.
-</td>
+            <td>if a database access error occurs,
+ this method is called while participating in a distributed transaction,
+ this method is called on a closed connection or this
+            <code>Connection</code> object is in auto-commit mode</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setAutoCommit(boolean)">setAutoCommit(boolean)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3551,14 +4037,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Undoes all changes made after the supplied <code>Savepoint</code> object was
- set. This method should only be used when auto-commit mode is disabled.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Undoes all changes made after the given <code>Savepoint</code> object
+ was set.
+ <P>
+ This method should be used only when auto-commit has been disabled.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>savepoint</th>
-          <td>the Savepoint to roll back to</td>
+          <td>the <code>Savepoint</code> object to roll back to</td>
         </tr>
       </table>
   </div>
@@ -3567,10 +4055,24 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs,
+ this method is called while participating in a distributed transaction,
+ this method is called on a closed connection,
+            the <code>Savepoint</code> object is no longer valid,
+            or this <code>Connection</code> object is currently in
+            auto-commit mode</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#rollback()">rollback()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3602,32 +4104,39 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets this connection's auto-commit mode <code>on</code> or <code>off</code>.
- <p>
- Putting a Connection into auto-commit mode means that all associated SQL
- statements are run and committed as separate transactions.
- By contrast, setting auto-commit to <code>off</code> means that associated SQL
- statements get grouped into transactions that need to be completed by
- explicit calls to either the <code><a href="reference/java/sql/Connection.html#commit()">commit()</a></code> or <code><a href="reference/java/sql/Connection.html#rollback()">rollback()</a></code>
- methods.
- <p>
- Auto-commit is the default mode for new connection instances.
- <p>
- When in this mode, commits will automatically occur upon successful SQL
- statement completion or upon successful completion of an execute.
- Statements are not considered successfully completed until all associated
- <code>ResultSet</code>s and output parameters have been obtained or closed.
- <p>
- Calling this operation during an uncommitted transaction will result in
- it being committed.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this connection's auto-commit mode to the given state.
+ If a connection is in auto-commit mode, then all its SQL
+ statements will be executed and committed as individual
+ transactions.  Otherwise, its SQL statements are grouped into
+ transactions that are terminated by a call to either
+ the method <code>commit</code> or the method <code>rollback</code>.
+ By default, new connections are in auto-commit
+ mode.
+ <P>
+ The commit occurs when the statement completes. The time when the statement
+ completes depends on the type of SQL Statement:
+ <ul>
+ <li>For DML statements, such as Insert, Update or Delete, and DDL statements,
+ the statement is complete as soon as it has finished executing.
+ <li>For Select statements, the statement is complete when the associated result
+ set is closed.
+ <li>For <code>CallableStatement</code> objects or for statements that return
+ multiple results, the statement is complete
+ when all of the associated result sets have been closed, and all update
+ counts and output parameters have been retrieved.
+</ul>
+ <P>
+ <B>NOTE:</B>  If this method is called during a transaction and the
+ auto-commit mode is changed, the transaction is committed.  If
+ <code>setAutoCommit</code> is called and the auto-commit mode is
+ not changed, the call is a no-op.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>autoCommit</th>
-          <td><code>boolean</code> indication of whether to put the target
-            connection into auto-commit mode (<code>true</code>) or not (
-            <code>false</code>).</td>
+          <td><code>true</code> to enable auto-commit mode;
+         <code>false</code> to disable it</td>
         </tr>
       </table>
   </div>
@@ -3636,10 +4145,16 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs,
+  setAutoCommit(true) is called while participating in a distributed transaction,
+ or this method is called on a closed connection</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#getAutoCommit()">getAutoCommit()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3671,15 +4186,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the catalog name for this connection. This is used to select a
- subspace of the database for future work. If the driver does not support
- catalog names, this method is ignored.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the given catalog name in order to select
+ a subspace of this <code>Connection</code> object's database
+ in which to work.
+ <P>
+ If the driver does not support catalogs, it will
+ silently ignore this request.
+ <p>
+ Calling <code>setCatalog</code> has no effect on previously created or prepared
+ <code>Statement</code> objects. It is implementation defined whether a DBMS
+ prepare operation takes place immediately when the <code>Connection</code>
+ method <code>prepareStatement</code> or <code>prepareCall</code> is invoked.
+ For maximum portability, <code>setCatalog</code> should be called before a
+ <code>Statement</code> is created or prepared.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>catalog</th>
-          <td>the catalog name to use.</td>
+          <td>the name of a catalog (subspace in this
+        <code>Connection</code> object's database) in which to work</td>
         </tr>
       </table>
   </div>
@@ -3688,10 +4214,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs
+ or this method is called on a closed connection</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#getCatalog()">getCatalog()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3723,19 +4254,51 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Replaces all client info properties with the name/value pairs from <code>properties</code>.
- All existing properties are removed. If an exception is thrown, the resulting state of
- this connection's client info properties is undefined.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the connection's client info properties.  The
+ <code>Properties</code> object contains the names and values of the client info
+ properties to be set.  The set of client info properties contained in
+ the properties list replaces the current set of client info properties
+ on the connection.  If a property that is currently set on the
+ connection is not present in the properties list, that property is
+ cleared.  Specifying an empty properties list will clear all of the
+ properties on the connection.  See <code>setClientInfo (String, String)</code> for
+ more information.
+ <p>
+ If an error occurs in setting any of the client info properties, a
+ <code>SQLClientInfoException</code> is thrown. The <code>SQLClientInfoException</code>
+ contains information indicating which client info properties were not set.
+ The state of the client information is unknown because
+ some databases do not allow multiple client info properties to be set
+ atomically.  For those databases, one or more properties may have been
+ set before the error occurred.
+ <p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>properties</th>
+          <td>the list of client info properties to set
+ <p></td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-            <td>if this connection is closed, or there's a problem setting
- a property.
+            <td>if the database server returns an error while
+                  setting the clientInfo values on the database server or this method
+ is called on a closed connection
+ <p>
 </td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#setClientInfo(java.lang.String, java.lang.String)">setClientInfo(String, String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3767,16 +4330,72 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the client info property <code>name</code> to <code>value</code>. A value of null clears the
- client info property.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the client info property specified by name to the
+ value specified by value.
+ <p>
+ Applications may use the <code>DatabaseMetaData.getClientInfoProperties</code>
+ method to determine the client info properties supported by the driver
+ and the maximum length that may be specified for each property.
+ <p>
+ The driver stores the value specified in a suitable location in the
+ database.  For example in a special register, session parameter, or
+ system table column.  For efficiency the driver may defer setting the
+ value in the database until the next time a statement is executed or
+ prepared.  Other than storing the client information in the appropriate
+ place in the database, these methods shall not alter the behavior of
+ the connection in anyway.  The values supplied to these methods are
+ used for accounting, diagnostics and debugging purposes only.
+ <p>
+ The driver shall generate a warning if the client info name specified
+ is not recognized by the driver.
+ <p>
+ If the value specified to this method is greater than the maximum
+ length for the property the driver may either truncate the value and
+ generate a warning or generate a <code>SQLClientInfoException</code>.  If the driver
+ generates a <code>SQLClientInfoException</code>, the value specified was not set on the
+ connection.
+ <p>
+ The following are standard client info properties.  Drivers are not
+ required to support these properties however if the driver supports a
+ client info property that can be described by one of the standard
+ properties, the standard property name should be used.
+ <p>
+ <ul>
+ <li>ApplicationName  -       The name of the application currently utilizing
+                                                      the connection</li>
+ <li>ClientUser               -       The name of the user that the application using
+                                                      the connection is performing work for.  This may
+                                                      not be the same as the user name that was used
+                                                      in establishing the connection.</li>
+ <li>ClientHostname   -       The hostname of the computer the application
+                                                      using the connection is running on.</li>
+ </ul>
+ <p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>name</th>
+          <td>The name of the client info property to set</td>
+        </tr>
+        <tr>
+          <th>value</th>
+          <td>The value to set the client info property to.  If the
+                                      value is null, the current value of the specified
+                                      property is cleared.
+ <p></td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-            <td>if this connection is closed, or there's a problem setting
- the property.
-</td>
+            <td>if the database server returns an error while
+                      setting the client info value on the database server or this method
+ is called on a closed connection
+ <p></td>
         </tr>
       </table>
   </div>
@@ -3810,18 +4429,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the holdability of the <code>ResultSet</code>s created by this Connection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Changes the default holdability of <code>ResultSet</code> objects
+ created using this <code>Connection</code> object to the given
+ holdability.  The default holdability of <code>ResultSet</code> objects
+ can be be determined by invoking
+ <code><a href="reference/java/sql/DatabaseMetaData.html#getResultSetHoldability()">getResultSetHoldability()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>holdability</th>
-          <td>one of the following holdability mode specifiers:
-            <ul>
-            <li><code><a href="reference/java/sql/ResultSet.html#CLOSE_CURSORS_AT_COMMIT">CLOSE_CURSORS_AT_COMMIT</a></code></li>
-            <li><code><a href="reference/java/sql/ResultSet.html#HOLD_CURSORS_OVER_COMMIT">HOLD_CURSORS_OVER_COMMIT</a></code></li>
-            <li>
-            </ul></td>
+          <td>a <code>ResultSet</code> holdability constant; one of
+        <code>ResultSet.HOLD_CURSORS_OVER_COMMIT</code> or
+        <code>ResultSet.CLOSE_CURSORS_AT_COMMIT</code></td>
         </tr>
       </table>
   </div>
@@ -3830,10 +4450,20 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database
-</td>
+            <td>if a database access occurs, this method is called
+ on a closed connection, or the given parameter
+         is not a <code>ResultSet</code> constant indicating holdability</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the given holdability is not supported</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#getHoldability()">getHoldability()</a></code></li><li><code><a href="../../../reference/java/sql/DatabaseMetaData.html#getResultSetHoldability()">getResultSetHoldability()</a></code></li><li><code><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3865,16 +4495,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets this connection to read-only mode.
- <p>
- This serves as a hint to the driver, which can enable database
- optimizations.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Puts this connection in read-only mode as a hint to the driver to enable
+ database optimizations.
+
+ <P><B>Note:</B> This method cannot be called during a transaction.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>readOnly</th>
-          <td><code>true</code> to set the Connection to read only mode. <code>false</code> disables read-only mode.</td>
+          <td><code>true</code> enables read-only mode;
+        <code>false</code> disables it</td>
         </tr>
       </table>
   </div>
@@ -3883,7 +4514,9 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
+            <td>if a database access error occurs, this
+  method is called on a closed connection or this
+            method is called during a transaction
 </td>
         </tr>
       </table>
@@ -3918,29 +4551,46 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a named <code>Savepoint</code> in the current transaction.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a savepoint with the given name in the current transaction
+ and returns the new <code>Savepoint</code> object that represents it.
+
+ <p> if setSavepoint is invoked outside of an active transaction, a transaction will be started at this newly created
+savepoint.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>name</th>
-          <td>the name to use for the new <code>Savepoint</code>.</td>
+          <td>a <code>String</code> containing the name of the savepoint</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Savepoint</code> object for this savepoint.</li></ul>
+      <ul class="nolist"><li>the new <code>Savepoint</code> object</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs,
+ this method is called while participating in a distributed transaction,
+ this method is called on a closed connection
+            or this <code>Connection</code> object is currently in
+            auto-commit mode</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3972,20 +4622,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an unnamed <code>Savepoint</code> in the current transaction.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an unnamed savepoint in the current transaction and
+ returns the new <code>Savepoint</code> object that represents it.
+
+<p> if setSavepoint is invoked outside of an active transaction, a transaction will be started at this newly created
+savepoint.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Savepoint</code> object for this savepoint.</li></ul>
+      <ul class="nolist"><li>the new <code>Savepoint</code> object</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database.
-</td>
+            <td>if a database access error occurs,
+ this method is called while participating in a distributed transaction,
+ this method is called on a closed connection
+            or this <code>Connection</code> object is currently in
+            auto-commit mode</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -4017,23 +4684,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the transaction isolation level for this Connection.
- <p>
- If this method is called during a transaction, the results are
- implementation defined.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to change the transaction isolation level for this
+ <code>Connection</code> object to the one given.
+ The constants defined in the interface <code>Connection</code>
+ are the possible transaction isolation levels.
+ <P>
+ <B>Note:</B> If this method is called during a transaction, the result
+ is implementation-defined.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>level</th>
-          <td>the new transaction isolation level to use from the following
-            list of possible values:
-            <ul>
-            <li><code><a href="reference/java/sql/Connection.html#TRANSACTION_READ_COMMITTED">TRANSACTION_READ_COMMITTED</a></code>
-            <li><code><a href="reference/java/sql/Connection.html#TRANSACTION_READ_UNCOMMITTED">TRANSACTION_READ_UNCOMMITTED</a></code>
-            <li><code><a href="reference/java/sql/Connection.html#TRANSACTION_REPEATABLE_READ">TRANSACTION_REPEATABLE_READ</a></code>
-            <li><code><a href="reference/java/sql/Connection.html#TRANSACTION_SERIALIZABLE">TRANSACTION_SERIALIZABLE</a></code>
-            </ul></td>
+          <td>one of the following <code>Connection</code> constants:
+        <code>Connection.TRANSACTION_READ_UNCOMMITTED</code>,
+        <code>Connection.TRANSACTION_READ_COMMITTED</code>,
+        <code>Connection.TRANSACTION_REPEATABLE_READ</code>, or
+        <code>Connection.TRANSACTION_SERIALIZABLE</code>.
+        (Note that <code>Connection.TRANSACTION_NONE</code> cannot be used
+        because it specifies that transactions are not supported.)</td>
         </tr>
       </table>
   </div>
@@ -4042,11 +4711,17 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem with the database or if the value of
-             <code>level</code> is not one of the expected constant values.
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection
+            or the given parameter is not one of the <code>Connection</code>
+            constants</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/DatabaseMetaData.html#supportsTransactionIsolationLevel(int)">supportsTransactionIsolationLevel(int)</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#getTransactionIsolation()">getTransactionIsolation()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -4078,14 +4753,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the <code>TypeMap</code> for this connection. The input <code>map</code>
- should contain mappings between complex Java and SQL types.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Installs the given <code>TypeMap</code> object as the type map for
+ this <code>Connection</code> object.  The type map will be used for the
+ custom mapping of SQL structured types and distinct types.
+<p>
+ You must set the the values for the <code>TypeMap</code> prior to
+ callng <code>setMap</code> as a JDBC driver may create an internal copy
+ of the <code>TypeMap</code>:
+ <p>
+ <pre>
+      Map myMap&lt;String,Class&lt;?&gt;&gt; = new HashMap&lt;String,Class&lt;?&gt;&gt;();
+      myMap.put("mySchemaName.ATHLETES", Athletes.class);
+      con.setTypeMap(myMap);
+ </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>map</th>
-          <td>the new type map.</td>
+          <td>the <code>java.util.Map</code> object to install
+        as the replacement for this <code>Connection</code>
+        object's default type map</td>
         </tr>
       </table>
   </div>
@@ -4094,10 +4782,22 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a problem accessing the database or if <code>map</code> is not an instance of <code><a href="reference/java/util/Map.html">Map</a></code>.
-</td>
+            <td>if a database access error occurs, this
+ method is called on a closed connection or
+        the given parameter is not a <code>java.util.Map</code>
+        object</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Connection.html#getTypeMap()">getTypeMap()</a></code></li>
+      </ul>
   </div>
 
     </div>

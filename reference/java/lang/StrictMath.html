@@ -165,22 +165,33 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Class StrictMath provides basic math constants and operations such as
- trigonometric functions, hyperbolic functions, exponential, logarithms, etc.
- <p>
- In contrast to class <code><a href="reference/java/lang/Math.html">Math</a></code>, the methods in this class return exactly
- the same results on all platforms. Algorithms based on these methods thus
- behave the same (e.g. regarding numerical convergence) on all platforms,
- complying with the slogan "write once, run everywhere". On the other side,
- the implementation of class StrictMath may be less efficient than that of
- class Math, as class StrictMath cannot utilize platform specific features
- such as an extended precision math co-processors.
- <p>
- The methods in this class are specified using the "Freely Distributable Math
- Library" (fdlibm), version 5.3.
- <p>
- <a href="http://www.netlib.org/fdlibm/">http://www.netlib.org/fdlibm/</a>
-</p>
+<p>The class <code>StrictMath</code> contains methods for performing basic
+ numeric operations such as the elementary exponential, logarithm,
+ square root, and trigonometric functions.
+
+ <p>To help ensure portability of Java programs, the definitions of
+ some of the numeric functions in this package require that they
+ produce the same results as certain published algorithms. These
+ algorithms are available from the well-known network library
+ <code>netlib</code> as the package "Freely Distributable Math
+ Library," <a
+ href="ftp://ftp.netlib.org/fdlibm.tar"><code>fdlibm</code></a>. These
+ algorithms, which are written in the C programming language, are
+ then to be understood as executed with all floating-point
+ operations following the rules of Java floating-point arithmetic.
+
+ <p>The Java math library is defined with respect to
+ <code>fdlibm</code> version 5.3. Where <code>fdlibm</code> provides
+ more than one definition for a function (such as
+ <code>acos</code>), use the "IEEE 754 core function" version
+ (residing in a file whose name begins with the letter
+ <code>e</code>).  The methods which require <code>fdlibm</code>
+ semantics are <code>sin</code>, <code>cos</code>, <code>tan</code>,
+ <code>asin</code>, <code>acos</code>, <code>atan</code>,
+ <code>exp</code>, <code>log</code>, <code>log10</code>,
+ <code>cbrt</code>, <code>atan2</code>, <code>pow</code>,
+ <code>sinh</code>, <code>cosh</code>, <code>tanh</code>,
+ <code>hypot</code>, <code>expm1</code>, and <code>log1p</code>.</p>
 
 
 
@@ -228,15 +239,17 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">double</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/StrictMath.html#E">E</a></td>
-        <td class="jd-descrcol" width="100%">The double value closest to e, the base of the natural logarithm.</td>
+        <td class="jd-descrcol" width="100%">The <code>double</code> value that is closer than any other to
+ <i>e</i>, the base of the natural logarithms.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">double</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/StrictMath.html#PI">PI</a></td>
-        <td class="jd-descrcol" width="100%">The double value closest to pi, the ratio of a circle's circumference to
- its diameter.</td>
+        <td class="jd-descrcol" width="100%">The <code>double</code> value that is closer than any other to
+ <i>pi</i>, the ratio of the circumference of a circle to its
+ diameter.</td>
     </tr>
     
     
@@ -274,10 +287,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#IEEEremainder(double, double)">IEEEremainder</a></span>(double x, double y)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#IEEEremainder(double, double)">IEEEremainder</a></span>(double f1, double f2)
         
-        <div class="jd-descrdiv">Returns the remainder of dividing <code>x</code> by <code>y</code> using the IEEE
- 754 rules.</div>
+        <div class="jd-descrdiv">Computes the remainder operation on two arguments as prescribed
+ by the IEEE 754 standard.</div>
   
   </td></tr>
 
@@ -293,9 +306,9 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(long)">abs</a></span>(long l)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(long)">abs</a></span>(long a)
         
-        <div class="jd-descrdiv">Returns the absolute value of the argument.</div>
+        <div class="jd-descrdiv">Returns the absolute value of a <code>long</code> value.</div>
   
   </td></tr>
 
@@ -311,9 +324,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(int)">abs</a></span>(int i)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(int)">abs</a></span>(int a)
         
-        <div class="jd-descrdiv">Returns the absolute value of the argument.</div>
+        <div class="jd-descrdiv">Returns the absolute value of an <code>int</code> value..</div>
   
   </td></tr>
 
@@ -329,9 +342,9 @@ layout: api
             float
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(float)">abs</a></span>(float f)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(float)">abs</a></span>(float a)
         
-        <div class="jd-descrdiv">Returns the absolute value of the argument.</div>
+        <div class="jd-descrdiv">Returns the absolute value of a <code>float</code> value.</div>
   
   </td></tr>
 
@@ -347,9 +360,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(double)">abs</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#abs(double)">abs</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the absolute value of the argument.</div>
+        <div class="jd-descrdiv">Returns the absolute value of a <code>double</code> value.</div>
   
   </td></tr>
 
@@ -365,10 +378,48 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#acos(double)">acos</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#acos(double)">acos</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the arc cosine of the
- argument within the range <code>[0..pi]</code>.</div>
+        <div class="jd-descrdiv">Returns the arc cosine of a value; the returned angle is in the
+ range 0.0 through <i>pi</i>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#addExact(int, int)">addExact</a></span>(int x, int y)
+        
+        <div class="jd-descrdiv">Returns the sum of its arguments,
+ throwing an exception if the result overflows an <code>int</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#addExact(long, long)">addExact</a></span>(long x, long y)
+        
+        <div class="jd-descrdiv">Returns the sum of its arguments,
+ throwing an exception if the result overflows a <code>long</code>.</div>
   
   </td></tr>
 
@@ -384,10 +435,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#asin(double)">asin</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#asin(double)">asin</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the arc sine of the argument
- within the range <code>[-pi/2..pi/2]</code>.</div>
+        <div class="jd-descrdiv">Returns the arc sine of a value; the returned angle is in the
+ range -<i>pi</i>/2 through <i>pi</i>/2.</div>
   
   </td></tr>
 
@@ -403,10 +454,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#atan(double)">atan</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#atan(double)">atan</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the arc tangent of the
- argument within the range <code>[-pi/2..pi/2]</code>.</div>
+        <div class="jd-descrdiv">Returns the arc tangent of a value; the returned angle is in the
+ range -<i>pi</i>/2 through <i>pi</i>/2.</div>
   
   </td></tr>
 
@@ -424,8 +475,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#atan2(double, double)">atan2</a></span>(double y, double x)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the arc tangent of
- <code>y/x</code> within the range <code>[-pi..pi]</code>.</div>
+        <div class="jd-descrdiv">Returns the angle <i>theta</i> from the conversion of rectangular
+ coordinates (<code>x</code>,&nbsp;<code>y</code>) to polar
+ coordinates (r,&nbsp;<i>theta</i>).</div>
   
   </td></tr>
 
@@ -441,10 +493,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#cbrt(double)">cbrt</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#cbrt(double)">cbrt</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the cube root of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the cube root of a <code>double</code> value.</div>
   
   </td></tr>
 
@@ -460,10 +511,11 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#ceil(double)">ceil</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#ceil(double)">ceil</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the double conversion of the most negative (closest to negative
- infinity) integer value greater than or equal to the argument.</div>
+        <div class="jd-descrdiv">Returns the smallest (closest to negative infinity)
+ <code>double</code> value that is greater than or equal to the
+ argument and is equal to a mathematical integer.</div>
   
   </td></tr>
 
@@ -481,7 +533,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#copySign(float, float)">copySign</a></span>(float magnitude, float sign)
         
-        <div class="jd-descrdiv">Returns a float with the given magnitude and the sign of <code>sign</code>.</div>
+        <div class="jd-descrdiv">Returns the first floating-point argument with the sign of the
+ second floating-point argument.</div>
   
   </td></tr>
 
@@ -499,7 +552,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#copySign(double, double)">copySign</a></span>(double magnitude, double sign)
         
-        <div class="jd-descrdiv">Returns a double with the given magnitude and the sign of <code>sign</code>.</div>
+        <div class="jd-descrdiv">Returns the first floating-point argument with the sign of the
+ second floating-point argument.</div>
   
   </td></tr>
 
@@ -515,9 +569,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#cos(double)">cos</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#cos(double)">cos</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the cosine of the argument.</div>
+        <div class="jd-descrdiv">Returns the trigonometric cosine of an angle.</div>
   
   </td></tr>
 
@@ -535,8 +589,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#cosh(double)">cosh</a></span>(double x)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the hyperbolic cosine of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the hyperbolic cosine of a <code>double</code> value.</div>
   
   </td></tr>
 
@@ -552,10 +605,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#exp(double)">exp</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#exp(double)">exp</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the raising "e" to the power
- of the argument.</div>
+        <div class="jd-descrdiv">Returns Euler's number <i>e</i> raised to the power of a
+ <code>double</code> value.</div>
   
   </td></tr>
 
@@ -573,8 +626,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#expm1(double)">expm1</a></span>(double x)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of <i><code>e</code></i><sup>
- <code>d</code></sup><code>- 1</code>.</div>
+        <div class="jd-descrdiv">Returns <i>e</i><sup>x</sup>&nbsp;-1.</div>
   
   </td></tr>
 
@@ -590,10 +642,85 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#floor(double)">floor</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#floor(double)">floor</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the double conversion of the most positive (closest to positive
- infinity) integer less than or equal to the argument.</div>
+        <div class="jd-descrdiv">Returns the largest (closest to positive infinity)
+ <code>double</code> value that is less than or equal to the
+ argument and is equal to a mathematical integer.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#floorDiv(int, int)">floorDiv</a></span>(int x, int y)
+        
+        <div class="jd-descrdiv">Returns the largest (closest to positive infinity)
+ <code>int</code> value that is less than or equal to the algebraic quotient.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#floorDiv(long, long)">floorDiv</a></span>(long x, long y)
+        
+        <div class="jd-descrdiv">Returns the largest (closest to positive infinity)
+ <code>long</code> value that is less than or equal to the algebraic quotient.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#floorMod(long, long)">floorMod</a></span>(long x, long y)
+        
+        <div class="jd-descrdiv">Returns the floor modulus of the <code>long</code> arguments.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#floorMod(int, int)">floorMod</a></span>(int x, int y)
+        
+        <div class="jd-descrdiv">Returns the floor modulus of the <code>int</code> arguments.</div>
   
   </td></tr>
 
@@ -611,7 +738,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#getExponent(double)">getExponent</a></span>(double d)
         
-        <div class="jd-descrdiv">Returns the exponent of double <code>d</code>.</div>
+        <div class="jd-descrdiv">Returns the unbiased exponent used in the representation of a
+ <code>double</code>.</div>
   
   </td></tr>
 
@@ -629,7 +757,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#getExponent(float)">getExponent</a></span>(float f)
         
-        <div class="jd-descrdiv">Returns the exponent of float <code>f</code>.</div>
+        <div class="jd-descrdiv">Returns the unbiased exponent used in the representation of a
+ <code>float</code>.</div>
   
   </td></tr>
 
@@ -647,8 +776,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#hypot(double, double)">hypot</a></span>(double x, double y)
         
-        <div class="jd-descrdiv">Returns <code>sqrt(</code><i><code>x</code></i><sup><code>2</code></sup><code>+</code> <i>
- <code>y</code></i><sup><code>2</code></sup><code>)</code>.</div>
+        <div class="jd-descrdiv">Returns sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)
+ without intermediate overflow or underflow.</div>
   
   </td></tr>
 
@@ -664,10 +793,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#log(double)">log</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#log(double)">log</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the natural logarithm of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the natural logarithm (base <i>e</i>) of a <code>double</code>
+ value.</div>
   
   </td></tr>
 
@@ -683,10 +812,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#log10(double)">log10</a></span>(double x)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#log10(double)">log10</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the base 10 logarithm of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the base 10 logarithm of a <code>double</code> value.</div>
   
   </td></tr>
 
@@ -704,8 +832,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#log1p(double)">log1p</a></span>(double x)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the natural logarithm of the
- sum of the argument and 1.</div>
+        <div class="jd-descrdiv">Returns the natural logarithm of the sum of the argument and 1.</div>
   
   </td></tr>
 
@@ -721,10 +848,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(int, int)">max</a></span>(int i1, int i2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(int, int)">max</a></span>(int a, int b)
         
-        <div class="jd-descrdiv">Returns the most positive (closest to positive infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the greater of two <code>int</code> values.</div>
   
   </td></tr>
 
@@ -740,10 +866,9 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(long, long)">max</a></span>(long l1, long l2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(long, long)">max</a></span>(long a, long b)
         
-        <div class="jd-descrdiv">Returns the most positive (closest to positive infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the greater of two <code>long</code> values.</div>
   
   </td></tr>
 
@@ -759,10 +884,9 @@ layout: api
             float
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(float, float)">max</a></span>(float f1, float f2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(float, float)">max</a></span>(float a, float b)
         
-        <div class="jd-descrdiv">Returns the most positive (closest to positive infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the greater of two <code>float</code> values.</div>
   
   </td></tr>
 
@@ -778,10 +902,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(double, double)">max</a></span>(double d1, double d2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#max(double, double)">max</a></span>(double a, double b)
         
-        <div class="jd-descrdiv">Returns the most positive (closest to positive infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the greater of two <code>double</code> values.</div>
   
   </td></tr>
 
@@ -797,10 +920,9 @@ layout: api
             float
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(float, float)">min</a></span>(float f1, float f2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(float, float)">min</a></span>(float a, float b)
         
-        <div class="jd-descrdiv">Returns the most negative (closest to negative infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the smaller of two <code>float</code> values.</div>
   
   </td></tr>
 
@@ -816,10 +938,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(double, double)">min</a></span>(double d1, double d2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(double, double)">min</a></span>(double a, double b)
         
-        <div class="jd-descrdiv">Returns the most negative (closest to negative infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the smaller of two <code>double</code> values.</div>
   
   </td></tr>
 
@@ -835,10 +956,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(int, int)">min</a></span>(int i1, int i2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(int, int)">min</a></span>(int a, int b)
         
-        <div class="jd-descrdiv">Returns the most negative (closest to negative infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the smaller of two <code>int</code> values.</div>
   
   </td></tr>
 
@@ -854,10 +974,47 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(long, long)">min</a></span>(long l1, long l2)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#min(long, long)">min</a></span>(long a, long b)
         
-        <div class="jd-descrdiv">Returns the most negative (closest to negative infinity) of the two
- arguments.</div>
+        <div class="jd-descrdiv">Returns the smaller of two <code>long</code> values.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#multiplyExact(int, int)">multiplyExact</a></span>(int x, int y)
+        
+        <div class="jd-descrdiv">Returns the product of the arguments,
+ throwing an exception if the result overflows an <code>int</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#multiplyExact(long, long)">multiplyExact</a></span>(long x, long y)
+        
+        <div class="jd-descrdiv">Returns the product of the arguments,
+ throwing an exception if the result overflows a <code>long</code>.</div>
   
   </td></tr>
 
@@ -875,8 +1032,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#nextAfter(double, double)">nextAfter</a></span>(double start, double direction)
         
-        <div class="jd-descrdiv">Returns the next double after <code>start</code> in the given
- <code>direction</code>.</div>
+        <div class="jd-descrdiv">Returns the floating-point number adjacent to the first
+ argument in the direction of the second argument.</div>
   
   </td></tr>
 
@@ -894,8 +1051,46 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#nextAfter(float, double)">nextAfter</a></span>(float start, double direction)
         
-        <div class="jd-descrdiv">Returns the next float after <code>start</code> in the given <code>direction</code>
- .</div>
+        <div class="jd-descrdiv">Returns the floating-point number adjacent to the first
+ argument in the direction of the second argument.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#nextDown(double)">nextDown</a></span>(double d)
+        
+        <div class="jd-descrdiv">Returns the floating-point value adjacent to <code>d</code> in
+ the direction of negative infinity.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#nextDown(float)">nextDown</a></span>(float f)
+        
+        <div class="jd-descrdiv">Returns the floating-point value adjacent to <code>f</code> in
+ the direction of negative infinity.</div>
   
   </td></tr>
 
@@ -913,7 +1108,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#nextUp(float)">nextUp</a></span>(float f)
         
-        <div class="jd-descrdiv">Returns the next float larger than <code>f</code>.</div>
+        <div class="jd-descrdiv">Returns the floating-point value adjacent to <code>f</code> in
+ the direction of positive infinity.</div>
   
   </td></tr>
 
@@ -931,7 +1127,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#nextUp(double)">nextUp</a></span>(double d)
         
-        <div class="jd-descrdiv">Returns the next double larger than <code>d</code>.</div>
+        <div class="jd-descrdiv">Returns the floating-point value adjacent to <code>d</code> in
+ the direction of positive infinity.</div>
   
   </td></tr>
 
@@ -947,10 +1144,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#pow(double, double)">pow</a></span>(double x, double y)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#pow(double, double)">pow</a></span>(double a, double b)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the result of raising
- <code>x</code> to the power of <code>y</code>.</div>
+        <div class="jd-descrdiv">Returns the value of the first argument raised to the power of the
+ second argument.</div>
   
   </td></tr>
 
@@ -968,8 +1165,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#random()">random</a></span>()
         
-        <div class="jd-descrdiv">Returns a pseudo-random number between 0.0 (inclusive) and 1.0
- (exclusive).</div>
+        <div class="jd-descrdiv">Returns a <code>double</code> value with a positive sign, greater
+ than or equal to <code>0.0</code> and less than <code>1.0</code>.</div>
   
   </td></tr>
 
@@ -985,10 +1182,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#rint(double)">rint</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#rint(double)">rint</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the double conversion of the result of rounding the argument to
- an integer.</div>
+        <div class="jd-descrdiv">Returns the <code>double</code> value that is closest in value
+ to the argument and is equal to a mathematical integer.</div>
   
   </td></tr>
 
@@ -1004,9 +1201,10 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#round(double)">round</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#round(double)">round</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the result of rounding the argument to an integer.</div>
+        <div class="jd-descrdiv">Returns the closest <code>long</code> to the argument, with ties
+ rounding to positive infinity.</div>
   
   </td></tr>
 
@@ -1022,9 +1220,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#round(float)">round</a></span>(float f)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#round(float)">round</a></span>(float a)
         
-        <div class="jd-descrdiv">Returns the result of rounding the argument to an integer.</div>
+        <div class="jd-descrdiv">Returns the closest <code>int</code> to the argument, with ties
+ rounding to positive infinity.</div>
   
   </td></tr>
 
@@ -1040,9 +1239,12 @@ layout: api
             float
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#scalb(float, int)">scalb</a></span>(float d, int scaleFactor)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#scalb(float, int)">scalb</a></span>(float f, int scaleFactor)
         
-        <div class="jd-descrdiv">Returns <code>d</code> * 2^<code>scaleFactor</code>.</div>
+        <div class="jd-descrdiv">Return <code>f</code> &times;
+ 2<sup><code>scaleFactor</code></sup> rounded as if performed
+ by a single correctly rounded floating-point multiply to a
+ member of the float value set.</div>
   
   </td></tr>
 
@@ -1060,7 +1262,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#scalb(double, int)">scalb</a></span>(double d, int scaleFactor)
         
-        <div class="jd-descrdiv">Returns <code>d</code> * 2^<code>scaleFactor</code>.</div>
+        <div class="jd-descrdiv">Return <code>d</code> &times;
+ 2<sup><code>scaleFactor</code></sup> rounded as if performed
+ by a single correctly rounded floating-point multiply to a
+ member of the double value set.</div>
   
   </td></tr>
 
@@ -1078,7 +1283,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#signum(double)">signum</a></span>(double d)
         
-        <div class="jd-descrdiv">Returns the signum function of the argument.</div>
+        <div class="jd-descrdiv">Returns the signum function of the argument; zero if the argument
+ is zero, 1.0 if the argument is greater than zero, -1.0 if the
+ argument is less than zero.</div>
   
   </td></tr>
 
@@ -1096,7 +1303,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#signum(float)">signum</a></span>(float f)
         
-        <div class="jd-descrdiv">Returns the signum function of the argument.</div>
+        <div class="jd-descrdiv">Returns the signum function of the argument; zero if the argument
+ is zero, 1.0f if the argument is greater than zero, -1.0f if the
+ argument is less than zero.</div>
   
   </td></tr>
 
@@ -1112,9 +1321,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#sin(double)">sin</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#sin(double)">sin</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the sine of the argument.</div>
+        <div class="jd-descrdiv">Returns the trigonometric sine of an angle.</div>
   
   </td></tr>
 
@@ -1132,8 +1341,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#sinh(double)">sinh</a></span>(double x)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the hyperbolic sine of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the hyperbolic sine of a <code>double</code> value.</div>
   
   </td></tr>
 
@@ -1149,10 +1357,48 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#sqrt(double)">sqrt</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#sqrt(double)">sqrt</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the square root of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the correctly rounded positive square root of a
+ <code>double</code> value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#subtractExact(long, long)">subtractExact</a></span>(long x, long y)
+        
+        <div class="jd-descrdiv">Returns the difference of the arguments,
+ throwing an exception if the result overflows a <code>long</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#subtractExact(int, int)">subtractExact</a></span>(int x, int y)
+        
+        <div class="jd-descrdiv">Returns the difference of the arguments,
+ throwing an exception if the result overflows an <code>int</code>.</div>
   
   </td></tr>
 
@@ -1168,9 +1414,9 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#tan(double)">tan</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#tan(double)">tan</a></span>(double a)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the tangent of the argument.</div>
+        <div class="jd-descrdiv">Returns the trigonometric tangent of an angle.</div>
   
   </td></tr>
 
@@ -1188,8 +1434,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#tanh(double)">tanh</a></span>(double x)
         
-        <div class="jd-descrdiv">Returns the closest double approximation of the hyperbolic tangent of the
- argument.</div>
+        <div class="jd-descrdiv">Returns the hyperbolic tangent of a <code>double</code> value.</div>
   
   </td></tr>
 
@@ -1207,7 +1452,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#toDegrees(double)">toDegrees</a></span>(double angrad)
         
-        <div class="jd-descrdiv">Returns the measure in degrees of the supplied radian angle.</div>
+        <div class="jd-descrdiv">Converts an angle measured in radians to an approximately
+ equivalent angle measured in degrees.</div>
   
   </td></tr>
 
@@ -1220,12 +1466,13 @@ layout: api
             
             static
             
-            double
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#toRadians(double)">toRadians</a></span>(double angdeg)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#toIntExact(long)">toIntExact</a></span>(long value)
         
-        <div class="jd-descrdiv">Returns the measure in radians of the supplied degree angle.</div>
+        <div class="jd-descrdiv">Returns the value of the <code>long</code> argument;
+ throwing an exception if the value overflows an <code>int</code>.</div>
   
   </td></tr>
 
@@ -1241,9 +1488,10 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#ulp(double)">ulp</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#toRadians(double)">toRadians</a></span>(double angdeg)
         
-        <div class="jd-descrdiv">Returns the argument's ulp (unit in the last place).</div>
+        <div class="jd-descrdiv">Converts an angle measured in degrees to an approximately
+ equivalent angle measured in radians.</div>
   
   </td></tr>
 
@@ -1256,12 +1504,30 @@ layout: api
             
             static
             
+            double
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#ulp(double)">ulp</a></span>(double d)
+        
+        <div class="jd-descrdiv">Returns the size of an ulp of the argument.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
             float
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/StrictMath.html#ulp(float)">ulp</a></span>(float f)
         
-        <div class="jd-descrdiv">Returns the argument's ulp (unit in the last place).</div>
+        <div class="jd-descrdiv">Returns the size of an ulp of the argument.</div>
   
   </td></tr>
 
@@ -1562,7 +1828,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The double value closest to e, the base of the natural logarithm.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>double</code> value that is closer than any other to
+ <i>e</i>, the base of the natural logarithms.
 </p></div>
 
     
@@ -1602,8 +1869,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The double value closest to pi, the ratio of a circle's circumference to
- its diameter.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>double</code> value that is closer than any other to
+ <i>pi</i>, the ratio of the circumference of a circle to its
+ diameter.
 </p></div>
 
     
@@ -1654,7 +1922,7 @@ From class
         double
       </span>
       <span class="sympad">IEEEremainder</span>
-      <span class="normal">(double x, double y)</span>
+      <span class="normal">(double f1, double f2)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1666,39 +1934,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the remainder of dividing <code>x</code> by <code>y</code> using the IEEE
- 754 rules. The result is <code>x-round(x/p)*p</code> where <code>round(x/p)</code>
- is the nearest integer (rounded to even), but without numerical
- cancellation problems.
- <p>
+  <div class="jd-tagdata jd-tagdescr"><p>Computes the remainder operation on two arguments as prescribed
+ by the IEEE 754 standard.
+ The remainder value is mathematically equal to
+ <code>f1&nbsp;-&nbsp;f2</code>&nbsp;&times;&nbsp;<i>n</i>,
+ where <i>n</i> is the mathematical integer closest to the exact
+ mathematical value of the quotient <code>f1/f2</code>, and if two
+ mathematical integers are equally close to <code>f1/f2</code>,
+ then <i>n</i> is the integer that is even. If the remainder is
+ zero, its sign is the same as the sign of the first argument.
  Special cases:
- <ul>
- <li><code>IEEEremainder((anything), 0) = NaN</code></li>
- <li><code>IEEEremainder(+infinity, (anything)) = NaN</code></li>
- <li><code>IEEEremainder(-infinity, (anything)) = NaN</code></li>
- <li><code>IEEEremainder(NaN, (anything)) = NaN</code></li>
- <li><code>IEEEremainder((anything), NaN) = NaN</code></li>
- <li><code>IEEEremainder(x, +infinity) = x </code> where x is anything but
- +/-infinity</li>
- <li><code>IEEEremainder(x, -infinity) = x </code> where x is anything but
- +/-infinity</li>
- </ul></p></div>
+ <ul><li>If either argument is NaN, or the first argument is infinite,
+ or the second argument is positive zero or negative zero, then the
+ result is NaN.
+ <li>If the first argument is finite and the second argument is
+ infinite, then the result is the same as the first argument.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the numerator of the operation.</td>
+          <th>f1</th>
+          <td>the dividend.</td>
         </tr>
         <tr>
-          <th>y</th>
-          <td>the denominator of the operation.</td>
+          <th>f2</th>
+          <td>the divisor.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the IEEE754 floating point reminder of of <code>x/y</code>.
+      <ul class="nolist"><li>the remainder when <code>f1</code> is divided by
+          <code>f2</code>.
 </li></ul>
   </div>
 
@@ -1719,7 +1986,7 @@ From class
         long
       </span>
       <span class="sympad">abs</span>
-      <span class="normal">(long l)</span>
+      <span class="normal">(long a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1731,11 +1998,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
- <p>
- If the argument is <code>Long.MIN_VALUE</code>, <code>Long.MIN_VALUE</code> is
- returned.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of a <code>long</code> value.
+ If the argument is not negative, the argument is returned.
+ If the argument is negative, the negation of the argument is returned.
+
+ <p>Note that if the argument is equal to the value of
+ <code><a href="reference/java/lang/Long.html#MIN_VALUE">MIN_VALUE</a></code>, the most negative representable
+ <code>long</code> value, the result is that same value, which
+ is negative.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the  argument whose absolute value is to be determined.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the absolute value of the argument.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1754,7 +2038,7 @@ From class
         int
       </span>
       <span class="sympad">abs</span>
-      <span class="normal">(int i)</span>
+      <span class="normal">(int a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1766,11 +2050,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
- <p>
- If the argument is <code>Integer.MIN_VALUE</code>, <code>Integer.MIN_VALUE</code>
- is returned.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of an <code>int</code> value..
+ If the argument is not negative, the argument is returned.
+ If the argument is negative, the negation of the argument is returned.
+
+ <p>Note that if the argument is equal to the value of
+ <code><a href="reference/java/lang/Integer.html#MIN_VALUE">MIN_VALUE</a></code>, the most negative representable
+ <code>int</code> value, the result is that same value, which is
+ negative.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the  argument whose absolute value is to be determined.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the absolute value of the argument.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1789,7 +2090,7 @@ From class
         float
       </span>
       <span class="sympad">abs</span>
-      <span class="normal">(float f)</span>
+      <span class="normal">(float a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1801,16 +2102,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
- <p>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of a <code>float</code> value.
+ If the argument is not negative, the argument is returned.
+ If the argument is negative, the negation of the argument is returned.
  Special cases:
- <ul>
- <li><code>abs(-0.0) = +0.0</code></li>
- <li><code>abs(+infinity) = +infinity</code></li>
- <li><code>abs(-infinity) = +infinity</code></li>
- <li><code>abs(NaN) = NaN</code></li>
- </ul>
-</p></div>
+ <ul><li>If the argument is positive zero or negative zero, the
+ result is positive zero.
+ <li>If the argument is infinite, the result is positive infinity.
+ <li>If the argument is NaN, the result is NaN.</ul>
+ In other words, the result is the same as the value of the expression:
+ <p><code>Float.intBitsToFloat(0x7fffffff &amp; Float.floatToIntBits(a))</code></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the argument whose absolute value is to be determined</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the absolute value of the argument.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1829,7 +2144,7 @@ From class
         double
       </span>
       <span class="sympad">abs</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1841,16 +2156,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
- <p>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of a <code>double</code> value.
+ If the argument is not negative, the argument is returned.
+ If the argument is negative, the negation of the argument is returned.
  Special cases:
- <ul>
- <li><code>abs(-0.0) = +0.0</code></li>
- <li><code>abs(+infinity) = +infinity</code></li>
- <li><code>abs(-infinity) = +infinity</code></li>
- <li><code>abs(NaN) = NaN</code></li>
- </ul>
-</p></div>
+ <ul><li>If the argument is positive zero or negative zero, the result
+ is positive zero.
+ <li>If the argument is infinite, the result is positive infinity.
+ <li>If the argument is NaN, the result is NaN.</ul>
+ In other words, the result is the same as the value of the expression:
+ <p><code>Double.longBitsToDouble((Double.doubleToLongBits(a)&lt;&lt;1)&gt;&gt;&gt;1)</code></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the argument whose absolute value is to be determined</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the absolute value of the argument.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1869,7 +2198,7 @@ From class
         double
       </span>
       <span class="sympad">acos</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1881,21 +2210,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc cosine of the
- argument within the range <code>[0..pi]</code>.
- <p>
- Special cases:
- <ul>
- <li><code>acos((anything > 1) = NaN</code></li>
- <li><code>acos((anything < -1) = NaN</code></li>
- <li><code>acos(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the arc cosine of a value; the returned angle is in the
+ range 0.0 through <i>pi</i>.  Special case:
+ <ul><li>If the argument is NaN or its absolute value is greater
+ than 1, then the result is NaN.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value to compute arc cosine of.</td>
+          <th>a</th>
+          <td>the value whose arc cosine is to be returned.</td>
         </tr>
       </table>
   </div>
@@ -1903,6 +2227,132 @@ From class
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>the arc cosine of the argument.
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="addExact(int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">addExact</span>
+      <span class="normal">(int x, int y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the sum of its arguments,
+ throwing an exception if the result overflows an <code>int</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first value</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the result overflows an int</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#addExact(int, int)">addExact(int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="addExact(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">addExact</span>
+      <span class="normal">(long x, long y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the sum of its arguments,
+ throwing an exception if the result overflows a <code>long</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first value</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the result overflows a long</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#addExact(long, long)">addExact(long, long)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1922,7 +2372,7 @@ From class
         double
       </span>
       <span class="sympad">asin</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1934,21 +2384,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc sine of the argument
- within the range <code>[-pi/2..pi/2]</code>.
- <p>
- Special cases:
- <ul>
- <li><code>asin((anything > 1)) = NaN</code></li>
- <li><code>asin((anything < -1)) = NaN</code></li>
- <li><code>asin(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the arc sine of a value; the returned angle is in the
+ range -<i>pi</i>/2 through <i>pi</i>/2.  Special cases:
+ <ul><li>If the argument is NaN or its absolute value is greater
+ than 1, then the result is NaN.
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value whose arc sine has to be computed.</td>
+          <th>a</th>
+          <td>the value whose arc sine is to be returned.</td>
         </tr>
       </table>
   </div>
@@ -1975,7 +2422,7 @@ From class
         double
       </span>
       <span class="sympad">atan</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1987,23 +2434,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc tangent of the
- argument within the range <code>[-pi/2..pi/2]</code>.
- <p>
- Special cases:
- <ul>
- <li><code>atan(+0.0) = +0.0</code></li>
- <li><code>atan(-0.0) = -0.0</code></li>
- <li><code>atan(+infinity) = +pi/2</code></li>
- <li><code>atan(-infinity) = -pi/2</code></li>
- <li><code>atan(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the arc tangent of a value; the returned angle is in the
+ range -<i>pi</i>/2 through <i>pi</i>/2.  Special cases:
+ <ul><li>If the argument is NaN, then the result is NaN.
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value whose arc tangent has to be computed.</td>
+          <th>a</th>
+          <td>the value whose arc tangent is to be returned.</td>
         </tr>
       </table>
   </div>
@@ -2042,51 +2483,65 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc tangent of
- <code>y/x</code> within the range <code>[-pi..pi]</code>. This is the angle of the
- polar representation of the rectangular coordinates (x,y).
- <p>
- Special cases:
- <ul>
- <li><code>atan2((anything), NaN ) = NaN;</code></li>
- <li><code>atan2(NaN , (anything) ) = NaN;</code></li>
- <li><code>atan2(+0.0, +(anything but NaN)) = +0.0</code></li>
- <li><code>atan2(-0.0, +(anything but NaN)) = -0.0</code></li>
- <li><code>atan2(+0.0, -(anything but NaN)) = +pi</code></li>
- <li><code>atan2(-0.0, -(anything but NaN)) = -pi</code></li>
- <li><code>atan2(+(anything but 0 and NaN), 0) = +pi/2</code></li>
- <li><code>atan2(-(anything but 0 and NaN), 0) = -pi/2</code></li>
- <li><code>atan2(+(anything but infinity and NaN), +infinity)</code> <code>=</code>
- <code>+0.0</code></li>
- <li><code>atan2(-(anything but infinity and NaN), +infinity)</code> <code>=</code>
- <code>-0.0</code></li>
- <li><code>atan2(+(anything but infinity and NaN), -infinity) = +pi</code></li>
- <li><code>atan2(-(anything but infinity and NaN), -infinity) = -pi</code></li>
- <li><code>atan2(+infinity, +infinity ) = +pi/4</code></li>
- <li><code>atan2(-infinity, +infinity ) = -pi/4</code></li>
- <li><code>atan2(+infinity, -infinity ) = +3pi/4</code></li>
- <li><code>atan2(-infinity, -infinity ) = -3pi/4</code></li>
- <li><code>atan2(+infinity, (anything but,0, NaN, and infinity))</code>
- <code>=</code> <code>+pi/2</code></li>
- <li><code>atan2(-infinity, (anything but,0, NaN, and infinity))</code>
- <code>=</code> <code>-pi/2</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the angle <i>theta</i> from the conversion of rectangular
+ coordinates (<code>x</code>,&nbsp;<code>y</code>) to polar
+ coordinates (r,&nbsp;<i>theta</i>).
+ This method computes the phase <i>theta</i> by computing an arc tangent
+ of <code>y/x</code> in the range of -<i>pi</i> to <i>pi</i>. Special
+ cases:
+ <ul><li>If either argument is NaN, then the result is NaN.
+ <li>If the first argument is positive zero and the second argument
+ is positive, or the first argument is positive and finite and the
+ second argument is positive infinity, then the result is positive
+ zero.
+ <li>If the first argument is negative zero and the second argument
+ is positive, or the first argument is negative and finite and the
+ second argument is positive infinity, then the result is negative zero.
+ <li>If the first argument is positive zero and the second argument
+ is negative, or the first argument is positive and finite and the
+ second argument is negative infinity, then the result is the
+ <code>double</code> value closest to <i>pi</i>.
+ <li>If the first argument is negative zero and the second argument
+ is negative, or the first argument is negative and finite and the
+ second argument is negative infinity, then the result is the
+ <code>double</code> value closest to -<i>pi</i>.
+ <li>If the first argument is positive and the second argument is
+ positive zero or negative zero, or the first argument is positive
+ infinity and the second argument is finite, then the result is the
+ <code>double</code> value closest to <i>pi</i>/2.
+ <li>If the first argument is negative and the second argument is
+ positive zero or negative zero, or the first argument is negative
+ infinity and the second argument is finite, then the result is the
+ <code>double</code> value closest to -<i>pi</i>/2.
+ <li>If both arguments are positive infinity, then the result is the
+ <code>double</code> value closest to <i>pi</i>/4.
+ <li>If the first argument is positive infinity and the second argument
+ is negative infinity, then the result is the <code>double</code>
+ value closest to 3*<i>pi</i>/4.
+ <li>If the first argument is negative infinity and the second argument
+ is positive infinity, then the result is the <code>double</code> value
+ closest to -<i>pi</i>/4.
+ <li>If both arguments are negative infinity, then the result is the
+ <code>double</code> value closest to -3*<i>pi</i>/4.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>y</th>
-          <td>the numerator of the value whose atan has to be computed.</td>
+          <td>the ordinate coordinate</td>
         </tr>
         <tr>
           <th>x</th>
-          <td>the denominator of the value whose atan has to be computed.</td>
+          <td>the abscissa coordinate</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the arc tangent of <code>y/x</code>.
+      <ul class="nolist"><li>the <i>theta</i> component of the point
+          (<i>r</i>,&nbsp;<i>theta</i>)
+          in polar coordinates that corresponds to the point
+          (<i>x</i>,&nbsp;<i>y</i>) in Cartesian coordinates.
 </li></ul>
   </div>
 
@@ -2107,7 +2562,7 @@ From class
         double
       </span>
       <span class="sympad">cbrt</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2119,30 +2574,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the cube root of the
- argument.
- <p>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the cube root of a <code>double</code> value.  For
+ positive finite <code>x</code>, <code>cbrt(-x) ==
+ -cbrt(x)</code>; that is, the cube root of a negative value is
+ the negative of the cube root of that value's magnitude.
  Special cases:
+
  <ul>
- <li><code>cbrt(+0.0) = +0.0</code></li>
- <li><code>cbrt(-0.0) = -0.0</code></li>
- <li><code>cbrt(+infinity) = +infinity</code></li>
- <li><code>cbrt(-infinity) = -infinity</code></li>
- <li><code>cbrt(NaN) = NaN</code></li>
+
+ <li>If the argument is NaN, then the result is NaN.
+
+ <li>If the argument is infinite, then the result is an infinity
+ with the same sign as the argument.
+
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value whose cube root has to be computed.</td>
+          <th>a</th>
+          <td>a value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the cube root of the argument.
-</li></ul>
+      <ul class="nolist"><li>the cube root of <code>a</code>.</li></ul>
   </div>
 
     </div>
@@ -2162,7 +2622,7 @@ From class
         double
       </span>
       <span class="sympad">ceil</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2174,19 +2634,33 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the double conversion of the most negative (closest to negative
- infinity) integer value greater than or equal to the argument.
- <p>
- Special cases:
- <ul>
- <li><code>ceil(+0.0) = +0.0</code></li>
- <li><code>ceil(-0.0) = -0.0</code></li>
- <li><code>ceil((anything in range (-1,0)) = -0.0</code></li>
- <li><code>ceil(+infinity) = +infinity</code></li>
- <li><code>ceil(-infinity) = -infinity</code></li>
- <li><code>ceil(NaN) = NaN</code></li>
- </ul>
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smallest (closest to negative infinity)
+ <code>double</code> value that is greater than or equal to the
+ argument and is equal to a mathematical integer. Special cases:
+ <ul><li>If the argument value is already equal to a
+ mathematical integer, then the result is the same as the
+ argument.  <li>If the argument is NaN or an infinity or
+ positive zero or negative zero, then the result is the same as
+ the argument.  <li>If the argument value is less than zero but
+ greater than -1.0, then the result is negative zero.</ul> Note
+ that the value of <code>StrictMath.ceil(x)</code> is exactly the
+ value of <code>-StrictMath.floor(-x)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>a value.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smallest (closest to negative infinity)
+          floating-point value that is greater than or equal to
+          the argument and is equal to a mathematical integer.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2217,8 +2691,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a float with the given magnitude and the sign of <code>sign</code>. If
- <code>sign</code> is NaN, the sign of the result is positive.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the first floating-point argument with the sign of the
+ second floating-point argument.  For this method, a NaN
+ <code>sign</code> argument is always treated as if it were
+ positive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>magnitude</th>
+          <td>the parameter providing the magnitude of the result</td>
+        </tr>
+        <tr>
+          <th>sign</th>
+          <td>the parameter providing the sign of the result</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a value with the magnitude of <code>magnitude</code>
+ and the sign of <code>sign</code>.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2249,8 +2743,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a double with the given magnitude and the sign of <code>sign</code>.
- If <code>sign</code> is NaN, the sign of the result is positive.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the first floating-point argument with the sign of the
+ second floating-point argument.  For this method, a NaN
+ <code>sign</code> argument is always treated as if it were
+ positive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>magnitude</th>
+          <td>the parameter providing the magnitude of the result</td>
+        </tr>
+        <tr>
+          <th>sign</th>
+          <td>the parameter providing the sign of the result</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a value with the magnitude of <code>magnitude</code>
+ and the sign of <code>sign</code>.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2269,7 +2783,7 @@ From class
         double
       </span>
       <span class="sympad">cos</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2281,20 +2795,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the cosine of the argument.
- <p>
- Special cases:
- <ul>
- <li><code>cos(+infinity) = NaN</code></li>
- <li><code>cos(-infinity) = NaN</code></li>
- <li><code>cos(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the trigonometric cosine of an angle. Special cases:
+ <ul><li>If the argument is NaN or an infinity, then the
+ result is NaN.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the angle whose cosine has to be computed, in radians.</td>
+          <th>a</th>
+          <td>an angle, in radians.</td>
         </tr>
       </table>
   </div>
@@ -2333,28 +2842,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the hyperbolic cosine of the
- argument.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hyperbolic cosine of a <code>double</code> value.
+ The hyperbolic cosine of <i>x</i> is defined to be
+ (<i>e<sup>x</sup>&nbsp;+&nbsp;e<sup>-x</sup></i>)/2
+ where <i>e</i> is {@linkplain Math#E Euler's number}.
+
+ <p>Special cases:
  <ul>
- <li><code>cosh(+infinity) = +infinity</code></li>
- <li><code>cosh(-infinity) = +infinity</code></li>
- <li><code>cosh(NaN) = NaN</code></li>
+
+ <li>If the argument is NaN, then the result is NaN.
+
+ <li>If the argument is infinite, then the result is positive
+ infinity.
+
+ <li>If the argument is zero, then the result is <code>1.0</code>.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>x</th>
-          <td>the value whose hyperbolic cosine has to be computed.</td>
+          <td>The number whose hyperbolic cosine is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the hyperbolic cosine of the argument.
-</li></ul>
+      <ul class="nolist"><li>The hyperbolic cosine of <code>x</code>.</li></ul>
   </div>
 
     </div>
@@ -2374,7 +2889,7 @@ From class
         double
       </span>
       <span class="sympad">exp</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2386,27 +2901,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the raising "e" to the power
- of the argument.
- <p>
- Special cases:
- <ul>
- <li><code>exp(+infinity) = +infinity</code></li>
- <li><code>exp(-infinity) = +0.0</code></li>
- <li><code>exp(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns Euler's number <i>e</i> raised to the power of a
+ <code>double</code> value. Special cases:
+ <ul><li>If the argument is NaN, the result is NaN.
+ <li>If the argument is positive infinity, then the result is
+ positive infinity.
+ <li>If the argument is negative infinity, then the result is
+ positive zero.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value whose exponential has to be computed.</td>
+          <th>a</th>
+          <td>the exponent to raise <i>e</i> to.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the exponential of the argument.
+      <ul class="nolist"><li>the value <i>e</i><sup><code>a</code></sup>,
+          where <i>e</i> is the base of the natural logarithms.
 </li></ul>
   </div>
 
@@ -2439,34 +2953,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of <i><code>e</code></i><sup>
- <code>d</code></sup><code>- 1</code>. If the argument is very close to 0, it is
- much more accurate to use <code>expm1(d)+1</code> than <code>exp(d)</code> (due to
- cancellation of significant digits).
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <i>e</i><sup>x</sup>&nbsp;-1.  Note that for values of
+ <i>x</i> near 0, the exact sum of
+ <code>expm1(x)</code>&nbsp;+&nbsp;1 is much closer to the true
+ result of <i>e</i><sup>x</sup> than <code>exp(x)</code>.
+
+ <p>Special cases:
  <ul>
- <li><code>expm1(+0.0) = +0.0</code></li>
- <li><code>expm1(-0.0) = -0.0</code></li>
- <li><code>expm1(+infinity) = +infinity</code></li>
- <li><code>expm1(-infinity) = -1.0</code></li>
- <li><code>expm1(NaN) = NaN</code></li>
+ <li>If the argument is NaN, the result is NaN.
+
+ <li>If the argument is positive infinity, then the result is
+ positive infinity.
+
+ <li>If the argument is negative infinity, then the result is
+ -1.0.
+
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>x</th>
-          <td>the value to compute the <i><code>e</code></i><sup><code>d</code></sup>
-            <code>- 1</code> of.</td>
+          <td>the exponent to raise <i>e</i> to in the computation of
+              <i>e</i><sup><code>x</code></sup>&nbsp;-1.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the <i><code>e</code></i><sup><code>d</code></sup><code>- 1</code> value of the
-         argument.
-</li></ul>
+      <ul class="nolist"><li>the value <i>e</i><sup><code>x</code></sup>&nbsp;-&nbsp;1.</li></ul>
   </div>
 
     </div>
@@ -2486,7 +3004,7 @@ From class
         double
       </span>
       <span class="sympad">floor</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2498,18 +3016,320 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the double conversion of the most positive (closest to positive
- infinity) integer less than or equal to the argument.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the largest (closest to positive infinity)
+ <code>double</code> value that is less than or equal to the
+ argument and is equal to a mathematical integer. Special cases:
+ <ul><li>If the argument value is already equal to a
+ mathematical integer, then the result is the same as the
+ argument.  <li>If the argument is NaN or an infinity or
+ positive zero or negative zero, then the result is the same as
+ the argument.</ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>a value.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the largest (closest to positive infinity)
+          floating-point value that less than or equal to the argument
+          and is equal to a mathematical integer.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="floorDiv(int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">floorDiv</span>
+      <span class="normal">(int x, int y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the largest (closest to positive infinity)
+ <code>int</code> value that is less than or equal to the algebraic quotient.
+ There is one special case, if the dividend is the
+ {@linkplain Integer#MIN_VALUE Integer.MIN_VALUE} and the divisor is <code>-1</code>,
+ then integer overflow occurs and
+ the result is equal to the <code>Integer.MIN_VALUE</code>.
  <p>
- Special cases:
+ See <code><a href="reference/java/lang/Math.html#floorDiv(int, int)">Math.floorDiv</a></code> for examples and
+ a comparison to the integer division <code>/</code> operator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the dividend</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the divisor</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the largest (closest to positive infinity)
+ <code>int</code> value that is less than or equal to the algebraic quotient.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the divisor <code>y</code> is zero</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#floorDiv(int, int)">floorDiv(int, int)</a></code></li><li><code><a href="../../../reference/java/lang/Math.html#floor(double)">floor(double)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="floorDiv(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">floorDiv</span>
+      <span class="normal">(long x, long y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the largest (closest to positive infinity)
+ <code>long</code> value that is less than or equal to the algebraic quotient.
+ There is one special case, if the dividend is the
+ {@linkplain Long#MIN_VALUE Long.MIN_VALUE} and the divisor is <code>-1</code>,
+ then integer overflow occurs and
+ the result is equal to the <code>Long.MIN_VALUE</code>.
+ <p>
+ See <code><a href="reference/java/lang/Math.html#floorDiv(int, int)">Math.floorDiv</a></code> for examples and
+ a comparison to the integer division <code>/</code> operator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the dividend</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the divisor</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the largest (closest to positive infinity)
+ <code>long</code> value that is less than or equal to the algebraic quotient.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the divisor <code>y</code> is zero</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#floorDiv(long, long)">floorDiv(long, long)</a></code></li><li><code><a href="../../../reference/java/lang/Math.html#floor(double)">floor(double)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="floorMod(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">floorMod</span>
+      <span class="normal">(long x, long y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floor modulus of the <code>long</code> arguments.
+ <p>
+ The floor modulus is <code>x - (floorDiv(x, y) * y)</code>,
+ has the same sign as the divisor <code>y</code>, and
+ is in the range of <code>-abs(y) &lt; r &lt; +abs(y)</code>.
+ <p>
+ The relationship between <code>floorDiv</code> and <code>floorMod</code> is such that:
  <ul>
- <li><code>floor(+0.0) = +0.0</code></li>
- <li><code>floor(-0.0) = -0.0</code></li>
- <li><code>floor(+infinity) = +infinity</code></li>
- <li><code>floor(-infinity) = -infinity</code></li>
- <li><code>floor(NaN) = NaN</code></li>
+   <li><code>floorDiv(x, y) * y + floorMod(x, y) == x</code>
  </ul>
-</p></div>
+ <p>
+ See <code><a href="reference/java/lang/Math.html#floorMod(int, int)">Math.floorMod</a></code> for examples and
+ a comparison to the <code>%</code> operator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the dividend</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the divisor</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the floor modulus <code>x - (floorDiv(x, y) * y)</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the divisor <code>y</code> is zero</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#floorMod(long, long)">floorMod(long, long)</a></code></li><li><code><a href="../../../reference/java/lang/StrictMath.html#floorDiv(long, long)">floorDiv(long, long)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="floorMod(int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">floorMod</span>
+      <span class="normal">(int x, int y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floor modulus of the <code>int</code> arguments.
+ <p>
+ The floor modulus is <code>x - (floorDiv(x, y) * y)</code>,
+ has the same sign as the divisor <code>y</code>, and
+ is in the range of <code>-abs(y) &lt; r &lt; +abs(y)</code>.
+ <p>
+ The relationship between <code>floorDiv</code> and <code>floorMod</code> is such that:
+ <ul>
+   <li><code>floorDiv(x, y) * y + floorMod(x, y) == x</code>
+ </ul>
+ <p>
+ See <code><a href="reference/java/lang/Math.html#floorMod(int, int)">Math.floorMod</a></code> for examples and
+ a comparison to the <code>%</code> operator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the dividend</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the divisor</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the floor modulus <code>x - (floorDiv(x, y) * y)</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the divisor <code>y</code> is zero</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#floorMod(int, int)">floorMod(int, int)</a></code></li><li><code><a href="../../../reference/java/lang/StrictMath.html#floorDiv(int, int)">floorDiv(int, int)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2540,7 +3360,24 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the exponent of double <code>d</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the unbiased exponent used in the representation of a
+ <code>double</code>.  Special cases:
+
+ <ul>
+ <li>If the argument is NaN or infinite, then the result is
+ <code><a href="reference/java/lang/Double.html#MAX_EXPONENT">MAX_EXPONENT</a></code> + 1.
+ <li>If the argument is zero or subnormal, then the result is
+ <code><a href="reference/java/lang/Double.html#MIN_EXPONENT">MIN_EXPONENT</a></code> -1.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>d</th>
+          <td>a <code>double</code> value</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2571,7 +3408,24 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the exponent of float <code>f</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the unbiased exponent used in the representation of a
+ <code>float</code>.  Special cases:
+
+ <ul>
+ <li>If the argument is NaN or infinite, then the result is
+ <code><a href="reference/java/lang/Float.html#MAX_EXPONENT">MAX_EXPONENT</a></code> + 1.
+ <li>If the argument is zero or subnormal, then the result is
+ <code><a href="reference/java/lang/Float.html#MIN_EXPONENT">MIN_EXPONENT</a></code> -1.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>f</th>
+          <td>a <code>float</code> value</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2602,37 +3456,36 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>sqrt(</code><i><code>x</code></i><sup><code>2</code></sup><code>+</code> <i>
- <code>y</code></i><sup><code>2</code></sup><code>)</code>. The final result is without
- medium underflow or overflow.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)
+ without intermediate overflow or underflow.
+
+ <p>Special cases:
  <ul>
- <li><code>hypot(+infinity, (anything including NaN)) = +infinity</code></li>
- <li><code>hypot(-infinity, (anything including NaN)) = +infinity</code></li>
- <li><code>hypot((anything including NaN), +infinity) = +infinity</code></li>
- <li><code>hypot((anything including NaN), -infinity) = +infinity</code></li>
- <li><code>hypot(NaN, NaN) = NaN</code></li>
+
+ <li> If either argument is infinite, then the result
+ is positive infinity.
+
+ <li> If either argument is NaN and neither argument is infinite,
+ then the result is NaN.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>x</th>
-          <td>a double number.</td>
+          <td>a value</td>
         </tr>
         <tr>
           <th>y</th>
-          <td>a double number.</td>
+          <td>a value</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the <code>sqrt(</code><i><code>x</code></i><sup><code>2</code></sup><code>+</code>
-         <i> <code>y</code></i><sup><code>2</code></sup><code>)</code> value of the
-         arguments.
-</li></ul>
+      <ul class="nolist"><li>sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)
+ without intermediate overflow or underflow</li></ul>
   </div>
 
     </div>
@@ -2652,7 +3505,7 @@ From class
         double
       </span>
       <span class="sympad">log</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2664,30 +3517,27 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the natural logarithm of the
- argument.
- <p>
- Special cases:
- <ul>
- <li><code>log(+0.0) = -infinity</code></li>
- <li><code>log(-0.0) = -infinity</code></li>
- <li><code>log((anything < 0) = NaN</code></li>
- <li><code>log(+infinity) = +infinity</code></li>
- <li><code>log(-infinity) = NaN</code></li>
- <li><code>log(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the natural logarithm (base <i>e</i>) of a <code>double</code>
+ value. Special cases:
+ <ul><li>If the argument is NaN or less than zero, then the result
+ is NaN.
+ <li>If the argument is positive infinity, then the result is
+ positive infinity.
+ <li>If the argument is positive zero or negative zero, then the
+ result is negative infinity.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value whose log has to be computed.</td>
+          <th>a</th>
+          <td>a value</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the natural logarithm of the argument.
+      <ul class="nolist"><li>the value ln&nbsp;<code>a</code>, the natural logarithm of
+          <code>a</code>.
 </li></ul>
   </div>
 
@@ -2708,7 +3558,7 @@ From class
         double
       </span>
       <span class="sympad">log10</span>
-      <span class="normal">(double x)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2720,31 +3570,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the base 10 logarithm of the
- argument.
- <p>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the base 10 logarithm of a <code>double</code> value.
  Special cases:
- <ul>
- <li><code>log10(+0.0) = -infinity</code></li>
- <li><code>log10(-0.0) = -infinity</code></li>
- <li><code>log10((anything < 0) = NaN</code></li>
- <li><code>log10(+infinity) = +infinity</code></li>
- <li><code>log10(-infinity) = NaN</code></li>
- <li><code>log10(NaN) = NaN</code></li>
+
+ <ul><li>If the argument is NaN or less than zero, then the result
+ is NaN.
+ <li>If the argument is positive infinity, then the result is
+ positive infinity.
+ <li>If the argument is positive zero or negative zero, then the
+ result is negative infinity.
+ <li> If the argument is equal to 10<sup><i>n</i></sup> for
+ integer <i>n</i>, then the result is <i>n</i>.
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the value whose base 10 log has to be computed.</td>
+          <th>a</th>
+          <td>a value</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the the base 10 logarithm of x
-</li></ul>
+      <ul class="nolist"><li>the base 10 logarithm of  <code>a</code>.</li></ul>
   </div>
 
     </div>
@@ -2776,34 +3625,41 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the natural logarithm of the
- sum of the argument and 1. If the argument is very close to 0, it is much
- more accurate to use <code>log1p(d)</code> than <code>log(1.0+d)</code> (due to
- numerical cancellation).
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the natural logarithm of the sum of the argument and 1.
+ Note that for small values <code>x</code>, the result of
+ <code>log1p(x)</code> is much closer to the true result of ln(1
+ + <code>x</code>) than the floating-point evaluation of
+ <code>log(1.0+x)</code>.
+
+ <p>Special cases:
  <ul>
- <li><code>log1p(+0.0) = +0.0</code></li>
- <li><code>log1p(-0.0) = -0.0</code></li>
- <li><code>log1p((anything < 1)) = NaN</code></li>
- <li><code>log1p(-1.0) = -infinity</code></li>
- <li><code>log1p(+infinity) = +infinity</code></li>
- <li><code>log1p(-infinity) = NaN</code></li>
- <li><code>log1p(NaN) = NaN</code></li>
+
+ <li>If the argument is NaN or less than -1, then the result is
+ NaN.
+
+ <li>If the argument is positive infinity, then the result is
+ positive infinity.
+
+ <li>If the argument is negative one, then the result is
+ negative infinity.
+
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>x</th>
-          <td>the value to compute the <code>ln(1+d)</code> of.</td>
+          <td>a value</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the natural logarithm of the sum of the argument and 1.
-</li></ul>
+      <ul class="nolist"><li>the value ln(<code>x</code>&nbsp;+&nbsp;1), the natural
+ log of <code>x</code>&nbsp;+&nbsp;1</li></ul>
   </div>
 
     </div>
@@ -2823,7 +3679,7 @@ From class
         int
       </span>
       <span class="sympad">max</span>
-      <span class="normal">(int i1, int i2)</span>
+      <span class="normal">(int a, int b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2835,9 +3691,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
- arguments.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greater of two <code>int</code> values. That is, the
+ result is the argument closer to the value of
+ <code><a href="reference/java/lang/Integer.html#MAX_VALUE">MAX_VALUE</a></code>. If the arguments have the same value,
+ the result is that same value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the larger of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2856,7 +3731,7 @@ From class
         long
       </span>
       <span class="sympad">max</span>
-      <span class="normal">(long l1, long l2)</span>
+      <span class="normal">(long a, long b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2868,9 +3743,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
- arguments.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greater of two <code>long</code> values. That is, the
+ result is the argument closer to the value of
+ <code><a href="reference/java/lang/Long.html#MAX_VALUE">MAX_VALUE</a></code>. If the arguments have the same value,
+ the result is that same value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the larger of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2889,7 +3783,7 @@ From class
         float
       </span>
       <span class="sympad">max</span>
-      <span class="normal">(float f1, float f2)</span>
+      <span class="normal">(float a, float b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2901,17 +3795,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
- arguments.
- <p>
- Special cases:
- <ul>
- <li><code>max(NaN, (anything)) = NaN</code></li>
- <li><code>max((anything), NaN) = NaN</code></li>
- <li><code>max(+0.0, -0.0) = +0.0</code></li>
- <li><code>max(-0.0, +0.0) = +0.0</code></li>
- </ul>
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greater of two <code>float</code> values.  That is,
+ the result is the argument closer to positive infinity. If the
+ arguments have the same value, the result is that same
+ value. If either value is NaN, then the result is NaN.  Unlike
+ the numerical comparison operators, this method considers
+ negative zero to be strictly smaller than positive zero. If one
+ argument is positive zero and the other negative zero, the
+ result is positive zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the larger of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2930,7 +3839,7 @@ From class
         double
       </span>
       <span class="sympad">max</span>
-      <span class="normal">(double d1, double d2)</span>
+      <span class="normal">(double a, double b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2942,17 +3851,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
- arguments.
- <p>
- Special cases:
- <ul>
- <li><code>max(NaN, (anything)) = NaN</code></li>
- <li><code>max((anything), NaN) = NaN</code></li>
- <li><code>max(+0.0, -0.0) = +0.0</code></li>
- <li><code>max(-0.0, +0.0) = +0.0</code></li>
- </ul>
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greater of two <code>double</code> values.  That
+ is, the result is the argument closer to positive infinity. If
+ the arguments have the same value, the result is that same
+ value. If either value is NaN, then the result is NaN.  Unlike
+ the numerical comparison operators, this method considers
+ negative zero to be strictly smaller than positive zero. If one
+ argument is positive zero and the other negative zero, the
+ result is positive zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the larger of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2971,7 +3895,7 @@ From class
         float
       </span>
       <span class="sympad">min</span>
-      <span class="normal">(float f1, float f2)</span>
+      <span class="normal">(float a, float b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2983,17 +3907,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
- arguments.
- <p>
- Special cases:
- <ul>
- <li><code>min(NaN, (anything)) = NaN</code></li>
- <li><code>min((anything), NaN) = NaN</code></li>
- <li><code>min(+0.0, -0.0) = -0.0</code></li>
- <li><code>min(-0.0, +0.0) = -0.0</code></li>
- </ul>
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smaller of two <code>float</code> values.  That is,
+ the result is the value closer to negative infinity. If the
+ arguments have the same value, the result is that same
+ value. If either value is NaN, then the result is NaN.  Unlike
+ the numerical comparison operators, this method considers
+ negative zero to be strictly smaller than positive zero.  If
+ one argument is positive zero and the other is negative zero,
+ the result is negative zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smaller of <code>a</code> and <code>b.</code>
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3012,7 +3951,7 @@ From class
         double
       </span>
       <span class="sympad">min</span>
-      <span class="normal">(double d1, double d2)</span>
+      <span class="normal">(double a, double b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3024,17 +3963,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
- arguments.
- <p>
- Special cases:
- <ul>
- <li><code>min(NaN, (anything)) = NaN</code></li>
- <li><code>min((anything), NaN) = NaN</code></li>
- <li><code>min(+0.0, -0.0) = -0.0</code></li>
- <li><code>min(-0.0, +0.0) = -0.0</code></li>
- </ul>
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smaller of two <code>double</code> values.  That
+ is, the result is the value closer to negative infinity. If the
+ arguments have the same value, the result is that same
+ value. If either value is NaN, then the result is NaN.  Unlike
+ the numerical comparison operators, this method considers
+ negative zero to be strictly smaller than positive zero. If one
+ argument is positive zero and the other is negative zero, the
+ result is negative zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smaller of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3053,7 +4007,7 @@ From class
         int
       </span>
       <span class="sympad">min</span>
-      <span class="normal">(int i1, int i2)</span>
+      <span class="normal">(int a, int b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3065,9 +4019,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
- arguments.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smaller of two <code>int</code> values. That is,
+ the result the argument closer to the value of
+ <code><a href="reference/java/lang/Integer.html#MIN_VALUE">MIN_VALUE</a></code>.  If the arguments have the same
+ value, the result is that same value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smaller of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3086,7 +4059,7 @@ From class
         long
       </span>
       <span class="sympad">min</span>
-      <span class="normal">(long l1, long l2)</span>
+      <span class="normal">(long a, long b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3098,9 +4071,154 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
- arguments.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smaller of two <code>long</code> values. That is,
+ the result is the argument closer to the value of
+ <code><a href="reference/java/lang/Long.html#MIN_VALUE">MIN_VALUE</a></code>. If the arguments have the same
+ value, the result is that same value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an argument.</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>another argument.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smaller of <code>a</code> and <code>b</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="multiplyExact(int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">multiplyExact</span>
+      <span class="normal">(int x, int y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the product of the arguments,
+ throwing an exception if the result overflows an <code>int</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first value</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the result overflows an int</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#multiplyExact(int, int)">multiplyExact(int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="multiplyExact(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">multiplyExact</span>
+      <span class="normal">(long x, long y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the product of the arguments,
+ throwing an exception if the result overflows a <code>long</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first value</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the result overflows a long</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#multiplyExact(long, long)">multiplyExact(long, long)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -3131,8 +4249,55 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next double after <code>start</code> in the given
- <code>direction</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floating-point number adjacent to the first
+ argument in the direction of the second argument.  If both
+ arguments compare as equal the second argument is returned.
+
+ <p>Special cases:
+ <ul>
+ <li> If either argument is a NaN, then NaN is returned.
+
+ <li> If both arguments are signed zeros, <code>direction</code>
+ is returned unchanged (as implied by the requirement of
+ returning the second argument if the arguments compare as
+ equal).
+
+ <li> If <code>start</code> is
+ &plusmn;<code><a href="reference/java/lang/Double.html#MIN_VALUE">MIN_VALUE</a></code> and <code>direction</code>
+ has a value such that the result should have a smaller
+ magnitude, then a zero with the same sign as <code>start</code>
+ is returned.
+
+ <li> If <code>start</code> is infinite and
+ <code>direction</code> has a value such that the result should
+ have a smaller magnitude, <code><a href="reference/java/lang/Double.html#MAX_VALUE">MAX_VALUE</a></code> with the
+ same sign as <code>start</code> is returned.
+
+ <li> If <code>start</code> is equal to &plusmn;
+ <code><a href="reference/java/lang/Double.html#MAX_VALUE">MAX_VALUE</a></code> and <code>direction</code> has a
+ value such that the result should have a larger magnitude, an
+ infinity with same sign as <code>start</code> is returned.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>start</th>
+          <td>starting floating-point value</td>
+        </tr>
+        <tr>
+          <th>direction</th>
+          <td>value indicating which of
+ <code>start</code>'s neighbors or <code>start</code> should
+ be returned</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The floating-point number adjacent to <code>start</code> in the
+ direction of <code>direction</code>.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3163,8 +4328,178 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next float after <code>start</code> in the given <code>direction</code>
- .</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floating-point number adjacent to the first
+ argument in the direction of the second argument.  If both
+ arguments compare as equal a value equivalent to the second argument
+ is returned.
+
+ <p>Special cases:
+ <ul>
+ <li> If either argument is a NaN, then NaN is returned.
+
+ <li> If both arguments are signed zeros, a value equivalent
+ to <code>direction</code> is returned.
+
+ <li> If <code>start</code> is
+ &plusmn;<code><a href="reference/java/lang/Float.html#MIN_VALUE">MIN_VALUE</a></code> and <code>direction</code>
+ has a value such that the result should have a smaller
+ magnitude, then a zero with the same sign as <code>start</code>
+ is returned.
+
+ <li> If <code>start</code> is infinite and
+ <code>direction</code> has a value such that the result should
+ have a smaller magnitude, <code><a href="reference/java/lang/Float.html#MAX_VALUE">MAX_VALUE</a></code> with the
+ same sign as <code>start</code> is returned.
+
+ <li> If <code>start</code> is equal to &plusmn;
+ <code><a href="reference/java/lang/Float.html#MAX_VALUE">MAX_VALUE</a></code> and <code>direction</code> has a
+ value such that the result should have a larger magnitude, an
+ infinity with same sign as <code>start</code> is returned.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>start</th>
+          <td>starting floating-point value</td>
+        </tr>
+        <tr>
+          <th>direction</th>
+          <td>value indicating which of
+ <code>start</code>'s neighbors or <code>start</code> should
+ be returned</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The floating-point number adjacent to <code>start</code> in the
+ direction of <code>direction</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="nextDown(double)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad">nextDown</span>
+      <span class="normal">(double d)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floating-point value adjacent to <code>d</code> in
+ the direction of negative infinity.  This method is
+ semantically equivalent to <code>nextAfter(d,
+ Double.NEGATIVE_INFINITY)</code>; however, a
+ <code>nextDown</code> implementation may run faster than its
+ equivalent <code>nextAfter</code> call.
+
+ <p>Special Cases:
+ <ul>
+ <li> If the argument is NaN, the result is NaN.
+
+ <li> If the argument is negative infinity, the result is
+ negative infinity.
+
+ <li> If the argument is zero, the result is
+ <code>-Double.MIN_VALUE</code>
+
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>d</th>
+          <td>starting floating-point value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The adjacent floating-point value closer to negative
+ infinity.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="nextDown(float)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad">nextDown</span>
+      <span class="normal">(float f)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floating-point value adjacent to <code>f</code> in
+ the direction of negative infinity.  This method is
+ semantically equivalent to <code>nextAfter(f,
+ Float.NEGATIVE_INFINITY)</code>; however, a
+ <code>nextDown</code> implementation may run faster than its
+ equivalent <code>nextAfter</code> call.
+
+ <p>Special Cases:
+ <ul>
+ <li> If the argument is NaN, the result is NaN.
+
+ <li> If the argument is negative infinity, the result is
+ negative infinity.
+
+ <li> If the argument is zero, the result is
+ <code>-Float.MIN_VALUE</code>
+
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>f</th>
+          <td>starting floating-point value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The adjacent floating-point value closer to negative
+ infinity.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3195,7 +4530,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next float larger than <code>f</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floating-point value adjacent to <code>f</code> in
+ the direction of positive infinity.  This method is
+ semantically equivalent to <code>nextAfter(f,
+ Float.POSITIVE_INFINITY)</code>; however, a <code>nextUp</code>
+ implementation may run faster than its equivalent
+ <code>nextAfter</code> call.
+
+ <p>Special Cases:
+ <ul>
+ <li> If the argument is NaN, the result is NaN.
+
+ <li> If the argument is positive infinity, the result is
+ positive infinity.
+
+ <li> If the argument is zero, the result is
+ <code><a href="reference/java/lang/Float.html#MIN_VALUE">MIN_VALUE</a></code>
+
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>f</th>
+          <td>starting floating-point value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The adjacent floating-point value closer to positive
+ infinity.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3226,7 +4592,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next double larger than <code>d</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the floating-point value adjacent to <code>d</code> in
+ the direction of positive infinity.  This method is
+ semantically equivalent to <code>nextAfter(d,
+ Double.POSITIVE_INFINITY)</code>; however, a <code>nextUp</code>
+ implementation may run faster than its equivalent
+ <code>nextAfter</code> call.
+
+ <p>Special Cases:
+ <ul>
+ <li> If the argument is NaN, the result is NaN.
+
+ <li> If the argument is positive infinity, the result is
+ positive infinity.
+
+ <li> If the argument is zero, the result is
+ <code><a href="reference/java/lang/Double.html#MIN_VALUE">MIN_VALUE</a></code>
+
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>d</th>
+          <td>starting floating-point value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The adjacent floating-point value closer to positive
+ infinity.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -3245,7 +4642,7 @@ From class
         double
       </span>
       <span class="sympad">pow</span>
-      <span class="normal">(double x, double y)</span>
+      <span class="normal">(double a, double b)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3257,52 +4654,135 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the result of raising
- <code>x</code> to the power of <code>y</code>.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the first argument raised to the power of the
+ second argument. Special cases:
+
+ <ul><li>If the second argument is positive or negative zero, then the
+ result is 1.0.
+ <li>If the second argument is 1.0, then the result is the same as the
+ first argument.
+ <li>If the second argument is NaN, then the result is NaN.
+ <li>If the first argument is NaN and the second argument is nonzero,
+ then the result is NaN.
+
+ <li>If
  <ul>
- <li><code>pow((anything), +0.0) = 1.0</code></li>
- <li><code>pow((anything), -0.0) = 1.0</code></li>
- <li><code>pow(x, 1.0) = x</code></li>
- <li><code>pow((anything), NaN) = NaN</code></li>
- <li><code>pow(NaN, (anything except 0)) = NaN</code></li>
- <li><code>pow(+/-(|x| > 1), +infinity) = +infinity</code></li>
- <li><code>pow(+/-(|x| > 1), -infinity) = +0.0</code></li>
- <li><code>pow(+/-(|x| < 1), +infinity) = +0.0</code></li>
- <li><code>pow(+/-(|x| < 1), -infinity) = +infinity</code></li>
- <li><code>pow(+/-1.0 , +infinity) = NaN</code></li>
- <li><code>pow(+/-1.0 , -infinity) = NaN</code></li>
- <li><code>pow(+0.0, (+anything except 0, NaN)) = +0.0</code></li>
- <li><code>pow(-0.0, (+anything except 0, NaN, odd integer)) = +0.0</code></li>
- <li><code>pow(+0.0, (-anything except 0, NaN)) = +infinity</code></li>
- <li><code>pow(-0.0, (-anything except 0, NAN, odd integer))</code> <code>=</code>
- <code>+infinity</code></li>
- <li><code>pow(-0.0, (odd integer)) = -pow( +0 , (odd integer) )</code></li>
- <li><code>pow(+infinity, (+anything except 0, NaN)) = +infinity</code></li>
- <li><code>pow(+infinity, (-anything except 0, NaN)) = +0.0</code></li>
- <li><code>pow(-infinity, (anything)) = -pow(0, (-anything))</code></li>
- <li><code>pow((-anything), (integer))</code> <code>=</code>
- <code>pow(-1,(integer))*pow(+anything,integer)</code></li>
- <li><code>pow((-anything except 0 and infinity), (non-integer))</code>
- <code>=</code> <code>NAN</code></li>
- </ul></p></div>
+ <li>the absolute value of the first argument is greater than 1
+ and the second argument is positive infinity, or
+ <li>the absolute value of the first argument is less than 1 and
+ the second argument is negative infinity,
+ </ul>
+ then the result is positive infinity.
+
+ <li>If
+ <ul>
+ <li>the absolute value of the first argument is greater than 1 and
+ the second argument is negative infinity, or
+ <li>the absolute value of the
+ first argument is less than 1 and the second argument is positive
+ infinity,
+ </ul>
+ then the result is positive zero.
+
+ <li>If the absolute value of the first argument equals 1 and the
+ second argument is infinite, then the result is NaN.
+
+ <li>If
+ <ul>
+ <li>the first argument is positive zero and the second argument
+ is greater than zero, or
+ <li>the first argument is positive infinity and the second
+ argument is less than zero,
+ </ul>
+ then the result is positive zero.
+
+ <li>If
+ <ul>
+ <li>the first argument is positive zero and the second argument
+ is less than zero, or
+ <li>the first argument is positive infinity and the second
+ argument is greater than zero,
+ </ul>
+ then the result is positive infinity.
+
+ <li>If
+ <ul>
+ <li>the first argument is negative zero and the second argument
+ is greater than zero but not a finite odd integer, or
+ <li>the first argument is negative infinity and the second
+ argument is less than zero but not a finite odd integer,
+ </ul>
+ then the result is positive zero.
+
+ <li>If
+ <ul>
+ <li>the first argument is negative zero and the second argument
+ is a positive finite odd integer, or
+ <li>the first argument is negative infinity and the second
+ argument is a negative finite odd integer,
+ </ul>
+ then the result is negative zero.
+
+ <li>If
+ <ul>
+ <li>the first argument is negative zero and the second argument
+ is less than zero but not a finite odd integer, or
+ <li>the first argument is negative infinity and the second
+ argument is greater than zero but not a finite odd integer,
+ </ul>
+ then the result is positive infinity.
+
+ <li>If
+ <ul>
+ <li>the first argument is negative zero and the second argument
+ is a negative finite odd integer, or
+ <li>the first argument is negative infinity and the second
+ argument is a positive finite odd integer,
+ </ul>
+ then the result is negative infinity.
+
+ <li>If the first argument is finite and less than zero
+ <ul>
+ <li> if the second argument is a finite even integer, the
+ result is equal to the result of raising the absolute value of
+ the first argument to the power of the second argument
+
+ <li>if the second argument is a finite odd integer, the result
+ is equal to the negative of the result of raising the absolute
+ value of the first argument to the power of the second
+ argument
+
+ <li>if the second argument is finite and not an integer, then
+ the result is NaN.
+ </ul>
+
+ <li>If both arguments are integers, then the result is exactly equal
+ to the mathematical result of raising the first argument to the power
+ of the second argument if that result can in fact be represented
+ exactly as a <code>double</code> value.</ul>
+
+ <p>(In the foregoing descriptions, a floating-point value is
+ considered to be an integer if and only if it is finite and a
+ fixed point of the method <code><a href="reference/java/lang/StrictMath.html#ceil(double)">ceil</a></code> or,
+ equivalently, a fixed point of the method <code><a href="reference/java/lang/StrictMath.html#floor(double)">floor</a></code>. A value is a fixed point of a one-argument
+ method if and only if the result of applying the method to the
+ value is equal to the value.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>x</th>
-          <td>the base of the operation.</td>
+          <th>a</th>
+          <td>base.</td>
         </tr>
         <tr>
-          <th>y</th>
-          <td>the exponent of the operation.</td>
+          <th>b</th>
+          <td>the exponent.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>x</code> to the power of <code>y</code>.
+      <ul class="nolist"><li>the value <code>a</code><sup><code>b</code></sup>.
 </li></ul>
   </div>
 
@@ -3335,12 +4815,32 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a pseudo-random number between 0.0 (inclusive) and 1.0
- (exclusive).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>double</code> value with a positive sign, greater
+ than or equal to <code>0.0</code> and less than <code>1.0</code>.
+ Returned values are chosen pseudorandomly with (approximately)
+ uniform distribution from that range.
+
+ <p>When this method is first called, it creates a single new
+ pseudorandom-number generator, exactly as if by the expression
+
+ <blockquote><code>new java.util.Random()</code></blockquote>
+
+ This new pseudorandom-number generator is used thereafter for
+ all calls to this method and is used nowhere else.
+
+ <p>This method is properly synchronized to allow correct use by
+ more than one thread. However, if many threads need to generate
+ pseudorandom numbers at a great rate, it may reduce contention
+ for each thread to have its own pseudorandom number generator.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a pseudo-random number.
-</li></ul>
+      <ul class="nolist"><li>a pseudorandom <code>double</code> greater than or equal
+ to <code>0.0</code> and less than <code>1.0</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Random.html#nextDouble()">nextDouble()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3360,7 +4860,7 @@ From class
         double
       </span>
       <span class="sympad">rint</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3372,30 +4872,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the double conversion of the result of rounding the argument to
- an integer. Tie breaks are rounded towards even.
- <p>
- Special cases:
- <ul>
- <li><code>rint(+0.0) = +0.0</code></li>
- <li><code>rint(-0.0) = -0.0</code></li>
- <li><code>rint(+infinity) = +infinity</code></li>
- <li><code>rint(-infinity) = -infinity</code></li>
- <li><code>rint(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>double</code> value that is closest in value
+ to the argument and is equal to a mathematical integer. If two
+ <code>double</code> values that are mathematical integers are
+ equally close to the value of the argument, the result is the
+ integer value that is even. Special cases:
+ <ul><li>If the argument value is already equal to a mathematical
+ integer, then the result is the same as the argument.
+ <li>If the argument is NaN or an infinity or positive zero or negative
+ zero, then the result is the same as the argument.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the value to be rounded.</td>
+          <th>a</th>
+          <td>a value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the closest integer to the argument (as a double).
-</li></ul>
+      <ul class="nolist"><li>the closest floating-point value to <code>a</code> that is
+          equal to a mathematical integer.</li></ul>
   </div>
 
     </div>
@@ -3415,7 +4913,7 @@ From class
         long
       </span>
       <span class="sympad">round</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3427,32 +4925,36 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of rounding the argument to an integer. The result is
- equivalent to <code>(long) Math.floor(d+0.5)</code>.
- <p>
- Special cases:
- <ul>
- <li><code>round(+0.0) = +0.0</code></li>
- <li><code>round(-0.0) = +0.0</code></li>
- <li><code>round((anything > Long.MAX_VALUE) = Long.MAX_VALUE</code></li>
- <li><code>round((anything < Long.MIN_VALUE) = Long.MIN_VALUE</code></li>
- <li><code>round(+infinity) = Long.MAX_VALUE</code></li>
- <li><code>round(-infinity) = Long.MIN_VALUE</code></li>
- <li><code>round(NaN) = +0.0</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest <code>long</code> to the argument, with ties
+ rounding to positive infinity.
+
+ <p>Special cases:
+ <ul><li>If the argument is NaN, the result is 0.
+ <li>If the argument is negative infinity or any value less than or
+ equal to the value of <code>Long.MIN_VALUE</code>, the result is
+ equal to the value of <code>Long.MIN_VALUE</code>.
+ <li>If the argument is positive infinity or any value greater than or
+ equal to the value of <code>Long.MAX_VALUE</code>, the result is
+ equal to the value of <code>Long.MAX_VALUE</code>.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the value to be rounded.</td>
+          <th>a</th>
+          <td>a floating-point value to be rounded to a
+          <code>long</code>.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the closest integer to the argument.
-</li></ul>
+      <ul class="nolist"><li>the value of the argument rounded to the nearest
+          <code>long</code> value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html#MAX_VALUE">MAX_VALUE</a></code></li><li><code><a href="../../../reference/java/lang/Long.html#MIN_VALUE">MIN_VALUE</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3472,7 +4974,7 @@ From class
         int
       </span>
       <span class="sympad">round</span>
-      <span class="normal">(float f)</span>
+      <span class="normal">(float a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3484,32 +4986,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of rounding the argument to an integer. The result is
- equivalent to <code>(int) Math.floor(f+0.5)</code>.
- <p>
- Special cases:
- <ul>
- <li><code>round(+0.0) = +0.0</code></li>
- <li><code>round(-0.0) = +0.0</code></li>
- <li><code>round((anything > Integer.MAX_VALUE) = Integer.MAX_VALUE</code></li>
- <li><code>round((anything < Integer.MIN_VALUE) = Integer.MIN_VALUE</code></li>
- <li><code>round(+infinity) = Integer.MAX_VALUE</code></li>
- <li><code>round(-infinity) = Integer.MIN_VALUE</code></li>
- <li><code>round(NaN) = +0.0</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest <code>int</code> to the argument, with ties
+ rounding to positive infinity.
+
+ <p>Special cases:
+ <ul><li>If the argument is NaN, the result is 0.
+ <li>If the argument is negative infinity or any value less than or
+ equal to the value of <code>Integer.MIN_VALUE</code>, the result is
+ equal to the value of <code>Integer.MIN_VALUE</code>.
+ <li>If the argument is positive infinity or any value greater than or
+ equal to the value of <code>Integer.MAX_VALUE</code>, the result is
+ equal to the value of <code>Integer.MAX_VALUE</code>.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>f</th>
-          <td>the value to be rounded.</td>
+          <th>a</th>
+          <td>a floating-point value to be rounded to an integer.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the closest integer to the argument.
-</li></ul>
+      <ul class="nolist"><li>the value of the argument rounded to the nearest
+          <code>int</code> value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html#MAX_VALUE">MAX_VALUE</a></code></li><li><code><a href="../../../reference/java/lang/Integer.html#MIN_VALUE">MIN_VALUE</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -3529,7 +5034,7 @@ From class
         float
       </span>
       <span class="sympad">scalb</span>
-      <span class="normal">(float d, int scaleFactor)</span>
+      <span class="normal">(float f, int scaleFactor)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3541,7 +5046,45 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>d</code> * 2^<code>scaleFactor</code>. The result may be rounded.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>f</code> &times;
+ 2<sup><code>scaleFactor</code></sup> rounded as if performed
+ by a single correctly rounded floating-point multiply to a
+ member of the float value set.  See the Java
+ Language Specification for a discussion of floating-point
+ value sets.  If the exponent of the result is between <code><a href="reference/java/lang/Float.html#MIN_EXPONENT">MIN_EXPONENT</a></code> and <code><a href="reference/java/lang/Float.html#MAX_EXPONENT">MAX_EXPONENT</a></code>, the
+ answer is calculated exactly.  If the exponent of the result
+ would be larger than <code>Float.MAX_EXPONENT</code>, an
+ infinity is returned.  Note that if the result is subnormal,
+ precision may be lost; that is, when <code>scalb(x, n)</code>
+ is subnormal, <code>scalb(scalb(x, n), -n)</code> may not equal
+ <i>x</i>.  When the result is non-NaN, the result has the same
+ sign as <code>f</code>.
+
+ <p>Special cases:
+ <ul>
+ <li> If the first argument is NaN, NaN is returned.
+ <li> If the first argument is infinite, then an infinity of the
+ same sign is returned.
+ <li> If the first argument is zero, then a zero of the same
+ sign is returned.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>f</th>
+          <td>number to be scaled by a power of two.</td>
+        </tr>
+        <tr>
+          <th>scaleFactor</th>
+          <td>power of 2 used to scale <code>f</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>f</code> &times; 2<sup><code>scaleFactor</code></sup></li></ul>
+  </div>
 
     </div>
 </div>
@@ -3572,7 +5115,45 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>d</code> * 2^<code>scaleFactor</code>. The result may be rounded.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Return <code>d</code> &times;
+ 2<sup><code>scaleFactor</code></sup> rounded as if performed
+ by a single correctly rounded floating-point multiply to a
+ member of the double value set.  See the Java
+ Language Specification for a discussion of floating-point
+ value sets.  If the exponent of the result is between <code><a href="reference/java/lang/Double.html#MIN_EXPONENT">MIN_EXPONENT</a></code> and <code><a href="reference/java/lang/Double.html#MAX_EXPONENT">MAX_EXPONENT</a></code>, the
+ answer is calculated exactly.  If the exponent of the result
+ would be larger than <code>Double.MAX_EXPONENT</code>, an
+ infinity is returned.  Note that if the result is subnormal,
+ precision may be lost; that is, when <code>scalb(x, n)</code>
+ is subnormal, <code>scalb(scalb(x, n), -n)</code> may not equal
+ <i>x</i>.  When the result is non-NaN, the result has the same
+ sign as <code>d</code>.
+
+ <p>Special cases:
+ <ul>
+ <li> If the first argument is NaN, NaN is returned.
+ <li> If the first argument is infinite, then an infinity of the
+ same sign is returned.
+ <li> If the first argument is zero, then a zero of the same
+ sign is returned.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>d</th>
+          <td>number to be scaled by a power of two.</td>
+        </tr>
+        <tr>
+          <th>scaleFactor</th>
+          <td>power of 2 used to scale <code>d</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>d</code> &times; 2<sup><code>scaleFactor</code></sup></li></ul>
+  </div>
 
     </div>
 </div>
@@ -3603,32 +5184,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the argument. If the argument is less than
- zero, it returns -1.0. If the argument is greater than zero, 1.0 is
- returned. If the argument is either positive or negative zero, the
- argument is returned as result.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the argument; zero if the argument
+ is zero, 1.0 if the argument is greater than zero, -1.0 if the
+ argument is less than zero.
+
+ <p>Special Cases:
  <ul>
- <li><code>signum(+0.0) = +0.0</code></li>
- <li><code>signum(-0.0) = -0.0</code></li>
- <li><code>signum(+infinity) = +1.0</code></li>
- <li><code>signum(-infinity) = -1.0</code></li>
- <li><code>signum(NaN) = NaN</code></li>
+ <li> If the argument is NaN, then the result is NaN.
+ <li> If the argument is positive zero or negative zero, then the
+      result is the same as the argument.
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>d</th>
-          <td>the value whose signum has to be computed.</td>
+          <td>the floating-point value whose signum is to be returned</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value of the signum function.
-</li></ul>
+      <ul class="nolist"><li>the signum function of the argument</li></ul>
   </div>
 
     </div>
@@ -3660,32 +5237,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the argument. If the argument is less than
- zero, it returns -1.0. If the argument is greater than zero, 1.0 is
- returned. If the argument is either positive or negative zero, the
- argument is returned as result.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the argument; zero if the argument
+ is zero, 1.0f if the argument is greater than zero, -1.0f if the
+ argument is less than zero.
+
+ <p>Special Cases:
  <ul>
- <li><code>signum(+0.0) = +0.0</code></li>
- <li><code>signum(-0.0) = -0.0</code></li>
- <li><code>signum(+infinity) = +1.0</code></li>
- <li><code>signum(-infinity) = -1.0</code></li>
- <li><code>signum(NaN) = NaN</code></li>
+ <li> If the argument is NaN, then the result is NaN.
+ <li> If the argument is positive zero or negative zero, then the
+      result is the same as the argument.
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>f</th>
-          <td>the value whose signum has to be computed.</td>
+          <td>the floating-point value whose signum is to be returned</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value of the signum function.
-</li></ul>
+      <ul class="nolist"><li>the signum function of the argument</li></ul>
   </div>
 
     </div>
@@ -3705,7 +5278,7 @@ From class
         double
       </span>
       <span class="sympad">sin</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3717,22 +5290,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the sine of the argument.
- <p>
- Special cases:
- <ul>
- <li><code>sin(+0.0) = +0.0</code></li>
- <li><code>sin(-0.0) = -0.0</code></li>
- <li><code>sin(+infinity) = NaN</code></li>
- <li><code>sin(-infinity) = NaN</code></li>
- <li><code>sin(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the trigonometric sine of an angle. Special cases:
+ <ul><li>If the argument is NaN or an infinity, then the
+ result is NaN.
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the angle whose sin has to be computed, in radians.</td>
+          <th>a</th>
+          <td>an angle, in radians.</td>
         </tr>
       </table>
   </div>
@@ -3771,30 +5339,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the hyperbolic sine of the
- argument.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hyperbolic sine of a <code>double</code> value.
+ The hyperbolic sine of <i>x</i> is defined to be
+ (<i>e<sup>x</sup>&nbsp;-&nbsp;e<sup>-x</sup></i>)/2
+ where <i>e</i> is {@linkplain Math#E Euler's number}.
+
+ <p>Special cases:
  <ul>
- <li><code>sinh(+0.0) = +0.0</code></li>
- <li><code>sinh(-0.0) = -0.0</code></li>
- <li><code>sinh(+infinity) = +infinity</code></li>
- <li><code>sinh(-infinity) = -infinity</code></li>
- <li><code>sinh(NaN) = NaN</code></li>
+
+ <li>If the argument is NaN, then the result is NaN.
+
+ <li>If the argument is infinite, then the result is an infinity
+ with the same sign as the argument.
+
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>x</th>
-          <td>the value whose hyperbolic sine has to be computed.</td>
+          <td>The number whose hyperbolic sine is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the hyperbolic sine of the argument.
-</li></ul>
+      <ul class="nolist"><li>The hyperbolic sine of <code>x</code>.</li></ul>
   </div>
 
     </div>
@@ -3814,7 +5387,7 @@ From class
         double
       </span>
       <span class="sympad">sqrt</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3826,18 +5399,157 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the square root of the
- argument.
- <p>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the correctly rounded positive square root of a
+ <code>double</code> value.
  Special cases:
- <ul>
- <li><code>sqrt(+0.0) = +0.0</code></li>
- <li><code>sqrt(-0.0) = -0.0</code></li>
- <li><code>sqrt( (anything < 0) ) = NaN</code></li>
- <li><code>sqrt(+infinity) = +infinity</code></li>
- <li><code>sqrt(NaN) = NaN</code></li>
- </ul>
-</p></div>
+ <ul><li>If the argument is NaN or less than zero, then the result
+ is NaN.
+ <li>If the argument is positive infinity, then the result is positive
+ infinity.
+ <li>If the argument is positive zero or negative zero, then the
+ result is the same as the argument.</ul>
+ Otherwise, the result is the <code>double</code> value closest to
+ the true mathematical square root of the argument value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>a value.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the positive square root of <code>a</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="subtractExact(long, long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad">subtractExact</span>
+      <span class="normal">(long x, long y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the difference of the arguments,
+ throwing an exception if the result overflows a <code>long</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first value</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second value to subtract from the first</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the result overflows a long</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#subtractExact(long, long)">subtractExact(long, long)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="subtractExact(int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">subtractExact</span>
+      <span class="normal">(int x, int y)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the difference of the arguments,
+ throwing an exception if the result overflows an <code>int</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>x</th>
+          <td>the first value</td>
+        </tr>
+        <tr>
+          <th>y</th>
+          <td>the second value to subtract from the first</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the result overflows an int</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#subtractExact(int, int)">subtractExact(int, int)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -3856,7 +5568,7 @@ From class
         double
       </span>
       <span class="sympad">tan</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -3868,22 +5580,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the tangent of the argument.
- <p>
- Special cases:
- <ul>
- <li><code>tan(+0.0) = +0.0</code></li>
- <li><code>tan(-0.0) = -0.0</code></li>
- <li><code>tan(+infinity) = NaN</code></li>
- <li><code>tan(-infinity) = NaN</code></li>
- <li><code>tan(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the trigonometric tangent of an angle. Special cases:
+ <ul><li>If the argument is NaN or an infinity, then the result
+ is NaN.
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.</ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the angle whose tangent has to be computed, in radians.</td>
+          <th>a</th>
+          <td>an angle, in radians.</td>
         </tr>
       </table>
   </div>
@@ -3922,30 +5629,41 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the hyperbolic tangent of the
- argument. The absolute value is always less than 1.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hyperbolic tangent of a <code>double</code> value.
+ The hyperbolic tangent of <i>x</i> is defined to be
+ (<i>e<sup>x</sup>&nbsp;-&nbsp;e<sup>-x</sup></i>)/(<i>e<sup>x</sup>&nbsp;+&nbsp;e<sup>-x</sup></i>),
+ in other words, {@linkplain Math#sinh
+ sinh(<i>x</i>)}/{@linkplain Math#cosh cosh(<i>x</i>)}.  Note
+ that the absolute value of the exact tanh is always less than
+ 1.
+
+ <p>Special cases:
  <ul>
- <li><code>tanh(+0.0) = +0.0</code></li>
- <li><code>tanh(-0.0) = -0.0</code></li>
- <li><code>tanh(+infinity) = +1.0</code></li>
- <li><code>tanh(-infinity) = -1.0</code></li>
- <li><code>tanh(NaN) = NaN</code></li>
+
+ <li>If the argument is NaN, then the result is NaN.
+
+ <li>If the argument is zero, then the result is a zero with the
+ same sign as the argument.
+
+ <li>If the argument is positive infinity, then the result is
+ <code>+1.0</code>.
+
+ <li>If the argument is negative infinity, then the result is
+ <code>-1.0</code>.
+
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>x</th>
-          <td>the value whose hyperbolic tangent has to be computed.</td>
+          <td>The number whose hyperbolic tangent is to be returned.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the hyperbolic tangent of the argument
-</li></ul>
+      <ul class="nolist"><li>The hyperbolic tangent of <code>x</code>.</li></ul>
   </div>
 
     </div>
@@ -3977,30 +5695,84 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the measure in degrees of the supplied radian angle. The result
- is <code>angrad * 180 / pi</code>.
- <p>
- Special cases:
- <ul>
- <li><code>toDegrees(+0.0) = +0.0</code></li>
- <li><code>toDegrees(-0.0) = -0.0</code></li>
- <li><code>toDegrees(+infinity) = +infinity</code></li>
- <li><code>toDegrees(-infinity) = -infinity</code></li>
- <li><code>toDegrees(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts an angle measured in radians to an approximately
+ equivalent angle measured in degrees.  The conversion from
+ radians to degrees is generally inexact; users should
+ <i>not</i> expect <code>cos(toRadians(90.0))</code> to exactly
+ equal <code>0.0</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>angrad</th>
-          <td>an angle in radians.</td>
+          <td>an angle, in radians</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the degree measure of the angle.
+      <ul class="nolist"><li>the measurement of the angle <code>angrad</code>
+          in degrees.
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toIntExact(long)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">toIntExact</span>
+      <span class="normal">(long value)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the <code>long</code> argument;
+ throwing an exception if the value overflows an <code>int</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>the long value</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the argument as an int</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td>if the <code>argument</code> overflows an int</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Math.html#toIntExact(long)">toIntExact(long)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -4032,29 +5804,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the measure in radians of the supplied degree angle. The result
- is <code>angdeg / 180 * pi</code>.
- <p>
- Special cases:
- <ul>
- <li><code>toRadians(+0.0) = +0.0</code></li>
- <li><code>toRadians(-0.0) = -0.0</code></li>
- <li><code>toRadians(+infinity) = +infinity</code></li>
- <li><code>toRadians(-infinity) = -infinity</code></li>
- <li><code>toRadians(NaN) = NaN</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts an angle measured in degrees to an approximately
+ equivalent angle measured in radians.  The conversion from
+ degrees to radians is generally inexact.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>angdeg</th>
-          <td>an angle in degrees.</td>
+          <td>an angle, in degrees</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the radian measure of the angle.
+      <ul class="nolist"><li>the measurement of the angle <code>angdeg</code>
+          in radians.
 </li></ul>
   </div>
 
@@ -4087,32 +5852,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the argument's ulp (unit in the last place). The size of a ulp of
- a double value is the positive distance between this value and the double
- value next larger in magnitude. For non-NaN <code>x</code>,
- <code>ulp(-x) == ulp(x)</code>.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the size of an ulp of the argument.  An ulp of a
+ <code>double</code> value is the positive distance between this
+ floating-point value and the <code>double</code> value next
+ larger in magnitude.  Note that for non-NaN <i>x</i>,
+ <code>ulp(-<i>x</i>) == ulp(<i>x</i>)</code>.
+
+ <p>Special Cases:
  <ul>
- <li><code>ulp(+0.0) = Double.MIN_VALUE</code></li>
- <li><code>ulp(-0.0) = Double.MIN_VALUE</code></li>
- <li><code>ulp(+infinity) = infinity</code></li>
- <li><code>ulp(-infinity) = infinity</code></li>
- <li><code>ulp(NaN) = NaN</code></li>
+ <li> If the argument is NaN, then the result is NaN.
+ <li> If the argument is positive or negative infinity, then the
+ result is positive infinity.
+ <li> If the argument is positive or negative zero, then the result is
+ <code>Double.MIN_VALUE</code>.
+ <li> If the argument is &plusmn;<code>Double.MAX_VALUE</code>, then
+ the result is equal to 2<sup>971</sup>.
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>d</th>
-          <td>the floating-point value to compute ulp of.</td>
+          <td>the floating-point value whose ulp is to be returned</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the size of a ulp of the argument.
-</li></ul>
+      <ul class="nolist"><li>the size of an ulp of the argument</li></ul>
   </div>
 
     </div>
@@ -4144,32 +5911,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the argument's ulp (unit in the last place). The size of a ulp of
- a float value is the positive distance between this value and the float
- value next larger in magnitude. For non-NaN <code>x</code>,
- <code>ulp(-x) == ulp(x)</code>.
- <p>
- Special cases:
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the size of an ulp of the argument.  An ulp of a
+ <code>float</code> value is the positive distance between this
+ floating-point value and the <code>float</code> value next
+ larger in magnitude.  Note that for non-NaN <i>x</i>,
+ <code>ulp(-<i>x</i>) == ulp(<i>x</i>)</code>.
+
+ <p>Special Cases:
  <ul>
- <li><code>ulp(+0.0) = Float.MIN_VALUE</code></li>
- <li><code>ulp(-0.0) = Float.MIN_VALUE</code></li>
- <li><code>ulp(+infinity) = infinity</code></li>
- <li><code>ulp(-infinity) = infinity</code></li>
- <li><code>ulp(NaN) = NaN</code></li>
+ <li> If the argument is NaN, then the result is NaN.
+ <li> If the argument is positive or negative infinity, then the
+ result is positive infinity.
+ <li> If the argument is positive or negative zero, then the result is
+ <code>Float.MIN_VALUE</code>.
+ <li> If the argument is &plusmn;<code>Float.MAX_VALUE</code>, then
+ the result is equal to 2<sup>104</sup>.
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>f</th>
-          <td>the floating-point value to compute ulp of.</td>
+          <td>the floating-point value whose ulp is to be returned</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the size of a ulp of the argument.
-</li></ul>
+      <ul class="nolist"><li>the size of an ulp of the argument</li></ul>
   </div>
 
     </div>

@@ -182,11 +182,13 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and <em>buffers</em> the input.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Reads text from a character-input stream, buffering characters so as to
+ provide for the efficient reading of characters, arrays, and lines.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> for reading the contents of a char array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements a character buffer that can be used as a
+ character-input stream.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a></td>
@@ -198,8 +200,7 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and performs some transformation on the
- input data while it is being read.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Abstract class for reading filtered character streams.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></td>
@@ -207,26 +208,24 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and counts the line terminators encountered
- while reading the data.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A buffered character-input stream that keeps track of line numbers.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></td>
-              <td class="jd-descrcol" width="100%">Receives information on a communications pipe.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Piped character-input streams.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and adds functionality to "push back"
- characters that have been read, so that they can be read again.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A character-stream reader that allows characters to be pushed back into the
+ stream.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/Reader.html">Reader</a></td>
-              <td class="jd-descrcol" width="100%">The base class for all readers.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Abstract class for reading character streams.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/StringReader.html">StringReader</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads characters from a <code>String</code> in
- a sequential manner.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A character stream whose source is a string.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -238,9 +237,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Represents a sequence of characters that can be incrementally read (copied)
- into a <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code>.
-</p>
+<p>A <tt>Readable</tt> is a source of characters. Characters from
+ a <tt>Readable</tt> are made available to callers of the read
+ method via a <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code>.</p>
 
 
 
@@ -312,7 +311,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Readable.html#read(java.nio.CharBuffer)">read</a></span>(<a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a> cb)
         
-        <div class="jd-descrdiv">Reads characters into the specified <code>CharBuffer</code>.</div>
+        <div class="jd-descrdiv">Attempts to read characters into the specified character buffer.</div>
   
   </td></tr>
 
@@ -390,28 +389,38 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads characters into the specified <code>CharBuffer</code>. The maximum
- number of characters read is <code>CharBuffer.remaining()</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to read characters into the specified character buffer.
+ The buffer is used as a repository of characters as-is: the only
+ changes made are the results of a put operation. No flipping or
+ rewinding of the buffer is performed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cb</th>
-          <td>the buffer to be filled with characters read.</td>
+          <td>the buffer to read characters into</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of characters actually read, or -1 if this
-         <code>Readable</code> reaches its end</li></ul>
+      <ul class="nolist"><li>The number of <code>char</code> values added to the buffer,
+                 or -1 if this source of characters is at its end</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an I/O error occurs.
+            <td>if an I/O error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if cb is null</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/nio/ReadOnlyBufferException.html">ReadOnlyBufferException</a></td>
+            <td>if cb is a read only buffer
 </td>
         </tr>
       </table>

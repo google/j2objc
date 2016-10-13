@@ -336,7 +336,44 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#charAt(int)">charAt</a></span>(int index)
         
-        <div class="jd-descrdiv">Returns the character at <code>index</code>.</div>
+        <div class="jd-descrdiv">Returns the <code>char</code> value at the specified index.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/IntStream.html">IntStream</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#chars()">chars</a></span>()
+        
+        <div class="jd-descrdiv">Returns a stream of <code>int</code> zero-extending the <code>char</code> values
+ from this sequence.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/IntStream.html">IntStream</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#codePoints()">codePoints</a></span>()
+        
+        <div class="jd-descrdiv">Returns a stream of code point values from this sequence.</div>
   
   </td></tr>
 
@@ -354,7 +391,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#length()">length</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of characters in this sequence.</div>
+        <div class="jd-descrdiv">Returns the length of this character sequence.</div>
   
   </td></tr>
 
@@ -372,8 +409,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#subSequence(int, int)">subSequence</a></span>(int start, int end)
         
-        <div class="jd-descrdiv">Returns a <code>CharSequence</code> from the <code>start</code> index (inclusive)
- to the <code>end</code> index (exclusive) of this sequence.</div>
+        <div class="jd-descrdiv">Returns a new <code>CharSequence</code> that is a subsequence of this sequence.</div>
   
   </td></tr>
 
@@ -391,8 +427,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/CharSequence.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string with the same characters in the same order as in this
- sequence.</div>
+        <div class="jd-descrdiv">Returns a string containing the characters in this sequence in the same
+ order as this sequence.</div>
   
   </td></tr>
 

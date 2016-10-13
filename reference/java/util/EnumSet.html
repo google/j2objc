@@ -247,11 +247,57 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An EnumSet is a specialized Set to be used with enums as keys.
-</p>
+<p>A specialized <code><a href="reference/java/util/Set.html">Set</a></code> implementation for use with enum types.  All of
+ the elements in an enum set must come from a single enum type that is
+ specified, explicitly or implicitly, when the set is created.  Enum sets
+ are represented internally as bit vectors.  This representation is
+ extremely compact and efficient. The space and time performance of this
+ class should be good enough to allow its use as a high-quality, typesafe
+ alternative to traditional <tt>int</tt>-based "bit flags."  Even bulk
+ operations (such as <tt>containsAll</tt> and <tt>retainAll</tt>) should
+ run very quickly if their argument is also an enum set.
+
+ <p>The iterator returned by the <tt>iterator</tt> method traverses the
+ elements in their <i>natural order</i> (the order in which the enum
+ constants are declared).  The returned iterator is <i>weakly
+ consistent</i>: it will never throw <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>
+ and it may or may not show the effects of any modifications to the set that
+ occur while the iteration is in progress.
+
+ <p>Null elements are not permitted.  Attempts to insert a null element
+ will throw <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code>.  Attempts to test for the
+ presence of a null element or to remove one will, however, function
+ properly.
+
+ <P>Like most collection implementations, <tt>EnumSet</tt> is not
+ synchronized.  If multiple threads access an enum set concurrently, and at
+ least one of the threads modifies the set, it should be synchronized
+ externally.  This is typically accomplished by synchronizing on some
+ object that naturally encapsulates the enum set.  If no such object exists,
+ the set should be "wrapped" using the <code><a href="reference/java/util/Collections.html#synchronizedSet(java.util.Set<T>)">synchronizedSet(Set<T>)</a></code>
+ method.  This is best done at creation time, to prevent accidental
+ unsynchronized access:
+
+ <pre>
+ Set&lt;MyEnum&gt; s = Collections.synchronizedSet(EnumSet.noneOf(MyEnum.class));
+ </pre>
+
+ <p>Implementation note: All basic operations execute in constant time.
+ They are likely (though not guaranteed) to be much faster than their
+ <code><a href="reference/java/util/HashSet.html">HashSet</a></code> counterparts.  Even bulk operations execute in
+ constant time if their argument is also an enum set.
+
+ <p>This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/EnumMap.html">EnumMap</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -320,8 +366,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#allOf(java.lang.Class<E>)">allOf</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;E&gt; elementType)
         
-        <div class="jd-descrdiv">Creates an enum set filled with all the enum elements of the specified
- <code>elementType</code>.</div>
+        <div class="jd-descrdiv">Creates an enum set containing all of the elements in the specified
+ element type.</div>
   
   </td></tr>
 
@@ -339,8 +385,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv">Creates a new enum set with the same elements as those contained in this
- enum set.</div>
+        <div class="jd-descrdiv">Returns a copy of this set.</div>
   
   </td></tr>
 
@@ -358,7 +403,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#complementOf(java.util.EnumSet<E>)">complementOf</a></span>(<a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&gt; s)
         
-        <div class="jd-descrdiv">Creates an enum set.</div>
+        <div class="jd-descrdiv">Creates an enum set with the same element type as the specified enum
+ set, initially containing all the elements of this type that are
+ <i>not</i> contained in the specified set.</div>
   
   </td></tr>
 
@@ -376,7 +423,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#copyOf(java.util.EnumSet<E>)">copyOf</a></span>(<a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&gt; s)
         
-        <div class="jd-descrdiv">Creates an enum set.</div>
+        <div class="jd-descrdiv">Creates an enum set with the same element type as the specified enum
+ set, initially containing the same elements (if any).</div>
   
   </td></tr>
 
@@ -394,7 +442,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#copyOf(java.util.Collection<E>)">copyOf</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt; c)
         
-        <div class="jd-descrdiv">Creates an enum set.</div>
+        <div class="jd-descrdiv">Creates an enum set initialized from the specified collection.</div>
   
   </td></tr>
 
@@ -412,7 +460,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#noneOf(java.lang.Class<E>)">noneOf</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;E&gt; elementType)
         
-        <div class="jd-descrdiv">Creates an empty enum set.</div>
+        <div class="jd-descrdiv">Creates an empty enum set with the specified element type.</div>
   
   </td></tr>
 
@@ -428,9 +476,9 @@ layout: api
             <a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E, E...)">of</a></span>(E start, E... others)
+        <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E, E...)">of</a></span>(E first, E... rest)
         
-        <div class="jd-descrdiv">Creates a new enum set, containing only the specified elements.</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing the specified elements.</div>
   
   </td></tr>
 
@@ -448,7 +496,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E, E, E)">of</a></span>(E e1, E e2, E e3)
         
-        <div class="jd-descrdiv">Creates a new enum set, containing only the specified elements.</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing the specified elements.</div>
   
   </td></tr>
 
@@ -466,7 +514,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E, E)">of</a></span>(E e1, E e2)
         
-        <div class="jd-descrdiv">Creates a new enum set, containing only the specified elements.</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing the specified elements.</div>
   
   </td></tr>
 
@@ -484,7 +532,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E, E, E, E, E)">of</a></span>(E e1, E e2, E e3, E e4, E e5)
         
-        <div class="jd-descrdiv">Creates a new enum set, containing only the specified elements.</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing the specified elements.</div>
   
   </td></tr>
 
@@ -502,7 +550,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E, E, E, E)">of</a></span>(E e1, E e2, E e3, E e4)
         
-        <div class="jd-descrdiv">Creates a new enum set, containing only the specified elements.</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing the specified elements.</div>
   
   </td></tr>
 
@@ -520,7 +568,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#of(E)">of</a></span>(E e)
         
-        <div class="jd-descrdiv">Creates a new enum set, containing only the specified element.</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing the specified element.</div>
   
   </td></tr>
 
@@ -536,10 +584,10 @@ layout: api
             <a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#range(E, E)">range</a></span>(E start, E end)
+        <span class="sympad"><a href="../../../reference/java/util/EnumSet.html#range(E, E)">range</a></span>(E from, E to)
         
-        <div class="jd-descrdiv">Creates an enum set containing all the elements within the range defined
- by <code>start</code> and <code>end</code> (inclusive).</div>
+        <div class="jd-descrdiv">Creates an enum set initially containing all of the elements in the
+ range defined by the two specified endpoints.</div>
   
   </td></tr>
 
@@ -589,10 +637,9 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSet.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSet.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this Set and returns true if they are
- equal.</div>
+        <div class="jd-descrdiv">Compares the specified object with this set for equality.</div>
   
   </td></tr>
 
@@ -610,7 +657,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractSet.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this set.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this set.</div>
   
   </td></tr>
 
@@ -626,10 +673,10 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractSet.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractSet.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this collection which are contained in the
- specified collection.</div>
+        <div class="jd-descrdiv">Removes from this set all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -670,10 +717,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -689,10 +739,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -710,7 +763,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -726,9 +782,12 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -744,10 +803,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -765,7 +828,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -783,8 +848,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -800,10 +864,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -819,10 +886,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -838,10 +909,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -859,7 +934,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -877,7 +952,12 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -895,7 +975,11 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -913,7 +997,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -1184,9 +1268,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object to this set.</div>
+        <div class="jd-descrdiv">Adds the specified element to this set if it is not already present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1202,10 +1287,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Adds the objects in the specified collection which do not exist yet in
- this set.</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this set if
+ they're not already present (optional operation).</div>
   
   </td></tr>
 
@@ -1223,7 +1308,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this set, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this set (optional operation).</div>
   
   </td></tr>
 
@@ -1239,9 +1324,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this set for the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains the specified element.</div>
   
   </td></tr>
 
@@ -1257,9 +1342,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Searches this set for all objects in the specified collection.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains all of the elements of the
+ specified collection.</div>
   
   </td></tr>
 
@@ -1275,10 +1361,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this set, and returns true if they
- represent the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this set for equality.</div>
   
   </td></tr>
 
@@ -1296,7 +1381,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this set.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this set.</div>
   
   </td></tr>
 
@@ -1314,7 +1399,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns true if this set has no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains no elements.</div>
   
   </td></tr>
 
@@ -1332,7 +1417,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this set.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this set.</div>
   
   </td></tr>
 
@@ -1348,9 +1433,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the specified object from this set.</div>
+        <div class="jd-descrdiv">Removes the specified element from this set if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1366,9 +1452,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects in the specified collection from this set.</div>
+        <div class="jd-descrdiv">Removes from this set all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1384,10 +1471,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this set that are not contained in the specified
- collection.</div>
+        <div class="jd-descrdiv">Retains only the elements in this set that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1405,7 +1492,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this set.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this set (its cardinality).</div>
   
   </td></tr>
 
@@ -1417,13 +1504,13 @@ From interface
             
             
             
-            &lt;T&gt;
-            T[]
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#spliterator()">spliterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this set.</div>
+        <div class="jd-descrdiv">Creates a <code>Spliterator</code> over the elements in this set.</div>
   
   </td></tr>
 
@@ -1435,13 +1522,32 @@ From interface
             
             
             
+            &lt;T&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#toArray(T[])">toArray</a></span>(T[] a)
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this set; the
+ runtime type of the returned array is that of the specified array.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
             
             <a href="../../../reference/java/lang/Object.html">Object[]</a>
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this set.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this set.</div>
   
   </td></tr>
 
@@ -1482,10 +1588,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1501,10 +1607,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1522,7 +1628,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -1538,9 +1644,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -1556,10 +1662,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1575,10 +1681,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -1596,7 +1701,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -1614,7 +1719,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -1632,8 +1737,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -1646,13 +1750,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -1668,10 +1772,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -1687,10 +1791,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1708,7 +1850,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -1724,9 +1902,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -1744,7 +1923,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -1786,6 +1965,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -1793,6 +1988,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -1869,27 +2080,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set filled with all the enum elements of the specified
- <code>elementType</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set containing all of the elements in the specified
+ element type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>elementType</th>
-          <td>the class object for the elements contained.</td>
+          <td>the class object of the element type for this enum
+     set</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set with elements solely from the specified element type.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the specified element type is not and enum type.
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <tt>elementType</tt> is null
 </td>
         </tr>
       </table>
@@ -1924,12 +2132,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set with the same elements as those contained in this
- enum set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a copy of this set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a new enum set with the same elements as those contained in this
-         enum set.
+      <ul class="nolist"><li>a copy of this set
 </li></ul>
   </div>
 
@@ -1962,28 +2168,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set. All the contained elements complement those from the
- specified enum set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set with the same element type as the specified enum
+ set, initially containing all the elements of this type that are
+ <i>not</i> contained in the specified set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the specified enum set.</td>
+          <td>the enum set from whose complement to initialize this enum set</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set with all the elements complementary to those from the
-         specified enum set.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>s</code> is <code>null</code>.
+            <td>if <tt>s</tt> is null
 </td>
         </tr>
       </table>
@@ -2018,28 +2220,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set. All the contained elements are of type
- Class&lt;E&gt;, and the contained elements are the same as those
- contained in <code>s</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set with the same element type as the specified enum
+ set, initially containing the same elements (if any).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the enum set from which to copy.</td>
+          <td>the enum set from which to initialize this enum set</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set with all the elements from the specified enum set.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the specified element type is not and enum type.
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <tt>s</tt> is null
 </td>
         </tr>
       </table>
@@ -2074,33 +2271,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set. The contained elements are the same as those
- contained in collection <code>c</code>. If c is an enum set, invoking this
- method is the same as invoking <code><a href="reference/java/util/EnumSet.html#copyOf(java.util.EnumSet<E>)">copyOf(EnumSet)</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initialized from the specified collection.  If
+ the specified collection is an <tt>EnumSet</tt> instance, this static
+ factory method behaves identically to <code><a href="reference/java/util/EnumSet.html#copyOf(java.util.EnumSet<E>)">copyOf(EnumSet)</a></code>.
+ Otherwise, the specified collection must contain at least one element
+ (in order to determine the new enum set's element type).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the collection from which to copy. if it is not an enum set,
-            it must not be empty.</td>
+          <td>the collection from which to initialize this enum set</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set with all the elements from the specified collection.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if c is not an enum set and contains no elements at all.</td>
+            <td>if <tt>c</tt> is not an
+     <tt>EnumSet</tt> instance and contains no elements</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>c</code> is <code>null</code>.
+            <td>if <tt>c</tt> is null
 </td>
         </tr>
       </table>
@@ -2135,27 +2330,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an empty enum set. The permitted elements are of type
- Class&lt;E&gt;.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an empty enum set with the specified element type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>elementType</th>
-          <td>the class object for the elements contained.</td>
+          <td>the class object of the element type for this enum
+     set</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an empty enum set, with permitted elements of type <code>elementType</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the specified element type is not and enum type.
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <tt>elementType</tt> is null
 </td>
         </tr>
       </table>
@@ -2178,7 +2369,7 @@ From interface
         <a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&gt;
       </span>
       <span class="sympad">of</span>
-      <span class="normal">(E start, E... others)</span>
+      <span class="normal">(E first, E... rest)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2190,33 +2381,36 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set, containing only the specified elements. It can
- receive an arbitrary number of elements, and runs slower than those only
- receiving a fixed number of elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing the specified elements.
+ This factory, whose parameter list uses the varargs feature, may
+ be used to create an enum set initially containing an arbitrary
+ number of elements, but it is likely to run slower than the overloadings
+ that do not use varargs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>start</th>
-          <td>the first initially contained element.</td>
+          <th>first</th>
+          <td>an element that the set is to contain initially</td>
         </tr>
         <tr>
-          <th>others</th>
-          <td>the other initially contained elements.</td>
+          <th>rest</th>
+          <td>the remaining elements the set is to contain initially</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set containing the specified elements.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing the specified elements
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the specified elements is <code>null</code>.
-</td>
+            <td>if any of the specified elements are null,
+     or if <tt>rest</tt> is null</td>
         </tr>
       </table>
   </div>
@@ -2250,38 +2444,41 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set, containing only the specified elements. There are
- six overloadings of the method. They accept from one to five elements
- respectively. The sixth one receives an arbitrary number of elements, and
- runs slower than those that only receive a fixed number of elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing the specified elements.
+
+ Overloadings of this method exist to initialize an enum set with
+ one through five elements.  A sixth overloading is provided that
+ uses the varargs feature.  This overloading may be used to create
+ an enum set initially containing an arbitrary number of elements, but
+ is likely to run slower than the overloadings that do not use varargs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e1</th>
-          <td>the initially contained element.</td>
+          <td>an element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e2</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e3</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set containing the specified elements.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing the specified elements
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the specified elements is <code>null</code>.
-</td>
+            <td>if any parameters are null</td>
         </tr>
       </table>
   </div>
@@ -2315,34 +2512,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set, containing only the specified elements. There are
- six overloadings of the method. They accept from one to five elements
- respectively. The sixth one receives an arbitrary number of elements, and
- runs slower than those that only receive a fixed number of elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing the specified elements.
+
+ Overloadings of this method exist to initialize an enum set with
+ one through five elements.  A sixth overloading is provided that
+ uses the varargs feature.  This overloading may be used to create
+ an enum set initially containing an arbitrary number of elements, but
+ is likely to run slower than the overloadings that do not use varargs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e1</th>
-          <td>the initially contained element.</td>
+          <td>an element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e2</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set containing the specified elements.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing the specified elements
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the specified elements is <code>null</code>.
-</td>
+            <td>if any parameters are null</td>
         </tr>
       </table>
   </div>
@@ -2376,46 +2576,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set, containing only the specified elements. There are
- six overloadings of the method. They accept from one to five elements
- respectively. The sixth one receives an arbitrary number of elements, and
- runs slower than those that only receive a fixed number of elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing the specified elements.
+
+ Overloadings of this method exist to initialize an enum set with
+ one through five elements.  A sixth overloading is provided that
+ uses the varargs feature.  This overloading may be used to create
+ an enum set initially containing an arbitrary number of elements, but
+ is likely to run slower than the overloadings that do not use varargs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e1</th>
-          <td>the initially contained element.</td>
+          <td>an element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e2</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e3</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e4</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e5</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set containing the specified elements.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing the specified elements
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the specified elements is <code>null</code>.
-</td>
+            <td>if any parameters are null</td>
         </tr>
       </table>
   </div>
@@ -2449,42 +2652,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set, containing only the specified elements. There are
- six overloadings of the method. They accept from one to five elements
- respectively. The sixth one receives an arbitrary number of elements, and
- runs slower than those that only receive a fixed number of elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing the specified elements.
+
+ Overloadings of this method exist to initialize an enum set with
+ one through five elements.  A sixth overloading is provided that
+ uses the varargs feature.  This overloading may be used to create
+ an enum set initially containing an arbitrary number of elements, but
+ is likely to run slower than the overloadings that do not use varargs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e1</th>
-          <td>the initially contained element.</td>
+          <td>an element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e2</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e3</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
         <tr>
           <th>e4</th>
-          <td>another initially contained element.</td>
+          <td>another element that this set is to contain initially</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set containing the specified elements.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing the specified elements
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the specified elements is <code>null</code>.
-</td>
+            <td>if any parameters are null</td>
         </tr>
       </table>
   </div>
@@ -2518,30 +2724,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new enum set, containing only the specified element. There are
- six overloadings of the method. They accept from one to five elements
- respectively. The sixth one receives an arbitrary number of elements, and
- runs slower than those that only receive a fixed number of elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing the specified element.
+
+ Overloadings of this method exist to initialize an enum set with
+ one through five elements.  A sixth overloading is provided that
+ uses the varargs feature.  This overloading may be used to create
+ an enum set initially containing an arbitrary number of elements, but
+ is likely to run slower than the overloadings that do not use varargs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>e</th>
-          <td>the element to be initially contained.</td>
+          <td>the element that this set is to contain initially</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set containing the specified element.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing the specified element
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>e</code> is <code>null</code>.
-</td>
+            <td>if <tt>e</tt> is null</td>
         </tr>
       </table>
   </div>
@@ -2563,7 +2772,7 @@ From interface
         <a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&gt;
       </span>
       <span class="sympad">range</span>
-      <span class="normal">(E start, E end)</span>
+      <span class="normal">(E from, E to)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2575,37 +2784,39 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set containing all the elements within the range defined
- by <code>start</code> and <code>end</code> (inclusive). All the elements must be in
- order.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an enum set initially containing all of the elements in the
+ range defined by the two specified endpoints.  The returned set will
+ contain the endpoints themselves, which may be identical but must not
+ be out of order.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>start</th>
-          <td>the element used to define the beginning of the range.</td>
+          <th>from</th>
+          <td>the first element in the range</td>
         </tr>
         <tr>
-          <th>end</th>
-          <td>the element used to define the end of the range.</td>
+          <th>to</th>
+          <td>the last element in the range</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an enum set with elements in the range from start to end.</li></ul>
+      <ul class="nolist"><li>an enum set initially containing all of the elements in the
+         range defined by the two specified endpoints
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any one of <code>start</code> or <code>end</code> is <code>null</code>.</td>
+            <td>if <code>from</code> or <code>to</code> are null</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>start</code> is behind <code>end</code>.
-</td>
+            <td>if <code>from.compareTo(to) &gt; 0</code></td>
         </tr>
       </table>
   </div>

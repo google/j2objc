@@ -2185,10 +2185,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -2763,7 +2762,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>offset < 0</code> or <code>len <= 0</code> or <code>offset+len-1 < 0</code> or <code>offset+len-1 >= in.length</code>.</td>
+            <td>if <code>offset &lt; 0</code> or <code>len &lt;= 0</code> or <code>offset+len-1 &lt; 0</code> or <code>offset+len-1 &gt;= in.length</code>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
@@ -2836,7 +2835,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>offset < 0</code> or <code>len <= 0</code> or <code>offset+len-1 < 0</code> or <code>offset+len-1 >= in.length</code>.</td>
+            <td>if <code>offset &lt; 0</code> or <code>len &lt;= 0</code> or <code>offset+len-1 &lt; 0</code> or <code>offset+len-1 &gt;= in.length</code>.</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
@@ -2845,7 +2844,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -2970,7 +2969,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -3085,7 +3084,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -3207,7 +3206,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -3306,7 +3305,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -3427,7 +3426,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.</td>
         </tr>
@@ -3530,7 +3529,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>c.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>c.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -3628,7 +3627,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and the new big decimal cannot be represented
              within the given precision without rounding.
 </td>
@@ -3944,7 +3943,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>1</code> if <code>this > val</code>, <code>-1</code> if <code>this < val</code>,
+      <ul class="nolist"><li><code>1</code> if <code>this &gt; val</code>, <code>-1</code> if <code>this &lt; val</code>,
          <code>0</code> if <code>this == val</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
@@ -4428,7 +4427,7 @@ From interface
  <code>this / divisor</code> at index 0 and the remainder <code>this %
  divisor</code> at index 1. The quotient is rounded down towards zero to the
  next integer. The rounding mode passed with the parameter <code>mc</code> is
- not considered. But if the precision of <code>mc > 0</code> and the integral
+ not considered. But if the precision of <code>mc &gt; 0</code> and the integral
  part requires more digits, then an <code>ArithmeticException</code> is thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
@@ -4566,7 +4565,7 @@ From interface
   <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigDecimal</code> whose value is the integral part of
  <code>this / divisor</code>. The quotient is rounded down towards zero to the
  next integer. The rounding mode passed with the parameter <code>mc</code> is
- not considered. But if the precision of <code>mc > 0</code> and the integral
+ not considered. But if the precision of <code>mc &gt; 0</code> and the integral
  part requires more digits, then an <code>ArithmeticException</code> is thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
@@ -4599,7 +4598,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.getPrecision() > 0</code> and the result requires more
+            <td>if <code>mc.getPrecision() &gt; 0</code> and the result requires more
              digits to be represented.
 </td>
         </tr>
@@ -5158,7 +5157,7 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigDecimal</code> instance where the decimal point has
- been moved <code>n</code> places to the left. If <code>n < 0</code> then the
+ been moved <code>n</code> places to the left. If <code>n &lt; 0</code> then the
  decimal point is moved <code>-n</code> places to the right.
  <p>
  The result is obtained by changing its scale. If the scale of the result
@@ -5166,7 +5165,7 @@ From interface
  zero.
  <p>
  Note, that <code>movePointLeft(0)</code> returns a result which is
- mathematically equivalent, but which has <code>scale >= 0</code>.</p></div>
+ mathematically equivalent, but which has <code>scale &gt;= 0</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -5212,7 +5211,7 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigDecimal</code> instance where the decimal point has
- been moved <code>n</code> places to the right. If <code>n < 0</code> then the
+ been moved <code>n</code> places to the right. If <code>n &lt; 0</code> then the
  decimal point is moved <code>-n</code> places to the left.
  <p>
  The result is obtained by changing its scale. If the scale of the result
@@ -5574,7 +5573,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>n < 0</code> or <code>n > 999999999</code>.
+            <td>if <code>n &lt; 0</code> or <code>n &gt; 999999999</code>.
 </td>
         </tr>
       </table>
@@ -5634,7 +5633,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>n < 0</code> or <code>n > 999999999</code>.
+            <td>if <code>n &lt; 0</code> or <code>n &gt; 999999999</code>.
 </td>
         </tr>
       </table>
@@ -5805,7 +5804,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.getPrecision() > 0</code> and the result of <code>this.divideToIntegralValue(divisor, mc)</code> requires more digits
+            <td>if <code>mc.getPrecision() &gt; 0</code> and the result of <code>this.divideToIntegralValue(divisor, mc)</code> requires more digits
              to be represented.
 </td>
         </tr>
@@ -5846,7 +5845,7 @@ From interface
  <p>
  If <code>mc.precision = 0</code>, then no rounding is performed.
  <p>
- If <code>mc.precision > 0</code> and <code>mc.roundingMode == UNNECESSARY</code>,
+ If <code>mc.precision &gt; 0</code> and <code>mc.roundingMode == UNNECESSARY</code>,
  then an <code>ArithmeticException</code> is thrown if the result cannot be
  represented exactly within the given precision.</p></div>
   <div class="jd-tagdata">
@@ -5867,7 +5866,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>mc.precision > 0</code> and <code>mc.roundingMode ==
+            <td>if <code>mc.precision &gt; 0</code> and <code>mc.roundingMode ==
              UNNECESSARY</code> and this cannot be represented within the given
              precision.
 </td>
@@ -6246,9 +6245,9 @@ From interface
   <div class="jd-tagdata jd-tagdescr"><p>Returns the sign of this <code>BigDecimal</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>-1</code> if <code>this < 0</code>,
+      <ul class="nolist"><li><code>-1</code> if <code>this &lt; 0</code>,
          <code>0</code> if <code>this == 0</code>,
-         <code>1</code> if <code>this > 0</code>.     </li></ul>
+         <code>1</code> if <code>this &gt; 0</code>.     </li></ul>
   </div>
 
     </div>
@@ -6520,7 +6519,7 @@ From interface
   <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this <code>BigDecimal</code>. This
  representation always prints all significant digits of this value.
  <p>
- If the scale is negative or if <code>scale - precision >= 6</code> then
+ If the scale is negative or if <code>scale - precision &gt;= 6</code> then
  engineering notation is used. Engineering notation is similar to the
  scientific notation except that the exponent is made to be a multiple of
  3 such that the integer part is >= 1 and < 1000.</p></div>
@@ -6610,7 +6609,7 @@ From interface
  necessary, scientific notation is used. This representation always prints
  all significant digits of this value.
  <p>
- If the scale is negative or if <code>scale - precision >= 6</code> then
+ If the scale is negative or if <code>scale - precision &gt;= 6</code> then
  scientific notation is used.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>

@@ -260,16 +260,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>UnrecoverableKeyException</code> indicates, that a key cannot be recovered
- from a <code>KeyStore</code>.</p>
+<p>This exception is thrown if a key in the keystore cannot be recovered.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/security/KeyStore.html">KeyStore</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -332,10 +326,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/UnrecoverableKeyException.html#UnrecoverableKeyException(java.lang.String)">UnrecoverableKeyException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../reference/java/security/UnrecoverableKeyException.html#UnrecoverableKeyException()">UnrecoverableKeyException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>UnrecoverableKeyException</code> with the
- given message.</div>
+        <div class="jd-descrdiv">Constructs an UnrecoverableKeyException with no detail message.</div>
   
   </td></tr>
 
@@ -351,9 +344,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/UnrecoverableKeyException.html#UnrecoverableKeyException()">UnrecoverableKeyException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/security/UnrecoverableKeyException.html#UnrecoverableKeyException(java.lang.String)">UnrecoverableKeyException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>UnrecoverableKeyException</code>.</div>
+        <div class="jd-descrdiv">Constructs an UnrecoverableKeyException with the specified detail
+ message, which provides more information about why this exception
+ has been thrown.</div>
   
   </td></tr>
 
@@ -591,6 +586,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -866,48 +880,6 @@ From class
 
 
 
-<a id="UnrecoverableKeyException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">UnrecoverableKeyException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>UnrecoverableKeyException</code> with the
- given message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="UnrecoverableKeyException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -933,8 +905,51 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>UnrecoverableKeyException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an UnrecoverableKeyException with no detail message.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="UnrecoverableKeyException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">UnrecoverableKeyException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an UnrecoverableKeyException with the specified detail
+ message, which provides more information about why this exception
+ has been thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

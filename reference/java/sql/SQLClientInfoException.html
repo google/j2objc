@@ -116,12 +116,12 @@ layout: api
   
 
   
+   
+  
   
   
   
 
-  
-   
   
   
   
@@ -244,12 +244,28 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An exception, which is subclass of SQLException, is thrown when one or more
- client info properties could not be set on a Connection.
-</p>
+<p>The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> is thrown when one or more client info properties
+ could not be set on a <code>Connection</code>.  In addition to the information provided
+ by <code>SQLException</code>, a <code>SQLClientInfoException</code> provides a list of client info
+ properties that were not set.
+
+ Some databases do not allow multiple client info properties to be set
+ atomically.  For those databases, it is possible that some of the client
+ info properties had been set even though the <code>Connection.setClientInfo</code>
+ method threw an exception.  An application can use the <code>getFailedProperties </code>
+ method to retrieve a list of client info properties that were not set.  The
+ properties are identified by passing a
+ <code>Map&lt;String,ClientInfoStatus&gt;</code> to
+ the appropriate <code>SQLClientInfoException</code> constructor.
+ <p></p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html#setClientInfo(java.lang.String, java.lang.String)">setClientInfo(String, String)</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -314,7 +330,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException()">SQLClientInfoException</a></span>()
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code>  Object.</div>
   
   </td></tr>
 
@@ -332,7 +348,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -350,7 +367,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with
+ a given <code>cause</code> and <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -368,7 +386,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given <code>reason</code> and <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -386,7 +405,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given <code>reason</code>, <code>cause</code> and
+ <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -402,9 +423,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>  and
+ <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -420,9 +443,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>, <code>cause</code>
+ and <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -438,9 +463,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>,
+ <code>vendorCode</code>  and <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -456,9 +483,12 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates an SQLClientInfoException object.</div>
+        <div class="jd-descrdiv">Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>,
+ <code>cause</code>, <code>vendorCode</code> and
+ <code>failedProperties</code>.</div>
   
   </td></tr>
 
@@ -489,7 +519,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#getFailedProperties()">getFailedProperties</a></span>()
         
-        <div class="jd-descrdiv">returns that the client info properties which could not be set</div>
+        <div class="jd-descrdiv">Returns the list of client info properties that could not be set.</div>
   
   </td></tr>
 
@@ -541,7 +571,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getErrorCode()">getErrorCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the integer error code for this <code>SQLException</code>.</div>
+        <div class="jd-descrdiv">Retrieves the vendor-specific exception code
+ for this <code>SQLException</code> object.</div>
   
   </td></tr>
 
@@ -559,8 +590,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getNextException()">getNextException</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the <code>SQLException</code> chained to this <code>SQLException</code>,
- if any.</div>
+        <div class="jd-descrdiv">Retrieves the exception chained to this
+ <code>SQLException</code> object by setNextException(SQLException ex).</div>
   
   </td></tr>
 
@@ -578,7 +609,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getSQLState()">getSQLState</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the <code>SQLState</code> description string for this <code>SQLException</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the SQLState for this <code>SQLException</code> object.</div>
   
   </td></tr>
 
@@ -596,7 +627,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Obsolete.</div>
+        <div class="jd-descrdiv">Returns an iterator over the chained SQLExceptions.</div>
   
   </td></tr>
 
@@ -614,7 +645,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#setNextException(java.sql.SQLException)">setNextException</a></span>(<a href="../../../reference/java/sql/SQLException.html">SQLException</a> ex)
         
-        <div class="jd-descrdiv">Obsolete.</div>
+        <div class="jd-descrdiv">Adds an <code>SQLException</code> object to the end of the chain.</div>
   
   </td></tr>
 
@@ -835,6 +866,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -1075,8 +1125,6 @@ From class
 
 
 
-
-
 <tr class="api apilevel-" >
 <td colspan="12">
   <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Iterable" class="jd-expando-trigger closed"
@@ -1103,6 +1151,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;<a href="../../../reference/java/lang/Throwable.html">Throwable</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -1113,10 +1177,28 @@ From interface
   </td></tr>
 
 
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;<a href="../../../reference/java/lang/Throwable.html">Throwable</a>&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
+  </td></tr>
+
+
 </table>
   </div>
 </div>
 </td></tr>
+
+
 
 
 </table>
@@ -1178,9 +1260,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- null, the SQLState string is set to null and the Error Code is set to 0.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code>  Object.
+ The <code>reason</code>,
+ <code>SQLState</code>, and failedProperties list are initialized to
+ <code> null</code> and the vendor code is initialized to 0.
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
 
     </div>
 </div>
@@ -1211,18 +1298,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to the
- given reason string, the SQLState string is set to null and the Error
- Code is set to 0, and the Map<String,ClientInfoStatus> object is set to
- the failed properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given <code>failedProperties</code>.
+ The <code>reason</code> and <code>SQLState</code> are initialized
+ to <code>null</code> and the vendor code is initialized to 0.
+
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values
-</td>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code>
+ <p></td>
         </tr>
       </table>
   </div>
@@ -1256,23 +1352,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to the
- null if cause == null or cause.toString() if cause!=null, the cause
- Throwable object is set to the given cause Throwable object, and the Map<String,ClientInfoStatus>
- object is set to the failed properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with
+ a given <code>cause</code> and <code>failedProperties</code>.
+
+ The <code>reason</code>  is initialized to <code>null</code> if
+ <code>cause==null</code> or to <code>cause.toString()</code> if
+ <code>cause!=null</code> and the vendor code is initialized to 0.
+
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values</td>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code></td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.
+ <p></td>
         </tr>
       </table>
   </div>
@@ -1306,21 +1410,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- reason, and the Map<String,ClientInfoStatus> object is set to the failed
- properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given <code>reason</code> and <code>failedProperties</code>.
+ The <code>SQLState</code> is initialized
+ to <code>null</code> and the vendor code is initialized to 0.
+
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
           <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values
-</td>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code>
+ <p></td>
         </tr>
       </table>
   </div>
@@ -1354,148 +1468,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- reason, the cause Throwable object is set to the given cause Throwable
- object, and the Map<String,ClientInfoStatus> object is set to the failed
- properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given <code>reason</code>, <code>cause</code> and
+ <code>failedProperties</code>.
+ The  <code>SQLState</code> is initialized
+ to <code>null</code> and the vendor code is initialized to 0.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
           <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values</td>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code></td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">SQLClientInfoException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- reason, the SQLState string is set to the sqlState, the Error Code is set
- to the vendorCode and the Map<String,ClientInfoStatus> object is set to
- the failed properties.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>reason</th>
-          <td>the string to use as the Reason string</td>
-        </tr>
-        <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
-        </tr>
-        <tr>
-          <th>vendorCode</th>
-          <td>the integer value for the error code</td>
-        </tr>
-        <tr>
-          <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values
-
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">SQLClientInfoException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- reason, the SQLState string is set to the sqlState, the Error Code is set
- to the vendorCode the cause Throwable object is set to the given cause
- Throwable object, and the Map<String,ClientInfoStatus> object is set to
- the failed properties.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>reason</th>
-          <td>the string to use as the Reason string</td>
-        </tr>
-        <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
-        </tr>
-        <tr>
-          <th>vendorCode</th>
-          <td>the integer value for the error code</td>
-        </tr>
-        <tr>
-          <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values</td>
-        </tr>
-        <tr>
-          <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.
+ <p></td>
         </tr>
       </table>
   </div>
@@ -1517,7 +1516,7 @@ From interface
         
       </span>
       <span class="sympad">SQLClientInfoException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1529,25 +1528,34 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- reason, the SQLState string is set to the sqlState, and the Map<String,ClientInfoStatus>
- object is set to the failed properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>  and
+ <code>failedProperties</code>.
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method. The vendor code
+ is initialized to 0.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
         </tr>
         <tr>
           <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values
-</td>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code>
+ <p></td>
         </tr>
       </table>
   </div>
@@ -1569,7 +1577,7 @@ From interface
         
       </span>
       <span class="sympad">SQLClientInfoException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> sqlState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1581,31 +1589,166 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
- reason, the SQLState string is set to the sqlState, the Error Code is set
- to the vendorCode, and the Map<String,ClientInfoStatus> object is set to
- the failed properties.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>, <code>cause</code>
+ and <code>failedProperties</code>.  The vendor code is initialized to 0.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>reason</th>
-          <td>the string to use as the Reason string</td>
+          <td>a description of the exception</td>
         </tr>
         <tr>
-          <th>sqlState</th>
-          <td>the string to use as the SQLState string</td>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
         </tr>
         <tr>
           <th>failedProperties</th>
-          <td>the Map<String,ClientInfoStatus> object to use as the
-            property values</td>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code></td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the Throwable object for the underlying reason this
-            SQLException
-</td>
+          <td>the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.
+ <p></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">SQLClientInfoException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>,
+ <code>vendorCode</code>  and <code>failedProperties</code>.
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>reason</th>
+          <td>a description of the exception</td>
+        </tr>
+        <tr>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
+        </tr>
+        <tr>
+          <th>vendorCode</th>
+          <td>a database vendor-specific exception code</td>
+        </tr>
+        <tr>
+          <th>failedProperties</th>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code>
+ <p></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">SQLClientInfoException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason, <a href="../../../reference/java/lang/String.html">String</a> SQLState, int vendorCode, <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; failedProperties, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SQLClientInfoException</code> object initialized with a
+ given  <code>reason</code>, <code>SQLState</code>,
+ <code>cause</code>, <code>vendorCode</code> and
+ <code>failedProperties</code>.
+ <p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>reason</th>
+          <td>a description of the exception</td>
+        </tr>
+        <tr>
+          <th>SQLState</th>
+          <td>an XOPEN or SQL:2003 code identifying the exception</td>
+        </tr>
+        <tr>
+          <th>vendorCode</th>
+          <td>a database vendor-specific exception code</td>
+        </tr>
+        <tr>
+          <th>failedProperties</th>
+          <td>A Map containing the property values that could not
+                                  be set.  The keys in the Map
+                                  contain the names of the client info
+                                  properties that could not be set and
+                                  the values contain one of the reason codes
+                                  defined in <code>ClientInfoStatus</code></td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     the cause is non-existent or unknown.
+ <p></td>
         </tr>
       </table>
   </div>
@@ -1654,12 +1797,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>returns that the client info properties which could not be set</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the list of client info properties that could not be set.  The
+ keys in the Map  contain the names of the client info
+ properties that could not be set and the values contain one of the
+ reason codes defined in <code>ClientInfoStatus</code>
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the list of ClientInfoStatus objects indicate client info
-         properties
-</li></ul>
+      <ul class="nolist"><li>Map list containing the client info properties that could
+ not be set
+ <p></li></ul>
   </div>
 
     </div>

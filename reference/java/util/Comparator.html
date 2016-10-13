@@ -180,16 +180,74 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>Comparator</code> is used to compare two objects to determine their ordering with
- respect to each other. On a given <code>Collection</code>, a <code>Comparator</code> can be used to
- obtain a sorted <code>Collection</code> which is <i>totally ordered</i>. For a <code>Comparator</code>
- to be <i>consistent with equals</i>, its {code #compare(Object, Object)}
- method has to return zero for each pair of elements (a,b) where a.equals(b)
- holds true. It is recommended that a <code>Comparator</code> implements
- <code><a href="reference/java/io/Serializable.html">Serializable</a></code>.</p>
+<p>A comparison function, which imposes a <i>total ordering</i> on some
+ collection of objects.  Comparators can be passed to a sort method (such
+ as <code><a href="reference/java/util/Collections.html#sort(java.util.List<T>, java.util.Comparator<? super T>)">Collections.sort</a></code> or <code><a href="reference/java/util/Arrays.html#sort(T[], java.util.Comparator<? super T>)">Arrays.sort</a></code>) to allow precise control
+ over the sort order.  Comparators can also be used to control the order of
+ certain data structures (such as <code><a href="reference/java/util/SortedSet.html">sorted sets</a></code> or <code><a href="reference/java/util/SortedMap.html">sorted maps</a></code>), or to provide an ordering for collections of
+ objects that don't have a <code><a href="reference/java/lang/Comparable.html">natural ordering</a></code>.<p>
+
+ The ordering imposed by a comparator <tt>c</tt> on a set of elements
+ <tt>S</tt> is said to be <i>consistent with equals</i> if and only if
+ <tt>c.compare(e1, e2)==0</tt> has the same boolean value as
+ <tt>e1.equals(e2)</tt> for every <tt>e1</tt> and <tt>e2</tt> in
+ <tt>S</tt>.<p>
+
+ Caution should be exercised when using a comparator capable of imposing an
+ ordering inconsistent with equals to order a sorted set (or sorted map).
+ Suppose a sorted set (or sorted map) with an explicit comparator <tt>c</tt>
+ is used with elements (or keys) drawn from a set <tt>S</tt>.  If the
+ ordering imposed by <tt>c</tt> on <tt>S</tt> is inconsistent with equals,
+ the sorted set (or sorted map) will behave "strangely."  In particular the
+ sorted set (or sorted map) will violate the general contract for set (or
+ map), which is defined in terms of <tt>equals</tt>.<p>
+
+ For example, suppose one adds two elements <code>a</code> and <code>b</code> such that
+ <code>(a.equals(b) &amp;&amp; c.compare(a, b) != 0)</code>
+ to an empty <code>TreeSet</code> with comparator <code>c</code>.
+ The second <code>add</code> operation will return
+ true (and the size of the tree set will increase) because <code>a</code> and
+ <code>b</code> are not equivalent from the tree set's perspective, even though
+ this is contrary to the specification of the
+ <code><a href="reference/java/util/Set.html#add(E)">Set.add</a></code> method.<p>
+
+ Note: It is generally a good idea for comparators to also implement
+ <tt>java.io.Serializable</tt>, as they may be used as ordering methods in
+ serializable data structures (like <code><a href="reference/java/util/TreeSet.html">TreeSet</a></code>, <code><a href="reference/java/util/TreeMap.html">TreeMap</a></code>).  In
+ order for the data structure to serialize successfully, the comparator (if
+ provided) must implement <tt>Serializable</tt>.<p>
+
+ For the mathematically inclined, the <i>relation</i> that defines the
+ <i>imposed ordering</i> that a given comparator <tt>c</tt> imposes on a
+ given set of objects <tt>S</tt> is:<pre>
+       {(x, y) such that c.compare(x, y) &lt;= 0}.
+ </pre> The <i>quotient</i> for this total order is:<pre>
+       {(x, y) such that c.compare(x, y) == 0}.
+ </pre>
+
+ It follows immediately from the contract for <tt>compare</tt> that the
+ quotient is an <i>equivalence relation</i> on <tt>S</tt>, and that the
+ imposed ordering is a <i>total order</i> on <tt>S</tt>.  When we say that
+ the ordering imposed by <tt>c</tt> on <tt>S</tt> is <i>consistent with
+ equals</i>, we mean that the quotient for the ordering is the equivalence
+ relation defined by the objects' <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> method(s):<pre>
+     {(x, y) such that x.equals(y)}. </pre>
+
+ <p>Unlike <code>Comparable</code>, a comparator may optionally permit
+ comparison of null arguments, while maintaining the requirements for
+ an equivalence relation.
+
+ <p>This interface is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li><li><code><a href="../../../reference/java/io/Serializable.html">Serializable</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -256,9 +314,202 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#compare(T, T)">compare</a></span>(T lhs, T rhs)
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#compare(T, T)">compare</a></span>(T o1, T o2)
         
-        <div class="jd-descrdiv">Compares the two specified objects to determine their relative ordering.</div>
+        <div class="jd-descrdiv">Compares its two arguments for order.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T,&nbsp;U&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>, java.util.Comparator<? super U>)">comparing</a></span>(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;U&gt; keyComparator)
+        
+        <div class="jd-descrdiv">Accepts a function that extracts a sort key from a type <code>T</code>, and
+ returns a <code>Comparator&lt;T&gt;</code> that compares by that sort key using
+ the specified <code><a href="reference/java/util/Comparator.html">Comparator</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T,&nbsp;U&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;U&gt;&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>)">comparing</a></span>(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Accepts a function that extracts a <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> sort key from a type <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#comparingDouble(java.util.function.ToDoubleFunction<? super T>)">comparingDouble</a></span>(<a href="../../../reference/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Accepts a function that extracts a <code>double</code> sort key from a type
+ <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that
+ sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#comparingInt(java.util.function.ToIntFunction<? super T>)">comparingInt</a></span>(<a href="../../../reference/java/util/function/ToIntFunction.html">ToIntFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Accepts a function that extracts an <code>int</code> sort key from a type
+ <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that
+ sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#comparingLong(java.util.function.ToLongFunction<? super T>)">comparingLong</a></span>(<a href="../../../reference/java/util/function/ToLongFunction.html">ToLongFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Accepts a function that extracts a <code>long</code> sort key from a type
+ <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that
+ sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
+        
+        <div class="jd-descrdiv">Indicates whether some other object is &quot;equal to&quot; this
+ comparator.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;T&gt;&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#naturalOrder()">naturalOrder</a></span>()
+        
+        <div class="jd-descrdiv">Returns a comparator that compares <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> objects in natural
+ order.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#nullsFirst(java.util.Comparator<? super T>)">nullsFirst</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
+        
+        <div class="jd-descrdiv">Returns a null-friendly comparator that considers <code>null</code> to be
+ less than non-null.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#nullsLast(java.util.Comparator<? super T>)">nullsLast</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
+        
+        <div class="jd-descrdiv">Returns a null-friendly comparator that considers <code>null</code> to be
+ greater than non-null.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            static
+            &lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;T&gt;&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#reverseOrder()">reverseOrder</a></span>()
+        
+        <div class="jd-descrdiv">Returns a comparator that imposes the reverse of the <em>natural
+ ordering</em>.</div>
   
   </td></tr>
 
@@ -271,13 +522,126 @@ layout: api
             
             
             
-            boolean
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#reversed()">reversed</a></span>()
         
-        <div class="jd-descrdiv">Compares this <code>Comparator</code> with the specified <code>Object</code> and indicates whether they
- are equal.</div>
+        <div class="jd-descrdiv">Returns a comparator that imposes the reverse ordering of this
+ comparator.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            &lt;U&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;?&nbsp;super&nbsp;U&gt;&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.function.Function<? super T, ? extends U>)">thenComparing</a></span>(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Returns a lexicographic-order comparator with a function that
+ extracts a <code>Comparable</code> sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            &lt;U&gt;
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.function.Function<? super T, ? extends U>, java.util.Comparator<? super U>)">thenComparing</a></span>(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;U&gt; keyComparator)
+        
+        <div class="jd-descrdiv">Returns a lexicographic-order comparator with a function that
+ extracts a key to be compared with the given <code>Comparator</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.Comparator<? super T>)">thenComparing</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; other)
+        
+        <div class="jd-descrdiv">Returns a lexicographic-order comparator with another comparator.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#thenComparingDouble(java.util.function.ToDoubleFunction<? super T>)">thenComparingDouble</a></span>(<a href="../../../reference/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Returns a lexicographic-order comparator with a function that
+ extracts a <code>double</code> sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#thenComparingInt(java.util.function.ToIntFunction<? super T>)">thenComparingInt</a></span>(<a href="../../../reference/java/util/function/ToIntFunction.html">ToIntFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Returns a lexicographic-order comparator with a function that
+ extracts a <code>int</code> sort key.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Comparator.html#thenComparingLong(java.util.function.ToLongFunction<? super T>)">thenComparingLong</a></span>(<a href="../../../reference/java/util/function/ToLongFunction.html">ToLongFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)
+        
+        <div class="jd-descrdiv">Returns a lexicographic-order comparator with a function that
+ extracts a <code>long</code> sort key.</div>
   
   </td></tr>
 
@@ -343,7 +707,7 @@ layout: api
         int
       </span>
       <span class="sympad">compare</span>
-      <span class="normal">(T lhs, T rhs)</span>
+      <span class="normal">(T o1, T o2)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -355,43 +719,376 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares the two specified objects to determine their relative ordering. The ordering
- implied by the return value of this method for all possible pairs of
- <code>(lhs, rhs)</code> should form an <i>equivalence relation</i>.
- This means that
- <ul>
- <li><code>compare(a,a)</code> returns zero for all <code>a</code></li>
- <li>the sign of <code>compare(a,b)</code> must be the opposite of the sign of <code>compare(b,a)</code> for all pairs of (a,b)</li>
- <li>From <code>compare(a,b) > 0</code> and <code>compare(b,c) > 0</code> it must
- follow <code>compare(a,c) > 0</code> for all possible combinations of <code>(a,b,c)</code></li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares its two arguments for order.  Returns a negative integer,
+ zero, or a positive integer as the first argument is less than, equal
+ to, or greater than the second.<p>
+
+ In the foregoing description, the notation
+ <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
+ <i>signum</i> function, which is defined to return one of <tt>-1</tt>,
+ <tt>0</tt>, or <tt>1</tt> according to whether the value of
+ <i>expression</i> is negative, zero or positive.<p>
+
+ The implementor must ensure that <tt>sgn(compare(x, y)) ==
+ -sgn(compare(y, x))</tt> for all <tt>x</tt> and <tt>y</tt>.  (This
+ implies that <tt>compare(x, y)</tt> must throw an exception if and only
+ if <tt>compare(y, x)</tt> throws an exception.)<p>
+
+ The implementor must also ensure that the relation is transitive:
+ <tt>((compare(x, y)&gt;0) &amp;&amp; (compare(y, z)&gt;0))</tt> implies
+ <tt>compare(x, z)&gt;0</tt>.<p>
+
+ Finally, the implementor must ensure that <tt>compare(x, y)==0</tt>
+ implies that <tt>sgn(compare(x, z))==sgn(compare(y, z))</tt> for all
+ <tt>z</tt>.<p>
+
+ It is generally the case, but <i>not</i> strictly required that
+ <tt>(compare(x, y)==0) == (x.equals(y))</tt>.  Generally speaking,
+ any comparator that violates this condition should clearly indicate
+ this fact.  The recommended language is "Note: this comparator
+ imposes orderings that are inconsistent with equals."</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>lhs</th>
-          <td>an <code>Object</code>.</td>
+          <th>o1</th>
+          <td>the first object to be compared.</td>
         </tr>
         <tr>
-          <th>rhs</th>
-          <td>a second <code>Object</code> to compare with <code>lhs</code>.</td>
+          <th>o2</th>
+          <td>the second object to be compared.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an integer < 0 if <code>lhs</code> is less than <code>rhs</code>, 0 if they are
-         equal, and > 0 if <code>lhs</code> is greater than <code>rhs</code>.</li></ul>
+      <ul class="nolist"><li>a negative integer, zero, or a positive integer as the
+         first argument is less than, equal to, or greater than the
+         second.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if an argument is null and this
+         comparator does not permit null arguments</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if objects are not of the correct type.
+            <td>if the arguments' types prevent them from
+         being compared by this comparator.
 </td>
         </tr>
       </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparing(java.util.function.Function<? super T, ? extends U>, java.util.Comparator<? super U>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">comparing</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;U&gt; keyComparator)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Accepts a function that extracts a sort key from a type <code>T</code>, and
+ returns a <code>Comparator&lt;T&gt;</code> that compares by that sort key using
+ the specified <code><a href="reference/java/util/Comparator.html">Comparator</a></code>.
+
+ <p>The returned comparator is serializable if the specified function
+ and comparator are both serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the sort key</td>
+        </tr>
+        <tr>
+          <th>keyComparator</th>
+          <td>the <code>Comparator</code> used to compare the sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares by an extracted key using the
+         specified <code>Comparator</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if either argument is null</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparing(java.util.function.Function<? super T, ? extends U>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">comparing</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Accepts a function that extracts a <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> sort key from a type <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that sort key.
+
+ <p>The returned comparator is serializable if the specified function
+ is also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares by an extracted key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparingDouble(java.util.function.ToDoubleFunction<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">comparingDouble</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Accepts a function that extracts a <code>double</code> sort key from a type
+ <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that
+ sort key.
+
+ <p>The returned comparator is serializable if the specified function
+ is also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the double sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares by an extracted key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>)">comparing(Function)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparingInt(java.util.function.ToIntFunction<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">comparingInt</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/ToIntFunction.html">ToIntFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Accepts a function that extracts an <code>int</code> sort key from a type
+ <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that
+ sort key.
+
+ <p>The returned comparator is serializable if the specified function
+ is also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the integer sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares by an extracted key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>)">comparing(Function)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="comparingLong(java.util.function.ToLongFunction<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">comparingLong</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/ToLongFunction.html">ToLongFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Accepts a function that extracts a <code>long</code> sort key from a type
+ <code>T</code>, and returns a <code>Comparator&lt;T&gt;</code> that compares by that
+ sort key.
+
+ <p>The returned comparator is serializable if the specified function is
+ also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the long sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that compares by an extracted key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>)">comparing(Function)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -411,7 +1108,7 @@ layout: api
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -423,29 +1120,631 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>Comparator</code> with the specified <code>Object</code> and indicates whether they
- are equal. In order to be equal, <code>object</code> must represent the same object
- as this instance using a class-specific comparison.
- <p>
- A <code>Comparator</code> never needs to override this method, but may choose so for
- performance reasons.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether some other object is &quot;equal to&quot; this
+ comparator.  This method must obey the general contract of
+ <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code>.  Additionally, this method can return
+ <tt>true</tt> <i>only</i> if the specified object is also a comparator
+ and it imposes the same ordering as this comparator.  Thus,
+ <code>comp1.equals(comp2)</code> implies that <tt>sgn(comp1.compare(o1,
+ o2))==sgn(comp2.compare(o1, o2))</tt> for every object reference
+ <tt>o1</tt> and <tt>o2</tt>.<p>
+
+ Note that it is <i>always</i> safe <i>not</i> to override
+ <tt>Object.equals(Object)</tt>.  However, overriding this method may,
+ in some cases, improve performance by allowing programs to determine
+ that two distinct comparators impose the same order.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the <code>Object</code> to compare with this comparator.</td>
+          <th>obj</th>
+          <td>the reference object with which to compare.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>boolean <code>true</code> if specified <code>Object</code> is the same as this
-         <code>Object</code>, and <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> only if the specified object is also
+          a comparator and it imposes the same ordering as this
+          comparator.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="naturalOrder()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">naturalOrder</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that compares <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> objects in natural
+ order.
+
+ <p>The returned comparator is serializable and throws <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> when comparing <code>null</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that imposes the <i>natural ordering</i> on <code>Comparable</code> objects.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="nullsFirst(java.util.Comparator<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">nullsFirst</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a null-friendly comparator that considers <code>null</code> to be
+ less than non-null. When both are <code>null</code>, they are considered
+ equal. If both are non-null, the specified <code>Comparator</code> is used
+ to determine the order. If the specified comparator is <code>null</code>,
+ then the returned comparator considers all non-null values to be equal.
+
+ <p>The returned comparator is serializable if the specified comparator
+ is serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>comparator</th>
+          <td>a <code>Comparator</code> for comparing non-null values</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that considers <code>null</code> to be less than
+         non-null, and compares non-null objects with the supplied
+         <code>Comparator</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="nullsLast(java.util.Comparator<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">nullsLast</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a null-friendly comparator that considers <code>null</code> to be
+ greater than non-null. When both are <code>null</code>, they are considered
+ equal. If both are non-null, the specified <code>Comparator</code> is used
+ to determine the order. If the specified comparator is <code>null</code>,
+ then the returned comparator considers all non-null values to be equal.
+
+ <p>The returned comparator is serializable if the specified comparator
+ is serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>comparator</th>
+          <td>a <code>Comparator</code> for comparing non-null values</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that considers <code>null</code> to be greater than
+         non-null, and compares non-null objects with the supplied
+         <code>Comparator</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="reverseOrder()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">reverseOrder</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that imposes the reverse of the <em>natural
+ ordering</em>.
+
+ <p>The returned comparator is serializable and throws <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> when comparing <code>null</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that imposes the reverse of the <i>natural
+         ordering</i> on <code>Comparable</code> objects.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="reversed()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">reversed</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a comparator that imposes the reverse ordering of this
+ comparator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a comparator that imposes the reverse ordering of this
+         comparator.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="thenComparing(java.util.function.Function<? super T, ? extends U>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">thenComparing</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a lexicographic-order comparator with a function that
+ extracts a <code>Comparable</code> sort key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a lexicographic-order comparator composed of this and then the
+         <code><a href="reference/java/lang/Comparable.html">Comparable</a></code> sort key.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>)">comparing(Function)</a></code></li><li><code><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.Comparator<? super T>)">thenComparing(Comparator)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="thenComparing(java.util.function.Function<? super T, ? extends U>, java.util.Comparator<? super U>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">thenComparing</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;T,&nbsp;?&nbsp;extends&nbsp;U&gt; keyExtractor, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;U&gt; keyComparator)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a lexicographic-order comparator with a function that
+ extracts a key to be compared with the given <code>Comparator</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the sort key</td>
+        </tr>
+        <tr>
+          <th>keyComparator</th>
+          <td>the <code>Comparator</code> used to compare the sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a lexicographic-order comparator composed of this comparator
+         and then comparing on the key extracted by the keyExtractor function</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if either argument is null.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparing(java.util.function.Function<? super T, ? extends U>, java.util.Comparator<? super U>)">comparing(Function, Comparator)</a></code></li><li><code><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.Comparator<? super T>)">thenComparing(Comparator)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="thenComparing(java.util.Comparator<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">thenComparing</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; other)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a lexicographic-order comparator with another comparator.
+ If this <code>Comparator</code> considers two elements equal, i.e.
+ <code>compare(a, b) == 0</code>, <code>other</code> is used to determine the order.
+
+ <p>The returned comparator is serializable if the specified comparator
+ is also serializable.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>other</th>
+          <td>the other comparator to be used when this comparator
+         compares two objects that are equal.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a lexicographic-order comparator composed of this and then the
+         other comparator</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null.</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="thenComparingDouble(java.util.function.ToDoubleFunction<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">thenComparingDouble</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/ToDoubleFunction.html">ToDoubleFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a lexicographic-order comparator with a function that
+ extracts a <code>double</code> sort key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the double sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a lexicographic-order comparator composed of this and then the
+         <code>double</code> sort key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparingDouble(java.util.function.ToDoubleFunction<? super T>)">comparingDouble(ToDoubleFunction)</a></code></li><li><code><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.Comparator<? super T>)">thenComparing(Comparator)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="thenComparingInt(java.util.function.ToIntFunction<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">thenComparingInt</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/ToIntFunction.html">ToIntFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a lexicographic-order comparator with a function that
+ extracts a <code>int</code> sort key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the integer sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a lexicographic-order comparator composed of this and then the
+         <code>int</code> sort key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparingInt(java.util.function.ToIntFunction<? super T>)">comparingInt(ToIntFunction)</a></code></li><li><code><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.Comparator<? super T>)">thenComparing(Comparator)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="thenComparingLong(java.util.function.ToLongFunction<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">thenComparingLong</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/ToLongFunction.html">ToLongFunction</a>&lt;?&nbsp;super&nbsp;T&gt; keyExtractor)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a lexicographic-order comparator with a function that
+ extracts a <code>long</code> sort key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>keyExtractor</th>
+          <td>the function used to extract the long sort key</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a lexicographic-order comparator composed of this and then the
+         <code>long</code> sort key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the argument is null.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Comparator.html#comparingLong(java.util.function.ToLongFunction<? super T>)">comparingLong(ToLongFunction)</a></code></li><li><code><a href="../../../reference/java/util/Comparator.html#thenComparing(java.util.Comparator<? super T>)">thenComparing(Comparator)</a></code></li>
       </ul>
   </div>
 

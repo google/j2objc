@@ -234,12 +234,14 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">Class <code>AbstractCollection</code> is an abstract implementation of the <code>Collection</code> interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <tt>Collection</tt>
+ interface, to minimize the effort required to implement this interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%"><code>AbstractList</code> is an abstract implementation of the <code>List</code> interface, optimized
- for a backing store which supports random access.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <code><a href="reference/java/util/List.html">List</a></code>
+ interface to minimize the effort required to implement this interface
+ backed by a "random access" data store (such as an array).&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</td>
@@ -248,11 +250,15 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">AbstractSequentialList is an abstract implementation of the List interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <tt>List</tt>
+ interface to minimize the effort required to implement this interface
+ backed by a "sequential access" data store (such as a linked list).&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">An AbstractSet is an abstract implementation of the Set interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <tt>Set</tt>
+ interface to minimize the effort required to implement this
+ interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</td>
@@ -265,11 +271,12 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">ArrayList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Resizable-array implementation of the <tt>List</tt> interface.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></td>
-              <td class="jd-descrcol" width="100%">This exception is thrown if a problem occurs during a batch update operation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when an error
+ occurs during a batch update operation.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;</td>
@@ -286,7 +293,7 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%"><code>Collection</code> is the root of the collection hierarchy.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The root interface in the <i>collection hierarchy</i>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;</td>
@@ -312,9 +319,11 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></td>
-              <td class="jd-descrcol" width="100%">An exception which is thrown when a JDBC driver unexpectedly truncates a data
- value either when reading (resulting in warning), or when writing data
- (resulting in an error).&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An exception  thrown as a <code>DataTruncation</code> exception
+ (on writes) or reported as a
+ <code>DataTruncation</code> warning (on reads)
+  when a data values is unexpectedly truncated for reasons other than its having
+  execeeded <code>MaxFieldSize</code>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;</td>
@@ -329,11 +338,12 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">An EnumSet is a specialized Set to be used with enums as keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/util/Set.html">Set</a></code> implementation for use with enum types.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">HashSet is an implementation of a Set.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements the <tt>Set</tt> interface, backed by a hash table
+ (actually a <tt>HashMap</tt> instance).&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</td>
@@ -347,11 +357,13 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedHashSet is a variant of HashSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Hash table and linked list implementation of the <tt>Set</tt> interface,
+ with predictable iteration order.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by a doubly-linked list.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Doubly-linked list implementation of the <code>List</code> and <code>Deque</code>
+ interfaces.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</td>
@@ -359,7 +371,7 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">A <code>List</code> is a collection which maintains an ordering for its elements.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An ordered collection (also known as a <i>sequence</i>).&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</td>
@@ -374,9 +386,7 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">A PriorityQueue holds elements on a priority heap, which orders the elements
- according to their natural order or according to the comparator specified at
- construction time.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An unbounded priority {@linkplain Queue queue} based on a priority heap.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</td>
@@ -384,89 +394,99 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when one or more
- client info properties could not be set on a Connection.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> is thrown when one or more client info properties
+ could not be set on a <code>Connection</code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when various data
- errors arise.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>22</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-              <td class="jd-descrcol" width="100%">An exception that indicates a failed JDBC operation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>An exception that provides information on a database access
+ error or other errors.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
- various the JDBC driver does not support an optional JDBC feature.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value is '<i>0A</i>'
+ ( the value is 'zero' A).&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
- various the an integrity constraint (foreign key, primary key or unique key)
- has been violated.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>23</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
- the authorization credentials presented during connection establishment are
- not valid.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>28</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></td>
-              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when the
- connection operation that failed will not succeed when the operation is
- retried without the cause of the failure being corrected.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown for the SQLState
+ class value '<i>08</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when an instance where a retry
+ of the same operation would fail unless the cause of the <code>SQLException</code>
+ is corrected.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown in situations where a
+ previously failed operation might be able to succeed if the application performs
+  some recovery steps and retries the entire transaction or in the case of a
+ distributed transaction, the transaction branch.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>42</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the timeout specified by <code>Statement</code>
+  has expired.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> thrown when the SQLState class value
+ is '<i>40</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> for the SQLState class
+ value '<i>08</i>', or under vendor-specified conditions.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The subclass of <code><a href="reference/java/sql/SQLException.html">SQLException</a></code> is thrown in situations where a
+ previoulsy failed operation might be able to succeed when the operation is
+ retried without any intervention by application-level functionality.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></td>
-              <td class="jd-descrcol" width="100%">An exception class that holds information about Database access warnings.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>An exception that provides information on  database access
+ warnings.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</td>
-              <td class="jd-descrcol" width="100%">A service-provider loader.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A simple service-provider loading facility.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">A <code>Set</code> is a data structure which does not allow duplicate elements.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A collection that contains no duplicate elements.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">SortedSet is a Set which iterates over its elements in a sorted order.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/Set.html">Set</a></code> that further provides a <i>total ordering</i> on its elements.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%"><code>Stack</code> is a Last-In/First-Out(LIFO) data structure which represents a
- stack of objects.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Stack</code> class represents a last-in-first-out
+ (LIFO) stack of objects.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</td>
@@ -490,11 +510,12 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">TreeSet is an implementation of SortedSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> implementation based on a <code><a href="reference/java/util/TreeMap.html">TreeMap</a></code>.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">Vector is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array and synchronized.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Vector</code> class implements a growable array of
+ objects.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -506,11 +527,15 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Instances of classes that implement this interface can be used with
- the enhanced for loop.</p>
+<p>Stub implementation of java.lang.Iterable.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html">Object</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -574,6 +599,22 @@ layout: api
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;T&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -581,6 +622,22 @@ layout: api
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;T&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -632,6 +689,37 @@ layout: api
 
 
 
+<a id="forEach(java.util.function.Consumer<? super T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">forEach</span>
+      <span class="normal">(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
 <a id="iterator()"></a>
 
 <div class="jd-details api apilevel-">
@@ -663,6 +751,37 @@ layout: api
       <ul class="nolist"><li>An <code>Iterator</code> instance.
 </li></ul>
   </div>
+
+    </div>
+</div>
+
+
+<a id="spliterator()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;T&gt;
+      </span>
+      <span class="sympad">spliterator</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>

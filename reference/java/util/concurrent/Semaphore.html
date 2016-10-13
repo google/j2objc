@@ -192,7 +192,7 @@ layout: api
    public Object getItem() throws InterruptedException {
      available.acquire();
      return getNextAvailableItem();
-   </code>
+   }
 
    public void putItem(Object x) {
      if (markAsUnused(x))
@@ -205,7 +205,7 @@ layout: api
    protected boolean[] used = new boolean[MAX_AVAILABLE];
 
    protected synchronized Object getNextAvailableItem() {
-     for (int i = 0; i < MAX_AVAILABLE; ++i) {
+     for (int i = 0; i &lt; MAX_AVAILABLE; ++i) {
        if (!used[i]) {
           used[i] = true;
           return items[i];
@@ -215,7 +215,7 @@ layout: api
    }
 
    protected synchronized boolean markAsUnused(Object item) {
-     for (int i = 0; i < MAX_AVAILABLE; ++i) {
+     for (int i = 0; i &lt; MAX_AVAILABLE; ++i) {
        if (item == items[i]) {
           if (used[i]) {
             used[i] = false;
@@ -226,7 +226,7 @@ layout: api
      }
      return false;
    }
- }}</pre>
+ }</code></pre>
 
  <p>Before obtaining an item each thread must acquire a permit from
  the semaphore, guaranteeing that an item is available for use. When

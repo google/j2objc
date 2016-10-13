@@ -240,17 +240,49 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A PriorityQueue holds elements on a priority heap, which orders the elements
- according to their natural order or according to the comparator specified at
- construction time. If the queue uses natural ordering, only elements that are
- comparable are permitted to be inserted into the queue.
- <p>
- The least element of the specified ordering is the first retrieved with
- <code><a href="reference/java/util/PriorityQueue.html#poll()">poll()</a></code> and the greatest element is the last.
- <p>
- A PriorityQueue is not synchronized. If multiple threads will have to access
- it concurrently, use the <code><a href="reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a></code>.
-</p>
+<p>An unbounded priority {@linkplain Queue queue} based on a priority heap.
+ The elements of the priority queue are ordered according to their
+ {@linkplain Comparable natural ordering}, or by a <code><a href="reference/java/util/Comparator.html">Comparator</a></code>
+ provided at queue construction time, depending on which constructor is
+ used.  A priority queue does not permit <code>null</code> elements.
+ A priority queue relying on natural ordering also does not permit
+ insertion of non-comparable objects (doing so may result in
+ <code>ClassCastException</code>).
+
+ <p>The <em>head</em> of this queue is the <em>least</em> element
+ with respect to the specified ordering.  If multiple elements are
+ tied for least value, the head is one of those elements -- ties are
+ broken arbitrarily.  The queue retrieval operations <code>poll</code>,
+ <code>remove</code>, <code>peek</code>, and <code>element</code> access the
+ element at the head of the queue.
+
+ <p>A priority queue is unbounded, but has an internal
+ <i>capacity</i> governing the size of an array used to store the
+ elements on the queue.  It is always at least as large as the queue
+ size.  As elements are added to a priority queue, its capacity
+ grows automatically.  The details of the growth policy are not
+ specified.
+
+ <p>This class and its iterator implement all of the
+ <em>optional</em> methods of the <code><a href="reference/java/util/Collection.html">Collection</a></code> and <code><a href="reference/java/util/Iterator.html">Iterator</a></code> interfaces.  The Iterator provided in method <code><a href="reference/java/util/PriorityQueue.html#iterator()">iterator()</a></code> is <em>not</em> guaranteed to traverse the elements of
+ the priority queue in any particular order. If you need ordered
+ traversal, consider using <code>Arrays.sort(pq.toArray())</code>.
+
+ <p><strong>Note that this implementation is not synchronized.</strong>
+ Multiple threads should not access a <code>PriorityQueue</code>
+ instance concurrently if any of the threads modifies the queue.
+ Instead, use the thread-safe <code><a href="reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a></code> class.
+
+ <p>Implementation note: this implementation provides
+ O(log(n)) time for the enqueuing and dequeuing methods
+ (<code>offer</code>, <code>poll</code>, <code>remove()</code> and <code>add</code>);
+ linear time for the <code>remove(Object)</code> and <code>contains(Object)</code>
+ methods; and constant time for the retrieval methods
+ (<code>peek</code>, <code>element</code>, and <code>size</code>).
+
+ <p>This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
@@ -318,8 +350,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue()">PriorityQueue</a></span>()
         
-        <div class="jd-descrdiv">Constructs a priority queue with an initial capacity of 11 and natural
- ordering.</div>
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> with the default initial
+ capacity (11) that orders its elements according to their
+ {@linkplain Comparable natural ordering}.</div>
   
   </td></tr>
 
@@ -337,14 +370,34 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(int)">PriorityQueue</a></span>(int initialCapacity)
         
-        <div class="jd-descrdiv">Constructs a priority queue with the specified capacity and natural
- ordering.</div>
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> with the specified initial
+ capacity that orders its elements according to their
+ {@linkplain Comparable natural ordering}.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(java.util.Comparator<? super E>)">PriorityQueue</a></span>(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; comparator)
+        
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> with the default initial capacity and
+ whose elements are ordered according to the specified comparator.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -356,25 +409,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(int, java.util.Comparator<? super E>)">PriorityQueue</a></span>(int initialCapacity, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; comparator)
         
-        <div class="jd-descrdiv">Constructs a priority queue with the specified capacity and comparator.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(java.util.Collection<? extends E>)">PriorityQueue</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
-        
-        <div class="jd-descrdiv">Constructs a priority queue that contains the elements of a collection.</div>
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> with the specified initial capacity
+ that orders its elements according to the specified comparator.</div>
   
   </td></tr>
 
@@ -390,10 +426,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(java.util.PriorityQueue<? extends E>)">PriorityQueue</a></span>(<a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(java.util.Collection<? extends E>)">PriorityQueue</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Constructs a priority queue that contains the elements of another
- priority queue.</div>
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> containing the elements in the
+ specified collection.</div>
   
   </td></tr>
 
@@ -409,9 +445,29 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(java.util.PriorityQueue<? extends E>)">PriorityQueue</a></span>(<a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
+        
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> containing the elements in the
+ specified priority queue.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#PriorityQueue(java.util.SortedSet<? extends E>)">PriorityQueue</a></span>(<a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Constructs a priority queue that contains the elements of a sorted set.</div>
+        <div class="jd-descrdiv">Creates a <code>PriorityQueue</code> containing the elements in the
+ specified sorted set.</div>
   
   </td></tr>
 
@@ -440,9 +496,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#add(E)">add</a></span>(E o)
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object to the priority queue.</div>
+        <div class="jd-descrdiv">Inserts the specified element into this priority queue.</div>
   
   </td></tr>
 
@@ -460,7 +516,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all the elements of the priority queue.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this priority queue.</div>
   
   </td></tr>
 
@@ -478,13 +534,33 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#comparator()">comparator</a></span>()
         
-        <div class="jd-descrdiv">Gets the comparator of the priority queue.</div>
+        <div class="jd-descrdiv">Returns the comparator used to order the elements in this
+ queue, or <code>null</code> if this queue is sorted according to
+ the {@linkplain Comparable natural ordering} of its elements.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if this queue contains the specified element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -496,26 +572,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Gets the iterator of the priority queue, which will not return elements
- in any specified ordering.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#offer(E)">offer</a></span>(E o)
-        
-        <div class="jd-descrdiv">Inserts the element to the priority queue.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this queue.</div>
   
   </td></tr>
 
@@ -528,18 +585,34 @@ layout: api
             
             
             
-            E
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#peek()">peek</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#offer(E)">offer</a></span>(E e)
         
-        <div class="jd-descrdiv">Gets but does not remove the head of the queue.</div>
+        <div class="jd-descrdiv">Inserts the specified element into this priority queue.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#peek()">peek</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -551,7 +624,24 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#poll()">poll</a></span>()
         
-        <div class="jd-descrdiv">Gets and removes the head of the queue.</div>
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this queue,
+ if it is present.</div>
   
   </td></tr>
 
@@ -564,12 +654,51 @@ layout: api
             
             
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Removes the specified object from the priority queue.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <em><a href="Spliterator.html#binding">late-binding</a></em>
+ and <em>fail-fast</em> <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this
+ queue.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;T&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#toArray(T[])">toArray</a></span>(T[] a)
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this queue; the
+ runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -582,12 +711,12 @@ layout: api
             
             
             
-            int
+            <a href="../../../reference/java/lang/Object.html">Object[]</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#size()">size</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/PriorityQueue.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Gets the size of the priority queue.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this queue.</div>
   
   </td></tr>
 
@@ -641,7 +770,7 @@ From class
         
         <div class="jd-descrdiv">Inserts the specified element into this queue if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt>
+ <code>true</code> upon success and throwing an <code>IllegalStateException</code>
  if no space is currently available.</div>
   
   </td></tr>
@@ -756,10 +885,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -775,10 +907,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -796,7 +931,10 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -812,9 +950,12 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -830,10 +971,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -851,7 +996,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -869,8 +1016,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -886,10 +1032,13 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -905,10 +1054,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -924,10 +1077,14 @@ From class
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -945,7 +1102,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -963,7 +1120,12 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -981,7 +1143,11 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -999,7 +1165,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -1274,7 +1440,7 @@ From interface
         
         <div class="jd-descrdiv">Inserts the specified element into this queue if it is possible to do so
  immediately without violating capacity restrictions, returning
- <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt>
+ <code>true</code> upon success and throwing an <code>IllegalStateException</code>
  if no space is currently available.</div>
   
   </td></tr>
@@ -1331,7 +1497,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Queue.html#peek()">peek</a></span>()
         
         <div class="jd-descrdiv">Retrieves, but does not remove, the head of this queue,
- or returns <tt>null</tt> if this queue is empty.</div>
+ or returns <code>null</code> if this queue is empty.</div>
   
   </td></tr>
 
@@ -1350,7 +1516,7 @@ From interface
         <span class="sympad"><a href="../../../reference/java/util/Queue.html#poll()">poll</a></span>()
         
         <div class="jd-descrdiv">Retrieves and removes the head of this queue,
- or returns <tt>null</tt> if this queue is empty.</div>
+ or returns <code>null</code> if this queue is empty.</div>
   
   </td></tr>
 
@@ -1409,10 +1575,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1428,10 +1594,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1449,7 +1615,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -1465,9 +1631,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -1483,10 +1649,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1502,10 +1668,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -1523,7 +1688,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -1541,7 +1706,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -1559,8 +1724,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -1573,13 +1737,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -1595,10 +1759,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -1614,10 +1778,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1635,7 +1837,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -1651,9 +1889,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -1671,7 +1910,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -1711,6 +1950,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -1718,6 +1973,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -1786,8 +2057,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a priority queue with an initial capacity of 11 and natural
- ordering.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> with the default initial
+ capacity (11) that orders its elements according to their
+ {@linkplain Comparable natural ordering}.
 </p></div>
 
     </div>
@@ -1819,14 +2091,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a priority queue with the specified capacity and natural
- ordering.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> with the specified initial
+ capacity that orders its elements according to their
+ {@linkplain Comparable natural ordering}.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>initialCapacity</th>
-          <td>the specified capacity.</td>
+          <td>the initial capacity for this priority queue</td>
         </tr>
       </table>
   </div>
@@ -1835,8 +2108,52 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the initialCapacity is less than 1.
+            <td>if <code>initialCapacity</code> is less
+         than 1
 </td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="PriorityQueue(java.util.Comparator<? super E>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">PriorityQueue</span>
+      <span class="normal">(<a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; comparator)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> with the default initial capacity and
+ whose elements are ordered according to the specified comparator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>comparator</th>
+          <td>the comparator that will be used to order this
+         priority queue.  If <code>null</code>, the {@linkplain Comparable
+         natural ordering} of the elements will be used.</td>
         </tr>
       </table>
   </div>
@@ -1870,18 +2187,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a priority queue with the specified capacity and comparator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> with the specified initial capacity
+ that orders its elements according to the specified comparator.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>initialCapacity</th>
-          <td>the specified capacity.</td>
+          <td>the initial capacity for this priority queue</td>
         </tr>
         <tr>
           <th>comparator</th>
-          <td>the specified comparator. If it is null, the natural ordering
-            will be used.</td>
+          <td>the comparator that will be used to order this
+         priority queue.  If <code>null</code>, the {@linkplain Comparable
+         natural ordering} of the elements will be used.</td>
         </tr>
       </table>
   </div>
@@ -1890,7 +2209,8 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the initialCapacity is less than 1.
+            <td>if <code>initialCapacity</code> is
+         less than 1
 </td>
         </tr>
       </table>
@@ -1925,17 +2245,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a priority queue that contains the elements of a collection.
- The constructed priority queue has the initial capacity of 110% of the
- size of the collection. The queue uses natural ordering to order its
- elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> containing the elements in the
+ specified collection.  If the specified collection is an instance of
+ a <code><a href="reference/java/util/SortedSet.html">SortedSet</a></code> or is another <code>PriorityQueue</code>, this
+ priority queue will be ordered according to the same ordering.
+ Otherwise, this priority queue will be ordered according to the
+ {@linkplain Comparable natural ordering} of its elements.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the collection whose elements will be added to the priority
-            queue to be constructed.</td>
+          <td>the collection whose elements are to be placed
+         into this priority queue</td>
         </tr>
       </table>
   </div>
@@ -1944,11 +2266,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if any of the elements in the collection are not comparable.</td>
+            <td>if elements of the specified collection
+         cannot be compared to one another according to the priority
+         queue's ordering</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if any of the elements in the collection are null.
+            <td>if the specified collection or any
+         of its elements are null
 </td>
         </tr>
       </table>
@@ -1983,17 +2308,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a priority queue that contains the elements of another
- priority queue. The constructed priority queue has the initial capacity
- of 110% of the specified one. Both priority queues have the same
- comparator.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> containing the elements in the
+ specified priority queue.  This priority queue will be
+ ordered according to the same ordering as the given priority
+ queue.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the priority queue whose elements will be added to the
-            priority queue to be constructed.
+          <td>the priority queue whose elements are to be placed
+         into this priority queue</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if elements of <code>c</code> cannot be
+         compared to one another according to <code>c</code>'s
+         ordering</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified priority queue or any
+         of its elements are null
 </td>
         </tr>
       </table>
@@ -2028,17 +2369,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a priority queue that contains the elements of a sorted set.
- The constructed priority queue has the initial capacity of 110% of the
- size of the sorted set. The priority queue will have the same comparator
- as the sorted set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>PriorityQueue</code> containing the elements in the
+ specified sorted set.   This priority queue will be ordered
+ according to the same ordering as the given sorted set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the sorted set whose elements will be added to the priority
-            queue to be constructed.
+          <td>the sorted set whose elements are to be placed
+         into this priority queue</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if elements of the specified sorted
+         set cannot be compared to one another according to the
+         sorted set's ordering</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified sorted set or any
+         of its elements are null
 </td>
         </tr>
       </table>
@@ -2076,7 +2432,7 @@ From interface
         boolean
       </span>
       <span class="sympad">add</span>
-      <span class="normal">(E o)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2088,31 +2444,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified object to the priority queue.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into this priority queue.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>o</th>
-          <td>the object to be added.</td>
+          <th>e</th>
+          <td>the element to add</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>always true.</li></ul>
+      <ul class="nolist"><li><code>true</code> (as specified by <code><a href="reference/java/util/Collection.html#add(E)">add(E)</a></code>)</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the element cannot be compared with the elements in the
-             priority queue using the ordering of the priority queue.</td>
+            <td>if the specified element cannot be
+         compared with elements currently in this priority queue
+         according to the priority queue's ordering</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>o</code> is <code>null</code>.
+            <td>if the specified element is null
 </td>
         </tr>
       </table>
@@ -2147,7 +2504,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all the elements of the priority queue.
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the elements from this priority queue.
+ The queue will be empty after this call returns.
 </p></div>
 
     </div>
@@ -2179,11 +2537,61 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the comparator of the priority queue.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the comparator used to order the elements in this
+ queue, or <code>null</code> if this queue is sorted according to
+ the {@linkplain Comparable natural ordering} of its elements.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the comparator of the priority queue or null if the natural
-         ordering is used.
+      <ul class="nolist"><li>the comparator used to order this queue, or
+         <code>null</code> if this queue is sorted according to the
+         natural ordering of its elements
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="contains(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">contains</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this queue contains the specified element.
+ More formally, returns <code>true</code> if and only if this queue contains
+ at least one element <code>e</code> such that <code>o.equals(e)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>object to be checked for containment in this queue</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if this queue contains the specified element
 </li></ul>
   </div>
 
@@ -2216,11 +2624,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the iterator of the priority queue, which will not return elements
- in any specified ordering.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements in this queue. The iterator
+ does not return the elements in any particular order.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the iterator of the priority queue.
+      <ul class="nolist"><li>an iterator over the elements in this queue
 </li></ul>
   </div>
 
@@ -2241,7 +2649,7 @@ From interface
         boolean
       </span>
       <span class="sympad">offer</span>
-      <span class="normal">(E o)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2253,31 +2661,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Inserts the element to the priority queue.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>o</th>
-          <td>the element to add to the priority queue.</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into this priority queue.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>always true</li></ul>
+      <ul class="nolist"><li><code>true</code> (as specified by <code><a href="reference/java/util/Queue.html#offer(E)">offer(E)</a></code>)</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the element cannot be compared with the elements in the
-             priority queue using the ordering of the priority queue.</td>
+            <td>if the specified element cannot be
+         compared with elements currently in this priority queue
+         according to the priority queue's ordering</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>o</code> is <code>null</code>.
+            <td>if the specified element is null
 </td>
         </tr>
       </table>
@@ -2312,12 +2712,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets but does not remove the head of the queue.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of the queue or null if the queue is empty.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -2348,12 +2743,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets and removes the head of the queue.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the head of the queue or null if the queue is empty.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
 
     </div>
 </div>
@@ -2384,20 +2774,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the specified object from the priority queue.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes a single instance of the specified element from this queue,
+ if it is present.  More formally, removes an element <code>e</code> such
+ that <code>o.equals(e)</code>, if this queue contains one or more such
+ elements.  Returns <code>true</code> if and only if this queue contained
+ the specified element (or equivalently, if this queue changed as a
+ result of the call).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>o</th>
-          <td>the object to be removed.</td>
+          <td>element to be removed from this queue, if present</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>true if the object was in the priority queue, false if the object
-         was not in the priority queue.
+      <ul class="nolist"><li><code>true</code> if this queue changed as a result of the call
 </li></ul>
   </div>
 
@@ -2430,11 +2824,184 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the size of the priority queue. If the size of the queue is greater
- than the Integer.MAX, then it returns Integer.MAX.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this collection.  If this collection
+ contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
+ <tt>Integer.MAX_VALUE</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the size of the priority queue.
+      <ul class="nolist"><li>the number of elements in this collection
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="spliterator()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad">spliterator</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <em><a href="Spliterator.html#binding">late-binding</a></em>
+ and <em>fail-fast</em> <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this
+ queue.
+
+ <p>The <code>Spliterator</code> reports <code><a href="reference/java/util/Spliterator.html#SIZED">SIZED</a></code>,
+ <code><a href="reference/java/util/Spliterator.html#SUBSIZED">SUBSIZED</a></code>, and <code><a href="reference/java/util/Spliterator.html#NONNULL">NONNULL</a></code>.
+ Overriding implementations should document the reporting of additional
+ characteristic values.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a <code>Spliterator</code> over the elements in this queue</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toArray(T[])"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        T[]
+      </span>
+      <span class="sympad">toArray</span>
+      <span class="normal">(T[] a)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this queue; the
+ runtime type of the returned array is that of the specified array.
+ The returned array elements are in no particular order.
+ If the queue fits in the specified array, it is returned therein.
+ Otherwise, a new array is allocated with the runtime type of the
+ specified array and the size of this queue.
+
+ <p>If the queue fits in the specified array with room to spare
+ (i.e., the array has more elements than the queue), the element in
+ the array immediately following the end of the collection is set to
+ <code>null</code>.
+
+ <p>Like the <code><a href="reference/java/util/PriorityQueue.html#toArray()">toArray()</a></code> method, this method acts as bridge between
+ array-based and collection-based APIs.  Further, this method allows
+ precise control over the runtime type of the output array, and may,
+ under certain circumstances, be used to save allocation costs.
+
+ <p>Suppose <code>x</code> is a queue known to contain only strings.
+ The following code can be used to dump the queue into a newly
+ allocated array of <code>String</code>:
+
+ <pre> <code>String[] y = x.toArray(new String[0]);</code></pre>
+
+ Note that <code>toArray(new Object[0])</code> is identical in function to
+ <code>toArray()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the array into which the elements of the queue are to
+          be stored, if it is big enough; otherwise, a new array of the
+          same runtime type is allocated for this purpose.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an array containing all of the elements in this queue</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></td>
+            <td>if the runtime type of the specified array
+         is not a supertype of the runtime type of every element in
+         this queue</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified array is null
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toArray()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Object.html">Object[]</a>
+      </span>
+      <span class="sympad">toArray</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this queue.
+ The elements are in no particular order.
+
+ <p>The returned array will be "safe" in that no references to it are
+ maintained by this queue.  (In other words, this method must allocate
+ a new array).  The caller is thus free to modify the returned array.
+
+ <p>This method acts as bridge between array-based and collection-based
+ APIs.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an array containing all of the elements in this queue
 </li></ul>
   </div>
 

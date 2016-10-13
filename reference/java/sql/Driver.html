@@ -144,19 +144,32 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An interface to a JDBC driver. Instances are returned by <code><a href="reference/java/sql/DriverManager.html">DriverManager</a></code>.
+<p>The interface that every driver class must implement.
+ <P>The Java SQL framework allows for multiple database drivers.
 
- <p>The JDBC driver uses URLs to specify the location of specific data. URL
- format typically takes the form " <code>xxxx:yyyy:SpecificData</code>", where "
- <code>xxxx:yyyy</code>" is referred to as the <i>subprotocol</i> and is normally
- the same for all of a particular driver. " <code>SpecificData</code>" is a string
- which identifies the particular data source that the driver should use.</p>
+ <P>Each driver should supply a class that implements
+ the Driver interface.
+
+ <P>The DriverManager will try to load as many drivers as it can
+ find and then for any given connection request, it will ask each
+ driver in turn to try to connect to the target URL.
+
+ <P>It is strongly recommended that each Driver class should be
+ small and standalone so that the Driver class can be loaded and
+ queried without bringing in vast quantities of supporting code.
+
+ <P>When a Driver class is loaded, it should create an instance of
+ itself and register it with the DriverManager. This means that a
+ user can load and register a driver by calling
+ <pre>
+   <code>Class.forName("foo.bah.Driver")</code>
+ </pre></p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></code></li><li><code><a href="../../../reference/java/sql/Connection.html">Connection</a></code></li>
       </ul>
   </div>
 
@@ -227,8 +240,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Driver.html#acceptsURL(java.lang.String)">acceptsURL</a></span>(<a href="../../../reference/java/lang/String.html">String</a> url)
         
-        <div class="jd-descrdiv">Returns whether the driver thinks that it can open a connection to the
- given URL.</div>
+        <div class="jd-descrdiv">Retrieves whether the driver thinks that it can open a connection
+ to the given URL.</div>
   
   </td></tr>
 
@@ -246,8 +259,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Driver.html#connect(java.lang.String, java.util.Properties)">connect</a></span>(<a href="../../../reference/java/lang/String.html">String</a> url, <a href="../../../reference/java/util/Properties.html">Properties</a> info)
         
-        <div class="jd-descrdiv">Attempts to make a database connection to a data source specified by a
- supplied URL.</div>
+        <div class="jd-descrdiv">Attempts to make a database connection to the given URL.</div>
   
   </td></tr>
 
@@ -265,7 +277,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Driver.html#getMajorVersion()">getMajorVersion</a></span>()
         
-        <div class="jd-descrdiv">Gets the driver's major version number.</div>
+        <div class="jd-descrdiv">Retrieves the driver's major version number.</div>
   
   </td></tr>
 
@@ -301,7 +313,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Driver.html#getPropertyInfo(java.lang.String, java.util.Properties)">getPropertyInfo</a></span>(<a href="../../../reference/java/lang/String.html">String</a> url, <a href="../../../reference/java/util/Properties.html">Properties</a> info)
         
-        <div class="jd-descrdiv">Gets information about possible properties for this driver.</div>
+        <div class="jd-descrdiv">Gets information about the possible properties for this driver.</div>
   
   </td></tr>
 
@@ -319,7 +331,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Driver.html#jdbcCompliant()">jdbcCompliant</a></span>()
         
-        <div class="jd-descrdiv">Reports whether this driver is a genuine JDBC CompliantTM driver.</div>
+        <div class="jd-descrdiv">Reports whether this driver is a genuine JDBC
+ Compliant<sup><font size=-2>TM</font></sup> driver.</div>
   
   </td></tr>
 
@@ -397,30 +410,30 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether the driver thinks that it can open a connection to the
- given URL.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves whether the driver thinks that it can open a connection
+ to the given URL.  Typically drivers will return <code>true</code> if they
+ understand the subprotocol specified in the URL and <code>false</code> if
+ they do not.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>url</th>
-          <td>the URL to connect to.</td>
+          <td>the URL of the database</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the driver thinks that is can open a connection
-         to the supplied URL, <code>false</code> otherwise. Typically, the
-         driver will respond <code>true</code> if it thinks that it can handle
-         the subprotocol specified by the driver.</li></ul>
+      <ul class="nolist"><li><code>true</code> if this driver understands the given URL;
+         <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -455,34 +468,46 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Attempts to make a database connection to a data source specified by a
- supplied URL.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to make a database connection to the given URL.
+ The driver should return "null" if it realizes it is the wrong kind
+ of driver to connect to the given URL.  This will be common, as when
+ the JDBC driver manager is asked to connect to a given URL it passes
+ the URL to each loaded driver in turn.
+
+ <P>The driver should throw an <code>SQLException</code> if it is the right
+ driver to connect to the given URL but has trouble connecting to
+ the database.
+
+ <P>The <code>java.util.Properties</code> argument can be used to pass
+ arbitrary string tag/value pairs as connection arguments.
+ Normally at least "user" and "password" properties should be
+ included in the <code>Properties</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>url</th>
-          <td>the URL to connect.</td>
+          <td>the URL of the database to which to connect</td>
         </tr>
         <tr>
           <th>info</th>
-          <td>some properties that should be used in establishing the
-            connection. The properties consist of name/value pairs of
-            strings. Normally, a connection to a database requires at
-            least two properties - for <code>"user"</code> and <code>"password"</code> in order to pass authentication to the database.</td>
+          <td>a list of arbitrary string tag/value pairs as
+ connection arguments. Normally at least a "user" and
+ "password" property should be included.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the connection to the database.</li></ul>
+      <ul class="nolist"><li>a <code>Connection</code> object that represents a
+         connection to the URL</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -517,10 +542,10 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the driver's major version number.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the driver's major version number. Initially this should be 1.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the major version number of the driver - typically starts at 1.
+      <ul class="nolist"><li>this driver's major version number
 </li></ul>
   </div>
 
@@ -553,10 +578,10 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the driver's minor version number.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the driver's minor version number. Initially this should be 0.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the minor version number of the driver - typically starts at 0.
+      <ul class="nolist"><li>this driver's minor version number
 </li></ul>
   </div>
 
@@ -589,42 +614,41 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets information about possible properties for this driver.
- <p>
- This method is intended to provide a listing of possible properties that
- the client of the driver must supply in order to establish a connection
- to a database. Note that the returned array of properties may change
- depending on the supplied list of property values.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets information about the possible properties for this driver.
+ <P>
+ The <code>getPropertyInfo</code> method is intended to allow a generic
+ GUI tool to discover what properties it should prompt
+ a human for in order to get
+ enough information to connect to a database.  Note that depending on
+ the values the human has supplied so far, additional values may become
+ necessary, so it may be necessary to iterate though several calls
+ to the <code>getPropertyInfo</code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>url</th>
-          <td>the URL of the database. An application may call this method
-            iteratively as the property list is built up - for example,
-            when displaying a dialog to an end-user as part of the
-            database login process.</td>
+          <td>the URL of the database to which to connect</td>
         </tr>
         <tr>
           <th>info</th>
-          <td>a set of tag/value pairs giving data that a user may be
-            prompted to provide in order to connect to the database.</td>
+          <td>a proposed list of tag/value pairs that will be sent on
+          connect open</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of <code>DriverPropertyInfo</code> records which provide
-         details on which additional properties are required (in addition
-         to those supplied in the <code>info</code> parameter) in order to
-         connect to the database.</li></ul>
+      <ul class="nolist"><li>an array of <code>DriverPropertyInfo</code> objects describing
+          possible properties.  This array may be an empty array if
+          no properties are required.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -659,16 +683,25 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reports whether this driver is a genuine JDBC CompliantTM driver. The
- driver may only return <code>true</code> if it passes all the JDBC compliance
- tests.
- <p>
- A driver may not be fully compliant if the underlying database has
- limited functionality.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reports whether this driver is a genuine JDBC
+ Compliant<sup><font size=-2>TM</font></sup> driver.
+ A driver may only report <code>true</code> here if it passes the JDBC
+ compliance tests; otherwise it is required to return <code>false</code>.
+ <P>
+ JDBC compliance requires full support for the JDBC API and full support
+ for SQL 92 Entry Level.  It is expected that JDBC compliant drivers will
+ be available for all the major commercial databases.
+ <P>
+ This method is not intended to encourage the development of non-JDBC
+ compliant drivers, but is a recognition of the fact that some vendors
+ are interested in using the JDBC API and framework for lightweight
+ databases that do not support full database functionality, or for
+ special databases such as document information retrieval where a SQL
+ implementation may not be feasible.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the driver is fully JDBC compliant, <code>false</code>
-         otherwise.
+      <ul class="nolist"><li><code>true</code> if this driver is JDBC Compliant; <code>false</code>
+         otherwise
 </li></ul>
   </div>
 

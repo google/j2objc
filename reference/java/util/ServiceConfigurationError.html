@@ -212,7 +212,29 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a service provider can't be loaded by <code><a href="reference/java/util/ServiceLoader.html">ServiceLoader</a></code>.</p>
+<p>Error thrown when something goes wrong while loading a service provider.
+
+ <p> This error will be thrown in the following situations:
+
+ <ul>
+
+   <li> The format of a provider-configuration file violates the <a
+   href="ServiceLoader.html#format">specification</a>; </li>
+
+   <li> An <code><a href="reference/java/io/IOException.html">IOException</a></code> occurs while reading a
+   provider-configuration file; </li>
+
+   <li> A concrete provider class named in a provider-configuration file
+   cannot be found; </li>
+
+   <li> A concrete provider class is not a subclass of the service class;
+   </li>
+
+   <li> A concrete provider class cannot be instantiated; or
+
+   <li> Some other kind of error occurs. </li>
+
+ </ul></p>
 
 
 
@@ -278,9 +300,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/ServiceConfigurationError.html#ServiceConfigurationError(java.lang.String)">ServiceConfigurationError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message)
+        <span class="sympad"><a href="../../../reference/java/util/ServiceConfigurationError.html#ServiceConfigurationError(java.lang.String)">ServiceConfigurationError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new error with the given detail message.</div>
+        <div class="jd-descrdiv">Constructs a new instance with the specified message.</div>
   
   </td></tr>
 
@@ -296,9 +318,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/ServiceConfigurationError.html#ServiceConfigurationError(java.lang.String, java.lang.Throwable)">ServiceConfigurationError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/util/ServiceConfigurationError.html#ServiceConfigurationError(java.lang.String, java.lang.Throwable)">ServiceConfigurationError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new error with the given detail message and cause.</div>
+        <div class="jd-descrdiv">Constructs a new instance with the specified message and cause.</div>
   
   </td></tr>
 
@@ -532,6 +554,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -820,7 +861,7 @@ From class
         
       </span>
       <span class="sympad">ServiceConfigurationError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -832,13 +873,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new error with the given detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the specified message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>message</th>
-          <td>the detail message, or null
+          <th>msg</th>
+          <td>The message, or <tt>null</tt> if there is no message
+
 </td>
         </tr>
       </table>
@@ -861,7 +903,7 @@ From class
         
       </span>
       <span class="sympad">ServiceConfigurationError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -873,17 +915,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new error with the given detail message and cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the specified message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>message</th>
-          <td>the detail message, or null</td>
+          <th>msg</th>
+          <td>The message, or <tt>null</tt> if there is no message</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the cause, null
+          <td>The cause, or <tt>null</tt> if the cause is nonexistent
+                or unknown
 </td>
         </tr>
       </table>

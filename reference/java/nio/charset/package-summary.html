@@ -110,6 +110,55 @@ layout: api
 <div id="jd-content" class="api apilevel-">
 
 
+  <div class="jd-descr">
+    Defines charsets, decoders, and encoders, for translating between bytes and
+ Unicode characters.
+
+ <blockquote><table cellspacing=1 cellpadding=0 summary="Summary of charsets, decoders, and encoders in this package">
+  <tr><th><p align="left">Class name</p></th><th><p align="left">Description</p></th></tr>
+   <tr><td valign=top><tt><code><a href="reference/java/nio/charset/Charset.html">Charset</a></code></tt></td>
+       <td>A named mapping between characters<br>and bytes</td></tr>
+   <tr><td valign=top><tt><code><a href="reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a></code></tt></td>
+       <td>Decodes bytes into characters</td></tr>
+   <tr><td valign=top><tt><code><a href="reference/java/nio/charset/CharsetEncoder.html">CharsetEncoder</a></code>&nbsp;&nbsp;</tt></td>
+       <td>Encodes characters into bytes</td></tr>
+   <tr><td valign=top><tt><code><a href="reference/java/nio/charset/CoderResult.html">CoderResult</a></code>&nbsp;&nbsp;</tt></td>
+       <td>Describes coder results</td></tr>
+   <tr><td valign=top><tt><code><a href="reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a></code>&nbsp;&nbsp;</tt></td>
+       <td>Describes actions to take when<br>coding errors are detected</td></tr>
+
+ </table></blockquote>
+
+ <p> A <i>charset</i> is named mapping between sequences of sixteen-bit Unicode
+ characters and sequences of bytes, in the sense defined in <a
+ href="http://www.ietf.org/rfc/rfc2278.txt"><i>RFC&nbsp;2278</i></a>.  A
+ <i>decoder</i> is an engine which transforms bytes in a specific charset into
+ characters, and an <i>encoder</i> is an engine which transforms characters into
+ bytes.  Encoders and decoders operate on byte and character buffers.  They are
+ collectively referred to as <i>coders</i>.
+
+ <p> The <code><a href="reference/java/nio/charset/Charset.html">Charset</a></code> class defines methods for creating
+ coders for a given charset and for retrieving the various names associated with
+ a charset.  It also defines static methods for testing whether a particular
+ charset is supported, for locating charset instances by name, and for
+ constructing a map that contains every charset for which support is available
+ in the current Java virtual machine.
+
+ <p> Most users will not use these classes directly; instead they will use the
+ existing charset-related constructors and methods in the <code><a href="reference/java/lang/String.html">String</a></code> class, together with the existing <code><a href="reference/java/io/InputStreamReader.html">InputStreamReader</a></code> and <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code> classes, all
+ of whose implementations have been reworked to make use of the charset
+ facilities defined in this package.  A small number of changes have been made
+ to the <code><a href="reference/java/io/InputStreamReader.html">InputStreamReader</a></code> and <code><a href="reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code>
+ classes in order to allow explicit charset objects to be specified in the
+ construction of instances of those classes.
+
+ <p> Support for new charsets can be made available via the interface defined in
+ the <code><a href="reference/java/nio/charset/spi/CharsetProvider.html">CharsetProvider</a></code> class in the <tt><code><a href="reference/java/nio/charset/spi/package-summary.html">java.nio.charset.spi</a></code></tt> package.
+
+ <p> Unless otherwise noted, passing a <tt>null</tt> argument to a constructor
+ or method in any class or interface in this package will cause a <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> to be thrown.
+  </div>
+
 
 
 
@@ -133,7 +182,8 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html">CharsetEncoder</a></td>
-              <td class="jd-descrcol" width="100%">Transforms a sequence of 16-bit Java characters to a byte sequence in some encoding.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A converter that can converts a 16-bit Unicode character sequence to a byte
+ sequence in some charset.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CoderResult.html">CoderResult</a></td>
@@ -143,14 +193,6 @@ layout: api
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a></td>
               <td class="jd-descrcol" width="100%">Used to indicate what kind of actions to take in case of encoding/decoding
  errors.&nbsp;</td>
-          </tr>
-        <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IOSCharsetDecoder.html">IOSCharsetDecoder</a></td>
-              <td class="jd-descrcol" width="100%">iOS native charset decoder.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IOSCharsetEncoder.html">IOSCharsetEncoder</a></td>
-              <td class="jd-descrcol" width="100%">iOS native charset encoder.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/StandardCharsets.html">StandardCharsets</a></td>
@@ -171,28 +213,30 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CharacterCodingException.html">CharacterCodingException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>CharacterCodingException</code> is thrown when an encoding or decoding
- error occurs.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception thrown when a character encoding
+ or decoding error occurs.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IllegalCharsetNameException.html">IllegalCharsetNameException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>IllegalCharsetNameException</code> is thrown when an illegal charset name
- is encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a string that is not a
+ <a href=Charset.html#names>legal charset name</a> is used as such.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/MalformedInputException.html">MalformedInputException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>MalformedInputException</code> is thrown when a malformed input is
- encountered, for example if a byte sequence is illegal for the given charset.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception thrown when an input byte sequence is not legal for given
+ charset, or an input character sequence is not a legal sixteen-bit Unicode
+ sequence.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/UnmappableCharacterException.html">UnmappableCharacterException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnmappableCharacterException</code> is thrown when an unmappable
- character for the given charset is encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception thrown when an input character (or byte) sequence
+ is valid but cannot be mapped to an output byte (or character)
+ sequence.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/UnsupportedCharsetException.html">UnsupportedCharsetException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>UnsupportedCharsetException</code> is thrown when an unsupported charset
- name is encountered.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when no support is available
+ for a requested charset.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -206,8 +250,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CoderMalfunctionError.html">CoderMalfunctionError</a></td>
-              <td class="jd-descrcol" width="100%">A <code>CoderMalfunctionError</code> is thrown when the encoder/decoder is
- malfunctioning.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Error thrown when the <code><a href="reference/java/nio/charset/CharsetDecoder.html#decodeLoop(java.nio.ByteBuffer, java.nio.CharBuffer)">decodeLoop</a></code> method of
+ a <code><a href="reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a></code>, or the <code><a href="reference/java/nio/charset/CharsetEncoder.html#encodeLoop(java.nio.CharBuffer, java.nio.ByteBuffer)">encodeLoop</a></code> method of a <code><a href="reference/java/nio/charset/CharsetEncoder.html">CharsetEncoder</a></code>, throws an unexpected
+ exception.&nbsp;</td>
           </tr>
   </table>
     </div>

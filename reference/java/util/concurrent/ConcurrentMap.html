@@ -387,13 +387,71 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Map</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the mappings from this map (optional operation).</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#compute(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">compute</a></span>(K key, <a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">Attempts to compute a mapping for the specified key and its current
+ mapped value (or <code>null</code> if there is no current mapping).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#computeIfAbsent(K, java.util.function.Function<? super K, ? extends V>)">computeIfAbsent</a></span>(K key, <a href="../../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; mappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>), attempts to compute its value using the given mapping
+ function and enters it into this map unless <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#computeIfPresent(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">computeIfPresent</a></span>(K key, <a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the value for the specified key is present and non-null, attempts to
+ compute a new mapping given the key and its current mapped value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -405,25 +463,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#containsKey(java.lang.Object)">containsKey</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified key.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> value)
-        
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains a mapping for the specified
+ key.</div>
   
   </td></tr>
 
@@ -436,12 +477,13 @@ From interface
             
             
             
-            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns a <code>Set</code> containing all of the mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map maps one or more keys to the
+ specified value.</div>
   
   </td></tr>
 
@@ -454,13 +496,49 @@ From interface
             
             
             
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns <code>true</code> if the
- specified object is a <code>Map</code> and both <code>Map</code>s contain the same mappings.</div>
+        <div class="jd-descrdiv">Compares the specified object with this map for equality.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#forEach(java.util.function.BiConsumer<? super K, ? super V>)">forEach</a></span>(<a href="../../../../reference/java/util/function/BiConsumer.html">BiConsumer</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V&gt; action)
+        
+        <div class="jd-descrdiv">Performs the given action for each entry in this map until all entries
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -478,7 +556,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#get(java.lang.Object)">get</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value of the mapping with the specified key.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -491,12 +570,13 @@ From interface
             
             
             
-            int
+            V
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#getOrDefault(java.lang.Object, V)">getOrDefault</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key, V defaultValue)
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped, or
+ <code>defaultValue</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -509,12 +589,12 @@ From interface
             
             
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this map is empty.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this map.</div>
   
   </td></tr>
 
@@ -527,12 +607,49 @@ From interface
             
             
             
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains no key-value mappings.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/Set.html">Set</a>&lt;K&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#keySet()">keySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a set of the keys contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#merge(K, V, java.util.function.BiFunction<? super V, ? super V, ? extends V>)">merge</a></span>(K key, V value, <a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value or is
+ associated with null, associates it with the given non-null value.</div>
   
   </td></tr>
 
@@ -550,7 +667,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#put(K, V)">put</a></span>(K key, V value)
         
-        <div class="jd-descrdiv">Maps the specified key to the specified value.</div>
+        <div class="jd-descrdiv">Associates the specified value with the specified key in this map
+ (optional operation).</div>
   
   </td></tr>
 
@@ -566,9 +684,49 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Copies every mapping in the specified <code>Map</code> to this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Copies all of the mappings from the specified map to this map
+ (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#putIfAbsent(K, V)">putIfAbsent</a></span>(K key, V value)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>) associates it with the given value and returns
+ <code>null</code>, else returns the current value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#remove(java.lang.Object, java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">Removes the entry for the specified key only if it is currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -586,7 +744,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes a mapping with the specified key from this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Removes the mapping for a key from this map if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -599,12 +758,13 @@ From interface
             
             
             
-            int
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/util/Map.html#size()">size</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#replace(K, V, V)">replace</a></span>(K key, V oldValue, V newValue)
         
-        <div class="jd-descrdiv">Returns the number of mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -617,12 +777,69 @@ From interface
             
             
             
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#replace(K, V)">replace</a></span>(K key, V value)
+        
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if it is
+ currently mapped to some value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#replaceAll(java.util.function.BiFunction<? super K, ? super V, ? extends V>)">replaceAll</a></span>(<a href="../../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; function)
+        
+        <div class="jd-descrdiv">Replaces each entry's value with the result of invoking the given
+ function on that entry until all entries have been processed or the
+ function throws an exception.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/util/Map.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns the number of key-value mappings in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/Map.html#values()">values</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>Collection</code> of the values contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.</div>
   
   </td></tr>
 
@@ -788,11 +1005,11 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Removes the entry for a key only if currently mapped to a given value.
  This is equivalent to
-  <pre> <code>if (map.containsKey(key) && map.get(key).equals(value)) {
+  <pre> <code>if (map.containsKey(key) &amp;&amp; map.get(key).equals(value)) {
    map.remove(key);
    return true;
- </code> else
-   return false;}</pre>
+ } else
+   return false;</code></pre>
 
  except that the action is performed atomically.</p></div>
   <div class="jd-tagdata">
@@ -867,11 +1084,11 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Replaces the entry for a key only if currently mapped to a given value.
  This is equivalent to
-  <pre> <code>if (map.containsKey(key) && map.get(key).equals(oldValue)) {
+  <pre> <code>if (map.containsKey(key) &amp;&amp; map.get(key).equals(oldValue)) {
    map.put(key, newValue);
    return true;
- </code> else
-   return false;}</pre>
+ } else
+   return false;</code></pre>
 
  except that the action is performed atomically.</p></div>
   <div class="jd-tagdata">
@@ -955,8 +1172,8 @@ From interface
  This is equivalent to
   <pre> <code>if (map.containsKey(key)) {
    return map.put(key, value);
- </code> else
-   return null;}</pre>
+ } else
+   return null;</code></pre>
 
  except that the action is performed atomically.</p></div>
   <div class="jd-tagdata">

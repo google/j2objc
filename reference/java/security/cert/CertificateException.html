@@ -257,21 +257,19 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateEncodingException.html">CertificateEncodingException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when an error occurs while a <code>Certificate</code>
- is being encoded.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Encoding Exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateExpiredException.html">CertificateExpiredException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> has expired.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Expired Exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateNotYetValidException.html">CertificateNotYetValidException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> is not yet valid or
- will not yet be valid on a specified date.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate is not yet valid exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertificateParsingException.html">CertificateParsingException</a></td>
-              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> can not be parsed.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Certificate Parsing Exception.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -285,11 +283,15 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The base class for all <code>Certificate</code> related exceptions.
-</p>
+<p>This exception indicates one of a variety of certificate problems.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/security/cert/Certificate.html">Certificate</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -352,9 +354,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateException.html#CertificateException(java.lang.String)">CertificateException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateException.html#CertificateException()">CertificateException</a></span>()
         
-        <div class="jd-descrdiv">Creates a new <code>CertificateException</code> with the specified message.</div>
+        <div class="jd-descrdiv">Constructs a certificate exception with no detail message.</div>
   
   </td></tr>
 
@@ -370,9 +372,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateException.html#CertificateException()">CertificateException</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateException.html#CertificateException(java.lang.String)">CertificateException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Creates a new <code>CertificateException</code>.</div>
+        <div class="jd-descrdiv">Constructs a certificate exception with the given detail
+ message.</div>
   
   </td></tr>
 
@@ -390,8 +393,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateException.html#CertificateException(java.lang.String, java.lang.Throwable)">CertificateException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> message, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates a new <code>CertificateException</code> with the specified message and
- cause.</div>
+        <div class="jd-descrdiv">Creates a <code>CertificateException</code> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -409,7 +412,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateException.html#CertificateException(java.lang.Throwable)">CertificateException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates a new <code>CertificateException</code> with the specified cause.</div>
+        <div class="jd-descrdiv">Creates a <code>CertificateException</code> with the specified cause
+ and a detail message of <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</div>
   
   </td></tr>
 
@@ -645,6 +651,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -920,47 +945,6 @@ From class
 
 
 
-<a id="CertificateException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">CertificateException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertificateException</code> with the specified message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for the exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="CertificateException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -986,8 +970,52 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertificateException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a certificate exception with no detail message. A detail
+ message is a String that describes this particular exception.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="CertificateException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">CertificateException</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a certificate exception with the given detail
+ message. A detail message is a String that describes this
+ particular exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1018,19 +1046,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertificateException</code> with the specified message and
- cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertificateException</code> with the specified
+ detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for the exception.</td>
+          <td>the detail message (which is saved for later retrieval
+        by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the cause.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1064,14 +1094,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertificateException</code> with the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertificateException</code> with the specified cause
+ and a detail message of <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the cause
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>

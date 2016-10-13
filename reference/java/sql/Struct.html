@@ -144,10 +144,15 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An interface which provides facilities for manipulating an SQL structured type
- as a Java object. The <code>Struct</code> object has a value for each attribute of the SQL structured
- type.
-</p>
+<p><p>The standard mapping in the Java programming language for an SQL
+ structured type. A <code>Struct</code> object contains a
+ value for each attribute of the SQL structured type that
+ it represents.
+ By default, an instance of<code>Struct</code> is valid as long as the
+ application has a reference to it.
+ <p>
+ All methods on the <code>Struct</code> interface must be fully implemented if the
+ JDBC driver supports the data type.</p>
 
 
 
@@ -219,7 +224,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Struct.html#getAttributes()">getAttributes</a></span>()
         
-        <div class="jd-descrdiv">Gets the values of the attributes of this SQL structured type.</div>
+        <div class="jd-descrdiv">Produces the ordered values of the attributes of the SQL
+ structured type that this <code>Struct</code> object represents.</div>
   
   </td></tr>
 
@@ -235,9 +241,10 @@ layout: api
             <a href="../../../reference/java/lang/Object.html">Object[]</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Struct.html#getAttributes(java.util.Map<java.lang.String, java.lang.Class<?>>)">getAttributes</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;&gt; theMap)
+        <span class="sympad"><a href="../../../reference/java/sql/Struct.html#getAttributes(java.util.Map<java.lang.String, java.lang.Class<?>>)">getAttributes</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;&gt; map)
         
-        <div class="jd-descrdiv">Gets the values of the attributes of this SQL structured type.</div>
+        <div class="jd-descrdiv">Produces the ordered values of the attributes of the SQL
+ structured type that this <code>Struct</code> object represents.</div>
   
   </td></tr>
 
@@ -255,7 +262,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Struct.html#getSQLTypeName()">getSQLTypeName</a></span>()
         
-        <div class="jd-descrdiv">Gets the SQL Type name of the SQL structured type that this <code>Struct</code> represents.</div>
+        <div class="jd-descrdiv">Retrieves the SQL type name of the SQL structured type
+ that this <code>Struct</code> object represents.</div>
   
   </td></tr>
 
@@ -333,22 +341,35 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the values of the attributes of this SQL structured type. This
- method uses the type map associated with the <code><a href="reference/java/sql/Connection.html">Connection</a></code> for
- customized type mappings. Where there is no entry in the type mapping
- which matches this structured type, the JDBC driver uses the standard
- mapping.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Produces the ordered values of the attributes of the SQL
+ structured type that this <code>Struct</code> object represents.
+ As individual attributes are processed, this method uses the type map
+ associated with the
+ connection for customizations of the type mappings.
+ If there is no
+ entry in the connection's type map that matches the structured
+ type that an attribute represents,
+ the driver uses the standard mapping.
+ <p>
+ Conceptually, this method calls the method
+ <code>getObject</code> on each attribute
+ of the structured type and returns a Java array containing
+ the result.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an <code>Object</code> array containing the ordered attributes.</li></ul>
+      <ul class="nolist"><li>an array containing the ordered attribute values</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -370,7 +391,7 @@ layout: api
         <a href="../../../reference/java/lang/Object.html">Object[]</a>
       </span>
       <span class="sympad">getAttributes</span>
-      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;&gt; theMap)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;&gt; map)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -382,31 +403,44 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the values of the attributes of this SQL structured type. This
- method uses the supplied type mapping to determine how to map SQL types
- to their corresponding Java objects. In the
- case where there is no entry in the type mapping which matches this
- structured type, the JDBC driver uses the default mapping. The <code>Connection</code> type map is <i>never</i> utilized by this method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Produces the ordered values of the attributes of the SQL
+ structured type that this <code>Struct</code> object represents.
+  As individual attrbutes are proccessed, this method uses the given type map
+ for customizations of the type mappings.
+ If there is no
+ entry in the given type map that matches the structured
+ type that an attribute represents,
+ the driver uses the standard mapping. This method never
+ uses the type map associated with the connection.
+ <p>
+ Conceptually, this method calls the method
+ <code>getObject</code> on each attribute
+ of the structured type and returns a Java array containing
+ the result.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theMap</th>
-          <td>a Map describing how SQL Type names are mapped to classes.</td>
+          <th>map</th>
+          <td>a mapping of SQL type names to Java classes</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an Object array containing the ordered attributes,.</li></ul>
+      <ul class="nolist"><li>an array containing the ordered attribute values</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -440,18 +474,25 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the SQL Type name of the SQL structured type that this <code>Struct</code> represents.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the SQL type name of the SQL structured type
+ that this <code>Struct</code> object represents.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the fully qualified name of SQL structured type.</li></ul>
+      <ul class="nolist"><li>the fully-qualified type name of the SQL structured
+          type for which this <code>Struct</code> object
+          is the generic representation</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error occurs.
-</td>
+            <td>if a database access error occurs</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>

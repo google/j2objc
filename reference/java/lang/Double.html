@@ -203,15 +203,19 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The wrapper for the primitive type <code>double</code>.</p>
+<p>The <code>Double</code> class wraps a value of the primitive type
+ <code>double</code> in an object. An object of type
+ <code>Double</code> contains a single field whose type is
+ <code>double</code>.
+
+ <p>In addition, this class provides several methods for converting a
+ <code>double</code> to a <code>String</code> and a
+ <code>String</code> to a <code>double</code>, as well as other
+ constants and methods useful when dealing with a
+ <code>double</code>.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Number.html">Number</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -255,66 +259,79 @@ layout: api
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#MAX_EXPONENT">MAX_EXPONENT</a></td>
-        <td class="jd-descrcol" width="100%">Maximum base-2 exponent that a finite value of the <code>double</code> type may have.</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#BYTES">BYTES</a></td>
+        <td class="jd-descrcol" width="100%">The number of bytes used to represent a <code>double</code> value.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#MAX_EXPONENT">MAX_EXPONENT</a></td>
+        <td class="jd-descrcol" width="100%">Maximum exponent a finite <code>double</code> variable may have.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">double</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#MAX_VALUE">MAX_VALUE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the maximum <code>double</code> value, (2 - 2<sup>-52</sup>) *
- 2<sup>1023</sup>.</td>
+        <td class="jd-descrcol" width="100%">A constant holding the largest positive finite value of type
+ <code>double</code>,
+ (2-2<sup>-52</sup>)&middot;2<sup>1023</sup>.</td>
     </tr>
     
     
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#MIN_EXPONENT">MIN_EXPONENT</a></td>
-        <td class="jd-descrcol" width="100%">Minimum base-2 exponent that a normal value of the <code>double</code> type may have.</td>
+        <td class="jd-descrcol" width="100%">Minimum exponent a normalized <code>double</code> variable may
+ have.</td>
     </tr>
     
     
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">double</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#MIN_NORMAL">MIN_NORMAL</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the smallest positive normal value of the <code>double</code> type.</td>
+        <td class="jd-descrcol" width="100%">A constant holding the smallest positive normal value of type
+ <code>double</code>, 2<sup>-1022</sup>.</td>
     </tr>
     
     
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">double</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#MIN_VALUE">MIN_VALUE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the minimum <code>double</code> value, 2<sup>-1074</sup>.</td>
+        <td class="jd-descrcol" width="100%">A constant holding the smallest positive nonzero value of type
+ <code>double</code>, 2<sup>-1074</sup>.</td>
     </tr>
     
     
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">double</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#NEGATIVE_INFINITY">NEGATIVE_INFINITY</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the negative infinity value of the <code>double</code> type.</td>
-    </tr>
-    
-    
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">double</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#NaN">NaN</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the Not-a-Number (NaN) value of the <code>double</code> type.</td>
+        <td class="jd-descrcol" width="100%">A constant holding the negative infinity of type
+ <code>double</code>.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">double</td>
-        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#POSITIVE_INFINITY">POSITIVE_INFINITY</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the positive infinity value of the <code>double</code> type.</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#NaN">NaN</a></td>
+        <td class="jd-descrcol" width="100%">A constant holding a Not-a-Number (NaN) value of type
+ <code>double</code>.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">double</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#POSITIVE_INFINITY">POSITIVE_INFINITY</a></td>
+        <td class="jd-descrcol" width="100%">A constant holding the positive infinity of type
+ <code>double</code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#SIZE">SIZE</a></td>
-        <td class="jd-descrcol" width="100%">Constant for the number of bits needed to represent a <code>double</code> in
- two's complement form.</td>
+        <td class="jd-descrcol" width="100%">The number of bits used to represent a <code>double</code> value.</td>
     </tr>
     
     
@@ -339,7 +356,8 @@ layout: api
           final
           <a href="../../../reference/java/lang/Class.html">Class</a>&lt;<a href="../../../reference/java/lang/Double.html">Double</a>&gt;</td>
           <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html#TYPE">TYPE</a></td>
-          <td class="jd-descrcol" width="100%">The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>double</code>.</td>
+          <td class="jd-descrcol" width="100%">The <code>Class</code> instance representing the primitive type
+ <code>double</code>.</td>
       </tr>
       
     
@@ -370,8 +388,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#Double(double)">Double</a></span>(double value)
         
-        <div class="jd-descrdiv">Constructs a new <code>Double</code> with the specified primitive double
- value.</div>
+        <div class="jd-descrdiv">Constructs a newly allocated <code>Double</code> object that
+ represents the primitive <code>double</code> argument.</div>
   
   </td></tr>
 
@@ -387,9 +405,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#Double(java.lang.String)">Double</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#Double(java.lang.String)">Double</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>Double</code> from the specified string.</div>
+        <div class="jd-descrdiv">Constructs a newly allocated <code>Double</code> object that
+ represents the floating-point value of type <code>double</code>
+ represented by the string.</div>
   
   </td></tr>
 
@@ -420,6 +440,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#byteValue()">byteValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Double</code> as a <code>byte</code> (by
+ casting to a <code>byte</code>).</div>
+  
   </td></tr>
 
 
@@ -434,9 +457,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#compare(double, double)">compare</a></span>(double double1, double double2)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#compare(double, double)">compare</a></span>(double d1, double d2)
         
-        <div class="jd-descrdiv">Compares the two specified double values.</div>
+        <div class="jd-descrdiv">Compares the two specified <code>double</code> values.</div>
   
   </td></tr>
 
@@ -452,10 +475,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#compareTo(java.lang.Double)">compareTo</a></span>(<a href="../../../reference/java/lang/Double.html">Double</a> object)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#compareTo(java.lang.Double)">compareTo</a></span>(<a href="../../../reference/java/lang/Double.html">Double</a> anotherDouble)
         
-        <div class="jd-descrdiv">Compares this object to the specified double object to determine their
- relative order.</div>
+        <div class="jd-descrdiv">Compares two <code>Double</code> objects numerically.</div>
   
   </td></tr>
 
@@ -473,9 +495,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#doubleToLongBits(double)">doubleToLongBits</a></span>(double value)
         
-        <div class="jd-descrdiv">Returns an integer corresponding to the bits of the given
- <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a> double precision
- <code>value</code>.</div>
+        <div class="jd-descrdiv">Returns a representation of the specified floating-point value
+ according to the IEEE 754 floating-point "double
+ format" bit layout.</div>
   
   </td></tr>
 
@@ -493,9 +515,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#doubleToRawLongBits(double)">doubleToRawLongBits</a></span>(double value)
         
-        <div class="jd-descrdiv">Returns an integer corresponding to the bits of the given
- <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a> double precision
- <code>value</code>.</div>
+        <div class="jd-descrdiv">Returns a representation of the specified floating-point value
+ according to the IEEE 754 floating-point "double
+ format" bit layout, preserving Not-a-Number (NaN) values.</div>
   
   </td></tr>
 
@@ -513,7 +535,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#doubleValue()">doubleValue</a></span>()
         
-        <div class="jd-descrdiv">Gets the primitive value of this double.</div>
+        <div class="jd-descrdiv">Returns the <code>double</code> value of this
+ <code>Double</code> object.</div>
   
   </td></tr>
 
@@ -529,9 +552,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Tests this double for equality with <code>object</code>.</div>
+        <div class="jd-descrdiv">Compares this object against the specified object.</div>
   
   </td></tr>
 
@@ -549,6 +572,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#floatValue()">floatValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the <code>float</code> value of this
+ <code>Double</code> object.</div>
+  
   </td></tr>
 
 
@@ -565,13 +591,32 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+        <div class="jd-descrdiv">Returns a hash code for this <code>Double</code> object.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#hashCode(double)">hashCode</a></span>(double value)
+        
+        <div class="jd-descrdiv">Returns a hash code for a <code>double</code> value; compatible with
+ <code>Double.hashCode()</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -583,6 +628,29 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#intValue()">intValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Double</code> as an
+ <code>int</code> (by casting to type <code>int</code>).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#isFinite(double)">isFinite</a></span>(double d)
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if the argument is a finite floating-point
+ value; returns <code>false</code> otherwise (for NaN and infinity
+ arguments).</div>
+  
   </td></tr>
 
 
@@ -599,7 +667,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#isInfinite()">isInfinite</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this object represents an infinite value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this <code>Double</code> value is
+ infinitely large in magnitude, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -615,9 +684,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#isInfinite(double)">isInfinite</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#isInfinite(double)">isInfinite</a></span>(double v)
         
-        <div class="jd-descrdiv">Indicates whether the specified double represents an infinite value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the specified number is infinitely
+ large in magnitude, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -633,10 +703,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#isNaN(double)">isNaN</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#isNaN(double)">isNaN</a></span>(double v)
         
-        <div class="jd-descrdiv">Indicates whether the specified double is a <em>Not-a-Number (NaN)</em>
- value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the specified number is a
+ Not-a-Number (NaN) value, <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -654,7 +724,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#isNaN()">isNaN</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this object is a <em>Not-a-Number (NaN)</em> value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this <code>Double</code> value is
+ a Not-a-Number (NaN), <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -672,8 +743,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#longBitsToDouble(long)">longBitsToDouble</a></span>(long bits)
         
-        <div class="jd-descrdiv">Returns the <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a>
- double precision float corresponding to the given <code>bits</code>.</div>
+        <div class="jd-descrdiv">Returns the <code>double</code> value corresponding to a given
+ bit representation.</div>
   
   </td></tr>
 
@@ -691,6 +762,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#longValue()">longValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Double</code> as a
+ <code>long</code> (by casting to type <code>long</code>).</div>
+  
   </td></tr>
 
 
@@ -705,9 +779,50 @@ layout: api
             double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#parseDouble(java.lang.String)">parseDouble</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#max(double, double)">max</a></span>(double a, double b)
         
-        <div class="jd-descrdiv">Parses the specified string as a double value.</div>
+        <div class="jd-descrdiv">Returns the greater of two <code>double</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#max(double, double)">Math.max</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#min(double, double)">min</a></span>(double a, double b)
+        
+        <div class="jd-descrdiv">Returns the smaller of two <code>double</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#min(double, double)">Math.min</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#parseDouble(java.lang.String)">parseDouble</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
+        
+        <div class="jd-descrdiv">Returns a new <code>double</code> initialized to the value
+ represented by the specified <code>String</code>, as performed
+ by the <code>valueOf</code> method of class
+ <code>Double</code>.</div>
   
   </td></tr>
 
@@ -725,6 +840,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#shortValue()">shortValue</a></span>()
         
+        <div class="jd-descrdiv">Returns the value of this <code>Double</code> as a
+ <code>short</code> (by casting to a <code>short</code>).</div>
+  
   </td></tr>
 
 
@@ -736,12 +854,12 @@ layout: api
             
             static
             
-            <a href="../../../reference/java/lang/String.html">String</a>
+            double
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#toHexString(double)">toHexString</a></span>(double d)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#sum(double, double)">sum</a></span>(double a, double b)
         
-        <div class="jd-descrdiv">Converts the specified double into its hexadecimal string representation.</div>
+        <div class="jd-descrdiv">Adds two <code>double</code> values together as per the + operator.</div>
   
   </td></tr>
 
@@ -752,15 +870,15 @@ layout: api
             
             
             
-            
+            static
             
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#toString()">toString</a></span>()
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#toHexString(double)">toHexString</a></span>(double d)
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.</div>
+        <div class="jd-descrdiv">Returns a hexadecimal string representation of the
+ <code>double</code> argument.</div>
   
   </td></tr>
 
@@ -778,8 +896,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#toString(double)">toString</a></span>(double d)
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of the
- specified double value.</div>
+        <div class="jd-descrdiv">Returns a string representation of the <code>double</code>
+ argument.</div>
   
   </td></tr>
 
@@ -790,14 +908,14 @@ layout: api
             
             
             
-            static
             
-            <a href="../../../reference/java/lang/Double.html">Double</a>
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Double.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> string)
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Parses the specified string as a double value.</div>
+        <div class="jd-descrdiv">Returns a string representation of this <code>Double</code> object.</div>
   
   </td></tr>
 
@@ -813,9 +931,30 @@ layout: api
             <a href="../../../reference/java/lang/Double.html">Double</a>
         </td>
         <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Double.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
+        
+        <div class="jd-descrdiv">Returns a <code>Double</code> object holding the
+ <code>double</code> value represented by the argument string
+ <code>s</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Double.html">Double</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Double.html#valueOf(double)">valueOf</a></span>(double d)
         
-        <div class="jd-descrdiv">Returns a <code>Double</code> instance for the specified double value.</div>
+        <div class="jd-descrdiv">Returns a <code>Double</code> instance representing the specified
+ <code>double</code> value.</div>
   
   </td></tr>
 
@@ -1218,10 +1357,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Double.html">Double</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/lang/Double.html">Double</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -1261,6 +1399,46 @@ From interface
 
 
 
+<a id="BYTES"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        int
+      </span>
+        BYTES
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The number of bytes used to represent a <code>double</code> value.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                8
+                (0x00000008)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
 <a id="MAX_EXPONENT"></a>
 
 <div class="jd-details api apilevel-">
@@ -1283,8 +1461,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Maximum base-2 exponent that a finite value of the <code>double</code> type may have.
- Equal to <code>Math.getExponent(Double.MAX_VALUE)</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Maximum exponent a finite <code>double</code> variable may have.
+ It is equal to the value returned by
+ <code>Math.getExponent(Double.MAX_VALUE)</code>.</p></div>
 
     
         <div class="jd-tagdata">
@@ -1324,8 +1503,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the maximum <code>double</code> value, (2 - 2<sup>-52</sup>) *
- 2<sup>1023</sup>.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the largest positive finite value of type
+ <code>double</code>,
+ (2-2<sup>-52</sup>)&middot;2<sup>1023</sup>.  It is equal to
+ the hexadecimal floating-point literal
+ <code>0x1.fffffffffffffP+1023</code> and also equal to
+ <code>Double.longBitsToDouble(0x7fefffffffffffffL)</code>.
 </p></div>
 
     
@@ -1365,8 +1548,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Minimum base-2 exponent that a normal value of the <code>double</code> type may have.
- Equal to <code>Math.getExponent(Double.MIN_NORMAL)</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Minimum exponent a normalized <code>double</code> variable may
+ have.  It is equal to the value returned by
+ <code>Math.getExponent(Double.MIN_NORMAL)</code>.</p></div>
 
     
         <div class="jd-tagdata">
@@ -1406,7 +1590,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the smallest positive normal value of the <code>double</code> type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the smallest positive normal value of type
+ <code>double</code>, 2<sup>-1022</sup>.  It is equal to the
+ hexadecimal floating-point literal <code>0x1.0p-1022</code> and also
+ equal to <code>Double.longBitsToDouble(0x0010000000000000L)</code>.</p></div>
 
     
         <div class="jd-tagdata">
@@ -1445,7 +1632,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the minimum <code>double</code> value, 2<sup>-1074</sup>.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the smallest positive nonzero value of type
+ <code>double</code>, 2<sup>-1074</sup>. It is equal to the
+ hexadecimal floating-point literal
+ <code>0x0.0000000000001P-1022</code> and also equal to
+ <code>Double.longBitsToDouble(0x1L)</code>.
 </p></div>
 
     
@@ -1485,7 +1676,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the negative infinity value of the <code>double</code> type.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the negative infinity of type
+ <code>double</code>. It is equal to the value returned by
+ <code>Double.longBitsToDouble(0xfff0000000000000L)</code>.
 </p></div>
 
     
@@ -1525,7 +1718,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the Not-a-Number (NaN) value of the <code>double</code> type.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding a Not-a-Number (NaN) value of type
+ <code>double</code>. It is equivalent to the value returned by
+ <code>Double.longBitsToDouble(0x7ff8000000000000L)</code>.
 </p></div>
 
     
@@ -1565,7 +1760,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the positive infinity value of the <code>double</code> type.
+  <div class="jd-tagdata jd-tagdescr"><p>A constant holding the positive infinity of type
+ <code>double</code>. It is equal to the value returned by
+ <code>Double.longBitsToDouble(0x7ff0000000000000L)</code>.
 </p></div>
 
     
@@ -1605,8 +1802,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constant for the number of bits needed to represent a <code>double</code> in
- two's complement form.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The number of bits used to represent a <code>double</code> value.</p></div>
 
     
         <div class="jd-tagdata">
@@ -1656,7 +1852,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>double</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>Class</code> instance representing the primitive type
+ <code>double</code>.</p></div>
 
     
     </div>
@@ -1698,14 +1895,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Double</code> with the specified primitive double
- value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a newly allocated <code>Double</code> object that
+ represents the primitive <code>double</code> argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the primitive double value to store in the new instance.
+          <td>the value to be represented by the <code>Double</code>.
 </td>
         </tr>
       </table>
@@ -1728,7 +1925,7 @@ From interface
         
       </span>
       <span class="sympad">Double</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1740,13 +1937,16 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Double</code> from the specified string.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a newly allocated <code>Double</code> object that
+ represents the floating-point value of type <code>double</code>
+ represented by the string. The string is converted to a
+ <code>double</code> value as if by the <code>valueOf</code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a double value.</td>
+          <th>s</th>
+          <td>a string to be converted to a <code>Double</code>.</td>
         </tr>
       </table>
   </div>
@@ -1755,13 +1955,14 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a double value.</td>
+            <td>if the string does not contain a
+            parsable number.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#parseDouble(java.lang.String)">parseDouble(String)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#valueOf(java.lang.String)">valueOf(java.lang.String)</a></code></li>
       </ul>
   </div>
 
@@ -1809,7 +2010,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Double</code> as a <code>byte</code> (by
+ casting to a <code>byte</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>double</code> value represented by this object
+          converted to type <code>byte</code></li></ul>
+  </div>
 
     </div>
 </div>
@@ -1828,7 +2035,7 @@ From interface
         int
       </span>
       <span class="sympad">compare</span>
-      <span class="normal">(double double1, double double2)</span>
+      <span class="normal">(double d1, double d2)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1840,31 +2047,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares the two specified double values. There are two special cases:
- <ul>
- <li><code>Double.NaN</code> is equal to <code>Double.NaN</code> and it is greater
- than any other double value, including <code>Double.POSITIVE_INFINITY</code>;</li>
- <li>+0.0d is greater than -0.0d</li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the two specified <code>double</code> values. The sign
+ of the integer value returned is the same as that of the
+ integer that would be returned by the call:
+ <pre>
+    new Double(d1).compareTo(new Double(d2))
+ </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>double1</th>
-          <td>the first value to compare.</td>
+          <th>d1</th>
+          <td>the first <code>double</code> to compare</td>
         </tr>
         <tr>
-          <th>double2</th>
-          <td>the second value to compare.</td>
+          <th>d2</th>
+          <td>the second <code>double</code> to compare</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a negative value if <code>double1</code> is less than <code>double2</code>;
-         0 if <code>double1</code> and <code>double2</code> are equal; a positive
-         value if <code>double1</code> is greater than <code>double2</code>.
-</li></ul>
+      <ul class="nolist"><li>the value <code>0</code> if <code>d1</code> is
+          numerically equal to <code>d2</code>; a value less than
+          <code>0</code> if <code>d1</code> is numerically less than
+          <code>d2</code>; and a value greater than <code>0</code>
+          if <code>d1</code> is numerically greater than
+          <code>d2</code>.</li></ul>
   </div>
 
     </div>
@@ -1884,7 +2093,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Double.html">Double</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Double.html">Double</a> anotherDouble)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1896,42 +2105,41 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified double object to determine their
- relative order. There are two special cases:
- <ul>
- <li><code>Double.NaN</code> is equal to <code>Double.NaN</code> and it is greater
- than any other double value, including <code>Double.POSITIVE_INFINITY</code>;</li>
- <li>+0.0d is greater than -0.0d</li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>Double</code> objects numerically.  There
+ are two ways in which comparisons performed by this method
+ differ from those performed by the Java language numerical
+ comparison operators (<code>&lt;, &lt;=, ==, &gt;=, &gt;</code>)
+ when applied to primitive <code>double</code> values:
+ <ul><li>
+          <code>Double.NaN</code> is considered by this method
+          to be equal to itself and greater than all other
+          <code>double</code> values (including
+          <code>Double.POSITIVE_INFINITY</code>).
+ <li>
+          <code>0.0d</code> is considered by this method to be greater
+          than <code>-0.0d</code>.
+ </ul>
+ This ensures that the <i>natural ordering</i> of
+ <code>Double</code> objects imposed by this method is <i>consistent
+ with equals</i>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the double object to compare this object to.</td>
+          <th>anotherDouble</th>
+          <td>the <code>Double</code> to be compared.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a negative value if the value of this double is less than the
-         value of <code>object</code>; 0 if the value of this double and the
-         value of <code>object</code> are equal; a positive value if the value
-         of this double is greater than the value of <code>object</code>.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>object</code> is <code>null</code>.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
-      </ul>
+      <ul class="nolist"><li>the value <code>0</code> if <code>anotherDouble</code> is
+          numerically equal to this <code>Double</code>; a value
+          less than <code>0</code> if this <code>Double</code>
+          is numerically less than <code>anotherDouble</code>;
+          and a value greater than <code>0</code> if this
+          <code>Double</code> is numerically greater than
+          <code>anotherDouble</code>.</li></ul>
   </div>
 
     </div>
@@ -1963,11 +2171,47 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer corresponding to the bits of the given
- <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a> double precision
- <code>value</code>. All <em>Not-a-Number (NaN)</em> values are converted to a single NaN
- representation (<code>0x7ff8000000000000L</code>) (compare to <code><a href="reference/java/lang/Double.html#doubleToRawLongBits(double)">doubleToRawLongBits(double)</a></code>).
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a representation of the specified floating-point value
+ according to the IEEE 754 floating-point "double
+ format" bit layout.
+
+ <p>Bit 63 (the bit that is selected by the mask
+ <code>0x8000000000000000L</code>) represents the sign of the
+ floating-point number. Bits
+ 62-52 (the bits that are selected by the mask
+ <code>0x7ff0000000000000L</code>) represent the exponent. Bits 51-0
+ (the bits that are selected by the mask
+ <code>0x000fffffffffffffL</code>) represent the significand
+ (sometimes called the mantissa) of the floating-point number.
+
+ <p>If the argument is positive infinity, the result is
+ <code>0x7ff0000000000000L</code>.
+
+ <p>If the argument is negative infinity, the result is
+ <code>0xfff0000000000000L</code>.
+
+ <p>If the argument is NaN, the result is
+ <code>0x7ff8000000000000L</code>.
+
+ <p>In all cases, the result is a <code>long</code> integer that, when
+ given to the <code><a href="reference/java/lang/Double.html#longBitsToDouble(long)">longBitsToDouble(long)</a></code> method, will produce a
+ floating-point value the same as the argument to
+ <code>doubleToLongBits</code> (except all NaN values are
+ collapsed to a single "canonical" NaN value).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>a <code>double</code> precision floating-point number.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the bits that represent the floating-point number.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1998,11 +2242,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer corresponding to the bits of the given
- <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a> double precision
- <code>value</code>. <em>Not-a-Number (NaN)</em> values are preserved (compare
- to <code><a href="reference/java/lang/Double.html#doubleToLongBits(double)">doubleToLongBits(double)</a></code>).
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a representation of the specified floating-point value
+ according to the IEEE 754 floating-point "double
+ format" bit layout, preserving Not-a-Number (NaN) values.
+
+ <p>Bit 63 (the bit that is selected by the mask
+ <code>0x8000000000000000L</code>) represents the sign of the
+ floating-point number. Bits
+ 62-52 (the bits that are selected by the mask
+ <code>0x7ff0000000000000L</code>) represent the exponent. Bits 51-0
+ (the bits that are selected by the mask
+ <code>0x000fffffffffffffL</code>) represent the significand
+ (sometimes called the mantissa) of the floating-point number.
+
+ <p>If the argument is positive infinity, the result is
+ <code>0x7ff0000000000000L</code>.
+
+ <p>If the argument is negative infinity, the result is
+ <code>0xfff0000000000000L</code>.
+
+ <p>If the argument is NaN, the result is the <code>long</code>
+ integer representing the actual NaN value.  Unlike the
+ <code>doubleToLongBits</code> method,
+ <code>doubleToRawLongBits</code> does not collapse all the bit
+ patterns encoding a NaN to a single "canonical" NaN
+ value.
+
+ <p>In all cases, the result is a <code>long</code> integer that,
+ when given to the <code><a href="reference/java/lang/Double.html#longBitsToDouble(long)">longBitsToDouble(long)</a></code> method, will
+ produce a floating-point value the same as the argument to
+ <code>doubleToRawLongBits</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>a <code>double</code> precision floating-point number.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the bits that represent the floating-point number.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2033,10 +2315,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the primitive value of this double.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>double</code> value of this
+ <code>Double</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's primitive value.
+      <ul class="nolist"><li>the <code>double</code> value represented by this object
 </li></ul>
   </div>
 
@@ -2057,7 +2340,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2069,26 +2352,56 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Tests this double for equality with <code>object</code>.
- To be equal, <code>object</code> must be an instance of <code>Double</code> and
- <code>doubleToLongBits</code> must give the same value for both objects.
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object against the specified object.  The result
+ is <code>true</code> if and only if the argument is not
+ <code>null</code> and is a <code>Double</code> object that
+ represents a <code>double</code> that has the same value as the
+ <code>double</code> represented by this object. For this
+ purpose, two <code>double</code> values are considered to be
+ the same if and only if the method <code><a href="reference/java/lang/Double.html#doubleToLongBits(double)">doubleToLongBits(double)</a></code> returns the identical
+ <code>long</code> value when applied to each.
 
- <p>Note that, unlike <code>==</code>, <code>-0.0</code> and <code>+0.0</code> compare
- unequal, and <code>NaN</code>s compare equal by this method.</p></div>
+ <p>Note that in most cases, for two instances of class
+ <code>Double</code>, <code>d1</code> and <code>d2</code>, the
+ value of <code>d1.equals(d2)</code> is <code>true</code> if and
+ only if
+
+ <blockquote>
+  <code>d1.doubleValue() == d2.doubleValue()</code>
+ </blockquote>
+
+ <p>also has the value <code>true</code>. However, there are two
+ exceptions:
+ <ul>
+ <li>If <code>d1</code> and <code>d2</code> both represent
+     <code>Double.NaN</code>, then the <code>equals</code> method
+     returns <code>true</code>, even though
+     <code>Double.NaN==Double.NaN</code> has the value
+     <code>false</code>.
+ <li>If <code>d1</code> represents <code>+0.0</code> while
+     <code>d2</code> represents <code>-0.0</code>, or vice versa,
+     the <code>equal</code> test has the value <code>false</code>,
+     even though <code>+0.0==-0.0</code> has the value <code>true</code>.
+ </ul>
+ This definition allows hash tables to operate properly.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to compare this double with.</td>
+          <th>obj</th>
+          <td>the object to compare with.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this
-         <code>Double</code>; <code>false</code> otherwise.
-</li></ul>
+      <ul class="nolist"><li><code>true</code> if the objects are the same;
+          <code>false</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#doubleToLongBits(double)">doubleToLongBits(double)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2120,7 +2433,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>float</code> value of this
+ <code>Double</code> object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>double</code> value represented by this object
+          converted to type <code>float</code></li></ul>
+  </div>
 
     </div>
 </div>
@@ -2151,20 +2470,72 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
- objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
- the same hash code value. This means that subclasses of <code>Object</code>
- usually override both methods or neither method.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this <code>Double</code> object. The
+ result is the exclusive OR of the two halves of the
+ <code>long</code> integer bit representation, exactly as
+ produced by the method <code><a href="reference/java/lang/Double.html#doubleToLongBits(double)">doubleToLongBits(double)</a></code>, of
+ the primitive <code>double</code> value represented by this
+ <code>Double</code> object. That is, the hash code is the value
+ of the expression:
 
- <p>Note that hash values must not change over time unless information used in equals
- comparisons also changes.
+ <blockquote>
+  <code>(int)(v^(v&gt;&gt;&gt;32))</code>
+ </blockquote>
 
- <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
- <code>hashCode</code> method</a>
- if you intend implementing your own <code>hashCode</code> method.</p></div>
+ where <code>v</code> is defined by:
+
+ <blockquote>
+  <code>long v = Double.doubleToLongBits(this.doubleValue());</code>
+ </blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's hash code.</li></ul>
+      <ul class="nolist"><li>a <code>hash code</code> value for this object.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="hashCode(double)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">hashCode</span>
+      <span class="normal">(double value)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for a <code>double</code> value; compatible with
+ <code>Double.hashCode()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>the value to hash</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a hash code value for a <code>double</code> value.</li></ul>
   </div>
 
     </div>
@@ -2196,7 +2567,61 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Double</code> as an
+ <code>int</code> (by casting to type <code>int</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>double</code> value represented by this object
+          converted to type <code>int</code>
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="isFinite(double)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isFinite</span>
+      <span class="normal">(double d)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the argument is a finite floating-point
+ value; returns <code>false</code> otherwise (for NaN and infinity
+ arguments).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>d</th>
+          <td>the <code>double</code> value to be tested</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the argument is a finite
+ floating-point value, <code>false</code> otherwise.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2227,11 +2652,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this object represents an infinite value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this <code>Double</code> value is
+ infinitely large in magnitude, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the value of this double is positive or negative
-         infinity; <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the value represented by this object is
+          positive infinity or negative infinity;
+          <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -2252,7 +2679,7 @@ From interface
         boolean
       </span>
       <span class="sympad">isInfinite</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double v)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2264,20 +2691,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the specified double represents an infinite value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the specified number is infinitely
+ large in magnitude, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the double to check.</td>
+          <th>v</th>
+          <td>the value to be tested.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the value of <code>d</code> is positive or negative
-         infinity; <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the value of the argument is positive
+          infinity or negative infinity; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -2298,7 +2726,7 @@ From interface
         boolean
       </span>
       <span class="sympad">isNaN</span>
-      <span class="normal">(double d)</span>
+      <span class="normal">(double v)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2310,21 +2738,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the specified double is a <em>Not-a-Number (NaN)</em>
- value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the specified number is a
+ Not-a-Number (NaN) value, <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>d</th>
-          <td>the double value to check.</td>
+          <th>v</th>
+          <td>the value to be tested.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if <code>d</code> is <em>Not-a-Number</em>;
-         <code>false</code> if it is a (potentially infinite) double number.
+      <ul class="nolist"><li><code>true</code> if the value of the argument is NaN;
+          <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -2357,11 +2785,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this object is a <em>Not-a-Number (NaN)</em> value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this <code>Double</code> value is
+ a Not-a-Number (NaN), <code>false</code> otherwise.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this double is <em>Not-a-Number</em>;
-         <code>false</code> if it is a (potentially infinite) double number.
+      <ul class="nolist"><li><code>true</code> if the value represented by this object is
+          NaN; <code>false</code> otherwise.
 </li></ul>
   </div>
 
@@ -2394,9 +2823,76 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a>
- double precision float corresponding to the given <code>bits</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>double</code> value corresponding to a given
+ bit representation.
+ The argument is considered to be a representation of a
+ floating-point value according to the IEEE 754 floating-point
+ "double format" bit layout.
+
+ <p>If the argument is <code>0x7ff0000000000000L</code>, the result
+ is positive infinity.
+
+ <p>If the argument is <code>0xfff0000000000000L</code>, the result
+ is negative infinity.
+
+ <p>If the argument is any value in the range
+ <code>0x7ff0000000000001L</code> through
+ <code>0x7fffffffffffffffL</code> or in the range
+ <code>0xfff0000000000001L</code> through
+ <code>0xffffffffffffffffL</code>, the result is a NaN.  No IEEE
+ 754 floating-point operation provided by Java can distinguish
+ between two NaN values of the same type with different bit
+ patterns.  Distinct values of NaN are only distinguishable by
+ use of the <code>Double.doubleToRawLongBits</code> method.
+
+ <p>In all other cases, let <i>s</i>, <i>e</i>, and <i>m</i> be three
+ values that can be computed from the argument:
+
+ <blockquote><pre>
+ int s = ((bits &gt;&gt; 63) == 0) ? 1 : -1;
+ int e = (int)((bits &gt;&gt; 52) & 0x7ffL);
+ long m = (e == 0) ?
+                 (bits & 0xfffffffffffffL) &lt;&lt; 1 :
+                 (bits & 0xfffffffffffffL) | 0x10000000000000L;
+ </pre></blockquote>
+
+ Then the floating-point result equals the value of the mathematical
+ expression <i>s</i>&middot;<i>m</i>&middot;2<sup><i>e</i>-1075</sup>.
+
+ <p>Note that this method may not be able to return a
+ <code>double</code> NaN with exactly same bit pattern as the
+ <code>long</code> argument.  IEEE 754 distinguishes between two
+ kinds of NaNs, quiet NaNs and <i>signaling NaNs</i>.  The
+ differences between the two kinds of NaN are generally not
+ visible in Java.  Arithmetic operations on signaling NaNs turn
+ them into quiet NaNs with a different, but often similar, bit
+ pattern.  However, on some processors merely copying a
+ signaling NaN also performs that conversion.  In particular,
+ copying a signaling NaN to return it to the calling method
+ may perform this conversion.  So <code>longBitsToDouble</code>
+ may not be able to return a <code>double</code> with a
+ signaling NaN bit pattern.  Consequently, for some
+ <code>long</code> values,
+ <code>doubleToRawLongBits(longBitsToDouble(start))</code> may
+ <i>not</i> equal <code>start</code>.  Moreover, which
+ particular bit patterns represent signaling NaNs is platform
+ dependent; although all NaN bit patterns, quiet or signaling,
+ must be in the NaN range identified above.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bits</th>
+          <td>any <code>long</code> integer.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>double</code> floating-point value with the same
+          bit pattern.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2427,7 +2923,122 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Double</code> as a
+ <code>long</code> (by casting to type <code>long</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>double</code> value represented by this object
+          converted to type <code>long</code>
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="max(double, double)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad">max</span>
+      <span class="normal">(double a, double b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greater of two <code>double</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#max(double, double)">Math.max</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the greater of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="min(double, double)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad">min</span>
+      <span class="normal">(double a, double b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smaller of two <code>double</code> values
+ as if by calling <code><a href="reference/java/lang/Math.html#min(double, double)">Math.min</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the smaller of <code>a</code> and <code>b</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2446,7 +3057,7 @@ From interface
         double
       </span>
       <span class="sympad">parseDouble</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2458,29 +3069,42 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a double value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>double</code> initialized to the value
+ represented by the specified <code>String</code>, as performed
+ by the <code>valueOf</code> method of class
+ <code>Double</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a double value.</td>
+          <th>s</th>
+          <td>the string to be parsed.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the primitive double value represented by <code>string</code>.</li></ul>
+      <ul class="nolist"><li>the <code>double</code> value represented by the string
+         argument.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the string is null</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a double value.
-</td>
+            <td>if the string does not contain
+         a parsable <code>double</code>.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#valueOf(java.lang.String)">valueOf(String)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2512,7 +3136,66 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of this <code>Double</code> as a
+ <code>short</code> (by casting to a <code>short</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>double</code> value represented by this object
+          converted to type <code>short</code></li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="sum(double, double)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad">sum</span>
+      <span class="normal">(double a, double b)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds two <code>double</code> values together as per the + operator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>the first operand</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>the second operand</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the sum of <code>a</code> and <code>b</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/BinaryOperator.html">BinaryOperator</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -2543,63 +3226,86 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified double into its hexadecimal string representation.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hexadecimal string representation of the
+ <code>double</code> argument. All characters mentioned below
+ are ASCII characters.
+
+ <ul>
+ <li>If the argument is NaN, the result is the string
+     "<code>NaN</code>".
+ <li>Otherwise, the result is a string that represents the sign
+ and magnitude of the argument. If the sign is negative, the
+ first character of the result is '<code>-</code>'
+ (<code>'&#92;u002D'</code>); if the sign is positive, no sign
+ character appears in the result. As for the magnitude <i>m</i>:
+
+ <ul>
+ <li>If <i>m</i> is infinity, it is represented by the string
+ <code>"Infinity"</code>; thus, positive infinity produces the
+ result <code>"Infinity"</code> and negative infinity produces
+ the result <code>"-Infinity"</code>.
+
+ <li>If <i>m</i> is zero, it is represented by the string
+ <code>"0x0.0p0"</code>; thus, negative zero produces the result
+ <code>"-0x0.0p0"</code> and positive zero produces the result
+ <code>"0x0.0p0"</code>.
+
+ <li>If <i>m</i> is a <code>double</code> value with a
+ normalized representation, substrings are used to represent the
+ significand and exponent fields.  The significand is
+ represented by the characters <code>"0x1."</code>
+ followed by a lowercase hexadecimal representation of the rest
+ of the significand as a fraction.  Trailing zeros in the
+ hexadecimal representation are removed unless all the digits
+ are zero, in which case a single zero is used. Next, the
+ exponent is represented by <code>"p"</code> followed
+ by a decimal string of the unbiased exponent as if produced by
+ a call to <code><a href="reference/java/lang/Integer.html#toString(int)">Integer.toString</a></code> on the
+ exponent value.
+
+ <li>If <i>m</i> is a <code>double</code> value with a subnormal
+ representation, the significand is represented by the
+ characters <code>"0x0."</code> followed by a
+ hexadecimal representation of the rest of the significand as a
+ fraction.  Trailing zeros in the hexadecimal representation are
+ removed. Next, the exponent is represented by
+ <code>"p-1022"</code>.  Note that there must be at
+ least one nonzero digit in a subnormal significand.
+
+ </ul>
+
+ </ul>
+
+ <table border>
+ <caption><h3>Examples</h3></caption>
+ <tr><th>Floating-point Value</th><th>Hexadecimal String</th>
+ <tr><td><code>1.0</code></td> <td><code>0x1.0p0</code></td>
+ <tr><td><code>-1.0</code></td>        <td><code>-0x1.0p0</code></td>
+ <tr><td><code>2.0</code></td> <td><code>0x1.0p1</code></td>
+ <tr><td><code>3.0</code></td> <td><code>0x1.8p1</code></td>
+ <tr><td><code>0.5</code></td> <td><code>0x1.0p-1</code></td>
+ <tr><td><code>0.25</code></td>        <td><code>0x1.0p-2</code></td>
+ <tr><td><code>Double.MAX_VALUE</code></td>
+     <td><code>0x1.fffffffffffffp1023</code></td>
+ <tr><td><code>Minimum Normal Value</code></td>
+     <td><code>0x1.0p-1022</code></td>
+ <tr><td><code>Maximum Subnormal Value</code></td>
+     <td><code>0x0.fffffffffffffp-1022</code></td>
+ <tr><td><code>Double.MIN_VALUE</code></td>
+     <td><code>0x0.0000000000001p-1022</code></td>
+ </table></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>d</th>
-          <td>the double to convert.</td>
+          <td>the <code>double</code> to be converted.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the hexadecimal string representation of <code>d</code>.</li></ul>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="toString()"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        <a href="../../../reference/java/lang/String.html">String</a>
-      </span>
-      <span class="sympad">toString</span>
-      <span class="normal">()</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- object. Subclasses are encouraged to override this method and provide an
- implementation that takes into account the object's type and data. The
- default implementation is equivalent to the following expression:
- <pre>
-   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
- <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
- <code>toString</code> method</a>
- if you intend implementing your own <code>toString</code> method.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
-</li></ul>
+      <ul class="nolist"><li>a hex string representation of the argument.</li></ul>
   </div>
 
     </div>
@@ -2631,21 +3337,119 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of the
- specified double value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of the <code>double</code>
+ argument. All characters mentioned below are ASCII characters.
+ <ul>
+ <li>If the argument is NaN, the result is the string
+     "<code>NaN</code>".
+ <li>Otherwise, the result is a string that represents the sign and
+ magnitude (absolute value) of the argument. If the sign is negative,
+ the first character of the result is '<code>-</code>'
+ (<code>'&#92;u002D'</code>); if the sign is positive, no sign character
+ appears in the result. As for the magnitude <i>m</i>:
+ <ul>
+ <li>If <i>m</i> is infinity, it is represented by the characters
+ <code>"Infinity"</code>; thus, positive infinity produces the result
+ <code>"Infinity"</code> and negative infinity produces the result
+ <code>"-Infinity"</code>.
+
+ <li>If <i>m</i> is zero, it is represented by the characters
+ <code>"0.0"</code>; thus, negative zero produces the result
+ <code>"-0.0"</code> and positive zero produces the result
+ <code>"0.0"</code>.
+
+ <li>If <i>m</i> is greater than or equal to 10<sup>-3</sup> but less
+ than 10<sup>7</sup>, then it is represented as the integer part of
+ <i>m</i>, in decimal form with no leading zeroes, followed by
+ '<code>.</code>' (<code>'&#92;u002E'</code>), followed by one or
+ more decimal digits representing the fractional part of <i>m</i>.
+
+ <li>If <i>m</i> is less than 10<sup>-3</sup> or greater than or
+ equal to 10<sup>7</sup>, then it is represented in so-called
+ "computerized scientific notation." Let <i>n</i> be the unique
+ integer such that 10<sup><i>n</i></sup> &le; <i>m</i> &lt;
+ 10<sup><i>n</i>+1</sup>; then let <i>a</i> be the
+ mathematically exact quotient of <i>m</i> and
+ 10<sup><i>n</i></sup> so that 1 &le; <i>a</i> &lt; 10. The
+ magnitude is then represented as the integer part of <i>a</i>,
+ as a single decimal digit, followed by '<code>.</code>'
+ (<code>'&#92;u002E'</code>), followed by decimal digits
+ representing the fractional part of <i>a</i>, followed by the
+ letter '<code>E</code>' (<code>'&#92;u0045'</code>), followed
+ by a representation of <i>n</i> as a decimal integer, as
+ produced by the method <code><a href="reference/java/lang/Integer.html#toString(int)">toString(int)</a></code>.
+ </ul>
+ </ul>
+ How many digits must be printed for the fractional part of
+ <i>m</i> or <i>a</i>? There must be at least one digit to represent
+ the fractional part, and beyond that as many, but only as many, more
+ digits as are needed to uniquely distinguish the argument value from
+ adjacent values of type <code>double</code>. That is, suppose that
+ <i>x</i> is the exact mathematical value represented by the decimal
+ representation produced by this method for a finite nonzero argument
+ <i>d</i>. Then <i>d</i> must be the <code>double</code> value nearest
+ to <i>x</i>; or if two <code>double</code> values are equally close
+ to <i>x</i>, then <i>d</i> must be one of them and the least
+ significant bit of the significand of <i>d</i> must be <code>0</code>.
+
+ <p>To create localized string representations of a floating-point
+ value, use subclasses of <code><a href="reference/java/text/NumberFormat.html">NumberFormat</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>d</th>
-          <td>the double to convert to a string.</td>
+          <td>the <code>double</code> to be converted.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of <code>d</code>.
+      <ul class="nolist"><li>a string representation of the argument.
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toString()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">toString</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this <code>Double</code> object.
+ The primitive <code>double</code> value represented by this
+ object is converted to a string exactly as if by the method
+ <code>toString</code> of one argument.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a <code>String</code> representation of this object.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#toString(double)">toString(double)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2665,7 +3469,7 @@ From interface
         <a href="../../../reference/java/lang/Double.html">Double</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> string)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2677,34 +3481,191 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a double value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Double</code> object holding the
+ <code>double</code> value represented by the argument string
+ <code>s</code>.
+
+ <p>If <code>s</code> is <code>null</code>, then a
+ <code>NullPointerException</code> is thrown.
+
+ <p>Leading and trailing whitespace characters in <code>s</code>
+ are ignored.  Whitespace is removed as if by the <code><a href="reference/java/lang/String.html#trim()">trim()</a></code> method; that is, both ASCII space and control
+ characters are removed. The rest of <code>s</code> should
+ constitute a <i>FloatValue</i> as described by the lexical
+ syntax rules:
+
+ <blockquote>
+ <dl>
+ <dt><i>FloatValue:</i>
+ <dd><i>Sign<sub>opt</sub></i> <code>NaN</code>
+ <dd><i>Sign<sub>opt</sub></i> <code>Infinity</code>
+ <dd><i>Sign<sub>opt</sub> FloatingPointLiteral</i>
+ <dd><i>Sign<sub>opt</sub> HexFloatingPointLiteral</i>
+ <dd><i>SignedInteger</i>
+ </dl>
+
+ <p>
+
+ <dl>
+ <dt><i>HexFloatingPointLiteral</i>:
+ <dd> <i>HexSignificand BinaryExponent FloatTypeSuffix<sub>opt</sub></i>
+ </dl>
+
+ <p>
+
+ <dl>
+ <dt><i>HexSignificand:</i>
+ <dd><i>HexNumeral</i>
+ <dd><i>HexNumeral</i> <code>.</code>
+ <dd><code>0x</code> <i>HexDigits<sub>opt</sub>
+     </i><code>.</code><i> HexDigits</i>
+ <dd><code>0X</code><i> HexDigits<sub>opt</sub>
+     </i><code>.</code> <i>HexDigits</i>
+ </dl>
+
+ <p>
+
+ <dl>
+ <dt><i>BinaryExponent:</i>
+ <dd><i>BinaryExponentIndicator SignedInteger</i>
+ </dl>
+
+ <p>
+
+ <dl>
+ <dt><i>BinaryExponentIndicator:</i>
+ <dd><code>p</code>
+ <dd><code>P</code>
+ </dl>
+
+ </blockquote>
+
+ where <i>Sign</i>, <i>FloatingPointLiteral</i>,
+ <i>HexNumeral</i>, <i>HexDigits</i>, <i>SignedInteger</i> and
+ <i>FloatTypeSuffix</i> are as defined in the lexical structure
+ sections of
+ <cite>The Java&trade; Language Specification</cite>,
+ except that underscores are not accepted between digits.
+ If <code>s</code> does not have the form of
+ a <i>FloatValue</i>, then a <code>NumberFormatException</code>
+ is thrown. Otherwise, <code>s</code> is regarded as
+ representing an exact decimal value in the usual
+ "computerized scientific notation" or as an exact
+ hexadecimal value; this exact numerical value is then
+ conceptually converted to an "infinitely precise"
+ binary value that is then rounded to type <code>double</code>
+ by the usual round-to-nearest rule of IEEE 754 floating-point
+ arithmetic, which includes preserving the sign of a zero
+ value.
+
+ Note that the round-to-nearest rule also implies overflow and
+ underflow behaviour; if the exact value of <code>s</code> is large
+ enough in magnitude (greater than or equal to (<code><a href="reference/java/lang/Double.html#MAX_VALUE">MAX_VALUE</a></code> + <code><a href="reference/java/lang/Math.html#ulp(double)">ulp(MAX_VALUE)</a></code>/2),
+ rounding to <code>double</code> will result in an infinity and if the
+ exact value of <code>s</code> is small enough in magnitude (less
+ than or equal to <code><a href="reference/java/lang/Double.html#MIN_VALUE">MIN_VALUE</a></code>/2), rounding to float will
+ result in a zero.
+
+ Finally, after rounding a <code>Double</code> object representing
+ this <code>double</code> value is returned.
+
+ <p> To interpret localized string representations of a
+ floating-point value, use subclasses of <code><a href="reference/java/text/NumberFormat.html">NumberFormat</a></code>.
+
+ <p>Note that trailing format specifiers, specifiers that
+ determine the type of a floating-point literal
+ (<code>1.0f</code> is a <code>float</code> value;
+ <code>1.0d</code> is a <code>double</code> value), do
+ <em>not</em> influence the results of this method.  In other
+ words, the numerical value of the input string is converted
+ directly to the target floating-point type.  The two-step
+ sequence of conversions, string to <code>float</code> followed
+ by <code>float</code> to <code>double</code>, is <em>not</em>
+ equivalent to converting a string directly to
+ <code>double</code>. For example, the <code>float</code>
+ literal <code>0.1f</code> is equal to the <code>double</code>
+ value <code>0.10000000149011612</code>; the <code>float</code>
+ literal <code>0.1f</code> represents a different numerical
+ value than the <code>double</code> literal
+ <code>0.1</code>. (The numerical value 0.1 cannot be exactly
+ represented in a binary floating-point number.)
+
+ <p>To avoid calling this method on an invalid string and having
+ a <code>NumberFormatException</code> be thrown, the regular
+ expression below can be used to screen the input string:
+
+ <code>
+ <pre>
+  final String Digits     = "(\\p{Digit}+)";
+  final String HexDigits  = "(\\p{XDigit}+)";
+  // an exponent is 'e' or 'E' followed by an optionally
+  // signed decimal integer.
+  final String Exp        = "[eE][+-]?"+Digits;
+  final String fpRegex    =
+      ("[\\x00-\\x20]*"+  // Optional leading "whitespace"
+       "[+-]?(" + // Optional sign character
+       "NaN|" +           // "NaN" string
+       "Infinity|" +      // "Infinity" string
+
+       // A decimal floating-point string representing a finite positive
+       // number without a leading sign has at most five basic pieces:
+       // Digits . Digits ExponentPart FloatTypeSuffix
+       //
+       // Since this method allows integer-only strings as input
+       // in addition to strings of floating-point literals, the
+       // two sub-patterns below are simplifications of the grammar
+       // productions from section 3.10.2 of
+       // <cite>The Java&trade; Language Specification</cite>.
+
+       // Digits ._opt Digits_opt ExponentPart_opt FloatTypeSuffix_opt
+       "((("+Digits+"(\\.)?("+Digits+"?)("+Exp+")?)|"+
+
+       // . Digits ExponentPart_opt FloatTypeSuffix_opt
+       "(\\.("+Digits+")("+Exp+")?)|"+
+
+       // Hexadecimal strings
+       "((" +
+        // 0[xX] HexDigits ._opt BinaryExponent FloatTypeSuffix_opt
+        "(0[xX]" + HexDigits + "(\\.)?)|" +
+
+        // 0[xX] HexDigits_opt . HexDigits BinaryExponent FloatTypeSuffix_opt
+        "(0[xX]" + HexDigits + "?(\\.)" + HexDigits + ")" +
+
+        ")[pP][+-]?" + Digits + "))" +
+       "[fFdD]?))" +
+       "[\\x00-\\x20]*");// Optional trailing "whitespace"
+
+  if (Pattern.matches(fpRegex, myString))
+      Double.valueOf(myString); // Will not throw NumberFormatException
+  else {
+      // Perform suitable alternative action
+  }
+ </pre>
+ </code></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>string</th>
-          <td>the string representation of a double value.</td>
+          <th>s</th>
+          <td>the string to be parsed.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Double</code> instance containing the double value represented
-         by <code>string</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Double</code> object holding the value
+             represented by the <code>String</code> argument.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>string</code> cannot be parsed as a double value.</td>
+            <td>if the string does not contain a
+             parsable number.
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Double.html#parseDouble(java.lang.String)">parseDouble(String)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -2736,19 +3697,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Double</code> instance for the specified double value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Double</code> instance representing the specified
+ <code>double</code> value.
+ If a new <code>Double</code> instance is not required, this method
+ should generally be used in preference to the constructor
+ <code><a href="reference/java/lang/Double.html#Double(double)">Double(double)</a></code>, as this method is likely to yield
+ significantly better space and time performance by caching
+ frequently requested values.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>d</th>
-          <td>the double value to store in the instance.</td>
+          <td>a double value.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>Double</code> instance containing <code>d</code>.</li></ul>
+      <ul class="nolist"><li>a <code>Double</code> instance representing <code>d</code>.</li></ul>
   </div>
 
     </div>

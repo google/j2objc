@@ -251,8 +251,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/nio/ReadOnlyBufferException.html">ReadOnlyBufferException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>ReadOnlyBufferException</code> is thrown when some write operation is
- called on a read-only buffer.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Unchecked exception thrown when a content-mutation method such as
+ <tt>put</tt> or <tt>compact</tt> is invoked upon a read-only buffer.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -266,8 +266,11 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when an unsupported operation is attempted.
-</p>
+<p>Thrown to indicate that the requested operation is not supported.<p>
+
+ This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
@@ -335,8 +338,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/UnsupportedOperationException.html#UnsupportedOperationException()">UnsupportedOperationException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>UnsupportedOperationException</code> that includes the
- current stack trace.</div>
+        <div class="jd-descrdiv">Constructs an UnsupportedOperationException with no detail message.</div>
   
   </td></tr>
 
@@ -352,10 +354,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/UnsupportedOperationException.html#UnsupportedOperationException(java.lang.String)">UnsupportedOperationException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/UnsupportedOperationException.html#UnsupportedOperationException(java.lang.String)">UnsupportedOperationException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Constructs a new <code>UnsupportedOperationException</code> with the current
- stack trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an UnsupportedOperationException with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -373,8 +375,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/UnsupportedOperationException.html#UnsupportedOperationException(java.lang.String, java.lang.Throwable)">UnsupportedOperationException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>UnsupportedOperationException</code> with the current
- stack trace, the specified detail message and the specified cause.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified detail message and
+ cause.</div>
   
   </td></tr>
 
@@ -392,8 +394,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/UnsupportedOperationException.html#UnsupportedOperationException(java.lang.Throwable)">UnsupportedOperationException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>UnsupportedOperationException</code> with the current
- stack trace and the specified cause.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified cause and a detail
+ message of <tt>(cause==null ? null : cause.toString())</tt> (which
+ typically contains the class and detail message of <tt>cause</tt>).</div>
   
   </td></tr>
 
@@ -629,6 +632,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -929,8 +951,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnsupportedOperationException</code> that includes the
- current stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an UnsupportedOperationException with no detail message.
 </p></div>
 
     </div>
@@ -950,7 +971,7 @@ From class
         
       </span>
       <span class="sympad">UnsupportedOperationException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -962,14 +983,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnsupportedOperationException</code> with the current
- stack trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an UnsupportedOperationException with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>message</th>
+          <td>the detail message
 </td>
         </tr>
       </table>
@@ -1004,18 +1025,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnsupportedOperationException</code> with the current
- stack trace, the specified detail message and the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified detail message and
+ cause.
+
+ <p>Note that the detail message associated with <code>cause</code> is
+ <i>not</i> automatically incorporated in this exception's detail
+ message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+         by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the optional cause of this exception, may be <code>null</code>.</td>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value
+         is permitted, and indicates that the cause is nonexistent or
+         unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1049,14 +1078,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnsupportedOperationException</code> with the current
- stack trace and the specified cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified cause and a detail
+ message of <tt>(cause==null ? null : cause.toString())</tt> (which
+ typically contains the class and detail message of <tt>cause</tt>).
+ This constructor is useful for exceptions that are little more than
+ wrappers for other throwables (for example, <code><a href="reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the optional cause of this exception, may be <code>null</code>.</td>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value is
+         permitted, and indicates that the cause is nonexistent or
+         unknown.)</td>
         </tr>
       </table>
   </div>

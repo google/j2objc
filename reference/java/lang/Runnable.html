@@ -206,12 +206,34 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Represents a command that can be executed. Often used to run code in a
- different <code><a href="reference/java/lang/Thread.html">Thread</a></code>.
-</p>
+<p>The <code>Runnable</code> interface should be implemented by any
+ class whose instances are intended to be executed by a thread. The
+ class must define a method of no arguments called <code>run</code>.
+ <p>
+ This interface is designed to provide a common protocol for objects that
+ wish to execute code while they are active. For example,
+ <code>Runnable</code> is implemented by class <code>Thread</code>.
+ Being active simply means that a thread has been started and has not
+ yet been stopped.
+ <p>
+ In addition, <code>Runnable</code> provides the means for a class to be
+ active while not subclassing <code>Thread</code>. A class that implements
+ <code>Runnable</code> can run without subclassing <code>Thread</code>
+ by instantiating a <code>Thread</code> instance and passing itself in
+ as the target.  In most cases, the <code>Runnable</code> interface should
+ be used if you are only planning to override the <code>run()</code>
+ method and no other <code>Thread</code> methods.
+ This is important because classes should not be subclassed
+ unless the programmer intends on modifying or enhancing the fundamental
+ behavior of the class.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li><li><code><a href="../../../reference/java/util/concurrent/Callable.html">Callable</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -280,7 +302,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Runnable.html#run()">run</a></span>()
         
-        <div class="jd-descrdiv">Starts executing the active part of the class' code.</div>
+        <div class="jd-descrdiv">When an object implementing interface <code>Runnable</code> is used
+ to create a thread, starting the thread causes the object's
+ <code>run</code> method to be called in that separately executing
+ thread.</div>
   
   </td></tr>
 
@@ -358,10 +383,18 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Starts executing the active part of the class' code. This method is
- called when a thread is started that has been created with a class which
- implements <code>Runnable</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>When an object implementing interface <code>Runnable</code> is used
+ to create a thread, starting the thread causes the object's
+ <code>run</code> method to be called in that separately executing
+ thread.
+ <p>
+ The general contract of the method <code>run</code> is that it may
+ take any action whatsoever.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#run()">run()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>

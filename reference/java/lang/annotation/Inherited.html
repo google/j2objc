@@ -156,8 +156,21 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Defines a meta-annotation for indicating that an annotation is automatically
- inherited.</p>
+<p>Indicates that an annotation type is automatically inherited.  If
+ an Inherited meta-annotation is present on an annotation type
+ declaration, and the user queries the annotation type on a class
+ declaration, and the class declaration has no annotation for this type,
+ then the class's superclass will automatically be queried for the
+ annotation type.  This process will be repeated until an annotation for this
+ type is found, or the top of the class hierarchy (Object)
+ is reached.  If no superclass has an annotation for this type, then
+ the query will indicate that the class in question has no such annotation.
+
+ <p>Note that this meta-annotation type has no effect if the annotated
+ type is used to annotate anything other than a class.  Note also
+ that this meta-annotation only causes annotations to be inherited
+ from superclasses; annotations on implemented interfaces have no
+ effect.</p>
 
 
 
@@ -254,7 +267,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/Annotation.html#annotationType()">annotationType</a></span>()
         
-        <div class="jd-descrdiv">Returns the type of this annotation.</div>
+        <div class="jd-descrdiv">Returns the annotation type of this annotation.</div>
   
   </td></tr>
 
@@ -272,8 +285,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/Annotation.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Determines whether or not this annotation is equivalent to the annotation
- passed.</div>
+        <div class="jd-descrdiv">Returns true if the specified object represents an annotation
+ that is logically equivalent to this one.</div>
   
   </td></tr>
 
@@ -291,7 +304,24 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/Annotation.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code of this annotation.</div>
+        <div class="jd-descrdiv">Returns the hash code of this annotation, as defined below:
+
+ <p>The hash code of an annotation is the sum of the hash codes
+ of its members (including those with default values), as defined
+ below:
+
+ The hash code of an annotation member is (127 times the hash code
+ of the member-name as computed by <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code>) XOR
+ the hash code of the member-value, as defined below:
+
+ <p>The hash code of a member-value depends on its type:
+ <ul>
+ <li>The hash code of a primitive value <tt><i>v</i></tt> is equal to
+     <tt><i>WrapperType</i>.valueOf(<i>v</i>).hashCode()</tt>, where
+     <tt><i>WrapperType</i></tt> is the wrapper type corresponding
+     to the primitive type of <tt><i>v</i></tt> (<code><a href="reference/java/lang/Byte.html">Byte</a></code>,
+     <code><a href="reference/java/lang/Character.html">Character</a></code>, <code><a href="reference/java/lang/Double.html">Double</a></code>, <code><a href="reference/java/lang/Float.html">Float</a></code>, <code><a href="reference/java/lang/Integer.html">Integer</a></code>,
+     <code><a href="reference/java/lang/Long.html">Long</a></code>, <code><a href="reference/java/lang/Short.html">Short</a></code>, or <code><a href="reference/java/lang/Boolean.html">Boolean</a></code>).</div>
   
   </td></tr>
 
@@ -309,7 +339,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/Annotation.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>String</code> representation of this annotation.</div>
+        <div class="jd-descrdiv">Returns a string representation of this annotation.</div>
   
   </td></tr>
 

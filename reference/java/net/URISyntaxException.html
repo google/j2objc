@@ -212,12 +212,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>URISyntaxException</code> will be thrown if some information could not be parsed
- while creating a URI.
-</p>
+<p>Checked exception thrown to indicate that a string could not be parsed as a
+ URI reference.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/net/URI.html">URI</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -282,9 +286,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/URISyntaxException.html#URISyntaxException(java.lang.String, java.lang.String, int)">URISyntaxException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> input, <a href="../../../reference/java/lang/String.html">String</a> reason, int index)
         
-        <div class="jd-descrdiv">Constructs a new <code>URISyntaxException</code> instance containing the
- string that caused the exception, a description of the problem and the
- index at which the error occurred.</div>
+        <div class="jd-descrdiv">Constructs an instance from the given input string, reason, and error
+ index.</div>
   
   </td></tr>
 
@@ -302,8 +305,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/URISyntaxException.html#URISyntaxException(java.lang.String, java.lang.String)">URISyntaxException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> input, <a href="../../../reference/java/lang/String.html">String</a> reason)
         
-        <div class="jd-descrdiv">Constructs a new <code>URISyntaxException</code> instance containing the
- string that caused the exception and a description of the problem.</div>
+        <div class="jd-descrdiv">Constructs an instance from the given input string and reason.</div>
   
   </td></tr>
 
@@ -334,8 +336,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/URISyntaxException.html#getIndex()">getIndex</a></span>()
         
-        <div class="jd-descrdiv">Gets the index at which the syntax error was found or <code>-1</code> if the
- index is unknown/unavailable.</div>
+        <div class="jd-descrdiv">Returns an index into the input string of the position at which the
+ parse error occurred, or <code>-1</code> if this position is not known.</div>
   
   </td></tr>
 
@@ -353,7 +355,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/URISyntaxException.html#getInput()">getInput</a></span>()
         
-        <div class="jd-descrdiv">Gets the initial string that contains an invalid syntax.</div>
+        <div class="jd-descrdiv">Returns the input string.</div>
   
   </td></tr>
 
@@ -371,9 +373,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/URISyntaxException.html#getMessage()">getMessage</a></span>()
         
-        <div class="jd-descrdiv">Gets a description of the exception, including the reason, the string
- that caused the syntax error and the position of the syntax error if
- available.</div>
+        <div class="jd-descrdiv">Returns a string describing the parse error.</div>
   
   </td></tr>
 
@@ -391,7 +391,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/URISyntaxException.html#getReason()">getReason</a></span>()
         
-        <div class="jd-descrdiv">Gets a description of the syntax error.</div>
+        <div class="jd-descrdiv">Returns a string explaining why the input string could not be parsed.</div>
   
   </td></tr>
 
@@ -621,6 +621,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -921,23 +940,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>URISyntaxException</code> instance containing the
- string that caused the exception, a description of the problem and the
- index at which the error occurred.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance from the given input string, reason, and error
+ index.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>input</th>
-          <td>the string that caused the exception.</td>
+          <td>The input string</td>
         </tr>
         <tr>
           <th>reason</th>
-          <td>the reason why the exception occurred.</td>
+          <td>A string explaining why the input could not be parsed</td>
         </tr>
         <tr>
           <th>index</th>
-          <td>the position where the exception occurred.</td>
+          <td>The index at which the parse error occurred,
+                 or <code>-1</code> if the index is not known</td>
         </tr>
       </table>
   </div>
@@ -946,12 +965,11 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if one of the arguments <code>input</code> or <code>reason</code> is
-             <code>null</code>.</td>
+            <td>If either the input or reason strings are <code>null</code></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the value for <code>index</code> is lesser than <code>-1</code>.
+            <td>If the error index is less than <code>-1</code>
 </td>
         </tr>
       </table>
@@ -986,18 +1004,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>URISyntaxException</code> instance containing the
- string that caused the exception and a description of the problem.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance from the given input string and reason.  The
+ resulting object will have an error index of <code>-1</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>input</th>
-          <td>the string that caused the exception.</td>
+          <td>The input string</td>
         </tr>
         <tr>
           <th>reason</th>
-          <td>the reason why the exception occurred.</td>
+          <td>A string explaining why the input could not be parsed</td>
         </tr>
       </table>
   </div>
@@ -1006,8 +1024,7 @@ From class
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if one of the arguments <code>input</code> or <code>reason</code> is
-             <code>null</code>.
+            <td>If either the input or reason strings are <code>null</code>
 </td>
         </tr>
       </table>
@@ -1057,11 +1074,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the index at which the syntax error was found or <code>-1</code> if the
- index is unknown/unavailable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an index into the input string of the position at which the
+ parse error occurred, or <code>-1</code> if this position is not known.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the syntax error.
+      <ul class="nolist"><li>The error index
 </li></ul>
   </div>
 
@@ -1094,10 +1111,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the initial string that contains an invalid syntax.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the input string.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the string that caused the exception.
+      <ul class="nolist"><li>The input string
 </li></ul>
   </div>
 
@@ -1130,17 +1147,16 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets a description of the exception, including the reason, the string
- that caused the syntax error and the position of the syntax error if
- available.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string describing the parse error.  The resulting string
+ consists of the reason string followed by a colon character
+ (<code>':'</code>), a space, and the input string.  If the error index is
+ defined then the string <code>" at index "</code> followed by the index, in
+ decimal, is inserted after the reason string and before the colon
+ character.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a sting containing information about the exception.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code></li>
-      </ul>
+      <ul class="nolist"><li>A string describing the parse error
+</li></ul>
   </div>
 
     </div>
@@ -1172,10 +1188,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets a description of the syntax error.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string explaining why the input string could not be parsed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the string describing the syntax error.
+      <ul class="nolist"><li>The reason string
 </li></ul>
   </div>
 

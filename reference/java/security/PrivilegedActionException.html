@@ -213,10 +213,31 @@ layout: api
 
 <h2>Class Overview</h2>
 <p>Legacy security code; do not use.
-</p>
+
+ This exception is thrown by
+ <code>doPrivileged(PrivilegedExceptionAction)</code> and
+ <code>doPrivileged(PrivilegedExceptionAction,
+ AccessControlContext context)</code> to indicate
+ that the action being performed threw a checked exception.  The exception
+ thrown by the action can be obtained by calling the
+ <code>getException</code> method.  In effect, an
+ <code>PrivilegedActionException</code> is a "wrapper"
+ for an exception thrown by a privileged action.
+
+ <p>As of release 1.4, this exception has been retrofitted to conform to
+ the general purpose exception-chaining mechanism.  The "exception thrown
+ by the privileged computation" that is provided at construction time and
+ accessed via the <code><a href="reference/java/security/PrivilegedActionException.html#getException()">getException()</a></code> method is now known as the
+ <i>cause</i>, and may be accessed via the <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code>
+ method, as well as the aforementioned "legacy method."</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/security/PrivilegedExceptionAction.html">PrivilegedExceptionAction</a></code></li><li><code><a href="../../../reference/java/security/AccessController.html#doPrivileged(java.security.PrivilegedExceptionAction<T>)">doPrivileged(PrivilegedExceptionAction)</a></code></li><li><code><a href="../../../reference/java/security/AccessController.html#doPrivileged(java.security.PrivilegedExceptionAction<T>, java.security.AccessControlContext)">doPrivileged(PrivilegedExceptionAction, AccessControlContext)</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -279,8 +300,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/PrivilegedActionException.html#PrivilegedActionException(java.lang.Exception)">PrivilegedActionException</a></span>(<a href="../../../reference/java/lang/Exception.html">Exception</a> ex)
+        <span class="sympad"><a href="../../../reference/java/security/PrivilegedActionException.html#PrivilegedActionException(java.lang.Exception)">PrivilegedActionException</a></span>(<a href="../../../reference/java/lang/Exception.html">Exception</a> exception)
         
+        <div class="jd-descrdiv">Constructs a new PrivilegedActionException &quot;wrapping&quot;
+ the specific Exception.</div>
+  
   </td></tr>
 
 
@@ -305,11 +329,53 @@ layout: api
             
             
             
+            <a href="../../../reference/java/lang/Throwable.html">Throwable</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/security/PrivilegedActionException.html#getCause()">getCause</a></span>()
+        
+        <div class="jd-descrdiv">Returns the cause of this exception (the exception thrown by
+ the privileged computation that resulted in this
+ <code>PrivilegedActionException</code>).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
             <a href="../../../reference/java/lang/Exception.html">Exception</a>
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/PrivilegedActionException.html#getException()">getException</a></span>()
         
+        <div class="jd-descrdiv">Returns the exception thrown by the privileged computation that
+ resulted in this <code>PrivilegedActionException</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/security/PrivilegedActionException.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -538,6 +604,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -826,7 +911,7 @@ From class
         
       </span>
       <span class="sympad">PrivilegedActionException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Exception.html">Exception</a> ex)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Exception.html">Exception</a> exception)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -838,7 +923,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new PrivilegedActionException &quot;wrapping&quot;
+ the specific Exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>exception</th>
+          <td>The exception thrown
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -857,6 +953,43 @@ From class
 
 <h2>Public Methods</h2>
 
+
+
+<a id="getCause()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Throwable.html">Throwable</a>
+      </span>
+      <span class="sympad">getCause</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this exception (the exception thrown by
+ the privileged computation that resulted in this
+ <code>PrivilegedActionException</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the cause of this exception.</li></ul>
+  </div>
+
+    </div>
+</div>
 
 
 <a id="getException()"></a>
@@ -884,7 +1017,66 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception thrown by the privileged computation that
+ resulted in this <code>PrivilegedActionException</code>.
+
+ <p>This method predates the general-purpose exception chaining facility.
+ The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method is now the preferred means of
+ obtaining this information.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the exception thrown by the privileged computation that
+         resulted in this <code>PrivilegedActionException</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/security/PrivilegedExceptionAction.html">PrivilegedExceptionAction</a></code></li><li><code><a href="../../../reference/java/security/AccessController.html#doPrivileged(java.security.PrivilegedExceptionAction<T>)">doPrivileged(PrivilegedExceptionAction)</a></code></li><li><code><a href="../../../reference/java/security/AccessController.html#doPrivileged(java.security.PrivilegedExceptionAction<T>, java.security.AccessControlContext)">doPrivileged(PrivilegedExceptionAction, AccessControlContext)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toString()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">toString</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
+ object. Subclasses are encouraged to override this method and provide an
+ implementation that takes into account the object's type and data. The
+ default implementation is equivalent to the following expression:
+ <pre>
+   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
+ <code>toString</code> method</a>
+ if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a printable representation of this object.
+</li></ul>
+  </div>
 
     </div>
 </div>

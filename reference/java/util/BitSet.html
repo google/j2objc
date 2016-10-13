@@ -140,9 +140,9 @@ layout: api
   
       implements
       
-        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
-      
         <a href="../../../reference/java/lang/Cloneable.html">Cloneable</a>
+      
+        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
       
   
   
@@ -182,11 +182,29 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The <code>BitSet</code> class implements a
- <a href="http://en.wikipedia.org/wiki/Bit_array">bit array</a>.
- Each element is either true or false. A <code>BitSet</code> is created with a given size and grows
- automatically if this size is exceeded.
-</p>
+<p>This class implements a vector of bits that grows as needed. Each
+ component of the bit set has a <code>boolean</code> value. The
+ bits of a <code>BitSet</code> are indexed by nonnegative integers.
+ Individual indexed bits can be examined, set, or cleared. One
+ <code>BitSet</code> may be used to modify the contents of another
+ <code>BitSet</code> through logical AND, logical inclusive OR, and
+ logical exclusive OR operations.
+
+ <p>By default, all bits in the set initially have the value
+ <code>false</code>.
+
+ <p>Every bit set has a current size, which is the number of bits
+ of space currently in use by the bit set. Note that the size is
+ related to the implementation of a bit set, so it may change with
+ implementation. The length of a bit set relates to logical length
+ of a bit set and is defined independently of implementation.
+
+ <p>Unless otherwise noted, passing a null parameter to any of the
+ methods in a <code>BitSet</code> will result in a
+ <code>NullPointerException</code>.
+
+ <p>A <code>BitSet</code> is not safe for multithreaded use without
+ external synchronization.</p>
 
 
 
@@ -254,7 +272,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#BitSet()">BitSet</a></span>()
         
-        <div class="jd-descrdiv">Creates a new <code>BitSet</code> with size equal to 64 bits.</div>
+        <div class="jd-descrdiv">Creates a new bit set.</div>
   
   </td></tr>
 
@@ -270,10 +288,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#BitSet(int)">BitSet</a></span>(int bitCount)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#BitSet(int)">BitSet</a></span>(int nbits)
         
-        <div class="jd-descrdiv">Creates a new <code>BitSet</code> with size equal to <code>bitCount</code>, rounded up to
- a multiple of 64.</div>
+        <div class="jd-descrdiv">Creates a bit set whose initial size is large enough to explicitly
+ represent bits with indices in the range <code>0</code> through
+ <code>nbits-1</code>.</div>
   
   </td></tr>
 
@@ -302,9 +321,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#and(java.util.BitSet)">and</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#and(java.util.BitSet)">and</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)
         
-        <div class="jd-descrdiv">Logically ands the bits of this <code>BitSet</code> with <code>bs</code>.</div>
+        <div class="jd-descrdiv">Performs a logical <b>AND</b> of this target bit set with the
+ argument bit set.</div>
   
   </td></tr>
 
@@ -320,9 +340,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#andNot(java.util.BitSet)">andNot</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#andNot(java.util.BitSet)">andNot</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)
         
-        <div class="jd-descrdiv">Clears all bits in this <code>BitSet</code> which are also set in <code>bs</code>.</div>
+        <div class="jd-descrdiv">Clears all of the bits in this <code>BitSet</code> whose corresponding
+ bit is set in the specified <code>BitSet</code>.</div>
   
   </td></tr>
 
@@ -340,7 +361,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#cardinality()">cardinality</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of bits that are <code>true</code> in this <code>BitSet</code>.</div>
+        <div class="jd-descrdiv">Returns the number of bits set to <code>true</code> in this <code>BitSet</code>.</div>
   
   </td></tr>
 
@@ -358,7 +379,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#clear(int, int)">clear</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Clears the range of bits <code>[fromIndex, toIndex)</code>.</div>
+        <div class="jd-descrdiv">Sets the bits from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to <code>false</code>.</div>
   
   </td></tr>
 
@@ -374,9 +396,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#clear(int)">clear</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#clear(int)">clear</a></span>(int bitIndex)
         
-        <div class="jd-descrdiv">Clears the bit at index <code>index</code>.</div>
+        <div class="jd-descrdiv">Sets the bit specified by the index to <code>false</code>.</div>
   
   </td></tr>
 
@@ -394,7 +416,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Clears all the bits in this <code>BitSet</code>.</div>
+        <div class="jd-descrdiv">Sets all of the bits in this BitSet to <code>false</code>.</div>
   
   </td></tr>
 
@@ -412,7 +434,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+        <div class="jd-descrdiv">Cloning this <code>BitSet</code> produces a new <code>BitSet</code>
+ that is equal to it.</div>
   
   </td></tr>
 
@@ -428,10 +451,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
- are equal.</div>
+        <div class="jd-descrdiv">Compares this object against the specified object.</div>
   
   </td></tr>
 
@@ -447,9 +469,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#flip(int)">flip</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#flip(int)">flip</a></span>(int bitIndex)
         
-        <div class="jd-descrdiv">Flips the bit at index <code>index</code>.</div>
+        <div class="jd-descrdiv">Sets the bit at the specified index to the complement of its
+ current value.</div>
   
   </td></tr>
 
@@ -467,7 +490,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#flip(int, int)">flip</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Flips the range of bits <code>[fromIndex, toIndex)</code>.</div>
+        <div class="jd-descrdiv">Sets each bit from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to the complement of its current
+ value.</div>
   
   </td></tr>
 
@@ -483,9 +508,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#get(int)">get</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#get(int)">get</a></span>(int bitIndex)
         
-        <div class="jd-descrdiv">Returns the bit at index <code>index</code>.</div>
+        <div class="jd-descrdiv">Returns the value of the bit with the specified index.</div>
   
   </td></tr>
 
@@ -503,9 +528,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#get(int, int)">get</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Returns a new <code>BitSet</code> containing the
- range of bits <code>[fromIndex, toIndex)</code>, shifted down so that the bit
- at <code>fromIndex</code> is at bit 0 in the new <code>BitSet</code>.</div>
+        <div class="jd-descrdiv">Returns a new <code>BitSet</code> composed of bits from this <code>BitSet</code>
+ from <code>fromIndex</code> (inclusive) to <code>toIndex</code> (exclusive).</div>
   
   </td></tr>
 
@@ -523,7 +547,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this bit set.</div>
   
   </td></tr>
 
@@ -539,9 +563,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#intersects(java.util.BitSet)">intersects</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#intersects(java.util.BitSet)">intersects</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)
         
-        <div class="jd-descrdiv">Returns true if <code>this.and(bs)</code> is non-empty, but may be faster than computing that.</div>
+        <div class="jd-descrdiv">Returns true if the specified <code>BitSet</code> has any bits set to
+ <code>true</code> that are also set to <code>true</code> in this <code>BitSet</code>.</div>
   
   </td></tr>
 
@@ -559,7 +584,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns true if all the bits in this <code>BitSet</code> are set to false, false otherwise.</div>
+        <div class="jd-descrdiv">Returns true if this <code>BitSet</code> contains no bits that are set
+ to <code>true</code>.</div>
   
   </td></tr>
 
@@ -577,7 +603,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#length()">length</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of bits up to and including the highest bit set.</div>
+        <div class="jd-descrdiv">Returns the "logical size" of this <code>BitSet</code>: the index of
+ the highest set bit in the <code>BitSet</code> plus one.</div>
   
   </td></tr>
 
@@ -593,9 +620,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#nextClearBit(int)">nextClearBit</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#nextClearBit(int)">nextClearBit</a></span>(int fromIndex)
         
-        <div class="jd-descrdiv">Returns the index of the first bit that is clear on or after <code>index</code>.</div>
+        <div class="jd-descrdiv">Returns the index of the first bit that is set to <code>false</code>
+ that occurs on or after the specified starting index.</div>
   
   </td></tr>
 
@@ -611,10 +639,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#nextSetBit(int)">nextSetBit</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#nextSetBit(int)">nextSetBit</a></span>(int fromIndex)
         
-        <div class="jd-descrdiv">Returns the index of the first bit that is set on or after <code>index</code>, or -1
- if no higher bits are set.</div>
+        <div class="jd-descrdiv">Returns the index of the first bit that is set to <code>true</code>
+ that occurs on or after the specified starting index.</div>
   
   </td></tr>
 
@@ -630,9 +658,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#or(java.util.BitSet)">or</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#or(java.util.BitSet)">or</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)
         
-        <div class="jd-descrdiv">Logically ors the bits of this <code>BitSet</code> with <code>bs</code>.</div>
+        <div class="jd-descrdiv">Performs a logical <b>OR</b> of this bit set with the bit set
+ argument.</div>
   
   </td></tr>
 
@@ -648,10 +677,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#previousClearBit(int)">previousClearBit</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#previousClearBit(int)">previousClearBit</a></span>(int fromIndex)
         
-        <div class="jd-descrdiv">Returns the index of the first bit that is clear on or before <code>index</code>, or -1 if
- no lower bits are clear or <code>index == -1</code>.</div>
+        <div class="jd-descrdiv">Returns the index of the nearest bit that is set to <code>false</code>
+ that occurs on or before the specified starting index.</div>
   
   </td></tr>
 
@@ -667,10 +696,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#previousSetBit(int)">previousSetBit</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#previousSetBit(int)">previousSetBit</a></span>(int fromIndex)
         
-        <div class="jd-descrdiv">Returns the index of the first bit that is set on or before <code>index</code>, or -1 if
- no lower bits are set or <code>index == -1</code>.</div>
+        <div class="jd-descrdiv">Returns the index of the nearest bit that is set to <code>true</code>
+ that occurs on or before the specified starting index.</div>
   
   </td></tr>
 
@@ -686,9 +715,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int, int, boolean)">set</a></span>(int fromIndex, int toIndex, boolean state)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int, int, boolean)">set</a></span>(int fromIndex, int toIndex, boolean value)
         
-        <div class="jd-descrdiv">Sets the range of bits <code>[fromIndex, toIndex)</code> to <code>state</code>.</div>
+        <div class="jd-descrdiv">Sets the bits from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to the specified value.</div>
   
   </td></tr>
 
@@ -706,7 +736,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int, int)">set</a></span>(int fromIndex, int toIndex)
         
-        <div class="jd-descrdiv">Sets the range of bits <code>[fromIndex, toIndex)</code>.</div>
+        <div class="jd-descrdiv">Sets the bits from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to <code>true</code>.</div>
   
   </td></tr>
 
@@ -722,9 +753,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int)">set</a></span>(int index)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int)">set</a></span>(int bitIndex)
         
-        <div class="jd-descrdiv">Sets the bit at index <code>index</code> to true.</div>
+        <div class="jd-descrdiv">Sets the bit at the specified index to <code>true</code>.</div>
   
   </td></tr>
 
@@ -740,9 +771,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int, boolean)">set</a></span>(int index, boolean state)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#set(int, boolean)">set</a></span>(int bitIndex, boolean value)
         
-        <div class="jd-descrdiv">Sets the bit at index <code>index</code> to <code>state</code>.</div>
+        <div class="jd-descrdiv">Sets the bit at the specified index to the specified value.</div>
   
   </td></tr>
 
@@ -760,13 +791,33 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the capacity in bits of the array implementing this <code>BitSet</code>.</div>
+        <div class="jd-descrdiv">Returns the number of bits of space actually in use by this
+ <code>BitSet</code> to represent bit values.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/IntStream.html">IntStream</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a stream of indices for which this <code>BitSet</code>
+ contains a bit in the set state.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -778,15 +829,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#toByteArray()">toByteArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new <code>byte[]</code> containing a little-endian representation the bits of
- this <code>BitSet</code>, suitable for passing to <code>valueOf</code> to reconstruct
- this <code>BitSet</code>.</div>
+        <div class="jd-descrdiv">Returns a new byte array containing all the bits in this bit set.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -798,15 +847,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#toLongArray()">toLongArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new <code>long[]</code> containing a little-endian representation of the bits of
- this <code>BitSet</code>, suitable for passing to <code>valueOf</code> to reconstruct
- this <code>BitSet</code>.</div>
+        <div class="jd-descrdiv">Returns a new long array containing all the bits in this bit set.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -818,14 +865,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of the
- receiver: a comma-delimited list of the indexes of all set bits.</div>
+        <div class="jd-descrdiv">Returns a string representation of this bit set.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -837,13 +883,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#valueOf(long[])">valueOf</a></span>(long[] longs)
         
-        <div class="jd-descrdiv">Equivalent to <code>BitSet.valueOf(LongBuffer.wrap(longs))</code>, but likely to be faster.</div>
+        <div class="jd-descrdiv">Returns a new bit set containing all the bits in the given long array.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -855,26 +901,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/BitSet.html#valueOf(byte[])">valueOf</a></span>(byte[] bytes)
         
-        <div class="jd-descrdiv">Equivalent to <code>BitSet.valueOf(ByteBuffer.wrap(bytes))</code>.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            static
-            
-            <a href="../../../reference/java/util/BitSet.html">BitSet</a>
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#valueOf(java.nio.ByteBuffer)">valueOf</a></span>(<a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> byteBuffer)
-        
-        <div class="jd-descrdiv">Returns a <code>BitSet</code> corresponding to <code>byteBuffer</code>, interpreted as a little-endian
- sequence of bits.</div>
+        <div class="jd-descrdiv">Returns a new bit set containing all the bits in the given byte array.</div>
   
   </td></tr>
 
@@ -890,10 +917,10 @@ layout: api
             <a href="../../../reference/java/util/BitSet.html">BitSet</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#valueOf(java.nio.LongBuffer)">valueOf</a></span>(<a href="../../../reference/java/nio/LongBuffer.html">LongBuffer</a> longBuffer)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#valueOf(java.nio.ByteBuffer)">valueOf</a></span>(<a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> bb)
         
-        <div class="jd-descrdiv">Returns a <code>BitSet</code> corresponding to <code>longBuffer</code>, interpreted as a little-endian
- sequence of bits.</div>
+        <div class="jd-descrdiv">Returns a new bit set containing all the bits in the given byte
+ buffer between its position and limit.</div>
   
   </td></tr>
 
@@ -904,14 +931,34 @@ layout: api
             
             
             
+            static
+            
+            <a href="../../../reference/java/util/BitSet.html">BitSet</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#valueOf(java.nio.LongBuffer)">valueOf</a></span>(<a href="../../../reference/java/nio/LongBuffer.html">LongBuffer</a> lb)
+        
+        <div class="jd-descrdiv">Returns a new bit set containing all the bits in the given long
+ buffer between its position and limit.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#xor(java.util.BitSet)">xor</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)
+        <span class="sympad"><a href="../../../reference/java/util/BitSet.html#xor(java.util.BitSet)">xor</a></span>(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)
         
-        <div class="jd-descrdiv">Logically xors the bits of this <code>BitSet</code> with <code>bs</code>.</div>
+        <div class="jd-descrdiv">Performs a logical <b>XOR</b> of this bit set with the bit set
+ argument.</div>
   
   </td></tr>
 
@@ -1224,7 +1271,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>BitSet</code> with size equal to 64 bits.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new bit set. All bits are initially <code>false</code>.
 </p></div>
 
     </div>
@@ -1244,7 +1291,7 @@ From class
         
       </span>
       <span class="sympad">BitSet</span>
-      <span class="normal">(int bitCount)</span>
+      <span class="normal">(int nbits)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1256,14 +1303,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>BitSet</code> with size equal to <code>bitCount</code>, rounded up to
- a multiple of 64.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a bit set whose initial size is large enough to explicitly
+ represent bits with indices in the range <code>0</code> through
+ <code>nbits-1</code>. All bits are initially <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>nbits</th>
+          <td>the initial size of the bit set</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></td>
-            <td>if <code>bitCount < 0</code>.
+            <td>if the specified initial size
+         is negative
 </td>
         </tr>
       </table>
@@ -1301,7 +1359,7 @@ From class
         void
       </span>
       <span class="sympad">and</span>
-      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)</span>
+      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1313,8 +1371,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Logically ands the bits of this <code>BitSet</code> with <code>bs</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Performs a logical <b>AND</b> of this target bit set with the
+ argument bit set. This bit set is modified so that each bit in it
+ has the value <code>true</code> if and only if it both initially
+ had the value <code>true</code> and the corresponding bit in the
+ bit set argument also had the value <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>set</th>
+          <td>a bit set
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1333,7 +1404,7 @@ From class
         void
       </span>
       <span class="sympad">andNot</span>
-      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)</span>
+      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1345,8 +1416,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Clears all bits in this <code>BitSet</code> which are also set in <code>bs</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Clears all of the bits in this <code>BitSet</code> whose corresponding
+ bit is set in the specified <code>BitSet</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>set</th>
+          <td>the <code>BitSet</code> with which to mask this
+         <code>BitSet</code></td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1377,8 +1458,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of bits that are <code>true</code> in this <code>BitSet</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of bits set to <code>true</code> in this <code>BitSet</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the number of bits set to <code>true</code> in this <code>BitSet</code></li></ul>
+  </div>
 
     </div>
 </div>
@@ -1409,15 +1493,29 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Clears the range of bits <code>[fromIndex, toIndex)</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bits from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>index of the first bit to be cleared</td>
+        </tr>
+        <tr>
+          <th>toIndex</th>
+          <td>index after the last bit to be cleared</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>fromIndex</code> or <code>toIndex</code> is negative, or if
-             <code>toIndex</code> is smaller than <code>fromIndex</code>.
-</td>
+            <td>if <code>fromIndex</code> is negative,
+         or <code>toIndex</code> is negative, or <code>fromIndex</code> is
+         larger than <code>toIndex</code></td>
         </tr>
       </table>
   </div>
@@ -1439,7 +1537,7 @@ From class
         void
       </span>
       <span class="sympad">clear</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int bitIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1451,14 +1549,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Clears the bit at index <code>index</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bit specified by the index to <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bitIndex</th>
+          <td>the index of the bit to be cleared</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
-</td>
+            <td>if the specified index is negative</td>
         </tr>
       </table>
   </div>
@@ -1492,10 +1598,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Clears all the bits in this <code>BitSet</code>. This method does not change the capacity.
- Use <code>clear</code> if you want to reuse this <code>BitSet</code> with the same capacity, but
- create a new <code>BitSet</code> if you're trying to potentially reclaim memory.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets all of the bits in this BitSet to <code>false</code>.</p></div>
 
     </div>
 </div>
@@ -1526,17 +1629,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates and returns a copy of this <code>Object</code>. The default
- implementation returns a so-called "shallow" copy: It creates a new
- instance of the same class and then copies the field values (including
- object references) from this instance to the new instance. A "deep" copy,
- in contrast, would also recursively clone nested objects. A subclass that
- needs to implement this kind of cloning should call <code>super.clone()</code>
- to create the new instance and then create deep copies of the nested,
- mutable objects.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Cloning this <code>BitSet</code> produces a new <code>BitSet</code>
+ that is equal to it.
+ The clone of the bit set is another bit set that has exactly the
+ same bits set to <code>true</code> as this bit set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a copy of this object.</li></ul>
+      <ul class="nolist"><li>a clone of this bit set</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/BitSet.html#size()">size()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1556,7 +1660,7 @@ From class
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1568,33 +1672,31 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
- are equal. In order to be equal, <code>o</code> must represent the same object
- as this instance using a class-specific comparison. The general contract
- is that this comparison should be reflexive, symmetric, and transitive.
- Also, no object reference other than null is equal to null.
-
- <p>The default implementation returns <code>true</code> only if <code>this ==
- o</code>. See <a href="../../../reference/java/lang/Object.html#writing_equals">Writing a correct
- <code>equals</code> method</a>
- if you intend implementing your own <code>equals</code> method.
-
- <p>The general contract for the <code>equals</code> and <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code> methods is that if <code>equals</code> returns <code>true</code> for
- any two objects, then <code>hashCode()</code> must return the same value for
- these objects. This means that subclasses of <code>Object</code> usually
- override either both methods or neither of them.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object against the specified object.
+ The result is <code>true</code> if and only if the argument is
+ not <code>null</code> and is a <code>Bitset</code> object that has
+ exactly the same set of bits set to <code>true</code> as this bit
+ set. That is, for every nonnegative <code>int</code> index <code>k</code>,
+ <pre>((BitSet)obj).get(k) == this.get(k)</pre>
+ must be true. The current sizes of the two bit sets are not compared.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>o</th>
-          <td>the object to compare this instance with.</td>
+          <th>obj</th>
+          <td>the object to compare with</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this <code>Object</code>; <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if the objects are the same;
+         <code>false</code> otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/BitSet.html#size()">size()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1614,7 +1716,7 @@ From class
         void
       </span>
       <span class="sympad">flip</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int bitIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1626,14 +1728,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Flips the bit at index <code>index</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bit at the specified index to the complement of its
+ current value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bitIndex</th>
+          <td>the index of the bit to flip</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
-</td>
+            <td>if the specified index is negative</td>
         </tr>
       </table>
   </div>
@@ -1667,15 +1778,30 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Flips the range of bits <code>[fromIndex, toIndex)</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets each bit from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to the complement of its current
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>index of the first bit to flip</td>
+        </tr>
+        <tr>
+          <th>toIndex</th>
+          <td>index after the last bit to flip</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>fromIndex</code> or <code>toIndex</code> is negative, or if
-             <code>toIndex</code> is smaller than <code>fromIndex</code>.
-</td>
+            <td>if <code>fromIndex</code> is negative,
+         or <code>toIndex</code> is negative, or <code>fromIndex</code> is
+         larger than <code>toIndex</code></td>
         </tr>
       </table>
   </div>
@@ -1697,7 +1823,7 @@ From class
         boolean
       </span>
       <span class="sympad">get</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int bitIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1709,13 +1835,29 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the bit at index <code>index</code>. Indexes greater than the current length return false.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the bit with the specified index. The value
+ is <code>true</code> if the bit with the index <code>bitIndex</code>
+ is currently set in this <code>BitSet</code>; otherwise, the result
+ is <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bitIndex</th>
+          <td>the bit index</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the value of the bit with the specified index</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
+            <td>if the specified index is negative
 </td>
         </tr>
       </table>
@@ -1750,17 +1892,33 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BitSet</code> containing the
- range of bits <code>[fromIndex, toIndex)</code>, shifted down so that the bit
- at <code>fromIndex</code> is at bit 0 in the new <code>BitSet</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BitSet</code> composed of bits from this <code>BitSet</code>
+ from <code>fromIndex</code> (inclusive) to <code>toIndex</code> (exclusive).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>index of the first bit to include</td>
+        </tr>
+        <tr>
+          <th>toIndex</th>
+          <td>index after the last bit to include</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a new <code>BitSet</code> from a range of this <code>BitSet</code></li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>fromIndex</code> or <code>toIndex</code> is negative, or if
-             <code>toIndex</code> is smaller than <code>fromIndex</code>.
-</td>
+            <td>if <code>fromIndex</code> is negative,
+         or <code>toIndex</code> is negative, or <code>fromIndex</code> is
+         larger than <code>toIndex</code></td>
         </tr>
       </table>
   </div>
@@ -1794,20 +1952,23 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
- objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
- the same hash code value. This means that subclasses of <code>Object</code>
- usually override both methods or neither method.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code value for this bit set. The hash code depends
+ only on which bits are set within this <code>BitSet</code>.
 
- <p>Note that hash values must not change over time unless information used in equals
- comparisons also changes.
-
- <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
- <code>hashCode</code> method</a>
- if you intend implementing your own <code>hashCode</code> method.</p></div>
+ <p>The hash code is defined to be the result of the following
+ calculation:
+  <pre> <code>public int hashCode() {
+     long h = 1234;
+     long[] words = toLongArray();
+     for (int i = words.length; --i &gt;= 0; )
+         h ^= words[i] * (i + 1);
+     return (int)((h &gt;&gt; 32) ^ h);
+ }</code></pre>
+ Note that the hash code changes if the set of bits is altered.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's hash code.</li></ul>
+      <ul class="nolist"><li>the hash code value for this bit set
+</li></ul>
   </div>
 
     </div>
@@ -1827,7 +1988,7 @@ From class
         boolean
       </span>
       <span class="sympad">intersects</span>
-      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)</span>
+      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1839,8 +2000,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>this.and(bs)</code> is non-empty, but may be faster than computing that.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if the specified <code>BitSet</code> has any bits set to
+ <code>true</code> that are also set to <code>true</code> in this <code>BitSet</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>set</th>
+          <td><code>BitSet</code> to intersect with</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>boolean indicating whether this <code>BitSet</code> intersects
+         the specified <code>BitSet</code></li></ul>
+  </div>
 
     </div>
 </div>
@@ -1871,8 +2046,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if all the bits in this <code>BitSet</code> are set to false, false otherwise.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this <code>BitSet</code> contains no bits that are set
+ to <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>boolean indicating whether this <code>BitSet</code> is empty</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1903,9 +2082,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of bits up to and including the highest bit set. This is unrelated to
- the <code><a href="reference/java/util/BitSet.html#size()">size()</a></code> of the <code>BitSet</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the "logical size" of this <code>BitSet</code>: the index of
+ the highest set bit in the <code>BitSet</code> plus one. Returns zero
+ if the <code>BitSet</code> contains no set bits.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the logical size of this <code>BitSet</code></li></ul>
+  </div>
 
     </div>
 </div>
@@ -1924,7 +2107,7 @@ From class
         int
       </span>
       <span class="sympad">nextClearBit</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int fromIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1936,15 +2119,27 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first bit that is clear on or after <code>index</code>.
- Since all bits past the end are implicitly clear, this never returns -1.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first bit that is set to <code>false</code>
+ that occurs on or after the specified starting index.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>the index to start checking from (inclusive)</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the index of the next clear bit</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
-</td>
+            <td>if the specified index is negative</td>
         </tr>
       </table>
   </div>
@@ -1966,7 +2161,7 @@ From class
         int
       </span>
       <span class="sympad">nextSetBit</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int fromIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1978,15 +2173,36 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first bit that is set on or after <code>index</code>, or -1
- if no higher bits are set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first bit that is set to <code>true</code>
+ that occurs on or after the specified starting index. If no such
+ bit exists then <code>-1</code> is returned.
+
+ <p>To iterate over the <code>true</code> bits in a <code>BitSet</code>,
+ use the following loop:
+
+  <pre> <code>for (int i = bs.nextSetBit(0); i &gt;= 0; i = bs.nextSetBit(i+1)) {
+     // operate on index i here
+ }</code></pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>the index to start checking from (inclusive)</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the index of the next set bit, or <code>-1</code> if there
+         is no such bit</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
-</td>
+            <td>if the specified index is negative</td>
         </tr>
       </table>
   </div>
@@ -2008,7 +2224,7 @@ From class
         void
       </span>
       <span class="sympad">or</span>
-      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)</span>
+      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2020,8 +2236,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Logically ors the bits of this <code>BitSet</code> with <code>bs</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Performs a logical <b>OR</b> of this bit set with the bit set
+ argument. This bit set is modified so that a bit in it has the
+ value <code>true</code> if and only if it either already had the
+ value <code>true</code> or the corresponding bit in the bit set
+ argument has the value <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>set</th>
+          <td>a bit set
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2040,7 +2269,7 @@ From class
         int
       </span>
       <span class="sympad">previousClearBit</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int fromIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2052,14 +2281,31 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first bit that is clear on or before <code>index</code>, or -1 if
- no lower bits are clear or <code>index == -1</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the nearest bit that is set to <code>false</code>
+ that occurs on or before the specified starting index.
+ If no such bit exists, or if <code>-1</code> is given as the
+ starting index, then <code>-1</code> is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>the index to start checking from (inclusive)</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the index of the previous clear bit, or <code>-1</code> if there
+         is no such bit</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < -1</code>.</td>
+            <td>if the specified index is less
+         than <code>-1</code></td>
         </tr>
       </table>
   </div>
@@ -2081,7 +2327,7 @@ From class
         int
       </span>
       <span class="sympad">previousSetBit</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int fromIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2093,14 +2339,38 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first bit that is set on or before <code>index</code>, or -1 if
- no lower bits are set or <code>index == -1</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the nearest bit that is set to <code>true</code>
+ that occurs on or before the specified starting index.
+ If no such bit exists, or if <code>-1</code> is given as the
+ starting index, then <code>-1</code> is returned.
+
+ <p>To iterate over the <code>true</code> bits in a <code>BitSet</code>,
+ use the following loop:
+
+  <pre> <code>for (int i = bs.length(); (i = bs.previousSetBit(i-1)) &gt;= 0; ) {
+     // operate on index i here
+ }</code></pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>the index to start checking from (inclusive)</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the index of the previous set bit, or <code>-1</code> if there
+         is no such bit</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < -1</code>.</td>
+            <td>if the specified index is less
+         than <code>-1</code></td>
         </tr>
       </table>
   </div>
@@ -2122,7 +2392,7 @@ From class
         void
       </span>
       <span class="sympad">set</span>
-      <span class="normal">(int fromIndex, int toIndex, boolean state)</span>
+      <span class="normal">(int fromIndex, int toIndex, boolean value)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2134,15 +2404,33 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the range of bits <code>[fromIndex, toIndex)</code> to <code>state</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bits from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to the specified value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>index of the first bit to be set</td>
+        </tr>
+        <tr>
+          <th>toIndex</th>
+          <td>index after the last bit to be set</td>
+        </tr>
+        <tr>
+          <th>value</th>
+          <td>value to set the selected bits to</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>fromIndex</code> or <code>toIndex</code> is negative, or if
-             <code>toIndex</code> is smaller than <code>fromIndex</code>.
-</td>
+            <td>if <code>fromIndex</code> is negative,
+         or <code>toIndex</code> is negative, or <code>fromIndex</code> is
+         larger than <code>toIndex</code></td>
         </tr>
       </table>
   </div>
@@ -2176,15 +2464,29 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the range of bits <code>[fromIndex, toIndex)</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bits from the specified <code>fromIndex</code> (inclusive) to the
+ specified <code>toIndex</code> (exclusive) to <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>fromIndex</th>
+          <td>index of the first bit to be set</td>
+        </tr>
+        <tr>
+          <th>toIndex</th>
+          <td>index after the last bit to be set</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>fromIndex</code> or <code>toIndex</code> is negative, or if
-             <code>toIndex</code> is smaller than <code>fromIndex</code>.
-</td>
+            <td>if <code>fromIndex</code> is negative,
+         or <code>toIndex</code> is negative, or <code>fromIndex</code> is
+         larger than <code>toIndex</code></td>
         </tr>
       </table>
   </div>
@@ -2206,7 +2508,7 @@ From class
         void
       </span>
       <span class="sympad">set</span>
-      <span class="normal">(int index)</span>
+      <span class="normal">(int bitIndex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2218,14 +2520,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the bit at index <code>index</code> to true.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bit at the specified index to <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bitIndex</th>
+          <td>a bit index</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
-</td>
+            <td>if the specified index is negative</td>
         </tr>
       </table>
   </div>
@@ -2247,7 +2557,7 @@ From class
         void
       </span>
       <span class="sympad">set</span>
-      <span class="normal">(int index, boolean state)</span>
+      <span class="normal">(int bitIndex, boolean value)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2259,14 +2569,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the bit at index <code>index</code> to <code>state</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the bit at the specified index to the specified value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bitIndex</th>
+          <td>a bit index</td>
+        </tr>
+        <tr>
+          <th>value</th>
+          <td>a boolean value to set</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>index < 0</code>.
-</td>
+            <td>if the specified index is negative</td>
         </tr>
       </table>
   </div>
@@ -2300,10 +2622,57 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the capacity in bits of the array implementing this <code>BitSet</code>. This is
- unrelated to the length of the <code>BitSet</code>, and not generally useful.
- Use <code><a href="reference/java/util/BitSet.html#nextSetBit(int)">nextSetBit(int)</a></code> to iterate, or <code><a href="reference/java/util/BitSet.html#length()">length()</a></code> to find the highest set bit.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of bits of space actually in use by this
+ <code>BitSet</code> to represent bit values.
+ The maximum element in the set is the size - 1st element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the number of bits currently in this bit set
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="stream()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/util/stream/IntStream.html">IntStream</a>
+      </span>
+      <span class="sympad">stream</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a stream of indices for which this <code>BitSet</code>
+ contains a bit in the set state. The indices are returned
+ in order, from lowest to highest. The size of the stream
+ is the number of bits in the set state, equal to the value
+ returned by the <code><a href="reference/java/util/BitSet.html#cardinality()">cardinality()</a></code> method.
+
+ <p>The bit set must remain constant during the execution of the
+ terminal stream operation.  Otherwise, the result of the terminal
+ stream operation is undefined.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a stream of integers representing set indices</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2334,9 +2703,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>byte[]</code> containing a little-endian representation the bits of
- this <code>BitSet</code>, suitable for passing to <code>valueOf</code> to reconstruct
- this <code>BitSet</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new byte array containing all the bits in this bit set.
+
+ <p>More precisely, if
+ <br><code>byte[] bytes = s.toByteArray();</code>
+ <br>then <code>bytes.length == (s.length()+7)/8</code> and
+ <br><code>s.get(n) == ((bytes[n/8] &amp; (1&lt;&lt;(n%8))) != 0)</code>
+ <br>for all <code>n &lt; 8 * bytes.length</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a byte array containing a little-endian representation
+         of all the bits in this bit set</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2367,9 +2745,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>long[]</code> containing a little-endian representation of the bits of
- this <code>BitSet</code>, suitable for passing to <code>valueOf</code> to reconstruct
- this <code>BitSet</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new long array containing all the bits in this bit set.
+
+ <p>More precisely, if
+ <br><code>long[] longs = s.toLongArray();</code>
+ <br>then <code>longs.length == (s.length()+63)/64</code> and
+ <br><code>s.get(n) == ((longs[n/64] &amp; (1L&lt;&lt;(n%64))) != 0)</code>
+ <br>for all <code>n &lt; 64 * longs.length</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a long array containing a little-endian representation
+         of all the bits in this bit set</li></ul>
+  </div>
 
     </div>
 </div>
@@ -2400,13 +2787,28 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of the
- receiver: a comma-delimited list of the indexes of all set bits.
- For example: <code>"{0,1,8</code>"}.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this bit set. For every index
+ for which this <code>BitSet</code> contains a bit in the set
+ state, the decimal representation of that index is included in
+ the result. Such indices are listed in order from lowest to
+ highest, separated by ",&nbsp;" (a comma and a space) and
+ surrounded by braces, resulting in the usual mathematical
+ notation for a set of integers.
+
+ <p>Example:
+ <pre>
+ BitSet drPepper = new BitSet();</pre>
+ Now <code>drPepper.toString()</code> returns "<code>{}</code>".<p>
+ <pre>
+ drPepper.set(2);</pre>
+ Now <code>drPepper.toString()</code> returns "<code>{2}</code>".<p>
+ <pre>
+ drPepper.set(4);
+ drPepper.set(10);</pre>
+ Now <code>drPepper.toString()</code> returns "<code>{2, 4, 10}</code>".</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
+      <ul class="nolist"><li>a string representation of this bit set
 </li></ul>
   </div>
 
@@ -2439,9 +2841,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>BitSet.valueOf(LongBuffer.wrap(longs))</code>, but likely to be faster.
- This is likely to be the fastest way to create a <code>BitSet</code> because it's closest
- to the internal representation.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new bit set containing all the bits in the given long array.
+
+ <p>More precisely,
+ <br><code>BitSet.valueOf(longs).get(n) == ((longs[n/64] &amp; (1L&lt;&lt;(n%64))) != 0)</code>
+ <br>for all <code>n &lt; 64 * longs.length</code>.
+
+ <p>This method is equivalent to
+ <code>BitSet.valueOf(LongBuffer.wrap(longs))</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>longs</th>
+          <td>a long array containing a little-endian representation
+        of a sequence of bits to be used as the initial bits of the
+        new bit set</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2472,7 +2890,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>BitSet.valueOf(ByteBuffer.wrap(bytes))</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new bit set containing all the bits in the given byte array.
+
+ <p>More precisely,
+ <br><code>BitSet.valueOf(bytes).get(n) == ((bytes[n/8] &amp; (1&lt;&lt;(n%8))) != 0)</code>
+ <br>for all <code>n &lt;  8 * bytes.length</code>.
+
+ <p>This method is equivalent to
+ <code>BitSet.valueOf(ByteBuffer.wrap(bytes))</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bytes</th>
+          <td>a byte array containing a little-endian
+        representation of a sequence of bits to be used as the
+        initial bits of the new bit set</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2491,7 +2927,7 @@ From class
         <a href="../../../reference/java/util/BitSet.html">BitSet</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> byteBuffer)</span>
+      <span class="normal">(<a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> bb)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2503,8 +2939,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>BitSet</code> corresponding to <code>byteBuffer</code>, interpreted as a little-endian
- sequence of bits. This method does not alter the <code>ByteBuffer</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new bit set containing all the bits in the given byte
+ buffer between its position and limit.
+
+ <p>More precisely,
+ <br><code>BitSet.valueOf(bb).get(n) == ((bb.get(bb.position()+n/8) &amp; (1&lt;&lt;(n%8))) != 0)</code>
+ <br>for all <code>n &lt; 8 * bb.remaining()</code>.
+
+ <p>The byte buffer is not modified by this method, and no
+ reference to the buffer is retained by the bit set.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>bb</th>
+          <td>a byte buffer containing a little-endian representation
+        of a sequence of bits between its position and limit, to be
+        used as the initial bits of the new bit set</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2523,7 +2977,7 @@ From class
         <a href="../../../reference/java/util/BitSet.html">BitSet</a>
       </span>
       <span class="sympad">valueOf</span>
-      <span class="normal">(<a href="../../../reference/java/nio/LongBuffer.html">LongBuffer</a> longBuffer)</span>
+      <span class="normal">(<a href="../../../reference/java/nio/LongBuffer.html">LongBuffer</a> lb)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2535,8 +2989,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>BitSet</code> corresponding to <code>longBuffer</code>, interpreted as a little-endian
- sequence of bits. This method does not alter the <code>LongBuffer</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new bit set containing all the bits in the given long
+ buffer between its position and limit.
+
+ <p>More precisely,
+ <br><code>BitSet.valueOf(lb).get(n) == ((lb.get(lb.position()+n/64) &amp; (1L&lt;&lt;(n%64))) != 0)</code>
+ <br>for all <code>n &lt; 64 * lb.remaining()</code>.
+
+ <p>The long buffer is not modified by this method, and no
+ reference to the buffer is retained by the bit set.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>lb</th>
+          <td>a long buffer containing a little-endian representation
+        of a sequence of bits between its position and limit, to be
+        used as the initial bits of the new bit set</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -2555,7 +3027,7 @@ From class
         void
       </span>
       <span class="sympad">xor</span>
-      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> bs)</span>
+      <span class="normal">(<a href="../../../reference/java/util/BitSet.html">BitSet</a> set)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2567,8 +3039,26 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Logically xors the bits of this <code>BitSet</code> with <code>bs</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Performs a logical <b>XOR</b> of this bit set with the bit set
+ argument. This bit set is modified so that a bit in it has the
+ value <code>true</code> if and only if one of the following
+ statements holds:
+ <ul>
+ <li>The bit initially has the value <code>true</code>, and the
+     corresponding bit in the argument has the value <code>false</code>.
+ <li>The bit initially has the value <code>false</code>, and the
+     corresponding bit in the argument has the value <code>true</code>.
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>set</th>
+          <td>a bit set
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

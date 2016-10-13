@@ -235,16 +235,36 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The exception that is thrown when a certification path (or certificate chain)
- cannot be validated.
+<p>An exception indicating one of a variety of problems encountered when
+ validating a certification path.
  <p>
- A <code>CertPathValidatorException</code> may optionally include the certification
- path instance that failed the validation and the index of the failed
- certificate.
-</p>
+ A <code>CertPathValidatorException</code> provides support for wrapping
+ exceptions. The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause</a></code> method returns the throwable,
+ if any, that caused this exception to be thrown.
+ <p>
+ A <code>CertPathValidatorException</code> may also include the
+ certification path that was being validated when the exception was thrown,
+ the index of the certificate in the certification path that caused the
+ exception to be thrown, and the reason that caused the failure. Use the
+ <code><a href="reference/java/security/cert/CertPathValidatorException.html#getCertPath()">getCertPath</a></code>, <code><a href="reference/java/security/cert/CertPathValidatorException.html#getIndex()">getIndex</a></code>, and
+ <code><a href="reference/java/security/cert/CertPathValidatorException.html#getReason()">getReason</a></code> methods to retrieve this information.
+
+ <p>
+ <b>Concurrent Access</b>
+ <p>
+ Unless otherwise specified, the methods defined in this class are not
+ thread-safe. Multiple threads that need to access a single
+ object concurrently should synchronize amongst themselves and
+ provide the necessary locking. Multiple threads each manipulating
+ separate objects need not synchronize.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/security/cert/CertPathValidator.html">CertPathValidator</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -269,6 +289,40 @@ layout: api
 
 <h2>Summary</h2>
 
+
+
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<table id="nestedclasses" class="jd-sumtable"><tr><th colspan="12">Nested Classes</th></tr>
+
+
+  
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        enum</td>
+      <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorException.BasicReason.html">CertPathValidatorException.BasicReason</a></td>
+      <td class="jd-descrcol" width="100%">The BasicReason enumerates the potential reasons that a certification
+ path of any type may be invalid.&nbsp;</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        interface</td>
+      <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorException.Reason.html">CertPathValidatorException.Reason</a></td>
+      <td class="jd-descrcol" width="100%">The reason the validation algorithm failed.&nbsp;</td>
+    </tr>
+    
+    
+
+</table>
 
 
 
@@ -307,49 +361,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.String, java.lang.Throwable, java.security.cert.CertPath, int)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause, <a href="../../../../reference/java/security/cert/CertPath.html">CertPath</a> certPath, int index)
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException()">CertPathValidatorException</a></span>()
         
-        <div class="jd-descrdiv">Creates a new <code>CertPathValidatorException</code> with the specified
- message , cause, certification path and certificate index in the
- certification path.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.String, java.lang.Throwable)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
-        
-        <div class="jd-descrdiv">Creates a new <code>CertPathValidatorException</code> with the specified
- message and cause.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.Throwable)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
-        
-        <div class="jd-descrdiv">Creates a new <code>CertPathValidatorException</code> with the specified
- cause.</div>
+        <div class="jd-descrdiv">Creates a <code>CertPathValidatorException</code> with
+ no detail message.</div>
   
   </td></tr>
 
@@ -367,8 +382,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.String)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Creates a new <code>CertPathValidatorException</code> with the specified
- message.</div>
+        <div class="jd-descrdiv">Creates a <code>CertPathValidatorException</code> with the given
+ detail message.</div>
   
   </td></tr>
 
@@ -384,9 +399,67 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException()">CertPathValidatorException</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.Throwable)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates a new <code>CertPathValidatorException</code>.</div>
+        <div class="jd-descrdiv">Creates a <code>CertPathValidatorException</code> that wraps the
+ specified throwable.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.String, java.lang.Throwable)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        
+        <div class="jd-descrdiv">Creates a <code>CertPathValidatorException</code> with the specified
+ detail message and cause.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.String, java.lang.Throwable, java.security.cert.CertPath, int)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause, <a href="../../../../reference/java/security/cert/CertPath.html">CertPath</a> certPath, int index)
+        
+        <div class="jd-descrdiv">Creates a <code>CertPathValidatorException</code> with the specified
+ detail message, cause, certification path, and index.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#CertPathValidatorException(java.lang.String, java.lang.Throwable, java.security.cert.CertPath, int, java.security.cert.CertPathValidatorException.Reason)">CertPathValidatorException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause, <a href="../../../../reference/java/security/cert/CertPath.html">CertPath</a> certPath, int index, <a href="../../../../reference/java/security/cert/CertPathValidatorException.Reason.html">CertPathValidatorException.Reason</a> reason)
+        
+        <div class="jd-descrdiv">Creates a <code>CertPathValidatorException</code> with the specified
+ detail message, cause, certification path, index, and reason.</div>
   
   </td></tr>
 
@@ -417,7 +490,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#getCertPath()">getCertPath</a></span>()
         
-        <div class="jd-descrdiv">Returns the certification path that failed validation.</div>
+        <div class="jd-descrdiv">Returns the certification path that was being validated when
+ the exception was thrown.</div>
   
   </td></tr>
 
@@ -435,7 +509,26 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#getIndex()">getIndex</a></span>()
         
-        <div class="jd-descrdiv">Returns the index of the failed certificate in the certification path.</div>
+        <div class="jd-descrdiv">Returns the index of the certificate in the certification path
+ that caused the exception to be thrown.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/security/cert/CertPathValidatorException.Reason.html">CertPathValidatorException.Reason</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html#getReason()">getReason</a></span>()
+        
+        <div class="jd-descrdiv">Returns the reason that the validation failed.</div>
   
   </td></tr>
 
@@ -667,6 +760,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -942,7 +1054,7 @@ From class
 
 
 
-<a id="CertPathValidatorException(java.lang.String, java.lang.Throwable, java.security.cert.CertPath, int)"></a>
+<a id="CertPathValidatorException()"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -955,7 +1067,7 @@ From class
         
       </span>
       <span class="sympad">CertPathValidatorException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause, <a href="../../../../reference/java/security/cert/CertPath.html">CertPath</a> certPath, int index)</span>
+      <span class="normal">()</span>
     </h4>
       <div class="api-level">
         <div>
@@ -967,51 +1079,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertPathValidatorException</code> with the specified
- message , cause, certification path and certificate index in the
- certification path.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception.</td>
-        </tr>
-        <tr>
-          <th>cause</th>
-          <td>the cause.</td>
-        </tr>
-        <tr>
-          <th>certPath</th>
-          <td>the certification path that failed the validation.</td>
-        </tr>
-        <tr>
-          <th>index</th>
-          <td>the index of the failed certificate.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>certPath</code> is <code>null</code> and index is not <code>-1</code>.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>certPath</code> is not <code>null</code> and index is not
-             referencing an certificate in the certification path.
-</td>
-        </tr>
-      </table>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertPathValidatorException</code> with
+ no detail message.
+</p></div>
 
     </div>
 </div>
 
 
-<a id="CertPathValidatorException(java.lang.String, java.lang.Throwable)"></a>
+<a id="CertPathValidatorException(java.lang.String)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -1024,7 +1100,7 @@ From class
         
       </span>
       <span class="sympad">CertPathValidatorException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1036,18 +1112,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertPathValidatorException</code> with the specified
- message and cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertPathValidatorException</code> with the given
+ detail message. A detail message is a <code>String</code> that
+ describes this particular exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>msg</th>
-          <td>the detail message for this exception.</td>
-        </tr>
-        <tr>
-          <th>cause</th>
-          <td>the cause why the path could not be validated.
+          <td>the detail message
 </td>
         </tr>
       </table>
@@ -1082,14 +1155,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertPathValidatorException</code> with the specified
- cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertPathValidatorException</code> that wraps the
+ specified throwable. This allows any exception to be converted into a
+ <code>CertPathValidatorException</code>, while retaining information
+ about the wrapped exception, which may be useful for debugging. The
+ detail message is set to (<code>cause==null ? null : cause.toString()</code>)
+ (which typically contains the class and detail message of
+ cause).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the cause why the path could not be validated.
+          <td>the cause (which is saved for later retrieval by the
+ <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method). (A <code>null</code> value is
+ permitted, and indicates that the cause is nonexistent or unknown.)
 </td>
         </tr>
       </table>
@@ -1099,7 +1179,7 @@ From class
 </div>
 
 
-<a id="CertPathValidatorException(java.lang.String)"></a>
+<a id="CertPathValidatorException(java.lang.String, java.lang.Throwable)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -1112,7 +1192,7 @@ From class
         
       </span>
       <span class="sympad">CertPathValidatorException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1124,14 +1204,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertPathValidatorException</code> with the specified
- message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertPathValidatorException</code> with the specified
+ detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>msg</th>
-          <td>the detail message for this exception.
+          <td>the detail message</td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause (which is saved for later retrieval by the
+ <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method). (A <code>null</code> value is
+ permitted, and indicates that the cause is nonexistent or unknown.)
 </td>
         </tr>
       </table>
@@ -1141,7 +1227,7 @@ From class
 </div>
 
 
-<a id="CertPathValidatorException()"></a>
+<a id="CertPathValidatorException(java.lang.String, java.lang.Throwable, java.security.cert.CertPath, int)"></a>
 
 <div class="jd-details api apilevel-">
     <h4 class="jd-details-title">
@@ -1154,7 +1240,7 @@ From class
         
       </span>
       <span class="sympad">CertPathValidatorException</span>
-      <span class="normal">()</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause, <a href="../../../../reference/java/security/cert/CertPath.html">CertPath</a> certPath, int index)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1166,8 +1252,129 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertPathValidatorException</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertPathValidatorException</code> with the specified
+ detail message, cause, certification path, and index.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message (or <code>null</code> if none)</td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause (or <code>null</code> if none)</td>
+        </tr>
+        <tr>
+          <th>certPath</th>
+          <td>the certification path that was in the process of
+ being validated when the error was encountered</td>
+        </tr>
+        <tr>
+          <th>index</th>
+          <td>the index of the certificate in the certification path
+ that caused the error (or -1 if not applicable). Note that
+ the list of certificates in a <code>CertPath</code> is zero based.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>if the index is out of range
+ <code>(index &lt; -1 || (certPath != null &amp;&amp; index &gt;=
+ certPath.getCertificates().size()) </code></td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if <code>certPath</code> is
+ <code>null</code> and <code>index</code> is not -1
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="CertPathValidatorException(java.lang.String, java.lang.Throwable, java.security.cert.CertPath, int, java.security.cert.CertPathValidatorException.Reason)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">CertPathValidatorException</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg, <a href="../../../../reference/java/lang/Throwable.html">Throwable</a> cause, <a href="../../../../reference/java/security/cert/CertPath.html">CertPath</a> certPath, int index, <a href="../../../../reference/java/security/cert/CertPathValidatorException.Reason.html">CertPathValidatorException.Reason</a> reason)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>CertPathValidatorException</code> with the specified
+ detail message, cause, certification path, index, and reason.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message (or <code>null</code> if none)</td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause (or <code>null</code> if none)</td>
+        </tr>
+        <tr>
+          <th>certPath</th>
+          <td>the certification path that was in the process of
+ being validated when the error was encountered</td>
+        </tr>
+        <tr>
+          <th>index</th>
+          <td>the index of the certificate in the certification path
+ that caused the error (or -1 if not applicable). Note that
+ the list of certificates in a <code>CertPath</code> is zero based.</td>
+        </tr>
+        <tr>
+          <th>reason</th>
+          <td>the reason the validation failed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>if the index is out of range
+ <code>(index &lt; -1 || (certPath != null &amp;&amp; index &gt;=
+ certPath.getCertificates().size()) </code></td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if <code>certPath</code> is
+ <code>null</code> and <code>index</code> is not -1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>reason</code> is <code>null</code></td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1213,11 +1420,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the certification path that failed validation.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the certification path that was being validated when
+ the exception was thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the certification path that failed validation, or <code>null</code> if
-         none was specified.
+      <ul class="nolist"><li>the <code>CertPath</code> that was being validated when
+ the exception was thrown (or <code>null</code> if not specified)
 </li></ul>
   </div>
 
@@ -1250,12 +1458,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the failed certificate in the certification path.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the certificate in the certification path
+ that caused the exception to be thrown. Note that the list of
+ certificates in a <code>CertPath</code> is zero based. If no
+ index has been set, -1 is returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index of the failed certificate in the certification path, or
-         <code>-1</code> if none was specified.
+      <ul class="nolist"><li>the index that has been set, or -1 if none has been set
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getReason()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/security/cert/CertPathValidatorException.Reason.html">CertPathValidatorException.Reason</a>
+      </span>
+      <span class="sympad">getReason</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the reason that the validation failed. The reason is
+ associated with the index of the certificate returned by
+ <code><a href="reference/java/security/cert/CertPathValidatorException.html#getIndex()">getIndex()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the reason that the validation failed, or
+    <code>BasicReason.UNSPECIFIED</code> if a reason has not been
+    specified</li></ul>
   </div>
 
     </div>

@@ -235,13 +235,25 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program tries to access a class, interface, enum or annotation
- type through a string that contains the type's name and the type cannot be
- found. This exception is an unchecked alternative to
- <code><a href="reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></code>.</p>
+<p>Thrown when an application tries to access a type using a string
+ representing the type's name, but no definition for the type with
+ the specified name can be found.   This exception differs from
+ <code><a href="reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></code> in that <tt>ClassNotFoundException</tt> is a
+ checked exception, whereas this exception is unchecked.
+
+ <p>Note that this exception may be used when undefined type variables
+ are accessed as well as when types (e.g., classes, interfaces or
+ annotation types) are loaded.
+ In particular, this exception can be thrown by the {@linkplain java.lang.reflect.AnnotatedElement API used to read annotations
+ reflectively}.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -306,9 +318,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/TypeNotPresentException.html#TypeNotPresentException(java.lang.String, java.lang.Throwable)">TypeNotPresentException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> typeName, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>TypeNotPresentException</code> with the current stack
- trace, a detail message that includes the name of the type that could not
- be found and the <code>Throwable</code> that caused this exception.</div>
+        <div class="jd-descrdiv">Constructs a <tt>TypeNotPresentException</tt> for the named type
+ with the specified cause.</div>
   
   </td></tr>
 
@@ -339,7 +350,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/TypeNotPresentException.html#typeName()">typeName</a></span>()
         
-        <div class="jd-descrdiv">Gets the fully qualified name of the type that could not be found.</div>
+        <div class="jd-descrdiv">Returns the fully qualified name of the unavailable type.</div>
   
   </td></tr>
 
@@ -571,6 +582,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -871,19 +901,19 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>TypeNotPresentException</code> with the current stack
- trace, a detail message that includes the name of the type that could not
- be found and the <code>Throwable</code> that caused this exception.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <tt>TypeNotPresentException</tt> for the named type
+ with the specified cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>typeName</th>
-          <td>the fully qualified name of the type that could not be found.</td>
+          <td>the fully qualified name of the unavailable type</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the optional cause of this exception, may be <code>null</code>.
+          <td>the exception that was thrown when the system attempted to
+    load the named type, or <tt>null</tt> if unavailable or inapplicable
 </td>
         </tr>
       </table>
@@ -933,10 +963,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the fully qualified name of the type that could not be found.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the fully qualified name of the unavailable type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the name of the type that caused this exception.
+      <ul class="nolist"><li>the fully qualified name of the unavailable type
 </li></ul>
   </div>
 

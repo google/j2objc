@@ -296,7 +296,7 @@ layout: api
          if (!cacheValid) {
            data = ...
            cacheValid = true;
-         </code>
+         }
          // Downgrade by acquiring read lock before releasing write lock
          rwl.readLock().lock();
        } finally {
@@ -310,7 +310,7 @@ layout: api
        rwl.readLock().unlock();
      }
    }
- }}</pre>
+ }</code></pre>
 
  ReentrantReadWriteLocks can be used to improve concurrency in some
  uses of some kinds of Collections. This is typically worthwhile
@@ -321,14 +321,14 @@ layout: api
  concurrently accessed.
 
   <pre> <code>class RWDictionary {
-   private final Map<String, Data> m = new TreeMap<String, Data>();
+   private final Map&lt;String, Data&gt; m = new TreeMap&lt;String, Data&gt;();
    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
    private final Lock r = rwl.readLock();
    private final Lock w = rwl.writeLock();
 
    public Data get(String key) {
      r.lock();
-     try { return m.get(key); </code>
+     try { return m.get(key); }
      finally { r.unlock(); }
    }
    public String[] allKeys() {
@@ -346,7 +346,7 @@ layout: api
      try { m.clear(); }
      finally { w.unlock(); }
    }
- }}</pre>
+ }</code></pre>
 
  <h3>Implementation Notes</h3>
 

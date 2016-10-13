@@ -224,7 +224,7 @@ layout: api
               
             
               
-                <a href="../../../reference/java/util/Date.html">Date</a>,
+                <a href="../../../reference/java/sql/Date.html">Date</a>,
               
               and
                 <a href="#" onclick="return toggleInherited(document.getElementById('subclasses-indirect', null))">41 others.</a>
@@ -242,7 +242,7 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">ArrayList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Resizable-array implementation of the <tt>List</tt> interface.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/text/AttributedCharacterIterator.html">AttributedCharacterIterator</a></td>
@@ -256,8 +256,7 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/BitSet.html">BitSet</a></td>
-              <td class="jd-descrcol" width="100%">The <code>BitSet</code> class implements a
- <a href="http://en.wikipedia.org/wiki/Bit_array">bit array</a>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements a vector of bits that grows as needed.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html">Calendar</a></td>
@@ -300,8 +299,9 @@ layout: api
               <td class="jd-descrcol" width="100%">A thread-safe random-access list.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/util/Date.html">Date</a></td>
-              <td class="jd-descrcol" width="100%">A specific moment in time, with millisecond precision.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Date.html">Date</a></td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around a millisecond value that allows
+ JDBC to identify this as an SQL <code>DATE</code> value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/text/DateFormat.html">DateFormat</a></td>
@@ -323,11 +323,11 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">An <code>Map</code> specialized for use with <code>Enum</code> types as keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/util/Map.html">Map</a></code> implementation for use with enum type keys.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">An EnumSet is a specialized Set to be used with enums as keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/util/Set.html">Set</a></code> implementation for use with enum types.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/text/Format.html">Format</a></td>
@@ -340,15 +340,16 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">HashMap is an implementation of <code><a href="reference/java/util/Map.html">Map</a></code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Hash table based implementation of the <tt>Map</tt> interface.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">HashSet is an implementation of a Set.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements the <tt>Set</tt> interface, backed by a hash table
+ (actually a <tt>HashMap</tt> instance).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">Hashtable is a synchronized implementation of <code><a href="reference/java/util/Map.html">Map</a></code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements a hash table, which maps keys to values.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/net/HttpCookie.html">HttpCookie</a></td>
@@ -361,8 +362,9 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">IdentityHashMap is a variant on HashMap which tests equality by reference
- instead of equality by value.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements the <tt>Map</tt> interface with a hash table, using
+ reference-equality in place of object-equality when comparing keys (and
+ values).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/jar/JarEntry.html">JarEntry</a></td>
@@ -371,15 +373,18 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedHashMap is an implementation of <code><a href="reference/java/util/Map.html">Map</a></code> that guarantees iteration order.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Hash table and linked list implementation of the <tt>Map</tt> interface,
+ with predictable iteration order.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedHashSet is a variant of HashSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Hash table and linked list implementation of the <tt>Set</tt> interface,
+ with predictable iteration order.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by a doubly-linked list.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Doubly-linked list implementation of the <code>List</code> and <code>Deque</code>
+ interfaces.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Locale.html">Locale</a></td>
@@ -405,8 +410,8 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Properties.html">Properties</a></td>
-              <td class="jd-descrcol" width="100%">A <code>Properties</code> object is a <code>Hashtable</code> where the keys and values
- must be <code>String</code>s.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Properties</code> class represents a persistent set of
+ properties.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/Provider.html">Provider</a></td>
@@ -440,8 +445,8 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%"><code>Stack</code> is a Last-In/First-Out(LIFO) data structure which represents a
- stack of objects.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Stack</code> class represents a last-in-first-out
+ (LIFO) stack of objects.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/text/StringCharacterIterator.html">StringCharacterIterator</a></td>
@@ -449,7 +454,8 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Time.html">Time</a></td>
-              <td class="jd-descrcol" width="100%">Java representation of an SQL <code>TIME</code> value.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around the <code>java.util.Date</code> class that allows the JDBC
+ API to identify this as an SQL <code>TIME</code> value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></td>
@@ -458,19 +464,21 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></td>
-              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>TIMESTAMP</code> type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around <code>java.util.Date</code> that allows
+ the JDBC API to identify this as an SQL <code>TIMESTAMP</code> value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">A map whose entries are sorted by their keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A Red-Black tree based <code><a href="reference/java/util/NavigableMap.html">NavigableMap</a></code> implementation.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">TreeSet is an implementation of SortedSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> implementation based on a <code><a href="reference/java/util/TreeMap.html">TreeMap</a></code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">Vector is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array and synchronized.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Vector</code> class implements a growable array of
+ objects.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a></td>

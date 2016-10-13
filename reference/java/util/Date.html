@@ -211,15 +211,18 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Date.html">Date</a></td>
-              <td class="jd-descrcol" width="100%">A class which can consume and produce dates in SQL <code>Date</code> format.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around a millisecond value that allows
+ JDBC to identify this as an SQL <code>DATE</code> value.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Time.html">Time</a></td>
-              <td class="jd-descrcol" width="100%">Java representation of an SQL <code>TIME</code> value.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around the <code>java.util.Date</code> class that allows the JDBC
+ API to identify this as an SQL <code>TIME</code> value.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></td>
-              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>TIMESTAMP</code> type.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><P>A thin wrapper around <code>java.util.Date</code> that allows
+ the JDBC API to identify this as an SQL <code>TIMESTAMP</code> value.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -1284,10 +1287,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -1894,8 +1896,8 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an <code>int < 0</code> if this <code>Date</code> is less than the specified <code>Date</code>, <code>0</code> if
-         they are equal, and an <code>int > 0</code> if this <code>Date</code> is greater.
+      <ul class="nolist"><li>an <code>int &lt; 0</code> if this <code>Date</code> is less than the specified <code>Date</code>, <code>0</code> if
+         they are equal, and an <code>int &gt; 0</code> if this <code>Date</code> is greater.
 </li></ul>
   </div>
 

@@ -152,7 +152,7 @@ layout: api
               >
           
             
-              <a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a>,
+              <a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a>&lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/util/EventListener.html">EventListener</a>&gt;,
             
               <a href="../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a>,
             
@@ -169,8 +169,9 @@ layout: api
               >
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></td>
-              <td class="jd-descrcol" width="100%">This abstract class provides a simple wrapper for objects of type <code>EventListener</code>.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a>&lt;T&nbsp;extends&nbsp;<a href="../../../reference/java/util/EventListener.html">EventListener</a>&gt;</td>
+              <td class="jd-descrcol" width="100%">An abstract wrapper class for an <code>EventListener</code> class
+ which associates a set of additional parameters with the listener.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a></td>
@@ -179,12 +180,14 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a></td>
-              <td class="jd-descrcol" width="100%">A PropertyChangeListener can subscribe with a event source.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A "PropertyChange" event gets fired whenever a bean changes a "bound"
+ property.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html">PropertyChangeListenerProxy</a></td>
-              <td class="jd-descrcol" width="100%">The implementation of this listener proxy just delegates the received events
- to its listener.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A class which extends the <code>EventListenerProxy</code>
+ specifically for adding a <code>PropertyChangeListener</code>
+ with a "bound" property.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLSessionBindingListener.html">SSLSessionBindingListener</a></td>
@@ -201,15 +204,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>EventListener is the superclass of all event listener interfaces.</p>
+<p>A tagging interface that all event listener interfaces must extend.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/EventObject.html">EventObject</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->

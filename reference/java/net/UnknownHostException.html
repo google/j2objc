@@ -235,8 +235,7 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a hostname can not be resolved.
-</p>
+<p>Thrown to indicate that the IP address of a host could not be determined.</p>
 
 
 
@@ -302,9 +301,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/UnknownHostException.html#UnknownHostException()">UnknownHostException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/net/UnknownHostException.html#UnknownHostException(java.lang.String)">UnknownHostException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> host)
         
-        <div class="jd-descrdiv">Constructs a new <code>UnknownHostException</code> instance with no detail message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>UnknownHostException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -320,9 +320,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/UnknownHostException.html#UnknownHostException(java.lang.String)">UnknownHostException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/net/UnknownHostException.html#UnknownHostException()">UnknownHostException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>UnknownHostException</code> instance with the given detail message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>UnknownHostException</code> with no detail
+ message.</div>
   
   </td></tr>
 
@@ -558,6 +559,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -833,6 +853,48 @@ From class
 
 
 
+<a id="UnknownHostException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">UnknownHostException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> host)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnknownHostException</code> with the
+ specified detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>host</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="UnknownHostException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -858,52 +920,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnknownHostException</code> instance with no detail message.
- Callers should usually supply a detail message.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnknownHostException</code> with no detail
+ message.
 </p></div>
-
-    </div>
-</div>
-
-
-<a id="UnknownHostException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">UnknownHostException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnknownHostException</code> instance with the given detail message.
- The detail message should generally contain the hostname and a reason for the failure,
- if known.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
-</td>
-        </tr>
-      </table>
-  </div>
 
     </div>
 </div>

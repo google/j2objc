@@ -156,7 +156,20 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Provides information about the columns returned in a <code>ResultSet</code>.
+<p>An object that can be used to get information about the types
+ and properties of the columns in a <code>ResultSet</code> object.
+ The following code fragment creates the <code>ResultSet</code> object rs,
+ creates the <code>ResultSetMetaData</code> object rsmd, and uses rsmd
+ to find out how many columns rs has and whether the first column in rs
+ can be used in a <code>WHERE</code> clause.
+ <PRE>
+
+     ResultSet rs = stmt.executeQuery("SELECT a, b, c FROM TABLE2");
+     ResultSetMetaData rsmd = rs.getMetaData();
+     int numberOfColumns = rsmd.getColumnCount();
+     boolean b = rsmd.isSearchable(1);
+
+ </PRE>
 </p>
 
 
@@ -205,21 +218,24 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSetMetaData.html#columnNoNulls">columnNoNulls</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that a column cannot contain <code>NULL</code> values.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that a
+ column does not allow <code>NULL</code> values.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSetMetaData.html#columnNullable">columnNullable</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that a column can contain <code>NULL</code> values.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that a
+ column allows <code>NULL</code> values.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSetMetaData.html#columnNullableUnknown">columnNullableUnknown</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that it is unknown whether a column can contain <code>NULL</code>s or not.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that the
+ nullability of a column's values is unknown.</td>
     </tr>
     
     
@@ -259,7 +275,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getCatalogName(int)">getCatalogName</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the title of an indexed column's catalog.</div>
+        <div class="jd-descrdiv">Gets the designated column's table's catalog name.</div>
   
   </td></tr>
 
@@ -277,8 +293,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnClassName(int)">getColumnClassName</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the fully-qualified type of the class that is produced when
- invoking <code>ResultSet.getObject</code> to recover this column's value.</div>
+        <div class="jd-descrdiv"><p>Returns the fully-qualified name of the Java class whose instances
+ are manufactured if the method <code>ResultSet.getObject</code>
+ is called to retrieve a value
+ from the column.</div>
   
   </td></tr>
 
@@ -296,7 +314,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnCount()">getColumnCount</a></span>()
         
-        <div class="jd-descrdiv">Returns number of columns contained in the associated result set.</div>
+        <div class="jd-descrdiv">Returns the number of columns in this <code>ResultSet</code> object.</div>
   
   </td></tr>
 
@@ -314,8 +332,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnDisplaySize(int)">getColumnDisplaySize</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the indexed column's standard maximum width, expressed in number
- of characters.</div>
+        <div class="jd-descrdiv">Indicates the designated column's normal maximum width in characters.</div>
   
   </td></tr>
 
@@ -333,8 +350,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnLabel(int)">getColumnLabel</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns a recommended title for the indexed column, to be used when the
- title needs to be displayed.</div>
+        <div class="jd-descrdiv">Gets the designated column's suggested title for use in printouts and
+ displays.</div>
   
   </td></tr>
 
@@ -352,7 +369,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnName(int)">getColumnName</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the title of the indexed column.</div>
+        <div class="jd-descrdiv">Get the designated column's name.</div>
   
   </td></tr>
 
@@ -370,7 +387,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnType(int)">getColumnType</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the type of the indexed column as SQL type code.</div>
+        <div class="jd-descrdiv">Retrieves the designated column's SQL type.</div>
   
   </td></tr>
 
@@ -388,7 +405,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getColumnTypeName(int)">getColumnTypeName</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the type name of the indexed column.</div>
+        <div class="jd-descrdiv">Retrieves the designated column's database-specific type name.</div>
   
   </td></tr>
 
@@ -406,7 +423,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getPrecision(int)">getPrecision</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the decimal precision of the indexed column.</div>
+        <div class="jd-descrdiv">Get the designated column's specified column size.</div>
   
   </td></tr>
 
@@ -424,8 +441,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getScale(int)">getScale</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the number of digits to the right of the decimal point of the
- indexed column.</div>
+        <div class="jd-descrdiv">Gets the designated column's number of digits to right of the decimal point.</div>
   
   </td></tr>
 
@@ -443,7 +459,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getSchemaName(int)">getSchemaName</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the name of the indexed columns schema.</div>
+        <div class="jd-descrdiv">Get the designated column's table's schema.</div>
   
   </td></tr>
 
@@ -461,7 +477,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#getTableName(int)">getTableName</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns the title of the indexed columns table.</div>
+        <div class="jd-descrdiv">Gets the designated column's table name.</div>
   
   </td></tr>
 
@@ -479,8 +495,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isAutoIncrement(int)">isAutoIncrement</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether the indexed column is automatically
- incremented and is therefore read-only.</div>
+        <div class="jd-descrdiv">Indicates whether the designated column is automatically numbered.</div>
   
   </td></tr>
 
@@ -498,8 +513,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isCaseSensitive(int)">isCaseSensitive</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether the case of the indexed column is
- important.</div>
+        <div class="jd-descrdiv">Indicates whether a column's case matters.</div>
   
   </td></tr>
 
@@ -517,7 +531,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isCurrency(int)">isCurrency</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns whether the indexed column contains a monetary amount.</div>
+        <div class="jd-descrdiv">Indicates whether the designated column is a cash value.</div>
   
   </td></tr>
 
@@ -535,8 +549,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isDefinitelyWritable(int)">isDefinitelyWritable</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether writing to the indexed column is
- guaranteed to be successful.</div>
+        <div class="jd-descrdiv">Indicates whether a write on the designated column will definitely succeed.</div>
   
   </td></tr>
 
@@ -554,7 +567,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isNullable(int)">isNullable</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns whether the indexed column is nullable.</div>
+        <div class="jd-descrdiv">Indicates the nullability of values in the designated column.</div>
   
   </td></tr>
 
@@ -572,8 +585,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isReadOnly(int)">isReadOnly</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether writing to the indexed column is
- guaranteed to be unsuccessful.</div>
+        <div class="jd-descrdiv">Indicates whether the designated column is definitely not writable.</div>
   
   </td></tr>
 
@@ -591,7 +603,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isSearchable(int)">isSearchable</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether the indexed column is searchable.</div>
+        <div class="jd-descrdiv">Indicates whether the designated column can be used in a where clause.</div>
   
   </td></tr>
 
@@ -609,8 +621,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isSigned(int)">isSigned</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether the values contained in the indexed
- column are signed.</div>
+        <div class="jd-descrdiv">Indicates whether values in the designated column are signed numbers.</div>
   
   </td></tr>
 
@@ -628,8 +639,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ResultSetMetaData.html#isWritable(int)">isWritable</a></span>(int column)
         
-        <div class="jd-descrdiv">Returns an indication of whether writing to the indexed column is
- possible.</div>
+        <div class="jd-descrdiv">Indicates whether it is possible for a write on the designated column to succeed.</div>
   
   </td></tr>
 
@@ -681,8 +691,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#isWrapperFor(java.lang.Class<?>)">isWrapperFor</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; iface)
         
-        <div class="jd-descrdiv">If the caller is a wrapper of the class or implements the given
- interface, the methods return false and vice versa.</div>
+        <div class="jd-descrdiv">Returns true if this either implements the interface argument or is directly or indirectly a wrapper
+ for an object that does.</div>
   
   </td></tr>
 
@@ -700,7 +710,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#unwrap(java.lang.Class<T>)">unwrap</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; iface)
         
-        <div class="jd-descrdiv">Returns an object that implements the given interface.</div>
+        <div class="jd-descrdiv">Returns an object that implements the given interface to allow access to
+ non-standard methods, or standard methods not exposed by the proxy.</div>
   
   </td></tr>
 
@@ -762,7 +773,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that a column cannot contain <code>NULL</code> values.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that a
+ column does not allow <code>NULL</code> values.
 </p></div>
 
     
@@ -803,7 +815,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that a column can contain <code>NULL</code> values.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that a
+ column allows <code>NULL</code> values.
 </p></div>
 
     
@@ -844,7 +857,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that it is unknown whether a column can contain <code>NULL</code>s or not.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that the
+ nullability of a column's values is unknown.
 </p></div>
 
     
@@ -908,26 +922,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the title of an indexed column's catalog.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the designated column's table's catalog name.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the catalog title.</li></ul>
+      <ul class="nolist"><li>the name of the catalog for the table in which the given column
+          appears or "" if not applicable</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -962,34 +977,35 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the fully-qualified type of the class that is produced when
- invoking <code>ResultSet.getObject</code> to recover this column's value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns the fully-qualified name of the Java class whose instances
+ are manufactured if the method <code>ResultSet.getObject</code>
+ is called to retrieve a value
+ from the column.  <code>ResultSet.getObject</code> may return a subclass of the
+ class returned by this method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the fully-qualified class name.</li></ul>
+      <ul class="nolist"><li>the fully-qualified name of the class in the Java programming
+         language that would be used by the method
+ <code>ResultSet.getObject</code> to retrieve the value in the specified
+ column. This is the class name used for custom mapping.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/ResultSet.html#getObject(int)">getObject(int)</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1021,17 +1037,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns number of columns contained in the associated result set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of columns in this <code>ResultSet</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the column count.</li></ul>
+      <ul class="nolist"><li>the number of columns</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1066,27 +1082,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the indexed column's standard maximum width, expressed in number
- of characters.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates the designated column's normal maximum width in characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the column's max width.</li></ul>
+      <ul class="nolist"><li>the normal maximum number of characters allowed as the width
+          of the designated column</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1121,27 +1137,30 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a recommended title for the indexed column, to be used when the
- title needs to be displayed.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the designated column's suggested title for use in printouts and
+ displays. The suggested title is usually specified by the SQL <code>AS</code>
+ clause.  If a SQL <code>AS</code> is not specified, the value returned from
+ <code>getColumnLabel</code> will be the same as the value returned by the
+ <code>getColumnName</code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the column's title.</li></ul>
+      <ul class="nolist"><li>the suggested column title</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1176,26 +1195,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the title of the indexed column.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Get the designated column's name.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the column title.</li></ul>
+      <ul class="nolist"><li>column name</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1230,26 +1249,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the type of the indexed column as SQL type code.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated column's SQL type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the column type code.</li></ul>
+      <ul class="nolist"><li>SQL type from java.sql.Types</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -1288,26 +1307,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the type name of the indexed column.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated column's database-specific type name.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the type name.</li></ul>
+      <ul class="nolist"><li>type name used by the database. If the column type is
+ a user-defined type, then a fully-qualified type name is returned.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1342,26 +1362,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the decimal precision of the indexed column.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Get the designated column's specified column size.
+ For numeric data, this is the maximum precision.  For character data, this is the length in characters.
+ For datetime datatypes, this is the length in characters of the String representation (assuming the
+ maximum allowed precision of the fractional seconds component). For binary data, this is the length in bytes.  For the ROWID datatype,
+ this is the length in bytes. 0 is returned for data types where the
+ column size is not applicable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the precision.</li></ul>
+      <ul class="nolist"><li>precision</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1396,27 +1421,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of digits to the right of the decimal point of the
- indexed column.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the designated column's number of digits to right of the decimal point.
+ 0 is returned for data types where the scale is not applicable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>number of decimal places.</li></ul>
+      <ul class="nolist"><li>scale</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1451,26 +1476,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the indexed columns schema.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Get the designated column's table's schema.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the name of the columns schema.</li></ul>
+      <ul class="nolist"><li>schema name or "" if not applicable</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1505,26 +1530,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the title of the indexed columns table.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the designated column's table name.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the table title.</li></ul>
+      <ul class="nolist"><li>table name or "" if not applicable</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1559,28 +1584,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether the indexed column is automatically
- incremented and is therefore read-only.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the designated column is automatically numbered.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if it is automatically numbered, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1615,27 +1638,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether the case of the indexed column is
- important.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether a column's case matters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if case matters, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1670,26 +1692,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether the indexed column contains a monetary amount.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the designated column is a cash value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if it is a monetary value, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1724,27 +1746,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether writing to the indexed column is
- guaranteed to be successful.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether a write on the designated column will definitely succeed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the write is guaranteed, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1779,26 +1800,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether the indexed column is nullable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates the nullability of values in the designated column.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if it is nullable, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li>the nullability status of the given column; one of <code>columnNoNulls</code>,
+          <code>columnNullable</code> or <code>columnNullableUnknown</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1833,27 +1855,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether writing to the indexed column is
- guaranteed to be unsuccessful.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the designated column is definitely not writable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the column is read-only, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1888,27 +1909,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether the indexed column is searchable.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the designated column can be used in a where clause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the indexed column is searchable, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1943,27 +1963,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether the values contained in the indexed
- column are signed.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether values in the designated column are signed numbers.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if they are signed, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>
@@ -1998,27 +2017,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an indication of whether writing to the indexed column is
- possible.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether it is possible for a write on the designated column to succeed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>column</th>
-          <td>the column index, starting at 1.</td>
+          <td>the first column is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if it is possible to write, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if there is a database error.
+            <td>if a database access error occurs
 </td>
         </tr>
       </table>

@@ -355,7 +355,7 @@ layout: api
      // Report whether in locked state
      protected boolean isHeldExclusively() {
        return getState() == 1;
-     </code>
+     }
 
      // Acquire the lock if state is zero
      public boolean tryAcquire(int acquires) {
@@ -403,7 +403,7 @@ layout: api
        throws InterruptedException {
      return sync.tryAcquireNanos(1, unit.toNanos(timeout));
    }
- }}</pre>
+ }</code></pre>
 
  <p>Here is a latch class that is like a <code><a href="reference/java/util/concurrent/CountDownLatch.html">CountDownLatch</a></code>
  except that it only requires a single <tt>signal</tt> to
@@ -413,7 +413,7 @@ layout: api
   <pre> <code>class BooleanLatch {
 
    private static class Sync extends AbstractQueuedSynchronizer {
-     boolean isSignalled() { return getState() != 0; </code>
+     boolean isSignalled() { return getState() != 0; }
 
      protected int tryAcquireShared(int ignore) {
        return isSignalled() ? 1 : -1;
@@ -431,7 +431,7 @@ layout: api
    public void await() throws InterruptedException {
      sync.acquireSharedInterruptibly(1);
    }
- }}</pre></p>
+ }</code></pre></p>
 
 
 

@@ -203,27 +203,48 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A Java representation of the SQL <code>TIMESTAMP</code> type. It provides the
- capability of representing the SQL <code>TIMESTAMP</code> nanosecond value, in
- addition to the regular date/time value which has millisecond resolution.
- <p>
- The <code>Timestamp</code> class consists of a regular date/time value, where only
- the integral seconds value is stored, plus a nanoseconds value where the
- fractional seconds are stored.
- <p>
- The addition of the nanosecond value field to the <code>Timestamp</code> object
- makes it significantly different from the <code>java.util.Date</code> object which
- it extends. Users should be aware that <code>Timestamp</code> objects are not
- interchangable with <code>java.util.Date</code> objects when used outside the
- confines of the <code>java.sql</code> package.</p>
+<p><P>A thin wrapper around <code>java.util.Date</code> that allows
+ the JDBC API to identify this as an SQL <code>TIMESTAMP</code> value.
+ It adds the ability
+ to hold the SQL <code>TIMESTAMP</code> fractional seconds value, by allowing
+ the specification of fractional seconds to a precision of nanoseconds.
+ A Timestamp also provides formatting and
+ parsing operations to support the JDBC escape syntax for timestamp values.
+
+ <p>The precision of a Timestamp object is calculated to be either:
+ <ul>
+ <li><code>19 </code>, which is the number of characters in yyyy-mm-dd hh:mm:ss
+ <li> <code> 20 + s </code>, which is the number
+ of characters in the yyyy-mm-dd hh:mm:ss.[fff...] and <code>s</code> represents  the scale of the given Timestamp,
+ its fractional seconds precision.
+</ul>
+
+ <P><B>Note:</B> This type is a composite of a <code>java.util.Date</code> and a
+ separate nanoseconds value. Only integral seconds are stored in the
+ <code>java.util.Date</code> component. The fractional seconds - the nanos - are
+ separate.  The <code>Timestamp.equals(Object)</code> method never returns
+ <code>true</code> when passed an object
+ that isn't an instance of <code>java.sql.Timestamp</code>,
+ because the nanos component of a date is unknown.
+ As a result, the <code>Timestamp.equals(Object)</code>
+ method is not symmetric with respect to the
+ <code>java.util.Date.equals(Object)</code>
+ method.  Also, the <code>hashCode</code> method uses the underlying
+ <code>java.util.Date</code>
+ implementation and therefore does not include nanos in its computation.
+ <P>
+ Due to the differences between the <code>Timestamp</code> class
+ and the <code>java.util.Date</code>
+ class mentioned above, it is recommended that code not view
+ <code>Timestamp</code> values generically as an instance of
+ <code>java.util.Date</code>.  The
+ inheritance relationship between <code>Timestamp</code>
+ and <code>java.util.Date</code> really
+ denotes implementation inheritance, and not type inheritance.
+</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Date.html">Date</a></code></li><li><code><a href="../../../reference/java/sql/Time.html">Time</a></code></li><li><code><a href="../../../reference/java/util/Date.html">Date</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -286,12 +307,12 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#Timestamp(int, int, int, int, int, int, int)">Timestamp</a></span>(int theYear, int theMonth, int theDate, int theHour, int theMinute, int theSecond, int theNano)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#Timestamp(int, int, int, int, int, int, int)">Timestamp</a></span>(int year, int month, int date, int hour, int minute, int second, int nano)
         
         <div class="jd-descrdiv">
       <em>
   This constructor is deprecated.
-      Use the constructor <code><a href="reference/java/sql/Timestamp.html#Timestamp(long)">Timestamp(long)</a></code> instead.</em></div>
+      instead use the constructor <code>Timestamp(long millis)</code></em></div>
   
   </td></tr>
 
@@ -307,10 +328,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#Timestamp(long)">Timestamp</a></span>(long theTime)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#Timestamp(long)">Timestamp</a></span>(long time)
         
-        <div class="jd-descrdiv">Returns a <code>Timestamp</code> object corresponding to the time represented
- by a supplied time value.</div>
+        <div class="jd-descrdiv">Constructs a <code>Timestamp</code> object
+ using a milliseconds time value.</div>
   
   </td></tr>
 
@@ -339,10 +360,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#after(java.sql.Timestamp)">after</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#after(java.sql.Timestamp)">after</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)
         
-        <div class="jd-descrdiv">Returns <code>true</code> if this timestamp object is later than the supplied
- timestamp, otherwise returns <code>false</code>.</div>
+        <div class="jd-descrdiv">Indicates whether this <code>Timestamp</code> object is
+ later than the given <code>Timestamp</code> object.</div>
   
   </td></tr>
 
@@ -358,10 +379,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#before(java.sql.Timestamp)">before</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#before(java.sql.Timestamp)">before</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)
         
-        <div class="jd-descrdiv">Returns <code>true</code> if this <code>Timestamp</code> object is earlier than the
- supplied timestamp, otherwise returns <code>false</code>.</div>
+        <div class="jd-descrdiv">Indicates whether this <code>Timestamp</code> object is
+ earlier than the given <code>Timestamp</code> object.</div>
   
   </td></tr>
 
@@ -377,10 +398,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#compareTo(java.util.Date)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> theObject)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#compareTo(java.util.Date)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> o)
         
-        <div class="jd-descrdiv">Compares this <code>Timestamp</code> object with a supplied <code>Timestamp</code>
- object.</div>
+        <div class="jd-descrdiv">Compares this <code>Timestamp</code> object to the given
+ <code>Date</code> object.</div>
   
   </td></tr>
 
@@ -396,10 +417,10 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#compareTo(java.sql.Timestamp)">compareTo</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#compareTo(java.sql.Timestamp)">compareTo</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)
         
-        <div class="jd-descrdiv">Compares this <code>Timestamp</code> object with a supplied <code>Timestamp</code>
- object.</div>
+        <div class="jd-descrdiv">Compares this <code>Timestamp</code> object to the given
+ <code>Timestamp</code> object.</div>
   
   </td></tr>
 
@@ -415,9 +436,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#equals(java.sql.Timestamp)">equals</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#equals(java.sql.Timestamp)">equals</a></span>(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)
         
-        <div class="jd-descrdiv">Tests to see if this timestamp is equal to a supplied timestamp.</div>
+        <div class="jd-descrdiv">Tests to see if this <code>Timestamp</code> object is
+ equal to the given <code>Timestamp</code> object.</div>
   
   </td></tr>
 
@@ -433,9 +455,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> theObject)
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> ts)
         
-        <div class="jd-descrdiv">Tests to see if this timestamp is equal to a supplied object.</div>
+        <div class="jd-descrdiv">Tests to see if this <code>Timestamp</code> object is
+ equal to the given object.</div>
   
   </td></tr>
 
@@ -453,7 +476,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#getNanos()">getNanos</a></span>()
         
-        <div class="jd-descrdiv">Gets this <code>Timestamp</code>'s nanosecond value</div>
+        <div class="jd-descrdiv">Gets this <code>Timestamp</code> object's <code>nanos</code> value.</div>
   
   </td></tr>
 
@@ -471,15 +494,35 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#getTime()">getTime</a></span>()
         
-        <div class="jd-descrdiv">Returns the time represented by this <code>Timestamp</code> object, as a long
- value containing the number of milliseconds since the Epoch (January 1
- 1970, 00:00:00.000 GMT).</div>
+        <div class="jd-descrdiv">Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT
+ represented by this <code>Timestamp</code> object.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#hashCode()">hashCode</a></span>()
+        
+        <div class="jd-descrdiv">Returns an integer hash code for the receiver.
+
+ The <code>hashCode</code> method uses the underlying <code>java.util.Date</code>
+ implementation and therefore does not include nanos in its computation.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -491,27 +534,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#setNanos(int)">setNanos</a></span>(int n)
         
-        <div class="jd-descrdiv">Sets the nanosecond value for this <code>Timestamp</code>.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class=" api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            void
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#setTime(long)">setTime</a></span>(long theTime)
-        
-        <div class="jd-descrdiv">Sets the time represented by this <code>Timestamp</code> object to the
- supplied time, defined as the number of milliseconds since the Epoch
- (January 1 1970, 00:00:00.000 GMT).</div>
+        <div class="jd-descrdiv">Sets this <code>Timestamp</code> object's <code>nanos</code> field
+ to the given value.</div>
   
   </td></tr>
 
@@ -524,19 +548,37 @@ layout: api
             
             
             
-            <a href="../../../reference/java/lang/String.html">String</a>
+            void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#toString()">toString</a></span>()
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#setTime(long)">setTime</a></span>(long time)
         
-        <div class="jd-descrdiv">Returns the timestamp formatted as a String in the JDBC Timestamp Escape
- format, which is <code>"yyyy-MM-dd HH:mm:ss.nnnnnnnnn"</code>.</div>
+        <div class="jd-descrdiv">Sets this <code>Timestamp</code> object to represent a point in time that is
+ <tt>time</tt> milliseconds after January 1, 1970 00:00:00 GMT.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Formats a timestamp in JDBC timestamp escape format.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -548,9 +590,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Timestamp.html#valueOf(java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Creates a <code>Timestamp</code> object with a time value equal to the time
- specified by a supplied String holding the time in JDBC timestamp escape
- format, which is <code>"yyyy-MM-dd HH:mm:ss.nnnnnnnnn</code>"</div>
+        <div class="jd-descrdiv">Converts a <code>String</code> object in JDBC timestamp escape format to a
+ <code>Timestamp</code> value.</div>
   
   </td></tr>
 
@@ -1422,10 +1463,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/Date.html">Date</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -1483,7 +1523,7 @@ From interface
         
       </span>
       <span class="sympad">Timestamp</span>
-      <span class="normal">(int theYear, int theMonth, int theDate, int theHour, int theMinute, int theSecond, int theNano)</span>
+      <span class="normal">(int year, int month, int date, int hour, int minute, int second, int nano)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1497,42 +1537,40 @@ From interface
       <p>
   <p class="caution">
       <strong>
-  This constructor is deprecated.</strong><br/> Use the constructor <code><a href="reference/java/sql/Timestamp.html#Timestamp(long)">Timestamp(long)</a></code> instead.
+  This constructor is deprecated.</strong><br/> instead use the constructor <code>Timestamp(long millis)</code>
   </p>
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Timestamp</code> corresponding to the time specified by the
- supplied values for <i>Year</i>, <i>Month</i>, <i>Date</i>, <i>Hour</i>,
- <i>Minutes</i>, <i>Seconds</i> and <i>Nanoseconds</i>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>Timestamp</code> object initialized
+ with the given values.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theYear</th>
-          <td>specified as the year minus 1900.</td>
+          <th>year</th>
+          <td>the year minus 1900</td>
         </tr>
         <tr>
-          <th>theMonth</th>
-          <td>specified as an integer in the range [0,11].</td>
+          <th>month</th>
+          <td>0 to 11</td>
         </tr>
         <tr>
-          <th>theDate</th>
-          <td>specified as an integer in the range [1,31].</td>
+          <th>date</th>
+          <td>1 to 31</td>
         </tr>
         <tr>
-          <th>theHour</th>
-          <td>specified as an integer in the range [0,23].</td>
+          <th>hour</th>
+          <td>0 to 23</td>
         </tr>
         <tr>
-          <th>theMinute</th>
-          <td>specified as an integer in the range [0,59].</td>
+          <th>minute</th>
+          <td>0 to 59</td>
         </tr>
         <tr>
-          <th>theSecond</th>
-          <td>specified as an integer in the range [0,59].</td>
+          <th>second</th>
+          <td>0 to 59</td>
         </tr>
         <tr>
-          <th>theNano</th>
-          <td>which defines the nanosecond value of the timestamp specified
-            as an integer in the range [0,999'999'999]</td>
+          <th>nano</th>
+          <td>0 to 999,999,999</td>
         </tr>
       </table>
   </div>
@@ -1541,7 +1579,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if any of the parameters is out of range.
+            <td>if the nano argument is out of bounds
 </td>
         </tr>
       </table>
@@ -1564,7 +1602,7 @@ From interface
         
       </span>
       <span class="sympad">Timestamp</span>
-      <span class="normal">(long theTime)</span>
+      <span class="normal">(long time)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1576,18 +1614,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Timestamp</code> object corresponding to the time represented
- by a supplied time value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>Timestamp</code> object
+ using a milliseconds time value. The
+ integral seconds are stored in the underlying date value; the
+ fractional seconds are stored in the <code>nanos</code> field of
+ the <code>Timestamp</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTime</th>
-          <td>a time value in the format of milliseconds since the Epoch
-            (January 1 1970 00:00:00.000 GMT).
-</td>
+          <th>time</th>
+          <td>milliseconds since January 1, 1970, 00:00:00 GMT.
+        A negative number is the number of milliseconds before
+         January 1, 1970, 00:00:00 GMT.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1622,7 +1668,7 @@ From interface
         boolean
       </span>
       <span class="sympad">after</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1634,21 +1680,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this timestamp object is later than the supplied
- timestamp, otherwise returns <code>false</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this <code>Timestamp</code> object is
+ later than the given <code>Timestamp</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTimestamp</th>
-          <td>the timestamp to compare with this timestamp object.</td>
+          <th>ts</th>
+          <td>the <code>Timestamp</code> value to compare with</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Timestamp</code> object is later than the
-         supplied timestamp, <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if this <code>Timestamp</code> object is later;
+        <code>false</code> otherwise
 </li></ul>
   </div>
 
@@ -1669,7 +1715,7 @@ From interface
         boolean
       </span>
       <span class="sympad">before</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1681,21 +1727,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this <code>Timestamp</code> object is earlier than the
- supplied timestamp, otherwise returns <code>false</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this <code>Timestamp</code> object is
+ earlier than the given <code>Timestamp</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTimestamp</th>
-          <td>the timestamp to compare with this <code>Timestamp</code> object.</td>
+          <th>ts</th>
+          <td>the <code>Timestamp</code> value to compare with</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Timestamp</code> object is earlier than the
-         supplied timestamp, <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if this <code>Timestamp</code> object is earlier;
+        <code>false</code> otherwise
 </li></ul>
   </div>
 
@@ -1716,7 +1762,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/util/Date.html">Date</a> theObject)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Date.html">Date</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1728,43 +1774,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>Timestamp</code> object with a supplied <code>Timestamp</code>
- object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>Timestamp</code> object to the given
+ <code>Date</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theObject</th>
-          <td>the timestamp to compare with this <code>Timestamp</code> object,
-            passed as an <code>Object</code>.</td>
+          <th>o</th>
+          <td>the <code>Date</code> to be compared to
+          this <code>Timestamp</code> object</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><dd>
-         <dl>
-         <code>0</code> if the two <code>Timestamp</code> objects are equal in time
-         </dl>
-         <dl>
-         a value <code>< 0</code> if this <code>Timestamp</code> object is before
-         the supplied <code>Timestamp</code> and a value
-         </dl>
-         <dl>
-         <code>> 0</code> if this <code>Timestamp</code> object is after the
-         supplied <code>Timestamp</code>
-         </dl>
-         </dd></li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the supplied object is not a <code>Timestamp</code> object.
-</td>
-        </tr>
-      </table>
+      <ul class="nolist"><li>the value <code>0</code> if this <code>Timestamp</code> object
+          and the given object are equal; a value less than <code>0</code>
+          if this  <code>Timestamp</code> object is before the given argument;
+          and a value greater than <code>0</code> if this
+          <code>Timestamp</code> object is after the given argument.</li></ul>
   </div>
 
     </div>
@@ -1784,7 +1812,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1796,30 +1824,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>Timestamp</code> object with a supplied <code>Timestamp</code>
- object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>Timestamp</code> object to the given
+ <code>Timestamp</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTimestamp</th>
-          <td>the timestamp to compare with this <code>Timestamp</code> object,
-            passed in as a <code>Timestamp</code>.</td>
+          <th>ts</th>
+          <td>the <code>Timestamp</code> object to be compared to
+                this <code>Timestamp</code> object</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>one of the following:
-         <ul>
-         <li><code>0</code>, if the two <code>Timestamp</code> objects are
-         equal in time</li>
-         <li><code>< 0</code>, if this <code>Timestamp</code> object is before the
-         supplied <code>Timestamp</code></li>
-         <li> <code>> 0</code>, if this <code>Timestamp</code> object is after the
-         supplied <code>Timestamp</code></li>
-         </ul>
-</li></ul>
+      <ul class="nolist"><li>the value <code>0</code> if the two <code>Timestamp</code>
+          objects are equal; a value less than <code>0</code> if this
+          <code>Timestamp</code> object is before the given argument;
+          and a value greater than <code>0</code> if this
+          <code>Timestamp</code> object is after the given argument.</li></ul>
   </div>
 
     </div>
@@ -1839,7 +1862,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> theTimestamp)</span>
+      <span class="normal">(<a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> ts)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1851,21 +1874,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Tests to see if this timestamp is equal to a supplied timestamp.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests to see if this <code>Timestamp</code> object is
+ equal to the given <code>Timestamp</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTimestamp</th>
-          <td>the timestamp to compare with this <code>Timestamp</code> object,
-            passed as an <code>Object</code>.</td>
+          <th>ts</th>
+          <td>the <code>Timestamp</code> value to compare with</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Timestamp</code> object is equal to the
-         supplied <code>Timestamp</code> object, <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the given <code>Timestamp</code>
+         object is equal to this <code>Timestamp</code> object;
+         <code>false</code> otherwise
 </li></ul>
   </div>
 
@@ -1886,7 +1910,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> theObject)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> ts)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1898,21 +1922,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Tests to see if this timestamp is equal to a supplied object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Tests to see if this <code>Timestamp</code> object is
+ equal to the given object.
+
+ This version of the method <code>equals</code> has been added
+ to fix the incorrect
+ signature of <code>Timestamp.equals(Timestamp)</code> and to preserve backward
+ compatibility with existing class files.
+
+ Note: This method is not symmetric with respect to the
+ <code>equals(Object)</code> method in the base class.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theObject</th>
-          <td>the object to which this timestamp is compared.</td>
+          <th>ts</th>
+          <td>the <code>Object</code> value to compare with</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Timestamp</code> object is equal to the
-         supplied <code>Timestamp</code> object<br><code>false</code> if the object
-         is not a <code>Timestamp</code> object or if the object is a <code>Timestamp</code> but represents a different instant in time.
+      <ul class="nolist"><li><code>true</code> if the given <code>Object</code> is an instance
+         of a <code>Timestamp</code> that
+         is equal to this <code>Timestamp</code> object;
+         <code>false</code> otherwise
 </li></ul>
   </div>
 
@@ -1945,12 +1979,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets this <code>Timestamp</code>'s nanosecond value</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this <code>Timestamp</code> object's <code>nanos</code> value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>The timestamp's nanosecond value, an integer between 0 and
-         999,999,999.
-</li></ul>
+      <ul class="nolist"><li>this <code>Timestamp</code> object's fractional seconds component</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Timestamp.html#setNanos(int)">setNanos(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1982,14 +2019,58 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the time represented by this <code>Timestamp</code> object, as a long
- value containing the number of milliseconds since the Epoch (January 1
- 1970, 00:00:00.000 GMT).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT
+ represented by this <code>Timestamp</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of milliseconds that have passed since January 1 1970,
-         00:00:00.000 GMT.
-</li></ul>
+      <ul class="nolist"><li>the number of milliseconds since January 1, 1970, 00:00:00 GMT
+          represented by this date.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Timestamp.html#setTime(long)">setTime(long)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="hashCode()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">hashCode</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for the receiver. Objects which are equal
+ return the same value for this method.
+
+ The <code>hashCode</code> method uses the underlying <code>java.util.Date</code>
+ implementation and therefore does not include nanos in its computation.
+
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this <code>Date</code>'s hash.</li></ul>
   </div>
 
     </div>
@@ -2021,13 +2102,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the nanosecond value for this <code>Timestamp</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this <code>Timestamp</code> object's <code>nanos</code> field
+ to the given value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>n</th>
-          <td>number of nanoseconds.</td>
+          <td>the new fractional seconds component</td>
         </tr>
       </table>
   </div>
@@ -2036,11 +2118,15 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if number of nanoseconds smaller than 0 or greater than
-             999,999,999.
-</td>
+            <td>if the given argument
+            is greater than 999999999 or less than 0</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Timestamp.html#getNanos()">getNanos()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2060,7 +2146,7 @@ From interface
         void
       </span>
       <span class="sympad">setTime</span>
-      <span class="normal">(long theTime)</span>
+      <span class="normal">(long time)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2072,19 +2158,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the time represented by this <code>Timestamp</code> object to the
- supplied time, defined as the number of milliseconds since the Epoch
- (January 1 1970, 00:00:00.000 GMT).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this <code>Timestamp</code> object to represent a point in time that is
+ <tt>time</tt> milliseconds after January 1, 1970 00:00:00 GMT.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>theTime</th>
-          <td>number of milliseconds since the Epoch (January 1 1970,
-            00:00:00.000 GMT).
-</td>
+          <th>time</th>
+          <td>the number of milliseconds.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Timestamp.html#getTime()">getTime()</a></code></li><li><code><a href="../../../reference/java/sql/Timestamp.html#Timestamp(long)">Timestamp(long)</a></code></li><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2116,11 +2204,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the timestamp formatted as a String in the JDBC Timestamp Escape
- format, which is <code>"yyyy-MM-dd HH:mm:ss.nnnnnnnnn"</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Formats a timestamp in JDBC timestamp escape format.
+         <code>yyyy-mm-dd hh:mm:ss.fffffffff</code>,
+ where <code>ffffffffff</code> indicates nanoseconds.
+ <P></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>A string representing the instant defined by the <code>Timestamp</code>, in JDBC Timestamp escape format.
+      <ul class="nolist"><li>a <code>String</code> object in
+           <code>yyyy-mm-dd hh:mm:ss.fffffffff</code> format
 </li></ul>
   </div>
 
@@ -2153,30 +2244,30 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>Timestamp</code> object with a time value equal to the time
- specified by a supplied String holding the time in JDBC timestamp escape
- format, which is <code>"yyyy-MM-dd HH:mm:ss.nnnnnnnnn</code>"</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Converts a <code>String</code> object in JDBC timestamp escape format to a
+ <code>Timestamp</code> value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>s</th>
-          <td>the <code>String</code> containing a time in JDBC timestamp escape
-            format.</td>
+          <td>timestamp in format <code>yyyy-[m]m-[d]d hh:mm:ss[.f...]</code>.  The
+ fractional seconds may be omitted. The leading zero for <code>mm</code>
+ and <code>dd</code> may also be omitted.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>A <code>Timestamp</code> object with time value as defined by the
-         supplied <code>String</code>.</li></ul>
+      <ul class="nolist"><li>corresponding <code>Timestamp</code> value</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if the provided string is <code>null</code>.
+            <td>if the given argument
+ does not have the format <code>yyyy-[m]m-[d]d hh:mm:ss[.f...]</code>
 </td>
         </tr>
       </table>

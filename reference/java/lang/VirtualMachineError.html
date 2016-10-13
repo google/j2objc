@@ -222,7 +222,9 @@ layout: api
             
               <a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a>,
             
-              <a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a>
+              <a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a>,
+            
+              <a href="../../../reference/java/lang/UnknownError.html">UnknownError</a>
             
           
       </div>
@@ -232,17 +234,24 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InternalError.html">InternalError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that it has gotten into an undefined state.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate some unexpected internal error has occurred in
+ the Java Virtual Machine.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a request for memory is made that can not be satisfied using the
- available platform resources.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine cannot allocate an object
+ because it is out of memory, and no more memory could be made
+ available by the garbage collector.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the depth of the stack of the running program exceeds some
- platform or VM specific limit.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a stack overflow occurs because an application
+ recurses too deeply.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnknownError.html">UnknownError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an unknown but serious exception has occurred in the
+ Java Virtual Machine.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -274,7 +283,7 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/zip/ZipError.html">ZipError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an unrecoverable zip error has occurred.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that an unrecoverable error has occurred.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -286,16 +295,11 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>VirtualMachineError</code> is the superclass of all error classes that occur
- during the operation of the VM.</p>
+<p>Thrown to indicate that the Java Virtual Machine is broken or has
+ run out of resources necessary for it to continue operating.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Error.html">Error</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -360,8 +364,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/VirtualMachineError.html#VirtualMachineError()">VirtualMachineError</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>VirtualMachineError</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>VirtualMachineError</code> with no detail message.</div>
   
   </td></tr>
 
@@ -377,10 +380,50 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/VirtualMachineError.html#VirtualMachineError(java.lang.String)">VirtualMachineError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/VirtualMachineError.html#VirtualMachineError(java.lang.String)">VirtualMachineError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Constructs a new <code>VirtualMachineError</code> with the current stack trace
- and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>VirtualMachineError</code> with the specified
+ detail message.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/VirtualMachineError.html#VirtualMachineError(java.lang.String, java.lang.Throwable)">VirtualMachineError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        
+        <div class="jd-descrdiv">Constructs a <code>VirtualMachineError</code> with the specified
+ detail message and cause.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/VirtualMachineError.html#VirtualMachineError(java.lang.Throwable)">VirtualMachineError</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        
+        <div class="jd-descrdiv">Constructs an a <code>VirtualMachineError</code> with the specified
+ cause and a detail message of <code>(cause==null ? null :
+ cause.toString())</code> (which typically contains the class and
+ detail message of <code>cause</code>).</div>
   
   </td></tr>
 
@@ -614,6 +657,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -914,8 +976,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>VirtualMachineError</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>VirtualMachineError</code> with no detail message.
 </p></div>
 
     </div>
@@ -935,7 +996,7 @@ From class
         
       </span>
       <span class="sympad">VirtualMachineError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -947,15 +1008,112 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>VirtualMachineError</code> with the current stack trace
- and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>VirtualMachineError</code> with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>message</th>
+          <td>the detail message.
 </td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="VirtualMachineError(java.lang.String, java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">VirtualMachineError</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>VirtualMachineError</code> with the specified
+ detail message and cause.  <p>Note that the detail message
+ associated with <code>cause</code> is <i>not</i> automatically
+ incorporated in this error's detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the detail message (which is saved for later retrieval
+         by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is
+         permitted, and indicates that the cause is nonexistent or
+         unknown.)</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="VirtualMachineError(java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">VirtualMachineError</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an a <code>VirtualMachineError</code> with the specified
+ cause and a detail message of <code>(cause==null ? null :
+ cause.toString())</code> (which typically contains the class and
+ detail message of <code>cause</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>cause</th>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is
+         permitted, and indicates that the cause is nonexistent or
+         unknown.)</td>
         </tr>
       </table>
   </div>

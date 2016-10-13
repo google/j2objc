@@ -235,9 +235,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>If a HTTP request has to be retried, this exception will be thrown if the
- request cannot be retried automatically.
-</p>
+<p>Thrown to indicate that a HTTP request needs to be retried
+ but cannot be retried automatically, due to streaming mode
+ being enabled.</p>
 
 
 
@@ -305,8 +305,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/HttpRetryException.html#HttpRetryException(java.lang.String, int)">HttpRetryException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detail, int code)
         
-        <div class="jd-descrdiv">Creates a new <code>HttpRetryException</code> instance with the specified
- response code and the given detail message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>HttpRetryException</code> from the
+ specified response code and exception detail message</div>
   
   </td></tr>
 
@@ -324,9 +324,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/HttpRetryException.html#HttpRetryException(java.lang.String, int, java.lang.String)">HttpRetryException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detail, int code, <a href="../../../reference/java/lang/String.html">String</a> location)
         
-        <div class="jd-descrdiv">Creates a new <code>HttpRetryException</code> instance with the specified
- response code, the given detail message and the value of the location
- field from the response header.</div>
+        <div class="jd-descrdiv">Constructs a new <code>HttpRetryException</code> with detail message
+ responseCode and the contents of the Location response header field.</div>
   
   </td></tr>
 
@@ -357,7 +356,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/HttpRetryException.html#getLocation()">getLocation</a></span>()
         
-        <div class="jd-descrdiv">Gets the location value.</div>
+        <div class="jd-descrdiv">Returns the value of the Location header field if the
+ error resulted from redirection.</div>
   
   </td></tr>
 
@@ -375,7 +375,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/HttpRetryException.html#getReason()">getReason</a></span>()
         
-        <div class="jd-descrdiv">Gets the detail message.</div>
+        <div class="jd-descrdiv">Returns a string explaining why the http request could
+ not be retried.</div>
   
   </td></tr>
 
@@ -393,7 +394,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/HttpRetryException.html#responseCode()">responseCode</a></span>()
         
-        <div class="jd-descrdiv">Gets the response code.</div>
+        <div class="jd-descrdiv">Returns the http response code</div>
   
   </td></tr>
 
@@ -625,6 +626,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -925,18 +945,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>HttpRetryException</code> instance with the specified
- response code and the given detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>HttpRetryException</code> from the
+ specified response code and exception detail message</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detail</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message.</td>
         </tr>
         <tr>
           <th>code</th>
-          <td>the HTTP response code from target host.
+          <td>the HTTP response code from server.
 </td>
         </tr>
       </table>
@@ -971,23 +991,22 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>HttpRetryException</code> instance with the specified
- response code, the given detail message and the value of the location
- field from the response header.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>HttpRetryException</code> with detail message
+ responseCode and the contents of the Location response header field.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>detail</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message.</td>
         </tr>
         <tr>
           <th>code</th>
-          <td>the HTTP response code from target host.</td>
+          <td>the HTTP response code from server.</td>
         </tr>
         <tr>
           <th>location</th>
-          <td>the destination URL of the redirection.
+          <td>the URL to be redirected to
 </td>
         </tr>
       </table>
@@ -1037,10 +1056,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the location value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the Location header field if the
+ error resulted from redirection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the stored location from the HTTP header.
+      <ul class="nolist"><li>The location string
 </li></ul>
   </div>
 
@@ -1073,10 +1093,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string explaining why the http request could
+ not be retried.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the detail message.
+      <ul class="nolist"><li>The reason string
 </li></ul>
   </div>
 
@@ -1109,10 +1130,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the response code.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the http response code</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the HTTP response code.
+      <ul class="nolist"><li>The http response code.
 </li></ul>
   </div>
 

@@ -225,11 +225,11 @@ layout: api
      lock.lock();  // block until condition holds
      try {
        // ... method body
-     </code> finally {
+     } finally {
        lock.unlock()
      }
    }
- }}</pre>
+ }</code></pre>
 
  <p>In addition to implementing the <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> interface, this
  class defines methods <code>isLocked</code> and
@@ -1261,11 +1261,11 @@ From interface
      lock.lock();
      try {
        // ... method body
-     </code> finally {
+     } finally {
        lock.unlock();
      }
    }
- }}</pre></p></div>
+ }</code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>the number of holds on this lock by the current thread,
@@ -1628,8 +1628,8 @@ From interface
    public void m() {
        assert lock.isHeldByCurrentThread();
        // ... method body
-   </code>
- }}</pre>
+   }
+ }</code></pre>
 
  <p>It can also be used to ensure that a reentrant lock is used
  in a non-reentrant manner, for example:
@@ -1643,11 +1643,11 @@ From interface
        lock.lock();
        try {
            // ... method body
-       </code> finally {
+       } finally {
            lock.unlock();
        }
    }
- }}</pre></p></div>
+ }</code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li><code>true</code> if current thread holds this lock and
@@ -2024,7 +2024,7 @@ From interface
   <pre> <code>if (lock.tryLock() ||
      lock.tryLock(timeout, unit)) {
    ...
- </code>}</pre>
+ }</code></pre>
 
  <p>If the current thread
  already holds this lock then the hold count is incremented by one and

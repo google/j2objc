@@ -212,7 +212,7 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This error is thrown when a severe I/O error has happened.</p>
+<p>Thrown when a serious I/O error has occurred.</p>
 
 
 
@@ -280,7 +280,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/IOError.html#IOError(java.lang.Throwable)">IOError</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance with its cause filled in.</div>
+        <div class="jd-descrdiv">Constructs a new instance of IOError with the specified cause.</div>
   
   </td></tr>
 
@@ -514,6 +514,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -814,13 +833,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with its cause filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of IOError with the specified cause. The
+ IOError is created with the detail message of
+ <tt>(cause==null ? null : cause.toString())</tt> (which typically
+ contains the class and detail message of cause).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>The detail cause for the error.
+          <td>The cause of this error, or <tt>null</tt> if the cause
+         is not known
 </td>
         </tr>
       </table>

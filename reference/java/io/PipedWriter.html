@@ -126,6 +126,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -209,17 +216,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Places information on a communications pipe. When two threads want to pass
- data back and forth, one creates a piped writer and the other creates a piped
- reader.</p>
+<p>Piped character-output streams.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -293,7 +293,7 @@ layout: api
           
           <a href="../../../reference/java/lang/Object.html">Object</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/Writer.html#lock">lock</a></td>
-          <td class="jd-descrcol" width="100%">The object used to synchronize access to the writer.</td>
+          <td class="jd-descrcol" width="100%">The object used to synchronize operations on this stream.</td>
       </tr>
       
     
@@ -301,6 +301,8 @@ layout: api
   </div>
 </div>
 </td></tr>
+
+
 
 
 
@@ -332,9 +334,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#PipedWriter()">PipedWriter</a></span>()
+        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#PipedWriter(java.io.PipedReader)">PipedWriter</a></span>(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> snk)
         
-        <div class="jd-descrdiv">Constructs a new unconnected <code>PipedWriter</code>.</div>
+        <div class="jd-descrdiv">Creates a piped writer connected to the specified piped
+ reader.</div>
   
   </td></tr>
 
@@ -350,9 +353,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#PipedWriter(java.io.PipedReader)">PipedWriter</a></span>(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> destination)
+        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#PipedWriter()">PipedWriter</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>PipedWriter</code> connected to <code>destination</code>.</div>
+        <div class="jd-descrdiv">Creates a piped writer that is not yet connected to a
+ piped reader.</div>
   
   </td></tr>
 
@@ -383,7 +387,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this writer.</div>
+        <div class="jd-descrdiv">Closes this piped output stream and releases any system resources
+ associated with this stream.</div>
   
   </td></tr>
 
@@ -392,16 +397,16 @@ layout: api
     <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#connect(java.io.PipedReader)">connect</a></span>(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> reader)
+        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#connect(java.io.PipedReader)">connect</a></span>(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> snk)
         
-        <div class="jd-descrdiv">Connects this <code>PipedWriter</code> to a <code><a href="reference/java/io/PipedReader.html">PipedReader</a></code>.</div>
+        <div class="jd-descrdiv">Connects this piped writer to a receiver.</div>
   
   </td></tr>
 
@@ -410,7 +415,7 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
-            
+            synchronized
             
             
             
@@ -419,7 +424,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Notifies the readers of this <code>PipedReader</code> that characters can be read.</div>
+        <div class="jd-descrdiv">Flushes this output stream and forces any buffered output characters
+ to be written out.</div>
   
   </td></tr>
 
@@ -437,7 +443,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#write(int)">write</a></span>(int c)
         
-        <div class="jd-descrdiv">Writes a single character <code>c</code> to this writer.</div>
+        <div class="jd-descrdiv">Writes the specified <code>char</code> to the piped output stream.</div>
   
   </td></tr>
 
@@ -453,10 +459,10 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#write(char[], int, int)">write</a></span>(char[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/PipedWriter.html#write(char[], int, int)">write</a></span>(char[] cbuf, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> characters from the character array <code>buffer</code>
- starting at offset <code>index</code> to this writer.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> characters from the specified character array
+ starting at offset <code>off</code> to this piped output stream.</div>
   
   </td></tr>
 
@@ -508,7 +514,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the character <code>c</code> to the target.</div>
+        <div class="jd-descrdiv">Appends the specified character to this writer.</div>
   
   </td></tr>
 
@@ -526,8 +532,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of the character sequence <code>csq</code> to the
- target.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this writer.</div>
   
   </td></tr>
 
@@ -545,7 +550,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code> to the target.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this writer.</div>
   
   </td></tr>
 
@@ -563,7 +568,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this writer.</div>
+        <div class="jd-descrdiv">Closes the stream, flushing it first.</div>
   
   </td></tr>
 
@@ -581,7 +586,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes this writer.</div>
+        <div class="jd-descrdiv">Flushes the stream.</div>
   
   </td></tr>
 
@@ -599,7 +604,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(java.lang.String)">write</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str)
         
-        <div class="jd-descrdiv">Writes the characters from the specified string to the target.</div>
+        <div class="jd-descrdiv">Writes a string.</div>
   
   </td></tr>
 
@@ -615,9 +620,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(int)">write</a></span>(int oneChar)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(int)">write</a></span>(int c)
         
-        <div class="jd-descrdiv">Writes one character to the target.</div>
+        <div class="jd-descrdiv">Writes a single character.</div>
   
   </td></tr>
 
@@ -633,9 +638,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(java.lang.String, int, int)">write</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(java.lang.String, int, int)">write</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> characters from <code>str</code> starting at <code>offset</code> to the target.</div>
+        <div class="jd-descrdiv">Writes a portion of a string.</div>
   
   </td></tr>
 
@@ -651,10 +656,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[], int, int)">write</a></span>(char[] buf, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[], int, int)">write</a></span>(char[] cbuf, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> characters starting at <code>offset</code> in <code>buf</code>
- to the target.</div>
+        <div class="jd-descrdiv">Writes a portion of an array of characters.</div>
   
   </td></tr>
 
@@ -670,9 +674,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[])">write</a></span>(char[] buf)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[])">write</a></span>(char[] cbuf)
         
-        <div class="jd-descrdiv">Writes the entire character buffer <code>buf</code> to the target.</div>
+        <div class="jd-descrdiv">Writes an array of characters.</div>
   
   </td></tr>
 
@@ -945,7 +949,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the specified character.</div>
+        <div class="jd-descrdiv">Appends the specified character to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -963,7 +967,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this
+ <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -981,7 +986,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -1024,7 +1029,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
   
   </td></tr>
 
@@ -1067,8 +1073,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Flushable.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes the object by writing out any buffered data to the underlying
- output.</div>
+        <div class="jd-descrdiv">Flushes this stream by writing any buffered output to the underlying
+ stream.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1113,6 +1162,58 @@ From interface
 
 
 
+<a id="PipedWriter(java.io.PipedReader)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">PipedWriter</span>
+      <span class="normal">(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> snk)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a piped writer connected to the specified piped
+ reader. Data characters written to this stream will then be
+ available as input from <code>snk</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>snk</th>
+          <td>The piped reader to connect to.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="PipedWriter()"></a>
 
 <div class="jd-details api apilevel-">
@@ -1138,64 +1239,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new unconnected <code>PipedWriter</code>. The resulting writer
- must be connected to a <code>PipedReader</code> before data may be written to
- it.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a piped writer that is not yet connected to a
+ piped reader. It must be connected to a piped reader,
+ either by the receiver or the sender, before being used.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/PipedReader.html#connect(java.io.PipedWriter)">connect(java.io.PipedWriter)</a></code></li><li><code><a href="../../../reference/java/io/PipedWriter.html#connect(java.io.PipedReader)">connect(java.io.PipedReader)</a></code></li>
       </ul>
-  </div>
-
-    </div>
-</div>
-
-
-<a id="PipedWriter(java.io.PipedReader)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">PipedWriter</span>
-      <span class="normal">(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> destination)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PipedWriter</code> connected to <code>destination</code>.
- Any data written to this writer can be read from <code>destination</code>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>destination</th>
-          <td>the <code>PipedReader</code> to connect to.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if <code>destination</code> is already connected.
-</td>
-        </tr>
-      </table>
   </div>
 
     </div>
@@ -1242,15 +1292,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes this writer. If a <code><a href="reference/java/io/PipedReader.html">PipedReader</a></code> is connected to this writer,
- it is closed as well and the pipe is disconnected. Any data buffered in
- the reader can still be read.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this piped output stream and releases any system resources
+ associated with this stream. This stream may no longer be used for
+ writing characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while closing this writer.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1269,11 +1319,11 @@ From interface
         
         
         
-        
+        synchronized
         void
       </span>
       <span class="sympad">connect</span>
-      <span class="normal">(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> reader)</span>
+      <span class="normal">(<a href="../../../reference/java/io/PipedReader.html">PipedReader</a> snk)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1285,14 +1335,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Connects this <code>PipedWriter</code> to a <code><a href="reference/java/io/PipedReader.html">PipedReader</a></code>. Any data
- written to this writer becomes readable in the reader.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Connects this piped writer to a receiver. If this object
+ is already connected to some other piped reader, an
+ <code>IOException</code> is thrown.
+ <p>
+ If <code>snk</code> is an unconnected piped reader and
+ <code>src</code> is an unconnected piped writer, they may
+ be connected by either the call:
+ <blockquote><pre>
+ src.connect(snk)</pre></blockquote>
+ or the call:
+ <blockquote><pre>
+ snk.connect(src)</pre></blockquote>
+ The two calls have the same effect.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>reader</th>
-          <td>the reader to connect to.</td>
+          <th>snk</th>
+          <td>the piped reader to connect to.</td>
         </tr>
       </table>
   </div>
@@ -1301,7 +1362,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or already connected, or if <code>reader</code> is already connected.
+            <td>if an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1320,7 +1381,7 @@ From interface
         
         
         
-        
+        synchronized
         void
       </span>
       <span class="sympad">flush</span>
@@ -1336,14 +1397,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Notifies the readers of this <code>PipedReader</code> that characters can be read. This
- method does nothing if this Writer is not connected.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes this output stream and forces any buffered output characters
+ to be written out.
+ This will notify any readers that characters are waiting in the pipe.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an I/O error occurs while flushing this writer.
+            <td>if the pipe is closed, or an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1378,18 +1440,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes a single character <code>c</code> to this writer. This character can
- then be read from the connected <code><a href="reference/java/io/PipedReader.html">PipedReader</a></code> instance.
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the specified <code>char</code> to the piped output stream.
+ If a thread was reading data characters from the connected piped input
+ stream, but the thread is no longer alive, then an
+ <code>IOException</code> is thrown.
  <p>
- Separate threads should be used to write to a <code>PipedWriter</code> and to
- read from the connected <code>PipedReader</code>. If the same thread is used,
- a deadlock may occur.</p></div>
+ Implements the <code>write</code> method of <code>Writer</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the character to write.</td>
+          <td>the <code>char</code> to be written.</td>
         </tr>
       </table>
   </div>
@@ -1397,17 +1459,11 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></td>
-            <td>if the pipe is full and the current thread is interrupted
-             waiting for space to write data. This case is not currently
-             handled correctly.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or not connected, if the target
-             reader is closed or if the thread reading from the target
-             reader is no longer alive. This case is currently not handled
-             correctly.
+            <td>if the pipe is
+          <a href=PipedOutputStream.html#BROKEN> <code>broken</code></a>,
+          <code><a href="reference/java/io/PipedWriter.html#connect(java.io.PipedReader)">unconnected</a></code>, closed
+          or an I/O error occurs.
 </td>
         </tr>
       </table>
@@ -1430,7 +1486,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(char[] buffer, int offset, int count)</span>
+      <span class="normal">(char[] cbuf, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1442,28 +1498,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> characters from the character array <code>buffer</code>
- starting at offset <code>index</code> to this writer. The written data can
- then be read from the connected <code><a href="reference/java/io/PipedReader.html">PipedReader</a></code> instance.
- <p>
- Separate threads should be used to write to a <code>PipedWriter</code> and to
- read from the connected <code>PipedReader</code>. If the same thread is used,
- a deadlock may occur.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>len</code> characters from the specified character array
+ starting at offset <code>off</code> to this piped output stream.
+ This method blocks until all the characters are written to the output
+ stream.
+ If a thread was reading data characters from the connected piped input
+ stream, but the thread is no longer alive, then an
+ <code>IOException</code> is thrown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the buffer to write.</td>
+          <th>cbuf</th>
+          <td>the data.</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the index of the first character in <code>buffer</code> to write.</td>
+          <th>off</th>
+          <td>the start offset in the data.</td>
         </tr>
         <tr>
-          <th>count</th>
-          <td>the number of characters from <code>buffer</code> to write to this
-            writer.</td>
+          <th>len</th>
+          <td>the number of characters to write.</td>
         </tr>
       </table>
   </div>
@@ -1471,25 +1526,11 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>count < 0</code>, or if <code>offset + count</code> is bigger than the length of <code>buffer</code>.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></td>
-            <td>if the pipe is full and the current thread is interrupted
-             waiting for space to write data. This case is not currently
-             handled correctly.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or not connected, if the target
-             reader is closed or if the thread reading from the target
-             reader is no longer alive. This case is currently not handled
-             correctly.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>buffer</code> is <code>null</code>.
+            <td>if the pipe is
+          <a href=PipedOutputStream.html#BROKEN> <code>broken</code></a>,
+          <code><a href="reference/java/io/PipedWriter.html#connect(java.io.PipedReader)">unconnected</a></code>, closed
+          or an I/O error occurs.
 </td>
         </tr>
       </table>

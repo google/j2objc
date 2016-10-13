@@ -245,6 +245,8 @@ layout: api
             
               <a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a>,
             
+              <a href="../../../reference/java/lang/InstantiationError.html">InstantiationError</a>,
+            
               <a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a>,
             
               <a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a>
@@ -257,22 +259,28 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown by the VM when an abstract method is called.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to call an abstract method.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries access a field
- which is not accessible from where it is referenced.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application attempts to access or modify a field, or
+ to call a method that it does not have access to.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a field that does not exist.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/InstantiationError.html">InstantiationError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to use the Java <code>new</code>
+ construct to instantiate an abstract class or an interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to access or modify a specified
+ field of an object, and that object no longer has that field.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a method that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to call a specified method of a
+ class (either static or instance), and that class no longer has a
+ definition of that method.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -286,17 +294,12 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>IncompatibleClassChangeError</code> is the superclass of all classes which
- represent errors that occur when inconsistent class files are loaded into
- the same running image.</p>
+<p>Thrown when an incompatible class change has occurred to some class
+ definition. The definition of some class, on which the currently
+ executing method depends, has since changed.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Error.html">Error</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -361,8 +364,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html#IncompatibleClassChangeError()">IncompatibleClassChangeError</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>IncompatibleClassChangeError</code> that includes the
- current stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>IncompatibleClassChangeError</code> with no
+ detail message.</div>
   
   </td></tr>
 
@@ -378,10 +381,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html#IncompatibleClassChangeError(java.lang.String)">IncompatibleClassChangeError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html#IncompatibleClassChangeError(java.lang.String)">IncompatibleClassChangeError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>IncompatibleClassChangeError</code> with the current
- stack trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>IncompatibleClassChangeError</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -617,6 +620,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -917,8 +939,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IncompatibleClassChangeError</code> that includes the
- current stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IncompatibleClassChangeError</code> with no
+ detail message.
 </p></div>
 
     </div>
@@ -938,7 +960,7 @@ From class
         
       </span>
       <span class="sympad">IncompatibleClassChangeError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -950,14 +972,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IncompatibleClassChangeError</code> with the current
- stack trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IncompatibleClassChangeError</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this error.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

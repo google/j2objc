@@ -110,6 +110,28 @@ layout: api
 <div id="jd-content" class="api apilevel-">
 
 
+  <div class="jd-descr">
+    Provides classes and interfaces for obtaining reflective
+ information about classes and objects.  Reflection allows
+ programmatic access to information about the fields, methods and
+ constructors of loaded classes, and the use of reflected fields,
+ methods, and constructors to operate on their underlying
+ counterparts, within security restrictions.
+
+ <p><code>AccessibleObject</code> allows suppression of access checks if
+ the necessary <code>ReflectPermission</code> is available.
+
+ <p><code>Array</code> provides static methods to dynamically create and
+ access arrays.
+
+ <p>Classes in this package, along with <code>java.lang.Class</code>
+ accommodate applications such as debuggers, interpreters, object
+ inspectors, class browsers, and services such as Object
+ Serialization and JavaBeans that need access to either the public
+ members of a target object (based on its runtime class) or the
+ members declared by a given class.
+  </div>
+
 
 
 
@@ -121,38 +143,44 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></td>
-              <td class="jd-descrcol" width="100%">This interface provides reflective access to annotation information.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Represents an annotated element of the program currently running in this
+ VM.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/AnnotatedType.html">AnnotatedType</a></td>
+              <td class="jd-descrcol" width="100%">Stub implementation of java.lang.reflect.AnnotatedType.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/GenericArrayType.html">GenericArrayType</a></td>
               <td class="jd-descrcol" width="100%">This interface represents an array type with a component type that is either
  a parameterized type or a type variable.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a></td>
               <td class="jd-descrcol" width="100%">Common interface for language constructs that declare type parameters.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a></td>
               <td class="jd-descrcol" width="100%">Implementors of this interface dispatch methods invoked on proxy instances.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Member.html">Member</a></td>
               <td class="jd-descrcol" width="100%">Common interface providing access to reflective information on class members.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/ParameterizedType.html">ParameterizedType</a></td>
-              <td class="jd-descrcol" width="100%">This interface represents a parameterized type such as <code>'Set&lt;String&gt;'</code>.&nbsp;</td>
-          </tr>
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Type.html">Type</a></td>
-              <td class="jd-descrcol" width="100%">Common interface implemented by all Java types.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This interface represents a parameterized type such as <code>'Set&amp;lt;String&amp;gt;'</code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/TypeVariable.html">TypeVariable</a>&lt;D&nbsp;extends&nbsp;<a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a>&gt;</td>
-              <td class="jd-descrcol" width="100%">This interface represents a type variables such as <code>'T'</code> in <code>'public interface Comparable<T>'</code>, the bounded <code>'T'</code> in <code>'public interface A<T extends Number>'</code> or the multiple bounded <code>'T'</code> in <code>'public interface B<T extends Number & Cloneable>'</code>.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Type.html">Type</a></td>
+              <td class="jd-descrcol" width="100%">Type is the common superinterface for all types in the Java
+ programming language.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/TypeVariable.html">TypeVariable</a>&lt;D&nbsp;extends&nbsp;<a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a>&gt;</td>
+              <td class="jd-descrcol" width="100%">This interface represents a type variables such as <code>'T'</code> in <code>'public interface Comparable&lt;T&gt;'</code>, the bounded <code>'T'</code> in <code>'public interface A&lt;T extends Number&gt;'</code> or the multiple bounded <code>'T'</code> in <code>'public interface B&lt;T extends Number &amp; Cloneable&gt;'</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/WildcardType.html">WildcardType</a></td>
               <td class="jd-descrcol" width="100%">A pattern type, such as the upper bounded wildcard <code>? extends Closeable</code> or the lower bounded wildcard <code>? super String</code>.&nbsp;</td>
           </tr>
@@ -179,22 +207,27 @@ layout: api
               <td class="jd-descrcol" width="100%">Stub implementation of Constructor.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Executable.html">Executable</a></td>
+              <td class="jd-descrcol" width="100%">Stub implementation of Executable.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Field.html">Field</a></td>
               <td class="jd-descrcol" width="100%">Stub implementation of Field.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Method.html">Method</a></td>
               <td class="jd-descrcol" width="100%">Stub implementation of Method.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html">Modifier</a></td>
-              <td class="jd-descrcol" width="100%">This class provides static methods to decode class and member modifiers.&nbsp;</td>
-          </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html">Modifier</a></td>
+              <td class="jd-descrcol" width="100%">The Modifier class provides <code>static</code> methods and
+ constants to decode class and member access modifiers.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Proxy.html">Proxy</a></td>
               <td class="jd-descrcol" width="100%"><code>Proxy</code> defines methods for creating dynamic proxy classes and instances.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/ReflectPermission.html">ReflectPermission</a></td>
               <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
           </tr>
@@ -213,18 +246,23 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html">InvocationTargetException</a></td>
-              <td class="jd-descrcol" width="100%">This class provides a wrapper for an exception thrown by a <code>Method</code> or
- <code>Constructor</code> invocation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">InvocationTargetException is a checked exception that wraps
+ an exception thrown by an invoked method or constructor.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/MalformedParameterizedTypeException.html">MalformedParameterizedTypeException</a></td>
-              <td class="jd-descrcol" width="100%">Indicates that a malformed parameterized type has been encountered by a
- reflective method.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a semantically malformed parameterized type is
+ encountered by a reflective method that needs to instantiate it.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html">UndeclaredThrowableException</a></td>
-              <td class="jd-descrcol" width="100%">This class provides a wrapper for an undeclared, checked exception thrown by
- an InvocationHandler.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown by a method invocation on a proxy instance if its invocation
+ handler's <code><a href="reference/java/lang/reflect/InvocationHandler.html#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])">invoke</a></code> method throws a
+ checked exception (a <code>Throwable</code> that is not assignable
+ to <code>RuntimeException</code> or <code>Error</code>) that
+ is not assignable to any of the exception types declared in the
+ <code>throws</code> clause of the method that was invoked on the
+ proxy instance and dispatched to the invocation handler.&nbsp;</td>
           </tr>
   </table>
     </div>
@@ -238,8 +276,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/GenericSignatureFormatError.html">GenericSignatureFormatError</a></td>
-              <td class="jd-descrcol" width="100%">Indicates that a malformed signature has been encountered via a reflective
- method.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a syntactically malformed signature attribute is
+ encountered by a reflective method that needs to interpret the
+ generic signature information for a type, method or constructor.&nbsp;</td>
           </tr>
   </table>
     </div>

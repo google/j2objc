@@ -238,32 +238,38 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a class loader is unable to find a class.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to load in a class through its
+ string name using:
+ <ul>
+ <li>The <code>forName</code> method in class <code>Class</code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a field or method which is not
- accessible from the location where the reference is made.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An IllegalAccessException is thrown when an application tries
+ to reflectively create an instance (other than an array),
+ set or get a field, or invoke a method, but the currently
+ executing method does not have access to the definition of
+ the specified class, field, method or constructor.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a constructor which is not
- accessible from the location where the reference is made.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to create an instance of a class
+ using the <code>newInstance</code> method in class
+ <code>Class</code>, but the specified class object cannot be
+ instantiated.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/reflect/InvocationTargetException.html">InvocationTargetException</a></td>
-              <td class="jd-descrcol" width="100%">This class provides a wrapper for an exception thrown by a <code>Method</code> or
- <code>Constructor</code> invocation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">InvocationTargetException is a checked exception that wraps
+ an exception thrown by an invoked method or constructor.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a field that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Signals that the class doesn't have a field of a specified name.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a method that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a particular method cannot be found.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -277,10 +283,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Superclass of exceptions related to reflection.</p>
+<p>Common superclass of exceptions thrown by reflective operations in
+ core reflection.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/LinkageError.html">LinkageError</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -345,7 +357,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ReflectiveOperationException.html#ReflectiveOperationException()">ReflectiveOperationException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new exception with no detail message.</div>
+        <div class="jd-descrdiv">Constructs a new exception with <code>null</code> as its detail
+ message.</div>
   
   </td></tr>
 
@@ -363,7 +376,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ReflectiveOperationException.html#ReflectiveOperationException(java.lang.String)">ReflectiveOperationException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Constructs a new exception with the given detail message.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified detail message.</div>
   
   </td></tr>
 
@@ -379,9 +392,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ReflectiveOperationException.html#ReflectiveOperationException(java.lang.Throwable)">ReflectiveOperationException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/lang/ReflectiveOperationException.html#ReflectiveOperationException(java.lang.String, java.lang.Throwable)">ReflectiveOperationException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new exception with the given cause.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified detail message
+ and cause.</div>
   
   </td></tr>
 
@@ -397,9 +411,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ReflectiveOperationException.html#ReflectiveOperationException(java.lang.String, java.lang.Throwable)">ReflectiveOperationException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/lang/ReflectiveOperationException.html#ReflectiveOperationException(java.lang.Throwable)">ReflectiveOperationException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new exception with the given detail message and cause.</div>
+        <div class="jd-descrdiv">Constructs a new exception with the specified cause and a detail
+ message of <code>(cause==null ? null : cause.toString())</code> (which
+ typically contains the class and detail message of <code>cause</code>).</div>
   
   </td></tr>
 
@@ -633,6 +649,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -933,7 +968,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with no detail message.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with <code>null</code> as its detail
+ message.  The cause is not initialized, and may subsequently be
+ initialized by a call to <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(Throwable)</a></code>.
 </p></div>
 
     </div>
@@ -965,40 +1002,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the given detail message.
-</p></div>
-
-    </div>
-</div>
-
-
-<a id="ReflectiveOperationException(java.lang.Throwable)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">ReflectiveOperationException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the given cause.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified detail message.
+ The cause is not initialized, and may subsequently be
+ initialized by a call to <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(Throwable)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the detail message. The detail message is saved for
+          later retrieval by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1029,8 +1046,76 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the given detail message and cause.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified detail message
+ and cause.
+
+ <p>Note that the detail message associated with
+ <code>cause</code> is <em>not</em> automatically incorporated in
+ this exception's detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the detail message (which is saved for later retrieval
+         by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is
+         permitted, and indicates that the cause is nonexistent or
+         unknown.)
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="ReflectiveOperationException(java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">ReflectiveOperationException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new exception with the specified cause and a detail
+ message of <code>(cause==null ? null : cause.toString())</code> (which
+ typically contains the class and detail message of <code>cause</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>cause</th>
+          <td>the cause (which is saved for later retrieval by the
+         <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is
+         permitted, and indicates that the cause is nonexistent or
+         unknown.)
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

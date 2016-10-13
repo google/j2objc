@@ -144,7 +144,7 @@ layout: api
   
 
   
-    extends <a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a><br/>
+    extends <a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a>&lt;<a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a>&gt;<br/>
   
   
   
@@ -177,7 +177,7 @@ layout: api
         
             <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
         
-        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../reference/java/util/EventListenerProxy.html">java.util.EventListenerProxy</a></td>
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../reference/java/util/EventListenerProxy.html">java.util.EventListenerProxy</a>&lt;<a href="../../../reference/java/beans/PropertyChangeListener.html">java.beans.PropertyChangeListener</a>&gt;</td>
     </tr>
     
 
@@ -203,12 +203,24 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The implementation of this listener proxy just delegates the received events
- to its listener.
-</p>
+<p>A class which extends the <code>EventListenerProxy</code>
+ specifically for adding a <code>PropertyChangeListener</code>
+ with a "bound" property.
+ Instances of this class can be added
+ as <code>PropertyChangeListener</code>s to a bean
+ which supports firing property change events.
+ <p>
+ If the object has a <code>getPropertyChangeListeners</code> method
+ then the array returned could be a mixture of <code>PropertyChangeListener</code>
+ and <code>PropertyChangeListenerProxy</code> objects.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></code></li><li><code><a href="../../../reference/java/beans/PropertyChangeSupport.html#getPropertyChangeListeners()">getPropertyChangeListeners()</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -273,8 +285,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html#PropertyChangeListenerProxy(java.lang.String, java.beans.PropertyChangeListener)">PropertyChangeListenerProxy</a></span>(<a href="../../../reference/java/lang/String.html">String</a> propertyName, <a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> listener)
         
-        <div class="jd-descrdiv">Creates a new listener proxy that associates a listener with a property
- name.</div>
+        <div class="jd-descrdiv">Constructor which binds the <code>PropertyChangeListener</code>
+ to a specific property.</div>
   
   </td></tr>
 
@@ -305,7 +317,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html#getPropertyName()">getPropertyName</a></span>()
         
-        <div class="jd-descrdiv">Returns the name of the property associated with this listener proxy.</div>
+        <div class="jd-descrdiv">Returns the name of the named property associated with the listener.</div>
   
   </td></tr>
 
@@ -323,7 +335,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html#propertyChange(java.beans.PropertyChangeEvent)">propertyChange</a></span>(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> event)
         
-        <div class="jd-descrdiv">The source bean calls this method when an event is raised.</div>
+        <div class="jd-descrdiv">Forwards the property change event to the listener delegate.</div>
   
   </td></tr>
 
@@ -370,12 +382,12 @@ From class
             
             
             
-            <a href="../../../reference/java/util/EventListener.html">EventListener</a>
+            <a href="../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a>
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/EventListenerProxy.html#getListener()">getListener</a></span>()
         
-        <div class="jd-descrdiv">Returns the wrapped <code>EventListener</code>.</div>
+        <div class="jd-descrdiv">Returns the listener associated with the proxy.</div>
   
   </td></tr>
 
@@ -648,9 +660,9 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListener.html#propertyChange(java.beans.PropertyChangeEvent)">propertyChange</a></span>(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> event)
+        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListener.html#propertyChange(java.beans.PropertyChangeEvent)">propertyChange</a></span>(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> evt)
         
-        <div class="jd-descrdiv">The source bean calls this method when an event is raised.</div>
+        <div class="jd-descrdiv">This method gets called when a bound property is changed.</div>
   
   </td></tr>
 
@@ -720,18 +732,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new listener proxy that associates a listener with a property
- name.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructor which binds the <code>PropertyChangeListener</code>
+ to a specific property.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>propertyName</th>
-          <td>the name of the associated property.</td>
+          <td>the name of the property to listen on</td>
         </tr>
         <tr>
           <th>listener</th>
-          <td>the listener to delegate incoming events to.
+          <td>the listener object
 </td>
         </tr>
       </table>
@@ -781,10 +793,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the property associated with this listener proxy.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the named property associated with the listener.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the name of the associated property.
+      <ul class="nolist"><li>the name of the named property associated with the listener
 </li></ul>
   </div>
 
@@ -817,14 +829,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The source bean calls this method when an event is raised.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Forwards the property change event to the listener delegate.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>event</th>
-          <td>the <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> object which contains the name
-            and the old and new value of the property that has changed.
+          <td>the property change event
 </td>
         </tr>
       </table>

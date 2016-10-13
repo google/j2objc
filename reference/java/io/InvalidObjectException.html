@@ -260,13 +260,14 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Signals that, during deserialization, the validation of an object has failed.</p>
+<p>Indicates that one or more deserialized objects failed validation
+ tests.  The argument should provide the reason for the failure.</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#registerValidation(java.io.ObjectInputValidation, int)">registerValidation(ObjectInputValidation, int)</a></code></li><li><code><a href="../../../reference/java/io/ObjectInputValidation.html#validateObject()">validateObject()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></code></li>
       </ul>
   </div>
 
@@ -331,10 +332,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InvalidObjectException.html#InvalidObjectException(java.lang.String)">InvalidObjectException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/io/InvalidObjectException.html#InvalidObjectException(java.lang.String)">InvalidObjectException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason)
         
-        <div class="jd-descrdiv">Constructs an <code>InvalidObjectException</code> with its stack trace and
- detail message filled in.</div>
+        <div class="jd-descrdiv">Constructs an <code>InvalidObjectException</code>.</div>
   
   </td></tr>
 
@@ -572,6 +572,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -860,7 +879,7 @@ From class
         
       </span>
       <span class="sympad">InvalidObjectException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -872,17 +891,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>InvalidObjectException</code> with its stack trace and
- detail message filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>InvalidObjectException</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
-</td>
+          <th>reason</th>
+          <td>Detailed message explaining the reason for the failure.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></code></li>
+      </ul>
   </div>
 
     </div>

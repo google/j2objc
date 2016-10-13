@@ -208,8 +208,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%"><code>AbstractList</code> is an abstract implementation of the <code>List</code> interface, optimized
- for a backing store which supports random access.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <code><a href="reference/java/util/List.html">List</a></code>
+ interface to minimize the effort required to implement this interface
+ backed by a "random access" data store (such as an array).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</td>
@@ -218,7 +219,9 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">An AbstractSet is an abstract implementation of the Set interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <tt>Set</tt>
+ interface to minimize the effort required to implement this
+ interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</td>
@@ -296,7 +299,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">AbstractSequentialList is an abstract implementation of the List interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <tt>List</tt>
+ interface to minimize the effort required to implement this interface
+ backed by a "sequential access" data store (such as a linked list).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</td>
@@ -305,7 +310,7 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">ArrayList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Resizable-array implementation of the <tt>List</tt> interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;</td>
@@ -329,11 +334,12 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">An EnumSet is a specialized Set to be used with enums as keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/util/Set.html">Set</a></code> implementation for use with enum types.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">HashSet is an implementation of a Set.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements the <tt>Set</tt> interface, backed by a hash table
+ (actually a <tt>HashMap</tt> instance).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</td>
@@ -347,11 +353,13 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedHashSet is a variant of HashSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Hash table and linked list implementation of the <tt>Set</tt> interface,
+ with predictable iteration order.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by a doubly-linked list.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Doubly-linked list implementation of the <code>List</code> and <code>Deque</code>
+ interfaces.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</td>
@@ -365,14 +373,12 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">A PriorityQueue holds elements on a priority heap, which orders the elements
- according to their natural order or according to the comparator specified at
- construction time.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">An unbounded priority {@linkplain Queue queue} based on a priority heap.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%"><code>Stack</code> is a Last-In/First-Out(LIFO) data structure which represents a
- stack of objects.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Stack</code> class represents a last-in-first-out
+ (LIFO) stack of objects.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</td>
@@ -382,11 +388,12 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">TreeSet is an implementation of SortedSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> implementation based on a <code><a href="reference/java/util/TreeMap.html">TreeMap</a></code>.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">Vector is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array and synchronized.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>Vector</code> class implements a growable array of
+ objects.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -398,12 +405,39 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Class <code>AbstractCollection</code> is an abstract implementation of the <code>Collection</code> interface. A subclass must implement the abstract methods <code>iterator()</code> and <code>size()</code> to create an immutable collection. To create a
- modifiable collection it's necessary to override the <code>add()</code> method that
- currently throws an <code>UnsupportedOperationException</code>.</p>
+<p>This class provides a skeletal implementation of the <tt>Collection</tt>
+ interface, to minimize the effort required to implement this interface. <p>
+
+ To implement an unmodifiable collection, the programmer needs only to
+ extend this class and provide implementations for the <tt>iterator</tt> and
+ <tt>size</tt> methods.  (The iterator returned by the <tt>iterator</tt>
+ method must implement <tt>hasNext</tt> and <tt>next</tt>.)<p>
+
+ To implement a modifiable collection, the programmer must additionally
+ override this class's <tt>add</tt> method (which otherwise throws an
+ <tt>UnsupportedOperationException</tt>), and the iterator returned by the
+ <tt>iterator</tt> method must additionally implement its <tt>remove</tt>
+ method.<p>
+
+ The programmer should generally provide a void (no argument) and
+ <tt>Collection</tt> constructor, as per the recommendation in the
+ <tt>Collection</tt> interface specification.<p>
+
+ The documentation for each non-abstract method in this class describes its
+ implementation in detail.  Each of these methods may be overridden if
+ the collection being implemented admits a more efficient implementation.<p>
+
+ This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html">Collection</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -470,7 +504,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#AbstractCollection()">AbstractCollection</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of this AbstractCollection.</div>
+        <div class="jd-descrdiv">Sole constructor.</div>
   
   </td></tr>
 
@@ -497,10 +531,13 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).
+
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -516,10 +553,13 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.</div>
   
   </td></tr>
 
@@ -537,7 +577,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.</div>
   
   </td></tr>
 
@@ -553,9 +596,12 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</div>
   
   </td></tr>
 
@@ -571,10 +617,14 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.</div>
   
   </td></tr>
 
@@ -592,7 +642,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -610,8 +662,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements contained in this collection.</div>
   
   </td></tr>
 
@@ -627,10 +678,13 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.</div>
   
   </td></tr>
 
@@ -646,10 +700,14 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -665,10 +723,14 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -686,7 +748,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
   
   </td></tr>
 
@@ -704,7 +766,12 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray(T[])">toArray</a></span>(T[] contents)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -722,7 +789,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.</div>
   
   </td></tr>
 
@@ -740,7 +811,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractCollection.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns the string representation of this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns a string representation of this collection.</div>
   
   </td></tr>
 
@@ -1020,10 +1091,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -1039,10 +1110,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1060,7 +1131,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -1076,9 +1147,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -1094,10 +1165,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -1113,10 +1184,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -1134,7 +1204,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -1152,7 +1222,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -1170,8 +1240,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -1184,13 +1253,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -1206,10 +1275,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -1225,10 +1294,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -1246,7 +1353,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -1262,9 +1405,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -1282,7 +1426,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -1320,6 +1464,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -1327,6 +1487,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -1398,7 +1574,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of this AbstractCollection.
+  <div class="jd-tagdata jd-tagdescr"><p>Sole constructor.  (For invocation by subclass constructors, typically
+ implicit.)
 </p></div>
 
     </div>
@@ -1428,7 +1605,7 @@ From interface
         boolean
       </span>
       <span class="sympad">add</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1440,38 +1617,65 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).
+  <div class="jd-tagdata jd-tagdescr"><p>Ensures that this collection contains the specified element (optional
+ operation).  Returns <tt>true</tt> if this collection changed as a
+ result of the call.  (Returns <tt>false</tt> if this collection does
+ not permit duplicates and already contains the specified element.)<p>
 
- After this method finishes successfully it is guaranteed that the object
- is contained in the collection.
+ Collections that support this operation may place limitations on what
+ elements may be added to this collection.  In particular, some
+ collections will refuse to add <tt>null</tt> elements, and others will
+ impose restrictions on the type of elements that may be added.
+ Collection classes should clearly specify in their documentation any
+ restrictions on what elements may be added.<p>
 
- If the collection was modified it returns <code>true</code>, <code>false</code> if
- no changes were made.
+ If a collection refuses to add a particular element for any reason
+ other than that it already contains the element, it <i>must</i> throw
+ an exception (rather than returning <tt>false</tt>).  This preserves
+ the invariant that a collection always contains the specified element
+ after this call returns.
 
- An implementation of <code>Collection</code> may narrow the set of accepted
- objects, but it has to specify this in the documentation. If the object
- to be added does not meet this restriction, then an
- <code>IllegalArgumentException</code> is thrown.
-
- If a collection does not yet contain an object that is to be added and
- adding the object fails, this method <i>must</i> throw an appropriate
- unchecked Exception. Returning false is not permitted in this case
- because it would violate the postcondition that the element will be part
- of the collection after this method finishes.</p></div>
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to add.</td>
+          <th>e</th>
+          <td>element whose presence in this collection is to be ensured</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> is
-         modified, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection changed as a result of the
+         call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1491,7 +1695,7 @@ From interface
         boolean
       </span>
       <span class="sympad">addAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1503,54 +1707,61 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Attempts to add all of the objects contained in <code>collection</code>
- to the contents of this <code>Collection</code> (optional). This implementation
- iterates over the given <code>Collection</code> and calls <code>add</code> for each
- element. If any of these calls return <code>true</code>, then <code>true</code> is
- returned as result of this method call, <code>false</code> otherwise. If this
- <code>Collection</code> does not support adding elements, an <code>UnsupportedOperationException</code> is thrown.
- <p>
- If the passed <code>Collection</code> is changed during the process of adding elements
- to this <code>Collection</code>, the behavior depends on the behavior of the passed
- <code>Collection</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Adds all of the elements in the specified collection to this collection
+ (optional operation).  The behavior of this operation is undefined if
+ the specified collection is modified while the operation is in progress.
+ (This implies that the behavior of this call is undefined if the
+ specified collection is this collection, and this collection is
+ nonempty.)
+
+ <p>This implementation iterates over the specified collection, and adds
+ each object returned by the iterator to this collection, in turn.
+
+ <p>Note that this implementation will throw an
+ <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
+ overridden (assuming the specified collection is non-empty).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects.</td>
+          <th>c</th>
+          <td>collection containing elements to be added to this collection</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> is modified, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if adding to this <code>Collection</code> is not supported.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the class of an object is inappropriate for this
-                <code>Collection</code>.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if an object cannot be added to this <code>Collection</code>.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> is <code>null</code>, or if it contains
-                <code>null</code> elements and this <code>Collection</code> does not support
-                such elements.
-</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractCollection.html#add(E)">add(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1582,26 +1793,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all elements from this <code>Collection</code>, leaving it empty (optional).
- This implementation iterates over this <code>Collection</code> and calls the <code>remove</code> method on each element. If the iterator does not support removal
- of elements, an <code>UnsupportedOperationException</code> is thrown.
- <p>
- Concrete implementations usually can clear a <code>Collection</code> more efficiently
- and should therefore overwrite this method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the elements from this collection (optional operation).
+ The collection will be empty after this method returns.
+
+ <p>This implementation iterates over this collection, removing each
+ element using the <tt>Iterator.remove</tt> operation.  Most
+ implementations will probably choose to override this method for
+ efficiency.
+
+ <p>Note that this implementation will throw an
+ <tt>UnsupportedOperationException</tt> if the iterator returned by this
+ collection's <tt>iterator</tt> method does not implement the
+ <tt>remove</tt> method and this collection is non-empty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>it the iterator does not support removing elements from
-                this <code>Collection</code></td>
+            <td>
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractCollection.html#iterator()">iterator()</a></code></li><li><code><a href="../../../reference/java/util/AbstractCollection.html#isEmpty()">isEmpty()</a></code></li><li><code><a href="../../../reference/java/util/AbstractCollection.html#size()">size()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1621,7 +1833,7 @@ From interface
         boolean
       </span>
       <span class="sympad">contains</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1633,37 +1845,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Tests whether this <code>Collection</code> contains the specified object. This
- implementation iterates over this <code>Collection</code> and tests, whether any
- element is equal to the given object. If <code>object != null</code> then
- <code>object.equals(e)</code> is called for each element <code>e</code> returned by
- the iterator until the element is found. If <code>object == null</code> then
- each element <code>e</code> returned by the iterator is compared with the test
- <code>e == null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this collection contains the specified element.
+ More formally, returns <tt>true</tt> if and only if this collection
+ contains at least one element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+
+ <p>This implementation iterates over the elements in the collection,
+ checking each element in turn for equality with the specified element.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to search for.</td>
+          <th>o</th>
+          <td>element whose presence in this collection is to be tested</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if object is an element of this <code>Collection</code>, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection contains the specified
+         element</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the object to look for isn't of the correct type.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if the object to look for is <code>null</code> and this
-                <code>Collection</code> doesn't support <code>null</code> elements.
+            <td>
 </td>
         </tr>
       </table>
@@ -1686,7 +1898,7 @@ From interface
         boolean
       </span>
       <span class="sympad">containsAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1698,44 +1910,44 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>. This implementation iterates over the specified
- <code>Collection</code>. If one element returned by the iterator is not contained in
- this <code>Collection</code>, then <code>false</code> is returned; <code>true</code> otherwise.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.
+
+ <p>This implementation iterates over the specified collection,
+ checking each element returned by the iterator in turn to see
+ if it's contained in this collection.  If all elements are so
+ contained <tt>true</tt> is returned, otherwise <tt>false</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects.</td>
+          <th>c</th>
+          <td>collection to be checked for containment in this collection</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if all objects in the specified <code>Collection</code> are
-         elements of this <code>Collection</code>, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection contains all of the elements
+         in the specified collection</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if one or more elements of <code>collection</code> isn't of the
-                correct type.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> contains at least one <code>null</code>
-                element and this <code>Collection</code> doesn't support <code>null</code>
-                elements.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> is <code>null</code>.
-</td>
+            <td></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1767,17 +1979,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns if this <code>Collection</code> contains no elements. This implementation
- tests, whether <code>size</code> returns 0.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this collection contains no elements.
+
+ <p>This implementation returns <tt>size() == 0</tt>.
+</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> has no elements, <code>false</code>
-         otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractCollection.html#size()">size()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection contains no elements
+</li></ul>
   </div>
 
     </div>
@@ -1809,16 +2018,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>. The order in which the elements are
- returned by the <code><a href="reference/java/util/Iterator.html">Iterator</a></code> is not defined unless the instance of the
- <code>Collection</code> has a defined order.  In that case, the elements are returned in that order.
- <p>
- In this class this method is declared abstract and has to be implemented
- by concrete <code>Collection</code> implementations.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements contained in this collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an iterator for accessing the <code>Collection</code> contents.
+      <ul class="nolist"><li>an iterator over the elements contained in this collection
 </li></ul>
   </div>
 
@@ -1839,7 +2042,7 @@ From interface
         boolean
       </span>
       <span class="sympad">remove</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1851,45 +2054,49 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional). This implementation iterates over this
- <code>Collection</code> and tests for each element <code>e</code> returned by the iterator,
- whether <code>e</code> is equal to the given object. If <code>object != null</code>
- then this test is performed using <code>object.equals(e)</code>, otherwise
- using <code>object == null</code>. If an element equal to the given object is
- found, then the <code>remove</code> method is called on the iterator and
- <code>true</code> is returned, <code>false</code> otherwise. If the iterator does
- not support removing elements, an <code>UnsupportedOperationException</code>
- is thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).  More formally,
+ removes an element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>, if
+ this collection contains one or more such elements.  Returns
+ <tt>true</tt> if this collection contained the specified element (or
+ equivalently, if this collection changed as a result of the call).
+
+ <p>This implementation iterates over the collection looking for the
+ specified element.  If it finds the element, it removes the element
+ from the collection using the iterator's remove method.
+
+ <p>Note that this implementation throws an
+ <tt>UnsupportedOperationException</tt> if the iterator returned by this
+ collection's iterator method does not implement the <tt>remove</tt>
+ method and this collection contains the specified object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to remove.</td>
+          <th>o</th>
+          <td>element to be removed from this collection, if present</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> is modified, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if an element was removed as a result of this call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if removing from this <code>Collection</code> is not supported.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if the object passed is not of the correct type.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>object</code> is <code>null</code> and this <code>Collection</code>
-                doesn't support <code>null</code> elements.
+            <td>
 </td>
         </tr>
       </table>
@@ -1912,7 +2119,7 @@ From interface
         boolean
       </span>
       <span class="sympad">removeAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1924,54 +2131,56 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional). After this method returns none of the
- elements in the passed <code>Collection</code> can be found in this <code>Collection</code>
- anymore.
- <p>
- This implementation iterates over this <code>Collection</code> and tests for each
- element <code>e</code> returned by the iterator, whether it is contained in
- the specified <code>Collection</code>. If this test is positive, then the <code>remove</code> method is called on the iterator. If the iterator does not
- support removing elements, an <code>UnsupportedOperationException</code> is
- thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).  After this call returns,
+ this collection will contain no elements in common with the specified
+ collection.
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.  If it's so contained, it's removed from
+ this collection with the iterator's <tt>remove</tt> method.
+
+ <p>Note that this implementation will throw an
+ <tt>UnsupportedOperationException</tt> if the iterator returned by the
+ <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+ and this collection contains one or more elements in common with the
+ specified collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects to remove.</td>
+          <th>c</th>
+          <td>collection containing elements to be removed from this collection</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> is modified, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection changed as a result of the
+         call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if removing from this <code>Collection</code> is not supported.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if one or more elements of <code>collection</code> isn't of the
-                correct type.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> contains at least one <code>null</code>
-                element and this <code>Collection</code> doesn't support <code>null</code>
-                elements.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> is <code>null</code>.
-</td>
+            <td></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove(Object)</a></code></li><li><code><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1991,7 +2200,7 @@ From interface
         boolean
       </span>
       <span class="sympad">retainAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -2003,54 +2212,55 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional). After this method returns this <code>Collection</code>
- will only contain elements that also can be found in the <code>Collection</code>
- passed to this method.
- <p>
- This implementation iterates over this <code>Collection</code> and tests for each
- element <code>e</code> returned by the iterator, whether it is contained in
- the specified <code>Collection</code>. If this test is negative, then the <code>remove</code> method is called on the iterator. If the iterator does not
- support removing elements, an <code>UnsupportedOperationException</code> is
- thrown.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).  In other words, removes from
+ this collection all of its elements that are not contained in the
+ specified collection.
+
+ <p>This implementation iterates over this collection, checking each
+ element returned by the iterator in turn to see if it's contained
+ in the specified collection.  If it's not so contained, it's removed
+ from this collection with the iterator's <tt>remove</tt> method.
+
+ <p>Note that this implementation will throw an
+ <tt>UnsupportedOperationException</tt> if the iterator returned by the
+ <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+ and this collection contains one or more elements not present in the
+ specified collection.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects to retain.</td>
+          <th>c</th>
+          <td>collection containing elements to be retained in this collection</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this <code>Collection</code> is modified, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this collection changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if removing from this <code>Collection</code> is not supported.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>if one or more elements of <code>collection</code>
-                isn't of the correct type.</td>
+            <td></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> contains at least one
-                <code>null</code> element and this <code>Collection</code> doesn't support
-                <code>null</code> elements.</td>
-        </tr>
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>collection</code> is <code>null</code>.
-</td>
+            <td></td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractCollection.html#remove(java.lang.Object)">remove(Object)</a></code></li><li><code><a href="../../../reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -2082,15 +2292,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a count of how many objects this <code>Collection</code> contains.
- <p>
- In this class this method is declared abstract and has to be implemented
- by concrete <code>Collection</code> implementations.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this collection.  If this collection
+ contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
+ <tt>Integer.MAX_VALUE</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>how many objects this <code>Collection</code> contains, or <code>Integer.MAX_VALUE</code>
-         if there are more than <code>Integer.MAX_VALUE</code> elements in this
-         <code>Collection</code>.
+      <ul class="nolist"><li>the number of elements in this collection
 </li></ul>
   </div>
 
@@ -2123,29 +2330,85 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all elements contained in this <code>Collection</code>. If
- the specified array is large enough to hold the elements, the specified
- array is used, otherwise an array of the same type is created. If the
- specified array is used and is larger than this <code>Collection</code>, the array
- element following the <code>Collection</code> elements is set to null.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.
+ If the collection fits in the specified array, it is returned therein.
+ Otherwise, a new array is allocated with the runtime type of the
+ specified array and the size of this collection.
 
- If the implementation has ordered elements it will return the element
- array in the same order as an iterator would return them.
+ <p>If this collection fits in the specified array with room to spare
+ (i.e., the array has more elements than this collection), the element
+ in the array immediately following the end of the collection is set to
+ <tt>null</tt>.  (This is useful in determining the length of this
+ collection <i>only</i> if the caller knows that this collection does
+ not contain any <tt>null</tt> elements.)
 
- <code>toArray(new Object[0])</code> behaves exactly the same way as
- <code>toArray()</code> does.</p></div>
+ <p>If this collection makes any guarantees as to what order its elements
+ are returned by its iterator, this method must return the elements in
+ the same order.
+
+ <p>Like the <code><a href="reference/java/util/Collection.html#toArray()">toArray()</a></code> method, this method acts as bridge between
+ array-based and collection-based APIs.  Further, this method allows
+ precise control over the runtime type of the output array, and may,
+ under certain circumstances, be used to save allocation costs.
+
+ <p>Suppose <tt>x</tt> is a collection known to contain only strings.
+ The following code can be used to dump the collection into a newly
+ allocated array of <tt>String</tt>:
+
+ <pre>
+     String[] y = x.toArray(new String[0]);</pre>
+
+ Note that <tt>toArray(new Object[0])</tt> is identical in function to
+ <tt>toArray()</tt>.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.
+ If the number of elements returned by the iterator is too large to
+ fit into the specified array, then the elements are returned in a
+ newly allocated array with length equal to the number of elements
+ returned by the iterator, even if the size of this collection
+ changes during iteration, as might happen if the collection permits
+ concurrent modification during iteration.  The <code>size</code> method is
+ called only as an optimization hint; the correct result is returned
+ even if the iterator returns a different number of elements.
+
+ <p>This method is equivalent to:
+
+  <pre> <code>List&lt;E&gt; list = new ArrayList&lt;E&gt;(size());
+ for (E e : this)
+     list.add(e);
+ return list.toArray(a);
+ </code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>contents</th>
-          <td>the array.</td>
+          <td>the array into which the elements of this collection are to be
+        stored, if it is big enough; otherwise, a new array of the same
+        runtime type is allocated for this purpose.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of the elements from this <code>Collection</code>.</li></ul>
+      <ul class="nolist"><li>an array containing all of the elements in this collection</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -2177,17 +2440,40 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new array containing all elements contained in this <code>Collection</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this collection.
+ If this collection makes any guarantees as to what order its elements
+ are returned by its iterator, this method must return the elements in
+ the same order.
 
- If the implementation has ordered elements it will return the element
- array in the same order as an iterator would return them.
+ <p>The returned array will be "safe" in that no references to it are
+ maintained by this collection.  (In other words, this method must
+ allocate a new array even if this collection is backed by an array).
+ The caller is thus free to modify the returned array.
 
- The array returned does not reflect any changes of the <code>Collection</code>. A new
- array is created even if the underlying data structure is already an
- array.</p></div>
+ <p>This method acts as bridge between array-based and collection-based
+ APIs.
+
+ <p>This implementation returns an array containing all the elements
+ returned by this collection's iterator, in the same order, stored in
+ consecutive elements of the array, starting with index <code>0</code>.
+ The length of the returned array is equal to the number of elements
+ returned by the iterator, even if the size of this collection changes
+ during iteration, as might happen if the collection permits
+ concurrent modification during iteration.  The <code>size</code> method is
+ called only as an optimization hint; the correct result is returned
+ even if the iterator returns a different number of elements.
+
+ <p>This method is equivalent to:
+
+  <pre> <code>List&lt;E&gt; list = new ArrayList&lt;E&gt;(size());
+ for (E e : this)
+     list.add(e);
+ return list.toArray();
+ </code></pre>
+</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of the elements from this <code>Collection</code>.
+      <ul class="nolist"><li>an array containing all of the elements in this collection
 </li></ul>
   </div>
 
@@ -2220,12 +2506,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the string representation of this <code>Collection</code>. The presentation
- has a specific format. It is enclosed by square brackets ("[]"). Elements
- are separated by ', ' (comma and space).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this collection.  The string
+ representation consists of a list of the collection's elements in the
+ order they are returned by its iterator, enclosed in square brackets
+ (<tt>"[]"</tt>).  Adjacent elements are separated by the characters
+ <tt>", "</tt> (comma and space).  Elements are converted to strings as
+ by <code><a href="reference/java/lang/String.html#valueOf(java.lang.Object)">valueOf(Object)</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the string representation of this <code>Collection</code>.
+      <ul class="nolist"><li>a string representation of this collection
 </li></ul>
   </div>
 

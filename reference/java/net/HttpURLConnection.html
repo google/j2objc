@@ -250,10 +250,10 @@ layout: api
    try {
      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
      readStream(in);
-   </code> finally {
+   } finally {
      urlConnection.disconnect();
    }
- }</pre>
+ </code></pre>
 
  <h3>Secure Communication with HTTPS</h3>
  Calling <code><a href="reference/java/net/URL.html#openConnection()">openConnection()</a></code> on a URL with the "https"
@@ -261,7 +261,7 @@ layout: api
  overriding the default <code><a href="reference/javax/net/ssl/HostnameVerifier.html">HostnameVerifier</a></code> and <code><a href="reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a></code>. An application-supplied <code>SSLSocketFactory</code>
  created from an <code><a href="reference/javax/net/ssl/SSLContext.html">SSLContext</a></code> can
  provide a custom <code><a href="reference/javax/net/ssl/X509TrustManager.html">X509TrustManager</a></code> for verifying certificate chains and a custom
- <code><a href="reference/javax/net/ssl/X509KeyManager.html">X509KeyManager</a></code> for supplying
+ <code><a href="">ERROR(X509KeyManager/javax.net.ssl.X509KeyManager X509KeyManager)</a></code> for supplying
  client certificates. See <code><a href="reference/javax/net/ssl/HttpsURLConnection.html">HttpsURLConnection</a></code> for more details.
 
  <h3>Response Handling</h3>
@@ -291,10 +291,10 @@ layout: api
 
      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
      readStream(in);
-   </code> finally {
+   } finally {
      urlConnection.disconnect();
    }
- }</pre>
+ </code></pre>
 
  <h3>Performance</h3>
  The input and output streams returned by this class are <strong>not
@@ -336,12 +336,12 @@ layout: api
      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
      if (!url.getHost().equals(urlConnection.getURL().getHost())) {
        // we were redirected! Kick the user out to the browser to sign on?
-     </code>
+     }
      ...
    } finally {
      urlConnection.disconnect();
    }
- }</pre>
+ </code></pre>
 
  <h3>HTTP Authentication</h3>
  <code>HttpURLConnection</code> supports <a
@@ -350,9 +350,9 @@ layout: api
  <pre>   <code>Authenticator.setDefault(new Authenticator() {
      protected PasswordAuthentication getPasswordAuthentication() {
        return new PasswordAuthentication(username, password.toCharArray());
-     </code>
+     }
    });
- }</pre>
+ </code></pre>
  Unless paired with HTTPS, this is <strong>not</strong> a secure mechanism for
  user authentication. In particular, the username, password, request and
  response are all transmitted over the network without encryption.
@@ -417,10 +417,10 @@ layout: api
  connection pool</a>. Work around this by disabling connection pooling:
  <pre>   <code>private void disableConnectionReuseIfNecessary() {
    // Work around pre-Froyo bugs in HTTP connection reuse.
-   if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+   if (Integer.parseInt(Build.VERSION.SDK) &lt; Build.VERSION_CODES.FROYO) {
      System.setProperty("http.keepAlive", "false");
-   </code>
- }}</pre>
+   }
+ }</code></pre>
 
  <p>Each instance of <code>HttpURLConnection</code> may be used for one
  request/response pair. Instances of this class are not thread safe.

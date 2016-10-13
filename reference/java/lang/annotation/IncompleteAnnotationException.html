@@ -235,12 +235,20 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Indicates that an element of an annotation type was accessed that was added
- after the type was compiled or serialized. This does not apply to new
- elements that have default values.</p>
+<p>Thrown to indicate that a program has attempted to access an element of
+ an annotation type that was added to the annotation type definition after
+ the annotation was compiled (or serialized).  This exception will not be
+ thrown if the new element has a default value.
+ This exception can be thrown by the {@linkplain java.lang.reflect.AnnotatedElement API used to read annotations
+ reflectively}.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -305,8 +313,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/IncompleteAnnotationException.html#IncompleteAnnotationException(java.lang.Class<? extends java.lang.annotation.Annotation>, java.lang.String)">IncompleteAnnotationException</a></span>(<a href="../../../../reference/java/lang/Class.html">Class</a>&lt;?&nbsp;extends&nbsp;<a href="../../../../reference/java/lang/annotation/Annotation.html">Annotation</a>&gt; annotationType, <a href="../../../../reference/java/lang/String.html">String</a> elementName)
         
-        <div class="jd-descrdiv">Constructs an instance with the incomplete annotation type and the name
- of the element that's missing.</div>
+        <div class="jd-descrdiv">Constructs an IncompleteAnnotationException to indicate that
+ the named element was missing from the specified annotation type.</div>
   
   </td></tr>
 
@@ -337,7 +345,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/IncompleteAnnotationException.html#annotationType()">annotationType</a></span>()
         
-        <div class="jd-descrdiv">Returns the annotation type.</div>
+        <div class="jd-descrdiv">Returns the Class object for the annotation type with the
+ missing element.</div>
   
   </td></tr>
 
@@ -355,7 +364,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/IncompleteAnnotationException.html#elementName()">elementName</a></span>()
         
-        <div class="jd-descrdiv">Returns the incomplete element's name.</div>
+        <div class="jd-descrdiv">Returns the name of the missing element.</div>
   
   </td></tr>
 
@@ -587,6 +596,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -887,18 +915,27 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance with the incomplete annotation type and the name
- of the element that's missing.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an IncompleteAnnotationException to indicate that
+ the named element was missing from the specified annotation type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>annotationType</th>
-          <td>the annotation type.</td>
+          <td>the Class object for the annotation type</td>
         </tr>
         <tr>
           <th>elementName</th>
-          <td>the name of the incomplete element.
+          <td>the name of the missing element</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if either parameter is <code>null</code>
 </td>
         </tr>
       </table>
@@ -948,10 +985,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the annotation type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the Class object for the annotation type with the
+ missing element.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a Class instance.
+      <ul class="nolist"><li>the Class object for the annotation type with the
+     missing element
 </li></ul>
   </div>
 
@@ -984,10 +1023,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the incomplete element's name.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the missing element.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the name of the element.
+      <ul class="nolist"><li>the name of the missing element
 </li></ul>
   </div>
 

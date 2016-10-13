@@ -175,17 +175,17 @@ layout: api
   <pre> <code>class Node {
    private volatile Node left, right;
 
-   private static final AtomicReferenceFieldUpdater<Node, Node> leftUpdater =
+   private static final AtomicReferenceFieldUpdater&lt;Node, Node&gt; leftUpdater =
      AtomicReferenceFieldUpdater.newUpdater(Node.class, Node.class, "left");
-   private static AtomicReferenceFieldUpdater<Node, Node> rightUpdater =
+   private static AtomicReferenceFieldUpdater&lt;Node, Node&gt; rightUpdater =
      AtomicReferenceFieldUpdater.newUpdater(Node.class, Node.class, "right");
 
-   Node getLeft() { return left; </code>
+   Node getLeft() { return left; }
    boolean compareAndSetLeft(Node expect, Node update) {
      return leftUpdater.compareAndSet(this, expect, update);
    }
    // ... and so on
- }}</pre>
+ }</code></pre>
 
  <p>Note that the guarantees of the <code>compareAndSet</code>
  method in this class are weaker than in other atomic classes.

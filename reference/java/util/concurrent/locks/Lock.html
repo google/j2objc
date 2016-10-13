@@ -233,9 +233,9 @@ layout: api
  l.lock();
  try {
    // access the resource protected by this lock
- </code> finally {
+ } finally {
    l.unlock();
- }}</pre>
+ }</code></pre>
 
  When locking and unlocking occur in different scopes, care must be
  taken to ensure that all code that is executed while the lock is
@@ -748,12 +748,12 @@ layout: api
  if (lock.tryLock()) {
    try {
      // manipulate protected state
-   </code> finally {
+   } finally {
      lock.unlock();
    }
  } else {
    // perform alternative actions
- }}</pre>
+ }</code></pre>
 
  This usage ensures that the lock is unlocked if it was acquired, and
  doesn't try to unlock if the lock was not acquired.</p></div>

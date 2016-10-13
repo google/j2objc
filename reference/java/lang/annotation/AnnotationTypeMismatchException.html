@@ -235,11 +235,19 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Indicates that an annotation type has changed since it was compiled or
- serialized.</p>
+<p>Thrown to indicate that a program has attempted to access an element of
+ an annotation whose type has changed after the annotation was compiled
+ (or serialized).
+ This exception can be thrown by the {@linkplain java.lang.reflect.AnnotatedElement API used to read annotations
+ reflectively}.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -304,7 +312,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/AnnotationTypeMismatchException.html#AnnotationTypeMismatchException(java.lang.reflect.Method, java.lang.String)">AnnotationTypeMismatchException</a></span>(<a href="../../../../reference/java/lang/reflect/Method.html">Method</a> element, <a href="../../../../reference/java/lang/String.html">String</a> foundType)
         
-        <div class="jd-descrdiv">Constructs an instance for the given type element and the type found.</div>
+        <div class="jd-descrdiv">Constructs an AnnotationTypeMismatchException for the specified
+ annotation type element and found data type.</div>
   
   </td></tr>
 
@@ -335,7 +344,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/AnnotationTypeMismatchException.html#element()">element</a></span>()
         
-        <div class="jd-descrdiv">Returns the method object for the invalid type.</div>
+        <div class="jd-descrdiv">Returns the <tt>Method</tt> object for the incorrectly typed element.</div>
   
   </td></tr>
 
@@ -353,7 +362,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/annotation/AnnotationTypeMismatchException.html#foundType()">foundType</a></span>()
         
-        <div class="jd-descrdiv">Returns the invalid type.</div>
+        <div class="jd-descrdiv">Returns the type of data found in the incorrectly typed element.</div>
   
   </td></tr>
 
@@ -585,6 +594,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -885,19 +913,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance for the given type element and the type found.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an AnnotationTypeMismatchException for the specified
+ annotation type element and found data type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>element</th>
-          <td>the annotation type element.</td>
+          <td>the <tt>Method</tt> object for the annotation element</td>
         </tr>
         <tr>
           <th>foundType</th>
-          <td>the invalid type that was found. This is actually the textual
-            type description found in the binary class representation,
-            so it may not be human-readable.
+          <td>the (erroneous) type of data found in the annotation.
+        This string may, but is not required to, contain the value
+        as well.  The exact format of the string is unspecified.
 </td>
         </tr>
       </table>
@@ -947,10 +976,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the method object for the invalid type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <tt>Method</tt> object for the incorrectly typed element.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code><a href="reference/java/lang/reflect/Method.html">Method</a></code> instance.
+      <ul class="nolist"><li>the <tt>Method</tt> object for the incorrectly typed element
 </li></ul>
   </div>
 
@@ -983,10 +1012,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the invalid type.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the type of data found in the incorrectly typed element.
+ The returned string may, but is not required to, contain the value
+ as well.  The exact format of the string is unspecified.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a string describing the invalid data.
+      <ul class="nolist"><li>the type of data found in the incorrectly typed element
 </li></ul>
   </div>
 

@@ -123,12 +123,12 @@ layout: api
   
 
   
+   
+  
   
   
   
 
-  
-   
   
   
   
@@ -181,11 +181,6 @@ layout: api
   
 
   
-  
-      implements
-      
-        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
-      
   
   
 
@@ -276,10 +271,14 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An exception which is thrown when a JDBC driver unexpectedly truncates a data
- value either when reading (resulting in warning), or when writing data
- (resulting in an error). The <code>SQLState</code> error code for truncated data
- is <code>01004</code>.
+<p>An exception  thrown as a <code>DataTruncation</code> exception
+ (on writes) or reported as a
+ <code>DataTruncation</code> warning (on reads)
+  when a data values is unexpectedly truncated for reasons other than its having
+  execeeded <code>MaxFieldSize</code>.
+
+ <P>The SQLstate for a <code>DataTruncation</code> during read is <code>01004</code>.
+ <P>The SQLstate for a <code>DataTruncation</code> during write is <code>22001</code>.
 </p>
 
 
@@ -348,7 +347,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#DataTruncation(int, boolean, boolean, int, int)">DataTruncation</a></span>(int index, boolean parameter, boolean read, int dataSize, int transferSize)
         
-        <div class="jd-descrdiv">Creates the <code>DataTruncation</code> object.</div>
+        <div class="jd-descrdiv">Creates a <code>DataTruncation</code> object
+ with the SQLState initialized
+ to 01004 when <code>read</code> is set to <code>true</code> and 22001
+ when <code>read</code> is set to <code>false</code>,
+ the reason set to "Data truncation", the
+ vendor code set to 0, and
+ the other fields set to the given values.</div>
   
   </td></tr>
 
@@ -366,7 +371,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#DataTruncation(int, boolean, boolean, int, int, java.lang.Throwable)">DataTruncation</a></span>(int index, boolean parameter, boolean read, int dataSize, int transferSize, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Creates a DataTruncation.</div>
+        <div class="jd-descrdiv">Creates a <code>DataTruncation</code> object
+ with the SQLState initialized
+ to 01004 when <code>read</code> is set to <code>true</code> and 22001
+ when <code>read</code> is set to <code>false</code>,
+ the reason set to "Data truncation", the
+ vendor code set to 0, and
+ the other fields set to the given values.</div>
   
   </td></tr>
 
@@ -397,7 +408,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#getDataSize()">getDataSize</a></span>()
         
-        <div class="jd-descrdiv">Gets the number of bytes of data that should have been read/written.</div>
+        <div class="jd-descrdiv">Gets the number of bytes of data that should have been transferred.</div>
   
   </td></tr>
 
@@ -415,7 +426,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#getIndex()">getIndex</a></span>()
         
-        <div class="jd-descrdiv">Gets the index of the column or of the parameter that was truncated.</div>
+        <div class="jd-descrdiv">Retrieves the index of the column or parameter that was truncated.</div>
   
   </td></tr>
 
@@ -433,7 +444,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#getParameter()">getParameter</a></span>()
         
-        <div class="jd-descrdiv">Gets whether the value truncated was a parameter value or a column value.</div>
+        <div class="jd-descrdiv">Indicates whether the value truncated was a parameter value or
+ a column value.</div>
   
   </td></tr>
 
@@ -451,8 +463,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#getRead()">getRead</a></span>()
         
-        <div class="jd-descrdiv">Gets whether the value was truncated on a read operation or a write
- operation</div>
+        <div class="jd-descrdiv">Indicates whether or not the value was truncated on a read.</div>
   
   </td></tr>
 
@@ -470,7 +481,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DataTruncation.html#getTransferSize()">getTransferSize</a></span>()
         
-        <div class="jd-descrdiv">Gets the number of bytes of data that was actually read or written.</div>
+        <div class="jd-descrdiv">Gets the number of bytes of data actually transferred.</div>
   
   </td></tr>
 
@@ -522,7 +533,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLWarning.html#getNextWarning()">getNextWarning</a></span>()
         
-        <div class="jd-descrdiv">Gets the next <code>SQLWarning</code> chained to this <code>SQLWarning</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the warning chained to this <code>SQLWarning</code> object by
+ <code>setNextWarning</code>.</div>
   
   </td></tr>
 
@@ -540,7 +552,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLWarning.html#setNextWarning(java.sql.SQLWarning)">setNextWarning</a></span>(<a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a> w)
         
-        <div class="jd-descrdiv">Chains a supplied <code>SQLWarning</code> to this <code>SQLWarning</code>.</div>
+        <div class="jd-descrdiv">Adds a <code>SQLWarning</code> object to the end of the chain.</div>
   
   </td></tr>
 
@@ -583,7 +595,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getErrorCode()">getErrorCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the integer error code for this <code>SQLException</code>.</div>
+        <div class="jd-descrdiv">Retrieves the vendor-specific exception code
+ for this <code>SQLException</code> object.</div>
   
   </td></tr>
 
@@ -601,8 +614,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getNextException()">getNextException</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the <code>SQLException</code> chained to this <code>SQLException</code>,
- if any.</div>
+        <div class="jd-descrdiv">Retrieves the exception chained to this
+ <code>SQLException</code> object by setNextException(SQLException ex).</div>
   
   </td></tr>
 
@@ -620,7 +633,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#getSQLState()">getSQLState</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the <code>SQLState</code> description string for this <code>SQLException</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the SQLState for this <code>SQLException</code> object.</div>
   
   </td></tr>
 
@@ -638,7 +651,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Obsolete.</div>
+        <div class="jd-descrdiv">Returns an iterator over the chained SQLExceptions.</div>
   
   </td></tr>
 
@@ -656,7 +669,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/SQLException.html#setNextException(java.sql.SQLException)">setNextException</a></span>(<a href="../../../reference/java/sql/SQLException.html">SQLException</a> ex)
         
-        <div class="jd-descrdiv">Obsolete.</div>
+        <div class="jd-descrdiv">Adds an <code>SQLException</code> object to the end of the chain.</div>
   
   </td></tr>
 
@@ -877,6 +890,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -1117,8 +1149,6 @@ From class
 
 
 
-
-
 <tr class="api apilevel-" >
 <td colspan="12">
   <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Iterable" class="jd-expando-trigger closed"
@@ -1145,6 +1175,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;<a href="../../../reference/java/lang/Throwable.html">Throwable</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -1155,10 +1201,28 @@ From interface
   </td></tr>
 
 
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;<a href="../../../reference/java/lang/Throwable.html">Throwable</a>&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
+  </td></tr>
+
+
 </table>
   </div>
 </div>
 </td></tr>
+
+
 
 
 </table>
@@ -1220,33 +1284,39 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates the <code>DataTruncation</code> object. The reason is set to <code>"Data truncation"</code>, the error code is set to the <code>SQLException</code> default value, and the other fields are set to the values
- supplied as arguments.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>DataTruncation</code> object
+ with the SQLState initialized
+ to 01004 when <code>read</code> is set to <code>true</code> and 22001
+ when <code>read</code> is set to <code>false</code>,
+ the reason set to "Data truncation", the
+ vendor code set to 0, and
+ the other fields set to the given values.
+ The <code>cause</code> is not initialized, and may subsequently be
+ initialized by a call to the
+ <code><a href="reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause(java.lang.Throwable)</a></code> method.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>index</th>
-          <td>the Index value of the column value or parameter that was
-            truncated.</td>
+          <td>The index of the parameter or column value</td>
         </tr>
         <tr>
           <th>parameter</th>
-          <td><code>true</code> if it was a parameter value that was truncated,
-            <code>false</code> otherwise.</td>
+          <td>true if a parameter value was truncated</td>
         </tr>
         <tr>
           <th>read</th>
-          <td><code>true</code> if the truncation occurred on a read operation,
-            <code>false</code> otherwise.</td>
+          <td>true if a read was truncated</td>
         </tr>
         <tr>
           <th>dataSize</th>
-          <td>the original size of the truncated data.</td>
+          <td>the original size of the data</td>
         </tr>
         <tr>
           <th>transferSize</th>
-          <td>the size of the data after truncation.
+          <td>the size after truncation
 </td>
         </tr>
       </table>
@@ -1281,38 +1351,42 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a DataTruncation. The Reason is set to "Data truncation", the
- error code is set to the SQLException default value and other fields are
- set to the values supplied on this method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>DataTruncation</code> object
+ with the SQLState initialized
+ to 01004 when <code>read</code> is set to <code>true</code> and 22001
+ when <code>read</code> is set to <code>false</code>,
+ the reason set to "Data truncation", the
+ vendor code set to 0, and
+ the other fields set to the given values.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>index</th>
-          <td>the Index value of the column value or parameter that was
-            truncated</td>
+          <td>The index of the parameter or column value</td>
         </tr>
         <tr>
           <th>parameter</th>
-          <td>true if it was a Parameter value that was truncated, false
-            otherwise</td>
+          <td>true if a parameter value was truncated</td>
         </tr>
         <tr>
           <th>read</th>
-          <td>true if the truncation occurred on a read operation, false
-            otherwise</td>
+          <td>true if a read was truncated</td>
         </tr>
         <tr>
           <th>dataSize</th>
-          <td>the original size of the truncated data</td>
+          <td>the original size of the data</td>
         </tr>
         <tr>
           <th>transferSize</th>
-          <td>the size of the data after truncation</td>
+          <td>the size after truncation</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the root reason for this DataTruncation</td>
+          <td>the underlying reason for this <code>DataTruncation</code>
+ (which is saved for later retrieval by the <code>getCause()</code> method);
+ may be null indicating the cause is non-existent or unknown.</td>
         </tr>
       </table>
   </div>
@@ -1361,11 +1435,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of bytes of data that should have been read/written.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of bytes of data that should have been transferred.
+ This number may be approximate if data conversions were being
+ performed.  The value may be <code>-1</code> if the size is unknown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of bytes that should have been read or written. The
-         value is set to <code>-1</code> if the size is unknown.
+      <ul class="nolist"><li>the number of bytes of data that should have been transferred
 </li></ul>
   </div>
 
@@ -1398,10 +1473,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the index of the column or of the parameter that was truncated.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the index of the column or parameter that was truncated.
+
+ <P>This may be -1 if the column or parameter index is unknown, in
+ which case the <code>parameter</code> and <code>read</code> fields should be ignored.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the index number of the column or of the parameter.
+      <ul class="nolist"><li>the index of the truncated paramter or column value
 </li></ul>
   </div>
 
@@ -1434,11 +1512,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets whether the value truncated was a parameter value or a column value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether the value truncated was a parameter value or
+ a column value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the value truncated was a parameter value,
-         <code>false</code> if it was a column value.
+      <ul class="nolist"><li><code>true</code> if the value truncated was a parameter;
+         <code>false</code> if it was a column value
 </li></ul>
   </div>
 
@@ -1471,12 +1550,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets whether the value was truncated on a read operation or a write
- operation</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the value was truncated on a read.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the value was truncated on a read operation,
-         <code>false</code> otherwise.
+      <ul class="nolist"><li><code>true</code> if the value was truncated when read from
+         the database; <code>false</code> if the data was truncated on a write
 </li></ul>
   </div>
 
@@ -1509,11 +1587,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of bytes of data that was actually read or written.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of bytes of data actually transferred.
+ The value may be <code>-1</code> if the size is unknown.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of bytes actually read/written. The value may be set
-         to <code>-1</code> if the size is unknown.
+      <ul class="nolist"><li>the number of bytes of data actually transferred
 </li></ul>
   </div>
 

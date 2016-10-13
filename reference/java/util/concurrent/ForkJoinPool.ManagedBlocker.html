@@ -166,7 +166,7 @@ layout: api
   <pre> <code>class ManagedLocker implements ManagedBlocker {
    final ReentrantLock lock;
    boolean hasLock = false;
-   ManagedLocker(ReentrantLock lock) { this.lock = lock; </code>
+   ManagedLocker(ReentrantLock lock) { this.lock = lock; }
    public boolean block() {
      if (!hasLock)
        lock.lock();
@@ -175,14 +175,14 @@ layout: api
    public boolean isReleasable() {
      return hasLock || (hasLock = lock.tryLock());
    }
- }}</pre>
+ }</code></pre>
 
  <p>Here is a class that possibly blocks waiting for an
  item on a given queue:
-  <pre> <code>class QueueTaker<E> implements ManagedBlocker {
-   final BlockingQueue<E> queue;
+  <pre> <code>class QueueTaker&lt;E&gt; implements ManagedBlocker {
+   final BlockingQueue&lt;E&gt; queue;
    volatile E item = null;
-   QueueTaker(BlockingQueue<E> q) { this.queue = q; </code>
+   QueueTaker(BlockingQueue&lt;E&gt; q) { this.queue = q; }
    public boolean block() throws InterruptedException {
      if (item == null)
        item = queue.take();
@@ -194,7 +194,7 @@ layout: api
    public E getItem() { // call after pool.managedBlock completes
      return item;
    }
- }}</pre>
+ }</code></pre>
 </p>
 
 

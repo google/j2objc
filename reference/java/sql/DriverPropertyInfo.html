@@ -165,10 +165,11 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A class holding information about driver properties of a database connection.
- This class is returned by the
- <code><a href="reference/java/sql/Driver.html#getPropertyInfo(java.lang.String, java.util.Properties)">getPropertyInfo(String, java.util.Properties)</a></code> method and
- allows for the advanced connection handling.
+<p><p>Driver properties for making a connection. The
+ <code>DriverPropertyInfo</code> class is of interest only to advanced programmers
+ who need to interact with a Driver via the method
+ <code>getDriverProperties</code> to discover
+ and supply properties for connections.
 </p>
 
 
@@ -226,8 +227,9 @@ layout: api
           
           <a href="../../../reference/java/lang/String.html">String[]</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverPropertyInfo.html#choices">choices</a></td>
-          <td class="jd-descrcol" width="100%">If the value member can be chosen from a set of possible values, they are
- contained here.</td>
+          <td class="jd-descrcol" width="100%">An array of possible values if the value for the field
+ <code>DriverPropertyInfo.value</code> may be selected
+ from a particular set of values; otherwise null.</td>
       </tr>
       
     
@@ -238,7 +240,7 @@ layout: api
           
           <a href="../../../reference/java/lang/String.html">String</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverPropertyInfo.html#description">description</a></td>
-          <td class="jd-descrcol" width="100%">A description of the property.</td>
+          <td class="jd-descrcol" width="100%">A brief description of the property, which may be null.</td>
       </tr>
       
     
@@ -260,7 +262,9 @@ layout: api
           
           boolean</td>
           <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverPropertyInfo.html#required">required</a></td>
-          <td class="jd-descrcol" width="100%"><code>true</code> when the value member must be provided during <code>Driver.connect</code>.</td>
+          <td class="jd-descrcol" width="100%">The <code>required</code> field is <code>true</code> if a value must be
+ supplied for this property
+ during <code>Driver.connect</code> and <code>false</code> otherwise.</td>
       </tr>
       
     
@@ -271,7 +275,10 @@ layout: api
           
           <a href="../../../reference/java/lang/String.html">String</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverPropertyInfo.html#value">value</a></td>
-          <td class="jd-descrcol" width="100%">The current value associated with this property.</td>
+          <td class="jd-descrcol" width="100%">The <code>value</code> field specifies the current value of
+ the property, based on a combination of the information
+ supplied to the method <code>getPropertyInfo</code>, the
+ Java environment, and the driver-supplied default values.</td>
       </tr>
       
     
@@ -302,8 +309,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/DriverPropertyInfo.html#DriverPropertyInfo(java.lang.String, java.lang.String)">DriverPropertyInfo</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name, <a href="../../../reference/java/lang/String.html">String</a> value)
         
-        <div class="jd-descrdiv">Creates a <code>DriverPropertyInfo</code> instance with the supplied name and
- value.</div>
+        <div class="jd-descrdiv">Constructs a <code>DriverPropertyInfo</code> object with a  given
+ name and value.</div>
   
   </td></tr>
 
@@ -611,8 +618,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>If the value member can be chosen from a set of possible values, they are
- contained here. Otherwise choices is <code>null</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>An array of possible values if the value for the field
+ <code>DriverPropertyInfo.value</code> may be selected
+ from a particular set of values; otherwise null.
 </p></div>
 
     
@@ -643,7 +651,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>A description of the property. May be <code>null</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>A brief description of the property, which may be null.
 </p></div>
 
     
@@ -705,7 +713,9 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><code>true</code> when the value member must be provided during <code>Driver.connect</code>. <code>false</code> otherwise.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>required</code> field is <code>true</code> if a value must be
+ supplied for this property
+ during <code>Driver.connect</code> and <code>false</code> otherwise.
 </p></div>
 
     
@@ -736,9 +746,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The current value associated with this property. It is depending on the
- data gathered by the <code>getPropertyInfo</code> method, the general Java
- environment and the driver's default values.
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>value</code> field specifies the current value of
+ the property, based on a combination of the information
+ supplied to the method <code>getPropertyInfo</code>, the
+ Java environment, and the driver-supplied default values.  This field
+ may be null if no value is known.
 </p></div>
 
     
@@ -781,18 +793,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>DriverPropertyInfo</code> instance with the supplied name and
- value. Other class members take their default values.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>DriverPropertyInfo</code> object with a  given
+ name and value.  The <code>description</code> and <code>choices</code>
+ are intialized to <code>null</code> and <code>required</code> is initialized
+ to <code>false</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>name</th>
-          <td>The property name.</td>
+          <td>the name of the property</td>
         </tr>
         <tr>
           <th>value</th>
-          <td>The property value.
+          <td>the current value, which may be null
 </td>
         </tr>
       </table>

@@ -1492,7 +1492,7 @@ From class
         <span class="sympad"><a href="../../../reference/java/nio/Buffer.html#hasRemaining()">hasRemaining</a></span>()
         
         <div class="jd-descrdiv">Indicates if there are elements remaining in this buffer, that is if
- <code>position < limit</code>.</div>
+ <code>position &lt; limit</code>.</div>
   
   </td></tr>
 
@@ -1963,10 +1963,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -2063,7 +2062,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>capacity < 0</code>.
+            <td>if <code>capacity &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -2117,7 +2116,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>capacity < 0</code>.
+            <td>if <code>capacity &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -2827,11 +2826,11 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>dstOffset < 0 ||  byteCount < 0</code></td>
+            <td>if <code>dstOffset &lt; 0 ||  byteCount &lt; 0</code></td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/nio/BufferUnderflowException.html">BufferUnderflowException</a></td>
-            <td>if <code>byteCount > remaining()</code>
+            <td>if <code>byteCount &gt; remaining()</code>
 </td>
         </tr>
       </table>

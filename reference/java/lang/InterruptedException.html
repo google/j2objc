@@ -212,12 +212,24 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a waiting thread is activated before the condition it was waiting
- for has been satisfied.
-</p>
+<p>Thrown when a thread is waiting, sleeping, or otherwise occupied,
+ and the thread is interrupted, either before or during the activity.
+ Occasionally a method may wish to test whether the current
+ thread has been interrupted, and if so, to immediately throw
+ this exception.  The following code can be used to achieve
+ this effect:
+ <pre>
+  if (Thread.interrupted())  // Clears interrupted status!
+      throw new InterruptedException();
+ </pre></p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#wait()">wait()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long)">wait(long)</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait(long, int)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html#sleep(long)">sleep(long)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html#interrupt()">interrupt()</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html#interrupted()">interrupted()</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -282,8 +294,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/InterruptedException.html#InterruptedException()">InterruptedException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>InterruptedException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>InterruptedException</code> with no detail  message.</div>
   
   </td></tr>
 
@@ -299,10 +310,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/InterruptedException.html#InterruptedException(java.lang.String)">InterruptedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/InterruptedException.html#InterruptedException(java.lang.String)">InterruptedException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>InterruptedException</code> with the current stack
- trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>InterruptedException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -536,6 +547,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -836,8 +866,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InterruptedException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>InterruptedException</code> with no detail  message.
 </p></div>
 
     </div>
@@ -857,7 +886,7 @@ From class
         
       </span>
       <span class="sympad">InterruptedException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -869,14 +898,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InterruptedException</code> with the current stack
- trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>InterruptedException</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

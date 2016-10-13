@@ -144,17 +144,93 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Classes that handle custom formatting for the 's' specifier of <code>Formatter</code>
- should implement the <code>Formattable</code> interface. It gives basic control over
- formatting objects.</p>
+<p>The <tt>Formattable</tt> interface must be implemented by any class that
+ needs to perform custom formatting using the <tt>'s'</tt> conversion
+ specifier of <code><a href="reference/java/util/Formatter.html">Formatter</a></code>.  This interface allows basic
+ control for formatting arbitrary objects.
+
+ For example, the following class prints out different representations of a
+ stock's name depending on the flags and length constraints:
+
+ <blockquote><pre>
+   import java.nio.CharBuffer;
+   import java.util.Formatter;
+   import java.util.Formattable;
+   import java.util.Locale;
+   import static java.util.FormattableFlags.*;
+
+  ...
+
+   public class StockName implements Formattable {
+       private String symbol, companyName, frenchCompanyName;
+       public StockName(String symbol, String companyName,
+                        String frenchCompanyName) {
+           ...
+       }
+
+       ...
+
+       public void formatTo(Formatter fmt, int f, int width, int precision) {
+           StringBuilder sb = new StringBuilder();
+
+           // decide form of name
+           String name = companyName;
+           if (fmt.locale().equals(Locale.FRANCE))
+               name = frenchCompanyName;
+           boolean alternate = (f & ALTERNATE) == ALTERNATE;
+           boolean usesymbol = alternate || (precision != -1 && precision < 10);
+           String out = (usesymbol ? symbol : name);
+
+           // apply precision
+           if (precision == -1 || out.length() < precision) {
+               // write it all
+               sb.append(out);
+           } else {
+               sb.append(out.substring(0, precision - 1)).append('*');
+           }
+
+           // apply width and justification
+           int len = sb.length();
+           if (len < width)
+               for (int i = 0; i < width - len; i++)
+                   if ((f & LEFT_JUSTIFY) == LEFT_JUSTIFY)
+                       sb.append(' ');
+                   else
+                       sb.insert(0, ' ');
+
+           fmt.format(sb.toString());
+       }
+
+       public String toString() {
+           return String.format("%s - %s", symbol, companyName);
+       }
+   }
+ </pre></blockquote>
+
+ <p> When used in conjunction with the <code><a href="reference/java/util/Formatter.html">Formatter</a></code>, the above
+ class produces the following output for various format strings.
+
+ <blockquote><pre>
+   Formatter fmt = new Formatter();
+   StockName sn = new StockName("HUGE", "Huge Fruit, Inc.",
+                                "Fruit Titanesque, Inc.");
+   fmt.format("%s", sn);                   //   -> "Huge Fruit, Inc."
+   fmt.format("%s", sn.toString());        //   -> "HUGE - Huge Fruit, Inc."
+   fmt.format("%#s", sn);                  //   -> "HUGE"
+   fmt.format("%-10.8s", sn);              //   -> "HUGE      "
+   fmt.format("%.12s", sn);                //   -> "Huge Fruit,*"
+   fmt.format(Locale.FRANCE, "%25s", sn);  //   -> "   Fruit Titanesque, Inc."
+ </pre></blockquote>
+
+ <p> Formattables are not necessarily safe for multithreaded access.  Thread
+ safety is optional and may be enforced by classes that extend and implement
+ this interface.
+
+ <p> Unless otherwise specified, passing a <tt>null</tt> argument to
+ any method in this interface will cause a <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> to be thrown.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Formatter.html">Formatter</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -223,7 +299,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Formattable.html#formatTo(java.util.Formatter, int, int, int)">formatTo</a></span>(<a href="../../../reference/java/util/Formatter.html">Formatter</a> formatter, int flags, int width, int precision)
         
-        <div class="jd-descrdiv">Formats the object using the specified <code>Formatter</code>.</div>
+        <div class="jd-descrdiv">Formats the object using the provided <code><a href="reference/java/util/Formatter.html">formatter</a></code>.</div>
   
   </td></tr>
 
@@ -301,39 +377,42 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Formats the object using the specified <code>Formatter</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Formats the object using the provided <code><a href="reference/java/util/Formatter.html">formatter</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>formatter</th>
-          <td>the <code>Formatter</code> to use.</td>
+          <td>The <code><a href="reference/java/util/Formatter.html">formatter</a></code>.  Implementing classes may call
+         <code><a href="reference/java/util/Formatter.html#out()">formatter.out()</a></code> or <code><a href="reference/java/util/Formatter.html#locale()">formatter.locale()</a></code> to obtain the <code><a href="reference/java/lang/Appendable.html">Appendable</a></code> or <code><a href="reference/java/util/Locale.html">Locale</a></code> used by this
+         <tt>formatter</tt> respectively.</td>
         </tr>
         <tr>
           <th>flags</th>
-          <td>the flags applied to the output format, which is a bitmask
-            that is any combination of <code>FormattableFlags.LEFT_JUSTIFY</code>,
-            <code>FormattableFlags.UPPERCASE</code>, and <code>FormattableFlags.ALTERNATE</code>. If
-            no such flag is set, the output is formatted by the default
-            formatting of the implementation.</td>
+          <td>The flags modify the output format.  The value is interpreted as
+         a bitmask.  Any combination of the following flags may be set:
+         <code><a href="reference/java/util/FormattableFlags.html#LEFT_JUSTIFY">LEFT_JUSTIFY</a></code>, <code><a href="reference/java/util/FormattableFlags.html#UPPERCASE">UPPERCASE</a></code>, and <code><a href="reference/java/util/FormattableFlags.html#ALTERNATE">ALTERNATE</a></code>.  If no flags are set, the default
+         formatting of the implementing class will apply.</td>
         </tr>
         <tr>
           <th>width</th>
-          <td>the minimum number of characters that should be written to the
-            output. If the length of the converted value is less than <code>width</code>
-            Additional space characters (' ') are added to the output if the
-            as needed to make up the difference. These spaces are added at the
-            beginning by default unless the flag
-            FormattableFlags.LEFT_JUSTIFY is set, which denotes that
-            padding should be added at the end. If width is -1, then
-            minimum length is not enforced.</td>
+          <td>The minimum number of characters to be written to the output.
+         If the length of the converted value is less than the
+         <tt>width</tt> then the output will be padded by
+         <tt>'&nbsp;&nbsp;'</tt> until the total number of characters
+         equals width.  The padding is at the beginning by default.  If
+         the <code><a href="reference/java/util/FormattableFlags.html#LEFT_JUSTIFY">LEFT_JUSTIFY</a></code> flag is set then the
+         padding will be at the end.  If <tt>width</tt> is <tt>-1</tt>
+         then there is no minimum.</td>
         </tr>
         <tr>
           <th>precision</th>
-          <td>the maximum number of characters that can be written to the
-            output. The length of the output is trimmed down to this size
-            before the width padding is applied. If the precision
-            is -1, then maximum length is not enforced.</td>
+          <td>The maximum number of characters to be written to the output.
+         The precision is applied before the width, thus the output will
+         be truncated to <tt>precision</tt> characters even if the
+         <tt>width</tt> is greater than the <tt>precision</tt>.  If
+         <tt>precision</tt> is <tt>-1</tt> then there is no explicit
+         limit on the number of characters.</td>
         </tr>
       </table>
   </div>
@@ -342,7 +421,10 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
-            <td>if any of the parameters is not supported.
+            <td>If any of the parameters are invalid.  For specification of all
+          possible formatting errors, see the <a
+          href="../util/Formatter.html#detail">Details</a> section of the
+          formatter class specification.
 </td>
         </tr>
       </table>

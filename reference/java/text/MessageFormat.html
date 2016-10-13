@@ -257,17 +257,17 @@ layout: api
  the surrounding single quotes are removed. An <i>UnquotedString</i> can
  contain arbitrary characters except single quotes and left curly brackets.
  Thus, a string that should result in the formatted message "'{0}'" can be
- written as <code>"'''{'0</code>''"} or <code>"'''{0</code>'''"}.
+ written as <code>"'''{'0}''"</code> or <code>"'''{0}'''"</code>.
  <p>
  Within a <i>SubformatPattern</i>, different rules apply. A <i>QuotedPattern</i>
  can contain arbitrary characters except single quotes, but the surrounding
  single quotes are <strong>not</strong> removed, so they may be interpreted
- by the subformat. For example, <code>"{1,number,$'#',##</code>"} will
+ by the subformat. For example, <code>"{1,number,$'#',##}"</code> will
  produce a number format with the hash-sign quoted, with a result such as:
  "$#31,45". An <i>UnquotedPattern</i> can contain arbitrary characters except
  single quotes, but curly braces within it must be balanced. For example,
- <code>"ab {0</code> de"} and <code>"ab '</code>' de"} are valid subformat
- patterns, but <code>"ab {0'</code>' de"} and <code>"ab </code> de"} are
+ <code>"ab {0} de"</code> and <code>"ab '</code>' de"} are valid subformat
+ patterns, but <code>"ab {0'}' de"</code> and <code>"ab </code> de"} are
  not.
  <dl>
  <dt><b>Warning:</b></dt>

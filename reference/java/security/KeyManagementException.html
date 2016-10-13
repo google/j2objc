@@ -260,12 +260,24 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>KeyManagementException</code> is a general exception, thrown to indicate an
- exception during processing an operation concerning key management.
-</p>
+<p>This is the general key management exception for all operations
+ dealing with key management. Examples of subclasses of
+ KeyManagementException that developers might create for
+ giving more detailed information could include:
+
+ <ul>
+ <li>KeyIDConflictException
+ <li>KeyAuthorizationFailureException
+ <li>ExpiredKeyException
+ </ul></p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/security/Key.html">Key</a></code></li><li><code><a href="../../../reference/java/security/KeyException.html">KeyException</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -328,10 +340,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/KeyManagementException.html#KeyManagementException(java.lang.String)">KeyManagementException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../reference/java/security/KeyManagementException.html#KeyManagementException()">KeyManagementException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>KeyManagementException</code> with the
- given message.</div>
+        <div class="jd-descrdiv">Constructs a KeyManagementException with no detail message.</div>
   
   </td></tr>
 
@@ -347,9 +358,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/KeyManagementException.html#KeyManagementException()">KeyManagementException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/security/KeyManagementException.html#KeyManagementException(java.lang.String)">KeyManagementException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>KeyManagementException</code>.</div>
+        <div class="jd-descrdiv">Constructs a KeyManagementException with the specified detail
+ message.</div>
   
   </td></tr>
 
@@ -367,8 +379,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/KeyManagementException.html#KeyManagementException(java.lang.String, java.lang.Throwable)">KeyManagementException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>KeyManagementException</code> with the
- given message and the cause.</div>
+        <div class="jd-descrdiv">Creates a <code>KeyManagementException</code> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -386,8 +398,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/KeyManagementException.html#KeyManagementException(java.lang.Throwable)">KeyManagementException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>KeyManagementException</code> with the
- cause.</div>
+        <div class="jd-descrdiv">Creates a <code>KeyManagementException</code> with the specified cause
+ and a detail message of <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</div>
   
   </td></tr>
 
@@ -625,6 +639,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -900,48 +933,6 @@ From class
 
 
 
-<a id="KeyManagementException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">KeyManagementException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>KeyManagementException</code> with the
- given message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="KeyManagementException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -967,8 +958,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>KeyManagementException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a KeyManagementException with no detail message. A
+ detail message is a String that describes this particular
+ exception.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="KeyManagementException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">KeyManagementException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a KeyManagementException with the specified detail
+ message. A detail message is a String that describes this
+ particular exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -999,19 +1035,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>KeyManagementException</code> with the
- given message and the cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>KeyManagementException</code> with the specified
+ detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+        by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1045,15 +1083,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>KeyManagementException</code> with the
- cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>KeyManagementException</code> with the specified cause
+ and a detail message of <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>

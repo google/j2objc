@@ -221,20 +221,20 @@ layout: api
  computation has completed, the computation cannot be cancelled.
  If you would like to use a <code>Future</code> for the sake
  of cancellability but not provide a usable result, you can
- declare types of the form <code>Future<?></code> and
+ declare types of the form <code>Future&lt;?&gt;</code> and
  return <code>null</code> as a result of the underlying task.
 
  <p>
  <b>Sample Usage</b> (Note that the following classes are all
  made-up.) <p>
-  <pre> <code>interface ArchiveSearcher { String search(String target); </code>
+  <pre> <code>interface ArchiveSearcher { String search(String target); }
  class App {
    ExecutorService executor = ...
    ArchiveSearcher searcher = ...
    void showSearch(final String target)
        throws InterruptedException {
-     Future<String> future
-       = executor.submit(new Callable<String>() {
+     Future&lt;String&gt; future
+       = executor.submit(new Callable&lt;String&gt;() {
          public String call() {
              return searcher.search(target);
          }});
@@ -243,17 +243,17 @@ layout: api
        displayText(future.get()); // use future
      } catch (ExecutionException ex) { cleanup(); return; }
    }
- }}</pre>
+ }</code></pre>
 
  The <code><a href="reference/java/util/concurrent/FutureTask.html">FutureTask</a></code> class is an implementation of <code>Future</code> that
  implements <code>Runnable</code>, and so may be executed by an <code>Executor</code>.
  For example, the above construction with <code>submit</code> could be replaced by:
-  <pre> <code>FutureTask<String> future =
-   new FutureTask<String>(new Callable<String>() {
+  <pre> <code>FutureTask&lt;String&gt; future =
+   new FutureTask&lt;String&gt;(new Callable&lt;String&gt;() {
      public String call() {
        return searcher.search(target);
-   </code>});
- executor.execute(future);}</pre>
+   }});
+ executor.execute(future);</code></pre>
 
  <p>Memory consistency effects: Actions taken by the asynchronous computation
  <a href="package-summary.html#MemoryVisibility"> <i>happen-before</i></a>

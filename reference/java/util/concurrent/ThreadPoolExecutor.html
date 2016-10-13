@@ -453,7 +453,7 @@ layout: api
    private ReentrantLock pauseLock = new ReentrantLock();
    private Condition unpaused = pauseLock.newCondition();
 
-   public PausableThreadPoolExecutor(...) { super(...); </code>
+   public PausableThreadPoolExecutor(...) { super(...); }
 
    protected void beforeExecute(Thread t, Runnable r) {
      super.beforeExecute(t, r);
@@ -485,7 +485,7 @@ layout: api
        pauseLock.unlock();
      }
    }
- }}</pre></p>
+ }</code></pre></p>
 
 
 
@@ -2173,10 +2173,10 @@ From interface
         <tr>
             <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
             <td>if one of the following holds:<br>
-         <code>corePoolSize < 0</code><br>
-         <code>keepAliveTime < 0</code><br>
-         <code>maximumPoolSize <= 0</code><br>
-         <code>maximumPoolSize < corePoolSize</code></td>
+         <code>corePoolSize &lt; 0</code><br>
+         <code>keepAliveTime &lt; 0</code><br>
+         <code>maximumPoolSize &lt;= 0</code><br>
+         <code>maximumPoolSize &lt; corePoolSize</code></td>
         </tr>
         <tr>
             <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
@@ -2259,10 +2259,10 @@ From interface
         <tr>
             <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
             <td>if one of the following holds:<br>
-         <code>corePoolSize < 0</code><br>
-         <code>keepAliveTime < 0</code><br>
-         <code>maximumPoolSize <= 0</code><br>
-         <code>maximumPoolSize < corePoolSize</code></td>
+         <code>corePoolSize &lt; 0</code><br>
+         <code>keepAliveTime &lt; 0</code><br>
+         <code>maximumPoolSize &lt;= 0</code><br>
+         <code>maximumPoolSize &lt; corePoolSize</code></td>
         </tr>
         <tr>
             <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
@@ -2346,10 +2346,10 @@ From interface
         <tr>
             <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
             <td>if one of the following holds:<br>
-         <code>corePoolSize < 0</code><br>
-         <code>keepAliveTime < 0</code><br>
-         <code>maximumPoolSize <= 0</code><br>
-         <code>maximumPoolSize < corePoolSize</code></td>
+         <code>corePoolSize &lt; 0</code><br>
+         <code>keepAliveTime &lt; 0</code><br>
+         <code>maximumPoolSize &lt;= 0</code><br>
+         <code>maximumPoolSize &lt; corePoolSize</code></td>
         </tr>
         <tr>
             <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
@@ -2438,10 +2438,10 @@ From interface
         <tr>
             <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
             <td>if one of the following holds:<br>
-         <code>corePoolSize < 0</code><br>
-         <code>keepAliveTime < 0</code><br>
-         <code>maximumPoolSize <= 0</code><br>
-         <code>maximumPoolSize < corePoolSize</code></td>
+         <code>corePoolSize &lt; 0</code><br>
+         <code>keepAliveTime &lt; 0</code><br>
+         <code>maximumPoolSize &lt;= 0</code><br>
+         <code>maximumPoolSize &lt; corePoolSize</code></td>
         </tr>
         <tr>
             <th><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
@@ -3429,7 +3429,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>corePoolSize < 0</code></td>
+            <td>if <code>corePoolSize &lt; 0</code></td>
         </tr>
       </table>
   </div>
@@ -3852,10 +3852,10 @@ From interface
    // ...
    protected void afterExecute(Runnable r, Throwable t) {
      super.afterExecute(r, t);
-     if (t == null && r instanceof Future<?>) {
+     if (t == null &amp;&amp; r instanceof Future&lt;?&gt;) {
        try {
-         Object result = ((Future<?>) r).get();
-       </code> catch (CancellationException ce) {
+         Object result = ((Future&lt;?&gt;) r).get();
+       } catch (CancellationException ce) {
            t = ce;
        } catch (ExecutionException ee) {
            t = ee.getCause();
@@ -3866,7 +3866,7 @@ From interface
      if (t != null)
        System.out.println(t);
    }
- }}</pre></p></div>
+ }</code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">

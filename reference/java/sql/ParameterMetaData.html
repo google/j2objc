@@ -156,9 +156,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An interface used to get information about the types and properties of
- parameters in a <code>PreparedStatement</code>.
-</p>
+<p>An object that can be used to get information about the types
+ and properties for each parameter marker in a
+ <code>PreparedStatement</code> object. For some queries and driver
+ implementations, the data that would be returned by a <code>ParameterMetaData</code>
+ object may not be available until the <code>PreparedStatement</code> has
+ been executed.
+<p>
+Some driver implementations may not be able to provide information about the
+types and properties for each parameter marker in a <code>CallableStatement</code>
+object.</p>
 
 
 
@@ -206,50 +213,52 @@ layout: api
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterModeIn">parameterModeIn</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that the parameter mode is <code>IN</code>.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that the parameter's mode is IN.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterModeInOut">parameterModeInOut</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that the parameter mode is <code>INOUT</code>.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that the parameter's mode is INOUT.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterModeOut">parameterModeOut</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that the parameter mode is <code>OUT</code>.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that the parameter's mode is  OUT.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterModeUnknown">parameterModeUnknown</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that the parameter mode is not known.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that the mode of the parameter is unknown.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterNoNulls">parameterNoNulls</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that a parameter is not permitted to be <code>NULL</code>.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that a
+ parameter will not allow <code>NULL</code> values.</td>
     </tr>
     
     
     <tr class=" api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterNullable">parameterNullable</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that a parameter is permitted to be <code>NULL</code>.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that a
+ parameter will allow <code>NULL</code> values.</td>
     </tr>
     
     
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">int</td>
         <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html#parameterNullableUnknown">parameterNullableUnknown</a></td>
-        <td class="jd-descrcol" width="100%">Indicates that whether a parameter is allowed to be <code>null</code> or not
- is not known.</td>
+        <td class="jd-descrcol" width="100%">The constant indicating that the
+ nullability of a parameter is unknown.</td>
     </tr>
     
     
@@ -287,10 +296,10 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterClassName(int)">getParameterClassName</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterClassName(int)">getParameterClassName</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets the fully-qualified name of the Java class which should be passed as
- a parameter to the method <code>PreparedStatement.setObject</code>.</div>
+        <div class="jd-descrdiv">Retrieves the fully-qualified name of the Java class whose instances
+ should be passed to the method <code>PreparedStatement.setObject</code>.</div>
   
   </td></tr>
 
@@ -308,8 +317,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterCount()">getParameterCount</a></span>()
         
-        <div class="jd-descrdiv">Gets the number of parameters in the <code>PreparedStatement</code> for which
- this <code>ParameterMetaData</code> contains information.</div>
+        <div class="jd-descrdiv">Retrieves the number of parameters in the <code>PreparedStatement</code>
+ object for which this <code>ParameterMetaData</code> object contains
+ information.</div>
   
   </td></tr>
 
@@ -325,9 +335,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterMode(int)">getParameterMode</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterMode(int)">getParameterMode</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets the mode of the specified parameter.</div>
+        <div class="jd-descrdiv">Retrieves the designated parameter's mode.</div>
   
   </td></tr>
 
@@ -343,9 +353,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterType(int)">getParameterType</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterType(int)">getParameterType</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets the SQL type of a specified parameter.</div>
+        <div class="jd-descrdiv">Retrieves the designated parameter's SQL type.</div>
   
   </td></tr>
 
@@ -361,9 +371,9 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterTypeName(int)">getParameterTypeName</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getParameterTypeName(int)">getParameterTypeName</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets the database-specific type name of a specified parameter.</div>
+        <div class="jd-descrdiv">Retrieves the designated parameter's database-specific type name.</div>
   
   </td></tr>
 
@@ -379,9 +389,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getPrecision(int)">getPrecision</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getPrecision(int)">getPrecision</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets the number of decimal digits for a specified parameter.</div>
+        <div class="jd-descrdiv">Retrieves the designated parameter's specified column size.</div>
   
   </td></tr>
 
@@ -397,10 +407,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getScale(int)">getScale</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#getScale(int)">getScale</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets the number of digits after the decimal point for a specified
- parameter.</div>
+        <div class="jd-descrdiv">Retrieves the designated parameter's number of digits to right of the decimal point.</div>
   
   </td></tr>
 
@@ -416,9 +425,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#isNullable(int)">isNullable</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#isNullable(int)">isNullable</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets whether <code>null</code> values are allowed for the specified parameter.</div>
+        <div class="jd-descrdiv">Retrieves whether null values are allowed in the designated parameter.</div>
   
   </td></tr>
 
@@ -434,9 +443,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#isSigned(int)">isSigned</a></span>(int paramIndex)
+        <span class="sympad"><a href="../../../reference/java/sql/ParameterMetaData.html#isSigned(int)">isSigned</a></span>(int param)
         
-        <div class="jd-descrdiv">Gets whether values for the specified parameter can be signed numbers.</div>
+        <div class="jd-descrdiv">Retrieves whether values for the designated parameter can be signed numbers.</div>
   
   </td></tr>
 
@@ -488,8 +497,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#isWrapperFor(java.lang.Class<?>)">isWrapperFor</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; iface)
         
-        <div class="jd-descrdiv">If the caller is a wrapper of the class or implements the given
- interface, the methods return false and vice versa.</div>
+        <div class="jd-descrdiv">Returns true if this either implements the interface argument or is directly or indirectly a wrapper
+ for an object that does.</div>
   
   </td></tr>
 
@@ -507,7 +516,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#unwrap(java.lang.Class<T>)">unwrap</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; iface)
         
-        <div class="jd-descrdiv">Returns an object that implements the given interface.</div>
+        <div class="jd-descrdiv">Returns an object that implements the given interface to allow access to
+ non-standard methods, or standard methods not exposed by the proxy.</div>
   
   </td></tr>
 
@@ -569,7 +579,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that the parameter mode is <code>IN</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that the parameter's mode is IN.
 </p></div>
 
     
@@ -610,7 +620,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that the parameter mode is <code>INOUT</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that the parameter's mode is INOUT.
 </p></div>
 
     
@@ -651,7 +661,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that the parameter mode is <code>OUT</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that the parameter's mode is  OUT.
 </p></div>
 
     
@@ -692,7 +702,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that the parameter mode is not known.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that the mode of the parameter is unknown.
 </p></div>
 
     
@@ -733,7 +743,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that a parameter is not permitted to be <code>NULL</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that a
+ parameter will not allow <code>NULL</code> values.
 </p></div>
 
     
@@ -774,7 +785,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that a parameter is permitted to be <code>NULL</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that a
+ parameter will allow <code>NULL</code> values.
 </p></div>
 
     
@@ -815,8 +827,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Indicates that whether a parameter is allowed to be <code>null</code> or not
- is not known.
+  <div class="jd-tagdata jd-tagdescr"><p>The constant indicating that the
+ nullability of a parameter is unknown.
 </p></div>
 
     
@@ -868,7 +880,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">getParameterClassName</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -880,31 +892,31 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the fully-qualified name of the Java class which should be passed as
- a parameter to the method <code>PreparedStatement.setObject</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the fully-qualified name of the Java class whose instances
+ should be passed to the method <code>PreparedStatement.setObject</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the fully qualified Java class name of the parameter with the
-         specified index. This class name is used for custom mapping
-         between SQL types and Java objects.</li></ul>
+      <ul class="nolist"><li>the fully-qualified name of the class in the Java programming
+         language that would be used by the method
+         <code>PreparedStatement.setObject</code> to set the value
+         in the specified parameter. This is the class name used
+         for custom mapping.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -938,19 +950,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of parameters in the <code>PreparedStatement</code> for which
- this <code>ParameterMetaData</code> contains information.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the number of parameters in the <code>PreparedStatement</code>
+ object for which this <code>ParameterMetaData</code> object contains
+ information.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of parameters.</li></ul>
+      <ul class="nolist"><li>the number of parameters</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -972,7 +984,7 @@ From interface
         int
       </span>
       <span class="sympad">getParameterMode</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -984,34 +996,30 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the mode of the specified parameter. Can be one of:
- <ul>
- <li>ParameterMetaData.parameterModeIn</li>
- <li>ParameterMetaData.parameterModeOut</li>
- <li>ParameterMetaData.parameterModeInOut</li>
- <li>ParameterMetaData.parameterModeUnknown</li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated parameter's mode.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the parameter's mode.</li></ul>
+      <ul class="nolist"><li>mode of the parameter; one of
+        <code>ParameterMetaData.parameterModeIn</code>,
+        <code>ParameterMetaData.parameterModeOut</code>, or
+        <code>ParameterMetaData.parameterModeInOut</code>
+        <code>ParameterMetaData.parameterModeUnknown</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -1033,7 +1041,7 @@ From interface
         int
       </span>
       <span class="sympad">getParameterType</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1045,30 +1053,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the SQL type of a specified parameter.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated parameter's SQL type.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the SQL type of the parameter as defined in <code>java.sql.Types</code>.</li></ul>
+      <ul class="nolist"><li>SQL type from <code>java.sql.Types</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Types.html">Types</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1088,7 +1099,7 @@ From interface
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">getParameterTypeName</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1100,30 +1111,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the database-specific type name of a specified parameter.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated parameter's database-specific type name.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the type name for the parameter as used by the database. A
-         fully-qualified name is returned if the parameter is a <i>User
-         Defined Type</i> (UDT).</li></ul>
+      <ul class="nolist"><li>type the name used by the database. If the parameter type is
+ a user-defined type, then a fully-qualified type name is returned.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -1145,7 +1153,7 @@ From interface
         int
       </span>
       <span class="sympad">getPrecision</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1157,29 +1165,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of decimal digits for a specified parameter.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated parameter's specified column size.
+
+ <P>The returned value represents the maximum column size for the given parameter.
+ For numeric data, this is the maximum precision.  For character data, this is the length in characters.
+ For datetime datatypes, this is the length in characters of the String representation (assuming the
+ maximum allowed precision of the fractional seconds component). For binary data, this is the length in bytes.  For the ROWID datatype,
+ this is the length in bytes. 0 is returned for data types where the
+ column size is not applicable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of decimal digits ("the precision") for the parameter.
-         <code>0</code> if the parameter is not a numeric type.</li></ul>
+      <ul class="nolist"><li>precision</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -1201,7 +1213,7 @@ From interface
         int
       </span>
       <span class="sympad">getScale</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1213,30 +1225,27 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of digits after the decimal point for a specified
- parameter.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the designated parameter's number of digits to right of the decimal point.
+ 0 is returned for data types where the scale is not applicable.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of digits after the decimal point ("the scale") for
-         the parameter. <code>0</code> if the parameter is not a numeric type.</li></ul>
+      <ul class="nolist"><li>scale</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -1258,7 +1267,7 @@ From interface
         int
       </span>
       <span class="sympad">isNullable</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1270,34 +1279,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets whether <code>null</code> values are allowed for the specified parameter.
- The returned value is one of:
- <ul>
- <li>ParameterMetaData.parameterNoNulls</li>
- <li>ParameterMetaData.parameterNullable</li>
- <li>ParameterMetaData.parameterNullableUnknown</li>
- </ul></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves whether null values are allowed in the designated parameter.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the int code indicating the nullability of the parameter.</li></ul>
+      <ul class="nolist"><li>the nullability status of the given parameter; one of
+        <code>ParameterMetaData.parameterNoNulls</code>,
+        <code>ParameterMetaData.parameterNullable</code>, or
+        <code>ParameterMetaData.parameterNullableUnknown</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error is encountered.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>
@@ -1319,7 +1323,7 @@ From interface
         boolean
       </span>
       <span class="sympad">isSigned</span>
-      <span class="normal">(int paramIndex)</span>
+      <span class="normal">(int param)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1331,29 +1335,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets whether values for the specified parameter can be signed numbers.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves whether values for the designated parameter can be signed numbers.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>paramIndex</th>
-          <td>the index number of the parameter, where the first parameter
-            has index 1.</td>
+          <th>param</th>
+          <td>the first parameter is 1, the second is 2, ...</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if values can be signed numbers for this parameter,
-         <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if so; <code>false</code> otherwise</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if a database error happens.
-</td>
+            <td>if a database access error occurs</td>
         </tr>
       </table>
   </div>

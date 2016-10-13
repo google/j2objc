@@ -263,14 +263,14 @@ layout: api
  <table>
  <tr><th>Component           </th><th>Legal Characters                                                    </th><th>Other Constraints                                  </th><th>Raw Value                                                      </th><th>Value</th></tr>
  <tr><td>Scheme              </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>+-.</code>                  </td><td>First character must be in <code>a-z</code>, <code>A-Z</code></td><td>                                                               </td><td><code>http</code></td></tr>
- <tr><td>Scheme-specific part</td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>//user:pa55w%3Frd@host:80/doc%7Csearch?q=green%20robots</code></td><td><code>//user:pa55w?rd@host:80/doc|search?q=green robots</code></td></tr>
- <tr><td>Authority           </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=@[]</code>  </td><td>Non-ASCII characters okay                          </td><td><code>user:pa55w%3Frd@host:80</code>                                </td><td><code>user:pa55w?rd@host:80</code></td></tr>
- <tr><td>User Info           </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=</code>     </td><td>Non-ASCII characters okay                          </td><td><code>user:pa55w%3Frd</code>                                        </td><td><code>user:pa55w?rd</code></td></tr>
+ <tr><td>Scheme-specific part</td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&amp;+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>//user:pa55w%3Frd@host:80/doc%7Csearch?q=green%20robots</code></td><td><code>//user:pa55w?rd@host:80/doc|search?q=green robots</code></td></tr>
+ <tr><td>Authority           </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&amp;+=@[]</code>  </td><td>Non-ASCII characters okay                          </td><td><code>user:pa55w%3Frd@host:80</code>                                </td><td><code>user:pa55w?rd@host:80</code></td></tr>
+ <tr><td>User Info           </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&amp;+=</code>     </td><td>Non-ASCII characters okay                          </td><td><code>user:pa55w%3Frd</code>                                        </td><td><code>user:pa55w?rd</code></td></tr>
  <tr><td>Host                </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>-.[]</code>                 </td><td>Domain name, IPv4 address or [IPv6 address]        </td><td>                                                               </td><td>host</td></tr>
  <tr><td>Port                </td><td><code>0-9</code>                                                         </td><td>                                                   </td><td>                                                               </td><td><code>80</code></td></tr>
- <tr><td>Path                </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=/@</code>   </td><td>Non-ASCII characters okay                          </td><td><code>/doc%7Csearch</code>                                          </td><td><code>/doc|search</code></td></tr>
- <tr><td>Query               </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>q=green%20robots</code>                                       </td><td><code>q=green robots</code></td></tr>
- <tr><td>Fragment            </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>over%206%22</code>                                            </td><td><code>over 6"</code></td></tr>
+ <tr><td>Path                </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&amp;+=/@</code>   </td><td>Non-ASCII characters okay                          </td><td><code>/doc%7Csearch</code>                                          </td><td><code>/doc|search</code></td></tr>
+ <tr><td>Query               </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&amp;+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>q=green%20robots</code>                                       </td><td><code>q=green robots</code></td></tr>
+ <tr><td>Fragment            </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&amp;+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>over%206%22</code>                                            </td><td><code>over 6"</code></td></tr>
  </table>
  A URI's host, port and scheme are not eligible for encoding and must not
  contain illegal characters.
@@ -1255,10 +1255,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 

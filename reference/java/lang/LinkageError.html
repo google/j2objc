@@ -218,13 +218,19 @@ layout: api
               >
           
             
+              <a href="../../../reference/java/lang/ClassCircularityError.html">ClassCircularityError</a>,
+            
               <a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a>,
             
               <a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a>,
             
               <a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a>,
             
-              <a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a>
+              <a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a>,
+            
+              <a href="../../../reference/java/lang/UnsatisfiedLinkError.html">UnsatisfiedLinkError</a>,
+            
+              <a href="../../../reference/java/lang/VerifyError.html">VerifyError</a>
             
           
       </div>
@@ -233,24 +239,42 @@ layout: api
               >
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown by a class loader when a class file has an illegal format or if the
- data that it contains can not be interpreted as a class.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassCircularityError.html">ClassCircularityError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine detects a circularity in the
+ superclass hierarchy of a class being loaded.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when an exception occurs during class initialization.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine attempts to read a class
+ file and determines that the file is malformed or otherwise cannot
+ be interpreted as a class file.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></td>
-              <td class="jd-descrcol" width="100%"><code>IncompatibleClassChangeError</code> is the superclass of all classes which
- represent errors that occur when inconsistent class files are loaded into
- the same running image.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></td>
+              <td class="jd-descrcol" width="100%">Signals that an unexpected exception has occurred in a static initializer.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an incompatible class change has occurred to some class
+ definition.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM is unable to locate a class which it has been
- asked to load.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if the Java Virtual Machine or a <code>ClassLoader</code> instance
+ tries to load in the definition of a class (as part of a normal method call
+ or as part of creating a new instance using the <code>new</code> expression)
+ and no definition of the class could be found.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnsatisfiedLinkError.html">UnsatisfiedLinkError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown if the Java Virtual Machine cannot find an appropriate
+ native-language definition of a method declared <code>native</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/VerifyError.html">VerifyError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the "verifier" detects that a class file,
+ though well formed, contains some sort of internal inconsistency
+ or security problem.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -278,9 +302,13 @@ layout: api
             
               <a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a>,
             
+              <a href="../../../reference/java/lang/InstantiationError.html">InstantiationError</a>,
+            
               <a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a>,
             
-              <a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a>
+              <a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a>,
+            
+              <a href="../../../reference/java/lang/UnsupportedClassVersionError.html">UnsupportedClassVersionError</a>
             
           
       </div>
@@ -290,27 +318,40 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown by the VM when an abstract method is called.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to call an abstract method.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/reflect/GenericSignatureFormatError.html">GenericSignatureFormatError</a></td>
-              <td class="jd-descrcol" width="100%">Indicates that a malformed signature has been encountered via a reflective
- method.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown when a syntactically malformed signature attribute is
+ encountered by a reflective method that needs to interpret the
+ generic signature information for a type, method or constructor.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries access a field
- which is not accessible from where it is referenced.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application attempts to access or modify a field, or
+ to call a method that it does not have access to.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a field that does not exist.&nbsp;</td>
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/InstantiationError.html">InstantiationError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an application tries to use the Java <code>new</code>
+ construct to instantiate an abstract class or an interface.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to access or modify a specified
+ field of an object, and that object no longer has that field.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
- on a class or object, a method that does not exist.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown if an application tries to call a specified method of a
+ class (either static or instance), and that class no longer has a
+ definition of that method.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnsupportedClassVersionError.html">UnsupportedClassVersionError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the Java Virtual Machine attempts to read a class
+ file and determines that the major and minor version numbers
+ in the file are not supported.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -322,16 +363,12 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>LinkageError</code> is the superclass of all error classes that occur when
- loading and linking class files.</p>
+<p>Subclasses of <code>LinkageError</code> indicate that a class has
+ some dependency on another class; however, the latter class has
+ incompatibly changed after the compilation of the former class.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Error.html">Error</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -396,8 +433,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/LinkageError.html#LinkageError()">LinkageError</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>LinkageError</code> that includes the current stack
- trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>LinkageError</code> with no detail message.</div>
   
   </td></tr>
 
@@ -413,10 +449,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/LinkageError.html#LinkageError(java.lang.String)">LinkageError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/LinkageError.html#LinkageError(java.lang.String)">LinkageError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>LinkageError</code> with the current stack trace and
- the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>LinkageError</code> with the specified detail
+ message.</div>
   
   </td></tr>
 
@@ -432,9 +468,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/LinkageError.html#LinkageError(java.lang.String, java.lang.Throwable)">LinkageError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        <span class="sympad"><a href="../../../reference/java/lang/LinkageError.html#LinkageError(java.lang.String, java.lang.Throwable)">LinkageError</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new <code>LinkageError</code> with the given detail message and cause.</div>
+        <div class="jd-descrdiv">Constructs a <code>LinkageError</code> with the specified detail
+ message and cause.</div>
   
   </td></tr>
 
@@ -443,33 +480,6 @@ layout: api
 </table>
 
 
-
-
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<table id="proctors" class="jd-sumtable"><tr><th colspan="12">Protected Constructors</th></tr>
-
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/LinkageError.html#LinkageError(java.lang.Throwable)">LinkageError</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
-        
-        <div class="jd-descrdiv">Constructs a new <code>LinkageError</code> with the given cause.</div>
-  
-  </td></tr>
-
-
-
-</table>
 
 
 
@@ -695,6 +705,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -995,8 +1024,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>LinkageError</code> that includes the current stack
- trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>LinkageError</code> with no detail message.
 </p></div>
 
     </div>
@@ -1016,7 +1044,7 @@ From class
         
       </span>
       <span class="sympad">LinkageError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1028,14 +1056,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>LinkageError</code> with the current stack trace and
- the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>LinkageError</code> with the specified detail
+ message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this error.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>
@@ -1058,7 +1086,7 @@ From class
         
       </span>
       <span class="sympad">LinkageError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1070,7 +1098,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>LinkageError</code> with the given detail message and cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>LinkageError</code> with the specified detail
+ message and cause.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>s</th>
+          <td>the detail message.</td>
+        </tr>
+        <tr>
+          <th>cause</th>
+          <td>the cause, may be <code>null</code></td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1081,43 +1123,6 @@ From class
 
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <!-- Protected ctors -->
-
-<h2>Protected Constructors</h2>
-
-
-
-<a id="LinkageError(java.lang.Throwable)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        protected
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">LinkageError</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>LinkageError</code> with the given cause.
-</p></div>
-
-    </div>
-</div>
-
-
 
 
 

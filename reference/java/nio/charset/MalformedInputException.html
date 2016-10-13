@@ -260,9 +260,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>MalformedInputException</code> is thrown when a malformed input is
- encountered, for example if a byte sequence is illegal for the given charset.
-</p>
+<p>Checked exception thrown when an input byte sequence is not legal for given
+ charset, or an input character sequence is not a legal sixteen-bit Unicode
+ sequence.</p>
 
 
 
@@ -328,9 +328,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/nio/charset/MalformedInputException.html#MalformedInputException(int)">MalformedInputException</a></span>(int length)
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/MalformedInputException.html#MalformedInputException(int)">MalformedInputException</a></span>(int inputLength)
         
-        <div class="jd-descrdiv">Constructs a new <code>MalformedInputException</code>.</div>
+        <div class="jd-descrdiv">Constructs an <code>MalformedInputException</code> with the given
+ length.</div>
   
   </td></tr>
 
@@ -361,7 +362,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/MalformedInputException.html#getInputLength()">getInputLength</a></span>()
         
-        <div class="jd-descrdiv">Gets the length of the malformed input.</div>
+        <div class="jd-descrdiv">Returns the length of the input.</div>
   
   </td></tr>
 
@@ -379,6 +380,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/MalformedInputException.html#getMessage()">getMessage</a></span>()
         
+        <div class="jd-descrdiv">Returns the message.</div>
+  
   </td></tr>
 
 
@@ -611,6 +614,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -899,7 +921,7 @@ From class
         
       </span>
       <span class="sympad">MalformedInputException</span>
-      <span class="normal">(int length)</span>
+      <span class="normal">(int inputLength)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -911,13 +933,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>MalformedInputException</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>MalformedInputException</code> with the given
+ length.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>length</th>
-          <td>the length of the malformed input.
+          <th>inputLength</th>
+          <td>the length of the input
 </td>
         </tr>
       </table>
@@ -967,10 +990,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the length of the malformed input.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the length of the input.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the length of the malformed input.
+      <ul class="nolist"><li>the length of the input
 </li></ul>
   </div>
 
@@ -1003,7 +1026,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the message
+</li></ul>
+  </div>
 
     </div>
 </div>

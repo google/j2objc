@@ -260,9 +260,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>InvalidParameterException</code> indicates exceptional conditions, caused by
- invalid parameters.
-</p>
+<p>This exception, designed for use by the JCA/JCE engine classes,
+ is thrown when an invalid parameter is passed
+ to a method.</p>
 
 
 
@@ -328,10 +328,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/InvalidParameterException.html#InvalidParameterException(java.lang.String)">InvalidParameterException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../reference/java/security/InvalidParameterException.html#InvalidParameterException()">InvalidParameterException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>InvalidParameterException</code> with the
- given message.</div>
+        <div class="jd-descrdiv">Constructs an InvalidParameterException with no detail message.</div>
   
   </td></tr>
 
@@ -347,9 +346,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/InvalidParameterException.html#InvalidParameterException()">InvalidParameterException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/security/InvalidParameterException.html#InvalidParameterException(java.lang.String)">InvalidParameterException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>InvalidParameterException</code>.</div>
+        <div class="jd-descrdiv">Constructs an InvalidParameterException with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -587,6 +587,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -862,48 +881,6 @@ From class
 
 
 
-<a id="InvalidParameterException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">InvalidParameterException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>InvalidParameterException</code> with the
- given message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="InvalidParameterException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -929,8 +906,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>InvalidParameterException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidParameterException with no detail message.
+ A detail message is a String that describes this particular
+ exception.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="InvalidParameterException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">InvalidParameterException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidParameterException with the specified
+ detail message.  A detail message is a String that describes
+ this particular exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

@@ -165,7 +165,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Utility methods for objects.</p>
+<p>This class consists of <code>static</code> utility methods for operating
+ on objects.  These utilities include <code>null</code>-safe or <code>null</code>-tolerant methods for computing the hash code of an object,
+ returning a string for an object, and comparing two objects.</p>
 
 
 
@@ -237,7 +239,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Objects.html#compare(T, T, java.util.Comparator<? super T>)">compare</a></span>(T a, T b, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; c)
         
-        <div class="jd-descrdiv">Returns 0 if <code>a == b</code>, or <code>c.compare(a, b)</code> otherwise.</div>
+        <div class="jd-descrdiv">Returns 0 if the arguments are identical and <code>c.compare(a, b)</code> otherwise.</div>
   
   </td></tr>
 
@@ -255,10 +257,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Objects.html#deepEquals(java.lang.Object, java.lang.Object)">deepEquals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> a, <a href="../../../reference/java/lang/Object.html">Object</a> b)
         
-        <div class="jd-descrdiv">Returns true if both arguments are null,
- the result of <code><a href="reference/java/util/Arrays.html#equals(boolean[], boolean[])">equals(boolean[], boolean[])</a></code> if both arguments are primitive arrays,
- the result of <code><a href="reference/java/util/Arrays.html#deepEquals(java.lang.Object[], java.lang.Object[])">deepEquals(Object[], Object[])</a></code> if both arguments are arrays of reference types,
- and the result of <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> otherwise.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the arguments are deeply equal to each other
+ and <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -276,7 +276,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Objects.html#equals(java.lang.Object, java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> a, <a href="../../../reference/java/lang/Object.html">Object</a> b)
         
-        <div class="jd-descrdiv">Null-safe equivalent of <code>a.equals(b)</code>.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if the arguments are equal to each other
+ and <code>false</code> otherwise.</div>
   
   </td></tr>
 
@@ -294,7 +295,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Objects.html#hash(java.lang.Object...)">hash</a></span>(<a href="../../../reference/java/lang/Object.html">Object...</a> values)
         
-        <div class="jd-descrdiv">Convenience wrapper for <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code>, adding varargs.</div>
+        <div class="jd-descrdiv">Generates a hash code for a sequence of input values.</div>
   
   </td></tr>
 
@@ -312,7 +313,46 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Objects.html#hashCode(java.lang.Object)">hashCode</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns 0 for null or <code>o.hashCode()</code>.</div>
+        <div class="jd-descrdiv">Returns the hash code of a non-<code>null</code> argument and 0 for
+ a <code>null</code> argument.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Objects.html#isNull(java.lang.Object)">isNull</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if the provided reference is <code>null</code> otherwise
+ returns <code>false</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Objects.html#nonNull(java.lang.Object)">nonNull</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if the provided reference is non-<code>null</code>
+ otherwise returns <code>false</code>.</div>
   
   </td></tr>
 
@@ -328,10 +368,10 @@ layout: api
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Objects.html#requireNonNull(T, java.lang.String)">requireNonNull</a></span>(T o, <a href="../../../reference/java/lang/String.html">String</a> message)
+        <span class="sympad"><a href="../../../reference/java/util/Objects.html#requireNonNull(T, java.lang.String)">requireNonNull</a></span>(T obj, <a href="../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Returns <code>o</code> if non-null, or throws <code>NullPointerException</code>
- with the given detail message.</div>
+        <div class="jd-descrdiv">Checks that the specified object reference is not <code>null</code> and
+ throws a customized <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> if it is.</div>
   
   </td></tr>
 
@@ -347,15 +387,34 @@ layout: api
             T
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Objects.html#requireNonNull(T)">requireNonNull</a></span>(T o)
+        <span class="sympad"><a href="../../../reference/java/util/Objects.html#requireNonNull(T, java.util.function.Supplier<java.lang.String>)">requireNonNull</a></span>(T obj, <a href="../../../reference/java/util/function/Supplier.html">Supplier</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>&gt; messageSupplier)
         
-        <div class="jd-descrdiv">Returns <code>o</code> if non-null, or throws <code>NullPointerException</code>.</div>
+        <div class="jd-descrdiv">Checks that the specified object reference is not <code>null</code> and
+ throws a customized <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> if it is.</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            &lt;T&gt;
+            T
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Objects.html#requireNonNull(T)">requireNonNull</a></span>(T obj)
+        
+        <div class="jd-descrdiv">Checks that the specified object reference is not <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -367,13 +426,13 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Objects.html#toString(java.lang.Object)">toString</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Returns "null" for null or <code>o.toString()</code>.</div>
+        <div class="jd-descrdiv">Returns the result of calling <code>toString</code> for a non-<code>null</code> argument and <code>"null"</code> for a <code>null</code> argument.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -383,9 +442,11 @@ layout: api
             <a href="../../../reference/java/lang/String.html">String</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Objects.html#toString(java.lang.Object, java.lang.String)">toString</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o, <a href="../../../reference/java/lang/String.html">String</a> nullString)
+        <span class="sympad"><a href="../../../reference/java/util/Objects.html#toString(java.lang.Object, java.lang.String)">toString</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o, <a href="../../../reference/java/lang/String.html">String</a> nullDefault)
         
-        <div class="jd-descrdiv">Returns <code>nullString</code> for null or <code>o.toString()</code>.</div>
+        <div class="jd-descrdiv">Returns the result of calling <code>toString</code> on the first
+ argument if the first argument is not <code>null</code> and returns
+ the second argument otherwise.</div>
   
   </td></tr>
 
@@ -702,9 +763,39 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns 0 if <code>a == b</code>, or <code>c.compare(a, b)</code> otherwise.
- That is, this makes <code>c</code> null-safe.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns 0 if the arguments are identical and <code>c.compare(a, b)</code> otherwise.
+ Consequently, if both arguments are <code>null</code> 0
+ is returned.
+
+ <p>Note that if one of the arguments is <code>null</code>, a <code>NullPointerException</code> may or may not be thrown depending on
+ what ordering policy, if any, the <code><a href="reference/java/util/Comparator.html">Comparator</a></code>
+ chooses to have for <code>null</code> values.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an object</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>an object to be compared with <code>a</code></td>
+        </tr>
+        <tr>
+          <th>c</th>
+          <td>the <code>Comparator</code> to compare the first two arguments</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>0 if the arguments are identical and <code>c.compare(a, b)</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li><li><code><a href="../../../reference/java/util/Comparator.html">Comparator</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -735,11 +826,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if both arguments are null,
- the result of <code><a href="reference/java/util/Arrays.html#equals(boolean[], boolean[])">equals(boolean[], boolean[])</a></code> if both arguments are primitive arrays,
- the result of <code><a href="reference/java/util/Arrays.html#deepEquals(java.lang.Object[], java.lang.Object[])">deepEquals(Object[], Object[])</a></code> if both arguments are arrays of reference types,
- and the result of <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> otherwise.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the arguments are deeply equal to each other
+ and <code>false</code> otherwise.
+
+ Two <code>null</code> values are deeply equal.  If both arguments are
+ arrays, the algorithm in <code><a href="reference/java/util/Arrays.html#deepEquals(java.lang.Object[], java.lang.Object[])">Arrays.deepEquals</a></code> is used to determine equality.
+ Otherwise, equality is determined by using the <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></code> method of the first argument.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an object</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>an object to be compared with <code>a</code> for deep equality</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the arguments are deeply equal to each other
+ and <code>false</code> otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Arrays.html#deepEquals(java.lang.Object[], java.lang.Object[])">deepEquals(Object[], Object[])</a></code></li><li><code><a href="../../../reference/java/util/Objects.html#equals(java.lang.Object, java.lang.Object)">equals(Object, Object)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -770,8 +885,35 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Null-safe equivalent of <code>a.equals(b)</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the arguments are equal to each other
+ and <code>false</code> otherwise.
+ Consequently, if both arguments are <code>null</code>, <code>true</code>
+ is returned and if exactly one argument is <code>null</code>, <code>false</code> is returned.  Otherwise, equality is determined by using
+ the <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></code> method of the first
+ argument.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>a</th>
+          <td>an object</td>
+        </tr>
+        <tr>
+          <th>b</th>
+          <td>an object to be compared with <code>a</code> for equality</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the arguments are equal to each other
+ and <code>false</code> otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -802,10 +944,40 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Convenience wrapper for <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code>, adding varargs.
- This can be used to compute a hash code for an object's fields as follows:
- <code>Objects.hash(a, b, c)</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Generates a hash code for a sequence of input values. The hash
+ code is generated as if all the input values were placed into an
+ array, and that array were hashed by calling <code><a href="reference/java/util/Arrays.html#hashCode(java.lang.Object[])">hashCode(Object[])</a></code>.
+
+ <p>This method is useful for implementing <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code> on objects containing multiple fields. For
+ example, if an object that has three fields, <code>x</code>, <code>y</code>, and <code>z</code>, one could write:
+
+ <blockquote><pre>
+ &#064;Override public int hashCode() {
+     return Objects.hash(x, y, z);
+ }
+ </pre></blockquote>
+
+ <b>Warning: When a single object reference is supplied, the returned
+ value does not equal the hash code of that object reference.</b> This
+ value can be computed by calling <code><a href="reference/java/util/Objects.html#hashCode(java.lang.Object)">hashCode(Object)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>values</th>
+          <td>the values to be hashed</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a hash value of the sequence of input values</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Arrays.html#hashCode(java.lang.Object[])">hashCode(Object[])</a></code></li><li><code><a href="../../../reference/java/util/List.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -836,8 +1008,129 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns 0 for null or <code>o.hashCode()</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code of a non-<code>null</code> argument and 0 for
+ a <code>null</code> argument.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>an object</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the hash code of a non-<code>null</code> argument and 0 for
+ a <code>null</code> argument</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="isNull(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isNull</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the provided reference is <code>null</code> otherwise
+ returns <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>a reference to be checked against <code>null</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the provided reference is <code>null</code> otherwise
+ <code>false</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/Predicate.html">Predicate</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="nonNull(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">nonNull</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the provided reference is non-<code>null</code>
+ otherwise returns <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>a reference to be checked against <code>null</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the provided reference is non-<code>null</code>
+ otherwise <code>false</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/function/Predicate.html">Predicate</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -856,7 +1149,7 @@ From class
         T
       </span>
       <span class="sympad">requireNonNull</span>
-      <span class="normal">(T o, <a href="../../../reference/java/lang/String.html">String</a> message)</span>
+      <span class="normal">(T obj, <a href="../../../reference/java/lang/String.html">String</a> message)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -868,9 +1161,110 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>o</code> if non-null, or throws <code>NullPointerException</code>
- with the given detail message.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Checks that the specified object reference is not <code>null</code> and
+ throws a customized <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> if it is. This method
+ is designed primarily for doing parameter validation in methods and
+ constructors with multiple parameters, as demonstrated below:
+ <blockquote><pre>
+ public Foo(Bar bar, Baz baz) {
+     this.bar = Objects.requireNonNull(bar, "bar must not be null");
+     this.baz = Objects.requireNonNull(baz, "baz must not be null");
+ }
+ </pre></blockquote></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>the object reference to check for nullity</td>
+        </tr>
+        <tr>
+          <th>message</th>
+          <td>detail message to be used in the event that a <code>NullPointerException</code> is thrown</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>obj</code> if not <code>null</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>obj</code> is <code>null</code>
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="requireNonNull(T, java.util.function.Supplier<java.lang.String>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        T
+      </span>
+      <span class="sympad">requireNonNull</span>
+      <span class="normal">(T obj, <a href="../../../reference/java/util/function/Supplier.html">Supplier</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>&gt; messageSupplier)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks that the specified object reference is not <code>null</code> and
+ throws a customized <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> if it is.
+
+ <p>Unlike the method <code><a href="reference/java/util/Objects.html#requireNonNull(T, java.lang.String)">requireNonNull(Object, String)</a></code>,
+ this method allows creation of the message to be deferred until
+ after the null check is made. While this may confer a
+ performance advantage in the non-null case, when deciding to
+ call this method care should be taken that the costs of
+ creating the message supplier are less than the cost of just
+ creating the string message directly.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>the object reference to check for nullity</td>
+        </tr>
+        <tr>
+          <th>messageSupplier</th>
+          <td>supplier of the detail message to be
+ used in the event that a <code>NullPointerException</code> is thrown</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>obj</code> if not <code>null</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>obj</code> is <code>null</code></td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -889,7 +1283,7 @@ From class
         T
       </span>
       <span class="sympad">requireNonNull</span>
-      <span class="normal">(T o)</span>
+      <span class="normal">(T obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -901,8 +1295,37 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>o</code> if non-null, or throws <code>NullPointerException</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Checks that the specified object reference is not <code>null</code>. This
+ method is designed primarily for doing parameter validation in methods
+ and constructors, as demonstrated below:
+ <blockquote><pre>
+ public Foo(Bar bar) {
+     this.bar = Objects.requireNonNull(bar);
+ }
+ </pre></blockquote></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>the object reference to check for nullity</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>obj</code> if not <code>null</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>obj</code> is <code>null</code>
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -933,8 +1356,25 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns "null" for null or <code>o.toString()</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of calling <code>toString</code> for a non-<code>null</code> argument and <code>"null"</code> for a <code>null</code> argument.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>an object</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result of calling <code>toString</code> for a non-<code>null</code> argument and <code>"null"</code> for a <code>null</code> argument</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#toString()">toString()</a></code></li><li><code><a href="../../../reference/java/lang/String.html#valueOf(java.lang.Object)">valueOf(Object)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -953,7 +1393,7 @@ From class
         <a href="../../../reference/java/lang/String.html">String</a>
       </span>
       <span class="sympad">toString</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o, <a href="../../../reference/java/lang/String.html">String</a> nullString)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o, <a href="../../../reference/java/lang/String.html">String</a> nullDefault)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -965,8 +1405,34 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>nullString</code> for null or <code>o.toString()</code>.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of calling <code>toString</code> on the first
+ argument if the first argument is not <code>null</code> and returns
+ the second argument otherwise.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>an object</td>
+        </tr>
+        <tr>
+          <th>nullDefault</th>
+          <td>string to return if the first argument is
+        <code>null</code></td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the result of calling <code>toString</code> on the first
+ argument if it is not <code>null</code> and the second argument
+ otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Objects.html#toString(java.lang.Object)">toString(Object)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>

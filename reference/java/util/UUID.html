@@ -184,14 +184,40 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>UUID is an immutable representation of a 128-bit universally unique
- identifier (UUID).
- <p>
- There are multiple, variant layouts of UUIDs, but this class is based upon
- variant 2 of <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>, the
- Leach-Salz variant. This class can be used to model alternate variants, but
- most of the methods will be unsupported in those cases; see each method for
- details.</p>
+<p>A class that represents an immutable universally unique identifier (UUID).
+ A UUID represents a 128-bit value.
+
+ <p> There exist different variants of these global identifiers.  The methods
+ of this class are for manipulating the Leach-Salz variant, although the
+ constructors allow the creation of any variant of UUID (described below).
+
+ <p> The layout of a variant 2 (Leach-Salz) UUID is as follows:
+
+ The most significant long consists of the following unsigned fields:
+ <pre>
+ 0xFFFFFFFF00000000 time_low
+ 0x00000000FFFF0000 time_mid
+ 0x000000000000F000 version
+ 0x0000000000000FFF time_hi
+ </pre>
+ The least significant long consists of the following unsigned fields:
+ <pre>
+ 0xC000000000000000 variant
+ 0x3FFF000000000000 clock_seq
+ 0x0000FFFFFFFFFFFF node
+ </pre>
+
+ <p> The variant field contains a value which identifies the layout of the
+ <code>UUID</code>.  The bit layout described above is valid only for a <code>UUID</code> with a variant value of 2, which indicates the Leach-Salz variant.
+
+ <p> The version field holds a value that describes the type of this <code>UUID</code>.  There are four different basic types of UUIDs: time-based, DCE
+ security, name-based, and randomly generated UUIDs.  These types have a
+ version value of 1, 2, 3 and 4, respectively.
+
+ <p> For more information including algorithms used to create <code>UUID</code>s,
+ see <a href="http://www.ietf.org/rfc/rfc4122.txt"> <i>RFC&nbsp;4122: A
+ Universally Unique IDentifier (UUID) URN Namespace</i></a>, section 4.2
+ &quot;Algorithms for Creating a Time-Based UUID&quot;.</p>
 
 
 
@@ -259,8 +285,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#UUID(long, long)">UUID</a></span>(long mostSigBits, long leastSigBits)
         
-        <div class="jd-descrdiv"><p>
- Constructs an instance with the specified bits.</div>
+        <div class="jd-descrdiv">Constructs a new <code>UUID</code> using the specified data.</div>
   
   </td></tr>
 
@@ -291,9 +316,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#clockSequence()">clockSequence</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The clock sequence value of the version 1, variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">The clock sequence value associated with this UUID.</div>
   
   </td></tr>
 
@@ -309,10 +332,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/UUID.html#compareTo(java.util.UUID)">compareTo</a></span>(<a href="../../../reference/java/util/UUID.html">UUID</a> uuid)
+        <span class="sympad"><a href="../../../reference/java/util/UUID.html#compareTo(java.util.UUID)">compareTo</a></span>(<a href="../../../reference/java/util/UUID.html">UUID</a> val)
         
-        <div class="jd-descrdiv"><p>
- Compares this UUID to the specified UUID.</div>
+        <div class="jd-descrdiv">Compares this UUID with the specified UUID.</div>
   
   </td></tr>
 
@@ -328,10 +350,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/UUID.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/UUID.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
-        <div class="jd-descrdiv"><p>
- Compares this UUID to another object for equality.</div>
+        <div class="jd-descrdiv">Compares this object to the specified object.</div>
   
   </td></tr>
 
@@ -347,10 +368,10 @@ layout: api
             <a href="../../../reference/java/util/UUID.html">UUID</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/UUID.html#fromString(java.lang.String)">fromString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> uuid)
+        <span class="sympad"><a href="../../../reference/java/util/UUID.html#fromString(java.lang.String)">fromString</a></span>(<a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv"><p>
- Parses a UUID string with the format defined by <code><a href="reference/java/util/UUID.html#toString()">toString()</a></code>.</div>
+        <div class="jd-descrdiv">Creates a <code>UUID</code> from the string standard representation as
+ described in the <code><a href="reference/java/util/UUID.html#toString()">toString()</a></code> method.</div>
   
   </td></tr>
 
@@ -368,8 +389,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#getLeastSignificantBits()">getLeastSignificantBits</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The 64 least significant bits of the UUID.</div>
+        <div class="jd-descrdiv">Returns the least significant 64 bits of this UUID's 128 bit value.</div>
   
   </td></tr>
 
@@ -387,8 +407,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#getMostSignificantBits()">getMostSignificantBits</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The 64 most significant bits of the UUID.</div>
+        <div class="jd-descrdiv">Returns the most significant 64 bits of this UUID's 128 bit value.</div>
   
   </td></tr>
 
@@ -406,9 +425,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv"><p>
- Returns a hash value for this UUID that is consistent with the
- <code><a href="reference/java/util/UUID.html#equals(java.lang.Object)">equals(Object)</a></code> method.</div>
+        <div class="jd-descrdiv">Returns a hash code for this <code>UUID</code>.</div>
   
   </td></tr>
 
@@ -426,9 +443,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#nameUUIDFromBytes(byte[])">nameUUIDFromBytes</a></span>(byte[] name)
         
-        <div class="jd-descrdiv"><p>
- Generates a variant 2, version 3 (name-based, MD5-hashed) UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">Static factory to retrieve a type 3 (name based) <code>UUID</code> based on
+ the specified byte array.</div>
   
   </td></tr>
 
@@ -446,9 +462,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#node()">node</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The node value of the version 1, variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">The node value associated with this UUID.</div>
   
   </td></tr>
 
@@ -466,9 +480,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#randomUUID()">randomUUID</a></span>()
         
-        <div class="jd-descrdiv"><p>
- Generates a variant 2, version 4 (randomly generated number) UUID as per
- <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">Static factory to retrieve a type 4 (pseudo randomly generated) UUID.</div>
   
   </td></tr>
 
@@ -486,9 +498,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#timestamp()">timestamp</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The timestamp value of the version 1, variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">The timestamp value associated with this UUID.</div>
   
   </td></tr>
 
@@ -506,9 +516,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv"><p>
- Returns a string representation of this UUID in the following format, as
- per <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">Returns a <code>String</code> object representing this <code>UUID</code>.</div>
   
   </td></tr>
 
@@ -526,9 +534,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#variant()">variant</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The variant of the UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">The variant number associated with this <code>UUID</code>.</div>
   
   </td></tr>
 
@@ -546,9 +552,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/UUID.html#version()">version</a></span>()
         
-        <div class="jd-descrdiv"><p>
- The version of the variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</div>
+        <div class="jd-descrdiv">The version number associated with this <code>UUID</code>.</div>
   
   </td></tr>
 
@@ -830,10 +834,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/UUID.html">UUID</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/util/UUID.html">UUID</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -903,18 +906,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Constructs an instance with the specified bits.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UUID</code> using the specified data.  <code>mostSigBits</code> is used for the most significant 64 bits of the <code>UUID</code> and <code>leastSigBits</code> becomes the least significant 64 bits of
+ the <code>UUID</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>mostSigBits</th>
-          <td>The 64 most significant bits of the UUID.</td>
+          <td>The most significant bits of the <code>UUID</code></td>
         </tr>
         <tr>
           <th>leastSigBits</th>
-          <td>The 64 least significant bits of the UUID.
+          <td>The least significant bits of the <code>UUID</code>
 </td>
         </tr>
       </table>
@@ -964,19 +967,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The clock sequence value of the version 1, variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The clock sequence value associated with this UUID.
+
+ <p> The 14 bit clock sequence value is constructed from the clock
+ sequence field of this UUID.  The clock sequence field is used to
+ guarantee temporal uniqueness in a time-based UUID.
+
+ <p> The <code>clockSequence</code> value is only meaningful in a time-based
+ UUID, which has version type 1.  If this UUID is not a time-based UUID
+ then this method throws UnsupportedOperationException.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>long</code> value.</li></ul>
+      <ul class="nolist"><li>The clock sequence of this <code>UUID</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if <code><a href="reference/java/util/UUID.html#version()">version()</a></code> is not 1.
+            <td>If this UUID is not a version 1 UUID
 </td>
         </tr>
       </table>
@@ -999,7 +1008,7 @@ From interface
         int
       </span>
       <span class="sympad">compareTo</span>
-      <span class="normal">(<a href="../../../reference/java/util/UUID.html">UUID</a> uuid)</span>
+      <span class="normal">(<a href="../../../reference/java/util/UUID.html">UUID</a> val)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1011,23 +1020,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Compares this UUID to the specified UUID. The natural ordering of UUIDs
- is based upon the value of the bits from most significant to least
- significant.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this UUID with the specified UUID.
+
+ <p> The first of two UUIDs is greater than the second if the most
+ significant field in which the UUIDs differ is greater for the first
+ UUID.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>uuid</th>
-          <td>the UUID to compare to.</td>
+          <th>val</th>
+          <td><code>UUID</code> to which this <code>UUID</code> is to be compared</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a value of -1, 0 or 1 if this UUID is less than, equal to or
-         greater than <code>uuid</code>.
+      <ul class="nolist"><li>-1, 0 or 1 as this <code>UUID</code> is less than, equal to, or
+          greater than <code>val</code>
+
 </li></ul>
   </div>
 
@@ -1048,7 +1059,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> obj)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1060,23 +1071,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Compares this UUID to another object for equality. If <code>object</code>
- is not <code>null</code>, is a UUID instance, and all bits are equal, then
- <code>true</code> is returned.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified object.  The result is <code>true</code> if and only if the argument is not <code>null</code>, is a <code>UUID</code>
+ object, has the same variant, and contains the same value, bit for bit,
+ as this <code>UUID</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the <code>Object</code> to compare to.</td>
+          <th>obj</th>
+          <td>The object to be compared</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this UUID is equal to <code>object</code>
-         or <code>false</code> if not.
+      <ul class="nolist"><li><code>true</code> if the objects are the same; <code>false</code>
+          otherwise
 </li></ul>
   </div>
 
@@ -1097,7 +1107,7 @@ From interface
         <a href="../../../reference/java/util/UUID.html">UUID</a>
       </span>
       <span class="sympad">fromString</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> uuid)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> name)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1109,31 +1119,29 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Parses a UUID string with the format defined by <code><a href="reference/java/util/UUID.html#toString()">toString()</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>UUID</code> from the string standard representation as
+ described in the <code><a href="reference/java/util/UUID.html#toString()">toString()</a></code> method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>uuid</th>
-          <td>the UUID string to parse.</td>
+          <th>name</th>
+          <td>A string that specifies a <code>UUID</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an UUID instance.</li></ul>
+      <ul class="nolist"><li>A <code>UUID</code> with the specified value</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>uuid</code> is <code>null</code>.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>uuid</code> is not formatted correctly.
+            <td>If name does not conform to the string representation as
+          described in <code><a href="reference/java/util/UUID.html#toString()">toString()</a></code>
+
 </td>
         </tr>
       </table>
@@ -1168,11 +1176,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The 64 least significant bits of the UUID.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the least significant 64 bits of this UUID's 128 bit value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the 64 least significant bits.
+      <ul class="nolist"><li>The least significant 64 bits of this UUID's 128 bit value
 </li></ul>
   </div>
 
@@ -1205,11 +1212,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The 64 most significant bits of the UUID.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most significant 64 bits of this UUID's 128 bit value.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the 64 most significant bits.
+      <ul class="nolist"><li>The most significant 64 bits of this UUID's 128 bit value
 </li></ul>
   </div>
 
@@ -1242,12 +1248,10 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Returns a hash value for this UUID that is consistent with the
- <code><a href="reference/java/util/UUID.html#equals(java.lang.Object)">equals(Object)</a></code> method.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this <code>UUID</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an <code>int</code> value.
+      <ul class="nolist"><li>A hash code value for this <code>UUID</code>
 </li></ul>
   </div>
 
@@ -1280,21 +1284,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Generates a variant 2, version 3 (name-based, MD5-hashed) UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Static factory to retrieve a type 3 (name based) <code>UUID</code> based on
+ the specified byte array.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>name</th>
-          <td>the name used as byte array to create an UUID.</td>
+          <td>A byte array to be used to construct a <code>UUID</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an UUID instance.
+      <ul class="nolist"><li>A <code>UUID</code> generated from the specified array
 </li></ul>
   </div>
 
@@ -1327,19 +1330,25 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The node value of the version 1, variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>The node value associated with this UUID.
+
+ <p> The 48 bit node value is constructed from the node field of this
+ UUID.  This field is intended to hold the IEEE 802 address of the machine
+ that generated this UUID to guarantee spatial uniqueness.
+
+ <p> The node value is only meaningful in a time-based UUID, which has
+ version type 1.  If this UUID is not a time-based UUID then this method
+ throws UnsupportedOperationException.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>long</code> value.</li></ul>
+      <ul class="nolist"><li>The node value of this <code>UUID</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if <code><a href="reference/java/util/UUID.html#version()">version()</a></code> is not 1.
+            <td>If this UUID is not a version 1 UUID
 </td>
         </tr>
       </table>
@@ -1374,12 +1383,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Generates a variant 2, version 4 (randomly generated number) UUID as per
- <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Static factory to retrieve a type 4 (pseudo randomly generated) UUID.
+
+ The <code>UUID</code> is generated using a cryptographically strong pseudo
+ random number generator.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an UUID instance.
+      <ul class="nolist"><li>A randomly generated <code>UUID</code>
 </li></ul>
   </div>
 
@@ -1412,19 +1422,22 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The timestamp value of the version 1, variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>long</code> value.</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>The timestamp value associated with this UUID.
+
+ <p> The 60 bit timestamp value is constructed from the time_low,
+ time_mid, and time_hi fields of this <code>UUID</code>.  The resulting
+ timestamp is measured in 100-nanosecond units since midnight,
+ October 15, 1582 UTC.
+
+ <p> The timestamp value is only meaningful in a time-based UUID, which
+ has version type 1.  If this <code>UUID</code> is not a time-based UUID then
+ this method throws UnsupportedOperationException.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>if <code><a href="reference/java/util/UUID.html#version()">version()</a></code> is not 1.
+            <td>If this UUID is not a version 1 UUID
 </td>
         </tr>
       </table>
@@ -1459,30 +1472,28 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- Returns a string representation of this UUID in the following format, as
- per <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>String</code> object representing this <code>UUID</code>.
 
- <pre>
-            UUID                   = time-low &quot;-&quot; time-mid &quot;-&quot;
-                                     time-high-and-version &quot;-&quot;
-                                     clock-seq-and-reserved
-                                     clock-seq-low &quot;-&quot; node
-            time-low               = 4hexOctet
-            time-mid               = 2hexOctet
-            time-high-and-version  = 2hexOctet
-            clock-seq-and-reserved = hexOctet
-            clock-seq-low          = hexOctet
-            node                   = 6hexOctet
-            hexOctet               = hexDigit hexDigit
-            hexDigit =
-                &quot;0&quot; / &quot;1&quot; / &quot;2&quot; / &quot;3&quot; / &quot;4&quot; / &quot;5&quot; / &quot;6&quot; / &quot;7&quot; / &quot;8&quot; / &quot;9&quot; /
-                &quot;a&quot; / &quot;b&quot; / &quot;c&quot; / &quot;d&quot; / &quot;e&quot; / &quot;f&quot; /
-                &quot;A&quot; / &quot;B&quot; / &quot;C&quot; / &quot;D&quot; / &quot;E&quot; / &quot;F&quot;
- </pre></p></div>
+ <p> The UUID string representation is as described by this BNF:
+ <blockquote><pre>
+ <code>UUID                   = &lt;time_low&gt; "-" &lt;time_mid&gt; "-"
+                          &lt;time_high_and_version&gt; "-"
+                          &lt;variant_and_sequence&gt; "-"
+                          &lt;node&gt;
+ time_low               = 4*&lt;hexOctet&gt;
+ time_mid               = 2*&lt;hexOctet&gt;
+ time_high_and_version  = 2*&lt;hexOctet&gt;
+ variant_and_sequence   = 2*&lt;hexOctet&gt;
+ node                   = 6*&lt;hexOctet&gt;
+ hexOctet               = &lt;hexDigit&gt;&lt;hexDigit&gt;
+ hexDigit               =
+       "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+       | "a" | "b" | "c" | "d" | "e" | "f"
+       | "A" | "B" | "C" | "D" | "E" | "F"
+ </code></pre></blockquote></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a String instance.
+      <ul class="nolist"><li>A string representation of this <code>UUID</code>
 </li></ul>
   </div>
 
@@ -1515,18 +1526,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The variant of the UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
- <ul>
- <li>0 - Reserved for NCS compatibility</li>
- <li>2 - RFC 4122/Leach-Salz</li>
- <li>6 - Reserved for Microsoft Corporation compatibility</li>
- <li>7 - Reserved for future use</li>
+  <div class="jd-tagdata jd-tagdescr"><p>The variant number associated with this <code>UUID</code>.  The variant
+ number describes the layout of the <code>UUID</code>.
+
+ The variant number has the following meaning:
+ <p><ul>
+ <li>0    Reserved for NCS backward compatibility
+ <li>2    <a href="http://www.ietf.org/rfc/rfc4122.txt">IETF&nbsp;RFC&nbsp;4122</a>
+ (Leach-Salz), used by this class
+ <li>6    Reserved, Microsoft Corporation backward compatibility
+ <li>7    Reserved for future definition
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an <code>int</code> value.
+      <ul class="nolist"><li>The variant number of this <code>UUID</code>
 </li></ul>
   </div>
 
@@ -1559,20 +1572,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p><p>
- The version of the variant 2 UUID as per <a
- href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>. If the variant
- is not 2, then the version will be 0.
- <ul>
- <li>1 - Time-based UUID</li>
- <li>2 - DCE Security UUID</li>
- <li>3 - Name-based with MD5 hashing UUID (<code><a href="reference/java/util/UUID.html#nameUUIDFromBytes(byte[])">nameUUIDFromBytes(byte[])</a></code>)</li>
- <li>4 - Randomly generated UUID (<code><a href="reference/java/util/UUID.html#randomUUID()">randomUUID()</a></code>)</li>
- <li>5 - Name-based with SHA-1 hashing UUID</li>
+  <div class="jd-tagdata jd-tagdescr"><p>The version number associated with this <code>UUID</code>.  The version
+ number describes how this <code>UUID</code> was generated.
+
+ The version number has the following meaning:
+ <p><ul>
+ <li>1    Time-based UUID
+ <li>2    DCE security UUID
+ <li>3    Name-based UUID
+ <li>4    Randomly generated UUID
  </ul></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an <code>int</code> value.
+      <ul class="nolist"><li>The version number of this <code>UUID</code>
 </li></ul>
   </div>
 

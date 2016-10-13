@@ -235,12 +235,19 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program attempts to access a field or method which is not
- accessible from the location where the reference is made.
-</p>
+<p>An IllegalAccessException is thrown when an application tries
+ to reflectively create an instance (other than an array),
+ set or get a field, or invoke a method, but the currently
+ executing method does not have access to the definition of
+ the specified class, field, method or constructor.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html#newInstance()">newInstance()</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#set(java.lang.Object, java.lang.Object)">set(Object, Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setBoolean(java.lang.Object, boolean)">setBoolean(Object, boolean)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setByte(java.lang.Object, byte)">setByte(Object, byte)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setShort(java.lang.Object, short)">setShort(Object, short)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setChar(java.lang.Object, char)">setChar(Object, char)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setInt(java.lang.Object, int)">setInt(Object, int)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setLong(java.lang.Object, long)">setLong(Object, long)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setFloat(java.lang.Object, float)">setFloat(Object, float)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#setDouble(java.lang.Object, double)">setDouble(Object, double)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#get(java.lang.Object)">get(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getBoolean(java.lang.Object)">getBoolean(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getByte(java.lang.Object)">getByte(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getShort(java.lang.Object)">getShort(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getChar(java.lang.Object)">getChar(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getInt(java.lang.Object)">getInt(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getLong(java.lang.Object)">getLong(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getFloat(java.lang.Object)">getFloat(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Field.html#getDouble(java.lang.Object)">getDouble(Object)</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Method.html#invoke(java.lang.Object, java.lang.Object...)">invoke(Object, Object[])</a></code></li><li><code><a href="../../../reference/java/lang/reflect/Constructor.html#newInstance(java.lang.Object...)">newInstance(Object[])</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -305,8 +312,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IllegalAccessException.html#IllegalAccessException()">IllegalAccessException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalAccessException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>IllegalAccessException</code> without a
+ detail message.</div>
   
   </td></tr>
 
@@ -322,10 +329,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/IllegalAccessException.html#IllegalAccessException(java.lang.String)">IllegalAccessException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/IllegalAccessException.html#IllegalAccessException(java.lang.String)">IllegalAccessException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalAccessException</code> with the current stack
- trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>IllegalAccessException</code> with a detail message.</div>
   
   </td></tr>
 
@@ -561,6 +567,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -861,8 +886,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalAccessException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IllegalAccessException</code> without a
+ detail message.
 </p></div>
 
     </div>
@@ -882,7 +907,7 @@ From class
         
       </span>
       <span class="sympad">IllegalAccessException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -894,14 +919,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalAccessException</code> with the current stack
- trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IllegalAccessException</code> with a detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

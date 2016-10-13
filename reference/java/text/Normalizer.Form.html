@@ -104,12 +104,12 @@ layout: api
   
 
   
+   
+  
   
   
   
 
-  
-   
   
   
   
@@ -374,7 +374,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv"><code>Enum</code> objects are singletons, they may not be cloned.</div>
+        <div class="jd-descrdiv">Throws CloneNotSupportedException.</div>
   
   </td></tr>
 
@@ -392,8 +392,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#compareTo(E)">compareTo</a></span>(<a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified enum object to determine their
- relative order.</div>
+        <div class="jd-descrdiv">Compares this enum with the specified object for order.</div>
   
   </td></tr>
 
@@ -411,8 +410,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> other)
         
-        <div class="jd-descrdiv">Compares this object with the specified object and indicates if they are
- equal.</div>
+        <div class="jd-descrdiv">Returns true if the specified object is equal to this
+ enum constant.</div>
   
   </td></tr>
 
@@ -430,7 +429,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#finalize()">finalize</a></span>()
         
-        <div class="jd-descrdiv">Enum types may not have finalizers.</div>
+        <div class="jd-descrdiv">enum classes cannot have finalize methods.</div>
   
   </td></tr>
 
@@ -448,7 +447,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#getDeclaringClass()">getDeclaringClass</a></span>()
         
-        <div class="jd-descrdiv">Returns the enum constant's declaring class.</div>
+        <div class="jd-descrdiv">Returns the Class object corresponding to this enum constant's
+ enum type.</div>
   
   </td></tr>
 
@@ -466,7 +466,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+        <div class="jd-descrdiv">Returns a hash code for this enum constant.</div>
   
   </td></tr>
 
@@ -484,7 +484,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#name()">name</a></span>()
         
-        <div class="jd-descrdiv">Returns the name of this enum constant.</div>
+        <div class="jd-descrdiv">Returns the name of this enum constant, exactly as declared in its
+ enum declaration.</div>
   
   </td></tr>
 
@@ -502,7 +503,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#ordinal()">ordinal</a></span>()
         
-        <div class="jd-descrdiv">Returns the position of the enum constant in the declaration.</div>
+        <div class="jd-descrdiv">Returns the ordinal of this enumeration constant (its position
+ in its enum declaration, where the initial constant is assigned
+ an ordinal of zero).</div>
   
   </td></tr>
 
@@ -520,8 +523,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.</div>
+        <div class="jd-descrdiv">Returns the name of this enum constant, as contained in the
+ declaration.</div>
   
   </td></tr>
 
@@ -539,7 +542,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Enum.html#valueOf(java.lang.Class<T>, java.lang.String)">valueOf</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; enumType, <a href="../../../reference/java/lang/String.html">String</a> name)
         
-        <div class="jd-descrdiv">Returns the constant with the specified name of the specified enum type.</div>
+        <div class="jd-descrdiv">Returns the enum constant of the specified enum type with the
+ specified name.</div>
   
   </td></tr>
 
@@ -781,8 +785,6 @@ From class
 
 
 
-
-
 <tr class="api apilevel-" >
 <td colspan="12">
   <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Comparable" class="jd-expando-trigger closed"
@@ -812,10 +814,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -824,6 +825,8 @@ From interface
   </div>
 </div>
 </td></tr>
+
+
 
 
 </table>

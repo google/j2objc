@@ -254,7 +254,7 @@ layout: api
        throws IOException {
      serverSocket = new ServerSocket(port);
      pool = Executors.newFixedThreadPool(poolSize);
-   </code>
+   }
 
    public void run() { // run the service
      try {
@@ -273,7 +273,7 @@ layout: api
    public void run() {
      // read and service request on socket
    }
- }}</pre>
+ }</code></pre>
 
  The following method shuts down an <code>ExecutorService</code> in two phases,
  first by calling <code>shutdown</code> to reject incoming tasks, and then
@@ -288,14 +288,14 @@ layout: api
        // Wait a while for tasks to respond to being cancelled
        if (!pool.awaitTermination(60, TimeUnit.SECONDS))
            System.err.println("Pool did not terminate");
-     </code>
+     }
    } catch (InterruptedException ie) {
      // (Re-)Cancel if current thread also interrupted
      pool.shutdownNow();
      // Preserve interrupt status
      Thread.currentThread().interrupt();
    }
- }}</pre>
+ }</code></pre>
 
  <p>Memory consistency effects: Actions in a thread prior to the
  submission of a <code>Runnable</code> or <code>Callable</code> task to an

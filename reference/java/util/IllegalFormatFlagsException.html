@@ -180,11 +180,6 @@ layout: api
 
   
   
-      implements
-      
-        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
-      
-  
   
 
 
@@ -292,16 +287,13 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>An <code>IllegalFormatFlagsException</code> will be thrown if the combination of
- the format flags is illegal.</p>
+<p>Unchecked exception thrown when an illegal combination flags is given.
+
+ <p> Unless otherwise specified, passing a <tt>null</tt> argument to any
+ method or constructor in this class will cause a <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> to be thrown.</p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -364,10 +356,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/IllegalFormatFlagsException.html#IllegalFormatFlagsException(java.lang.String)">IllegalFormatFlagsException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> flags)
+        <span class="sympad"><a href="../../../reference/java/util/IllegalFormatFlagsException.html#IllegalFormatFlagsException(java.lang.String)">IllegalFormatFlagsException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> f)
         
-        <div class="jd-descrdiv">Constructs a new <code>IllegalFormatFlagsException</code> with the specified
- flags.</div>
+        <div class="jd-descrdiv">Constructs an instance of this class with the specified flags.</div>
   
   </td></tr>
 
@@ -398,7 +389,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/IllegalFormatFlagsException.html#getFlags()">getFlags</a></span>()
         
-        <div class="jd-descrdiv">Returns the flags that are illegal.</div>
+        <div class="jd-descrdiv">Returns the set of flags which contains an illegal combination.</div>
   
   </td></tr>
 
@@ -650,6 +641,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -938,7 +948,7 @@ From class
         
       </span>
       <span class="sympad">IllegalFormatFlagsException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> flags)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> f)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -950,14 +960,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IllegalFormatFlagsException</code> with the specified
- flags.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance of this class with the specified flags.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>flags</th>
-          <td>the specified flags.
+          <th>f</th>
+          <td>The set of format flags which contain an illegal combination
 </td>
         </tr>
       </table>
@@ -1007,10 +1016,10 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the flags that are illegal.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the set of flags which contains an illegal combination.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the flags that are illegal.
+      <ul class="nolist"><li>The flags
 </li></ul>
   </div>
 

@@ -235,12 +235,15 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>InvalidAlgorithmParameterException</code> indicates the occurrence of
- invalid algorithm parameters.
-</p>
+<p>This is the exception for invalid or inappropriate algorithm parameters.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/security/AlgorithmParameters.html">AlgorithmParameters</a></code></li><li><code><a href="../../../reference/java/security/spec/AlgorithmParameterSpec.html">AlgorithmParameterSpec</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -303,10 +306,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html#InvalidAlgorithmParameterException(java.lang.String)">InvalidAlgorithmParameterException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html#InvalidAlgorithmParameterException()">InvalidAlgorithmParameterException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>InvalidAlgorithmParameterException</code>
- with the given message.</div>
+        <div class="jd-descrdiv">Constructs an InvalidAlgorithmParameterException with no detail
+ message.</div>
   
   </td></tr>
 
@@ -322,9 +325,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html#InvalidAlgorithmParameterException()">InvalidAlgorithmParameterException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html#InvalidAlgorithmParameterException(java.lang.String)">InvalidAlgorithmParameterException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>InvalidAlgorithmParameterException</code>.</div>
+        <div class="jd-descrdiv">Constructs an InvalidAlgorithmParameterException with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -342,8 +346,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html#InvalidAlgorithmParameterException(java.lang.String, java.lang.Throwable)">InvalidAlgorithmParameterException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>InvalidAlgorithmParameterException</code> with the
- given message and the cause.</div>
+        <div class="jd-descrdiv">Creates a <code>InvalidAlgorithmParameterException</code> with the
+ specified detail message and cause.</div>
   
   </td></tr>
 
@@ -361,8 +365,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html#InvalidAlgorithmParameterException(java.lang.Throwable)">InvalidAlgorithmParameterException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>InvalidAlgorithmParameterException</code>
- with the cause.</div>
+        <div class="jd-descrdiv">Creates a <code>InvalidAlgorithmParameterException</code> with the
+ specified cause and a detail message of
+ <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</div>
   
   </td></tr>
 
@@ -598,6 +605,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -873,48 +899,6 @@ From class
 
 
 
-<a id="InvalidAlgorithmParameterException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">InvalidAlgorithmParameterException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>InvalidAlgorithmParameterException</code>
- with the given message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="InvalidAlgorithmParameterException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -940,8 +924,55 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>InvalidAlgorithmParameterException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidAlgorithmParameterException with no detail
+ message.
+ A detail message is a String that describes this particular
+ exception.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="InvalidAlgorithmParameterException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">InvalidAlgorithmParameterException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidAlgorithmParameterException with the specified
+ detail message.
+ A detail message is a String that describes this
+ particular exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -972,19 +1003,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>InvalidAlgorithmParameterException</code> with the
- given message and the cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>InvalidAlgorithmParameterException</code> with the
+ specified detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+        by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1018,15 +1051,19 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>InvalidAlgorithmParameterException</code>
- with the cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>InvalidAlgorithmParameterException</code> with the
+ specified cause and a detail message of
+ <code>(cause==null ? null : cause.toString())</code>
+ (which typically contains the class and detail message of
+ <code>cause</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <code>null</code> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>

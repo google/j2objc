@@ -260,23 +260,17 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Signals a problem during the serialization or or deserialization of an
- object. Possible reasons include:
- <ul>
- <li>The SUIDs of the class loaded by the VM and the serialized class info do
- not match.</li>
- <li>A serializable or externalizable object cannot be instantiated (when
- deserializing) because the no-arg constructor that needs to be run is not
- visible or fails.</li>
- </ul></p>
+<p>Thrown when the Serialization runtime detects one of the following
+ problems with a Class.
+ <UL>
+ <LI> The serial version of the class does not match that of the class
+      descriptor read from the stream
+ <LI> The class contains unknown datatypes
+ <LI> The class does not have an accessible no-arg constructor
+ </UL></p>
 
 
 
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html">#readObject()</a></code></li><li><code><a href="../../../reference/java/io/ObjectInputValidation.html#validateObject()">validateObject()</a></code></li>
-      </ul>
-  </div>
 
 
 </div><!-- jd-descr -->
@@ -330,7 +324,7 @@ layout: api
           
           <a href="../../../reference/java/lang/String.html">String</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/InvalidClassException.html#classname">classname</a></td>
-          <td class="jd-descrcol" width="100%">The fully qualified name of the class that caused the problem.</td>
+          <td class="jd-descrcol" width="100%">Name of the invalid class.</td>
       </tr>
       
     
@@ -359,10 +353,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InvalidClassException.html#InvalidClassException(java.lang.String)">InvalidClassException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/io/InvalidClassException.html#InvalidClassException(java.lang.String)">InvalidClassException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> reason)
         
-        <div class="jd-descrdiv">Constructs a new <code>InvalidClassException</code> with its stack trace and
- detailed message filled in.</div>
+        <div class="jd-descrdiv">Report an InvalidClassException for the reason specified.</div>
   
   </td></tr>
 
@@ -378,11 +371,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/InvalidClassException.html#InvalidClassException(java.lang.String, java.lang.String)">InvalidClassException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> className, <a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/io/InvalidClassException.html#InvalidClassException(java.lang.String, java.lang.String)">InvalidClassException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> cname, <a href="../../../reference/java/lang/String.html">String</a> reason)
         
-        <div class="jd-descrdiv">Constructs a new <code>InvalidClassException</code> with its stack trace,
- detail message and the fully qualified name of the class which caused the
- exception filled in.</div>
+        <div class="jd-descrdiv">Constructs an InvalidClassException object.</div>
   
   </td></tr>
 
@@ -413,8 +404,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/InvalidClassException.html#getMessage()">getMessage</a></span>()
         
-        <div class="jd-descrdiv">Returns the detail message which was provided when the exception was
- created.</div>
+        <div class="jd-descrdiv">Produce the message and include the classname, if present.</div>
   
   </td></tr>
 
@@ -648,6 +638,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -943,8 +952,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The fully qualified name of the class that caused the problem.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Name of the invalid class.</p></div>
 
     
     </div>
@@ -974,7 +982,7 @@ From class
         
       </span>
       <span class="sympad">InvalidClassException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> reason)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -986,14 +994,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvalidClassException</code> with its stack trace and
- detailed message filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Report an InvalidClassException for the reason specified.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>reason</th>
+          <td>String describing the reason for the exception.
 </td>
         </tr>
       </table>
@@ -1016,7 +1023,7 @@ From class
         
       </span>
       <span class="sympad">InvalidClassException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> className, <a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> cname, <a href="../../../reference/java/lang/String.html">String</a> reason)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1028,19 +1035,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvalidClassException</code> with its stack trace,
- detail message and the fully qualified name of the class which caused the
- exception filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an InvalidClassException object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>className</th>
-          <td>the name of the class that caused the exception.</td>
+          <th>cname</th>
+          <td>a String naming the invalid class.</td>
         </tr>
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>reason</th>
+          <td>a String describing the reason for the exception.
 </td>
         </tr>
       </table>
@@ -1090,16 +1095,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the detail message which was provided when the exception was
- created. <code>null</code> is returned if no message was provided at creation
- time. If a detail message as well as a class name are provided, then the
- values are concatenated and returned.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the detail message, possibly concatenated with the name of the
-         class that caused the problem.
-</li></ul>
-  </div>
+  <div class="jd-tagdata jd-tagdescr"><p>Produce the message and include the classname, if present.
+</p></div>
 
     </div>
 </div>

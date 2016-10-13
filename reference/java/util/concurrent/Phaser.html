@@ -269,7 +269,7 @@ layout: api
  The typical idiom is for the method setting this up to first
  register, then start the actions, then deregister, as in:
 
-  <pre> <code>void runTasks(List<Runnable> tasks) {
+  <pre> <code>void runTasks(List&lt;Runnable&gt; tasks) {
    final Phaser phaser = new Phaser(1); // "1" to register self
    // create and start threads
    for (final Runnable task : tasks) {
@@ -278,22 +278,22 @@ layout: api
        public void run() {
          phaser.arriveAndAwaitAdvance(); // await all creation
          task.run();
-       </code>
+       }
      }.start();
    }
 
    // allow threads to start and deregister self
    phaser.arriveAndDeregister();
- }}</pre>
+ }</code></pre>
 
  <p>One way to cause a set of threads to repeatedly perform actions
  for a given number of iterations is to override <code>onAdvance</code>:
 
-  <pre> <code>void startTasks(List<Runnable> tasks, final int iterations) {
+  <pre> <code>void startTasks(List&lt;Runnable&gt; tasks, final int iterations) {
    final Phaser phaser = new Phaser() {
      protected boolean onAdvance(int phase, int registeredParties) {
-       return phase >= iterations || registeredParties == 0;
-     </code>
+       return phase &gt;= iterations || registeredParties == 0;
+     }
    };
    phaser.register();
    for (final Runnable task : tasks) {
@@ -308,7 +308,7 @@ layout: api
      }.start();
    }
    phaser.arriveAndDeregister(); // deregister self, don't wait
- }}</pre>
+ }</code></pre>
 
  If the main task must later await termination, it
  may re-register and then execute a similar loop:
@@ -323,14 +323,14 @@ layout: api
 
   <pre> <code>void awaitPhase(Phaser phaser, int phase) {
    int p = phaser.register(); // assumes caller not already registered
-   while (p < phase) {
+   while (p &lt; phase) {
      if (phaser.isTerminated())
        // ... deal with unexpected termination
      else
        p = phaser.arriveAndAwaitAdvance();
-   </code>
+   }
    phaser.arriveAndDeregister();
- }}</pre>
+ }</code></pre>
 
 
  <p>To create a set of <code>n</code> tasks using a tree of phasers, you
@@ -341,17 +341,17 @@ layout: api
  submitting to a pool:
 
   <pre> <code>void build(Task[] tasks, int lo, int hi, Phaser ph) {
-   if (hi - lo > TASKS_PER_PHASER) {
-     for (int i = lo; i < hi; i += TASKS_PER_PHASER) {
+   if (hi - lo &gt; TASKS_PER_PHASER) {
+     for (int i = lo; i &lt; hi; i += TASKS_PER_PHASER) {
        int j = Math.min(i + TASKS_PER_PHASER, hi);
        build(tasks, i, j, new Phaser(ph));
-     </code>
+     }
    } else {
-     for (int i = lo; i < hi; ++i)
+     for (int i = lo; i &lt; hi; ++i)
        tasks[i] = new Task(ph);
        // assumes new Task(ph) performs ph.register()
    }
- }}</pre>
+ }</code></pre>
 
  The best value of <code>TASKS_PER_PHASER</code> depends mainly on
  expected synchronization rates. A value as low as four may
@@ -1740,7 +1740,7 @@ From class
         </tr>
         <tr>
             <th><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>parties < 0</code>
+            <td>if <code>parties &lt; 0</code>
 </td>
         </tr>
       </table>
@@ -2204,8 +2204,8 @@ From class
  <code>false</code>:
 
  <pre> <code>Phaser phaser = new Phaser() {
-   protected boolean onAdvance(int phase, int parties) { return false; </code>
- }}</pre></p></div>
+   protected boolean onAdvance(int phase, int parties) { return false; }
+ }</code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">

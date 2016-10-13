@@ -144,15 +144,31 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A Java interface representing the SQL <code>BLOB</code> type.
+<p>The representation (mapping) in
+ the Java<sup><font size=-2>TM</font></sup> programming
+ language of an SQL
+ <code>BLOB</code> value.  An SQL <code>BLOB</code> is a built-in type
+ that stores a Binary Large Object as a column value in a row of
+ a database table. By default drivers implement <code>Blob</code> using
+ an SQL <code>locator(BLOB)</code>, which means that a
+ <code>Blob</code> object contains a logical pointer to the
+ SQL <code>BLOB</code> data rather than the data itself.
+ A <code>Blob</code> object is valid for the duration of the
+ transaction in which is was created.
+
+ <P>Methods in the interfaces <code><a href="reference/java/sql/ResultSet.html">ResultSet</a></code>,
+ <code><a href="reference/java/sql/CallableStatement.html">CallableStatement</a></code>, and <code><a href="reference/java/sql/PreparedStatement.html">PreparedStatement</a></code>, such as
+ <code>getBlob</code> and <code>setBlob</code> allow a programmer to
+ access an SQL <code>BLOB</code> value.
+ The <code>Blob</code> interface provides methods for getting the
+ length of an SQL <code>BLOB</code> (Binary Large Object) value,
+ for materializing a <code>BLOB</code> value on the client, and for
+ determining the position of a pattern of bytes within a
+ <code>BLOB</code> value. In addition, this interface has methods for updating
+ a <code>BLOB</code> value.
  <p>
- An SQL <code>BLOB</code> type stores a large array of binary data (bytes) as the
- value in a column of a database.
- <p>
- The <code>java.sql.Blob</code> interface provides methods for setting and
- retrieving data in the <code>Blob</code>, for querying <code>Blob</code> data length,
- and for searching for data within the <code>Blob</code>.
-</p>
+ All methods on the <code>Blob</code> interface must be fully implemented if the
+ JDBC driver supports the data type.</p>
 
 
 
@@ -224,7 +240,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#free()">free</a></span>()
         
-        <div class="jd-descrdiv">Frees any resources held by this blob.</div>
+        <div class="jd-descrdiv">This method frees the <code>Blob</code> object and releases the resources that
+ it holds.</div>
   
   </td></tr>
 
@@ -242,8 +259,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#getBinaryStream(long, long)">getBinaryStream</a></span>(long pos, long length)
         
-        <div class="jd-descrdiv">Retrieves <code>length</code> bytes from this <code>Blob</code>, starting at 1-based
- offset <code>pos</code>, and returns them as a binary stream.</div>
+        <div class="jd-descrdiv">Returns an <code>InputStream</code> object that contains a partial <code>Blob</code> value,
+ starting  with the byte specified by pos, which is length bytes in length.</div>
   
   </td></tr>
 
@@ -261,7 +278,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#getBinaryStream()">getBinaryStream</a></span>()
         
-        <div class="jd-descrdiv">Retrieves this <code>Blob</code> object as a binary stream.</div>
+        <div class="jd-descrdiv">Retrieves the <code>BLOB</code> value designated by this
+ <code>Blob</code> instance as a stream.</div>
   
   </td></tr>
 
@@ -279,7 +297,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#getBytes(long, int)">getBytes</a></span>(long pos, int length)
         
-        <div class="jd-descrdiv">Gets a portion of the value of this <code>Blob</code> as an array of bytes.</div>
+        <div class="jd-descrdiv">Retrieves all or part of the <code>BLOB</code>
+ value that this <code>Blob</code> object represents, as an array of
+ bytes.</div>
   
   </td></tr>
 
@@ -297,7 +317,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#length()">length</a></span>()
         
-        <div class="jd-descrdiv">Gets the number of bytes in this <code>Blob</code> object.</div>
+        <div class="jd-descrdiv">Returns the number of bytes in the <code>BLOB</code> value
+ designated by this <code>Blob</code> object.</div>
   
   </td></tr>
 
@@ -315,8 +336,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#position(java.sql.Blob, long)">position</a></span>(<a href="../../../reference/java/sql/Blob.html">Blob</a> pattern, long start)
         
-        <div class="jd-descrdiv">Search for the position in this <code>Blob</code> at which a specified pattern
- begins, starting at a specified position within the <code>Blob</code>.</div>
+        <div class="jd-descrdiv">Retrieves the byte position in the <code>BLOB</code> value
+ designated by this <code>Blob</code> object at which
+ <code>pattern</code> begins.</div>
   
   </td></tr>
 
@@ -334,8 +356,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#position(byte[], long)">position</a></span>(byte[] pattern, long start)
         
-        <div class="jd-descrdiv">Search for the position in this <code>Blob</code> at which the specified
- pattern begins, starting at a specified position within the <code>Blob</code>.</div>
+        <div class="jd-descrdiv">Retrieves the byte position at which the specified byte array
+ <code>pattern</code> begins within the <code>BLOB</code>
+ value that this <code>Blob</code> object represents.</div>
   
   </td></tr>
 
@@ -353,7 +376,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#setBinaryStream(long)">setBinaryStream</a></span>(long pos)
         
-        <div class="jd-descrdiv">Gets a stream that can be used to write binary data to this <code>Blob</code>.</div>
+        <div class="jd-descrdiv">Retrieves a stream that can be used to write to the <code>BLOB</code>
+ value that this <code>Blob</code> object represents.</div>
   
   </td></tr>
 
@@ -369,9 +393,11 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Blob.html#setBytes(long, byte[], int, int)">setBytes</a></span>(long pos, byte[] theBytes, int offset, int len)
+        <span class="sympad"><a href="../../../reference/java/sql/Blob.html#setBytes(long, byte[], int, int)">setBytes</a></span>(long pos, byte[] bytes, int offset, int len)
         
-        <div class="jd-descrdiv">Writes a portion of a specified byte array to this <code>Blob</code>.</div>
+        <div class="jd-descrdiv">Writes all or part of the given <code>byte</code> array to the
+ <code>BLOB</code> value that this <code>Blob</code> object represents
+ and returns the number of bytes written.</div>
   
   </td></tr>
 
@@ -387,10 +413,11 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/sql/Blob.html#setBytes(long, byte[])">setBytes</a></span>(long pos, byte[] theBytes)
+        <span class="sympad"><a href="../../../reference/java/sql/Blob.html#setBytes(long, byte[])">setBytes</a></span>(long pos, byte[] bytes)
         
-        <div class="jd-descrdiv">Writes a specified array of bytes to this <code>Blob</code> object, starting
- at a specified position.</div>
+        <div class="jd-descrdiv">Writes the given array of bytes to the <code>BLOB</code> value that
+ this <code>Blob</code> object represents, starting at position
+ <code>pos</code>, and returns the number of bytes written.</div>
   
   </td></tr>
 
@@ -408,8 +435,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Blob.html#truncate(long)">truncate</a></span>(long len)
         
-        <div class="jd-descrdiv">Truncate the value of this <code>Blob</code> object to a specified length in
- bytes.</div>
+        <div class="jd-descrdiv">Truncates the <code>BLOB</code> value that this <code>Blob</code>
+ object represents to be <code>len</code> bytes in length.</div>
   
   </td></tr>
 
@@ -487,15 +514,27 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Frees any resources held by this blob. After <code>free</code> is called, calling
- method other than <code>free</code> will throw <code>SQLException</code> (calling <code>free</code>
- repeatedly will do nothing).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>This method frees the <code>Blob</code> object and releases the resources that
+ it holds. The object is invalid once the <code>free</code>
+ method is called.
+<p>
+ After <code>free</code> has been called, any attempt to invoke a
+ method other than <code>free</code> will result in a <code>SQLException</code>
+ being thrown.  If <code>free</code> is called multiple times, the subsequent
+ calls to <code>free</code> are treated as a no-op.
+<p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <td>if an error occurs releasing
+ the Blob's resources</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -529,20 +568,39 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves <code>length</code> bytes from this <code>Blob</code>, starting at 1-based
- offset <code>pos</code>, and returns them as a binary stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>InputStream</code> object that contains a partial <code>Blob</code> value,
+ starting  with the byte specified by pos, which is length bytes in length.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>pos</th>
+          <td>the offset to the first byte of the partial value to be retrieved.
+  The first byte in the <code>Blob</code> is at position 1</td>
+        </tr>
+        <tr>
+          <th>length</th>
+          <td>the length in bytes of the partial value to be retrieved</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a binary <code>InputStream</code> giving access to the <code>Blob</code>
-         data.</li></ul>
+      <ul class="nolist"><li><code>InputStream</code> through which the partial <code>Blob</code> value can be read.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if pos is less than 1 or if pos is greater than the number of bytes
+ in the <code>Blob</code> or if pos + length is greater than the number of bytes
+ in the <code>Blob</code></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -576,21 +634,31 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves this <code>Blob</code> object as a binary stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the <code>BLOB</code> value designated by this
+ <code>Blob</code> instance as a stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a binary <code>InputStream</code> giving access to the <code>Blob</code>
-         data.</li></ul>
+      <ul class="nolist"><li>a stream containing the <code>BLOB</code> data</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html#setBinaryStream(long)">setBinaryStream(long)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -622,35 +690,53 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets a portion of the value of this <code>Blob</code> as an array of bytes.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves all or part of the <code>BLOB</code>
+ value that this <code>Blob</code> object represents, as an array of
+ bytes.  This <code>byte</code> array contains up to <code>length</code>
+ consecutive bytes starting at position <code>pos</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position of the first byte in the <code>Blob</code> to get,
-            where the first byte in the <code>Blob</code> has position 1.</td>
+          <td>the ordinal position of the first byte in the
+        <code>BLOB</code> value to be extracted; the first byte is at
+        position 1</td>
         </tr>
         <tr>
           <th>length</th>
-          <td>the number of bytes to get.</td>
+          <td>the number of consecutive bytes to be copied; the value
+ for length must be 0 or greater</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a byte array containing the data from the <code>Blob</code>, starting
-         at <code>pos</code> and is up to <code>length</code> bytes long.</li></ul>
+      <ul class="nolist"><li>a byte array containing up to <code>length</code>
+         consecutive bytes from the <code>BLOB</code> value designated
+         by this <code>Blob</code> object, starting with the
+         byte at position <code>pos</code></li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value; if pos is less than 1 or length is
+ less than 0</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html#setBytes(long, byte[])">setBytes(long, byte[])</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -682,19 +768,24 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the number of bytes in this <code>Blob</code> object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of bytes in the <code>BLOB</code> value
+ designated by this <code>Blob</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>long</code> value with the length of the <code>Blob</code> in
-         bytes.</li></ul>
+      <ul class="nolist"><li>length of the <code>BLOB</code> in bytes</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+ length of the <code>BLOB</code></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -728,36 +819,41 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Search for the position in this <code>Blob</code> at which a specified pattern
- begins, starting at a specified position within the <code>Blob</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the byte position in the <code>BLOB</code> value
+ designated by this <code>Blob</code> object at which
+ <code>pattern</code> begins.  The search begins at position
+ <code>start</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pattern</th>
-          <td>a <code>Blob</code> containing the pattern of data to search for in
-            this <code>Blob</code>.</td>
+          <td>the <code>Blob</code> object designating
+ the <code>BLOB</code> value for which to search</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the position within this <code>Blob</code> to start the search,
-            where the first position in the <code>Blob</code> is <code>1</code>.</td>
+          <td>the position in the <code>BLOB</code> value
+        at which to begin searching; the first position is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>long</code> value with the position at which the pattern
-         begins. Returns <code>-1</code> if the pattern is not found in this
-         <code>Blob</code>.</li></ul>
+      <ul class="nolist"><li>the position at which the pattern begins, else -1</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value or if start is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -791,36 +887,41 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Search for the position in this <code>Blob</code> at which the specified
- pattern begins, starting at a specified position within the <code>Blob</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the byte position at which the specified byte array
+ <code>pattern</code> begins within the <code>BLOB</code>
+ value that this <code>Blob</code> object represents.  The
+ search for <code>pattern</code> begins at position
+ <code>start</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pattern</th>
-          <td>a byte array containing the pattern of data to search for in
-            this <code>Blob</code>.</td>
+          <td>the byte array for which to search</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the position within this <code>Blob</code> to start the search,
-            where the first position in the <code>Blob</code> is <code>1</code>.</td>
+          <td>the position at which to begin searching; the
+        first position is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a <code>long</code> value with the position at which the pattern
-         begins. Returns <code>-1</code> if the pattern is not found in this
-         <code>Blob</code>.</li></ul>
+      <ul class="nolist"><li>the position at which the pattern appears, else -1</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+ <code>BLOB</code> or if start is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -854,32 +955,54 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets a stream that can be used to write binary data to this <code>Blob</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a stream that can be used to write to the <code>BLOB</code>
+ value that this <code>Blob</code> object represents.  The stream begins
+ at position <code>pos</code>.
+ The  bytes written to the stream will overwrite the existing bytes
+ in the <code>Blob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Blob</code> value is reached
+ while writing to the stream, then the length of the <code>Blob</code>
+ value will be increased to accomodate the extra bytes.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>BLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position within this <code>Blob</code> at which to start
-            writing, where the first position in the <code>Blob</code> is
-            <code>1</code>.</td>
+          <td>the position in the <code>BLOB</code> value at which
+        to start writing; the first position is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a binary <code>InputStream</code> which can be used to write data into
-         the <code>Blob</code> starting at the specified position.</li></ul>
+      <ul class="nolist"><li>a <code>java.io.OutputStream</code> object to which data can
+         be written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html#getBinaryStream()">getBinaryStream()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -899,7 +1022,7 @@ layout: api
         int
       </span>
       <span class="sympad">setBytes</span>
-      <span class="normal">(long pos, byte[] theBytes, int offset, int len)</span>
+      <span class="normal">(long pos, byte[] bytes, int offset, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -911,45 +1034,70 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes a portion of a specified byte array to this <code>Blob</code>. Returns
- the number of bytes written.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes all or part of the given <code>byte</code> array to the
+ <code>BLOB</code> value that this <code>Blob</code> object represents
+ and returns the number of bytes written.
+ Writing starts at position <code>pos</code> in the <code>BLOB</code>
+ value; <code>len</code> bytes from the given byte array are written.
+ The array of bytes will overwrite the existing bytes
+ in the <code>Blob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Blob</code> value is reached
+ while writing the array of bytes, then the length of the <code>Blob</code>
+ value will be increased to accomodate the extra bytes.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>BLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position within this <code>Blob</code> at which to start
-            writing, where the first position in the <code>Blob</code> is
-            <code>1</code>.</td>
+          <td>the position in the <code>BLOB</code> object at which
+        to start writing; the first position is 1</td>
         </tr>
         <tr>
-          <th>theBytes</th>
-          <td>an array of bytes to write into the <code>Blob</code>.</td>
+          <th>bytes</th>
+          <td>the array of bytes to be written to this <code>BLOB</code>
+        object</td>
         </tr>
         <tr>
           <th>offset</th>
-          <td>the offset into the byte array from which to start writing
-            data - the first byte in the array has offset <code>0</code>.</td>
+          <td>the offset into the array <code>bytes</code> at which
+        to start reading the bytes to be set</td>
         </tr>
         <tr>
           <th>len</th>
-          <td>the length of data to write in number of bytes.</td>
+          <td>the number of bytes to be written to the <code>BLOB</code>
+        value from the array of bytes <code>bytes</code></td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an integer containing the number of bytes written to the <code>Blob</code>.</li></ul>
+      <ul class="nolist"><li>the number of bytes written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html#getBytes(long, int)">getBytes(long, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -969,7 +1117,7 @@ layout: api
         int
       </span>
       <span class="sympad">setBytes</span>
-      <span class="normal">(long pos, byte[] theBytes)</span>
+      <span class="normal">(long pos, byte[] bytes)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -981,36 +1129,58 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes a specified array of bytes to this <code>Blob</code> object, starting
- at a specified position. Returns the number of bytes written.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the given array of bytes to the <code>BLOB</code> value that
+ this <code>Blob</code> object represents, starting at position
+ <code>pos</code>, and returns the number of bytes written.
+ The array of bytes will overwrite the existing bytes
+ in the <code>Blob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Blob</code> value is reached
+ while writing the array of bytes, then the length of the <code>Blob</code>
+ value will be increased to accomodate the extra bytes.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>BLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position within this <code>Blob</code> at which to start
-            writing, where the first position in the <code>Blob</code> is
-            <code>1</code>.</td>
+          <td>the position in the <code>BLOB</code> object at which
+        to start writing; the first position is 1</td>
         </tr>
         <tr>
-          <th>theBytes</th>
-          <td>an array of bytes to write into the <code>Blob</code>.</td>
+          <th>bytes</th>
+          <td>the array of bytes to be written to the <code>BLOB</code>
+        value that this <code>Blob</code> object represents</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an integer containing the number of bytes written to the <code>Blob</code>.</li></ul>
+      <ul class="nolist"><li>the number of bytes written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html#getBytes(long, int)">getBytes(long, int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1042,15 +1212,21 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Truncate the value of this <code>Blob</code> object to a specified length in
- bytes.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Truncates the <code>BLOB</code> value that this <code>Blob</code>
+ object represents to be <code>len</code> bytes in length.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>BLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>len</th>
-          <td>the length of data in bytes after which this <code>Blob</code>
-            is to be truncated.</td>
+          <td>the length, in bytes, to which the <code>BLOB</code> value
+        that this <code>Blob</code> object represents should be truncated</td>
         </tr>
       </table>
   </div>
@@ -1059,8 +1235,13 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Blob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>BLOB</code> value or if len is less than 0</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>

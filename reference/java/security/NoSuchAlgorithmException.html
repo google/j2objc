@@ -235,9 +235,8 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p><code>NoSuchAlgorithmException</code> indicates that a requested algorithm could
- not be found.
-</p>
+<p>This exception is thrown when a particular cryptographic algorithm is
+ requested but is not available in the environment.</p>
 
 
 
@@ -303,10 +302,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/NoSuchAlgorithmException.html#NoSuchAlgorithmException(java.lang.String)">NoSuchAlgorithmException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../reference/java/security/NoSuchAlgorithmException.html#NoSuchAlgorithmException()">NoSuchAlgorithmException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>NoSuchAlgorithmException</code> with the
- given message.</div>
+        <div class="jd-descrdiv">Constructs a NoSuchAlgorithmException with no detail
+ message.</div>
   
   </td></tr>
 
@@ -322,9 +321,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/security/NoSuchAlgorithmException.html#NoSuchAlgorithmException()">NoSuchAlgorithmException</a></span>()
+        <span class="sympad"><a href="../../../reference/java/security/NoSuchAlgorithmException.html#NoSuchAlgorithmException(java.lang.String)">NoSuchAlgorithmException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>NoSuchAlgorithmException</code>.</div>
+        <div class="jd-descrdiv">Constructs a NoSuchAlgorithmException with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -342,8 +342,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/NoSuchAlgorithmException.html#NoSuchAlgorithmException(java.lang.String, java.lang.Throwable)">NoSuchAlgorithmException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>NoSuchAlgorithmException</code> with the
- given message and the cause.</div>
+        <div class="jd-descrdiv">Creates a <code>NoSuchAlgorithmException</code> with the specified
+ detail message and cause.</div>
   
   </td></tr>
 
@@ -361,8 +361,10 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/security/NoSuchAlgorithmException.html#NoSuchAlgorithmException(java.lang.Throwable)">NoSuchAlgorithmException</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
         
-        <div class="jd-descrdiv">Constructs a new instance of <code>NoSuchAlgorithmException</code> with the
- cause.</div>
+        <div class="jd-descrdiv">Creates a <code>NoSuchAlgorithmException</code> with the specified cause
+ and a detail message of <tt>(cause==null ? null : cause.toString())</tt>
+ (which typically contains the class and detail message of
+ <tt>cause</tt>).</div>
   
   </td></tr>
 
@@ -598,6 +600,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -873,48 +894,6 @@ From class
 
 
 
-<a id="NoSuchAlgorithmException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">NoSuchAlgorithmException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>NoSuchAlgorithmException</code> with the
- given message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception.
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="NoSuchAlgorithmException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -940,8 +919,54 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>NoSuchAlgorithmException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a NoSuchAlgorithmException with no detail
+ message. A detail message is a String that describes this
+ particular exception.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="NoSuchAlgorithmException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">NoSuchAlgorithmException</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a NoSuchAlgorithmException with the specified
+ detail message. A detail message is a String that describes
+ this particular exception, which may, for example, specify which
+ algorithm is not available.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -972,19 +997,21 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>NoSuchAlgorithmException</code> with the
- given message and the cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>NoSuchAlgorithmException</code> with the specified
+ detail message and cause.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>message</th>
-          <td>the detail message for this exception.</td>
+          <td>the detail message (which is saved for later retrieval
+        by the <code><a href="reference/java/lang/Throwable.html#getMessage()">getMessage()</a></code> method).</td>
         </tr>
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>
@@ -1018,15 +1045,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>NoSuchAlgorithmException</code> with the
- cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>NoSuchAlgorithmException</code> with the specified cause
+ and a detail message of <tt>(cause==null ? null : cause.toString())</tt>
+ (which typically contains the class and detail message of
+ <tt>cause</tt>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>cause</th>
-          <td>the exception which is the cause for this exception.
-</td>
+          <td>the cause (which is saved for later retrieval by the
+        <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method).  (A <tt>null</tt> value is permitted,
+        and indicates that the cause is nonexistent or unknown.)</td>
         </tr>
       </table>
   </div>

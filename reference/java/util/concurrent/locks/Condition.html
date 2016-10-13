@@ -664,7 +664,7 @@ layout: api
   <div class="jd-tagdata jd-tagdescr"><p>Causes the current thread to wait until it is signalled or interrupted,
  or the specified waiting time elapses. This method is behaviorally
  equivalent to:
-  <pre> <code>awaitNanos(unit.toNanos(time)) > 0</code></pre></p></div>
+  <pre> <code>awaitNanos(unit.toNanos(time)) &gt; 0</code></pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -770,15 +770,15 @@ layout: api
    lock.lock();
    try {
      while (!conditionBeingWaitedFor()) {
-       if (nanos <= 0L)
+       if (nanos &lt;= 0L)
          return false;
        nanos = theCondition.awaitNanos(nanos);
-     </code>
+     }
      // ...
    } finally {
      lock.unlock();
    }
- }}</pre>
+ }</code></pre>
 
  <p> Design note: This method requires a nanosecond argument so
  as to avoid truncation errors in reporting remaining times.
@@ -967,12 +967,12 @@ layout: api
        if (!stillWaiting)
          return false;
        stillWaiting = theCondition.awaitUntil(deadline);
-     </code>
+     }
      // ...
    } finally {
      lock.unlock();
    }
- }}</pre>
+ }</code></pre>
 
  <p><b>Implementation Considerations</b>
 

@@ -235,11 +235,30 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a class loader is unable to find a class.
-</p>
+<p>Thrown when an application tries to load in a class through its
+ string name using:
+ <ul>
+ <li>The <code>forName</code> method in class <code>Class</code>.
+ <li>The <code>findSystemClass</code> method in class
+     <code>ClassLoader</code> .
+ <li>The <code>loadClass</code> method in class <code>ClassLoader</code>.
+ </ul>
+ <p>
+ but no definition for the class with the specified name could be found.
+
+ <p>As of release 1.4, this exception has been retrofitted to conform to
+ the general purpose exception-chaining mechanism.  The "optional exception
+ that was raised while loading the class" that may be provided at
+ construction time and accessed via the <code><a href="reference/java/lang/ClassNotFoundException.html#getException()">getException()</a></code> method is
+ now known as the <i>cause</i>, and may be accessed via the <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method, as well as the aforementioned "legacy method."</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html#forName(java.lang.String)">forName(java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/ClassLoader.html#findSystemClass(java.lang.String)">findSystemClass(java.lang.String)</a></code></li><li><code><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String, boolean)">loadClass(java.lang.String, boolean)</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -304,8 +323,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#ClassNotFoundException()">ClassNotFoundException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>ClassNotFoundException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>ClassNotFoundException</code> with no detail message.</div>
   
   </td></tr>
 
@@ -321,10 +339,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#ClassNotFoundException(java.lang.String)">ClassNotFoundException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#ClassNotFoundException(java.lang.String)">ClassNotFoundException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>ClassNotFoundException</code> with the current stack
- trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>ClassNotFoundException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -340,11 +358,11 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#ClassNotFoundException(java.lang.String, java.lang.Throwable)">ClassNotFoundException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> exception)
+        <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#ClassNotFoundException(java.lang.String, java.lang.Throwable)">ClassNotFoundException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> ex)
         
-        <div class="jd-descrdiv">Constructs a new <code>ClassNotFoundException</code> with the current stack
- trace, the specified detail message and the exception that occurred when
- loading the class.</div>
+        <div class="jd-descrdiv">Constructs a <code>ClassNotFoundException</code> with the
+ specified detail message and optional exception that was
+ raised while loading the class.</div>
   
   </td></tr>
 
@@ -375,8 +393,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#getCause()">getCause</a></span>()
         
-        <div class="jd-descrdiv">Returns the cause of this Throwable, or <code>null</code> if there is no
- cause.</div>
+        <div class="jd-descrdiv">Returns the cause of this exception (the exception that was raised
+ if an error occurred while attempting to load the class; otherwise
+ <tt>null</tt>).</div>
   
   </td></tr>
 
@@ -394,7 +413,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/ClassNotFoundException.html#getException()">getException</a></span>()
         
-        <div class="jd-descrdiv">Returns the exception which occurred when loading the class.</div>
+        <div class="jd-descrdiv">Returns the exception that was raised if an error occurred while
+ attempting to load the class.</div>
   
   </td></tr>
 
@@ -626,6 +646,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -926,8 +965,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ClassNotFoundException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>ClassNotFoundException</code> with no detail message.
 </p></div>
 
     </div>
@@ -947,7 +985,7 @@ From class
         
       </span>
       <span class="sympad">ClassNotFoundException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -959,14 +997,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ClassNotFoundException</code> with the current stack
- trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>ClassNotFoundException</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>
@@ -989,7 +1027,7 @@ From class
         
       </span>
       <span class="sympad">ClassNotFoundException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> exception)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> ex)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1001,20 +1039,19 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ClassNotFoundException</code> with the current stack
- trace, the specified detail message and the exception that occurred when
- loading the class.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>ClassNotFoundException</code> with the
+ specified detail message and optional exception that was
+ raised while loading the class.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.</td>
+          <th>s</th>
+          <td>the detail message</td>
         </tr>
         <tr>
-          <th>exception</th>
-          <td>the exception which occurred while loading the class.
-</td>
+          <th>ex</th>
+          <td>the exception that was raised while loading the class</td>
         </tr>
       </table>
   </div>
@@ -1063,12 +1100,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this Throwable, or <code>null</code> if there is no
- cause.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this exception (the exception that was raised
+ if an error occurred while attempting to load the class; otherwise
+ <tt>null</tt>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>Throwable the receiver's cause.
-</li></ul>
+      <ul class="nolist"><li>the cause of this exception.</li></ul>
   </div>
 
     </div>
@@ -1100,11 +1137,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception which occurred when loading the class.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception that was raised if an error occurred while
+ attempting to load the class. Otherwise, returns <tt>null</tt>.
+
+ <p>This method predates the general-purpose exception chaining facility.
+ The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method is now the preferred means of
+ obtaining this information.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>Throwable the exception which occurred while loading the class.
-</li></ul>
+      <ul class="nolist"><li>the <code>Exception</code> that was raised while loading a class</li></ul>
   </div>
 
     </div>

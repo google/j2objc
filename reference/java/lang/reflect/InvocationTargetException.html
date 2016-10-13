@@ -235,14 +235,21 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>This class provides a wrapper for an exception thrown by a <code>Method</code> or
- <code>Constructor</code> invocation.</p>
+<p>InvocationTargetException is a checked exception that wraps
+ an exception thrown by an invoked method or constructor.
+
+ <p>As of release 1.4, this exception has been retrofitted to conform to
+ the general purpose exception-chaining mechanism.  The "target exception"
+ that is provided at construction time and accessed via the
+ <code><a href="reference/java/lang/reflect/InvocationTargetException.html#getTargetException()">getTargetException()</a></code> method is now known as the <i>cause</i>,
+ and may be accessed via the <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method,
+ as well as the aforementioned "legacy method."</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/Method.html#invoke(java.lang.Object, java.lang.Object...)">invoke(Object, Object...)</a></code></li><li><code><a href="../../../../reference/java/lang/reflect/Constructor.html#newInstance(java.lang.Object...)">newInstance(Object...)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/Method.html">Method</a></code></li><li><code><a href="../../../../reference/java/lang/reflect/Constructor.html">Constructor</a></code></li>
       </ul>
   </div>
 
@@ -307,10 +314,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#InvocationTargetException(java.lang.Throwable)">InvocationTargetException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#InvocationTargetException(java.lang.Throwable)">InvocationTargetException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> target)
         
-        <div class="jd-descrdiv">Constructs a new <code>InvocationTargetException</code> instance with its
- cause / target exception filled in.</div>
+        <div class="jd-descrdiv">Constructs a InvocationTargetException with a target exception.</div>
   
   </td></tr>
 
@@ -326,10 +332,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#InvocationTargetException(java.lang.Throwable, java.lang.String)">InvocationTargetException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception, <a href="../../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#InvocationTargetException(java.lang.Throwable, java.lang.String)">InvocationTargetException</a></span>(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> target, <a href="../../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>InvocationTargetException</code> instance with its
- cause / target exception and message filled in.</div>
+        <div class="jd-descrdiv">Constructs a InvocationTargetException with a target exception
+ and a detail message.</div>
   
   </td></tr>
 
@@ -358,8 +364,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#InvocationTargetException()">InvocationTargetException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>InvocationTargetException</code> instance with a
- <code>null</code> cause / target exception.</div>
+        <div class="jd-descrdiv">Constructs an <code>InvocationTargetException</code> with
+ <code>null</code> as the target exception.</div>
   
   </td></tr>
 
@@ -388,7 +394,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#getCause()">getCause</a></span>()
         
-        <div class="jd-descrdiv">Returns the cause of this exception, which may be <code>null</code>.</div>
+        <div class="jd-descrdiv">Returns the cause of this exception (the thrown target exception,
+ which may be <code>null</code>).</div>
   
   </td></tr>
 
@@ -406,7 +413,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html#getTargetException()">getTargetException</a></span>()
         
-        <div class="jd-descrdiv">Returns the target exception, which may be <code>null</code>.</div>
+        <div class="jd-descrdiv">Get the thrown target exception.</div>
   
   </td></tr>
 
@@ -638,6 +645,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -926,7 +952,7 @@ From class
         
       </span>
       <span class="sympad">InvocationTargetException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> target)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -938,15 +964,13 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvocationTargetException</code> instance with its
- cause / target exception filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a InvocationTargetException with a target exception.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>exception</th>
-          <td>the exception which occurred while running the Method or
-            Constructor
+          <th>target</th>
+          <td>the target exception
 </td>
         </tr>
       </table>
@@ -969,7 +993,7 @@ From class
         
       </span>
       <span class="sympad">InvocationTargetException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> exception, <a href="../../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/Throwable.html">Throwable</a> target, <a href="../../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -981,20 +1005,19 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvocationTargetException</code> instance with its
- cause / target exception and message filled in.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a InvocationTargetException with a target exception
+ and a detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>exception</th>
-          <td>the exception which occurred while running the Method or
-            Constructor
-</td>
+          <th>target</th>
+          <td>the target exception</td>
         </tr>
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for the exception</td>
+          <th>s</th>
+          <td>the detail message
+</td>
         </tr>
       </table>
   </div>
@@ -1038,8 +1061,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>InvocationTargetException</code> instance with a
- <code>null</code> cause / target exception.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>InvocationTargetException</code> with
+ <code>null</code> as the target exception.
 </p></div>
 
     </div>
@@ -1081,11 +1104,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this exception, which may be <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the cause of this exception (the thrown target exception,
+ which may be <code>null</code>).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the cause of this exception
-</li></ul>
+      <ul class="nolist"><li>the cause of this exception.</li></ul>
   </div>
 
     </div>
@@ -1117,10 +1140,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the target exception, which may be <code>null</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Get the thrown target exception.
+
+ <p>This method predates the general-purpose exception chaining facility.
+ The <code><a href="reference/java/lang/Throwable.html#getCause()">getCause()</a></code> method is now the preferred means of
+ obtaining this information.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the target exception
+      <ul class="nolist"><li>the thrown target exception (cause of this exception).
 </li></ul>
   </div>
 

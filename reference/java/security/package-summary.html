@@ -396,55 +396,57 @@ and defining services such as <code><a href="reference/java/security/cert/Certif
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a></td>
-              <td class="jd-descrcol" width="100%"><code>AccessControlException</code> is thrown if the access control infrastructure
- denies protected access due to missing permissions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p> This exception is thrown by the AccessController to indicate
+ that a requested access (to a critical system resource such as the
+ file system or the network) is denied.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/DigestException.html">DigestException</a></td>
-              <td class="jd-descrcol" width="100%"><code>DigestException</code> is a general message digest exception.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the generic Message Digest exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/GeneralSecurityException.html">GeneralSecurityException</a></td>
-              <td class="jd-descrcol" width="100%"><code>GeneralSecurityException</code> is a general security exception and the
- superclass for all security specific exceptions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The <code>GeneralSecurityException</code> class is a generic
+ security exception class that provides type safety for all the
+ security-related exception classes that extend from it.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></td>
-              <td class="jd-descrcol" width="100%"><code>InvalidAlgorithmParameterException</code> indicates the occurrence of
- invalid algorithm parameters.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the exception for invalid or inappropriate algorithm parameters.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidKeyException.html">InvalidKeyException</a></td>
-              <td class="jd-descrcol" width="100%"><code>InvalidKeyException</code> indicates exceptional conditions, caused by an
- invalid key.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the exception for invalid Keys (invalid encoding, wrong
+ length, uninitialized, etc).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
-              <td class="jd-descrcol" width="100%"><code>InvalidParameterException</code> indicates exceptional conditions, caused by
- invalid parameters.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception, designed for use by the JCA/JCE engine classes,
+ is thrown when an invalid parameter is passed
+ to a method.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyException.html">KeyException</a></td>
-              <td class="jd-descrcol" width="100%"><code>KeyException</code> is the common superclass of all key related exceptions.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the basic key exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></td>
-              <td class="jd-descrcol" width="100%"><code>KeyManagementException</code> is a general exception, thrown to indicate an
- exception during processing an operation concerning key management.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the general key management exception for all operations
+ dealing with key management.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></td>
-              <td class="jd-descrcol" width="100%"><code>KeyStoreException</code> is a general <code>KeyStore</code> exception.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the generic KeyStore exception.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
-              <td class="jd-descrcol" width="100%"><code>NoSuchAlgorithmException</code> indicates that a requested algorithm could
- not be found.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown when a particular cryptographic algorithm is
+ requested but is not available in the environment.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></td>
-              <td class="jd-descrcol" width="100%"><code>NoSuchProviderException</code> indicates that a requested security provider
- could not be found.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown when a particular security provider is
+ requested but is not available in the environment.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></td>
@@ -452,21 +454,22 @@ and defining services such as <code><a href="reference/java/security/cert/Certif
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/ProviderException.html">ProviderException</a></td>
-              <td class="jd-descrcol" width="100%"><code>ProviderException</code> is a general exception, thrown by security <code>Providers</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A runtime exception for Provider exceptions (such as
+ misconfiguration errors or unrecoverable internal errors),
+ which may be subclassed by Providers to
+ throw specialized, provider-specific runtime errors.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></td>
-              <td class="jd-descrcol" width="100%"><code>SignatureException</code> is a general <code>Signature</code> exception.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This is the generic Signature exception.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></td>
-              <td class="jd-descrcol" width="100%"><code>UnrecoverableEntryException</code> indicates, that a <code>KeyStore.Entry</code>
- cannot be recovered from a <code>KeyStore</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown if an entry in the keystore cannot be recovered.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableKeyException.html">UnrecoverableKeyException</a></td>
-              <td class="jd-descrcol" width="100%"><code>UnrecoverableKeyException</code> indicates, that a key cannot be recovered
- from a <code>KeyStore</code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This exception is thrown if a key in the keystore cannot be recovered.&nbsp;</td>
           </tr>
   </table>
     </div>

@@ -126,6 +126,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -225,11 +232,20 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and counts the line terminators encountered
- while reading the data. The line number starts at 0 and is incremented any
- time <code>'\r'</code>, <code>'\n'</code> or <code>"\r\n"</code> is read. The class has an
- internal buffer for its data. The size of the buffer defaults to 8 KB.
-</p>
+<p>A buffered character-input stream that keeps track of line numbers.  This
+ class defines methods <code><a href="reference/java/io/LineNumberReader.html#setLineNumber(int)">setLineNumber(int)</a></code> and <code><a href="reference/java/io/LineNumberReader.html#getLineNumber()">getLineNumber()</a></code> for setting and getting the current line number
+ respectively.
+
+ <p> By default, line numbering begins at 0. This number increments at every
+ <a href="#lt">line terminator</a> as the data is read, and can be changed
+ with a call to <tt>setLineNumber(int)</tt>.  Note however, that
+ <tt>setLineNumber(int)</tt> does not actually change the current position in
+ the stream; it only changes the value that will be returned by
+ <tt>getLineNumber()</tt>.
+
+ <p> A line is considered to be <a name="lt">terminated</a> by any one of a
+ line feed ('\n'), a carriage return ('\r'), or a carriage return followed
+ immediately by a linefeed.</p>
 
 
 
@@ -308,7 +324,7 @@ layout: api
           
           <a href="../../../reference/java/lang/Object.html">Object</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/Reader.html#lock">lock</a></td>
-          <td class="jd-descrcol" width="100%">The object used to synchronize access to the reader.</td>
+          <td class="jd-descrcol" width="100%">The object used to synchronize operations on this stream.</td>
       </tr>
       
     
@@ -316,6 +332,8 @@ layout: api
   </div>
 </div>
 </td></tr>
+
+
 
 
 
@@ -347,7 +365,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#LineNumberReader(java.io.Reader)">LineNumberReader</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> in)
         
-        <div class="jd-descrdiv">Constructs a new LineNumberReader on the Reader <code>in</code>.</div>
+        <div class="jd-descrdiv">Create a new line-numbering reader, using the default input-buffer
+ size.</div>
   
   </td></tr>
 
@@ -363,9 +382,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#LineNumberReader(java.io.Reader, int)">LineNumberReader</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> in, int size)
+        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#LineNumberReader(java.io.Reader, int)">LineNumberReader</a></span>(<a href="../../../reference/java/io/Reader.html">Reader</a> in, int sz)
         
-        <div class="jd-descrdiv">Constructs a new LineNumberReader on the Reader <code>in</code>.</div>
+        <div class="jd-descrdiv">Create a new line-numbering reader, reading characters into a buffer of
+ the given size.</div>
   
   </td></tr>
 
@@ -396,7 +416,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#getLineNumber()">getLineNumber</a></span>()
         
-        <div class="jd-descrdiv">Returns the current line number for this reader.</div>
+        <div class="jd-descrdiv">Get the current line number.</div>
   
   </td></tr>
 
@@ -412,9 +432,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#mark(int)">mark</a></span>(int readlimit)
+        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#mark(int)">mark</a></span>(int readAheadLimit)
         
-        <div class="jd-descrdiv">Sets a mark position in this reader.</div>
+        <div class="jd-descrdiv">Mark the present position in the stream.</div>
   
   </td></tr>
 
@@ -432,8 +452,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single character from the source reader and returns it as an
- integer with the two higher-order bytes set to 0.</div>
+        <div class="jd-descrdiv">Read a single character.</div>
   
   </td></tr>
 
@@ -449,10 +468,9 @@ layout: api
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#read(char[], int, int)">read</a></span>(char[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#read(char[], int, int)">read</a></span>(char[] cbuf, int off, int len)
         
-        <div class="jd-descrdiv">Reads at most <code>count</code> characters from the source reader and stores
- them in the character array <code>buffer</code> starting at <code>offset</code>.</div>
+        <div class="jd-descrdiv">Read characters into a portion of an array.</div>
   
   </td></tr>
 
@@ -470,7 +488,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#readLine()">readLine</a></span>()
         
-        <div class="jd-descrdiv">Returns the next line of text available from this reader.</div>
+        <div class="jd-descrdiv">Read a line of text.</div>
   
   </td></tr>
 
@@ -488,7 +506,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this reader to the last marked location.</div>
+        <div class="jd-descrdiv">Reset the stream to the most recent mark.</div>
   
   </td></tr>
 
@@ -506,7 +524,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#setLineNumber(int)">setLineNumber</a></span>(int lineNumber)
         
-        <div class="jd-descrdiv">Sets the line number of this reader to the specified <code>lineNumber</code>.</div>
+        <div class="jd-descrdiv">Set the current line number.</div>
   
   </td></tr>
 
@@ -522,9 +540,9 @@ layout: api
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#skip(long)">skip</a></span>(long charCount)
+        <span class="sympad"><a href="../../../reference/java/io/LineNumberReader.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips <code>charCount</code> characters in this reader.</div>
+        <div class="jd-descrdiv">Skip characters.</div>
   
   </td></tr>
 
@@ -576,7 +594,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this reader.</div>
+        <div class="jd-descrdiv">Closes the stream and releases any system resources associated with
+ it.</div>
   
   </td></tr>
 
@@ -589,18 +608,37 @@ From class
             
             
             
-            void
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#mark(int)">mark</a></span>(int markLimit)
+        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#lines()">lines</a></span>()
         
-        <div class="jd-descrdiv">Sets a mark position in this reader.</div>
+        <div class="jd-descrdiv">Returns a <code>Stream</code>, the elements of which are lines read from
+ this <code>BufferedReader</code>.</div>
   
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#mark(int)">mark</a></span>(int readAheadLimit)
+        
+        <div class="jd-descrdiv">Marks the present position in the stream.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -612,14 +650,13 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#markSupported()">markSupported</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this reader supports the <code>mark()</code> and
- <code>reset()</code> methods.</div>
+        <div class="jd-descrdiv">Tells whether this stream supports the mark() operation, which it does.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -631,14 +668,13 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single character from this reader and returns it with the two
- higher-order bytes set to 0.</div>
+        <div class="jd-descrdiv">Reads a single character.</div>
   
   </td></tr>
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -648,16 +684,15 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#read(char[], int, int)">read</a></span>(char[] buffer, int offset, int length)
+        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#read(char[], int, int)">read</a></span>(char[] cbuf, int off, int len)
         
-        <div class="jd-descrdiv">Reads up to <code>length</code> characters from this reader and stores them
- at <code>offset</code> in the character array <code>buffer</code>.</div>
+        <div class="jd-descrdiv">Reads characters into a portion of an array.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -669,25 +704,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#readLine()">readLine</a></span>()
         
-        <div class="jd-descrdiv">Returns the next line of text available from this reader.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#ready()">ready</a></span>()
-        
-        <div class="jd-descrdiv">Indicates whether this reader is ready to be read without blocking.</div>
+        <div class="jd-descrdiv">Reads a line of text.</div>
   
   </td></tr>
 
@@ -700,12 +717,12 @@ From class
             
             
             
-            void
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#reset()">reset</a></span>()
+        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#ready()">ready</a></span>()
         
-        <div class="jd-descrdiv">Resets this reader's position to the last <code>mark()</code> location.</div>
+        <div class="jd-descrdiv">Tells whether this stream is ready to be read.</div>
   
   </td></tr>
 
@@ -718,12 +735,30 @@ From class
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#reset()">reset</a></span>()
+        
+        <div class="jd-descrdiv">Resets the stream to the most recent mark.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#skip(long)">skip</a></span>(long charCount)
+        <span class="sympad"><a href="../../../reference/java/io/BufferedReader.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips at most <code>charCount</code> chars in this stream.</div>
+        <div class="jd-descrdiv">Skips characters.</div>
   
   </td></tr>
 
@@ -766,7 +801,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Reader.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this reader.</div>
+        <div class="jd-descrdiv">Closes the stream and releases any system resources associated with
+ it.</div>
   
   </td></tr>
 
@@ -782,9 +818,9 @@ From class
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Reader.html#mark(int)">mark</a></span>(int readLimit)
+        <span class="sympad"><a href="../../../reference/java/io/Reader.html#mark(int)">mark</a></span>(int readAheadLimit)
         
-        <div class="jd-descrdiv">Sets a mark position in this reader.</div>
+        <div class="jd-descrdiv">Marks the present position in the stream.</div>
   
   </td></tr>
 
@@ -802,8 +838,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Reader.html#markSupported()">markSupported</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this reader supports the <code>mark()</code> and
- <code>reset()</code> methods.</div>
+        <div class="jd-descrdiv">Tells whether this stream supports the mark() operation.</div>
   
   </td></tr>
 
@@ -821,8 +856,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Reader.html#read()">read</a></span>()
         
-        <div class="jd-descrdiv">Reads a single character from this reader and returns it as an integer
- with the two higher-order bytes set to 0.</div>
+        <div class="jd-descrdiv">Reads a single character.</div>
   
   </td></tr>
 
@@ -838,10 +872,9 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Reader.html#read(char[], int, int)">read</a></span>(char[] buffer, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/Reader.html#read(char[], int, int)">read</a></span>(char[] cbuf, int off, int len)
         
-        <div class="jd-descrdiv">Reads up to <code>count</code> characters from this reader and stores them
- at <code>offset</code> in the character array <code>buffer</code>.</div>
+        <div class="jd-descrdiv">Reads characters into a portion of an array.</div>
   
   </td></tr>
 
@@ -857,10 +890,9 @@ From class
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Reader.html#read(char[])">read</a></span>(char[] buffer)
+        <span class="sympad"><a href="../../../reference/java/io/Reader.html#read(char[])">read</a></span>(char[] cbuf)
         
-        <div class="jd-descrdiv">Reads characters from this reader and stores them in the character array
- <code>buffer</code> starting at offset 0.</div>
+        <div class="jd-descrdiv">Reads characters into an array.</div>
   
   </td></tr>
 
@@ -878,7 +910,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Reader.html#read(java.nio.CharBuffer)">read</a></span>(<a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a> target)
         
-        <div class="jd-descrdiv">Reads characters and puts them into the <code>target</code> character buffer.</div>
+        <div class="jd-descrdiv">Attempts to read characters into the specified character buffer.</div>
   
   </td></tr>
 
@@ -896,7 +928,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Reader.html#ready()">ready</a></span>()
         
-        <div class="jd-descrdiv">Indicates whether this reader is ready to be read without blocking.</div>
+        <div class="jd-descrdiv">Tells whether this stream is ready to be read.</div>
   
   </td></tr>
 
@@ -914,7 +946,7 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Reader.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Resets this reader's position to the last <code>mark()</code> location.</div>
+        <div class="jd-descrdiv">Resets the stream.</div>
   
   </td></tr>
 
@@ -930,9 +962,9 @@ From class
             long
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Reader.html#skip(long)">skip</a></span>(long charCount)
+        <span class="sympad"><a href="../../../reference/java/io/Reader.html#skip(long)">skip</a></span>(long n)
         
-        <div class="jd-descrdiv">Skips <code>charCount</code> characters in this reader.</div>
+        <div class="jd-descrdiv">Skips characters.</div>
   
   </td></tr>
 
@@ -1205,7 +1237,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Readable.html#read(java.nio.CharBuffer)">read</a></span>(<a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a> cb)
         
-        <div class="jd-descrdiv">Reads characters into the specified <code>CharBuffer</code>.</div>
+        <div class="jd-descrdiv">Attempts to read characters into the specified character buffer.</div>
   
   </td></tr>
 
@@ -1248,7 +1280,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1318,14 +1394,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new LineNumberReader on the Reader <code>in</code>. The internal
- buffer gets the default size (8 KB).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Create a new line-numbering reader, using the default input-buffer
+ size.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>in</th>
-          <td>the Reader that is buffered.
+          <td>A Reader object to provide the underlying stream
 </td>
         </tr>
       </table>
@@ -1348,7 +1424,7 @@ From interface
         
       </span>
       <span class="sympad">LineNumberReader</span>
-      <span class="normal">(<a href="../../../reference/java/io/Reader.html">Reader</a> in, int size)</span>
+      <span class="normal">(<a href="../../../reference/java/io/Reader.html">Reader</a> in, int sz)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1360,27 +1436,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new LineNumberReader on the Reader <code>in</code>. The size of
- the internal buffer is specified by the parameter <code>size</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Create a new line-numbering reader, reading characters into a buffer of
+ the given size.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>in</th>
-          <td>the Reader that is buffered.</td>
+          <td>A Reader object to provide the underlying stream</td>
         </tr>
         <tr>
-          <th>size</th>
-          <td>the size of the buffer to allocate.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>size <= 0</code>.
+          <th>sz</th>
+          <td>An int specifying the size of the buffer
 </td>
         </tr>
       </table>
@@ -1430,11 +1497,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the current line number for this reader. Numbering starts at 0.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Get the current line number.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the current line number.
-</li></ul>
+      <ul class="nolist"><li>The current line number</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/LineNumberReader.html#setLineNumber(int)">setLineNumber(int)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1454,7 +1525,7 @@ From interface
         void
       </span>
       <span class="sympad">mark</span>
-      <span class="normal">(int readlimit)</span>
+      <span class="normal">(int readAheadLimit)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1466,19 +1537,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets a mark position in this reader. The parameter <code>readlimit</code>
- indicates how many characters can be read before the mark is invalidated.
- Sending <code>reset()</code> will reposition this reader back to the marked
- position, provided that <code>readlimit</code> has not been surpassed. The
- line number associated with this marked position is also stored so that
- it can be restored when <code>reset()</code> is called.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Mark the present position in the stream.  Subsequent calls to reset()
+ will attempt to reposition the stream to this point, and will also reset
+ the line number appropriately.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>readlimit</th>
-          <td>the number of characters that can be read from this stream
-            before the mark is invalidated.</td>
+          <th>readAheadLimit</th>
+          <td>Limit on the number of characters that may be read while still
+         preserving the mark.  After reading this many characters,
+         attempting to reset the stream may fail.</td>
         </tr>
       </table>
   </div>
@@ -1487,14 +1556,10 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while setting the mark in this reader.</td>
+            <td>If an I/O error occurs
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/BufferedReader.html#markSupported()">markSupported()</a></code></li><li><code><a href="../../../reference/java/io/LineNumberReader.html#reset()">reset()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1526,25 +1591,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads a single character from the source reader and returns it as an
- integer with the two higher-order bytes set to 0. Returns -1 if the end
- of the source reader has been reached.
- <p>
- The line number count is incremented if a line terminator is encountered.
- Recognized line terminator sequences are <code>'\r'</code>, <code>'\n'</code> and
- <code>"\r\n"</code>. Line terminator sequences are always translated into
- <code>'\n'</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Read a single character.  <a href="#lt">Line terminators</a> are
+ compressed into single newline ('\n') characters.  Whenever a line
+ terminator is read the current line number is incremented.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the character read or -1 if the end of the source reader has been
-         reached.</li></ul>
+      <ul class="nolist"><li>The character read, or -1 if the end of the stream has been
+          reached</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if the reader is closed or another IOException occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1567,7 +1627,7 @@ From interface
         int
       </span>
       <span class="sympad">read</span>
-      <span class="normal">(char[] buffer, int offset, int count)</span>
+      <span class="normal">(char[] cbuf, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1579,43 +1639,37 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Reads at most <code>count</code> characters from the source reader and stores
- them in the character array <code>buffer</code> starting at <code>offset</code>.
- Returns the number of characters actually read or -1 if no characters
- have been read and the end of this reader has been reached.
- <p>
- The line number count is incremented if a line terminator is encountered.
- Recognized line terminator sequences are <code>'\r'</code>, <code>'\n'</code> and
- <code>"\r\n"</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Read characters into a portion of an array.  Whenever a <a
+ href="#lt">line terminator</a> is read the current line number is
+ incremented.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buffer</th>
-          <td>the array in which to store the characters read.</td>
+          <th>cbuf</th>
+          <td>Destination buffer</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the initial position in <code>buffer</code> to store the characters
-            read from this reader.</td>
+          <th>off</th>
+          <td>Offset at which to start storing characters</td>
         </tr>
         <tr>
-          <th>count</th>
-          <td>the maximum number of characters to store in <code>buffer</code>.</td>
+          <th>len</th>
+          <td>Maximum number of characters to read</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of characters actually read or -1 if the end of the
-         source reader has been reached while reading.</li></ul>
+      <ul class="nolist"><li>The number of bytes read, or -1 if the end of the stream has
+          already been reached</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this reader is closed or another IOException occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1650,21 +1704,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the next line of text available from this reader. A line is
- represented by 0 or more characters followed by <code>'\r'</code>,
- <code>'\n'</code>, <code>"\r\n"</code> or the end of the stream. The returned
- string does not include the newline sequence.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Read a line of text.  Whenever a <a href="#lt">line terminator</a> is
+ read the current line number is incremented.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the contents of the line or <code>null</code> if no characters have
-         been read before the end of the stream has been reached.</li></ul>
+      <ul class="nolist"><li>A String containing the contents of the line, not including
+          any <a href="#lt">line termination characters</a>, or
+          <tt>null</tt> if the end of the stream has been reached</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this reader is closed or another IOException occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1699,24 +1752,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Resets this reader to the last marked location. It also resets the line
- count to what is was when this reader was marked. This implementation
- resets the source reader.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Reset the stream to the most recent mark.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this reader is already closed, no mark has been set or the
-             mark is no longer valid because more than <code>readlimit</code>
-             bytes have been read since setting the mark.</td>
+            <td>If the stream has not been marked, or if the mark has been
+          invalidated
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/LineNumberReader.html#mark(int)">mark(int)</a></code></li><li><code><a href="../../../reference/java/io/BufferedReader.html#markSupported()">markSupported()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1748,21 +1794,19 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the line number of this reader to the specified <code>lineNumber</code>.
- Note that this may have side effects on the line number associated with
- the last marked position.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Set the current line number.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>lineNumber</th>
-          <td>the new line number value.</td>
+          <td>An int specifying the line number</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/LineNumberReader.html#mark(int)">mark(int)</a></code></li><li><code><a href="../../../reference/java/io/LineNumberReader.html#reset()">reset()</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/LineNumberReader.html#getLineNumber()">getLineNumber()</a></code></li>
       </ul>
   </div>
 
@@ -1783,7 +1827,7 @@ From interface
         long
       </span>
       <span class="sympad">skip</span>
-      <span class="normal">(long charCount)</span>
+      <span class="normal">(long n)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1795,32 +1839,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Skips <code>charCount</code> characters in this reader. Subsequent calls to
- <code>read</code> will not return these characters unless <code>reset</code>
- is used. This implementation skips <code>charCount</code> number of characters in
- the source reader and increments the line number count whenever line
- terminator sequences are skipped.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Skip characters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>n</th>
+          <td>The number of characters to skip</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of characters actually skipped.</li></ul>
+      <ul class="nolist"><li>The number of characters actually skipped</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>charCount < 0</code>.</td>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>If an I/O error occurs</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this reader is closed or another IOException occurs.</td>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>If <tt>n</tt> is negative
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/LineNumberReader.html#mark(int)">mark(int)</a></code></li><li><code><a href="../../../reference/java/io/LineNumberReader.html#read()">read()</a></code></li><li><code><a href="../../../reference/java/io/LineNumberReader.html#reset()">reset()</a></code></li>
-      </ul>
   </div>
 
     </div>

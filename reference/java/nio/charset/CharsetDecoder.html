@@ -158,36 +158,6 @@ layout: api
 
 
 
-<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
-
-  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-direct" class="jd-expando-trigger closed"
-          ><a id="subclasses-direct-trigger"
-          class="jd-expando-trigger-img" /></a>Known Direct Subclasses
-
-  <div id="subclasses-direct">
-      <div id="subclasses-direct-list"
-              class="jd-inheritedlinks"
-              
-              >
-          
-            
-              <a href="../../../../reference/java/nio/charset/IOSCharsetDecoder.html">IOSCharsetDecoder</a>
-            
-          
-      </div>
-      <div id="subclasses-direct-summary"
-              style="display: none;"
-              >
-  <table class="jd-sumtable-expando">
-        <tr class="alt-color api apilevel-" >
-              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IOSCharsetDecoder.html">IOSCharsetDecoder</a></td>
-              <td class="jd-descrcol" width="100%">iOS native charset decoder.&nbsp;</td>
-          </tr>
-  </table>
-      </div>
-  </div>
-</td></tr></table>
-
 
 
 
@@ -245,7 +215,9 @@ layout: api
  decoding process for all charsets. Decoders for a specific charset should
  extend this class and need only to implement the
  <code><a href="reference/java/nio/charset/CharsetDecoder.html#decodeLoop(java.nio.ByteBuffer, java.nio.CharBuffer)">decodeLoop</a></code> method for the basic
- decoding.
+ decoding. If a subclass maintains an internal state, it should override the
+ <code><a href="reference/java/nio/charset/CharsetDecoder.html#implFlush(java.nio.CharBuffer)">implFlush</a></code> method and the
+ <code><a href="reference/java/nio/charset/CharsetDecoder.html#implReset()">implReset</a></code> method in addition.
  <p>
  This class is not thread-safe.</p>
 
@@ -354,7 +326,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#averageCharsPerByte()">averageCharsPerByte</a></span>()
         
-        <div class="jd-descrdiv">Returns the average number of characters created by this decoder for a
+        <div class="jd-descrdiv">Gets the average number of characters created by this decoder for a
  single input byte.</div>
   
   </td></tr>
@@ -373,7 +345,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#charset()">charset</a></span>()
         
-        <div class="jd-descrdiv">Returns the <code><a href="reference/java/nio/charset/Charset.html">Charset</a></code> which this decoder uses.</div>
+        <div class="jd-descrdiv">Gets the <code>Charset</code> which this decoder uses.</div>
   
   </td></tr>
 
@@ -381,9 +353,9 @@ layout: api
 	 
     <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
-            abstract
             
             
+            final
             
             
             <a href="../../../../reference/java/nio/CharBuffer.html">CharBuffer</a>
@@ -494,6 +466,25 @@ layout: api
         <td class="jd-typecol">
             
             
+            
+            
+            
+            <a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#malformedInputAction()">malformedInputAction</a></span>()
+        
+        <div class="jd-descrdiv">Gets this decoder's <code>CodingErrorAction</code> when malformed input
+ occurred during the decoding process.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
             final
             
             
@@ -502,14 +493,14 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#maxCharsPerByte()">maxCharsPerByte</a></span>()
         
-        <div class="jd-descrdiv">Returns the maximum number of characters which can be created by this
+        <div class="jd-descrdiv">Gets the maximum number of characters which can be created by this
  decoder for one input byte, must be positive.</div>
   
   </td></tr>
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -527,7 +518,7 @@ layout: api
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -545,7 +536,7 @@ layout: api
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -555,9 +546,27 @@ layout: api
             <a href="../../../../reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#replaceWith(java.lang.String)">replaceWith</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> replacement)
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#replaceWith(java.lang.String)">replaceWith</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> newReplacement)
         
         <div class="jd-descrdiv">Sets the new replacement string.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#replacement()">replacement</a></span>()
+        
+        <div class="jd-descrdiv">Gets the replacement string, which is never null or empty.</div>
   
   </td></tr>
 
@@ -570,12 +579,12 @@ layout: api
             final
             
             
-            <a href="../../../../reference/java/lang/String.html">String</a>
+            <a href="../../../../reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#replacement()">replacement</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#reset()">reset</a></span>()
         
-        <div class="jd-descrdiv">Returns the replacement string, which is never null or empty.</div>
+        <div class="jd-descrdiv">Resets this decoder.</div>
   
   </td></tr>
 
@@ -585,15 +594,16 @@ layout: api
         <td class="jd-typecol">
             
             
-            final
             
             
-            <a href="../../../../reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a>
+            
+            <a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a>
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#reset()">reset</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#unmappableCharacterAction()">unmappableCharacterAction</a></span>()
         
-        <div class="jd-descrdiv">Resets this decoder.</div>
+        <div class="jd-descrdiv">Gets this decoder's <code>CodingErrorAction</code> when an unmappable
+ character error occurred during the decoding process.</div>
   
   </td></tr>
 
@@ -623,6 +633,98 @@ layout: api
         <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#decodeLoop(java.nio.ByteBuffer, java.nio.CharBuffer)">decodeLoop</a></span>(<a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> in, <a href="../../../../reference/java/nio/CharBuffer.html">CharBuffer</a> out)
         
         <div class="jd-descrdiv">Decodes bytes into characters.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/charset/CoderResult.html">CoderResult</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#implFlush(java.nio.CharBuffer)">implFlush</a></span>(<a href="../../../../reference/java/nio/CharBuffer.html">CharBuffer</a> out)
+        
+        <div class="jd-descrdiv">Flushes this decoder.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#implOnMalformedInput(java.nio.charset.CodingErrorAction)">implOnMalformedInput</a></span>(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)
+        
+        <div class="jd-descrdiv">Notifies that this decoder's <code>CodingErrorAction</code> specified
+ for malformed input error has been changed.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#implOnUnmappableCharacter(java.nio.charset.CodingErrorAction)">implOnUnmappableCharacter</a></span>(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)
+        
+        <div class="jd-descrdiv">Notifies that this decoder's <code>CodingErrorAction</code> specified
+ for unmappable character error has been changed.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#implReplaceWith(java.lang.String)">implReplaceWith</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> newReplacement)
+        
+        <div class="jd-descrdiv">Notifies that this decoder's replacement has been changed.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html#implReset()">implReset</a></span>()
+        
+        <div class="jd-descrdiv">Reset this decoder's charset related state.</div>
   
   </td></tr>
 
@@ -1006,9 +1108,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the average number of characters created by this decoder for a
- single input byte.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the average number of characters created by this decoder for a
+ single input byte.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the average number of characters created by this decoder for a
+         single input byte.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1039,8 +1146,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code><a href="reference/java/nio/charset/Charset.html">Charset</a></code> which this decoder uses.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the <code>Charset</code> which this decoder uses.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the <code>Charset</code> which this decoder uses.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1053,8 +1164,8 @@ From class
       <span class="normal">
         public
         
+        final
         
-        abstract
         
         <a href="../../../../reference/java/nio/CharBuffer.html">CharBuffer</a>
       </span>
@@ -1334,6 +1445,11 @@ From class
       
   <div class="jd-tagdata jd-tagdescr"><p>Flushes this decoder.
 
+ This method will call <code><a href="reference/java/nio/charset/CharsetDecoder.html#implFlush(java.nio.CharBuffer)">implFlush</a></code>. Some
+ decoders may need to write some characters to the output buffer when they
+ have read all input bytes; subclasses can override
+ <code><a href="reference/java/nio/charset/CharsetDecoder.html#implFlush(java.nio.CharBuffer)">implFlush</a></code> to perform the writing operation.
+ <p>
  The maximum number of written bytes won't be larger than
  <code><a href="reference/java/nio/Buffer.html#remaining()">out.remaining()</a></code>. If some decoder wants to
  write more bytes than an output buffer's remaining space allows, then a
@@ -1477,6 +1593,44 @@ From class
 </div>
 
 
+<a id="malformedInputAction()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a>
+      </span>
+      <span class="sympad">malformedInputAction</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this decoder's <code>CodingErrorAction</code> when malformed input
+ occurred during the decoding process.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this decoder's <code>CodingErrorAction</code> when malformed
+         input occurred during the decoding process.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
 <a id="maxCharsPerByte()"></a>
 
 <div class="jd-details api apilevel-">
@@ -1502,9 +1656,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum number of characters which can be created by this
- decoder for one input byte, must be positive.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the maximum number of characters which can be created by this
+ decoder for one input byte, must be positive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the maximum number of characters which can be created by this
+         decoder for one input byte, must be positive.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1535,7 +1694,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets this decoder's action on malformed input errors.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this decoder's action on malformed input errors.
+
+ This method will call the
+ <code><a href="reference/java/nio/charset/CharsetDecoder.html#implOnMalformedInput(java.nio.charset.CodingErrorAction)">implOnMalformedInput</a></code>
+ method with the given new action as argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1589,7 +1752,11 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets this decoder's action on unmappable character errors.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets this decoder's action on unmappable character errors.
+
+ This method will call the
+ <code><a href="reference/java/nio/charset/CharsetDecoder.html#implOnUnmappableCharacter(java.nio.charset.CodingErrorAction)">implOnUnmappableCharacter</a></code>
+ method with the given new action as argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
@@ -1631,7 +1798,7 @@ From class
         <a href="../../../../reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a>
       </span>
       <span class="sympad">replaceWith</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> replacement)</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> newReplacement)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1643,12 +1810,17 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sets the new replacement string.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the new replacement string.
+
+ This method first checks the given replacement's validity, then changes
+ the replacement value, and at last calls the
+ <code><a href="reference/java/nio/charset/CharsetDecoder.html#implReplaceWith(java.lang.String)">implReplaceWith</a></code> method with the given
+ new replacement as argument.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>replacement</th>
+          <th>newReplacement</th>
           <td>the replacement string, cannot be null or empty. Its length
             cannot be larger than <code><a href="reference/java/nio/charset/CharsetDecoder.html#maxCharsPerByte()">maxCharsPerByte()</a></code>.</td>
         </tr>
@@ -1699,8 +1871,12 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the replacement string, which is never null or empty.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the replacement string, which is never null or empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the replacement string, cannot be null or empty.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1731,10 +1907,50 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Resets this decoder.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Resets this decoder. This method will reset the internal status, and then
+ calls <code>implReset()</code> to reset any status related to the
+ specific charset.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>this decoder.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="unmappableCharacterAction()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a>
+      </span>
+      <span class="sympad">unmappableCharacterAction</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this decoder's <code>CodingErrorAction</code> when an unmappable
+ character error occurred during the decoding process.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this decoder's <code>CodingErrorAction</code> when an
+         unmappable character error occurred during the decoding process.
 </li></ul>
   </div>
 
@@ -1818,6 +2034,215 @@ From class
       <ul class="nolist"><li>a <code>CoderResult</code> instance indicating the result.
 </li></ul>
   </div>
+
+    </div>
+</div>
+
+
+<a id="implFlush(java.nio.CharBuffer)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../reference/java/nio/charset/CoderResult.html">CoderResult</a>
+      </span>
+      <span class="sympad">implFlush</span>
+      <span class="normal">(<a href="../../../../reference/java/nio/CharBuffer.html">CharBuffer</a> out)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes this decoder. The default implementation does nothing and always
+ returns <code>CoderResult.UNDERFLOW</code>; this method can be
+ overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>out</th>
+          <td>the output buffer.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>CoderResult.UNDERFLOW</code> or
+         <code>CoderResult.OVERFLOW</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implOnMalformedInput(java.nio.charset.CodingErrorAction)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implOnMalformedInput</span>
+      <span class="normal">(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Notifies that this decoder's <code>CodingErrorAction</code> specified
+ for malformed input error has been changed. The default implementation
+ does nothing; this method can be overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>newAction</th>
+          <td>the new action.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implOnUnmappableCharacter(java.nio.charset.CodingErrorAction)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implOnUnmappableCharacter</span>
+      <span class="normal">(<a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a> newAction)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Notifies that this decoder's <code>CodingErrorAction</code> specified
+ for unmappable character error has been changed. The default
+ implementation does nothing; this method can be overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>newAction</th>
+          <td>the new action.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implReplaceWith(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implReplaceWith</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> newReplacement)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Notifies that this decoder's replacement has been changed. The default
+ implementation does nothing; this method can be overridden if needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>newReplacement</th>
+          <td>the new replacement string.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="implReset()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">implReset</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reset this decoder's charset related state. The default implementation
+ does nothing; this method can be overridden if needed.
+</p></div>
 
     </div>
 </div>

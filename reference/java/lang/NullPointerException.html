@@ -235,11 +235,25 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program tries to access a field or method of an object or an
- element of an array when there is no instance or array to use, that is if the
- object or array points to <code>null</code>. It also occurs in some other, less
- obvious circumstances, like a <code>throw e</code> statement where the <code><a href="reference/java/lang/Throwable.html">Throwable</a></code> reference is <code>null</code>.
-</p>
+<p>Thrown when an application attempts to use <code>null</code> in a
+ case where an object is required. These include:
+ <ul>
+ <li>Calling the instance method of a <code>null</code> object.
+ <li>Accessing or modifying the field of a <code>null</code> object.
+ <li>Taking the length of <code>null</code> as if it were an array.
+ <li>Accessing or modifying the slots of <code>null</code> as if it
+     were an array.
+ <li>Throwing <code>null</code> as if it were a <code>Throwable</code>
+     value.
+ </ul>
+ <p>
+ Applications should throw instances of this class to indicate
+ other illegal uses of the <code>null</code> object.
+
+ <code>NullPointerException</code> objects may be constructed by the
+ virtual machine as if {@linkplain Throwable#Throwable(String,
+ Throwable, boolean, boolean) suppression were disabled and/or the
+ stack trace was not writable}.</p>
 
 
 
@@ -307,8 +321,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/NullPointerException.html#NullPointerException()">NullPointerException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>NullPointerException</code> that includes the current
- stack trace.</div>
+        <div class="jd-descrdiv">Constructs a <code>NullPointerException</code> with no detail message.</div>
   
   </td></tr>
 
@@ -324,10 +337,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/NullPointerException.html#NullPointerException(java.lang.String)">NullPointerException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/NullPointerException.html#NullPointerException(java.lang.String)">NullPointerException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>NullPointerException</code> with the current stack
- trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs a <code>NullPointerException</code> with the specified
+ detail message.</div>
   
   </td></tr>
 
@@ -563,6 +576,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -863,8 +895,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>NullPointerException</code> that includes the current
- stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>NullPointerException</code> with no detail message.
 </p></div>
 
     </div>
@@ -884,7 +915,7 @@ From class
         
       </span>
       <span class="sympad">NullPointerException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -896,14 +927,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>NullPointerException</code> with the current stack
- trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>NullPointerException</code> with the specified
+ detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

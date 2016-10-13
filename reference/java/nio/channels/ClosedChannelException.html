@@ -251,8 +251,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
-              <td class="jd-descrcol" width="100%">An <code>AsynchronousCloseException</code> is thrown when the underlying channel
- for an I/O operation is closed by another thread.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception received by a thread when another thread closes the
+ channel or the part of the channel upon which it is blocked in an I/O
+ operation.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -284,8 +285,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
-              <td class="jd-descrcol" width="100%">A <code>ClosedByInterruptException</code> is thrown when a thread is interrupted
- in a blocking I/O operation.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Checked exception received by a thread when another thread interrupts it
+ while it is blocked in an I/O operation upon a channel.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -297,9 +298,11 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>ClosedChannelException</code> is thrown when a channel is closed for the
- type of operation attempted.
-</p>
+<p>Checked exception thrown when an attempt is made to invoke or complete an
+ I/O operation upon channel that is closed, or at least closed to that
+ operation.  That this exception is thrown does not necessarily imply that
+ the channel is completely closed.  A socket channel whose write half has
+ been shut down, for example, may still be open for reading.</p>
 
 
 
@@ -367,7 +370,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html#ClosedChannelException()">ClosedChannelException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a <code>ClosedChannelException</code>.</div>
+        <div class="jd-descrdiv">Constructs an instance of this class.</div>
   
   </td></tr>
 
@@ -603,6 +606,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -903,7 +925,7 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>ClosedChannelException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an instance of this class.
 </p></div>
 
     </div>

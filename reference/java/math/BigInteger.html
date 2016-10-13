@@ -491,7 +491,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#and(java.math.BigInteger)">and</a></span>(<a href="../../../reference/java/math/BigInteger.html">BigInteger</a> val)
         
-        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this & val</code>.</div>
+        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this &amp; val</code>.</div>
   
   </td></tr>
 
@@ -509,7 +509,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#andNot(java.math.BigInteger)">andNot</a></span>(<a href="../../../reference/java/math/BigInteger.html">BigInteger</a> val)
         
-        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this & ~val</code>.</div>
+        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this &amp; ~val</code>.</div>
   
   </td></tr>
 
@@ -1080,7 +1080,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#shiftLeft(int)">shiftLeft</a></span>(int n)
         
-        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this << n</code>.</div>
+        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this &lt;&lt; n</code>.</div>
   
   </td></tr>
 
@@ -1098,7 +1098,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#shiftRight(int)">shiftRight</a></span>(int n)
         
-        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this >> n</code>.</div>
+        <div class="jd-descrdiv">Returns a new <code>BigInteger</code> whose value is <code>this &gt;&gt; n</code>.</div>
   
   </td></tr>
 
@@ -1645,10 +1645,9 @@ From interface
             int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/math/BigInteger.html">BigInteger</a> another)
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/math/BigInteger.html">BigInteger</a> o)
         
-        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
- order.</div>
+        <div class="jd-descrdiv">Compares this object with the specified object for order.</div>
   
   </td></tr>
 
@@ -2016,8 +2015,8 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
-            <td>if <code>val</code> is not a valid representation of a <code>BigInteger</code> or if <code>radix < Character.MIN_RADIX</code> or
-             <code>radix > Character.MAX_RADIX</code>.
+            <td>if <code>val</code> is not a valid representation of a <code>BigInteger</code> or if <code>radix &lt; Character.MIN_RADIX</code> or
+             <code>radix &gt; Character.MAX_RADIX</code>.
 </td>
         </tr>
       </table>
@@ -2278,7 +2277,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this & val</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this &amp; val</code>.
  <p>
  <b>Implementation Note:</b> Usage of this method is not recommended as
  the current implementation is not efficient.</p></div>
@@ -2293,7 +2292,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>this & val</code>.</li></ul>
+      <ul class="nolist"><li><code>this &amp; val</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -2335,7 +2334,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this & ~val</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this &amp; ~val</code>.
  Evaluating <code>x.andNot(val)</code> returns the same result as <code>x.and(val.not())</code>.
  <p>
  <b>Implementation Note:</b> Usage of this method is not recommended as
@@ -2351,7 +2350,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>this & ~val</code>.</li></ul>
+      <ul class="nolist"><li><code>this &amp; ~val</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
@@ -2447,8 +2446,8 @@ From interface
  The two's complement representation of <code>this</code> will be at least
  <code>bitLength() + 1</code> bits long.
  <p>
- The value will fit into an <code>int</code> if <code>bitLength() < 32</code> or
- into a <code>long</code> if <code>bitLength() < 64</code>.</p></div>
+ The value will fit into an <code>int</code> if <code>bitLength() &lt; 32</code> or
+ into a <code>long</code> if <code>bitLength() &lt; 64</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li>the length of the minimal two's complement representation for
@@ -2487,7 +2486,7 @@ From interface
       
   <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> which has the same binary representation
  as <code>this</code> but with the bit at position n cleared. The result is
- equivalent to <code>this & ~(2^n)</code>.
+ equivalent to <code>this &amp; ~(2^n)</code>.
  <p>
  <b>Implementation Note:</b> Usage of this method is not recommended as
  the current implementation is not efficient.</p></div>
@@ -2502,14 +2501,14 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>this & ~(2^n)</code>.</li></ul>
+      <ul class="nolist"><li><code>this &amp; ~(2^n)</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>n < 0</code>.
+            <td>if <code>n &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -2557,7 +2556,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>1</code> if <code>this > val</code>, <code>-1</code> if <code>this < val</code>
+      <ul class="nolist"><li><code>1</code> if <code>this &gt; val</code>, <code>-1</code> if <code>this &lt; val</code>
          , <code>0</code> if <code>this == val</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
@@ -2833,7 +2832,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>n < 0</code>.
+            <td>if <code>n &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -3301,7 +3300,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>m < 0</code>.
+            <td>if <code>m &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -3362,7 +3361,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>m < 0 or</code> if <code>this</code> is not relatively prime
+            <td>if <code>m &lt; 0 or</code> if <code>this</code> is not relatively prime
              to <code>m</code>
 </td>
         </tr>
@@ -3430,7 +3429,7 @@ From interface
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>m < 0</code> or if <code>exponent<0</code> and this is not
+            <td>if <code>m &lt; 0</code> or if <code>exponent&lt;0</code> and this is not
              relatively prime to <code>m</code>.
 </td>
         </tr>
@@ -3567,7 +3566,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>this < 0</code>.
+            <td>if <code>this &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -3718,7 +3717,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>exp < 0</code>.
+            <td>if <code>exp &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -3780,7 +3779,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>if <code>bitLength < 2</code>.
+            <td>if <code>bitLength &lt; 2</code>.
 </td>
         </tr>
       </table>
@@ -3899,7 +3898,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>n < 0</code>.
+            <td>if <code>n &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -3934,7 +3933,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this << n</code>. The
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this &lt;&lt; n</code>. The
  result is equivalent to <code>this * 2^n</code> if n >= 0. The shift distance
  may be negative which means that <code>this</code> is shifted right. The
  result then corresponds to <code>floor(this / 2^(-n))</code>.
@@ -3952,7 +3951,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>this << n</code> if <code>n >= 0</code>; <code>this >> (-n)</code>.
+      <ul class="nolist"><li><code>this &lt;&lt; n</code> if <code>n &gt;= 0</code>; <code>this &gt;&gt; (-n)</code>.
          otherwise
 </li></ul>
   </div>
@@ -3986,7 +3985,7 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this >> n</code>. For
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this &gt;&gt; n</code>. For
  negative arguments, the result is also negative. The shift distance may
  be negative which means that <code>this</code> is shifted left.
  <p>
@@ -4003,7 +4002,7 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>this >> n</code> if <code>n >= 0</code>; <code>this << (-n)</code>
+      <ul class="nolist"><li><code>this &gt;&gt; n</code> if <code>n &gt;= 0</code>; <code>this &lt;&lt; (-n)</code>
          otherwise
 </li></ul>
   </div>
@@ -4040,9 +4039,9 @@ From interface
   <div class="jd-tagdata jd-tagdescr"><p>Returns the sign of this <code>BigInteger</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>-1</code> if <code>this < 0</code>,
+      <ul class="nolist"><li><code>-1</code> if <code>this &lt; 0</code>,
          <code>0</code> if <code>this == 0</code>,
-         <code>1</code> if <code>this > 0</code>.
+         <code>1</code> if <code>this &gt; 0</code>.
 </li></ul>
   </div>
 
@@ -4130,7 +4129,7 @@ From interface
     <div class="jd-details-descr">
       
   <div class="jd-tagdata jd-tagdescr"><p>Tests whether the bit at position n in <code>this</code> is set. The result is
- equivalent to <code>this & (2^n) != 0</code>.
+ equivalent to <code>this &amp; (2^n) != 0</code>.
  <p>
  <b>Implementation Note:</b> Usage of this method is not recommended as
  the current implementation is not efficient.</p></div>
@@ -4145,14 +4144,14 @@ From interface
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>this & (2^n) != 0</code>.</li></ul>
+      <ul class="nolist"><li><code>this &amp; (2^n) != 0</code>.</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
-            <td>if <code>n < 0</code>.
+            <td>if <code>n &lt; 0</code>.
 </td>
         </tr>
       </table>
@@ -4261,8 +4260,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a string representation of this <code>BigInteger</code> with base radix. If <code>radix < Character.MIN_RADIX</code> or
- <code>radix > Character.MAX_RADIX</code> then a decimal representation is
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a string representation of this <code>BigInteger</code> with base radix. If <code>radix &lt; Character.MIN_RADIX</code> or
+ <code>radix &gt; Character.MAX_RADIX</code> then a decimal representation is
  returned. The characters of the string representation are generated with
  method <code>Character.forDigit</code>.</p></div>
   <div class="jd-tagdata">

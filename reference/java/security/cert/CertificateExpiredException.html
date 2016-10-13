@@ -260,8 +260,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The exception that is thrown when a <code>Certificate</code> has expired.
-</p>
+<p>Certificate Expired Exception. This is thrown whenever the current
+ <code>Date</code> or the specified <code>Date</code> is after the
+ <code>notAfter</code> date/time specified in the validity period
+ of the certificate.</p>
 
 
 
@@ -327,10 +329,9 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateExpiredException.html#CertificateExpiredException(java.lang.String)">CertificateExpiredException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> msg)
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateExpiredException.html#CertificateExpiredException()">CertificateExpiredException</a></span>()
         
-        <div class="jd-descrdiv">Creates a new <code>CertificateExpiredException</code> with the specified
- message.</div>
+        <div class="jd-descrdiv">Constructs a CertificateExpiredException with no detail message.</div>
   
   </td></tr>
 
@@ -346,9 +347,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateExpiredException.html#CertificateExpiredException()">CertificateExpiredException</a></span>()
+        <span class="sympad"><a href="../../../../reference/java/security/cert/CertificateExpiredException.html#CertificateExpiredException(java.lang.String)">CertificateExpiredException</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> message)
         
-        <div class="jd-descrdiv">Creates a new <code>CertificateExpiredException</code>.</div>
+        <div class="jd-descrdiv">Constructs a CertificateExpiredException with the specified detail
+ message.</div>
   
   </td></tr>
 
@@ -586,6 +588,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -861,48 +882,6 @@ From class
 
 
 
-<a id="CertificateExpiredException(java.lang.String)"></a>
-
-<div class="jd-details api apilevel-">
-    <h4 class="jd-details-title">
-      <span class="normal">
-        public
-        
-        
-        
-        
-        
-      </span>
-      <span class="sympad">CertificateExpiredException</span>
-      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> msg)</span>
-    </h4>
-      <div class="api-level">
-        <div>
-
-</div>
-        
-  
-
-      </div>
-    <div class="jd-details-descr">
-      
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertificateExpiredException</code> with the specified
- message.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>msg</th>
-          <td>the detail message for this exception
-</td>
-        </tr>
-      </table>
-  </div>
-
-    </div>
-</div>
-
-
 <a id="CertificateExpiredException()"></a>
 
 <div class="jd-details api apilevel-">
@@ -928,8 +907,53 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>CertificateExpiredException</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a CertificateExpiredException with no detail message. A
+ detail message is a String that describes this particular
+ exception.
 </p></div>
+
+    </div>
+</div>
+
+
+<a id="CertificateExpiredException(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">CertificateExpiredException</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> message)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a CertificateExpiredException with the specified detail
+ message. A detail message is a String that describes this
+ particular exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>message</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

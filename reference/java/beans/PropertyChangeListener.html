@@ -172,8 +172,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/beans/PropertyChangeListenerProxy.html">PropertyChangeListenerProxy</a></td>
-              <td class="jd-descrcol" width="100%">The implementation of this listener proxy just delegates the received events
- to its listener.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A class which extends the <code>EventListenerProxy</code>
+ specifically for adding a <code>PropertyChangeListener</code>
+ with a "bound" property.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -185,8 +186,9 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A PropertyChangeListener can subscribe with a event source. Whenever that
- source raises a PropertyChangeEvent this listener will get notified.
+<p>A "PropertyChange" event gets fired whenever a bean changes a "bound"
+ property.  You can register a PropertyChangeListener with a source
+ bean so as to be notified of any bound property updates.
 </p>
 
 
@@ -257,9 +259,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListener.html#propertyChange(java.beans.PropertyChangeEvent)">propertyChange</a></span>(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> event)
+        <span class="sympad"><a href="../../../reference/java/beans/PropertyChangeListener.html#propertyChange(java.beans.PropertyChangeEvent)">propertyChange</a></span>(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> evt)
         
-        <div class="jd-descrdiv">The source bean calls this method when an event is raised.</div>
+        <div class="jd-descrdiv">This method gets called when a bound property is changed.</div>
   
   </td></tr>
 
@@ -325,7 +327,7 @@ layout: api
         void
       </span>
       <span class="sympad">propertyChange</span>
-      <span class="normal">(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> event)</span>
+      <span class="normal">(<a href="../../../reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a> evt)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -337,14 +339,14 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The source bean calls this method when an event is raised.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>This method gets called when a bound property is changed.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>event</th>
-          <td>the <code><a href="reference/java/beans/PropertyChangeEvent.html">PropertyChangeEvent</a></code> object which contains the name
-            and the old and new value of the property that has changed.
+          <th>evt</th>
+          <td>A PropertyChangeEvent object describing the event source
+          and the property that has changed.
 </td>
         </tr>
       </table>

@@ -155,6 +155,28 @@ layout: api
 <div class="jd-descr">
 
 
+<h2>Class Overview</h2>
+<p>The mapping in the Java<sup><font size=-2>TM</font></sup> programming language
+ for the SQL <code>NCLOB</code> type.
+ An SQL <code>NCLOB</code> is a built-in type
+ that stores a Character Large Object using the National Character Set
+  as a column value in a row of  a database table.
+ <P>The <code>NClob</code> interface extends the <code>Clob</code> interface
+ which provides provides methods for getting the
+ length of an SQL <code>NCLOB</code> value,
+ for materializing a <code>NCLOB</code> value on the client, and for
+ searching for a substring or <code>NCLOB</code> object within a
+ <code>NCLOB</code> value. A <code>NClob</code> object, just like a <code>Clob</code> object, is valid for the duration
+ of the transaction in which it was created.
+ Methods in the interfaces <code><a href="reference/java/sql/ResultSet.html">ResultSet</a></code>,
+ <code><a href="reference/java/sql/CallableStatement.html">CallableStatement</a></code>, and <code><a href="reference/java/sql/PreparedStatement.html">PreparedStatement</a></code>, such as
+ <code>getNClob</code> and <code>setNClob</code> allow a programmer to
+ access an SQL <code>NCLOB</code> value.  In addition, this interface
+ has methods for updating a <code>NCLOB</code> value.
+ <p>
+ All methods on the <code>NClob</code> interface must be fully implemented if the
+ JDBC driver supports the data type.</p>
+
 
 
 
@@ -250,7 +272,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#free()">free</a></span>()
         
-        <div class="jd-descrdiv">Frees any resources held by this clob.</div>
+        <div class="jd-descrdiv">This method frees the <code>Clob</code> object and releases the resources the resources
+ that it holds.</div>
   
   </td></tr>
 
@@ -268,7 +291,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getAsciiStream()">getAsciiStream</a></span>()
         
-        <div class="jd-descrdiv">Gets the value of this <code>Clob</code> object as an ASCII stream.</div>
+        <div class="jd-descrdiv">Retrieves the <code>CLOB</code> value designated by this <code>Clob</code>
+ object as an ascii stream.</div>
   
   </td></tr>
 
@@ -286,7 +310,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getCharacterStream()">getCharacterStream</a></span>()
         
-        <div class="jd-descrdiv">Gets the data of this <code>Clob</code> object in a <code>java.io.Reader</code>.</div>
+        <div class="jd-descrdiv">Retrieves the <code>CLOB</code> value designated by this <code>Clob</code>
+ object as a <code>java.io.Reader</code> object (or as a stream of
+ characters).</div>
   
   </td></tr>
 
@@ -304,8 +330,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getCharacterStream(long, long)">getCharacterStream</a></span>(long pos, long length)
         
-        <div class="jd-descrdiv">Returns a <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads <code>length</code> characters from this clob, starting
- at 1-based offset {code pos}.</div>
+        <div class="jd-descrdiv">Returns a <code>Reader</code> object that contains a partial <code>Clob</code> value, starting
+ with the character specified by pos, which is length characters in length.</div>
   
   </td></tr>
 
@@ -323,7 +349,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getSubString(long, int)">getSubString</a></span>(long pos, int length)
         
-        <div class="jd-descrdiv">Gets a copy of a specified substring in this <code>Clob</code>.</div>
+        <div class="jd-descrdiv">Retrieves a copy of the specified substring
+ in the <code>CLOB</code> value
+ designated by this <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -341,7 +369,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#length()">length</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the number of characters in this <code>Clob</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the number of characters
+ in the <code>CLOB</code> value
+ designated by this <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -359,8 +389,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#position(java.lang.String, long)">position</a></span>(<a href="../../../reference/java/lang/String.html">String</a> searchstr, long start)
         
-        <div class="jd-descrdiv">Retrieves the character position at which a specified substring appears
- in this <code>Clob</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the character position at which the specified substring
+ <code>searchstr</code> appears in the SQL <code>CLOB</code> value
+ represented by this <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -378,8 +409,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#position(java.sql.Clob, long)">position</a></span>(<a href="../../../reference/java/sql/Clob.html">Clob</a> searchstr, long start)
         
-        <div class="jd-descrdiv">Retrieves the character position at which a specified <code>Clob</code> object
- appears in this <code>Clob</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the character position at which the specified
+ <code>Clob</code> object <code>searchstr</code> appears in this
+ <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -397,8 +429,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setAsciiStream(long)">setAsciiStream</a></span>(long pos)
         
-        <div class="jd-descrdiv">Retrieves a stream which can be used to write Ascii characters to this
- <code>Clob</code> object, starting at specified position.</div>
+        <div class="jd-descrdiv">Retrieves a stream to be used to write Ascii characters to the
+ <code>CLOB</code> value that this <code>Clob</code> object represents,
+ starting at position <code>pos</code>.</div>
   
   </td></tr>
 
@@ -416,8 +449,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setCharacterStream(long)">setCharacterStream</a></span>(long pos)
         
-        <div class="jd-descrdiv">Retrieves a stream which can be used to write a stream of unicode
- characters to this <code>Clob</code> object, at a specified position.</div>
+        <div class="jd-descrdiv">Retrieves a stream to be used to write a stream of Unicode characters
+ to the <code>CLOB</code> value that this <code>Clob</code> object
+ represents, at position <code>pos</code>.</div>
   
   </td></tr>
 
@@ -435,8 +469,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setString(long, java.lang.String, int, int)">setString</a></span>(long pos, <a href="../../../reference/java/lang/String.html">String</a> str, int offset, int len)
         
-        <div class="jd-descrdiv">Writes <code>len</code> characters of a string, starting at a specified
- character offset, to this <code>Clob</code>.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> characters of <code>str</code>, starting
+ at character <code>offset</code>, to the <code>CLOB</code> value
+ that this <code>Clob</code> represents.</div>
   
   </td></tr>
 
@@ -454,8 +489,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setString(long, java.lang.String)">setString</a></span>(long pos, <a href="../../../reference/java/lang/String.html">String</a> str)
         
-        <div class="jd-descrdiv">Writes a given Java String to this <code>Clob</code> object at a specified
- position.</div>
+        <div class="jd-descrdiv">Writes the given Java <code>String</code> to the <code>CLOB</code>
+ value that this <code>Clob</code> object designates at the position
+ <code>pos</code>.</div>
   
   </td></tr>
 
@@ -473,7 +509,9 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#truncate(long)">truncate</a></span>(long len)
         
-        <div class="jd-descrdiv">Truncates this <code>Clob</code> after the specified number of characters.</div>
+        <div class="jd-descrdiv">Truncates the <code>CLOB</code> value that this <code>Clob</code>
+ designates to have a length of <code>len</code>
+ characters.</div>
   
   </td></tr>
 

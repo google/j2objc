@@ -117,6 +117,13 @@ layout: api
   
   
 
+  
+   
+  
+  
+  
+  
+
 
 <div class="api-level">
   
@@ -223,17 +230,16 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Writer.html">Writer</a></code> and <em>buffers</em> the output.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Writes text to a character-output stream, buffering characters so as to
+ provide for the efficient writing of single characters, arrays, and strings.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> for class for writing content to an (internal)
- char array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements a character buffer that can be used as an Writer.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></td>
-              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Writer.html">Writer</a></code> and performs some transformation on the
- output data while it is being written.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Abstract class for writing filtered character streams.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></td>
@@ -241,18 +247,16 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></td>
-              <td class="jd-descrcol" width="100%">Places information on a communications pipe.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Piped character-output streams.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></td>
-              <td class="jd-descrcol" width="100%">Wraps either an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> or an existing <code><a href="reference/java/io/Writer.html">Writer</a></code>
- and provides convenience methods for printing common data types in a human
- readable format.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Prints formatted representations of objects to a text-output stream.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></td>
-              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> that writes characters to a <code>StringBuffer</code>
- in a sequential manner, appending them in the process.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A character stream that collects its output in a string buffer, which can
+ then be used to construct a string.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -296,25 +300,16 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>The base class for all writers. A writer is a means of writing data to a
- target in a character-wise manner. Most output streams expect the
- <code><a href="reference/java/io/Writer.html#flush()">flush()</a></code> method to be called before closing the stream, to ensure all
- data is actually written out.
- <p>
- This abstract class does not provide a fully working implementation, so it
- needs to be subclassed, and at least the <code><a href="reference/java/io/Writer.html#write(char[], int, int)">write(char[], int, int)</a></code>,
- <code><a href="reference/java/io/Writer.html#close()">close()</a></code> and <code><a href="reference/java/io/Writer.html#flush()">flush()</a></code> methods needs to be overridden.
- Overriding some of the non-abstract methods is also often advised, since it
- might result in higher efficiency.
- <p>
- Many specialized readers for purposes like reading from a file already exist
- in this package.</p>
+<p>Abstract class for writing to character streams.  The only methods that a
+ subclass must implement are write(char[], int, int), flush(), and close().
+ Most subclasses, however, will override some of the methods defined here in
+ order to provide higher efficiency, additional functionality, or both.</p>
 
 
 
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/io/Reader.html">Reader</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/Writer.html">Writer</a></code></li><li><code><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></code></li><li><code><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></code></li><li><code><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></code></li><li><code><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></code></li><li><code><a href="../../../reference/java/io/FileWriter.html">FileWriter</a></code></li><li><code><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></code></li><li><code><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></code></li><li><code><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></code></li><li><code><a href="../../../reference/java/io/Reader.html">Reader</a></code></li>
       </ul>
   </div>
 
@@ -370,7 +365,7 @@ layout: api
           
           <a href="../../../reference/java/lang/Object.html">Object</a></td>
           <td class="jd-linkcol"><a href="../../../reference/java/io/Writer.html#lock">lock</a></td>
-          <td class="jd-descrcol" width="100%">The object used to synchronize access to the writer.</td>
+          <td class="jd-descrcol" width="100%">The object used to synchronize operations on this stream.</td>
       </tr>
       
     
@@ -403,8 +398,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#Writer()">Writer</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>Writer</code> with a lock object to synchronize
- critical sections.</div>
+        <div class="jd-descrdiv">Creates a new character-stream writer whose critical sections will
+ synchronize on the writer itself.</div>
   
   </td></tr>
 
@@ -422,8 +417,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#Writer(java.lang.Object)">Writer</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> lock)
         
-        <div class="jd-descrdiv">Constructs a new <code>Writer</code> with <code>lock</code> used to synchronize
- critical sections.</div>
+        <div class="jd-descrdiv">Creates a new character-stream writer whose critical sections will
+ synchronize on the given object.</div>
   
   </td></tr>
 
@@ -452,7 +447,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the character <code>c</code> to the target.</div>
+        <div class="jd-descrdiv">Appends the specified character to this writer.</div>
   
   </td></tr>
 
@@ -470,8 +465,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of the character sequence <code>csq</code> to the
- target.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this writer.</div>
   
   </td></tr>
 
@@ -489,7 +483,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code> to the target.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this writer.</div>
   
   </td></tr>
 
@@ -507,7 +501,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes this writer.</div>
+        <div class="jd-descrdiv">Closes the stream, flushing it first.</div>
   
   </td></tr>
 
@@ -525,7 +519,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes this writer.</div>
+        <div class="jd-descrdiv">Flushes the stream.</div>
   
   </td></tr>
 
@@ -543,7 +537,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(java.lang.String)">write</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str)
         
-        <div class="jd-descrdiv">Writes the characters from the specified string to the target.</div>
+        <div class="jd-descrdiv">Writes a string.</div>
   
   </td></tr>
 
@@ -559,9 +553,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(int)">write</a></span>(int oneChar)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(int)">write</a></span>(int c)
         
-        <div class="jd-descrdiv">Writes one character to the target.</div>
+        <div class="jd-descrdiv">Writes a single character.</div>
   
   </td></tr>
 
@@ -577,9 +571,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(java.lang.String, int, int)">write</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(java.lang.String, int, int)">write</a></span>(<a href="../../../reference/java/lang/String.html">String</a> str, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> characters from <code>str</code> starting at <code>offset</code> to the target.</div>
+        <div class="jd-descrdiv">Writes a portion of a string.</div>
   
   </td></tr>
 
@@ -595,10 +589,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[], int, int)">write</a></span>(char[] buf, int offset, int count)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[], int, int)">write</a></span>(char[] cbuf, int off, int len)
         
-        <div class="jd-descrdiv">Writes <code>count</code> characters starting at <code>offset</code> in <code>buf</code>
- to the target.</div>
+        <div class="jd-descrdiv">Writes a portion of an array of characters.</div>
   
   </td></tr>
 
@@ -614,9 +607,9 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[])">write</a></span>(char[] buf)
+        <span class="sympad"><a href="../../../reference/java/io/Writer.html#write(char[])">write</a></span>(char[] cbuf)
         
-        <div class="jd-descrdiv">Writes the entire character buffer <code>buf</code> to the target.</div>
+        <div class="jd-descrdiv">Writes an array of characters.</div>
   
   </td></tr>
 
@@ -898,7 +891,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(char)">append</a></span>(char c)
         
-        <div class="jd-descrdiv">Appends the specified character.</div>
+        <div class="jd-descrdiv">Appends the specified character to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -916,7 +909,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence, int, int)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq, int start, int end)
         
-        <div class="jd-descrdiv">Appends a subsequence of <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends a subsequence of the specified character sequence to this
+ <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -934,7 +928,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Appendable.html#append(java.lang.CharSequence)">append</a></span>(<a href="../../../reference/java/lang/CharSequence.html">CharSequence</a> csq)
         
-        <div class="jd-descrdiv">Appends the character sequence <code>csq</code>.</div>
+        <div class="jd-descrdiv">Appends the specified character sequence to this <tt>Appendable</tt>.</div>
   
   </td></tr>
 
@@ -977,7 +971,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Closeable.html#close()">close</a></span>()
         
-        <div class="jd-descrdiv">Closes the object and release any system resources it holds.</div>
+        <div class="jd-descrdiv">Closes this stream and releases any system resources associated
+ with it.</div>
   
   </td></tr>
 
@@ -1020,8 +1015,51 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/io/Flushable.html#flush()">flush</a></span>()
         
-        <div class="jd-descrdiv">Flushes the object by writing out any buffered data to the underlying
- output.</div>
+        <div class="jd-descrdiv">Flushes this stream by writing any buffered output to the underlying
+ stream.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.AutoCloseable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.AutoCloseable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/AutoCloseable.html">java.lang.AutoCloseable</a>
+
+<div id="inherited-methods-java.lang.AutoCloseable">
+  <div id="inherited-methods-java.lang.AutoCloseable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.AutoCloseable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/AutoCloseable.html#close()">close</a></span>()
+        
+        <div class="jd-descrdiv">Closes this resource, relinquishing any underlying resources.</div>
   
   </td></tr>
 
@@ -1086,7 +1124,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>The object used to synchronize access to the writer.
+  <div class="jd-tagdata jd-tagdescr"><p>The object used to synchronize operations on this stream.  For
+ efficiency, a character-stream object may use an object other than
+ itself to protect critical sections.  A subclass should therefore use
+ the object in this field rather than <tt>this</tt> or a synchronized
+ method.
 </p></div>
 
     
@@ -1132,8 +1174,8 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Writer</code> with a lock object to synchronize
- critical sections.
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new character-stream writer whose critical sections will
+ synchronize on the writer itself.
 </p></div>
 
     </div>
@@ -1165,23 +1207,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Writer</code> with <code>lock</code> used to synchronize
- critical sections.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new character-stream writer whose critical sections will
+ synchronize on the given object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>lock</th>
-          <td>the <code>Object</code> used to synchronize critical sections.</td>
-        </tr>
-      </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Throws</h5>
-      <table class="jd-tagtable">
-        <tr>
-            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
-            <td>if <code>lock</code> is <code>null</code>.
+          <td>Object to synchronize on
 </td>
         </tr>
       </table>
@@ -1226,28 +1259,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends the character <code>c</code> to the target. This method works the same
- way as <code><a href="reference/java/io/Writer.html#write(int)">write(int)</a></code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character to this writer.
+
+ <p> An invocation of this method of the form <tt>out.append(c)</tt>
+ behaves in exactly the same way as the invocation
+
+ <pre>
+     out.write(c) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>c</th>
-          <td>the character to append to the target stream.</td>
+          <td>The 16-bit character to append</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this writer.</li></ul>
+      <ul class="nolist"><li>This writer</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.
-</td>
+            <td>If an I/O error occurs</td>
         </tr>
       </table>
   </div>
@@ -1281,45 +1318,52 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends a subsequence of the character sequence <code>csq</code> to the
- target. This method works the same way as <code>Writer.writer(csq.subsequence(start, end).toString())</code>. If <code>csq</code> is <code>null</code>, then the specified subsequence of the string "null"
- will be written to the target.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends a subsequence of the specified character sequence to this writer.
+ <tt>Appendable</tt>.
+
+ <p> An invocation of this method of the form <tt>out.append(csq, start,
+ end)</tt> when <tt>csq</tt> is not <tt>null</tt> behaves in exactly the
+ same way as the invocation
+
+ <pre>
+     out.write(csq.subSequence(start, end).toString()) </pre></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>csq</th>
-          <td>the character sequence appended to the target.</td>
+          <td>The character sequence from which a subsequence will be
+         appended.  If <tt>csq</tt> is <tt>null</tt>, then characters
+         will be appended as if <tt>csq</tt> contained the four
+         characters <tt>"null"</tt>.</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the index of the first char in the character sequence appended
-            to the target.</td>
+          <td>The index of the first character in the subsequence</td>
         </tr>
         <tr>
           <th>end</th>
-          <td>the index of the character following the last character of the
-            subsequence appended to the target.</td>
+          <td>The index of the character following the last character in the
+         subsequence</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this writer.</li></ul>
+      <ul class="nolist"><li>This writer</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.</td>
+            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>If <tt>start</tt> or <tt>end</tt> are negative, <tt>start</tt>
+          is greater than <tt>end</tt>, or <tt>end</tt> is greater than
+          <tt>csq.length()</tt></td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>start > end</code>, <code>start < 0</code>, <code>end < 0</code> or
-             either <code>start</code> or <code>end</code> are greater or equal than
-             the length of <code>csq</code>.
-</td>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>If an I/O error occurs</td>
         </tr>
       </table>
   </div>
@@ -1353,29 +1397,40 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Appends the character sequence <code>csq</code> to the target. This method
- works the same way as <code>Writer.write(csq.toString())</code>. If <code>csq</code> is <code>null</code>, then the string "null" is written to the target
- stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Appends the specified character sequence to this writer.
+
+ <p> An invocation of this method of the form <tt>out.append(csq)</tt>
+ behaves in exactly the same way as the invocation
+
+ <pre>
+     out.write(csq.toString()) </pre>
+
+ <p> Depending on the specification of <tt>toString</tt> for the
+ character sequence <tt>csq</tt>, the entire sequence may not be
+ appended. For instance, invoking the <tt>toString</tt> method of a
+ character buffer will return a subsequence whose content depends upon
+ the buffer's position and limit.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>csq</th>
-          <td>the character sequence appended to the target.</td>
+          <td>The character sequence to append.  If <tt>csq</tt> is
+         <tt>null</tt>, then the four characters <tt>"null"</tt> are
+         appended to this writer.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this writer.</li></ul>
+      <ul class="nolist"><li>This writer</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.
-</td>
+            <td>If an I/O error occurs</td>
         </tr>
       </table>
   </div>
@@ -1409,14 +1464,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Closes this writer. Implementations of this method should free any
- resources associated with the writer.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Closes the stream, flushing it first. Once the stream has been closed,
+ further write() or flush() invocations will cause an IOException to be
+ thrown. Closing a previously closed stream has no effect.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while closing this writer.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1451,14 +1507,23 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Flushes this writer. Implementations of this method should ensure that
- all buffered characters are written to the target.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Flushes the stream.  If the stream has saved any characters from the
+ various write() methods in a buffer, write them immediately to their
+ intended destination.  Then, if that destination is another character or
+ byte stream, flush it.  Thus one flush() invocation will flush all the
+ buffers in a chain of Writers and OutputStreams.
+
+ <p> If the intended destination of this stream is an abstraction provided
+ by the underlying operating system, for example a file, then flushing the
+ stream guarantees only that bytes previously written to the stream are
+ passed to the operating system for writing; it does not guarantee that
+ they are actually written to a physical device such as a disk drive.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if an error occurs while flushing this writer.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1493,13 +1558,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes the characters from the specified string to the target.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a string.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>str</th>
-          <td>the non-null string containing the characters to write.</td>
+          <td>String to be written</td>
         </tr>
       </table>
   </div>
@@ -1508,7 +1573,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1531,7 +1596,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(int oneChar)</span>
+      <span class="normal">(int c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1543,14 +1608,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes one character to the target. Only the two least significant bytes
- of the integer <code>oneChar</code> are written.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a single character.  The character to be written is contained in
+ the 16 low-order bits of the given integer value; the 16 high-order bits
+ are ignored.
+
+ <p> Subclasses that intend to support efficient single-character output
+ should override this method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>oneChar</th>
-          <td>the character to write to the target.</td>
+          <th>c</th>
+          <td>int specifying a character to be written</td>
         </tr>
       </table>
   </div>
@@ -1559,7 +1628,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1582,7 +1651,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> str, int offset, int count)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> str, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1594,21 +1663,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> characters from <code>str</code> starting at <code>offset</code> to the target.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a portion of a string.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>str</th>
-          <td>the non-null string containing the characters to write.</td>
+          <td>A String</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the index of the first character in <code>str</code> to write.</td>
+          <th>off</th>
+          <td>Offset from which to start writing characters</td>
         </tr>
         <tr>
-          <th>count</th>
-          <td>the number of characters from <code>str</code> to write.</td>
+          <th>len</th>
+          <td>Number of characters to write</td>
         </tr>
       </table>
   </div>
@@ -1616,12 +1685,14 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.</td>
+            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>If <tt>off</tt> is negative, or <tt>len</tt> is negative,
+          or <tt>off+len</tt> is negative or greater than the length
+          of the given string</td>
         </tr>
         <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>count < 0</code>, or if <code>offset + count</code> is greater than the length of <code>str</code>.
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1644,7 +1715,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(char[] buf, int offset, int count)</span>
+      <span class="normal">(char[] cbuf, int off, int len)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1656,22 +1727,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> characters starting at <code>offset</code> in <code>buf</code>
- to the target.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a portion of an array of characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buf</th>
-          <td>the non-null character array to write.</td>
+          <th>cbuf</th>
+          <td>Array of characters</td>
         </tr>
         <tr>
-          <th>offset</th>
-          <td>the index of the first character in <code>buf</code> to write.</td>
+          <th>off</th>
+          <td>Offset from which to start writing characters</td>
         </tr>
         <tr>
-          <th>count</th>
-          <td>the maximum number of characters to write.</td>
+          <th>len</th>
+          <td>Number of characters to write</td>
         </tr>
       </table>
   </div>
@@ -1679,12 +1749,8 @@ From interface
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
-            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
-            <td>if <code>offset < 0</code> or <code>count < 0</code>, or if <code>offset + count</code> is greater than the size of <code>buf</code>.</td>
-        </tr>
-        <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>
@@ -1707,7 +1773,7 @@ From interface
         void
       </span>
       <span class="sympad">write</span>
-      <span class="normal">(char[] buf)</span>
+      <span class="normal">(char[] cbuf)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1719,13 +1785,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes the entire character buffer <code>buf</code> to the target.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an array of characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>buf</th>
-          <td>the non-null array containing characters to write.</td>
+          <th>cbuf</th>
+          <td>Array of characters to be written</td>
         </tr>
       </table>
   </div>
@@ -1734,7 +1800,7 @@ From interface
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
-            <td>if this writer is closed or another I/O error occurs.
+            <td>If an I/O error occurs
 </td>
         </tr>
       </table>

@@ -253,13 +253,13 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the an array is indexed with a value less than zero, or greater
- than or equal to the size of the array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate that an array has been accessed with an
+ illegal index.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
-              <td class="jd-descrcol" width="100%">Thrown when the a string is indexed with a value less than zero, or greater
- than or equal to the size of the array.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Thrown by <code>String</code> methods to indicate that an index
+ is either negative or greater than the size of the string.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -273,9 +273,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Thrown when a program attempts to access a value in an indexable collection
- using a value which is outside of the range of valid indices.
-</p>
+<p>Thrown to indicate that an index of some sort (such as to an array, to a
+ string, or to a vector) is out of range.
+ <p>
+ Applications can subclass this class to indicate similar exceptions.</p>
 
 
 
@@ -343,8 +344,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html#IndexOutOfBoundsException()">IndexOutOfBoundsException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new <code>IndexOutOfBoundsException</code> that includes the
- current stack trace.</div>
+        <div class="jd-descrdiv">Constructs an <code>IndexOutOfBoundsException</code> with no
+ detail message.</div>
   
   </td></tr>
 
@@ -360,10 +361,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html#IndexOutOfBoundsException(java.lang.String)">IndexOutOfBoundsException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html#IndexOutOfBoundsException(java.lang.String)">IndexOutOfBoundsException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> s)
         
-        <div class="jd-descrdiv">Constructs a new <code>IndexOutOfBoundsException</code> with the current stack
- trace and the specified detail message.</div>
+        <div class="jd-descrdiv">Constructs an <code>IndexOutOfBoundsException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -599,6 +600,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -899,8 +919,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IndexOutOfBoundsException</code> that includes the
- current stack trace.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IndexOutOfBoundsException</code> with no
+ detail message.
 </p></div>
 
     </div>
@@ -920,7 +940,7 @@ From class
         
       </span>
       <span class="sympad">IndexOutOfBoundsException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> s)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -932,14 +952,14 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>IndexOutOfBoundsException</code> with the current stack
- trace and the specified detail message.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs an <code>IndexOutOfBoundsException</code> with the
+ specified detail message.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>detailMessage</th>
-          <td>the detail message for this exception.
+          <th>s</th>
+          <td>the detail message.
 </td>
         </tr>
       </table>

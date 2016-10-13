@@ -235,11 +235,10 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Is thrown if no appropriate <code>ContentHandler</code> could be found for a
- particular service requested by the URL connection. This could be happened if
- there is an invalid MIME type or the application wants to send data over a
- read-only connection.
-</p>
+<p>Thrown to indicate that an unknown service exception has
+ occurred. Either the MIME type returned by a URL connection does
+ not make sense, or the application is attempting to write to a
+ read-only URL connection.</p>
 
 
 
@@ -307,7 +306,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/net/UnknownServiceException.html#UnknownServiceException()">UnknownServiceException</a></span>()
         
-        <div class="jd-descrdiv">Constructs a new instance.</div>
+        <div class="jd-descrdiv">Constructs a new <code>UnknownServiceException</code> with no
+ detail message.</div>
   
   </td></tr>
 
@@ -323,9 +323,10 @@ layout: api
             
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/net/UnknownServiceException.html#UnknownServiceException(java.lang.String)">UnknownServiceException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        <span class="sympad"><a href="../../../reference/java/net/UnknownServiceException.html#UnknownServiceException(java.lang.String)">UnknownServiceException</a></span>(<a href="../../../reference/java/lang/String.html">String</a> msg)
         
-        <div class="jd-descrdiv">Constructs a new instance with the given detail message.</div>
+        <div class="jd-descrdiv">Constructs a new <code>UnknownServiceException</code> with the
+ specified detail message.</div>
   
   </td></tr>
 
@@ -561,6 +562,25 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
         
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -861,7 +881,8 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance.
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnknownServiceException</code> with no
+ detail message.
 </p></div>
 
     </div>
@@ -881,7 +902,7 @@ From class
         
       </span>
       <span class="sympad">UnknownServiceException</span>
-      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> msg)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -893,8 +914,18 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance with the given detail message.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>UnknownServiceException</code> with the
+ specified detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>msg</th>
+          <td>the detail message.
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>

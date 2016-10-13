@@ -197,7 +197,9 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">An AbstractSet is an abstract implementation of the Set interface.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class provides a skeletal implementation of the <tt>Set</tt>
+ interface to minimize the effort required to implement this
+ interface.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;</td>
@@ -211,15 +213,17 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
-              <td class="jd-descrcol" width="100%">An EnumSet is a specialized Set to be used with enums as keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/util/Set.html">Set</a></code> implementation for use with enum types.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">HashSet is an implementation of a Set.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements the <tt>Set</tt> interface, backed by a hash table
+ (actually a <tt>HashMap</tt> instance).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedHashSet is a variant of HashSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Hash table and linked list implementation of the <tt>Set</tt> interface,
+ with predictable iteration order.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</td>
@@ -228,11 +232,11 @@ layout: api
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">SortedSet is a Set which iterates over its elements in a sorted order.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/Set.html">Set</a></code> that further provides a <i>total ordering</i> on its elements.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</td>
-              <td class="jd-descrcol" width="100%">TreeSet is an implementation of SortedSet.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> implementation based on a <code><a href="reference/java/util/TreeMap.html">TreeMap</a></code>.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -244,10 +248,54 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A <code>Set</code> is a data structure which does not allow duplicate elements.</p>
+<p>A collection that contains no duplicate elements.  More formally, sets
+ contain no pair of elements <code>e1</code> and <code>e2</code> such that
+ <code>e1.equals(e2)</code>, and at most one null element.  As implied by
+ its name, this interface models the mathematical <i>set</i> abstraction.
+
+ <p>The <tt>Set</tt> interface places additional stipulations, beyond those
+ inherited from the <tt>Collection</tt> interface, on the contracts of all
+ constructors and on the contracts of the <tt>add</tt>, <tt>equals</tt> and
+ <tt>hashCode</tt> methods.  Declarations for other inherited methods are
+ also included here for convenience.  (The specifications accompanying these
+ declarations have been tailored to the <tt>Set</tt> interface, but they do
+ not contain any additional stipulations.)
+
+ <p>The additional stipulation on constructors is, not surprisingly,
+ that all constructors must create a set that contains no duplicate elements
+ (as defined above).
+
+ <p>Note: Great care must be exercised if mutable objects are used as set
+ elements.  The behavior of a set is not specified if the value of an object
+ is changed in a manner that affects <tt>equals</tt> comparisons while the
+ object is an element in the set.  A special case of this prohibition is
+ that it is not permissible for a set to contain itself as an element.
+
+ <p>Some set implementations have restrictions on the elements that
+ they may contain.  For example, some implementations prohibit null elements,
+ and some have restrictions on the types of their elements.  Attempting to
+ add an ineligible element throws an unchecked exception, typically
+ <tt>NullPointerException</tt> or <tt>ClassCastException</tt>.  Attempting
+ to query the presence of an ineligible element may throw an exception,
+ or it may simply return false; some implementations will exhibit the former
+ behavior and some will exhibit the latter.  More generally, attempting an
+ operation on an ineligible element whose completion would not result in
+ the insertion of an ineligible element into the set may throw an
+ exception or it may succeed, at the option of the implementation.
+ Such exceptions are marked as "optional" in the specification for this
+ interface.
+
+ <p>This interface is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html">Collection</a></code></li><li><code><a href="../../../reference/java/util/List.html">List</a></code></li><li><code><a href="../../../reference/java/util/SortedSet.html">SortedSet</a></code></li><li><code><a href="../../../reference/java/util/HashSet.html">HashSet</a></code></li><li><code><a href="../../../reference/java/util/TreeSet.html">TreeSet</a></code></li><li><code><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a></code></li><li><code><a href="../../../reference/java/util/Collections.html#singleton(E)">singleton(java.lang.Object)</a></code></li><li><code><a href="../../../reference/java/util/Collections.html#EMPTY_SET">EMPTY_SET</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -314,9 +362,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Adds the specified object to this set.</div>
+        <div class="jd-descrdiv">Adds the specified element to this set if it is not already present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -332,10 +381,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Adds the objects in the specified collection which do not exist yet in
- this set.</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this set if
+ they're not already present (optional operation).</div>
   
   </td></tr>
 
@@ -353,7 +402,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this set, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the elements from this set (optional operation).</div>
   
   </td></tr>
 
@@ -369,9 +418,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Searches this set for the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains the specified element.</div>
   
   </td></tr>
 
@@ -387,9 +436,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Searches this set for all objects in the specified collection.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains all of the elements of the
+ specified collection.</div>
   
   </td></tr>
 
@@ -405,10 +455,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the specified object to this set, and returns true if they
- represent the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this set for equality.</div>
   
   </td></tr>
 
@@ -426,7 +475,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns the hash code for this set.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this set.</div>
   
   </td></tr>
 
@@ -444,7 +493,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns true if this set has no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this set contains no elements.</div>
   
   </td></tr>
 
@@ -462,7 +511,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an iterator on the elements of this set.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this set.</div>
   
   </td></tr>
 
@@ -478,9 +527,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes the specified object from this set.</div>
+        <div class="jd-descrdiv">Removes the specified element from this set if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -496,9 +546,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects in the specified collection from this set.</div>
+        <div class="jd-descrdiv">Removes from this set all of its elements that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -514,10 +565,10 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this set that are not contained in the specified
- collection.</div>
+        <div class="jd-descrdiv">Retains only the elements in this set that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -535,7 +586,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of elements in this set.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this set (its cardinality).</div>
   
   </td></tr>
 
@@ -547,13 +598,13 @@ layout: api
             
             
             
-            &lt;T&gt;
-            T[]
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Set.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#spliterator()">spliterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this set.</div>
+        <div class="jd-descrdiv">Creates a <code>Spliterator</code> over the elements in this set.</div>
   
   </td></tr>
 
@@ -565,13 +616,32 @@ layout: api
             
             
             
+            &lt;T&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Set.html#toArray(T[])">toArray</a></span>(T[] a)
+        
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this set; the
+ runtime type of the returned array is that of the specified array.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
             
             <a href="../../../reference/java/lang/Object.html">Object[]</a>
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Set.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this set.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this set.</div>
   
   </td></tr>
 
@@ -621,10 +691,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E e)
         
-        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
- <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Ensures that this collection contains the specified element (optional
+ operation).</div>
   
   </td></tr>
 
@@ -640,10 +710,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)
         
-        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
- to the contents of this <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Adds all of the elements in the specified collection to this collection
+ (optional operation).</div>
   
   </td></tr>
 
@@ -661,7 +731,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+        <div class="jd-descrdiv">Removes all of the elements from this collection (optional operation).</div>
   
   </td></tr>
 
@@ -677,9 +747,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains the specified element.</div>
   
   </td></tr>
 
@@ -695,10 +765,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
- specified <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains all of the elements
+ in the specified collection.</div>
   
   </td></tr>
 
@@ -714,10 +784,9 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
- the <em>same</em> object using a class specific comparison.</div>
+        <div class="jd-descrdiv">Compares the specified object with this collection for equality.</div>
   
   </td></tr>
 
@@ -735,7 +804,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this collection.</div>
   
   </td></tr>
 
@@ -753,7 +822,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this collection contains no elements.</div>
   
   </td></tr>
 
@@ -771,8 +840,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
         
-        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
- objects contained by this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an iterator over the elements in this collection.</div>
   
   </td></tr>
 
@@ -785,13 +853,13 @@ From interface
             
             
             
-            boolean
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#parallelStream()">parallelStream</a></span>()
         
-        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
- is contained (optional).</div>
+        <div class="jd-descrdiv">Returns a possibly parallel <code>Stream</code> with this collection as its
+ source.</div>
   
   </td></tr>
 
@@ -807,10 +875,10 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
- specified <code>Collection</code> (optional).</div>
+        <div class="jd-descrdiv">Removes a single instance of the specified element from this
+ collection, if it is present (optional operation).</div>
   
   </td></tr>
 
@@ -826,10 +894,48 @@ From interface
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
         
-        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
- <code>Collection</code> passed (optional).</div>
+        <div class="jd-descrdiv">Removes all of this collection's elements that are also contained in the
+ specified collection (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeIf(java.util.function.Predicate<? super E>)">removeIf</a></span>(<a href="../../../reference/java/util/function/Predicate.html">Predicate</a>&lt;?&nbsp;super&nbsp;E&gt; filter)
+        
+        <div class="jd-descrdiv">Removes all of the elements of this collection that satisfy the given
+ predicate.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)
+        
+        <div class="jd-descrdiv">Retains only the elements in this collection that are contained in the
+ specified collection (optional operation).</div>
   
   </td></tr>
 
@@ -847,7 +953,43 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+        <div class="jd-descrdiv">Returns the number of elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#spliterator()">spliterator</a></span>()
+        
+        <div class="jd-descrdiv">Creates a <code><a href="reference/java/util/Spliterator.html">Spliterator</a></code> over the elements in this collection.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/stream/Stream.html">Stream</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#stream()">stream</a></span>()
+        
+        <div class="jd-descrdiv">Returns a sequential <code>Stream</code> with this collection as its source.</div>
   
   </td></tr>
 
@@ -863,9 +1005,10 @@ From interface
             T[]
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] a)
         
-        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection;
+ the runtime type of the returned array is that of the specified array.</div>
   
   </td></tr>
 
@@ -883,7 +1026,7 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
         
-        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+        <div class="jd-descrdiv">Returns an array containing all of the elements in this collection.</div>
   
   </td></tr>
 
@@ -921,6 +1064,22 @@ From interface
             
             
             
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#forEach(java.util.function.Consumer<? super T>)">forEach</a></span>(<a href="../../../reference/java/util/function/Consumer.html">Consumer</a>&lt;?&nbsp;super&nbsp;T&gt; action)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
         </td>
         <td class="jd-linkcol" width="100%">
@@ -928,6 +1087,22 @@ From interface
         
         <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
   
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#spliterator()">spliterator</a></span>()
+        
   </td></tr>
 
 
@@ -992,7 +1167,7 @@ From interface
         boolean
       </span>
       <span class="sympad">add</span>
-      <span class="normal">(E object)</span>
+      <span class="normal">(E e)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1004,35 +1179,58 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified object to this set. The set is not modified if it
- already contains the object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified element to this set if it is not already present
+ (optional operation).  More formally, adds the specified element
+ <tt>e</tt> to this set if the set contains no element <tt>e2</tt>
+ such that
+ <tt>(e==null&nbsp;?&nbsp;e2==null&nbsp;:&nbsp;e.equals(e2))</tt>.
+ If this set already contains the element, the call leaves the set
+ unchanged and returns <tt>false</tt>.  In combination with the
+ restriction on constructors, this ensures that sets never contain
+ duplicate elements.
+
+ <p>The stipulation above does not imply that sets must accept all
+ elements; sets may refuse to add any particular element, including
+ <tt>null</tt>, and throw an exception, as described in the
+ specification for <code><a href="reference/java/util/Collection.html#add(E)">Collection.add</a></code>.
+ Individual set implementations should clearly document any
+ restrictions on the elements that they may contain.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to add.</td>
+          <th>e</th>
+          <td>element to be added to this set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this set is modified, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set did not already contain the specified
+         element</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when adding to this set is not supported.</td>
+            <td>if the <tt>add</tt> operation
+         is not supported by this set</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when the class of the object is inappropriate for this set.</td>
+            <td>if the class of the specified element
+         prevents it from being added to this set</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         set does not permit null elements</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>when the object cannot be added to this set.
+            <td>if some property of the specified element
+         prevents it from being added to this set
 </td>
         </tr>
       </table>
@@ -1055,7 +1253,7 @@ From interface
         boolean
       </span>
       <span class="sympad">addAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1067,38 +1265,55 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Adds the objects in the specified collection which do not exist yet in
- this set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Adds all of the elements in the specified collection to this set if
+ they're not already present (optional operation).  If the specified
+ collection is also a set, the <tt>addAll</tt> operation effectively
+ modifies this set so that its value is the <i>union</i> of the two
+ sets.  The behavior of this operation is undefined if the specified
+ collection is modified while the operation is in progress.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects.</td>
+          <th>c</th>
+          <td>collection containing elements to be added to this set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this set is modified, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when adding to this set is not supported.</td>
+            <td>if the <tt>addAll</tt> operation
+         is not supported by this set</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when the class of an object is inappropriate for this set.</td>
+            <td>if the class of an element of the
+         specified collection prevents it from being added to this set</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified collection contains one
+         or more null elements and this set does not permit null
+         elements, or if the specified collection is null</td>
         </tr>
         <tr>
             <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
-            <td>when an object cannot be added to this set.
-</td>
+            <td>if some property of an element of the
+         specified collection prevents it from being added to this set</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#add(E)">add(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1130,20 +1345,18 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all elements from this set, leaving it empty.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the elements from this set (optional operation).
+ The set will be empty after this call returns.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when removing from this set is not supported.</td>
+            <td>if the <tt>clear</tt> method
+         is not supported by this set
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#isEmpty()">isEmpty()</a></code></li><li><code><a href="../../../reference/java/util/Set.html#size()">size()</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1163,7 +1376,7 @@ From interface
         boolean
       </span>
       <span class="sympad">contains</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1175,21 +1388,40 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches this set for the specified object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this set contains the specified element.
+ More formally, returns <tt>true</tt> if and only if this set
+ contains an element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to search for.</td>
+          <th>o</th>
+          <td>element whose presence in this set is to be tested</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if object is an element of this set, <code>false</code>
-         otherwise.
-</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set contains the specified element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the type of the specified element
+         is incompatible with this set
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         set does not permit null elements
+ (<a href="Collection.html#optional-restrictions">optional</a>)
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1209,7 +1441,7 @@ From interface
         boolean
       </span>
       <span class="sympad">containsAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1221,21 +1453,47 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Searches this set for all objects in the specified collection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this set contains all of the elements of the
+ specified collection.  If the specified collection is also a set, this
+ method returns <tt>true</tt> if it is a <i>subset</i> of this set.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects.</td>
+          <th>c</th>
+          <td>collection to be checked for containment in this set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if all objects in the specified collection are
-         elements of this set, <code>false</code> otherwise.
-</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set contains all of the elements of the
+         specified collection</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the types of one or more elements
+         in the specified collection are incompatible with this
+         set
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified collection contains one
+         or more null elements and this set does not permit null
+         elements
+ (<a href="Collection.html#optional-restrictions">optional</a>),
+         or if the specified collection is null</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#contains(java.lang.Object)">contains(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1255,7 +1513,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1267,28 +1525,26 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object to this set, and returns true if they
- represent the <em>same</em> object using a class specific comparison.
- Equality for a set means that both sets have the same size and the same
- elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object with this set for equality.  Returns
+ <tt>true</tt> if the specified object is also a set, the two sets
+ have the same size, and every member of the specified set is
+ contained in this set (or equivalently, every member of this set is
+ contained in the specified set).  This definition ensures that the
+ equals method works properly across different implementations of the
+ set interface.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to compare with this object.</td>
+          <th>o</th>
+          <td>object to be compared for equality with this set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>boolean <code>true</code> if the object is the same as this object,
-         and <code>false</code> if it is different from this object.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#hashCode()">hashCode()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><tt>true</tt> if the specified object is equal to this set
+</li></ul>
   </div>
 
     </div>
@@ -1320,15 +1576,20 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code for this set. Two set which are equal must return
- the same value.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code value for this set.  The hash code of a set is
+ defined to be the sum of the hash codes of the elements in the set,
+ where the hash code of a <tt>null</tt> element is defined to be zero.
+ This ensures that <tt>s1.equals(s2)</tt> implies that
+ <tt>s1.hashCode()==s2.hashCode()</tt> for any two sets <tt>s1</tt>
+ and <tt>s2</tt>, as required by the general contract of
+ <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the hash code of this set.</li></ul>
+      <ul class="nolist"><li>the hash code value for this set</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li><li><code><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals(Object)</a></code></li>
       </ul>
   </div>
 
@@ -1361,16 +1622,11 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this set has no elements.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this set contains no elements.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this set has no elements, <code>false</code>
-         otherwise.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#size()">size()</a></code></li>
-      </ul>
+      <ul class="nolist"><li><tt>true</tt> if this set contains no elements
+</li></ul>
   </div>
 
     </div>
@@ -1402,16 +1658,13 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator on the elements of this set. The elements are
- unordered.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements in this set.  The elements are
+ returned in no particular order (unless this set is an instance of some
+ class that provides a guarantee).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an iterator on the elements of this set.</li></ul>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Iterator.html">Iterator</a></code></li>
-      </ul>
+      <ul class="nolist"><li>an iterator over the elements in this set
+</li></ul>
   </div>
 
     </div>
@@ -1431,7 +1684,7 @@ From interface
         boolean
       </span>
       <span class="sympad">remove</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1443,26 +1696,46 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes the specified object from this set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the specified element from this set if it is present
+ (optional operation).  More formally, removes an element <tt>e</tt>
+ such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>, if
+ this set contains such an element.  Returns <tt>true</tt> if this set
+ contained the element (or equivalently, if this set changed as a
+ result of the call).  (This set will not contain the element once the
+ call returns.)</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to remove.</td>
+          <th>o</th>
+          <td>object to be removed from this set, if present</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this set was modified, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set contained the specified element</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the type of the specified element
+         is incompatible with this set
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         set does not permit null elements
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when removing from this set is not supported.
+            <td>if the <tt>remove</tt> operation
+         is not supported by this set
 </td>
         </tr>
       </table>
@@ -1485,7 +1758,7 @@ From interface
         boolean
       </span>
       <span class="sympad">removeAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1497,29 +1770,51 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all objects in the specified collection from this set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Removes from this set all of its elements that are contained in the
+ specified collection (optional operation).  If the specified
+ collection is also a set, this operation effectively modifies this
+ set so that its value is the <i>asymmetric set difference</i> of
+ the two sets.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects to remove.</td>
+          <th>c</th>
+          <td>collection containing elements to be removed from this set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this set was modified, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when removing from this set is not supported.
-</td>
+            <td>if the <tt>removeAll</tt> operation
+         is not supported by this set</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of an element of this set
+         is incompatible with the specified collection
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if this set contains a null element and the
+         specified collection does not permit null elements
+         (<a href="Collection.html#optional-restrictions">optional</a>),
+         or if the specified collection is null</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#remove(java.lang.Object)">remove(Object)</a></code></li><li><code><a href="../../../reference/java/util/Set.html#contains(java.lang.Object)">contains(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1539,7 +1834,7 @@ From interface
         boolean
       </span>
       <span class="sympad">retainAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; c)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1551,30 +1846,52 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all objects from this set that are not contained in the specified
- collection.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retains only the elements in this set that are contained in the
+ specified collection (optional operation).  In other words, removes
+ from this set all of its elements that are not contained in the
+ specified collection.  If the specified collection is also a set, this
+ operation effectively modifies this set so that its value is the
+ <i>intersection</i> of the two sets.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>collection</th>
-          <td>the collection of objects to retain.</td>
+          <th>c</th>
+          <td>collection containing elements to be retained in this set</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this set was modified, <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if this set changed as a result of the call</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
-            <td>when removing from this set is not supported.
-</td>
+            <td>if the <tt>retainAll</tt> operation
+         is not supported by this set</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of an element of this set
+         is incompatible with the specified collection
+ (<a href="Collection.html#optional-restrictions">optional</a>)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if this set contains a null element and the
+         specified collection does not permit null elements
+         (<a href="Collection.html#optional-restrictions">optional</a>),
+         or if the specified collection is null</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Set.html#remove(java.lang.Object)">remove(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1606,11 +1923,52 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this set (its cardinality).  If this
+ set contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
+ <tt>Integer.MAX_VALUE</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of elements in this set.
+      <ul class="nolist"><li>the number of elements in this set (its cardinality)
 </li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="spliterator()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Spliterator.html">Spliterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad">spliterator</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a <code>Spliterator</code> over the elements in this set.
+
+ <p>The <code>Spliterator</code> reports <code><a href="reference/java/util/Spliterator.html#DISTINCT">DISTINCT</a></code>.
+ Implementations should document the reporting of additional
+ characteristic values.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a <code>Spliterator</code> over the elements in this set</li></ul>
   </div>
 
     </div>
@@ -1630,7 +1988,7 @@ From interface
         T[]
       </span>
       <span class="sympad">toArray</span>
-      <span class="normal">(T[] array)</span>
+      <span class="normal">(T[] a)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1642,38 +2000,67 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all elements contained in this set. If the
- specified array is large enough to hold the elements, the specified array
- is used, otherwise an array of the same type is created. If the specified
- array is used and is larger than this set, the array element following
- the collection elements is set to null.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this set; the
+ runtime type of the returned array is that of the specified array.
+ If the set fits in the specified array, it is returned therein.
+ Otherwise, a new array is allocated with the runtime type of the
+ specified array and the size of this set.
+
+ <p>If this set fits in the specified array with room to spare
+ (i.e., the array has more elements than this set), the element in
+ the array immediately following the end of the set is set to
+ <tt>null</tt>.  (This is useful in determining the length of this
+ set <i>only</i> if the caller knows that this set does not contain
+ any null elements.)
+
+ <p>If this set makes any guarantees as to what order its elements
+ are returned by its iterator, this method must return the elements
+ in the same order.
+
+ <p>Like the <code><a href="reference/java/util/Set.html#toArray()">toArray()</a></code> method, this method acts as bridge between
+ array-based and collection-based APIs.  Further, this method allows
+ precise control over the runtime type of the output array, and may,
+ under certain circumstances, be used to save allocation costs.
+
+ <p>Suppose <tt>x</tt> is a set known to contain only strings.
+ The following code can be used to dump the set into a newly allocated
+ array of <tt>String</tt>:
+
+ <pre>
+     String[] y = x.toArray(new String[0]);</pre>
+
+ Note that <tt>toArray(new Object[0])</tt> is identical in function to
+ <tt>toArray()</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>array</th>
-          <td>the array.</td>
+          <th>a</th>
+          <td>the array into which the elements of this set are to be
+        stored, if it is big enough; otherwise, a new array of the same
+        runtime type is allocated for this purpose.</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of the elements from this set.</li></ul>
+      <ul class="nolist"><li>an array containing all the elements in this set</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></td>
-            <td>when the type of an element in this set cannot be stored in
-             the type of the specified array.</td>
+            <td>if the runtime type of the specified array
+         is not a supertype of the runtime type of every element in this
+         set</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified array is null
+</td>
         </tr>
       </table>
-  </div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">See Also</h5>
-      <ul class="nolist"><li><code><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray(Object[])</a></code></li>
-      </ul>
   </div>
 
     </div>
@@ -1705,10 +2092,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all elements contained in this set.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all of the elements in this set.
+ If this set makes any guarantees as to what order its elements
+ are returned by its iterator, this method must return the
+ elements in the same order.
+
+ <p>The returned array will be "safe" in that no references to it
+ are maintained by this set.  (In other words, this method must
+ allocate a new array even if this set is backed by an array).
+ The caller is thus free to modify the returned array.
+
+ <p>This method acts as bridge between array-based and collection-based
+ APIs.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an array of the elements from this set.
+      <ul class="nolist"><li>an array containing all the elements in this set
 </li></ul>
   </div>
 

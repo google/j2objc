@@ -162,7 +162,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/sql/NClob.html">NClob</a></td>
-              <td class="jd-descrcol" width="100%">&nbsp;</td>
+              <td class="jd-descrcol" width="100%">The mapping in the Java<sup><font size=-2>TM</font></sup> programming language
+ for the SQL <code>NCLOB</code> type.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -174,15 +175,29 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A Java interface mapping for the SQL CLOB type.
+<p>The mapping in the Java<sup><font size=-2>TM</font></sup> programming language
+ for the SQL <code>CLOB</code> type.
+ An SQL <code>CLOB</code> is a built-in type
+ that stores a Character Large Object as a column value in a row of
+ a database table.
+ By default drivers implement a <code>Clob</code> object using an SQL
+ <code>locator(CLOB)</code>, which means that a <code>Clob</code> object
+ contains a logical pointer to the SQL <code>CLOB</code> data rather than
+ the data itself. A <code>Clob</code> object is valid for the duration
+ of the transaction in which it was created.
+ <P>The <code>Clob</code> interface provides methods for getting the
+ length of an SQL <code>CLOB</code> (Character Large Object) value,
+ for materializing a <code>CLOB</code> value on the client, and for
+ searching for a substring or <code>CLOB</code> object within a
+ <code>CLOB</code> value.
+ Methods in the interfaces <code><a href="reference/java/sql/ResultSet.html">ResultSet</a></code>,
+ <code><a href="reference/java/sql/CallableStatement.html">CallableStatement</a></code>, and <code><a href="reference/java/sql/PreparedStatement.html">PreparedStatement</a></code>, such as
+ <code>getClob</code> and <code>setClob</code> allow a programmer to
+ access an SQL <code>CLOB</code> value.  In addition, this interface
+ has methods for updating a <code>CLOB</code> value.
  <p>
- An SQL <code>CLOB</code> type stores a large array of characters as the value in a
- column of a database.
- <p>
- The <code>java.sql.Clob</code> interface provides methods for setting and
- retrieving data in the <code>Clob</code>, for querying <code>Clob</code> data length,
- for searching for data within the <code>Clob</code>.
-</p>
+ All methods on the <code>Clob</code> interface must be fully implemented if the
+ JDBC driver supports the data type.</p>
 
 
 
@@ -254,7 +269,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#free()">free</a></span>()
         
-        <div class="jd-descrdiv">Frees any resources held by this clob.</div>
+        <div class="jd-descrdiv">This method frees the <code>Clob</code> object and releases the resources the resources
+ that it holds.</div>
   
   </td></tr>
 
@@ -272,7 +288,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getAsciiStream()">getAsciiStream</a></span>()
         
-        <div class="jd-descrdiv">Gets the value of this <code>Clob</code> object as an ASCII stream.</div>
+        <div class="jd-descrdiv">Retrieves the <code>CLOB</code> value designated by this <code>Clob</code>
+ object as an ascii stream.</div>
   
   </td></tr>
 
@@ -290,7 +307,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getCharacterStream()">getCharacterStream</a></span>()
         
-        <div class="jd-descrdiv">Gets the data of this <code>Clob</code> object in a <code>java.io.Reader</code>.</div>
+        <div class="jd-descrdiv">Retrieves the <code>CLOB</code> value designated by this <code>Clob</code>
+ object as a <code>java.io.Reader</code> object (or as a stream of
+ characters).</div>
   
   </td></tr>
 
@@ -308,8 +327,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getCharacterStream(long, long)">getCharacterStream</a></span>(long pos, long length)
         
-        <div class="jd-descrdiv">Returns a <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads <code>length</code> characters from this clob, starting
- at 1-based offset {code pos}.</div>
+        <div class="jd-descrdiv">Returns a <code>Reader</code> object that contains a partial <code>Clob</code> value, starting
+ with the character specified by pos, which is length characters in length.</div>
   
   </td></tr>
 
@@ -327,7 +346,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#getSubString(long, int)">getSubString</a></span>(long pos, int length)
         
-        <div class="jd-descrdiv">Gets a copy of a specified substring in this <code>Clob</code>.</div>
+        <div class="jd-descrdiv">Retrieves a copy of the specified substring
+ in the <code>CLOB</code> value
+ designated by this <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -345,7 +366,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#length()">length</a></span>()
         
-        <div class="jd-descrdiv">Retrieves the number of characters in this <code>Clob</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the number of characters
+ in the <code>CLOB</code> value
+ designated by this <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -363,8 +386,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#position(java.lang.String, long)">position</a></span>(<a href="../../../reference/java/lang/String.html">String</a> searchstr, long start)
         
-        <div class="jd-descrdiv">Retrieves the character position at which a specified substring appears
- in this <code>Clob</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the character position at which the specified substring
+ <code>searchstr</code> appears in the SQL <code>CLOB</code> value
+ represented by this <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -382,8 +406,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#position(java.sql.Clob, long)">position</a></span>(<a href="../../../reference/java/sql/Clob.html">Clob</a> searchstr, long start)
         
-        <div class="jd-descrdiv">Retrieves the character position at which a specified <code>Clob</code> object
- appears in this <code>Clob</code> object.</div>
+        <div class="jd-descrdiv">Retrieves the character position at which the specified
+ <code>Clob</code> object <code>searchstr</code> appears in this
+ <code>Clob</code> object.</div>
   
   </td></tr>
 
@@ -401,8 +426,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setAsciiStream(long)">setAsciiStream</a></span>(long pos)
         
-        <div class="jd-descrdiv">Retrieves a stream which can be used to write Ascii characters to this
- <code>Clob</code> object, starting at specified position.</div>
+        <div class="jd-descrdiv">Retrieves a stream to be used to write Ascii characters to the
+ <code>CLOB</code> value that this <code>Clob</code> object represents,
+ starting at position <code>pos</code>.</div>
   
   </td></tr>
 
@@ -420,8 +446,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setCharacterStream(long)">setCharacterStream</a></span>(long pos)
         
-        <div class="jd-descrdiv">Retrieves a stream which can be used to write a stream of unicode
- characters to this <code>Clob</code> object, at a specified position.</div>
+        <div class="jd-descrdiv">Retrieves a stream to be used to write a stream of Unicode characters
+ to the <code>CLOB</code> value that this <code>Clob</code> object
+ represents, at position <code>pos</code>.</div>
   
   </td></tr>
 
@@ -439,8 +466,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setString(long, java.lang.String, int, int)">setString</a></span>(long pos, <a href="../../../reference/java/lang/String.html">String</a> str, int offset, int len)
         
-        <div class="jd-descrdiv">Writes <code>len</code> characters of a string, starting at a specified
- character offset, to this <code>Clob</code>.</div>
+        <div class="jd-descrdiv">Writes <code>len</code> characters of <code>str</code>, starting
+ at character <code>offset</code>, to the <code>CLOB</code> value
+ that this <code>Clob</code> represents.</div>
   
   </td></tr>
 
@@ -458,8 +486,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#setString(long, java.lang.String)">setString</a></span>(long pos, <a href="../../../reference/java/lang/String.html">String</a> str)
         
-        <div class="jd-descrdiv">Writes a given Java String to this <code>Clob</code> object at a specified
- position.</div>
+        <div class="jd-descrdiv">Writes the given Java <code>String</code> to the <code>CLOB</code>
+ value that this <code>Clob</code> object designates at the position
+ <code>pos</code>.</div>
   
   </td></tr>
 
@@ -477,7 +506,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/Clob.html#truncate(long)">truncate</a></span>(long len)
         
-        <div class="jd-descrdiv">Truncates this <code>Clob</code> after the specified number of characters.</div>
+        <div class="jd-descrdiv">Truncates the <code>CLOB</code> value that this <code>Clob</code>
+ designates to have a length of <code>len</code>
+ characters.</div>
   
   </td></tr>
 
@@ -555,15 +586,27 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Frees any resources held by this clob. After <code>free</code> is called, calling
- method other than <code>free</code> will throw <code>SQLException</code> (calling <code>free</code>
- repeatedly will do nothing).</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>This method frees the <code>Clob</code> object and releases the resources the resources
+ that it holds.  The object is invalid once the <code>free</code> method
+ is called.
+ <p>
+ After <code>free</code> has been called, any attempt to invoke a
+ method other than <code>free</code> will result in a <code>SQLException</code>
+ being thrown.  If <code>free</code> is called multiple times, the subsequent
+ calls to <code>free</code> are treated as a no-op.
+ <p></p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <td>if an error occurs releasing
+ the Clob's resources</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -597,21 +640,32 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the value of this <code>Clob</code> object as an ASCII stream.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the <code>CLOB</code> value designated by this <code>Clob</code>
+ object as an ascii stream.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an ASCII <code>InputStream</code> giving access to the
-            <code>Clob</code> data.</li></ul>
+      <ul class="nolist"><li>a <code>java.io.InputStream</code> object containing the
+         <code>CLOB</code> data</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Clob.html#setAsciiStream(long)">setAsciiStream(long)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -643,20 +697,33 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets the data of this <code>Clob</code> object in a <code>java.io.Reader</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the <code>CLOB</code> value designated by this <code>Clob</code>
+ object as a <code>java.io.Reader</code> object (or as a stream of
+ characters).</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a character stream Reader object giving access to the <code>Clob</code> data.</li></ul>
+      <ul class="nolist"><li>a <code>java.io.Reader</code> object containing the
+         <code>CLOB</code> data</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Clob.html#setCharacterStream(long)">setCharacterStream(long)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -688,15 +755,39 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads <code>length</code> characters from this clob, starting
- at 1-based offset {code pos}.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Reader</code> object that contains a partial <code>Clob</code> value, starting
+ with the character specified by pos, which is length characters in length.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>pos</th>
+          <td>the offset to the first character of the partial value to
+ be retrieved.  The first character in the Clob is at position 1.</td>
+        </tr>
+        <tr>
+          <th>length</th>
+          <td>the length in characters of the partial value to be retrieved.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>Reader</code> through which the partial <code>Clob</code> value can be read.</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td></td>
+            <td>if pos is less than 1 or if pos is greater than the number of
+ characters in the <code>Clob</code> or if pos + length is greater than the number of
+ characters in the <code>Clob</code></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -730,31 +821,45 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Gets a copy of a specified substring in this <code>Clob</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a copy of the specified substring
+ in the <code>CLOB</code> value
+ designated by this <code>Clob</code> object.
+ The substring begins at position
+ <code>pos</code> and has up to <code>length</code> consecutive
+ characters.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the index of the start of the substring in the <code>Clob</code>.</td>
+          <td>the first character of the substring to be extracted.
+            The first character is at position 1.</td>
         </tr>
         <tr>
           <th>length</th>
-          <td>the length of the data to retrieve.</td>
+          <td>the number of consecutive characters to be copied;
+ the value for length must be 0 or greater</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>A string containing the requested data.</li></ul>
+      <ul class="nolist"><li>a <code>String</code> that is the specified substring in
+         the <code>CLOB</code> value designated by this <code>Clob</code> object</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value; if pos is less than 1 or length is
+ less than 0</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -788,18 +893,25 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the number of characters in this <code>Clob</code> object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the number of characters
+ in the <code>CLOB</code> value
+ designated by this <code>Clob</code> object.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a long value with the number of character in this <code>Clob</code>.</li></ul>
+      <ul class="nolist"><li>length of the <code>CLOB</code> in characters</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            length of the <code>CLOB</code> value</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -833,33 +945,41 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the character position at which a specified substring appears
- in this <code>Clob</code> object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the character position at which the specified substring
+ <code>searchstr</code> appears in the SQL <code>CLOB</code> value
+ represented by this <code>Clob</code> object.  The search
+ begins at position <code>start</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>searchstr</th>
-          <td>the string to search for.</td>
+          <td>the substring for which to search</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the position at which to start the search within this <code>Clob</code>.</td>
+          <td>the position at which to begin searching; the first position
+              is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a long value with the position at which the specified string
-         occurs within this <code>Clob</code>.</li></ul>
+      <ul class="nolist"><li>the position at which the substring appears or -1 if it is not
+         present; the first position is 1</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -893,32 +1013,41 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the character position at which a specified <code>Clob</code> object
- appears in this <code>Clob</code> object.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the character position at which the specified
+ <code>Clob</code> object <code>searchstr</code> appears in this
+ <code>Clob</code> object.  The search begins at position
+ <code>start</code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>searchstr</th>
-          <td>the specified <code>Clob</code> to search for.</td>
+          <td>the <code>Clob</code> object for which to search</td>
         </tr>
         <tr>
           <th>start</th>
-          <td>the position within this <code>Clob</code> to start the search</td>
+          <td>the position at which to begin searching; the first
+              position is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a long value with the position at which the specified <code>Clob</code> occurs within this <code>Clob</code>.</li></ul>
+      <ul class="nolist"><li>the position at which the <code>Clob</code> object appears
+              or -1 if it is not present; the first position is 1</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if start is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -952,31 +1081,53 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a stream which can be used to write Ascii characters to this
- <code>Clob</code> object, starting at specified position.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a stream to be used to write Ascii characters to the
+ <code>CLOB</code> value that this <code>Clob</code> object represents,
+ starting at position <code>pos</code>.  Characters written to the stream
+ will overwrite the existing characters
+ in the <code>Clob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Clob</code> value is reached
+ while writing characters to the stream, then the length of the <code>Clob</code>
+ value will be increased to accomodate the extra characters.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>CLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position at which to start the writing.</td>
+          <td>the position at which to start writing to this
+        <code>CLOB</code> object; The first position is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>an OutputStream which can be used to write ASCII characters to
-         this <code>Clob</code>.</li></ul>
+      <ul class="nolist"><li>the stream to which ASCII encoded characters can be written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Clob.html#getAsciiStream()">getAsciiStream()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1008,31 +1159,53 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a stream which can be used to write a stream of unicode
- characters to this <code>Clob</code> object, at a specified position.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves a stream to be used to write a stream of Unicode characters
+ to the <code>CLOB</code> value that this <code>Clob</code> object
+ represents, at position <code>pos</code>. Characters written to the stream
+ will overwrite the existing characters
+ in the <code>Clob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Clob</code> value is reached
+ while writing characters to the stream, then the length of the <code>Clob</code>
+ value will be increased to accomodate the extra characters.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>CLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position at which to start the writing.</td>
+          <td>the position at which to start writing to the
+        <code>CLOB</code> value; The first position is 1</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a Writer which can be used to write unicode characters to this
-         <code>Clob</code>.</li></ul>
+      <ul class="nolist"><li>a stream to which Unicode encoded characters can be written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Clob.html#getCharacterStream()">getCharacterStream()</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1064,40 +1237,59 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>len</code> characters of a string, starting at a specified
- character offset, to this <code>Clob</code>.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>len</code> characters of <code>str</code>, starting
+ at character <code>offset</code>, to the <code>CLOB</code> value
+ that this <code>Clob</code> represents.  The string will overwrite the existing characters
+ in the <code>Clob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Clob</code> value is reached
+ while writing the given string, then the length of the <code>Clob</code>
+ value will be increased to accomodate the extra characters.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>CLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position at which to start the writing.</td>
+          <td>the position at which to start writing to this
+        <code>CLOB</code> object; The first position  is 1</td>
         </tr>
         <tr>
           <th>str</th>
-          <td>the String to write.</td>
+          <td>the string to be written to the <code>CLOB</code>
+        value that this <code>Clob</code> object represents</td>
         </tr>
         <tr>
           <th>offset</th>
-          <td>the offset within <code>str</code> to start writing from.</td>
+          <td>the offset into <code>str</code> to start reading
+        the characters to be written</td>
         </tr>
         <tr>
           <th>len</th>
-          <td>the number of characters to write.</td>
+          <td>the number of characters to be written</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of characters written.</li></ul>
+      <ul class="nolist"><li>the number of characters written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1131,32 +1323,51 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Writes a given Java String to this <code>Clob</code> object at a specified
- position.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the given Java <code>String</code> to the <code>CLOB</code>
+ value that this <code>Clob</code> object designates at the position
+ <code>pos</code>. The string will overwrite the existing characters
+ in the <code>Clob</code> object starting at the position
+ <code>pos</code>.  If the end of the <code>Clob</code> value is reached
+ while writing the given string, then the length of the <code>Clob</code>
+ value will be increased to accomodate the extra characters.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>CLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>pos</th>
-          <td>the position at which to start the writing.</td>
+          <td>the position at which to start writing to the <code>CLOB</code>
+         value that this <code>Clob</code> object represents;
+ The first position is 1</td>
         </tr>
         <tr>
           <th>str</th>
-          <td>the string to write.</td>
+          <td>the string to be written to the <code>CLOB</code>
+        value that this <code>Clob</code> designates</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of characters written.</li></ul>
+      <ul class="nolist"><li>the number of characters written</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if pos is less than 1</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>
@@ -1190,14 +1401,22 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Truncates this <code>Clob</code> after the specified number of characters.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Truncates the <code>CLOB</code> value that this <code>Clob</code>
+ designates to have a length of <code>len</code>
+ characters.
+ <p>
+ <b>Note:</b> If the value specified for <code>pos</code>
+ is greater then the length+1 of the <code>CLOB</code> value then the
+ behavior is undefined. Some JDBC drivers may throw a
+ <code>SQLException</code> while other drivers may support this
+ operation.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>len</th>
-          <td>the length in characters giving the place to
-            truncate this <code>Clob</code>.</td>
+          <td>the length, in characters, to which the <code>CLOB</code> value
+        should be truncated</td>
         </tr>
       </table>
   </div>
@@ -1206,8 +1425,13 @@ layout: api
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
-            <td>if an error occurs accessing the <code>Clob</code>.
-</td>
+            <td>if there is an error accessing the
+            <code>CLOB</code> value or if len is less than 0</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+            <td>if the JDBC driver does not support
+ this method</td>
         </tr>
       </table>
   </div>

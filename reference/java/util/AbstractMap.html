@@ -214,24 +214,26 @@ layout: api
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">An <code>Map</code> specialized for use with <code>Enum</code> types as keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/util/Map.html">Map</a></code> implementation for use with enum type keys.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">HashMap is an implementation of <code><a href="reference/java/util/Map.html">Map</a></code>.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Hash table based implementation of the <tt>Map</tt> interface.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">IdentityHashMap is a variant on HashMap which tests equality by reference
- instead of equality by value.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">This class implements the <tt>Map</tt> interface with a hash table, using
+ reference-equality in place of object-equality when comparing keys (and
+ values).&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">A map whose entries are sorted by their keys.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">A Red-Black tree based <code><a href="reference/java/util/NavigableMap.html">NavigableMap</a></code> implementation.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">WeakHashMap is an implementation of Map with keys which are WeakReferences.&nbsp;</td>
+              <td class="jd-descrcol" width="100%">Hash table based implementation of the <tt>Map</tt> interface, with
+ <em>weak keys</em>.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -263,7 +265,8 @@ layout: api
   <table class="jd-sumtable-expando">
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</td>
-              <td class="jd-descrcol" width="100%">LinkedHashMap is an implementation of <code><a href="reference/java/util/Map.html">Map</a></code> that guarantees iteration order.&nbsp;</td>
+              <td class="jd-descrcol" width="100%"><p>Hash table and linked list implementation of the <tt>Map</tt> interface,
+ with predictable iteration order.&nbsp;</td>
           </tr>
   </table>
       </div>
@@ -275,17 +278,41 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>A base class for <code>Map</code> implementations.
+<p>This class provides a skeletal implementation of the <tt>Map</tt>
+ interface, to minimize the effort required to implement this interface.
 
- <p>Subclasses that permit new mappings to be added must override <code><a href="reference/java/util/AbstractMap.html#put(K, V)">put(K, V)</a></code>.
+ <p>To implement an unmodifiable map, the programmer needs only to extend this
+ class and provide an implementation for the <tt>entrySet</tt> method, which
+ returns a set-view of the map's mappings.  Typically, the returned set
+ will, in turn, be implemented atop <tt>AbstractSet</tt>.  This set should
+ not support the <tt>add</tt> or <tt>remove</tt> methods, and its iterator
+ should not support the <tt>remove</tt> method.
 
- <p>The default implementations of many methods are inefficient for large
- maps. For example in the default implementation, each call to <code><a href="reference/java/util/AbstractMap.html#get(java.lang.Object)">get(Object)</a></code>
- performs a linear iteration of the entry set. Subclasses should override such
- methods to improve their performance.</p>
+ <p>To implement a modifiable map, the programmer must additionally override
+ this class's <tt>put</tt> method (which otherwise throws an
+ <tt>UnsupportedOperationException</tt>), and the iterator returned by
+ <tt>entrySet().iterator()</tt> must additionally implement its
+ <tt>remove</tt> method.
+
+ <p>The programmer should generally provide a void (no argument) and map
+ constructor, as per the recommendation in the <tt>Map</tt> interface
+ specification.
+
+ <p>The documentation for each non-abstract method in this class describes its
+ implementation in detail.  Each of these methods may be overridden if the
+ map being implemented admits a more efficient implementation.
+
+ <p>This class is a member of the
+ <a href="../../..//../technotes/guides/collections/index.html">
+ Java Collections Framework</a>.</p>
 
 
 
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Map.html">Map</a></code></li><li><code><a href="../../../reference/java/util/Collection.html">Collection</a></code></li>
+      </ul>
+  </div>
 
 
 </div><!-- jd-descr -->
@@ -325,7 +352,7 @@ layout: api
         
         class</td>
       <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</td>
-      <td class="jd-descrcol" width="100%">A key-value mapping with mutable values.&nbsp;</td>
+      <td class="jd-descrcol" width="100%">An Entry maintaining a key and a value.&nbsp;</td>
     </tr>
     
     
@@ -337,7 +364,7 @@ layout: api
         
         class</td>
       <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</td>
-      <td class="jd-descrcol" width="100%">An immutable key-value mapping.&nbsp;</td>
+      <td class="jd-descrcol" width="100%">An Entry maintaining an immutable key and value.&nbsp;</td>
     </tr>
     
     
@@ -385,6 +412,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#AbstractMap()">AbstractMap</a></span>()
         
+        <div class="jd-descrdiv">Sole constructor.</div>
+  
   </td></tr>
 
 
@@ -412,9 +441,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Map</code>, leaving it empty.
+        <div class="jd-descrdiv">Removes all of the mappings from this map (optional operation).
 
- <p>This implementation calls <code>entrySet().clear()</code>.</div>
+ <p>This implementation calls <tt>entrySet().clear()</tt>.</div>
   
   </td></tr>
 
@@ -432,10 +461,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#containsKey(java.lang.Object)">containsKey</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified key.
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains a mapping for the specified
+ key.
 
- <p>This implementation iterates its key set, looking for a key that
- <code>key</code> equals.</div>
+ <p>This implementation iterates over <tt>entrySet()</tt> searching
+ for an entry with the specified key.</div>
   
   </td></tr>
 
@@ -453,10 +483,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified value.
+        <div class="jd-descrdiv">Returns <code>true</code> if this map maps one or more keys to the
+ specified value.
 
- <p>This implementation iterates its entry set, looking for an entry with
- a value that <code>value</code> equals.</div>
+ <p>This implementation iterates over <tt>entrySet()</tt> searching
+ for an entry with the specified value.</div>
   
   </td></tr>
 
@@ -474,7 +505,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#entrySet()">entrySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>Set</code> containing all of the mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
   
   </td></tr>
 
@@ -490,12 +521,9 @@ layout: api
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
- are equal.
-
- <p>This implementation first checks the structure of <code>object</code>.</div>
+        <div class="jd-descrdiv">Compares the specified object with this map for equality.</div>
   
   </td></tr>
 
@@ -513,10 +541,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#get(java.lang.Object)">get</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value of the mapping with the specified key.
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.
 
- <p>This implementation iterates its entry set, looking for an entry with
- a key that <code>key</code> equals.</div>
+ <p>This implementation iterates over <tt>entrySet()</tt> searching
+ for an entry with the specified key.</div>
   
   </td></tr>
 
@@ -534,10 +563,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns an integer hash code for this object.
-
- <p>This implementation iterates its entry set, summing the hashcodes of
- its entries.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this map.</div>
   
   </td></tr>
 
@@ -555,9 +581,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#isEmpty()">isEmpty</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this map is empty.
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains no key-value mappings.
 
- <p>This implementation compares <code>size()</code> to 0.</div>
+ <p>This implementation returns <tt>size() == 0</tt>.</div>
   
   </td></tr>
 
@@ -575,9 +601,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#keySet()">keySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a set of the keys contained in this <code>Map</code>.
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.
 
- <p>This implementation returns a view that calls through this to map.</div>
+ <p>This implementation returns a set that subclasses <code><a href="reference/java/util/AbstractSet.html">AbstractSet</a></code>.</div>
   
   </td></tr>
 
@@ -595,9 +621,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#put(K, V)">put</a></span>(K key, V value)
         
-        <div class="jd-descrdiv">Maps the specified key to the specified value.
+        <div class="jd-descrdiv">Associates the specified value with the specified key in this map
+ (optional operation).
 
- <p>This base implementation throws <code>UnsupportedOperationException</code>.</div>
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</div>
   
   </td></tr>
 
@@ -613,12 +641,14 @@ layout: api
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Copies every mapping in the specified <code>Map</code> to this <code>Map</code>.
+        <div class="jd-descrdiv">Copies all of the mappings from the specified map to this map
+ (optional operation).
 
- <p>This implementation iterates through <code>map</code>'s entry set, calling
- <code>put()</code> for each.</div>
+ <p>This implementation iterates over the specified map's
+ <tt>entrySet()</tt> collection, and calls this map's <tt>put</tt>
+ operation once for each entry returned by the iteration.</div>
   
   </td></tr>
 
@@ -636,10 +666,11 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes a mapping with the specified key from this <code>Map</code>.
+        <div class="jd-descrdiv">Removes the mapping for a key from this map if it is present
+ (optional operation).
 
- <p>This implementation iterates its entry set, removing the entry with
- a key that <code>key</code> equals.</div>
+ <p>This implementation iterates over <tt>entrySet()</tt> searching for an
+ entry with the specified key.</div>
   
   </td></tr>
 
@@ -657,9 +688,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#size()">size</a></span>()
         
-        <div class="jd-descrdiv">Returns the number of mappings in this <code>Map</code>.
+        <div class="jd-descrdiv">Returns the number of key-value mappings in this map.
 
- <p>This implementation returns its entry set's size.</div>
+ <p>This implementation returns <tt>entrySet().size()</tt>.</div>
   
   </td></tr>
 
@@ -677,10 +708,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#toString()">toString</a></span>()
         
-        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
- object.
-
- <p>This implementation composes a string by iterating its entry set.</div>
+        <div class="jd-descrdiv">Returns a string representation of this map.</div>
   
   </td></tr>
 
@@ -698,9 +726,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#values()">values</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>Collection</code> of the values contained in this <code>Map</code>.
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.
 
- <p>This implementation returns a view that calls through this to map.</div>
+ <p>This implementation returns a collection that subclasses <code><a href="reference/java/util/AbstractCollection.html">AbstractCollection</a></code>.</div>
   
   </td></tr>
 
@@ -729,7 +757,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/AbstractMap.html#clone()">clone</a></span>()
         
-        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+        <div class="jd-descrdiv">Returns a shallow copy of this <tt>AbstractMap</tt> instance: the keys
+ and values themselves are not cloned.</div>
   
   </td></tr>
 
@@ -1009,13 +1038,71 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#clear()">clear</a></span>()
         
-        <div class="jd-descrdiv">Removes all elements from this <code>Map</code>, leaving it empty.</div>
+        <div class="jd-descrdiv">Removes all of the mappings from this map (optional operation).</div>
   
   </td></tr>
 
 
 	 
     <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#compute(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">compute</a></span>(K key, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">Attempts to compute a mapping for the specified key and its current
+ mapped value (or <code>null</code> if there is no current mapping).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#computeIfAbsent(K, java.util.function.Function<? super K, ? extends V>)">computeIfAbsent</a></span>(K key, <a href="../../../reference/java/util/function/Function.html">Function</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; mappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>), attempts to compute its value using the given mapping
+ function and enters it into this map unless <code>null</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#computeIfPresent(K, java.util.function.BiFunction<? super K, ? super V, ? extends V>)">computeIfPresent</a></span>(K key, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the value for the specified key is present and non-null, attempts to
+ compute a new mapping given the key and its current mapped value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             abstract
             
@@ -1027,25 +1114,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#containsKey(java.lang.Object)">containsKey</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified key.</div>
-  
-  </td></tr>
-
-
-	 
-    <tr class="alt-color api apilevel-" >
-        <td class="jd-typecol">
-            abstract
-            
-            
-            
-            
-            boolean
-        </td>
-        <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
-        
-        <div class="jd-descrdiv">Returns whether this <code>Map</code> contains the specified value.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains a mapping for the specified
+ key.</div>
   
   </td></tr>
 
@@ -1058,12 +1128,13 @@ From interface
             
             
             
-            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> value)
         
-        <div class="jd-descrdiv">Returns a <code>Set</code> containing all of the mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns <code>true</code> if this map maps one or more keys to the
+ specified value.</div>
   
   </td></tr>
 
@@ -1076,13 +1147,49 @@ From interface
             
             
             
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#entrySet()">entrySet</a></span>()
+        
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
         
-        <div class="jd-descrdiv">Compares the argument to the receiver, and returns <code>true</code> if the
- specified object is a <code>Map</code> and both <code>Map</code>s contain the same mappings.</div>
+        <div class="jd-descrdiv">Compares the specified object with this map for equality.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#forEach(java.util.function.BiConsumer<? super K, ? super V>)">forEach</a></span>(<a href="../../../reference/java/util/function/BiConsumer.html">BiConsumer</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V&gt; action)
+        
+        <div class="jd-descrdiv">Performs the given action for each entry in this map until all entries
+ have been processed or the action throws an exception.</div>
   
   </td></tr>
 
@@ -1100,7 +1207,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#get(java.lang.Object)">get</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Returns the value of the mapping with the specified key.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -1113,12 +1221,13 @@ From interface
             
             
             
-            int
+            V
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#getOrDefault(java.lang.Object, V)">getOrDefault</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, V defaultValue)
         
-        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+        <div class="jd-descrdiv">Returns the value to which the specified key is mapped, or
+ <code>defaultValue</code> if this map contains no mapping for the key.</div>
   
   </td></tr>
 
@@ -1131,12 +1240,12 @@ From interface
             
             
             
-            boolean
+            int
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#hashCode()">hashCode</a></span>()
         
-        <div class="jd-descrdiv">Returns whether this map is empty.</div>
+        <div class="jd-descrdiv">Returns the hash code value for this map.</div>
   
   </td></tr>
 
@@ -1149,12 +1258,49 @@ From interface
             
             
             
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#isEmpty()">isEmpty</a></span>()
+        
+        <div class="jd-descrdiv">Returns <code>true</code> if this map contains no key-value mappings.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Set.html">Set</a>&lt;K&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#keySet()">keySet</a></span>()
         
-        <div class="jd-descrdiv">Returns a set of the keys contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#merge(K, V, java.util.function.BiFunction<? super V, ? super V, ? extends V>)">merge</a></span>(K key, V value, <a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; remappingFunction)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value or is
+ associated with null, associates it with the given non-null value.</div>
   
   </td></tr>
 
@@ -1172,7 +1318,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#put(K, V)">put</a></span>(K key, V value)
         
-        <div class="jd-descrdiv">Maps the specified key to the specified value.</div>
+        <div class="jd-descrdiv">Associates the specified value with the specified key in this map
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1188,9 +1335,49 @@ From interface
             void
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)
         
-        <div class="jd-descrdiv">Copies every mapping in the specified <code>Map</code> to this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Copies all of the mappings from the specified map to this map
+ (optional operation).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#putIfAbsent(K, V)">putIfAbsent</a></span>(K key, V value)
+        
+        <div class="jd-descrdiv">If the specified key is not already associated with a value (or is mapped
+ to <code>null</code>) associates it with the given value and returns
+ <code>null</code>, else returns the current value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#remove(java.lang.Object, java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key, <a href="../../../reference/java/lang/Object.html">Object</a> value)
+        
+        <div class="jd-descrdiv">Removes the entry for the specified key only if it is currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1208,7 +1395,8 @@ From interface
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> key)
         
-        <div class="jd-descrdiv">Removes a mapping with the specified key from this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Removes the mapping for a key from this map if it is present
+ (optional operation).</div>
   
   </td></tr>
 
@@ -1221,12 +1409,13 @@ From interface
             
             
             
-            int
+            boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../reference/java/util/Map.html#size()">size</a></span>()
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#replace(K, V, V)">replace</a></span>(K key, V oldValue, V newValue)
         
-        <div class="jd-descrdiv">Returns the number of mappings in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if currently
+ mapped to the specified value.</div>
   
   </td></tr>
 
@@ -1239,12 +1428,69 @@ From interface
             
             
             
+            V
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#replace(K, V)">replace</a></span>(K key, V value)
+        
+        <div class="jd-descrdiv">Replaces the entry for the specified key only if it is
+ currently mapped to some value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#replaceAll(java.util.function.BiFunction<? super K, ? super V, ? extends V>)">replaceAll</a></span>(<a href="../../../reference/java/util/function/BiFunction.html">BiFunction</a>&lt;?&nbsp;super&nbsp;K,&nbsp;?&nbsp;super&nbsp;V,&nbsp;?&nbsp;extends&nbsp;V&gt; function)
+        
+        <div class="jd-descrdiv">Replaces each entry's value with the result of invoking the given
+ function on that entry until all entries have been processed or the
+ function throws an exception.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Map.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns the number of key-value mappings in this map.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
             <a href="../../../reference/java/util/Collection.html">Collection</a>&lt;V&gt;
         </td>
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Map.html#values()">values</a></span>()
         
-        <div class="jd-descrdiv">Returns a <code>Collection</code> of the values contained in this <code>Map</code>.</div>
+        <div class="jd-descrdiv">Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.</div>
   
   </td></tr>
 
@@ -1317,7 +1563,9 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Sole constructor.  (For invocation by subclass constructors, typically
+ implicit.)
+</p></div>
 
     </div>
 </div>
@@ -1358,10 +1606,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes all elements from this <code>Map</code>, leaving it empty.
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the mappings from this map (optional operation).
+ The map will be empty after this call returns.
 
- <p>This implementation calls <code>entrySet().clear()</code>.
-</p></div>
+ <p>This implementation calls <tt>entrySet().clear()</tt>.
+
+ <p>Note that this implementation throws an
+ <tt>UnsupportedOperationException</tt> if the <tt>entrySet</tt>
+ does not support the <tt>clear</tt> operation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
+  </div>
 
     </div>
 </div>
@@ -1392,25 +1654,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this <code>Map</code> contains the specified key.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this map contains a mapping for the specified
+ key.  More formally, returns <code>true</code> if and only if
+ this map contains a mapping for a key <code>k</code> such that
+ <code>Objects.equals(key, k)</code>.  (There can be
+ at most one such mapping.)
 
- <p>This implementation iterates its key set, looking for a key that
- <code>key</code> equals.
-</p></div>
+ <p>This implementation iterates over <tt>entrySet()</tt> searching
+ for an entry with the specified key.  If such an entry is found,
+ <tt>true</tt> is returned.  If the iteration terminates without
+ finding such an entry, <tt>false</tt> is returned.  Note that this
+ implementation requires linear time in the size of the map; many
+ implementations will override this method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key to search for.</td>
+          <td>key whose presence in this map is to be tested</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this map contains the specified key,
-         <code>false</code> otherwise.
-</li></ul>
+      <ul class="nolist"><li><code>true</code> if this map contains a mapping for the specified
+         key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1442,25 +1724,45 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this <code>Map</code> contains the specified value.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this map maps one or more keys to the
+ specified value.  More formally, returns <code>true</code> if and only if
+ this map contains at least one mapping to a value <code>v</code> such that
+ <code>Objects.equals(value, v)</code>.  This operation
+ will probably require time linear in the map size for most
+ implementations of the <code>Map</code> interface.
 
- <p>This implementation iterates its entry set, looking for an entry with
- a value that <code>value</code> equals.
-</p></div>
+ <p>This implementation iterates over <tt>entrySet()</tt> searching
+ for an entry with the specified value.  If such an entry is found,
+ <tt>true</tt> is returned.  If the iteration terminates without
+ finding such an entry, <tt>false</tt> is returned.  Note that this
+ implementation requires linear time in the size of the map.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>value</th>
-          <td>the value to search for.</td>
+          <td>value whose presence in this map is to be tested</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this map contains the specified value,
-         <code>false</code> otherwise.
-</li></ul>
+      <ul class="nolist"><li><code>true</code> if this map maps one or more keys to the
+         specified value</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1492,12 +1794,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Set</code> containing all of the mappings in this <code>Map</code>. Each mapping is
- an instance of <code><a href="reference/java/util/Map.Entry.html">Map.Entry</a></code>. As the <code>Set</code> is backed by this <code>Map</code>,
- changes in one will be reflected in the other.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.
+ The set is backed by the map, so changes to the map are
+ reflected in the set, and vice-versa.  If the map is modified
+ while an iteration over the set is in progress (except through
+ the iterator's own <code>remove</code> operation, or through the
+ <code>setValue</code> operation on a map entry returned by the
+ iterator) the results of the iteration are undefined.  The set
+ supports element removal, which removes the corresponding
+ mapping from the map, via the <code>Iterator.remove</code>,
+ <code>Set.remove</code>, <code>removeAll</code>, <code>retainAll</code> and
+ <code>clear</code> operations.  It does not support the
+ <code>add</code> or <code>addAll</code> operations.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a set of the mappings
+      <ul class="nolist"><li>a set view of the mappings contained in this map
 </li></ul>
   </div>
 
@@ -1518,7 +1829,7 @@ From interface
         boolean
       </span>
       <span class="sympad">equals</span>
-      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> object)</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1530,39 +1841,35 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
- are equal. In order to be equal, <code>o</code> must represent the same object
- as this instance using a class-specific comparison. The general contract
- is that this comparison should be reflexive, symmetric, and transitive.
- Also, no object reference other than null is equal to null.
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object with this map for equality.  Returns
+ <tt>true</tt> if the given object is also a map and the two maps
+ represent the same mappings.  More formally, two maps <tt>m1</tt> and
+ <tt>m2</tt> represent the same mappings if
+ <tt>m1.entrySet().equals(m2.entrySet())</tt>.  This ensures that the
+ <tt>equals</tt> method works properly across different implementations
+ of the <tt>Map</tt> interface.
 
- <p>The default implementation returns <code>true</code> only if <code>this ==
- o</code>. See <a href="../../../reference/java/lang/Object.html#writing_equals">Writing a correct
- <code>equals</code> method</a>
- if you intend implementing your own <code>equals</code> method.
-
- <p>The general contract for the <code>equals</code> and <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code> methods is that if <code>equals</code> returns <code>true</code> for
- any two objects, then <code>hashCode()</code> must return the same value for
- these objects. This means that subclasses of <code>Object</code> usually
- override either both methods or neither of them.
-
- <p>This implementation first checks the structure of <code>object</code>. If
- it is not a map or of a different size, this returns false. Otherwise it
- iterates its own entry set, looking up each entry's key in <code>object</code>. If any value does not equal the other map's value for the same
- key, this returns false. Otherwise it returns true.
-</p></div>
+ <p>This implementation first checks if the specified object is this map;
+ if so it returns <tt>true</tt>.  Then, it checks if the specified
+ object is a map whose size is identical to the size of this map; if
+ not, it returns <tt>false</tt>.  If so, it iterates over this map's
+ <tt>entrySet</tt> collection, and checks that the specified map
+ contains each mapping that this map contains.  If the specified map
+ fails to contain such a mapping, <tt>false</tt> is returned.  If the
+ iteration completes, <tt>true</tt> is returned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>object</th>
-          <td>the object to compare this instance with.</td>
+          <th>o</th>
+          <td>object to be compared for equality with this map</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if the specified object is equal to this <code>Object</code>; <code>false</code> otherwise.</li></ul>
+      <ul class="nolist"><li><tt>true</tt> if the specified object is equal to this map
+</li></ul>
   </div>
 
     </div>
@@ -1594,25 +1901,53 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the mapping with the specified key.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.
 
- <p>This implementation iterates its entry set, looking for an entry with
- a key that <code>key</code> equals.
-</p></div>
+ <p>More formally, if this map contains a mapping from a key
+ <code>k</code> to a value <code>v</code> such that
+ <code>Objects.equals(key, k)</code>,
+ then this method returns <code>v</code>; otherwise
+ it returns <code>null</code>.  (There can be at most one such mapping.)
+
+ <p>If this map permits null values, then a return value of
+ <code>null</code> does not <i>necessarily</i> indicate that the map
+ contains no mapping for the key; it's also possible that the map
+ explicitly maps the key to <code>null</code>.  The <code><a href="reference/java/util/Map.html#containsKey(java.lang.Object)">containsKey</a></code> operation may be used to distinguish these two cases.
+
+ <p>This implementation iterates over <tt>entrySet()</tt> searching
+ for an entry with the specified key.  If such an entry is found,
+ the entry's value is returned.  If the iteration terminates without
+ finding such an entry, <tt>null</tt> is returned.  Note that this
+ implementation requires linear time in the size of the map; many
+ implementations will override this method.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key.</td>
+          <td>the key whose associated value is to be returned</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value of the mapping with the specified key, or <code>null</code>
-         if no mapping for the specified key is found.
-</li></ul>
+      <ul class="nolist"><li>the value to which the specified key is mapped, or
+         <code>null</code> if this map contains no mapping for the key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1644,24 +1979,24 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
- objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
- the same hash code value. This means that subclasses of <code>Object</code>
- usually override both methods or neither method.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code value for this map.  The hash code of a map is
+ defined to be the sum of the hash codes of each entry in the map's
+ <tt>entrySet()</tt> view.  This ensures that <tt>m1.equals(m2)</tt>
+ implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
+ <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
+ <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code>.
 
- <p>Note that hash values must not change over time unless information used in equals
- comparisons also changes.
-
- <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
- <code>hashCode</code> method</a>
- if you intend implementing your own <code>hashCode</code> method.
-
- <p>This implementation iterates its entry set, summing the hashcodes of
- its entries.
-</p></div>
+ <p>This implementation iterates over <tt>entrySet()</tt>, calling
+ <code><a href="reference/java/util/Map.Entry.html#hashCode()">hashCode()</a></code> on each element (entry) in the
+ set, and adding up the results.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>this object's hash code.</li></ul>
+      <ul class="nolist"><li>the hash code value for this map</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Map.Entry.html#hashCode()">hashCode()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li><li><code><a href="../../../reference/java/util/Set.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -1693,14 +2028,14 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this map is empty.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this map contains no key-value mappings.
 
- <p>This implementation compares <code>size()</code> to 0.
+ <p>This implementation returns <tt>size() == 0</tt>.
 </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li><code>true</code> if this map has no elements, <code>false</code>
-         otherwise.</li></ul>
+      <ul class="nolist"><li><code>true</code> if this map contains no key-value mappings
+</li></ul>
   </div>
 
     </div>
@@ -1732,16 +2067,33 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a set of the keys contained in this <code>Map</code>. The <code>Set</code> is backed by
- this <code>Map</code> so changes to one are reflected by the other. The <code>Set</code> does not
- support adding.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.
+ The set is backed by the map, so changes to the map are
+ reflected in the set, and vice-versa.  If the map is modified
+ while an iteration over the set is in progress (except through
+ the iterator's own <code>remove</code> operation), the results of
+ the iteration are undefined.  The set supports element removal,
+ which removes the corresponding mapping from the map, via the
+ <code>Iterator.remove</code>, <code>Set.remove</code>,
+ <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code>
+ operations.  It does not support the <code>add</code> or <code>addAll</code>
+ operations.
 
- <p>This implementation returns a view that calls through this to map. Its
- iterator transforms this map's entry set iterator to return keys.
+ <p>This implementation returns a set that subclasses <code><a href="reference/java/util/AbstractSet.html">AbstractSet</a></code>.
+ The subclass's iterator method returns a "wrapper object" over this
+ map's <tt>entrySet()</tt> iterator.  The <tt>size</tt> method
+ delegates to this map's <tt>size</tt> method and the
+ <tt>contains</tt> method delegates to this map's
+ <tt>containsKey</tt> method.
+
+ <p>The set is created the first time this method is called,
+ and returned in response to all subsequent calls.  No synchronization
+ is performed, so there is a slight chance that multiple calls to this
+ method will not all return the same set.
 </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a set of the keys.
+      <ul class="nolist"><li>a set view of the keys contained in this map
 </li></ul>
   </div>
 
@@ -1774,27 +2126,57 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Maps the specified key to the specified value.
+  <div class="jd-tagdata jd-tagdescr"><p>Associates the specified value with the specified key in this map
+ (optional operation).  If the map previously contained a mapping for
+ the key, the old value is replaced by the specified value.  (A map
+ <code>m</code> is said to contain a mapping for a key <code>k</code> if and only
+ if <code><a href="reference/java/util/Map.html#containsKey(java.lang.Object)">m.containsKey(k)</a></code> would return
+ <code>true</code>.)
 
- <p>This base implementation throws <code>UnsupportedOperationException</code>.
-</p></div>
+ <p>This implementation always throws an
+ <tt>UnsupportedOperationException</tt>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key.</td>
+          <td>key with which the specified value is to be associated</td>
         </tr>
         <tr>
           <th>value</th>
-          <td>the value.</td>
+          <td>value to be associated with the specified key</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value of any previous mapping with the specified key or
-         <code>null</code> if there was no mapping.</li></ul>
+      <ul class="nolist"><li>the previous value associated with <code>key</code>, or
+         <code>null</code> if there was no mapping for <code>key</code>.
+         (A <code>null</code> return can also indicate that the map
+         previously associated <code>null</code> with <code>key</code>,
+         if the implementation supports <code>null</code> values.)</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1814,7 +2196,7 @@ From interface
         void
       </span>
       <span class="sympad">putAll</span>
-      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; map)</span>
+      <span class="normal">(<a href="../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; m)</span>
     </h4>
       <div class="api-level">
         <div>
@@ -1826,17 +2208,48 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Copies every mapping in the specified <code>Map</code> to this <code>Map</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Copies all of the mappings from the specified map to this map
+ (optional operation).  The effect of this call is equivalent to that
+ of calling <code><a href="reference/java/util/Map.html#put(K, V)">put(k, v)</a></code> on this map once
+ for each mapping from key <code>k</code> to value <code>v</code> in the
+ specified map.  The behavior of this operation is undefined if the
+ specified map is modified while the operation is in progress.
 
- <p>This implementation iterates through <code>map</code>'s entry set, calling
- <code>put()</code> for each.
-</p></div>
+ <p>This implementation iterates over the specified map's
+ <tt>entrySet()</tt> collection, and calls this map's <tt>put</tt>
+ operation once for each entry returned by the iteration.
+
+ <p>Note that this implementation throws an
+ <tt>UnsupportedOperationException</tt> if this map does not support
+ the <tt>put</tt> operation and the specified map is nonempty.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
-          <th>map</th>
-          <td>the <code>Map</code> to copy mappings from.</td>
+          <th>m</th>
+          <td>mappings to be stored in this map</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>
+</td>
         </tr>
       </table>
   </div>
@@ -1870,24 +2283,67 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Removes a mapping with the specified key from this <code>Map</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the mapping for a key from this map if it is present
+ (optional operation).   More formally, if this map contains a mapping
+ from key <code>k</code> to value <code>v</code> such that
+ <code>Objects.equals(key, k)</code>, that mapping
+ is removed.  (The map can contain at most one such mapping.)
 
- <p>This implementation iterates its entry set, removing the entry with
- a key that <code>key</code> equals.
-</p></div>
+ <p>Returns the value to which this map previously associated the key,
+ or <code>null</code> if the map contained no mapping for the key.
+
+ <p>If this map permits null values, then a return value of
+ <code>null</code> does not <i>necessarily</i> indicate that the map
+ contained no mapping for the key; it's also possible that the map
+ explicitly mapped the key to <code>null</code>.
+
+ <p>The map will not contain a mapping for the specified key once the
+ call returns.
+
+ <p>This implementation iterates over <tt>entrySet()</tt> searching for an
+ entry with the specified key.  If such an entry is found, its value is
+ obtained with its <tt>getValue</tt> operation, the entry is removed
+ from the collection (and the backing map) with the iterator's
+ <tt>remove</tt> operation, and the saved value is returned.  If the
+ iteration terminates without finding such an entry, <tt>null</tt> is
+ returned.  Note that this implementation requires linear time in the
+ size of the map; many implementations will override this method.
+
+ <p>Note that this implementation throws an
+ <tt>UnsupportedOperationException</tt> if the <tt>entrySet</tt>
+ iterator does not support the <tt>remove</tt> method and this map
+ contains a mapping for the specified key.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Parameters</h5>
       <table class="jd-tagtable">
         <tr>
           <th>key</th>
-          <td>the key of the mapping to remove.</td>
+          <td>key whose mapping is to be removed from the map</td>
         </tr>
       </table>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the value of the removed mapping or <code>null</code> if no mapping
-         for the specified key was found.</li></ul>
+      <ul class="nolist"><li>the previous value associated with <code>key</code>, or
+         <code>null</code> if there was no mapping for <code>key</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>
+</td>
+        </tr>
+      </table>
   </div>
 
     </div>
@@ -1919,13 +2375,15 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of mappings in this <code>Map</code>.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of key-value mappings in this map.  If the
+ map contains more than <code>Integer.MAX_VALUE</code> elements, returns
+ <code>Integer.MAX_VALUE</code>.
 
- <p>This implementation returns its entry set's size.
+ <p>This implementation returns <tt>entrySet().size()</tt>.
 </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>the number of mappings in this <code>Map</code>.
+      <ul class="nolist"><li>the number of key-value mappings in this map
 </li></ul>
   </div>
 
@@ -1958,23 +2416,17 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
- object. Subclasses are encouraged to override this method and provide an
- implementation that takes into account the object's type and data. The
- default implementation is equivalent to the following expression:
- <pre>
-   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
- <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
- <code>toString</code> method</a>
- if you intend implementing your own <code>toString</code> method.
-
- <p>This implementation composes a string by iterating its entry set. If
- this map contains itself as a key or a value, the string "(this Map)"
- will appear in its place.
-</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this map.  The string representation
+ consists of a list of key-value mappings in the order returned by the
+ map's <tt>entrySet</tt> view's iterator, enclosed in braces
+ (<tt>"{}"</tt>).  Adjacent mappings are separated by the characters
+ <tt>", "</tt> (comma and space).  Each key-value mapping is rendered as
+ the key followed by an equals sign (<tt>"="</tt>) followed by the
+ associated value.  Keys and values are converted to strings as by
+ <code><a href="reference/java/lang/String.html#valueOf(java.lang.Object)">valueOf(Object)</a></code>.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a printable representation of this object.
+      <ul class="nolist"><li>a string representation of this map
 </li></ul>
   </div>
 
@@ -2007,29 +2459,32 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Collection</code> of the values contained in this <code>Map</code>. The <code>Collection</code>
- is backed by this <code>Map</code> so changes to one are reflected by the other. The
- <code>Collection</code> supports <code><a href="reference/java/util/Collection.html#remove(java.lang.Object)">remove(Object)</a></code>, <code><a href="reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll(Collection<?>)</a></code>,
- <code><a href="reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll(Collection<?>)</a></code>, and <code><a href="reference/java/util/Collection.html#clear()">clear()</a></code> operations,
- and it does not support <code><a href="reference/java/util/Collection.html#add(E)">add(E)</a></code> or <code><a href="reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll(Collection<? extends E>)</a></code> operations.
- <p>
- This method returns a <code>Collection</code> which is the subclass of
- <code><a href="reference/java/util/AbstractCollection.html">AbstractCollection</a></code>. The <code><a href="reference/java/util/AbstractCollection.html#iterator()">iterator()</a></code> method of this subclass returns a
- "wrapper object" over the iterator of this <code>Map</code>'s <code><a href="reference/java/util/Map.html#entrySet()">entrySet()</a></code>. The <code><a href="reference/java/util/AbstractCollection.html#size()">size()</a></code> method
- wraps this <code>Map</code>'s <code><a href="reference/java/util/Map.html#size()">size()</a></code> method and the <code><a href="reference/java/util/AbstractCollection.html#contains(java.lang.Object)">contains(Object)</a></code> method wraps this <code>Map</code>'s
- <code><a href="reference/java/util/Map.html#containsValue(java.lang.Object)">containsValue(Object)</a></code> method.
- <p>
- The collection is created when this method is called at first time and
- returned in response to all subsequent calls. This method may return
- different Collection when multiple calls to this method, since it has no
- synchronization performed.
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.
+ The collection is backed by the map, so changes to the map are
+ reflected in the collection, and vice-versa.  If the map is
+ modified while an iteration over the collection is in progress
+ (except through the iterator's own <code>remove</code> operation),
+ the results of the iteration are undefined.  The collection
+ supports element removal, which removes the corresponding
+ mapping from the map, via the <code>Iterator.remove</code>,
+ <code>Collection.remove</code>, <code>removeAll</code>,
+ <code>retainAll</code> and <code>clear</code> operations.  It does not
+ support the <code>add</code> or <code>addAll</code> operations.
 
- <p>This implementation returns a view that calls through this to map. Its
- iterator transforms this map's entry set iterator to return values.
+ <p>This implementation returns a collection that subclasses <code><a href="reference/java/util/AbstractCollection.html">AbstractCollection</a></code>.  The subclass's iterator method returns a
+ "wrapper object" over this map's <tt>entrySet()</tt> iterator.
+ The <tt>size</tt> method delegates to this map's <tt>size</tt>
+ method and the <tt>contains</tt> method delegates to this map's
+ <tt>containsValue</tt> method.
+
+ <p>The collection is created the first time this method is called, and
+ returned in response to all subsequent calls.  No synchronization is
+ performed, so there is a slight chance that multiple calls to this
+ method will not all return the same collection.
 </p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a collection of the values contained in this map.
+      <ul class="nolist"><li>a collection view of the values contained in this map
 </li></ul>
   </div>
 
@@ -2071,17 +2526,12 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Creates and returns a copy of this <code>Object</code>. The default
- implementation returns a so-called "shallow" copy: It creates a new
- instance of the same class and then copies the field values (including
- object references) from this instance to the new instance. A "deep" copy,
- in contrast, would also recursively clone nested objects. A subclass that
- needs to implement this kind of cloning should call <code>super.clone()</code>
- to create the new instance and then create deep copies of the nested,
- mutable objects.</p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a shallow copy of this <tt>AbstractMap</tt> instance: the keys
+ and values themselves are not cloned.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
-      <ul class="nolist"><li>a copy of this object.</li></ul>
+      <ul class="nolist"><li>a shallow copy of this map
+</li></ul>
   </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
