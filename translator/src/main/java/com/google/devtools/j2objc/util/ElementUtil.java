@@ -71,6 +71,10 @@ public final class ElementUtil {
     return element.getSimpleName().toString();
   }
 
+  public static String getQualifiedName(TypeElement element) {
+    return element.getQualifiedName().toString();
+  }
+
   public static boolean isStatic(Element element) {
     return hasModifier(element, Modifier.STATIC);
   }

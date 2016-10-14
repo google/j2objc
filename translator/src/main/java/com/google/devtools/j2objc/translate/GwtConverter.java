@@ -35,12 +35,12 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.ExecutableType;
 
 /**
  * Updates the Java AST to remove code bound by GWT.isClient and
@@ -120,18 +120,19 @@ public class GwtConverter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    IMethodBinding method = node.getMethodBinding();
+    ExecutableElement method = node.getExecutableElement();
     List<Expression> args = node.getArguments();
-    if (method.getName().equals("create")
-        && method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS)
+    if (ElementUtil.getName(method).equals("create")
+        && ElementUtil.getQualifiedName(ElementUtil.getDeclaringClass(method)).equals(GWT_CLASS)
         && args.size() == 1) {
       // Convert GWT.create(Foo.class) to Foo.class.newInstance().
-      IMethodBinding newBinding = BindingUtil.findDeclaredMethod(
-          typeEnv.resolveJavaType("java.lang.Class"), "newInstance");
-      node.setName(new SimpleName(newBinding));
+      ExecutableElement newMethod = ElementUtil.findMethod(
+          typeEnv.resolveJavaTypeElement("java.lang.Class"), "newInstance");
+      node.setName(new SimpleName(newMethod));
       Expression clazz = args.remove(0);
       node.setExpression(clazz);
-      node.setMethodBinding(newBinding);
+      node.setExecutableElement(newMethod);
+      node.setExecutableType((ExecutableType) newMethod.asType());
     } else if (isGwtTest(node)) {
       node.replaceWith(new BooleanLiteral(false, typeEnv));
     }
@@ -150,10 +151,10 @@ public class GwtConverter extends UnitTreeVisitor {
    * code like this is translated.
    */
   private boolean isGwtTest(Expression node) {
-    IMethodBinding method = TreeUtil.getMethodBinding(node);
+    ExecutableElement method = TreeUtil.getExecutableElement(node);
     if (method != null) {
-      if (method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS)) {
-        String name = method.getName();
+      if (ElementUtil.getQualifiedName(ElementUtil.getDeclaringClass(method)).equals(GWT_CLASS)) {
+        String name = ElementUtil.getName(method);
         return name.equals("isClient") || name.equals("isScript");
       }
     }
