@@ -14,11 +14,11 @@
 
 package com.google.j2objc.annotations;
 
+import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Annotation that indicates a local variable should be retained outside of any
