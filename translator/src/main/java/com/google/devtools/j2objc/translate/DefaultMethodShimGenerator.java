@@ -244,7 +244,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     StringBuilder sb = new StringBuilder(ElementUtil.getName(method.elem));
     sb.append('(');
     for (TypeMirror pType : method.type.getParameterTypes()) {
-      sb.append(TypeUtil.getBinaryName(typeUtil.erasure(pType)));
+      sb.append(typeUtil.getSignatureName(pType));
     }
     sb.append(')');
     return sb.toString();

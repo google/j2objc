@@ -39,9 +39,11 @@ import javax.lang.model.util.Types;
 public final class TypeUtil {
 
   private final Types javacTypes;
+  private final ElementUtil elementUtil;
 
-  public TypeUtil(Types javacTypes) {
+  public TypeUtil(Types javacTypes, ElementUtil elementUtil) {
     this.javacTypes = javacTypes;
+    this.elementUtil = elementUtil;
   }
 
   public static ElementKind getDeclaredTypeKind(TypeMirror t) {
@@ -215,12 +217,13 @@ public final class TypeUtil {
     }
   }
 
-  public static String getBinaryName(TypeMirror t) {
+  public String getSignatureName(TypeMirror t) {
+    t = erasure(t);
     switch (t.getKind()) {
       case ARRAY:
-        return "[" + getBinaryName(((ArrayType) t).getComponentType());
+        return "[" + getSignatureName(((ArrayType) t).getComponentType());
       case DECLARED:
-        return "L" + asTypeElement(t).getQualifiedName().toString() + ";";
+        return "L" + elementUtil.getBinaryName(asTypeElement(t)).replace('.', '/') + ";";
       case BOOLEAN:
         return "Z";
       case BYTE:

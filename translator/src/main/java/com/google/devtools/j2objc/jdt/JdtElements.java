@@ -63,7 +63,7 @@ class JdtElements implements Elements {
 
   @Override
   public Name getBinaryName(TypeElement type) {
-    throw new AssertionError("not implemented");
+    return new StringName(BindingConverter.unwrapTypeElement(type).getBinaryName());
   }
 
   @Override

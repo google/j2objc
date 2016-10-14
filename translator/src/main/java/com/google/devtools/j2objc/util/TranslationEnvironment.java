@@ -30,7 +30,7 @@ public class TranslationEnvironment {
   public TranslationEnvironment(NameTable.Factory nameTableFactory, ParserEnvironment parserEnv) {
     Preconditions.checkNotNull(nameTableFactory);
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
-    typeUtil = new TypeUtil(parserEnv.typeUtilities());
+    typeUtil = new TypeUtil(parserEnv.typeUtilities(), elementUtil);
     typeEnv = new Types(parserEnv);
     nameTable = nameTableFactory.newNameTable(typeEnv, elementUtil);
   }

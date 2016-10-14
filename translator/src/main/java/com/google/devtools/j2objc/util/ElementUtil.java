@@ -316,6 +316,10 @@ public final class ElementUtil {
     return javacElements.getPackageOf(e);
   }
 
+  public String getBinaryName(TypeElement e) {
+    return javacElements.getBinaryName(e).toString();
+  }
+
   public static Set<Modifier> toModifierSet(int modifiers) {
     Set<Modifier> set = modifierSets.get(modifiers);
     if (set == null) {
@@ -418,7 +422,14 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
-    for (AnnotationMirror ann : mirror.getAnnotationType().asElement().getAnnotationMirrors()) {
+    return isRuntimeAnnotation(mirror.getAnnotationType().asElement());
+  }
+
+  public static boolean isRuntimeAnnotation(Element e) {
+    if (e.getKind() != ElementKind.ANNOTATION_TYPE) {
+      return false;
+    }
+    for (AnnotationMirror ann : e.getAnnotationMirrors()) {
       String annotationName = ann.getAnnotationType().asElement().getSimpleName().toString();
       if (annotationName.equals("Retention")) {
         for (AnnotationValue value : ann.getElementValues().values()) {

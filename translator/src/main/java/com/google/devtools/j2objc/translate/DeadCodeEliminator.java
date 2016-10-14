@@ -26,15 +26,16 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import com.google.devtools.j2objc.util.ElementUtil;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.NestingKind;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Updates the Java AST to remove methods and classes reported as dead
@@ -55,10 +56,10 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
+    TypeElement type = node.getTypeElement();
     eliminateDeadCode(type, node.getBodyDeclarations());
     // Also strip supertypes.
-    if (deadCodeMap.isDeadClass(type.getBinaryName())) {
+    if (deadCodeMap.isDeadClass(elementUtil.getBinaryName(type))) {
       node.setSuperclassType(null);
       node.getSuperInterfaceTypes().clear();
     }
@@ -66,9 +67,9 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    ITypeBinding binding = node.getTypeBinding();
-    eliminateDeadCode(binding, node.getBodyDeclarations());
-    if (deadCodeMap.isDeadClass(binding.getBinaryName())) {
+    TypeElement type = node.getTypeElement();
+    eliminateDeadCode(type, node.getBodyDeclarations());
+    if (deadCodeMap.isDeadClass(elementUtil.getBinaryName(type))) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.getEnumConstants().clear();
       node.getSuperInterfaceTypes().clear();
@@ -77,22 +78,22 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    ITypeBinding binding = node.getTypeBinding();
-    if (!BindingUtil.isRuntimeAnnotation(binding)) {
-      eliminateDeadCode(binding, node.getBodyDeclarations());
+    TypeElement type = node.getTypeElement();
+    if (!ElementUtil.isRuntimeAnnotation(type)) {
+      eliminateDeadCode(type, node.getBodyDeclarations());
     }
   }
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
-    eliminateDeadCode(node.getTypeBinding(), node.getBodyDeclarations());
+    eliminateDeadCode(node.getTypeElement(), node.getBodyDeclarations());
   }
 
   /**
    * Remove dead members from a type.
    */
-  private void eliminateDeadCode(ITypeBinding type, List<BodyDeclaration> decls) {
-    String clazz = type.getBinaryName();
+  private void eliminateDeadCode(TypeElement type, List<BodyDeclaration> decls) {
+    String clazz = elementUtil.getBinaryName(type);
     if (deadCodeMap.isDeadClass(clazz)) {
       stripClass(decls);
     } else {
@@ -108,8 +109,8 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
       // Do not strip interfaces or static nested classes. They are independent of the dead class,
       // and even if they are dead, they may still be referenced by other classes.
       if (decl instanceof TypeDeclaration) {
-        ITypeBinding type = ((TypeDeclaration) decl).getTypeBinding();
-        if (type.isInterface() || Modifier.isStatic(type.getModifiers())) {
+        TypeElement type = ((TypeDeclaration) decl).getTypeElement();
+        if (type.getKind().isInterface() || ElementUtil.isStatic(type)) {
           endVisit((TypeDeclaration) decl);
           continue;
         }
@@ -133,14 +134,14 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         || Modifier.isPrivate(modifiers)) {
       return false;
     }
-    ITypeBinding type = ((FieldDeclaration) decl).getType().getTypeBinding();
-    if (!(type.isPrimitive() || typeEnv.isStringType(type))) {
+    TypeMirror type = ((FieldDeclaration) decl).getType().getTypeMirror();
+    if (!(type.getKind().isPrimitive() || typeEnv.isStringType(type))) {
       return false;
     }
 
     // Only when every fragment has constant value do we say this is inlinable.
     for (VariableDeclarationFragment fragment : ((FieldDeclaration) decl).getFragments()) {
-      if (fragment.getVariableBinding().getConstantValue() == null) {
+      if (fragment.getVariableElement().getConstantValue() == null) {
         return false;
       }
     }
@@ -162,9 +163,9 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         if (Modifier.isNative(method.getModifiers())) {
           continue;
         }
-        IMethodBinding binding = method.getMethodBinding();
-        String name = getProGuardName(binding);
-        String signature = BindingUtil.getProGuardSignature(binding);
+        ExecutableElement elem = method.getExecutableElement();
+        String name = getProGuardName(elem);
+        String signature = getProGuardSignature(elem);
         if (deadCodeMap.isDeadMethod(clazz, name, signature)) {
           if (method.isConstructor()) {
             deadCodeMap.addConstructorRemovedClass(clazz);
@@ -188,7 +189,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         while (fragmentsIter.hasNext()) {
           VariableDeclarationFragment fragment = fragmentsIter.next();
           // Don't delete any constants because we can't detect their use.
-          if (fragment.getVariableBinding().getConstantValue() == null
+          if (fragment.getVariableElement().getConstantValue() == null
               && deadCodeMap.isDeadField(clazz, fragment.getName().getIdentifier())) {
             fragmentsIter.remove();
           }
@@ -207,17 +208,45 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
    * For constructors of inner classes, this is the $-delimited name path
    * from the outermost class declaration to the inner class declaration.
    */
-  private String getProGuardName(IMethodBinding method) {
-    if (!method.isConstructor() || !method.getDeclaringClass().isMember()) {
-      return method.getName();
+  private String getProGuardName(ExecutableElement method) {
+    if (!ElementUtil.isConstructor(method)
+        || ElementUtil.getDeclaringClass(method).getNestingKind() != NestingKind.MEMBER) {
+      return ElementUtil.getName(method);
     }
-    ITypeBinding parent = method.getDeclaringClass();
+    TypeElement parent = ElementUtil.getDeclaringClass(method);
     assert parent != null;
     List<String> components = Lists.newLinkedList(); // LinkedList is faster for prepending.
     do {
-      components.add(0, parent.getName());
-      parent = parent.getDeclaringClass();
+      components.add(0, ElementUtil.getName(parent));
+      parent = ElementUtil.getDeclaringClass(parent);
     } while (parent != null);
     return innerClassJoiner.join(components);
+  }
+
+  /**
+   * Get the ProGuard signature of a method.
+   */
+  public String getProGuardSignature(ExecutableElement method) {
+    StringBuilder sb = new StringBuilder("(");
+
+    // If the method is an inner class constructor, prepend the outer class type.
+    if (ElementUtil.isConstructor(method)) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
+      if (ElementUtil.hasOuterContext(declaringClass)) {
+        TypeElement outerClass = ElementUtil.getDeclaringClass(declaringClass);
+        sb.append(typeUtil.getSignatureName(outerClass.asType()));
+      }
+    }
+
+    for (VariableElement param : method.getParameters()) {
+      sb.append(typeUtil.getSignatureName(param.asType()));
+    }
+
+    sb.append(')');
+    TypeMirror returnType = method.getReturnType();
+    if (returnType != null) {
+      sb.append(typeUtil.getSignatureName(returnType));
+    }
+    return sb.toString();
   }
 }

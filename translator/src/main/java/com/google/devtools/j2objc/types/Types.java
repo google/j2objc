@@ -263,6 +263,10 @@ public class Types {
     return javaStringType.equals(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
   }
 
+  public boolean isStringType(TypeMirror type) {
+    return isStringType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
+  }
+
   public boolean isStringType(ITypeBinding type) {
     return javaStringType.isEqualTo(type) || NSString.isEqualTo(type);
   }
