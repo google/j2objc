@@ -591,7 +591,8 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
 
       for (CFIndex i = 0; i < count; i++) {
         SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
-        NSData* remoteCertificateData = (__bridge NSData *) SecCertificateCopyData(certificate);
+        NSData* remoteCertificateData =
+            [(NSData *) SecCertificateCopyData(certificate) autorelease];
         IOSByteArray* rawCert = [IOSByteArray arrayWithNSData:remoteCertificateData];
         [securityDataHandler_ handleSecCertificateDataWithByteArray:rawCert];
       }
