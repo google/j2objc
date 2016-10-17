@@ -219,4 +219,19 @@ public class AtomicLong extends Number implements java.io.Serializable {
         return (double)get();
     }
 
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "q";
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((long long int *) buffer) = value_;
+    }
+    ]-*/
+
 }
