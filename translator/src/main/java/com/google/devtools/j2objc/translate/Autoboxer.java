@@ -47,7 +47,6 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -462,9 +461,6 @@ public class Autoboxer extends UnitTreeVisitor {
   }
 
   private void convertArguments(IMethodBinding methodBinding, List<Expression> args) {
-    if (methodBinding instanceof IOSMethodBinding) {
-      return; // already converted
-    }
     ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
     for (int i = 0; i < args.size(); i++) {
       ITypeBinding paramType;
