@@ -38,15 +38,14 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.LoopTranslation;
 import com.google.j2objc.annotations.LoopTranslation.LoopStyle;
-
+import java.util.List;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.List;
-import javax.lang.model.element.VariableElement;
 
 /**
  * Rewrites Java enhanced for loops into appropriate C constructs.
@@ -108,13 +107,13 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     VariableDeclarationStatement bufferDecl =
         new VariableDeclarationStatement(bufferVariable, bufferAccess);
     InfixExpression endInit = new InfixExpression(
-        bufferType, InfixExpression.Operator.PLUS, new SimpleName(bufferVariable),
-        new FieldAccess(sizeField, new SimpleName(arrayVariable)));
+        BindingConverter.getType(bufferType), InfixExpression.Operator.PLUS,
+        new SimpleName(bufferVariable), new FieldAccess(sizeField, new SimpleName(arrayVariable)));
     VariableDeclarationStatement endDecl = new VariableDeclarationStatement(endVariable, endInit);
 
     WhileStatement loop = new WhileStatement();
     loop.setExpression(new InfixExpression(
-        typeEnv.resolveJavaType("boolean"), InfixExpression.Operator.LESS,
+        typeUtil.getPrimitiveType(TypeKind.BOOLEAN), InfixExpression.Operator.LESS,
         new SimpleName(bufferVariable), new SimpleName(endVariable)));
     Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
     loop.setBody(newLoopBody);

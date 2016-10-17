@@ -16,7 +16,10 @@ package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -29,6 +32,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -38,7 +42,33 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 class JdtTypes implements Types {
 
-  static final JdtTypes INSTANCE = new JdtTypes();
+  private final Map<TypeKind, PrimitiveType> primitiveTypes = new EnumMap<>(TypeKind.class);
+  private final Map<TypeKind, TypeElement> boxedClasses = new EnumMap<>(TypeKind.class);
+  private final Map<TypeElement, PrimitiveType> unboxedTypes = new HashMap<>();
+
+  JdtTypes(AST ast) {
+    populatePrimitiveMaps(ast);
+  }
+
+  private void populatePrimitiveMaps(AST ast) {
+    resolvePrimitiveType(ast, TypeKind.BOOLEAN, "boolean", "java.lang.Boolean");
+    resolvePrimitiveType(ast, TypeKind.BYTE, "byte", "java.lang.Byte");
+    resolvePrimitiveType(ast, TypeKind.CHAR, "char", "java.lang.Character");
+    resolvePrimitiveType(ast, TypeKind.SHORT, "short", "java.lang.Short");
+    resolvePrimitiveType(ast, TypeKind.INT, "int", "java.lang.Integer");
+    resolvePrimitiveType(ast, TypeKind.LONG, "long", "java.lang.Long");
+    resolvePrimitiveType(ast, TypeKind.FLOAT, "float", "java.lang.Float");
+    resolvePrimitiveType(ast, TypeKind.DOUBLE, "double", "java.lang.Double");
+  }
+
+  private void resolvePrimitiveType(AST ast, TypeKind kind, String pName, String cName) {
+    PrimitiveType primitiveType =
+        (PrimitiveType) BindingConverter.getType(ast.resolveWellKnownType(pName));
+    TypeElement classElement = BindingConverter.getTypeElement(ast.resolveWellKnownType(cName));
+    primitiveTypes.put(kind, primitiveType);
+    boxedClasses.put(kind, classElement);
+    unboxedTypes.put(classElement, primitiveType);
+  }
 
   @Override
   public Element asElement(TypeMirror t) {
@@ -117,7 +147,11 @@ class JdtTypes implements Types {
 
   @Override
   public PrimitiveType getPrimitiveType(TypeKind kind) {
-    throw new AssertionError("not implemented");
+    PrimitiveType result = primitiveTypes.get(kind);
+    if (result == null) {
+      throw new IllegalArgumentException("Not a primitive kind: " + kind);
+    }
+    return result;
   }
 
   @Override
@@ -148,7 +182,14 @@ class JdtTypes implements Types {
 
   @Override
   public PrimitiveType unboxedType(TypeMirror t) {
-    throw new AssertionError("not implemented");
+    if (t.getKind() == TypeKind.DECLARED) {
+      TypeElement e = (TypeElement) ((DeclaredType) t).asElement();
+      PrimitiveType result = unboxedTypes.get(e);
+      if (result != null) {
+        return result;
+      }
+    }
+    throw new IllegalArgumentException("No unboxing convertion for: " + t);
   }
 
   @Override

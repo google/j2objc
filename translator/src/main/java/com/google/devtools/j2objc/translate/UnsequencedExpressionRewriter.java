@@ -55,14 +55,13 @@ import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.type.TypeKind;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Detects unsequenced modifications which are errors in ObjC and extracts
@@ -344,7 +343,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
     if (branches.size() == 1) {
       return branches.get(0).copy();
     } else {
-      InfixExpression result = new InfixExpression(typeEnv.resolveJavaType("boolean"), op);
+      InfixExpression result = new InfixExpression(typeUtil.getPrimitiveType(TypeKind.BOOLEAN), op);
       TreeUtil.copyList(branches, result.getOperands());
       return result;
     }

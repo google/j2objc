@@ -45,6 +45,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.Weak;
@@ -54,7 +55,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -77,9 +82,9 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = node.getMethodBinding();
-    if (BindingUtil.hasAnnotation(binding, AutoreleasePool.class)) {
-      if (!binding.getReturnType().isPrimitive()) {
+    ExecutableElement element = node.getExecutableElement();
+    if (ElementUtil.hasAnnotation(element, AutoreleasePool.class)) {
+      if (TypeUtil.isReferenceType(element.getReturnType())) {
         ErrorUtil.warning(
             "Ignoring AutoreleasePool annotation on method with retainable return type");
       } else if (node.getBody() != null) {
@@ -99,7 +104,7 @@ public class Rewriter extends UnitTreeVisitor {
         List<VariableDeclarationFragment> fragments =
             ((VariableDeclarationExpression) initializer).getFragments();
         for (VariableDeclarationFragment fragment : fragments) {
-          if (BindingUtil.hasAnnotation(fragment.getVariableBinding(), AutoreleasePool.class)) {
+          if (ElementUtil.hasAnnotation(fragment.getVariableElement(), AutoreleasePool.class)) {
             Statement loopBody = node.getBody();
             if (!(loopBody instanceof Block)) {
               Block block = new Block();
@@ -116,8 +121,7 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
-    ITypeBinding type = node.getTypeBinding();
-    if (typeEnv.isJavaStringType(type) && op == InfixExpression.Operator.PLUS) {
+    if (typeEnv.isJavaStringType(node.getTypeMirror()) && op == InfixExpression.Operator.PLUS) {
       rewriteStringConcat(node);
     } else if (op == InfixExpression.Operator.CONDITIONAL_AND) {
       // Avoid logical-op-parentheses compiler warnings.
@@ -149,9 +153,9 @@ public class Rewriter extends UnitTreeVisitor {
     // Collect all non-string operands that precede the first string operand.
     // If there are multiple such operands, move them into a sub-expression.
     List<Expression> nonStringOperands = new ArrayList<>();
-    ITypeBinding nonStringExprType = null;
+    TypeMirror nonStringExprType = null;
     for (Expression operand : node.getOperands()) {
-      ITypeBinding operandType = operand.getTypeBinding();
+      TypeMirror operandType = operand.getTypeMirror();
       if (typeEnv.isJavaStringType(operandType)) {
         break;
       }
@@ -171,26 +175,30 @@ public class Rewriter extends UnitTreeVisitor {
     node.addOperand(0, nonStringExpr);
   }
 
-  private ITypeBinding getAdditionType(ITypeBinding aType, ITypeBinding bType) {
-    ITypeBinding doubleType = typeEnv.resolveJavaType("double");
-    ITypeBinding boxedDoubleType = typeEnv.resolveJavaType("java.lang.Double");
-    if (aType == doubleType || bType == doubleType
-        || aType == boxedDoubleType || bType == boxedDoubleType) {
-      return doubleType;
+  private TypeKind getPrimitiveKind(TypeMirror t) {
+    if (t == null) {
+      return null;
     }
-    ITypeBinding floatType = typeEnv.resolveJavaType("float");
-    ITypeBinding boxedFloatType = typeEnv.resolveJavaType("java.lang.Float");
-    if (aType == floatType || bType == floatType
-        || aType == boxedFloatType || bType == boxedFloatType) {
-      return floatType;
+    if (t.getKind().isPrimitive()) {
+      return t.getKind();
     }
-    ITypeBinding longType = typeEnv.resolveJavaType("long");
-    ITypeBinding boxedLongType = typeEnv.resolveJavaType("java.lang.Long");
-    if (aType == longType || bType == longType
-        || aType == boxedLongType || bType == boxedLongType) {
-      return longType;
+    PrimitiveType p = typeUtil.unboxedType(t);
+    return p != null ? p.getKind() : null;
+  }
+
+  private PrimitiveType getAdditionType(TypeMirror aType, TypeMirror bType) {
+    TypeKind aKind = getPrimitiveKind(aType);
+    TypeKind bKind = getPrimitiveKind(bType);
+    if (aKind == TypeKind.DOUBLE || bKind == TypeKind.DOUBLE) {
+      return typeUtil.getPrimitiveType(TypeKind.DOUBLE);
     }
-    return typeEnv.resolveJavaType("int");
+    if (aKind == TypeKind.FLOAT || bKind == TypeKind.FLOAT) {
+      return typeUtil.getPrimitiveType(TypeKind.FLOAT);
+    }
+    if (aKind == TypeKind.LONG || bKind == TypeKind.LONG) {
+      return typeUtil.getPrimitiveType(TypeKind.LONG);
+    }
+    return typeUtil.getPrimitiveType(TypeKind.INT);
   }
 
   @Override

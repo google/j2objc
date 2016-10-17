@@ -237,9 +237,11 @@ public class JdtParser extends Parser {
   private static class JdtParserEnvironment implements ParserEnvironment {
 
     private final AST ast;
+    private final Types types;
 
     JdtParserEnvironment(AST ast) {
       this.ast = ast;
+      types = new JdtTypes(ast);
     }
 
     @Override
@@ -254,7 +256,7 @@ public class JdtParser extends Parser {
 
     @Override
     public Types typeUtilities() {
-      return JdtTypes.INSTANCE;
+      return types;
     }
   }
 }

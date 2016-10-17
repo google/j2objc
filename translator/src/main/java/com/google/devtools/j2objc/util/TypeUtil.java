@@ -27,6 +27,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
@@ -164,6 +165,34 @@ public final class TypeUtil {
     inheritedTypes.add(type);
     for (TypeMirror superType : directSupertypes(type)) {
       collectInheritedTypesInclusive(superType, inheritedTypes);
+    }
+  }
+
+  public static boolean isReferenceType(TypeMirror t) {
+    switch (t.getKind()) {
+      case ARRAY:
+      case DECLARED:
+      case ERROR:
+      case INTERSECTION:
+      case NULL:
+      case TYPEVAR:
+      case UNION:
+      case WILDCARD:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  public PrimitiveType getPrimitiveType(TypeKind kind) {
+    return javacTypes.getPrimitiveType(kind);
+  }
+
+  public PrimitiveType unboxedType(TypeMirror t) {
+    try {
+      return javacTypes.unboxedType(t);
+    } catch (IllegalArgumentException e) {
+      return null;
     }
   }
 

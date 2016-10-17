@@ -14,12 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.jdt.BindingConverter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Infix expression node type.
@@ -51,7 +49,7 @@ public class InfixExpression extends Expression {
     CONDITIONAL_OR("||");
 
     private final String opString;
-    private static Map<String, Operator> stringLookup = Maps.newHashMap();
+    private static Map<String, Operator> stringLookup = new HashMap<>();
 
     static {
       for (Operator operator : Operator.values()) {
@@ -90,9 +88,8 @@ public class InfixExpression extends Expression {
     operands.copyFrom(other.getOperands());
   }
 
-  public InfixExpression(
-      ITypeBinding typeBinding, Operator operator, Expression... operands) {
-    typeMirror = BindingConverter.getType(typeBinding);
+  public InfixExpression(TypeMirror typeMirror, Operator operator, Expression... operands) {
+    this.typeMirror = typeMirror;
     this.operator = operator;
     for (Expression operand : operands) {
       this.operands.add(operand);
