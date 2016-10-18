@@ -28,12 +28,9 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -41,6 +38,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Checks for missing methods that would cause an ObjC compilation error. Adds stubs for existing
@@ -60,8 +62,8 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    IMethodBinding methodBinding = node.getMethodBinding();
-    if (!BindingUtil.isAbstract(methodBinding)) {
+    ExecutableElement methodElement = node.getExecutableElement();
+    if (!ElementUtil.isAbstract(methodElement)) {
       return;
     }
 
@@ -69,9 +71,8 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     // method is from a class. Since we want our code generator to go over an interface's
     // method nodes for default method support and skip abstract methods, we add the bit if the
     // method is from an interface.
-    ITypeBinding declaringClass = methodBinding.getDeclaringClass();
-    boolean isInterface = declaringClass.isInterface();
-    if (isInterface) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
+    if (declaringClass.getKind().isInterface()) {
       node.addModifiers(Modifier.ABSTRACT);
       return;
     }
@@ -89,7 +90,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     // Generate a body which throws a NSInvalidArgumentException.
     String bodyCode = "// can't call an abstract method\n"
         + "[self doesNotRecognizeSelector:_cmd];";
-    if (!BindingUtil.isVoid(node.getReturnType().getTypeBinding())) {
+    if (!TypeUtil.isVoid(node.getReturnType().getTypeMirror())) {
       bodyCode += "\nreturn 0;"; // Never executes, but avoids a gcc warning.
     }
     body.addStatement(new NativeStatement(bodyCode));

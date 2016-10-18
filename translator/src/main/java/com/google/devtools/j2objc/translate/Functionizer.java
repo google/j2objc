@@ -45,6 +45,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -278,7 +279,8 @@ public class Functionizer extends UnitTreeVisitor {
           // Public methods must be kept for the public API.
           || !(BindingUtil.isPrivateInnerType(declaringClass) || BindingUtil.isPrivate(binding))
           // Methods must be kept for reflection if enabled.
-          || (TranslationUtil.needsReflection(declaringClass) && !isEnumConstructor);
+          || (TranslationUtil.needsReflection(BindingConverter.getTypeElement(declaringClass))
+              && !isEnumConstructor);
       if (keepMethod) {
         setFunctionCaller(node, binding);
       } else {

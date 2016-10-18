@@ -83,7 +83,7 @@ public class MetadataWriter extends UnitTreeVisitor {
 
   private void visitType(AbstractTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    if (!TranslationUtil.needsReflection(type)) {
+    if (!TranslationUtil.needsReflection(BindingConverter.getTypeElement(type))) {
       return;
     }
 

@@ -36,24 +36,19 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * General collection of utility methods.
@@ -94,26 +89,25 @@ public final class TranslationUtil {
   }
 
   public static boolean needsReflection(AbstractTypeDeclaration node) {
-    return needsReflection(node.getTypeBinding());
+    return needsReflection(node.getTypeElement());
   }
 
   public static boolean needsReflection(PackageDeclaration node) {
     return needsReflection(getReflectionSupportLevel(
-        getAnnotation(node.getPackageElement(), ReflectionSupport.class)));
+        ElementUtil.getAnnotation(node.getPackageElement(), ReflectionSupport.class)));
   }
 
-  public static boolean needsReflection(ITypeBinding type) {
-    if (BindingUtil.isLambda(type)) {
+  public static boolean needsReflection(TypeElement type) {
+    if (ElementUtil.isLambda(type)) {
       return false;
     }
     while (type != null) {
-      TypeElement element = (TypeElement) BindingConverter.getElement(type);
       ReflectionSupport.Level level = getReflectionSupportLevel(
-          getAnnotation(element, ReflectionSupport.class));
+          ElementUtil.getAnnotation(type, ReflectionSupport.class));
       if (level != null) {
         return level == ReflectionSupport.Level.FULL;
       }
-      type = type.getDeclaringClass();
+      type = ElementUtil.getDeclaringClass(type);
     }
     return !Options.stripReflection();
   }
@@ -135,17 +129,6 @@ public final class TranslationUtil {
         ElementUtil.getAnnotationValue(reflectionSupport, "value");
     return level != null
         ? ReflectionSupport.Level.valueOf(level.getSimpleName().toString()) : null;
-  }
-
-  private static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
-    String className = annotationClass.getName();
-    for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
-      TypeElement type = (TypeElement) mirror.getAnnotationType().asElement();
-      if (type.getQualifiedName().toString().equals(className)) {
-        return mirror;
-      }
-    }
-    return null;
   }
 
   /**
