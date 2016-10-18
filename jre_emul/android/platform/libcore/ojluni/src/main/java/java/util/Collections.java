@@ -1848,7 +1848,7 @@ public class Collections {
 
         SynchronizedCollection(Collection<E> c) {
             this.c = Objects.requireNonNull(c);
-            mutex = this;
+            mutex = new Object();
         }
 
         SynchronizedCollection(Collection<E> c, Object mutex) {
