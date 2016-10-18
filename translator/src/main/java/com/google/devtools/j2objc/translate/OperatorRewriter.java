@@ -38,15 +38,20 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.google.j2objc.annotations.RetainedLocalRef;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -147,8 +152,21 @@ public class OperatorRewriter extends UnitTreeVisitor {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
       initializer.accept(this);
+      handleRetainedLocal(node.getVariableElement(), node.getInitializer());
     }
     return false;
+  }
+
+  private void handleRetainedLocal(VariableElement var, Expression rhs) {
+    if (var.getKind() == ElementKind.LOCAL_VARIABLE
+        && ElementUtil.hasAnnotation(var, RetainedLocalRef.class)
+        && Options.useReferenceCounting()) {
+      FunctionBinding binding = new FunctionBinding(
+          "JreRetainedLocalValue", typeEnv.getIdTypeMirror(), null);
+      FunctionInvocation invocation = new FunctionInvocation(binding, rhs.getTypeMirror());
+      rhs.replaceWith(invocation);
+      invocation.addArgument(rhs);
+    }
   }
 
   private void rewriteVolatileLoad(Expression node) {
@@ -232,6 +250,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     if (var == null) {
       return;
     }
+    handleRetainedLocal(BindingConverter.getVariableElement(var), node.getRightHandSide());
     boolean isRetainedWith = BindingUtil.isRetainedWithField(var);
     String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {

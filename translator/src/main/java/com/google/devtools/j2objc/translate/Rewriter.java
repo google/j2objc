@@ -19,8 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
-import com.google.devtools.j2objc.ast.CastExpression;
-import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -31,7 +29,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -40,27 +37,20 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.Weak;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -73,8 +63,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  * @author Tom Ball
  */
 public class Rewriter extends UnitTreeVisitor {
-
-  private Map<VariableElement, VariableElement> localRefs = new HashMap<>();
 
   public Rewriter(CompilationUnit unit) {
     super(unit);
@@ -226,40 +214,6 @@ public class Rewriter extends UnitTreeVisitor {
         statements.add(++location, newDecl);
       }
     }
-    // Scan modifiers since variable declarations don't have variable bindings.
-    if (TreeUtil.hasAnnotation(RetainedLocalRef.class, node.getAnnotations())) {
-      ITypeBinding localRefType = typeEnv.getLocalRefType();
-      node.setType(Type.newType(localRefType));
-
-      // Convert fragments to retained local refs.
-      for (VariableDeclarationFragment fragment : node.getFragments()) {
-        IVariableBinding var = fragment.getVariableBinding();
-        GeneratedVariableBinding newVar = new GeneratedVariableBinding(
-            var.getName(), var.getModifiers(), localRefType, false, false,
-            var.getDeclaringClass(), var.getDeclaringMethod());
-        localRefs.put(BindingConverter.getVariableElement(var),
-            BindingConverter.getVariableElement(newVar));
-
-        Expression initializer = fragment.getInitializer();
-        if (localRefs.containsKey(TreeUtil.getVariableElement(initializer))) {
-          initializer.accept(this);
-        } else {
-          // Create a constructor for a ScopedLocalRef for this fragment.
-          IMethodBinding constructor = null;
-          for (IMethodBinding m : localRefType.getDeclaredMethods()) {
-            if (m.isConstructor()) {
-              constructor = m;
-              break;
-            }
-          }
-          assert constructor != null : "failed finding ScopedLocalRef(var)";
-          ClassInstanceCreation newInvocation = new ClassInstanceCreation(constructor);
-          newInvocation.addArgument(initializer.copy());
-          fragment.setInitializer(newInvocation);
-          fragment.setVariableBinding(newVar);
-        }
-      }
-    }
   }
 
   @Override
@@ -289,21 +243,6 @@ public class Rewriter extends UnitTreeVisitor {
       return false;
     }
     return true;
-  }
-
-  @Override
-  public void endVisit(SimpleName node) {
-    // Check for ScopedLocalRefs.
-    Element localRef = localRefs.get(node.getElement());
-    if (localRef != null) {
-      VariableElement var =
-          BindingConverter.getVariableElement(typeEnv.getLocalRefType().getDeclaredFields()[0]);
-      FieldAccess access = new FieldAccess(
-          var, new SimpleName(localRef));
-      CastExpression newCast = new CastExpression(node.getTypeMirror(), access);
-      ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
-      node.replaceWith(newParens);
-    }
   }
 
   private LinkedListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(

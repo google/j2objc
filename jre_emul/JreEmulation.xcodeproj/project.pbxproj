@@ -2502,8 +2502,6 @@
 		06C73D9619180C0C001D3CC8 /* IosHttpsHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosHttpsHandler.m; path = build_result/Classes/com/google/j2objc/net/IosHttpsHandler.m; sourceTree = "<group>"; };
 		06C73D9719180C0C001D3CC8 /* IosHttpURLConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosHttpURLConnection.h; path = build_result/Classes/com/google/j2objc/net/IosHttpURLConnection.h; sourceTree = "<group>"; };
 		06C73D9819180C0C001D3CC8 /* IosHttpURLConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosHttpURLConnection.m; path = build_result/Classes/com/google/j2objc/net/IosHttpURLConnection.m; sourceTree = "<group>"; };
-		06C73D9919180C0C001D3CC8 /* ScopedLocalRef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScopedLocalRef.h; path = build_result/Classes/com/google/j2objc/util/ScopedLocalRef.h; sourceTree = "<group>"; };
-		06C73D9A19180C0C001D3CC8 /* ScopedLocalRef.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ScopedLocalRef.m; path = build_result/Classes/com/google/j2objc/util/ScopedLocalRef.m; sourceTree = "<group>"; };
 		06C73D9B19180C31001D3CC8 /* BlockGuard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlockGuard.h; path = build_result/Classes/dalvik/system/BlockGuard.h; sourceTree = "<group>"; };
 		06C73D9C19180C31001D3CC8 /* BlockGuard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BlockGuard.m; path = build_result/Classes/dalvik/system/BlockGuard.m; sourceTree = "<group>"; };
 		06C73D9D19180C31001D3CC8 /* CloseGuard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CloseGuard.h; path = build_result/Classes/dalvik/system/CloseGuard.h; sourceTree = "<group>"; };
@@ -5489,8 +5487,6 @@
 				06F2911118972DFA00676F1D /* ScheduledThreadPoolExecutor.m */,
 				064FB77E1727074100DC0D51 /* Schema.h */,
 				064FB77F1727074100DC0D51 /* Schema.m */,
-				06C73D9919180C0C001D3CC8 /* ScopedLocalRef.h */,
-				06C73D9A19180C0C001D3CC8 /* ScopedLocalRef.m */,
 				0649A6EE1AE0796400DE2494 /* SecretKey.h */,
 				0649A6EF1AE0796400DE2494 /* SecretKey.m */,
 				0649A5F41AE0778600DE2494 /* SecureCacheResponse.h */,

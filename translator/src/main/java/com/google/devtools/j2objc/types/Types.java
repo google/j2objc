@@ -52,9 +52,6 @@ public class Types {
   private final ITypeBinding javaThrowableType;
   private final ITypeBinding javaVoidType;
 
-  // Lazily load localRefType, since its initialization requires Types to be fully initialized.
-  private ITypeBinding localRefType;
-
   // Non-standard naming pattern is used, since in this case it's more readable.
   private final IOSTypeBinding NSCopying;
   private final IOSTypeBinding NSObject;
@@ -377,24 +374,6 @@ public class Types {
   public TypeMirror getPointerType(TypeMirror type) {
     return BindingConverter.getType(getPointerType(
         BindingConverter.unwrapTypeMirrorIntoTypeBinding(type)));
-  }
-
-  public ITypeBinding getLocalRefType() {
-    if (localRefType == null) {
-      ITypeBinding objectType = resolveWellKnownType("java.lang.Object");
-      GeneratedTypeBinding refType =
-          GeneratedTypeBinding.newTypeBinding("com.google.j2objc.util.ScopedLocalRef",
-          objectType, false);
-      GeneratedVariableBinding varBinding = new GeneratedVariableBinding("var", Modifier.PUBLIC,
-          objectType, true, false, refType, null);
-      refType.addField(varBinding);
-      GeneratedMethodBinding constructor =
-          GeneratedMethodBinding.newConstructor(refType, Modifier.PUBLIC, this);
-      constructor.addParameter(objectType);
-      refType.addMethod(constructor);
-      localRefType = refType;
-    }
-    return localRefType;
   }
 
   public IOSMethodBinding getRetainMethod() {

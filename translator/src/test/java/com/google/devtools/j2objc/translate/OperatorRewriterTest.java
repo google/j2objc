@@ -173,4 +173,32 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "JreRetainedWithRelease(self, rwo_);");
     assertTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
   }
+
+  public void testRetainedLocalRef() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "  boolean test1(String s1, String s2) {"
+        + "    @com.google.j2objc.annotations.RetainedLocalRef"
+        + "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;"
+        + "    return c.compare(s1, s2) == 0;"
+        + "    }   "
+        + "  boolean test2(Thing t, Thing t2, String s1, String s2) {"
+        + "    @com.google.j2objc.annotations.RetainedLocalRef"
+        + "    Thing thing = t;"
+        + "    thing = t2;"
+        + "    return thing.comp.compare(s1, s2) == 0;"
+        + "  }"
+        + "  private static class Thing { public java.util.Comparator<String> comp; }}",
+        "Test", "Test.m");
+    assertNotInTranslation(translation, "RetainedLocalRef");
+    assertTranslatedLines(translation,
+        "id<JavaUtilComparator> c = JreRetainedLocalValue(JreLoadStatic("
+        + "NSString, CASE_INSENSITIVE_ORDER));",
+        "return [((id<JavaUtilComparator>) nil_chk(c)) compareWithId:s1 withId:s2] == 0;");
+    assertTranslatedLines(translation,
+        "Test_Thing *thing = JreRetainedLocalValue(t);",
+        "thing = JreRetainedLocalValue(t2);",
+        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(thing))->comp_)) "
+          + "compareWithId:s1 withId:s2] == 0;");
+  }
 }

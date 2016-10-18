@@ -319,36 +319,6 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation, "return (r < 0) & ![self isPowerOfTwoWithInt:r];");
   }
 
-  public void testRetainedLocalRef() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  boolean test1(String s1, String s2) {"
-        + "    @com.google.j2objc.annotations.RetainedLocalRef"
-        + "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;"
-        + "    return c.compare(s1, s2) == 0;"
-        + "    }   "
-        + "  boolean test2(Thing t, String s1, String s2) {"
-        + "    @com.google.j2objc.annotations.RetainedLocalRef"
-        + "    Thing thing = t;"
-        + "    return t.comp.compare(s1, s2) == 0;"
-        + "  }"
-        + "  private static class Thing { public java.util.Comparator<String> comp; }}",
-        "Test", "Test.m");
-    assertNotInTranslation(translation, "RetainedLocalRef");
-    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = "
-        + "create_ComGoogleJ2objcUtilScopedLocalRef_initWithId_("
-        + "JreLoadStatic(NSString, CASE_INSENSITIVE_ORDER));");
-    assertTranslation(translation,
-        "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
-        + "cast_check(c->var_, JavaUtilComparator_class_())))) "
-        + "compareWithId:s1 withId:s2] == 0;");
-    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
-        + "create_ComGoogleJ2objcUtilScopedLocalRef_initWithId_(t);");
-    assertTranslation(translation,
-        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) "
-        + "compareWithId:s1 withId:s2] == 0;");
-  }
-
   public void testInitializeRenamed() throws IOException {
     String translation = translateSourceFile(
         "class Test { "

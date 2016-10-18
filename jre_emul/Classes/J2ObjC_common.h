@@ -130,6 +130,12 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
 }
 #endif
 
+#if !__has_feature(objc_arc)
+__attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {
+  return [[value retain] autorelease];
+}
+#endif
+
 /*!
  * Utility macro for passing an argument that contains a comma.
  */
