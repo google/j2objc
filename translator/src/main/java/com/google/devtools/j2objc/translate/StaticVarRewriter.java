@@ -46,8 +46,7 @@ public class StaticVarRewriter extends UnitTreeVisitor {
   }
 
   private boolean needsStaticLoad(TreeNode currentNode, IVariableBinding var) {
-    if (!BindingUtil.isStatic(var) || BindingUtil.isPrimitiveConstant(var)
-        || BindingUtil.isStringConstant(var)) {
+    if (!BindingUtil.isStatic(var) || BindingUtil.isConstant(var)) {
       return false;
     }
     ITypeBinding enclosingType = TreeUtil.getEnclosingTypeBinding(currentNode);

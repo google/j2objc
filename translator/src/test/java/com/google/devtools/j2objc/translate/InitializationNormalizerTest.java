@@ -236,4 +236,12 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Object", "java/lang/Object.h");
     assertTranslation(translation, "@interface NSObject");
   }
+
+  // Regression test for Issue #809.
+  public void testConstantInitializedByConditionalOnConstants() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { private static final int A = 1; private static final int B = 2; "
+        + "private static final int C = A < B ? A : B; }", "Test", "Test.m");
+    assertTranslation(translation, "#define Test_C 1");
+  }
 }

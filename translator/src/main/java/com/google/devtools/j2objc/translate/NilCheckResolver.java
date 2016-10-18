@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
@@ -504,6 +505,13 @@ public class NilCheckResolver extends UnitTreeVisitor {
       body.accept(this);
       popLastScope();
     }
+    return false;
+  }
+
+  @Override
+  public boolean visit(FieldDeclaration node) {
+    // Don't visit fields. Any non-constant initialization will have been moved into the constructor
+    // by InitializationNormalizer.
     return false;
   }
 

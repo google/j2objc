@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.Initializer;
@@ -40,12 +39,10 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Modifies initializers to be more iOS like.  Static initializers are
@@ -152,13 +149,9 @@ public class InitializationNormalizer extends UnitTreeVisitor {
    * be assigned to a literal value in ObjC.
    */
   private boolean requiresInitializer(VariableDeclarationFragment frag) {
-    Expression initializer = frag.getInitializer();
-    if (BindingUtil.isPrimitiveConstant(frag.getVariableBinding())) {
-      return false;
-    }
     // If the initializer is not a literal, but has a constant value, convert it
     // to a literal. (as javac would do)
-    Object constantValue = initializer.getConstantValue();
+    Object constantValue = frag.getInitializer().getConstantValue();
     if (constantValue != null) {
       if (constantValue instanceof String
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {

@@ -90,10 +90,12 @@ public final class BindingUtil {
         && binding.getDeclaringClass() != null;
   }
 
-  public static boolean isStringConstant(IVariableBinding binding) {
+  public static boolean isConstant(IVariableBinding binding) {
     Object constantValue = binding.getConstantValue();
-    return constantValue != null && constantValue instanceof String
-        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
+    return constantValue != null
+        && (binding.getType().isPrimitive()
+            || (constantValue instanceof String
+                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
   }
 
   /**
