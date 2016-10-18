@@ -30,7 +30,7 @@ public class LambdaTypeElement extends GeneratedTypeElement {
 
   public LambdaTypeElement(
       String name, Element enclosingElement, TypeMirror superclass) {
-    super(name, ElementKind.CLASS, enclosingElement, superclass, NestingKind.ANONYMOUS);
+    super(name, ElementKind.CLASS, enclosingElement, superclass, NestingKind.ANONYMOUS, false);
     addModifiers(Modifier.PRIVATE);
   }
 }

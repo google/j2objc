@@ -32,17 +32,20 @@ import javax.lang.model.element.Name;
  *
  * @author Keith Stanger
  */
-abstract class GeneratedElement implements Element {
+public abstract class GeneratedElement implements Element {
 
   private final String name;
   private final ElementKind kind;
+  private final boolean synthetic;
   private Set<Modifier> modifiers = new HashSet<>();
   private final Element enclosingElement;
   private final List<AnnotationMirror> annotationMirrors = new ArrayList<>();
 
-  protected GeneratedElement(String name, ElementKind kind, Element enclosingElement) {
+  protected GeneratedElement(String name, ElementKind kind, Element enclosingElement,
+      boolean synthetic) {
     this.name = name;
     this.kind = kind;
+    this.synthetic = synthetic;
     this.enclosingElement = enclosingElement;
   }
 
@@ -100,6 +103,10 @@ abstract class GeneratedElement implements Element {
   public GeneratedElement addModifiers(Collection<? extends Modifier> newModifiers) {
     modifiers.addAll(newModifiers);
     return this;
+  }
+
+  public boolean isSynthetic() {
+    return synthetic;
   }
 
   @Override

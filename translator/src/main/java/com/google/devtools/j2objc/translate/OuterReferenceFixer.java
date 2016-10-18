@@ -68,7 +68,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
     if (!parameterTypes.isEmpty()) {
       GeneratedExecutableElement element =
-          new GeneratedExecutableElement(node.getExecutableElement());
+          GeneratedExecutableElement.asMutable(node.getExecutableElement());
       element.addParametersPlaceholderFront(parameterTypes);
       node.setExecutableElement(element);
       assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();
@@ -110,7 +110,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
     if (!parameterTypes.isEmpty()) {
       GeneratedExecutableElement element =
-          new GeneratedExecutableElement(node.getExecutableElement());
+          GeneratedExecutableElement.asMutable(node.getExecutableElement());
       element.addParametersPlaceholderFront(parameterTypes);
       node.setExecutableElement(element);
       assert element.isVarArgs() || node.getArguments().size() == element.getParameters().size();

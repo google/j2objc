@@ -17,8 +17,11 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.code.Symbol;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -38,6 +41,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -184,6 +188,21 @@ public final class ElementUtil {
 
   public static boolean isSynthetic(int modifiers) {
     return (modifiers & ACC_SYNTHETIC) != 0;
+  }
+
+  public static boolean isSynthetic(Element e) {
+    if (e instanceof GeneratedElement) {
+      return ((GeneratedElement) e).isSynthetic();
+    }
+    if (e instanceof Symbol) {
+      return (((Symbol) e).flags() & Flags.SYNTHETIC) > 0;
+    }
+    // TODO(tball): remove when javac switch is complete.
+    IBinding binding = BindingConverter.unwrapElement(e);
+    if (binding != null) {
+      return binding.isSynthetic();
+    }
+    return false;
   }
 
   public static boolean isPackageInfo(TypeElement type) {

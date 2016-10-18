@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.Collection;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -34,9 +35,21 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
   private final TypeMirror type;
   private boolean nonnull = false;
 
+  public static GeneratedVariableElement asMutable(VariableElement var) {
+    return var instanceof GeneratedVariableElement
+        ? (GeneratedVariableElement) var
+        : new GeneratedVariableElement(var.getSimpleName().toString(), var.asType(),
+            var.getKind(), var.getEnclosingElement(), ElementUtil.isSynthetic(var));
+  }
+
   public GeneratedVariableElement(
       String name, TypeMirror type, ElementKind kind, Element enclosingElement) {
-    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement);
+    this(name, type, kind, enclosingElement, true);
+  }
+
+  private GeneratedVariableElement(
+      String name, TypeMirror type, ElementKind kind, Element enclosingElement, boolean synthetic) {
+    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.type = type;
   }
 

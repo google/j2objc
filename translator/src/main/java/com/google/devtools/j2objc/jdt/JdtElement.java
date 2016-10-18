@@ -94,4 +94,8 @@ abstract class JdtElement implements Element {
     }
     return false;
   }
+
+  public boolean isSynthetic() {
+    return binding.isSynthetic();
+  }
 }

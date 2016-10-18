@@ -39,22 +39,30 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private final TypeMirror returnType;
   private final boolean varargs;
 
+  /**
+   * Clone a method element, so parameters can be added to it.
+   */
+  public static GeneratedExecutableElement asMutable(ExecutableElement method) {
+    return method instanceof GeneratedExecutableElement
+        ? (GeneratedExecutableElement) method
+        : new GeneratedExecutableElement(method);
+  }
+
   public GeneratedExecutableElement(
       String name, ElementKind kind, TypeMirror returnType, Element enclosingElement,
       boolean varargs) {
-    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement);
+    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, true);
     this.returnType = returnType;
     this.varargs = varargs;
   }
 
-  /**
-   * Clone a method binding, so parameters can be added to it.
-   */
-  public GeneratedExecutableElement(ExecutableElement m) {
-    this(m.getSimpleName().toString(), m.getKind(), m.getReturnType(),  m.getEnclosingElement(),
-         m.isVarArgs());
+  private GeneratedExecutableElement(ExecutableElement m) {
+    super(m.getSimpleName().toString(), m.getKind(),  m.getEnclosingElement(),
+        ElementUtil.isSynthetic(m));
     addModifiers(m.getModifiers());
     parameters.addAll(m.getParameters());
+    this.returnType = m.getReturnType();
+    this.varargs = m.isVarArgs();
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
