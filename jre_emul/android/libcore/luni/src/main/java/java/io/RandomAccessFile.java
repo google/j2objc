@@ -17,6 +17,7 @@
 
 package java.io;
 
+import com.google.j2objc.annotations.RetainedWith;
 import dalvik.system.CloseGuard;
 
 import java.nio.ByteOrder;
@@ -51,6 +52,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
 
     // The unique file channel associated with this FileInputStream (lazily
     // initialized).
+    @RetainedWith
     private FileChannel channel;
 
     private int mode;
@@ -163,7 +165,13 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
         synchronized (this) {
             if (channel != null && channel.isOpen()) {
                 channel.close();
-                channel = null;
+
+                // j2objc: since a @RetainedWith field cannot be reassigned, the following line is
+                // commented out. If a channel is already closed, the predicate above will be false
+                // and so this branch will not be taken. FileInputStream and FileOutputStream
+                // simply call channel.close() when channel is not null witout even checking if
+                // it's still open (and that's ok).
+                // channel = null;
             }
             IoUtils.close(fd);
         }

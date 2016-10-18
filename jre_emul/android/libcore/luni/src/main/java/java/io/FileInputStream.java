@@ -17,6 +17,7 @@
 
 package java.io;
 
+import com.google.j2objc.annotations.RetainedWith;
 import dalvik.system.CloseGuard;
 
 import java.nio.NioUtils;
@@ -59,6 +60,7 @@ public class FileInputStream extends InputStream {
     private final boolean shouldClose;
 
     /** The unique file channel. Lazily initialized because it's rarely needed. */
+    @RetainedWith
     private FileChannel channel;
 
     private final CloseGuard guard = CloseGuard.get();
