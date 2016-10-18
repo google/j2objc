@@ -360,6 +360,7 @@ TEST_SOURCES := \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
+    libcore/java/util/concurrent/LinkedBlockingQueueTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
     libcore/java/util/zip/DeflaterOutputStreamTest.java \
     libcore/java/util/zip/DeflaterTest.java \
