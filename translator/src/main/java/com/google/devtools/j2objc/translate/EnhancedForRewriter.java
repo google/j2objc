@@ -32,20 +32,23 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.LoopTranslation;
 import com.google.j2objc.annotations.LoopTranslation.LoopStyle;
 import java.util.List;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites Java enhanced for loops into appropriate C constructs.
@@ -61,45 +64,48 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(EnhancedForStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding expressionType = expression.getTypeBinding();
-    IVariableBinding loopVariable = node.getParameter().getVariableBinding();
+    TypeMirror expressionType = expression.getTypeMirror();
+    VariableElement loopVariable = node.getParameter().getVariableElement();
 
-    if (BindingUtil.hasAnnotation(loopVariable, AutoreleasePool.class)) {
+    if (ElementUtil.hasAnnotation(loopVariable, AutoreleasePool.class)) {
       makeBlock(node.getBody()).setHasAutoreleasePool(true);
     }
 
-    if (expressionType.isArray()) {
+    if (TypeUtil.isArray(expressionType)) {
       handleArrayIteration(node);
     } else if (emitJavaIteratorLoop(loopVariable)) {
       convertToJavaIteratorLoop(node);
-    } else if (loopVariable.getType().isPrimitive()) {
+    } else if (loopVariable.asType().getKind().isPrimitive()) {
       boxLoopVariable(node, expressionType, loopVariable);
     } else {
-      GeneratedVariableBinding newLoopVariable = new GeneratedVariableBinding(loopVariable);
-      newLoopVariable.setTypeQualifiers("__strong");
-      node.getParameter().setVariableBinding(newLoopVariable);
+      VariableElement newLoopVariable = GeneratedVariableElement.asMutable(loopVariable)
+          .setTypeQualifiers("__strong");
+      node.getParameter().setVariableElement(newLoopVariable);
     }
   }
 
   private void handleArrayIteration(EnhancedForStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding expressionType = expression.getTypeBinding();
-    IVariableBinding loopVariable = node.getParameter().getVariableBinding();
-    ITypeBinding componentType = expressionType.getComponentType();
-    ITypeBinding iosArrayType = typeEnv.resolveArrayType(componentType);
-    PointerTypeBinding bufferType = typeEnv.getPointerType(componentType);
-    IVariableBinding arrayVariable = new GeneratedVariableBinding(
-        "a__", 0, expressionType, false, false, null, null);
-    GeneratedVariableBinding bufferVariable = new GeneratedVariableBinding(
-        "b__", 0, bufferType, false, false, null, null);
-    bufferVariable.setTypeQualifiers("const*");
-    GeneratedVariableBinding endVariable = new GeneratedVariableBinding(
-        "e__", 0, bufferType, false, false, null, null);
-    endVariable.setTypeQualifiers("const*");
-    VariableElement bufferField = BindingConverter.getVariableElement(new GeneratedVariableBinding(
-        "buffer", Modifier.PUBLIC, bufferType, true, false, iosArrayType, null));
-    VariableElement sizeField = BindingConverter.getVariableElement(new GeneratedVariableBinding(
-        "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false, iosArrayType, null));
+    ArrayType expressionType = (ArrayType) expression.getTypeMirror();
+    VariableElement loopVariable = node.getParameter().getVariableElement();
+    TypeMirror componentType = expressionType.getComponentType();
+    TypeElement iosArrayType = typeEnv.resolveArrayType(componentType);
+    TypeMirror bufferType = BindingConverter.getType(typeEnv.getPointerType(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(componentType)));
+    VariableElement arrayVariable = new GeneratedVariableElement(
+        "a__", expressionType, ElementKind.LOCAL_VARIABLE, null);
+    VariableElement bufferVariable = new GeneratedVariableElement(
+        "b__", bufferType, ElementKind.LOCAL_VARIABLE, null)
+        .setTypeQualifiers("const*");
+    VariableElement endVariable = new GeneratedVariableElement(
+        "e__", bufferType, ElementKind.LOCAL_VARIABLE, null)
+        .setTypeQualifiers("const*");
+    VariableElement bufferField = new GeneratedVariableElement(
+        "buffer", bufferType, ElementKind.FIELD, iosArrayType)
+        .addModifiers(Modifier.PUBLIC);
+    VariableElement sizeField = new GeneratedVariableElement(
+        "size", typeUtil.getPrimitiveType(TypeKind.INT), ElementKind.FIELD, iosArrayType)
+        .addModifiers(Modifier.PUBLIC);
 
     VariableDeclarationStatement arrayDecl =
         new VariableDeclarationStatement(arrayVariable, TreeUtil.remove(expression));
@@ -107,8 +113,8 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     VariableDeclarationStatement bufferDecl =
         new VariableDeclarationStatement(bufferVariable, bufferAccess);
     InfixExpression endInit = new InfixExpression(
-        BindingConverter.getType(bufferType), InfixExpression.Operator.PLUS,
-        new SimpleName(bufferVariable), new FieldAccess(sizeField, new SimpleName(arrayVariable)));
+        bufferType, InfixExpression.Operator.PLUS, new SimpleName(bufferVariable),
+        new FieldAccess(sizeField, new SimpleName(arrayVariable)));
     VariableDeclarationStatement endDecl = new VariableDeclarationStatement(endVariable, endInit);
 
     WhileStatement loop = new WhileStatement();
@@ -119,11 +125,8 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     loop.setBody(newLoopBody);
     newLoopBody.addStatement(0, new VariableDeclarationStatement(
         loopVariable, new PrefixExpression(
-            BindingConverter.getType(componentType),
-            PrefixExpression.Operator.DEREFERENCE,
-            new PostfixExpression(
-                BindingConverter.getVariableElement(bufferVariable),
-                PostfixExpression.Operator.INCREMENT))));
+            componentType, PrefixExpression.Operator.DEREFERENCE,
+            new PostfixExpression(bufferVariable, PostfixExpression.Operator.INCREMENT))));
 
     Block block = new Block();
     List<Statement> stmts = block.getStatements();
@@ -134,15 +137,15 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     replaceLoop(node, block, loop);
   }
 
-  private boolean emitJavaIteratorLoop(IVariableBinding loopVariable) {
-    IAnnotationBinding loopTranslation =
-        BindingUtil.getAnnotation(loopVariable, LoopTranslation.class);
+  private boolean emitJavaIteratorLoop(VariableElement loopVariable) {
+    AnnotationMirror loopTranslation =
+        ElementUtil.getAnnotation(loopVariable, LoopTranslation.class);
     if (loopTranslation == null) {
       return false;
     }
-    Object style = BindingUtil.getAnnotationValue(loopTranslation, "value");
-    if (style instanceof IVariableBinding
-        && ((IVariableBinding) style).getName().equals(LoopStyle.JAVA_ITERATOR.name())) {
+    Object style = ElementUtil.getAnnotationValue(loopTranslation, "value");
+    if (style instanceof VariableElement
+        && ElementUtil.getName((VariableElement) style).equals(LoopStyle.JAVA_ITERATOR.name())) {
       return true;
     }
     return false;
@@ -150,17 +153,17 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
 
   private void convertToJavaIteratorLoop(EnhancedForStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding expressionType = expression.getTypeBinding();
-    IVariableBinding loopVariable = node.getParameter().getVariableBinding();
-    ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
-    IMethodBinding iteratorMethod = BindingUtil.findDeclaredMethod(iterableType, "iterator");
-    ITypeBinding iteratorType = iteratorMethod.getReturnType();
-    IMethodBinding hasNextMethod = BindingUtil.findDeclaredMethod(iteratorType, "hasNext");
-    IMethodBinding nextMethod = BindingUtil.findDeclaredMethod(iteratorType, "next");
+    TypeMirror expressionType = expression.getTypeMirror();
+    VariableElement loopVariable = node.getParameter().getVariableElement();
+    DeclaredType iterableType = typeUtil.findSupertype(expressionType, "java.lang.Iterable");
+    ExecutablePair iteratorMethod = typeUtil.findMethod(iterableType, "iterator");
+    DeclaredType iteratorType = (DeclaredType) iteratorMethod.type().getReturnType();
+    ExecutablePair hasNextMethod = typeUtil.findMethod(iteratorType, "hasNext");
+    ExecutablePair nextMethod = typeUtil.findMethod(iteratorType, "next");
     assert hasNextMethod != null && nextMethod != null;
 
-    IVariableBinding iteratorVariable = new GeneratedVariableBinding(
-        "iter__", 0, iteratorType, false, false, null, null);
+    VariableElement iteratorVariable = new GeneratedVariableElement(
+        "iter__", iteratorType, ElementKind.LOCAL_VARIABLE, null);
 
     MethodInvocation iteratorInvocation =
         new MethodInvocation(iteratorMethod, TreeUtil.remove(expression));
@@ -198,15 +201,12 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
   }
 
   private void boxLoopVariable(
-      EnhancedForStatement node, ITypeBinding expressionType, IVariableBinding loopVariable) {
-    ITypeBinding[] typeArgs = expressionType.getTypeArguments();
-    if (typeArgs.length == 0) {
-      ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
-      typeArgs = iterableType != null ? iterableType.getTypeArguments() : new ITypeBinding[0];
-    }
-    assert typeArgs.length == 1 && typeEnv.isBoxedPrimitive(typeArgs[0]);
-    IVariableBinding boxVariable = new GeneratedVariableBinding(
-        "boxed__", 0, typeArgs[0], false, false, null, null);
+      EnhancedForStatement node, TypeMirror expressionType, VariableElement loopVariable) {
+    DeclaredType iterableType = typeUtil.findSupertype(expressionType, "java.lang.Iterable");
+    List<? extends TypeMirror> typeArgs = iterableType.getTypeArguments();
+    assert typeArgs.size() == 1 && typeUtil.isBoxedType(typeArgs.get(0));
+    VariableElement boxVariable = new GeneratedVariableElement(
+        "boxed__", typeArgs.get(0), ElementKind.LOCAL_VARIABLE, null);
     node.setParameter(new SingleVariableDeclaration(boxVariable));
     makeBlock(node.getBody()).addStatement(
         0, new VariableDeclarationStatement(loopVariable, new SimpleName(boxVariable)));

@@ -261,8 +261,7 @@ public final class ElementUtil {
   }
 
   public static boolean isField(Element element) {
-    ElementKind kind = element.getKind();
-    return kind == ElementKind.FIELD || kind == ElementKind.ENUM_CONSTANT;
+    return element.getKind().isField();
   }
 
   public static boolean isMethod(Element element) {

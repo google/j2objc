@@ -270,6 +270,7 @@ JAVA_SOURCES = \
 	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \
 	types/AbstractTypeBinding.java \
+	types/ExecutablePair.java \
 	types/FunctionBinding.java \
 	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \

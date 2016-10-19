@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,7 +31,6 @@ import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Detects variable name collision scenarios and renames variables accordingly.
@@ -104,18 +102,16 @@ public class VariableRenamer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SimpleName node) {
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    VariableElement var = TreeUtil.getVariableElement(node);
     if (var == null) {
       return;
     }
-    var = var.getVariableDeclaration();
-    if (var.isField()) {
+    if (var.getKind().isField()) {
       // Make sure fields for the declaring type are renamed.
-      collectAndRenameFields(BindingConverter.getTypeElement(var.getDeclaringClass()),
-          new HashSet<VariableElement>());
+      collectAndRenameFields(ElementUtil.getDeclaringClass(var), new HashSet<VariableElement>());
     } else {
       // Local variable or parameter. Rename if it shares a name with a field.
-      String varName = var.getName();
+      String varName = ElementUtil.getName(var);
       assert fieldNameStack.size() > 0;
       Set<String> fieldNames = fieldNameStack.get(fieldNameStack.size() - 1);
       if (fieldNames.contains(varName)) {

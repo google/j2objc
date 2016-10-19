@@ -354,6 +354,7 @@ public final class BindingConverter {
           possibleEnclosing != null ? possibleEnclosing.asType() : null, null);
       newBinding.addAnnotations(element.getAnnotationMirrors());
       newBinding.setNonnull(((GeneratedVariableElement) element).isNonnull());
+      newBinding.setTypeQualifiers(((GeneratedVariableElement) element).getTypeQualifiers());
       return newBinding;
     }
     if (element instanceof GeneratedExecutableElement) {

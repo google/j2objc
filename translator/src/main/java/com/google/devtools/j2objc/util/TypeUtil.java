@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtIntersectionType;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -142,6 +143,32 @@ public final class TypeUtil {
     return javacTypes.getArrayType(componentType);
   }
 
+  /**
+   * Find a supertype matching the given qualified name.
+   */
+  public DeclaredType findSupertype(TypeMirror type, String qualifiedName) {
+    TypeElement element = asTypeElement(type);
+    if (element != null && element.getQualifiedName().toString().equals(qualifiedName)) {
+      return (DeclaredType) type;
+    }
+    for (TypeMirror t : directSupertypes(type)) {
+      DeclaredType result = findSupertype(t, qualifiedName);
+      if (result != null) {
+        return result;
+      }
+    }
+    return null;
+  }
+
+  public ExecutablePair findMethod(DeclaredType type, String name, String... paramTypes) {
+    ExecutableElement methodElem =
+        ElementUtil.findMethod((TypeElement) type.asElement(), name, paramTypes);
+    if (methodElem != null) {
+      return new ExecutablePair(methodElem, asMemberOf(type, methodElem));
+    }
+    return null;
+  }
+
   public List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type) {
     List<DeclaredType> typeElements = new ArrayList<>();
     for (TypeMirror superType : getOrderedInheritedTypesInclusive(type)) {
@@ -194,6 +221,10 @@ public final class TypeUtil {
     } catch (IllegalArgumentException e) {
       return null;
     }
+  }
+
+  public boolean isBoxedType(TypeMirror t) {
+    return unboxedType(t) != null;
   }
 
   public static String getName(TypeMirror t) {

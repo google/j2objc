@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
@@ -67,6 +68,10 @@ public class MethodInvocation extends Expression {
     typeMirror = methodType.getReturnType();
     this.expression.set(expression);
     name.set(new SimpleName(BindingConverter.unwrapElement(method)));
+  }
+
+  public MethodInvocation(ExecutablePair method, Expression expression) {
+    this(method.element(), method.type(), expression);
   }
 
   @Override
