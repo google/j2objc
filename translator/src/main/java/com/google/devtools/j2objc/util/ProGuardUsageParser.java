@@ -114,13 +114,13 @@ public class ProGuardUsageParser {
     return signature.toString();
   }
 
-  public static DeadCodeMap parse(CharSource listing) throws IOException {
-    LineProcessor<DeadCodeMap> processor = new LineProcessor<DeadCodeMap>() {
-      DeadCodeMap.Builder dead = DeadCodeMap.builder();
+  public static CodeReferenceMap parse(CharSource listing) throws IOException {
+    LineProcessor<CodeReferenceMap> processor = new LineProcessor<CodeReferenceMap>() {
+      CodeReferenceMap.Builder dead = CodeReferenceMap.builder();
       String lastClass;
 
       @Override
-      public DeadCodeMap getResult() {
+      public CodeReferenceMap getResult() {
         return dead.build();
       }
 

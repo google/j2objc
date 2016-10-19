@@ -23,46 +23,46 @@ import junit.framework.TestCase;
  *
  * @author Daniel Connelly
  */
-public class DeadCodeMapTest extends TestCase {
+public class CodeReferenceMapTest extends TestCase {
 
   public void testIsDeadClass() {
-    DeadCodeMap report = DeadCodeMap.builder()
+    CodeReferenceMap report = CodeReferenceMap.builder()
         .addDeadClass("foo.bar.Baz")
         .addDeadMethod("foo.bah.Bar", "abc", "()")
         .build();
-    assertTrue(report.isDeadClass("foo.bar.Baz"));
-    assertFalse(report.isDeadClass("foo.bah.Bar"));
+    assertTrue(report.containsClass("foo.bar.Baz"));
+    assertFalse(report.containsClass("foo.bah.Bar"));
   }
 
   public void testIsDeadField() {
-    DeadCodeMap report = DeadCodeMap.builder()
+    CodeReferenceMap report = CodeReferenceMap.builder()
         .addDeadClass("foo.bar.Baz")
         .addDeadField("foo.bah.Bar", "abc")
         .build();
-    assertTrue(report.isDeadField("foo.bar.Baz", "foobar"));
-    assertTrue(report.isDeadField("foo.bah.Bar", "abc"));
-    assertFalse(report.isDeadField("foo.bah.Bar", "def"));
+    assertTrue(report.containsField("foo.bar.Baz", "foobar"));
+    assertTrue(report.containsField("foo.bah.Bar", "abc"));
+    assertFalse(report.containsField("foo.bah.Bar", "def"));
   }
 
   public void testIsDeadMethod() {
-    DeadCodeMap report = DeadCodeMap.builder()
+    CodeReferenceMap report = CodeReferenceMap.builder()
         .addDeadClass("foo.bar.Baz")
         .addDeadMethod("foo.bah.Bar", "abc", "()")
         .build();
-    assertTrue(report.isDeadMethod("foo.bah.Bar", "abc", "()"));
-    assertTrue(report.isDeadMethod("foo.bar.Baz", "anything", "()"));
-    assertFalse(report.isDeadMethod("foo.bah.Bar", "abc", "(IZ)Ljava.lang.String;"));
-    assertFalse(report.isDeadMethod("foo.bah.Bar", "def", "()"));
-    assertFalse(report.isDeadMethod("x.y.Z", "abc", "()"));
+    assertTrue(report.containsMethod("foo.bah.Bar", "abc", "()"));
+    assertTrue(report.containsMethod("foo.bar.Baz", "anything", "()"));
+    assertFalse(report.containsMethod("foo.bah.Bar", "abc", "(IZ)Ljava.lang.String;"));
+    assertFalse(report.containsMethod("foo.bah.Bar", "def", "()"));
+    assertFalse(report.containsMethod("x.y.Z", "abc", "()"));
   }
-  
+
   public void testToString() {
-    DeadCodeMap report = DeadCodeMap.builder()
+    CodeReferenceMap report = CodeReferenceMap.builder()
         .addDeadClass("foo.bar.Baz")
         .addDeadMethod("foo.bah.Bar", "abc", "()")
         .addDeadField("foo.bah.Bar", "xyz")
         .build();
-    
+
     String stringVersion = report.toString();
     assertEquals(stringVersion, "[foo.bar.Baz]\n" 
         + "{foo.bah.Bar=[xyz]}\n"

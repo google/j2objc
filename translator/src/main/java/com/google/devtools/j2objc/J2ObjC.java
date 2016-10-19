@@ -25,7 +25,7 @@ import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import com.google.devtools.j2objc.pipeline.TranslationProcessor;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -82,15 +82,15 @@ public class J2ObjC {
     return parser;
   }
 
-  private static DeadCodeMap loadDeadCodeMap() {
+  private static CodeReferenceMap loadDeadCodeMap() {
     return parseDeadCodeFile(Options.getProGuardUsageFile());
   }
   
-  private static DeadCodeMap loadTreeShakerMap() {
+  private static CodeReferenceMap loadTreeShakerMap() {
     return parseDeadCodeFile(Options.getTreeShakerUsageFile());
   }
 
-  private static DeadCodeMap parseDeadCodeFile(File file) {
+  private static CodeReferenceMap parseDeadCodeFile(File file) {
     if (file != null) {
       try {
         return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));

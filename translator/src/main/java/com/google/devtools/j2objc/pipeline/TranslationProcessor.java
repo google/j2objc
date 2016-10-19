@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
+import com.google.devtools.j2objc.translate.ElementReferenceMapper;
 import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
@@ -63,7 +64,7 @@ import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.CaptureInfo;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -82,12 +83,13 @@ public class TranslationProcessor extends FileProcessor {
 
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
-  private final DeadCodeMap deadCodeMap;
-  private final DeadCodeMap treeShakerMap;
+  private final CodeReferenceMap deadCodeMap;
+  private final CodeReferenceMap treeShakerMap;
 
   private int processedCount = 0;
 
-  public TranslationProcessor(Parser parser, DeadCodeMap deadCodeMap, DeadCodeMap treeShakerMap) {
+  public TranslationProcessor(Parser parser, CodeReferenceMap deadCodeMap,
+      CodeReferenceMap treeShakerMap) {
     super(parser);
     this.deadCodeMap = deadCodeMap;
     this.treeShakerMap = treeShakerMap;
@@ -126,8 +128,8 @@ public class TranslationProcessor extends FileProcessor {
    * also modified to add support for iOS memory management, extract inner
    * classes, etc.
    */
-  public static void applyMutations(CompilationUnit unit, DeadCodeMap deadCodeMap,
-      DeadCodeMap treeShakerMap, TimeTracker ticker) {
+  public static void applyMutations(CompilationUnit unit, CodeReferenceMap deadCodeMap,
+      CodeReferenceMap treeShakerMap, TimeTracker ticker) {
     ticker.push();
 
     CaptureInfo captureInfo = new CaptureInfo();
@@ -147,6 +149,7 @@ public class TranslationProcessor extends FileProcessor {
 
     if (treeShakerMap != null) {
 //    TODO(user): Add algorithm step, report step, and elimination step to treeshaker
+      new ElementReferenceMapper(unit).run();
       ticker.tick("TreeShaker");
     }
 

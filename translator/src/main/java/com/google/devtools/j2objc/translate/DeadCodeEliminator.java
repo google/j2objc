@@ -14,8 +14,14 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -26,16 +32,9 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
-import java.lang.reflect.Modifier;
-import java.util.Iterator;
-import java.util.List;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.NestingKind;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
+import com.google.devtools.j2objc.util.ProguardNameUtil;
 
 /**
  * Updates the Java AST to remove methods and classes reported as dead
@@ -45,11 +44,9 @@ import javax.lang.model.type.TypeMirror;
  */
 public class DeadCodeEliminator extends UnitTreeVisitor {
 
-  private static final Joiner innerClassJoiner = Joiner.on('$');
+  private final CodeReferenceMap deadCodeMap;
 
-  private final DeadCodeMap deadCodeMap;
-
-  public DeadCodeEliminator(CompilationUnit unit, DeadCodeMap deadCodeMap) {
+  public DeadCodeEliminator(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
     super(unit);
     this.deadCodeMap = deadCodeMap;
   }
@@ -59,7 +56,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
     TypeElement type = node.getTypeElement();
     eliminateDeadCode(type, node.getBodyDeclarations());
     // Also strip supertypes.
-    if (deadCodeMap.isDeadClass(elementUtil.getBinaryName(type))) {
+    if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
       node.setSuperclassType(null);
       node.getSuperInterfaceTypes().clear();
     }
@@ -69,7 +66,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
   public void endVisit(EnumDeclaration node) {
     TypeElement type = node.getTypeElement();
     eliminateDeadCode(type, node.getBodyDeclarations());
-    if (deadCodeMap.isDeadClass(elementUtil.getBinaryName(type))) {
+    if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.getEnumConstants().clear();
       node.getSuperInterfaceTypes().clear();
@@ -94,7 +91,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
    */
   private void eliminateDeadCode(TypeElement type, List<BodyDeclaration> decls) {
     String clazz = elementUtil.getBinaryName(type);
-    if (deadCodeMap.isDeadClass(clazz)) {
+    if (deadCodeMap.containsClass(clazz)) {
       stripClass(decls);
     } else {
       removeDeadMethods(clazz, decls);
@@ -164,9 +161,9 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
           continue;
         }
         ExecutableElement elem = method.getExecutableElement();
-        String name = getProGuardName(elem);
-        String signature = getProGuardSignature(elem);
-        if (deadCodeMap.isDeadMethod(clazz, name, signature)) {
+        String name = ProguardNameUtil.getProGuardName(elem);
+        String signature = ProguardNameUtil.getProGuardSignature(elem, typeUtil);
+        if (deadCodeMap.containsMethod(clazz, name, signature)) {
           if (method.isConstructor()) {
             deadCodeMap.addConstructorRemovedClass(clazz);
           }
@@ -190,7 +187,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
           VariableDeclarationFragment fragment = fragmentsIter.next();
           // Don't delete any constants because we can't detect their use.
           if (fragment.getVariableElement().getConstantValue() == null
-              && deadCodeMap.isDeadField(clazz, fragment.getName().getIdentifier())) {
+              && deadCodeMap.containsField(clazz, fragment.getName().getIdentifier())) {
             fragmentsIter.remove();
           }
         }
@@ -199,54 +196,5 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         }
       }
     }
-  }
-
-  /**
-   * Get the ProGuard name of a method.
-   * For non-constructors this is the method's name.
-   * For constructors of top-level classes, this is the name of the class.
-   * For constructors of inner classes, this is the $-delimited name path
-   * from the outermost class declaration to the inner class declaration.
-   */
-  private String getProGuardName(ExecutableElement method) {
-    if (!ElementUtil.isConstructor(method)
-        || ElementUtil.getDeclaringClass(method).getNestingKind() != NestingKind.MEMBER) {
-      return ElementUtil.getName(method);
-    }
-    TypeElement parent = ElementUtil.getDeclaringClass(method);
-    assert parent != null;
-    List<String> components = Lists.newLinkedList(); // LinkedList is faster for prepending.
-    do {
-      components.add(0, ElementUtil.getName(parent));
-      parent = ElementUtil.getDeclaringClass(parent);
-    } while (parent != null);
-    return innerClassJoiner.join(components);
-  }
-
-  /**
-   * Get the ProGuard signature of a method.
-   */
-  public String getProGuardSignature(ExecutableElement method) {
-    StringBuilder sb = new StringBuilder("(");
-
-    // If the method is an inner class constructor, prepend the outer class type.
-    if (ElementUtil.isConstructor(method)) {
-      TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
-      if (ElementUtil.hasOuterContext(declaringClass)) {
-        TypeElement outerClass = ElementUtil.getDeclaringClass(declaringClass);
-        sb.append(typeUtil.getSignatureName(outerClass.asType()));
-      }
-    }
-
-    for (VariableElement param : method.getParameters()) {
-      sb.append(typeUtil.getSignatureName(param.asType()));
-    }
-
-    sb.append(')');
-    TypeMirror returnType = method.getReturnType();
-    if (returnType != null) {
-      sb.append(typeUtil.getSignatureName(returnType));
-    }
-    return sb.toString();
   }
 }

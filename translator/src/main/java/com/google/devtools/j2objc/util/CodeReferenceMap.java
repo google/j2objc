@@ -26,21 +26,24 @@ import com.google.common.collect.Table;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.lang.model.element.ExecutableElement;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
- * Tracks dead classes and methods that can be ignored during translation.
+ * Tracks classes, fields, and methods that are referenced in source code.
  *
  * @author Daniel Connelly
  */
-public class DeadCodeMap {
+public class CodeReferenceMap {
 
   public static class Builder {
     private final Set<String> deadClasses = new HashSet<String>();
     private final Table<String, String, Set<String>> deadMethods = HashBasedTable.create();
     private final ListMultimap<String, String> deadFields = ArrayListMultimap.create();
 
-    public DeadCodeMap build() {
+    public CodeReferenceMap build() {
       ImmutableTable.Builder<String, String, ImmutableSet<String>> deadMethodsBuilder =
           ImmutableTable.builder();
       for (Table.Cell<String, String, Set<String>> cell : this.deadMethods.cellSet()) {
@@ -49,7 +52,7 @@ public class DeadCodeMap {
             cell.getColumnKey(),
             ImmutableSet.copyOf(cell.getValue()));
       }
-      return new DeadCodeMap(
+      return new CodeReferenceMap(
           ImmutableSet.copyOf(deadClasses),
           deadMethodsBuilder.build(),
           ImmutableMultimap.copyOf(deadFields));
@@ -83,7 +86,7 @@ public class DeadCodeMap {
   private final ImmutableMultimap<String, String> deadFields;
   private final Set<String> hasConstructorRemovedClasses = new HashSet<>();
 
-  private DeadCodeMap(
+  private CodeReferenceMap(
       ImmutableSet<String> deadClasses,
       ImmutableTable<String, String, ImmutableSet<String>> deadMethods,
       ImmutableMultimap<String, String> deadFields) {
@@ -92,27 +95,36 @@ public class DeadCodeMap {
     this.deadFields = deadFields;
   }
 
-  public boolean isDeadClass(String clazz) {
+  public boolean containsClass(String clazz) {
     return deadClasses.contains(clazz);
   }
 
-  public boolean isDeadClass(AbstractTypeDeclaration node) {
-    return isDeadClass(node.getTypeBinding().getBinaryName());
+  public boolean containsClass(AbstractTypeDeclaration node) {
+    return containsClass(node.getTypeBinding().getBinaryName());
   }
 
-  public boolean isDeadMethod(String clazz, String name, String signature) {
+  public boolean containsMethod(String clazz, String name, String signature) {
     return deadClasses.contains(clazz)
-        || deadMethods.contains(clazz, name) && deadMethods.get(clazz, name).contains(signature);
+        || (deadMethods.contains(clazz, name) && deadMethods.get(clazz, name).contains(signature));
   }
 
-  public boolean isDeadMethod(IMethodBinding binding) {
+  public boolean containsMethod(IMethodBinding binding) {
     String className = binding.getDeclaringClass().getBinaryName();
     String methodName = binding.getName();
     String methodSig = BindingUtil.getSignature(binding);
-    return isDeadMethod(className, methodName, methodSig);
+    return containsMethod(className, methodName, methodSig);
   }
 
-  public boolean isDeadField(String clazz, String field) {
+  //TODO(user): Revisit this method and remove typeUtil
+  //  Problem: need access to a typeUtil for ProguardNameUtil.getSignature method.
+  public boolean containsMethod(ExecutableElement method, TypeUtil typeUtil) {
+    String className = ElementUtil.getName(ElementUtil.getDeclaringClass(method));
+    String methodName = ProguardNameUtil.getProGuardName(method);
+    String methodSig = ProguardNameUtil.getProGuardSignature(method, typeUtil);
+    return containsMethod(className, methodName, methodSig);
+  }
+
+  public boolean containsField(String clazz, String field) {
     return deadClasses.contains(clazz) || deadFields.containsEntry(clazz, field);
   }
 
@@ -127,15 +139,15 @@ public class DeadCodeMap {
   public boolean classHasConstructorRemoved(String clazz) {
     return hasConstructorRemovedClasses.contains(clazz);
   }
-  
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    
+
     builder.append(deadClasses.asList().toString() + "\n");
     builder.append(deadFields.toString() + "\n");
     builder.append(deadMethods.toString());
-    
+
     return builder.toString();
   }
 }

@@ -32,7 +32,7 @@ import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import com.google.devtools.j2objc.pipeline.TranslationProcessor;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -49,6 +49,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -68,8 +69,8 @@ public class GenerationTest extends TestCase {
 
   protected File tempDir;
   protected Parser parser;
-  private DeadCodeMap deadCodeMap = null;
-  private DeadCodeMap treeShakerMap = null;
+  private CodeReferenceMap deadCodeMap = null;
+  private CodeReferenceMap treeShakerMap = null;
 
   static {
     // Prevents errors and warnings from being printed to the console.
@@ -112,11 +113,11 @@ public class GenerationTest extends TestCase {
     return parser;
   }
 
-  protected void setDeadCodeMap(DeadCodeMap deadCodeMap) {
+  protected void setDeadCodeMap(CodeReferenceMap deadCodeMap) {
     this.deadCodeMap = deadCodeMap;
   }
   
-  protected void setTreeShakerMap(DeadCodeMap treeShakerMap) {
+  protected void setTreeShakerMap(CodeReferenceMap treeShakerMap) {
     this.treeShakerMap = treeShakerMap;
   }
 
@@ -378,8 +379,8 @@ public class GenerationTest extends TestCase {
     List<ProcessingContext> inputs = batch.getInputs();
     parser.setEnableDocComments(Options.docCommentsEnabled());
     new InputFilePreprocessor(parser).processInputs(inputs);
-    new TranslationProcessor(parser, DeadCodeMap.builder().build(), 
-        DeadCodeMap.builder().build()).processInputs(inputs);
+    new TranslationProcessor(parser, CodeReferenceMap.builder().build(), 
+        CodeReferenceMap.builder().build()).processInputs(inputs);
     return getTranslatedFile(outputPath + extension);
   }
 
@@ -495,7 +496,7 @@ public class GenerationTest extends TestCase {
         String source = sources[i + 1];
         JarEntry fooEntry = new JarEntry(name);
         jar.putNextEntry(fooEntry);
-        jar.write(source.getBytes());
+        jar.write(source.getBytes(Charset.defaultCharset()));
         jar.closeEntry();
       }
     } finally {

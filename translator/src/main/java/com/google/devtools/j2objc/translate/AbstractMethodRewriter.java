@@ -27,7 +27,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -53,9 +53,9 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class AbstractMethodRewriter extends UnitTreeVisitor {
 
-  private final DeadCodeMap deadCodeMap;
+  private final CodeReferenceMap deadCodeMap;
 
-  public AbstractMethodRewriter(CompilationUnit unit, DeadCodeMap deadCodeMap) {
+  public AbstractMethodRewriter(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
     super(unit);
     this.deadCodeMap = deadCodeMap;
   }
@@ -171,7 +171,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
   private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
 
     // No need to run this if the entire class is dead.
-    if (deadCodeMap != null && deadCodeMap.isDeadClass(node)) {
+    if (deadCodeMap != null && deadCodeMap.containsClass(node)) {
       return;
     }
 
@@ -202,7 +202,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     }
 
     for (IMethodBinding method : newDeclarations.values()) {
-      if (deadCodeMap != null && deadCodeMap.isDeadMethod(method.getMethodDeclaration())) {
+      if (deadCodeMap != null && deadCodeMap.containsMethod(method.getMethodDeclaration())) {
         continue;
       }
 

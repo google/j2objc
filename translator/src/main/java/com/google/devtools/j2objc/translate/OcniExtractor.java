@@ -35,7 +35,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -57,9 +57,9 @@ import java.util.regex.Pattern;
 public class OcniExtractor extends UnitTreeVisitor {
 
   private final ListMultimap<TreeNode, Comment> blockComments;
-  private final DeadCodeMap deadCodeMap;
+  private final CodeReferenceMap deadCodeMap;
 
-  public OcniExtractor(CompilationUnit unit, DeadCodeMap deadCodeMap) {
+  public OcniExtractor(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
     super(unit);
     blockComments = findBlockComments(unit);
     this.deadCodeMap = deadCodeMap;
@@ -174,7 +174,7 @@ public class OcniExtractor extends UnitTreeVisitor {
     // methods are always live.
     if (BindingUtil.findInterface(node.getTypeBinding(), "java.lang.Iterable") != null
         && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")
-        && (deadCodeMap == null || !deadCodeMap.isDeadClass(node))) {
+        && (deadCodeMap == null || !deadCodeMap.containsClass(node))) {
       bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
           "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
           + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"

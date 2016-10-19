@@ -17,7 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 
 import java.io.IOException;
 
@@ -37,7 +37,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "    // nothing\n"
         + "  }\n"
         + "}\n";
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadMethod("A$B", "bar", "()Ljava/lang/String;")
         .build();
     setDeadCodeMap(map);
@@ -54,7 +54,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "    public void foo() {}\n"
         + "  };\n"
         + "}\n";
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadMethod("A$1", "foo", "()V")
         .build();
     setDeadCodeMap(map);
@@ -68,7 +68,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "    B(int i) {}\n"
         + "  }\n"
         + "}\n";
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadMethod("A$B", "A$B", "(LA;I)V")
         .build();
     setDeadCodeMap(map);
@@ -86,7 +86,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  final String baz = null, bah = \"123\";\n"
         + "  private int abc = 9;\n"
         + "}\n";
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadField("A", "foo")
         .addDeadField("A", "baz")
         .addDeadField("java.lang.System", "in")
@@ -105,7 +105,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadInitializer() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("A").build();
     setDeadCodeMap(map);
     String source = "class A {\n"
@@ -123,7 +123,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadEnum() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("A$Thing")
         .build();
     setDeadCodeMap(map);
@@ -147,7 +147,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testConstructorGeneration() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("A")
         .addDeadMethod("C", "C", "(I)V")
         .build();
@@ -168,7 +168,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadClass_FieldRemoval() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .build();
     setDeadCodeMap(map);
@@ -187,7 +187,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadClass_StaticNestedClass() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .build();
     setDeadCodeMap(map);
@@ -203,7 +203,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadClass_DeadStaticNestedClass() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .addDeadClass("Foo$Bar")
         .addDeadMethod("Foo$Baz", "g", "()V")
@@ -226,7 +226,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadClass_DeadInnerClassConstructor() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadField("Foo$A", "z")
         .addDeadField("Foo$A", "this$0")
         .addDeadMethod("Foo$A", "Foo$A", "(LFoo;I)V")
@@ -254,7 +254,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadClass_SupertypeRemoval() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .build();
     setDeadCodeMap(map);
@@ -270,7 +270,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   // Verify that annotation bodies aren't stripped when specified in a dead code report.
   public void testDeadAnnotation() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .build();
     setDeadCodeMap(map);
@@ -285,7 +285,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   }
 
   public void testDeadDefaultConstructor() throws IOException {
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadMethod("Test", "Test", "()V")
         .build();
     setDeadCodeMap(map);
@@ -303,7 +303,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  public Iterator<String> iterator() { return null; }\n"
         + "}";
 
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .build();
     setDeadCodeMap(map);
@@ -322,7 +322,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "}\n"
         + "class Foo extends Base<String> {}";
 
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .build();
     setDeadCodeMap(map);
@@ -340,7 +340,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "}\n"
         + "class Foo extends Base<String> {}";
 
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadMethod("Base", "someDeadMethod", "()Ljava/lang/Object;")
         .build();
     setDeadCodeMap(map);
@@ -356,7 +356,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "}\n"
         + "class Foo extends Base<String> {}";
 
-    DeadCodeMap map = DeadCodeMap.builder()
+    CodeReferenceMap map = CodeReferenceMap.builder()
         .addDeadClass("Foo")
         .addDeadMethod("Base", "someDeadMethod", "()Ljava/lang/Object;")
         .build();

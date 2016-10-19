@@ -74,7 +74,7 @@ import com.google.devtools.j2objc.types.CompoundTypeTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.util.BindingUtilTest;
-import com.google.devtools.j2objc.util.DeadCodeMapTest;
+import com.google.devtools.j2objc.util.CodeReferenceMapTest;
 import com.google.devtools.j2objc.util.ElementUtilTest;
 import com.google.devtools.j2objc.util.ErrorUtilTest;
 import com.google.devtools.j2objc.util.FileUtilTest;
@@ -102,10 +102,10 @@ public class SmallTests {
     AutoboxerTest.class,
     BindingUtilTest.class,
     CastResolverTest.class,
+    CodeReferenceMapTest.class,
     ComplexExpressionExtractorTest.class,
     ConstantBranchPrunerTest.class,
     DeadCodeEliminatorTest.class,
-    DeadCodeMapTest.class,
     DestructorGeneratorTest.class,
     ElementUtilTest.class,
     EnhancedForRewriterTest.class,
