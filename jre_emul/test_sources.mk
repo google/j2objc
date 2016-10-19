@@ -203,6 +203,7 @@ TEST_SOURCES := \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
     com/google/j2objc/FieldTest.java \
+    com/google/j2objc/LinkedBlockingQueueTest.java \
     com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
     com/google/j2objc/MethodTest.java \
@@ -360,7 +361,6 @@ TEST_SOURCES := \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
-    libcore/java/util/concurrent/LinkedBlockingQueueTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
     libcore/java/util/zip/DeflaterOutputStreamTest.java \
     libcore/java/util/zip/DeflaterTest.java \
