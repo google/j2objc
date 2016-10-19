@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -47,12 +46,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Rewrites the Java AST to replace difficult to translate code with methods
@@ -192,7 +190,7 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(SingleVariableDeclaration node) {
     if (node.getExtraDimensions() > 0) {
-      node.setType(Type.newType(node.getVariableBinding().getType()));
+      node.setType(Type.newType(node.getVariableElement().asType()));
       node.setExtraDimensions(0);
     }
   }
@@ -235,7 +233,7 @@ public class Rewriter extends UnitTreeVisitor {
   public boolean visit(QualifiedName node) {
     VariableElement var = TreeUtil.getVariableElement(node);
     Expression qualifier = node.getQualifier();
-    if (var != null && ElementUtil.isField(var) && TreeUtil.getVariableBinding(qualifier) != null) {
+    if (var != null && ElementUtil.isField(var) && TreeUtil.getVariableElement(qualifier) != null) {
       // FieldAccess nodes are more easily mutated than QualifiedName.
       FieldAccess fieldAccess = new FieldAccess(var, TreeUtil.remove(qualifier));
       node.replaceWith(fieldAccess);
@@ -256,11 +254,10 @@ public class Rewriter extends UnitTreeVisitor {
     while (iter.hasNext()) {
       VariableDeclarationFragment frag = iter.next();
       int dimensions = frag.getExtraDimensions();
-      ITypeBinding binding = frag.getVariableBinding().getType();
       if (masterDimensions == -1) {
         masterDimensions = dimensions;
         if (dimensions != 0) {
-          typeNode.replaceWith(Type.newType(binding));
+          typeNode.replaceWith(Type.newType(frag.getVariableElement().asType()));
         }
       } else if (dimensions != masterDimensions) {
         if (newDeclarations == null) {
@@ -285,10 +282,11 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(PropertyAnnotation node) {
     FieldDeclaration field = (FieldDeclaration) node.getParent();
+    TypeMirror fieldType = field.getType().getTypeMirror();
     VariableDeclarationFragment firstVarNode = field.getFragment(0);
-    if (field.getType().getTypeBinding().getName().equals("String")) {
+    if (typeEnv.isStringType(fieldType)) {
       node.addAttribute("copy");
-    } else if (BindingUtil.hasAnnotation(firstVarNode.getVariableBinding(), Weak.class)) {
+    } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {
       if (node.hasAttribute("strong")) {
         ErrorUtil.error(field, "Weak field annotation conflicts with strong Property attribute");
         return;
@@ -315,15 +313,15 @@ public class Rewriter extends UnitTreeVisitor {
       }
     } else {
       // Check that specified accessors exist.
-      IVariableBinding var = field.getFragment(0).getVariableBinding();
+      TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(node);
       if (getter != null) {
-        if (BindingUtil.findDeclaredMethod(var.getType(), getter) == null) {
+        if (ElementUtil.findMethod(enclosingType, getter) == null) {
           ErrorUtil.error(field, "Non-existent getter specified: " + getter);
         }
       }
       if (setter != null) {
-        if (BindingUtil.findDeclaredMethod(var.getType(), setter,
-            var.getType().getQualifiedName()) == null) {
+        if (ElementUtil.findMethod(
+            enclosingType, setter, TypeUtil.getQualifiedName(fieldType)) == null) {
           ErrorUtil.error(field, "Non-existent setter specified: " + setter);
         }
       }
