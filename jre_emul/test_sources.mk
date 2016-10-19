@@ -203,6 +203,7 @@ TEST_SOURCES := \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
     com/google/j2objc/FieldTest.java \
+    com/google/j2objc/LinkedBlockingQueueTest.java \
     com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
     com/google/j2objc/MethodTest.java \

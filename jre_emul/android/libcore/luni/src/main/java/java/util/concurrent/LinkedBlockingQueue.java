@@ -879,4 +879,10 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
             add(item);
         }
     }
+
+	@Override
+	protected void finalize() throws Throwable {
+		clear();
+		super.finalize();
+	}
 }
