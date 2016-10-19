@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -65,19 +66,6 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
   public DefaultMethodShimGenerator(CompilationUnit unit) {
     super(unit);
-  }
-
-  /**
-   * Pairs an ExecutableElement with an ExecutableType representing the resolved type variables as a
-   * member of the current subclass being fixed.
-   */
-  private static class ExecutablePair {
-    private final ExecutableElement elem;
-    private final ExecutableType type;
-    private ExecutablePair(ExecutableElement elem, ExecutableType type) {
-      this.elem = elem;
-      this.type = type;
-    }
   }
 
   /**
@@ -144,24 +132,24 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       Set<ExecutablePair> newMethods = this.newMethods.get(signature);
       Iterable<ExecutablePair> allMethods = Iterables.concat(existingMethods, newMethods);
       ExecutablePair first = allMethods.iterator().next();
-      String mainSelector = nameTable.getMethodSelector(first.elem);
+      String mainSelector = nameTable.getMethodSelector(first.element());
       ExecutablePair impl = resolveImplementation(allMethods);
 
       // Find the set of selectors for this method that don't yet have shims in a superclass.
       Set<String> existingSelectors = new HashSet<>();
       Map<String, ExecutablePair> newSelectors = new LinkedHashMap<>();
       for (ExecutablePair method : existingMethods) {
-        existingSelectors.add(nameTable.getMethodSelector(method.elem));
+        existingSelectors.add(nameTable.getMethodSelector(method.element()));
       }
       existingSelectors.add(mainSelector);
       for (ExecutablePair method : newMethods) {
-        String sel =  nameTable.getMethodSelector(method.elem);
+        String sel =  nameTable.getMethodSelector(method.element());
         if (!existingSelectors.contains(sel) && !newSelectors.containsKey(sel)) {
           newSelectors.put(sel, method);
         }
       }
 
-      if (ElementUtil.isDefault(impl.elem) && newMethods.contains(impl)) {
+      if (ElementUtil.isDefault(impl.element()) && newMethods.contains(impl)) {
         addDefaultMethodShim(mainSelector, impl);
       }
       for (Map.Entry<String, ExecutablePair> entry : newSelectors.entrySet()) {
@@ -185,14 +173,15 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
     private boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
       return b == null
-          || (!declaredByClass(b.elem) && declaredByClass(a.elem))
-          || elementUtil.overrides(a.elem, b.elem, ElementUtil.getDeclaringClass(a.elem));
+          || (!declaredByClass(b.element()) && declaredByClass(a.element()))
+          || elementUtil.overrides(
+              a.element(), b.element(), ElementUtil.getDeclaringClass(a.element()));
     }
 
     private void addShimWithInvocation(
         String selector, ExecutablePair method, Expression invocation, List<Expression> args) {
       IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(
-          selector, (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type));
+          selector, (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type()));
       // Mark synthetic to avoid writing metadata.
       binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
       binding.removeModifiers(Modifier.ABSTRACT | Modifier.DEFAULT);
@@ -202,7 +191,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       methodDecl.setHasDeclaration(false);
 
       int i = 0;
-      for (TypeMirror paramType : method.type.getParameterTypes()) {
+      for (TypeMirror paramType : method.type().getParameterTypes()) {
         GeneratedVariableElement newParam = new GeneratedVariableElement(
             "arg" + i++, paramType, ElementKind.PARAMETER, null);
         methodDecl.addParameter(new SingleVariableDeclaration(newParam));
@@ -210,7 +199,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       }
 
       Block block = new Block();
-      block.addStatement(TypeUtil.isVoid(method.elem.getReturnType())
+      block.addStatement(TypeUtil.isVoid(method.element().getReturnType())
           ? new ExpressionStatement(invocation) : new ReturnStatement(invocation));
       methodDecl.setBody(block);
       typeNode.addBodyDeclaration(methodDecl);
@@ -219,12 +208,13 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     private void addDefaultMethodShim(String selector, ExecutablePair method) {
       // The shim's only purpose is to call the default method implementation and returns it value
       // if required.
-      TypeElement declaringClass = ElementUtil.getDeclaringClass(method.elem);
-      String name = nameTable.getFullFunctionName(method.elem);
-      FunctionBinding fb = new FunctionBinding(name, method.elem.getReturnType(), declaringClass);
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(method.element());
+      String name = nameTable.getFullFunctionName(method.element());
+      FunctionBinding fb = new FunctionBinding(
+          name, method.element().getReturnType(), declaringClass);
       fb.addParameters(declaringClass.asType());
-      fb.addParameters(((ExecutableType) method.elem.asType()).getParameterTypes());
-      FunctionInvocation invocation = new FunctionInvocation(fb, method.type.getReturnType());
+      fb.addParameters(((ExecutableType) method.element().asType()).getParameterTypes());
+      FunctionInvocation invocation = new FunctionInvocation(fb, method.type().getReturnType());
 
       // All default method implementations require self as the first function call argument.
       invocation.addArgument(new ThisExpression(typeElem.asType()));
@@ -233,7 +223,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
     private void addRenamingMethodShim(
         String selector, ExecutablePair method, ExecutablePair delegate) {
-      MethodInvocation invocation = new MethodInvocation(delegate.elem, delegate.type, null);
+      MethodInvocation invocation = new MethodInvocation(delegate, null);
       addShimWithInvocation(selector, method, invocation, invocation.getArguments());
     }
   }
@@ -241,9 +231,9 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
   // Generates a signature that will be the same for methods that can override each other and unique
   // otherwise. Used as a key to group inherited methods together.
   private String getOverrideSignature(ExecutablePair method) {
-    StringBuilder sb = new StringBuilder(ElementUtil.getName(method.elem));
+    StringBuilder sb = new StringBuilder(ElementUtil.getName(method.element()));
     sb.append('(');
-    for (TypeMirror pType : method.type.getParameterTypes()) {
+    for (TypeMirror pType : method.type().getParameterTypes()) {
       sb.append(typeUtil.getSignatureName(pType));
     }
     sb.append(')');
