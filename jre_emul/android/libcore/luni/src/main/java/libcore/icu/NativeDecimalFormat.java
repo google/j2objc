@@ -699,10 +699,16 @@ public final class NativeDecimalFormat implements Cloneable {
       // On an empty string NSNumberFormatter returns YES but leaves the result value nil.
       if (success && !error && result) {
         [position setIndexWithInt:start + (int) range.length];
-        if (fmod([result doubleValue], 1.0) == 0) {
+        NSString *format = [formatter positiveFormat];
+        BOOL isPercentage = [format hasPrefix:@"%"] || [format hasSuffix:@"%"];
+        if (fmod([result doubleValue], 1.0) == 0 && !isPercentage) {
           return JavaLangLong_valueOfWithLong_([result longLongValue]);
         } else {
-          return JavaLangDouble_valueOfWithDouble_([result doubleValue]);
+          double doubleResult = [result doubleValue];
+          if (isPercentage) {
+            doubleResult /= 100.0;
+          }
+          return JavaLangDouble_valueOfWithDouble_(doubleResult);
         }
       } else {
         [position setErrorIndexWithInt:start];

@@ -44,4 +44,10 @@ public class NativeDecimalFormatTest extends TestCase {
     ParsePosition pos = new ParsePosition(0);
     assertNull(df.parse("", pos));
   }
+
+  // https://github.com/google/j2objc/issues/811
+  public void testParsePercentage() throws Exception {
+    float floatValue = new DecimalFormat("0.0#%").parse("12.0%").floatValue();
+    assertEquals(.12, floatValue, 0.0001);
+  }
 }
