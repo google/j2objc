@@ -642,6 +642,8 @@
 		0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		069FE7FA1D8B1FF3006D0FD8 /* sun_misc_Unsafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */; };
+		06A6C8851DB838D200AEB1FA /* LinkedBlockingQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A6C8831DB838D200AEB1FA /* LinkedBlockingQueueTest.m */; };
+		06A6C8861DB838D200AEB1FA /* FileChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A6C8841DB838D200AEB1FA /* FileChannelTest.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
 		06C73F5819180E64001D3CC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06C73F5A19180E6D001D3CC8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
@@ -2330,6 +2332,8 @@
 		069FE7FB1D8B2042006D0FD8 /* AnnotatedElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotatedElements.h; path = build_result/Classes/libcore/reflect/AnnotatedElements.h; sourceTree = "<group>"; };
 		069FE7FC1D8B2043006D0FD8 /* AnnotatedElements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotatedElements.m; path = build_result/Classes/libcore/reflect/AnnotatedElements.m; sourceTree = "<group>"; };
 		06A4CD131B8B9FEA0082FEB2 /* J2ObjC_common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = J2ObjC_common.m; sourceTree = "<group>"; };
+		06A6C8831DB838D200AEB1FA /* LinkedBlockingQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedBlockingQueueTest.m; path = com/google/j2objc/LinkedBlockingQueueTest.m; sourceTree = "<group>"; };
+		06A6C8841DB838D200AEB1FA /* FileChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileChannelTest.m; path = com/google/j2objc/nio/FileChannelTest.m; sourceTree = "<group>"; };
 		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
 		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
 		06AA054A17E110D00017C34A /* Charset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charset.h; path = build_result/Classes/java/nio/charset/Charset.h; sourceTree = "<group>"; };
@@ -6165,6 +6169,7 @@
 				062027D91D512DED001EE455 /* FieldTest.m */,
 				0620265E1D512CBE001EE455 /* FieldTest.m */,
 				0620251D1D512B37001EE455 /* FieldTest.m */,
+				06A6C8841DB838D200AEB1FA /* FileChannelTest.m */,
 				062026851D512D08001EE455 /* FileChannelTest.m */,
 				062025C31D512CA1001EE455 /* FileDescriptorTest.m */,
 				062025C41D512CA1001EE455 /* FileInputStreamTest.m */,
@@ -6232,6 +6237,7 @@
 				0620268F1D512D08001EE455 /* LargeTests.m */,
 				0620278F1D512DCA001EE455 /* LevelTest.m */,
 				062027901D512DCA001EE455 /* LevelTestResource.m */,
+				06A6C8831DB838D200AEB1FA /* LinkedBlockingQueueTest.m */,
 				062025931D512C8E001EE455 /* LinkedBlockingQueueTest.m */,
 				062028D71D512EBD001EE455 /* LinkedHashMapTest.m */,
 				0620281C1D512E03001EE455 /* LinkedHashSetTest.m */,
@@ -6983,6 +6989,7 @@
 				0620254A1D512B37001EE455 /* LinkedListTest.m in Sources */,
 				062029811D512F41001EE455 /* Support_Proxy_ParentException.m in Sources */,
 				062027F51D512DED001EE455 /* NoSuchFieldErrorTest.m in Sources */,
+				06A6C8861DB838D200AEB1FA /* FileChannelTest.m in Sources */,
 				0620262B1D512CA1001EE455 /* OldByteArrayOutputStreamTest.m in Sources */,
 				0620286F1D512E3E001EE455 /* AlgorithmParametersSpiTest.m in Sources */,
 				0620293A1D512F25001EE455 /* Util.m in Sources */,
@@ -7158,6 +7165,7 @@
 				062027761D512D9D001EE455 /* MockFooChild.m in Sources */,
 				062026C01D512D08001EE455 /* LargeTests.m in Sources */,
 				062026B61D512D08001EE455 /* FileChannelTest.m in Sources */,
+				06A6C8851DB838D200AEB1FA /* LinkedBlockingQueueTest.m in Sources */,
 				062025B81D512C8E001EE455 /* ThreadPoolExecutorTest.m in Sources */,
 				062025521D512B37001EE455 /* PackageTest.m in Sources */,
 				0620299F1D512F6A001EE455 /* CallVerificationStack.m in Sources */,
