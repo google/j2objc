@@ -242,6 +242,7 @@ JAVA_SOURCES = \
 	translate/DefaultConstructorAdder.java \
 	translate/DefaultMethodShimGenerator.java \
 	translate/DestructorGenerator.java \
+	translate/ElementReferenceMapper.java \
 	translate/EnhancedForRewriter.java \
 	translate/EnumRewriter.java \
 	translate/Functionizer.java \
@@ -292,7 +293,7 @@ JAVA_SOURCES = \
 	types/Types.java \
 	util/BindingUtil.java \
 	util/CaptureInfo.java \
-	util/DeadCodeMap.java \
+	util/CodeReferenceMap.java \
 	util/ElementUtil.java \
 	util/ErrorUtil.java \
 	util/FileUtil.java \
@@ -302,6 +303,7 @@ JAVA_SOURCES = \
 	util/Parser.java \
 	util/ParserEnvironment.java \
 	util/ProGuardUsageParser.java \
+	util/ProguardNameUtil.java \
 	util/SourceVersion.java \
 	util/TimeTracker.java \
 	util/TranslationEnvironment.java \
