@@ -33,12 +33,10 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashSet;
@@ -48,12 +46,11 @@ import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Generate shims for classes and enums that implement interfaces with default methods. Each shim
@@ -180,14 +177,12 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
     private void addShimWithInvocation(
         String selector, ExecutablePair method, Expression invocation, List<Expression> args) {
-      IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(
-          selector, (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type()));
-      // Mark synthetic to avoid writing metadata.
-      binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
-      binding.removeModifiers(Modifier.ABSTRACT | Modifier.DEFAULT);
-      binding.setDeclaringClass(BindingConverter.unwrapTypeElement(typeElem));
+      ExecutableElement element = (ExecutableElement)
+          GeneratedExecutableElement.newMethod(selector, method.type().getReturnType(), typeElem)
+          .addModifiers(method.element().getModifiers())
+          .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT);
 
-      MethodDeclaration methodDecl = new MethodDeclaration(binding);
+      MethodDeclaration methodDecl = new MethodDeclaration(element);
       methodDecl.setHasDeclaration(false);
 
       int i = 0;

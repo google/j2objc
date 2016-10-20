@@ -560,7 +560,7 @@ public class NameTable {
       return "init";
     }
     String name = method.getName();
-    if (!BindingUtil.isSynthetic(method) && isReservedName(name)) {
+    if (isReservedName(name)) {
       name += "__";
     }
     return name;
@@ -581,6 +581,9 @@ public class NameTable {
   }
 
   public String getMethodSelector(ExecutableElement method) {
+    if (ElementUtil.isSynthetic(method)) {
+      return ElementUtil.getName(method);
+    }
     if (ElementUtil.isInstanceMethod(method)) {
       method = getOriginalMethod(method);
     }
@@ -678,6 +681,9 @@ public class NameTable {
    */
   public String getFunctionName(IMethodBinding method) {
     method = method.getMethodDeclaration();
+    if (BindingUtil.isSynthetic(method)) {
+      return method.getName().replaceAll(":", "_");
+    }
     String name = getRenamedMethodName(method);
     if (name != null) {
       return name.replaceAll(":", "_");

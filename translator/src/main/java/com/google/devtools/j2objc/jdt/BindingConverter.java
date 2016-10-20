@@ -365,6 +365,9 @@ public final class BindingConverter {
           BindingConverter.unwrapTypeMirrorIntoTypeBinding(gElement.getReturnType()), null,
           BindingConverter.unwrapTypeElement((TypeElement) gElement.getEnclosingElement()),
           element.getKind() == ElementKind.CONSTRUCTOR, gElement.isVarArgs());
+      if (gElement.isSynthetic()) {
+        newOne.addModifiers(BindingUtil.ACC_SYNTHETIC);
+      }
       for (VariableElement p : gElement.getParameters()) {
         newOne.getParameters().add(
             BindingConverter.unwrapTypeMirrorIntoTypeBinding(p.asType()));

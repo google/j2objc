@@ -105,6 +105,13 @@ public abstract class GeneratedElement implements Element {
     return this;
   }
 
+  public GeneratedElement removeModifiers(Modifier... modifiersToRemove) {
+    for (Modifier m : modifiersToRemove) {
+      modifiers.remove(m);
+    }
+    return this;
+  }
+
   public boolean isSynthetic() {
     return synthetic;
   }

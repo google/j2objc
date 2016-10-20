@@ -39,15 +39,6 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private final TypeMirror returnType;
   private final boolean varargs;
 
-  /**
-   * Clone a method element, so parameters can be added to it.
-   */
-  public static GeneratedExecutableElement asMutable(ExecutableElement method) {
-    return method instanceof GeneratedExecutableElement
-        ? (GeneratedExecutableElement) method
-        : new GeneratedExecutableElement(method);
-  }
-
   public GeneratedExecutableElement(
       String name, ElementKind kind, TypeMirror returnType, Element enclosingElement,
       boolean varargs) {
@@ -63,6 +54,21 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     parameters.addAll(m.getParameters());
     this.returnType = m.getReturnType();
     this.varargs = m.isVarArgs();
+  }
+
+  public static GeneratedExecutableElement newMethod(
+      String name, TypeMirror returnType, Element enclosingElement) {
+    return new GeneratedExecutableElement(
+        name, ElementKind.METHOD, returnType, enclosingElement, false);
+  }
+
+  /**
+   * Clone a method element, so parameters can be added to it.
+   */
+  public static GeneratedExecutableElement asMutable(ExecutableElement method) {
+    return method instanceof GeneratedExecutableElement
+        ? (GeneratedExecutableElement) method
+        : new GeneratedExecutableElement(method);
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
