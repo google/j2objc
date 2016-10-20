@@ -457,6 +457,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/LibraryNotLinkedError.java \
   com/google/j2objc/ReflectionStrippedError.java \
+  com/google/j2objc/WeakProxy.java \
   com/google/j2objc/nio/charset/IOSCharset.java \
   com/google/j2objc/nio/charset/IOSCharsetDecoder.java \
   com/google/j2objc/nio/charset/IOSCharsetEncoder.java \
