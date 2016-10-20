@@ -25,6 +25,7 @@
 
 package java.io;
 
+import com.google.j2objc.WeakProxy;
 import java.util.Objects;
 import java.util.Formatter;
 import java.util.Locale;
@@ -900,7 +901,7 @@ public class PrintWriter extends Writer {
                 ensureOpen();
                 if ((formatter == null)
                     || (formatter.locale() != Locale.getDefault()))
-                    formatter = new Formatter(this);
+                    formatter = new Formatter(WeakProxy.forObject(this));
                 formatter.format(Locale.getDefault(), format, args);
                 if (autoFlush)
                     out.flush();
@@ -959,7 +960,7 @@ public class PrintWriter extends Writer {
             synchronized (lock) {
                 ensureOpen();
                 if ((formatter == null) || (formatter.locale() != l))
-                    formatter = new Formatter(this, l);
+                    formatter = new Formatter(WeakProxy.forObject(this), l);
                 formatter.format(l, format, args);
                 if (autoFlush)
                     out.flush();

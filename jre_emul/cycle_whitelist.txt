@@ -9,6 +9,11 @@ FIELD java.lang.Throwable.suppressedExceptions
 
 FIELD java.io.ObjectOutputStream.currentPutField
 
+# The following are fixed using WeakProxy.
+FIELD java.io.PrintStream.charOut
+FIELD java.io.PrintStream.formatter
+FIELD java.io.PrintWriter.formatter
+
 TYPE java.net.InetAddress.isReachable.$
 FIELD java.net.NetworkInterface.children
 
@@ -65,9 +70,3 @@ TYPE sun.misc.URLClassPath
 
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
-
-# TODO(kstanger,tball): OpenJDK cycles to be resolved.
-FIELD java.io.PrintStream.formatter
-FIELD java.io.PrintWriter.formatter
-FIELD java.io.PrintWriter.psOut
-FIELD java.io.OutputStreamWriter.out
