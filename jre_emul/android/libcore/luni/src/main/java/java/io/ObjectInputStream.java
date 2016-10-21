@@ -17,7 +17,7 @@
 
 package java.io;
 
-import com.google.j2objc.annotations.WeakOuter;
+import com.google.j2objc.WeakProxy;
 
 import java.io.EmulatedFields.ObjectSlot;
 import java.lang.reflect.Array;
@@ -362,7 +362,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
     public ObjectInputStream(InputStream input) throws StreamCorruptedException, IOException {
         this.input = (input instanceof DataInputStream)
                 ? (DataInputStream) input : new DataInputStream(input);
-        primitiveTypes = new DataInputStream(new WeakProxy());
+        primitiveTypes = new DataInputStream(WeakProxy.forObject(this));
         enableResolve = false;
         this.subclassOverridingImplementation = false;
         resetState();
@@ -2411,34 +2411,5 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
             throw new StreamCorruptedException();
         }
         desc.setSuperclass(superDesc);
-    }
-
-    /**
-     * This class avoids a reference cycle by proxying calls through to the
-     * outer ObjectInputStream while holding a weak reference to the outer
-     * instance.
-     */
-    @WeakOuter
-    private class WeakProxy extends InputStream {
-
-      @Override
-      public int available() throws IOException {
-        return ObjectInputStream.this.available();
-      }
-
-      @Override
-      public void close() throws IOException {
-        ObjectInputStream.this.close();
-      }
-
-      @Override
-      public int read() throws IOException {
-        return ObjectInputStream.this.read();
-      }
-
-      @Override
-      public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-        return ObjectInputStream.this.read(buffer, byteOffset, byteCount);
-      }
     }
 }
