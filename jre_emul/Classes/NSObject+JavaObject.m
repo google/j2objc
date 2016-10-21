@@ -43,7 +43,7 @@
 
   // Use the Java getClass method because it returns the class we want in case
   // self's class hass been swizzled by a WeakReference or RetainedWith field.
-  Class cls = [self getClass].objcClass;
+  Class cls = [self java_getClass].objcClass;
   size_t instanceSize = class_getInstanceSize(cls);
   // We don't want to copy the NSObject portion of the object, in particular the
   // isa pointer, because it may contain the retain count.
@@ -78,7 +78,7 @@
   return clone;
 }
 
-- (IOSClass *)getClass {
+- (IOSClass *)java_getClass {
   return IOSClass_fromClass([self class]);
 }
 
@@ -172,22 +172,22 @@ static void doWait(id obj, long long timeout) {
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "LIOSClass;", 0x11, -1, -1, -1, 0, -1, -1 },
-    { NULL, "I", 0x1, 1, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 2, 3, -1, -1, -1, -1 },
-    { NULL, "LNSObject;", 0x4, -1, -1, 4, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 5, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x4, 6, -1, 7, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x11, 0, -1, -1, 1, -1, -1 },
+    { NULL, "I", 0x1, 2, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 3, 4, -1, -1, -1, -1 },
+    { NULL, "LNSObject;", 0x4, -1, -1, 5, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 6, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x4, 7, -1, 8, -1, -1, -1 },
     { NULL, "V", 0x11, -1, -1, -1, -1, -1, -1 },
     { NULL, "V", 0x11, -1, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x11, 8, 9, 10, -1, -1, -1 },
-    { NULL, "V", 0x11, 8, 11, 10, -1, -1, -1 },
-    { NULL, "V", 0x11, -1, -1, 10, -1, -1, -1 },
+    { NULL, "V", 0x11, 9, 10, 11, -1, -1, -1 },
+    { NULL, "V", 0x11, 9, 12, 11, -1, -1, -1 },
+    { NULL, "V", 0x11, -1, -1, 11, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
-  methods[1].selector = @selector(getClass);
+  methods[1].selector = @selector(java_getClass);
   methods[2].selector = @selector(hash);
   methods[3].selector = @selector(isEqual:);
   methods[4].selector = @selector(clone);
@@ -200,7 +200,7 @@ static void doWait(id obj, long long timeout) {
   methods[11].selector = @selector(wait);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
-    "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;",
+    "getClass", "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;",
     "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LNSException;", "wait", "J",
     "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {

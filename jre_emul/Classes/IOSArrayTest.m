@@ -234,23 +234,24 @@
   // Verify primitive array types are equal ...
   IOSBooleanArray *boolArray1 = [IOSBooleanArray arrayWithLength:0];
   IOSBooleanArray *boolArray2 = [IOSBooleanArray arrayWithLength:10];
-  XCTAssertTrue([[boolArray1 getClass] isEqual:[boolArray2 getClass]],
+  XCTAssertTrue([[boolArray1 java_getClass] isEqual:[boolArray2 java_getClass]],
                @"boolean array types not equal");
   IOSIntArray *intArray1 = [IOSIntArray arrayWithLength:0];
   IOSIntArray *intArray2 = [IOSIntArray arrayWithLength:10];
-  XCTAssertTrue([[intArray1 getClass] isEqual:[intArray2 getClass]], @"int array types not equal");
+  XCTAssertTrue([[intArray1 java_getClass] isEqual:[intArray2 java_getClass]],
+               @"int array types not equal");
 
   // ... but not to each other.
-  XCTAssertFalse([[boolArray1 getClass] isEqual:[intArray2 getClass]],
+  XCTAssertFalse([[boolArray1 java_getClass] isEqual:[intArray2 java_getClass]],
                 @"different primitive array types equal");
 
   // Verify object array types are equal only if their element type is equal.
   IOSObjectArray *dateArray1 = [IOSObjectArray arrayWithLength:0 type:JavaUtilDate_class_()];
   IOSObjectArray *dateArray2 = [IOSObjectArray arrayWithLength:10 type:JavaUtilDate_class_()];
   IOSObjectArray *calArray = [IOSObjectArray arrayWithLength:0 type:JavaUtilCalendar_class_()];
-  XCTAssertTrue([[dateArray1 getClass] isEqual:[dateArray2 getClass]],
+  XCTAssertTrue([[dateArray1 java_getClass] isEqual:[dateArray2 java_getClass]],
                @"Date array types not equal");
-  XCTAssertFalse([[dateArray1 getClass] isEqual:[calArray getClass]],
+  XCTAssertFalse([[dateArray1 java_getClass] isEqual:[calArray java_getClass]],
                 @"different object array types equal");
 }
 

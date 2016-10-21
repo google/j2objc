@@ -918,7 +918,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return [self isEqualToString:[sb description]];
 }
 
-- (IOSClass *)getClass {
+- (IOSClass *)java_getClass {
   return NSString_class_();
 }
 

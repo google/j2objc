@@ -132,7 +132,7 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
   return result;
 }
 
-- (IOSClass *)getClass {
+- (IOSClass *)java_getClass {
   return IOSClass_arrayOf([self elementType]);
 }
 

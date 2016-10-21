@@ -100,7 +100,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSClass *cls = [self getClass];", result);
+    assertEquals("IOSClass *cls = [self java_getClass];", result);
     result = generateStatement(stmts.get(1));
     assertEquals("IOSClass *superClass = [cls getSuperclass];", result);
   }

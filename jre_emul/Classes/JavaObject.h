@@ -33,7 +33,7 @@
 - (id)clone;
 
 // Returns the IOSClass of the receiver.
-- (IOSClass *)getClass;
+- (IOSClass *)java_getClass;
 
 // Wakes up a waiting thread (if any).
 - (void)notify;
