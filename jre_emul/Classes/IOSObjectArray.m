@@ -123,7 +123,7 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 static void ThrowArrayStoreException(IOSObjectArray *array, id value) {
   NSString *msg = [NSString stringWithFormat:
       @"attempt to add object of type %@ to array with type %@",
-      [[value java_getClass] getName], [array->elementType_ getName]];
+      [[value getClass] getName], [array->elementType_ getName]];
   @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
 }
 #endif

@@ -40,13 +40,13 @@
 - (void)testGetClass {
   // Test with class.
   JavaUtilArrayList *one = [[[JavaUtilArrayList alloc] init] autorelease];
-  IOSClass *clazz = [one java_getClass];
+  IOSClass *clazz = [one getClass];
   XCTAssertEqualObjects([clazz getName], @"java.util.ArrayList",
                  @"incorrect class name", nil);
 
   // Now with a protocol.
   id<JavaUtilList> two = [[[JavaUtilArrayList alloc] init] autorelease];
-  clazz = [(id<JavaObject>) two java_getClass];
+  clazz = [(id<JavaObject>) two getClass];
   XCTAssertEqualObjects([clazz getName], @"java.util.ArrayList",
                  @"incorrect class name", nil);
 }

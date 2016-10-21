@@ -66,8 +66,8 @@ static void *CreateSubclass(void *clsPtr) {
   Method release = class_getInstanceMethod(cls, @selector(release));
   class_addMethod(subclass, @selector(release), (IMP)RetainedWithRelease,
                   method_getTypeEncoding(release));
-  Method getClass = class_getInstanceMethod(cls, @selector(java_getClass));
-  class_addMethod(subclass, @selector(java_getClass), (IMP)RetainedWithGetClass,
+  Method getClass = class_getInstanceMethod(cls, @selector(getClass));
+  class_addMethod(subclass, @selector(getClass), (IMP)RetainedWithGetClass,
                   method_getTypeEncoding(getClass));
   objc_registerClassPair(subclass);
   return subclass;

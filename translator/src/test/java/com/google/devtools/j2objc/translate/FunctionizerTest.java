@@ -64,7 +64,7 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslatedLines(translation, functionHeader + " {",
         "return JreStrcat(\"$@\", msg, cls);");
     assertTranslation(translation,
-        "return A_strWithNSString_withIOSClass_(self, msg, [self java_getClass]);");
+        "return A_strWithNSString_withIOSClass_(self, msg, [self getClass]);");
   }
 
   // Verify non-private instance method is generated normally.
@@ -77,7 +77,7 @@ public class FunctionizerTest extends GenerationTest {
         "- (NSString *)strWithNSString:(NSString *)msg",
         "withIOSClass:(IOSClass *)cls {");
     assertTranslation(translation,
-        "return [self strWithNSString:msg withIOSClass:[self java_getClass]];");
+        "return [self strWithNSString:msg withIOSClass:[self getClass]];");
   }
 
   // Verify instance field access in function.
@@ -224,7 +224,7 @@ public class FunctionizerTest extends GenerationTest {
     // Check invocation.
     assertTranslatedLines(translation,
         "- (NSString *)testWithNSString:(NSString *)msg {",
-        "return A_strWithNSString_withIOSClass_(msg, [self java_getClass]);");
+        "return A_strWithNSString_withIOSClass_(msg, [self getClass]);");
   }
 
   // Verify function declaration is in the header.
@@ -249,7 +249,7 @@ public class FunctionizerTest extends GenerationTest {
     // Check invocation.
     assertTranslatedLines(translation,
         "- (NSString *)testWithNSString:(NSString *)msg {",
-        "return A_strWithNSString_withIOSClass_(msg, [self java_getClass]);");
+        "return A_strWithNSString_withIOSClass_(msg, [self getClass]);");
   }
 
   public void testFunctionParameter() throws IOException {
@@ -296,7 +296,7 @@ public class FunctionizerTest extends GenerationTest {
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this.getClass()) { return \"abc\"; }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized([self java_getClass])");
+    assertTranslation(translation, "@synchronized([self getClass])");
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private static String str() { synchronized(A.class) { return \"abc\"; }}}",

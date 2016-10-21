@@ -204,8 +204,8 @@ static Class CreateReferentSubclass(Class cls) {
   Method release = class_getInstanceMethod(cls, @selector(release));
   class_addMethod(subclass, @selector(release), (IMP) ReferentSubclassRelease,
                   method_getTypeEncoding(release));
-  Method getClass = class_getInstanceMethod(cls, @selector(java_getClass));
-  class_addMethod(subclass, @selector(java_getClass), (IMP) ReferentSubclassGetClass,
+  Method getClass = class_getInstanceMethod(cls, @selector(getClass));
+  class_addMethod(subclass, @selector(getClass), (IMP) ReferentSubclassGetClass,
                   method_getTypeEncoding(getClass));
   objc_registerClassPair(subclass);
   return subclass;

@@ -353,8 +353,7 @@ public class DefaultMethodsTest extends GenerationTest {
   public void testAccessingOuterType() throws IOException {
     String source = "interface A { default Class<?> type() { return getClass(); } }";
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslatedLines(impl,
-        "IOSClass *A_type(id<A> self) {", "return [self java_getClass];", "}");
+    assertTranslatedLines(impl, "IOSClass *A_type(id<A> self) {", "return [self getClass];", "}");
   }
 
   public void testDefaultMethodWithMultipleSelectors() throws IOException {

@@ -53,7 +53,7 @@
 }
 
 - (jboolean)isInstance:(id)object {
-  IOSClass *objClass = [object java_getClass];
+  IOSClass *objClass = [object getClass];
   return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
 }
 

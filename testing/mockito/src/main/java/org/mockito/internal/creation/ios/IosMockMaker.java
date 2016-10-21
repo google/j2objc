@@ -163,7 +163,7 @@ public final class IosMockMaker implements MockMaker {
     /*-[
     static JavaLangReflectMethod *FindMethod(id self, SEL selector) {
       IOSClass *mockedClass =
-          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self java_getClass]];
+          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:[self getClass]];
       return [mockedClass getMethodWithSelector:sel_getName(selector)];
     }
     ]-*/
