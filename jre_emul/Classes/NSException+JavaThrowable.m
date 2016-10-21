@@ -531,7 +531,7 @@ void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
   //   . if there is a message, then the reason is "class-name: message",
   //   . otherwise, it's "class-name".
   // Note: this only affects translator-generated exception instances.
-  NSString *clsName = [[self getClass] getName];
+  NSString *clsName = [[self java_getClass] getName];
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
 
   [self initWithName:[[self class] description] reason:reason userInfo:userInfo];

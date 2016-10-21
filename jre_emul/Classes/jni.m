@@ -186,7 +186,7 @@ static jobject GetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize inde
 
 static jclass GetObjectClass(JNIEnv *env, jobject obj) {
   nil_chk(obj);
-  return [(id<JavaObject>) obj getClass];
+  return [(id<JavaObject>) obj java_getClass];
 }
 
 static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, jboolean *isCopy) {

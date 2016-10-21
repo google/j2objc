@@ -40,18 +40,18 @@
 @implementation IOSPrimitiveClassTest
 
 - (void)testBooleanType {
-  NSString *objectTypeName = [[JavaLangBoolean_get_TRUE() getClass] getName];
+  NSString *objectTypeName = [[JavaLangBoolean_get_TRUE() java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Boolean",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangBoolean_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"boolean",
                        @"incorrect primitive type name");
-  NSString *arrayTypeName = [[[IOSBooleanArray arrayWithLength:0] getClass] getName];
+  NSString *arrayTypeName = [[[IOSBooleanArray arrayWithLength:0] java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[Z", @"incorrect array type name");
 }
 
 - (void)testByteType {
-  IOSClass *javaByteClass = [[JavaLangByte valueOfWithByte:42] getClass];
+  IOSClass *javaByteClass = [[JavaLangByte valueOfWithByte:42] java_getClass];
   NSString *objectTypeName = [javaByteClass getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Byte",
                        @"incorrect object type name");
@@ -59,85 +59,85 @@
   XCTAssertEqualObjects(primitiveTypeName, @"byte",
                        @"incorrect primitive type name");
   IOSByteArray *byteArray = [IOSByteArray arrayWithLength:0];
-  NSString *arrayTypeName = [[byteArray getClass] getName];
+  NSString *arrayTypeName = [[byteArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[B", @"incorrect array type name");
 }
 
 - (void)testCharType {
   JavaLangCharacter *javaCharacter = [JavaLangCharacter valueOfWithChar:'x'];
-  NSString *objectTypeName = [[javaCharacter getClass] getName];
+  NSString *objectTypeName = [[javaCharacter java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Character",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangCharacter_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"char",
                        @"incorrect primitive type name");
   IOSCharArray *charArray = [IOSCharArray arrayWithLength:0];
-  NSString *arrayTypeName = [[charArray getClass] getName];
+  NSString *arrayTypeName = [[charArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[C", @"incorrect array type name");
 }
 
 - (void)testDoubleType {
   JavaLangDouble *javaDouble = [JavaLangDouble valueOfWithDouble:1.2];
-  NSString *objectTypeName = [[javaDouble getClass] getName];
+  NSString *objectTypeName = [[javaDouble java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Double",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangDouble_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"double",
                        @"incorrect primitive type name");
   IOSDoubleArray *doubleArray = [IOSDoubleArray arrayWithLength:0];
-  NSString *arrayTypeName = [[doubleArray getClass] getName];
+  NSString *arrayTypeName = [[doubleArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[D", @"incorrect array type name");
 }
 
 - (void)testFloatType {
   JavaLangFloat *javaFloat = [JavaLangFloat valueOfWithFloat:3.4f];
-  NSString *objectTypeName = [[javaFloat getClass] getName];
+  NSString *objectTypeName = [[javaFloat java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Float",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangFloat_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"float",
                        @"incorrect primitive type name");
   IOSFloatArray *floatArray = [IOSFloatArray arrayWithLength:0];
-  NSString *arrayTypeName = [[floatArray getClass] getName];
+  NSString *arrayTypeName = [[floatArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[F", @"incorrect array type name");
 }
 
 - (void)testIntType {
   JavaLangInteger *javaInteger = [JavaLangInteger valueOfWithInt:42];
-  NSString *objectTypeName = [[javaInteger getClass] getName];
+  NSString *objectTypeName = [[javaInteger java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Integer",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangInteger_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"int",
                        @"incorrect primitive type name");
   IOSIntArray *intArray = [IOSIntArray arrayWithLength:0];
-  NSString *arrayTypeName = [[intArray getClass] getName];
+  NSString *arrayTypeName = [[intArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[I", @"incorrect array type name");
 }
 
 - (void)testLongType {
   JavaLangLong *javaLong = [JavaLangLong valueOfWithLong:42LL];
-  NSString *objectTypeName = [[javaLong getClass] getName];
+  NSString *objectTypeName = [[javaLong java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Long",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangLong_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"long",
                        @"incorrect primitive type name");
   IOSLongArray *longArray = [IOSLongArray arrayWithLength:0];
-  NSString *arrayTypeName = [[longArray getClass] getName];
+  NSString *arrayTypeName = [[longArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[J", @"incorrect array type name");
 }
 
 - (void)testShortType {
   JavaLangShort *javaShort = [JavaLangShort valueOfWithShort:42];
-  NSString *objectTypeName = [[javaShort getClass] getName];
+  NSString *objectTypeName = [[javaShort java_getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Short",
                        @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangShort_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"short",
                        @"incorrect primitive type name");
   IOSShortArray *shortArray = [IOSShortArray arrayWithLength:0];
-  NSString *arrayTypeName = [[shortArray getClass] getName];
+  NSString *arrayTypeName = [[shortArray java_getClass] getName];
   XCTAssertEqualObjects(arrayTypeName, @"[S", @"incorrect array type name");
 }
 

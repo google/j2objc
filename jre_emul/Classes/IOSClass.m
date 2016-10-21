@@ -793,7 +793,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
     for (jint i = 0; i < declared->size_; i++) {
       id<JavaLangAnnotationAnnotation> annotation = declared->buffer_[i];
-      IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
+      IOSObjectArray *attributes = [[annotation java_getClass] getDeclaredAnnotations];
       for (jint j = 0; j < attributes->size_; j++) {
         id<JavaLangAnnotationAnnotation> attribute = attributes->buffer_[j];
         if (inheritedAnnotation == [attribute annotationType]) {
@@ -1119,7 +1119,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return self;
 }
 
-- (IOSClass *)getClass {
+- (IOSClass *)java_getClass {
   return IOSClass_class_();
 }
 

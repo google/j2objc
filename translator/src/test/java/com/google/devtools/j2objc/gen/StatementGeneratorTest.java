@@ -47,8 +47,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    Class<?> classOne = one.getClass();"
         + "    Class<?> classTwo = two.getClass(); }}",
         "A", "A.m");
-    assertTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) getClass]");
-    assertTranslation(translation, "[((id<JavaUtilList>) nil_chk(two)) getClass]");
+    assertTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) java_getClass]");
+    assertTranslation(translation, "[((id<JavaUtilList>) nil_chk(two)) java_getClass]");
   }
 
   public void testEnumConstantReferences() throws IOException {
@@ -604,7 +604,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSClass *myClass = [self getClass];", result);
+    assertEquals("IOSClass *myClass = [self java_getClass];", result);
     result = generateStatement(stmts.get(1));
     assertEquals("IOSClass *mySuperClass = [myClass getSuperclass];", result);
     result = generateStatement(stmts.get(2));
@@ -942,7 +942,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    getClass().getMethod(\"equals\", Object.class); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[[self getClass] getMethod:@\"equals\" parameterTypes:[IOSObjectArray "
+        "[[self java_getClass] getMethod:@\"equals\" parameterTypes:[IOSObjectArray "
         + "arrayWithObjects:(id[]){ NSObject_class_() } count:1 type:IOSClass_class_()]];");
   }
 
@@ -953,7 +953,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    getClass().getMethod(\"hashCode\", new Class[0]); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[[self getClass] getMethod:@\"hashCode\" parameterTypes:[IOSObjectArray "
+        "[[self java_getClass] getMethod:@\"hashCode\" parameterTypes:[IOSObjectArray "
         + "arrayWithLength:0 type:IOSClass_class_()]];");
   }
 

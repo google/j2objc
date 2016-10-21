@@ -44,8 +44,8 @@ public class WeakProxy {
     return [delegate_ isKindOfClass:aClass];
   }
 
-  - (IOSClass *)getClass {
-    return [delegate_ getClass];
+  - (IOSClass *)java_getClass {
+    return [delegate_ java_getClass];
   }
   ]-*/
 }
