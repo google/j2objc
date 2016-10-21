@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -55,7 +56,11 @@ public class MethodDeclaration extends BodyDeclaration {
   }
 
   public MethodDeclaration(ExecutableElement method) {
-    this((IMethodBinding) BindingConverter.unwrapElement(method));
+    super(method);
+    executableElement = method;
+    isConstructor = ElementUtil.isConstructor(method);
+    returnType.set(Type.newType(method.getReturnType()));
+    name.set(new SimpleName(method));
   }
 
   @Override

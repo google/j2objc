@@ -33,9 +33,13 @@ public class StringLiteral extends Expression {
     typeMirror = other.getTypeMirror();
   }
 
-  public StringLiteral(String literalValue, Types typeEnv) {
+  public StringLiteral(String literalValue, TypeMirror type) {
     this.literalValue = literalValue;
-    typeMirror = typeEnv.resolveJavaTypeMirror("java.lang.String");
+    typeMirror = type;
+  }
+
+  public StringLiteral(String literalValue, Types typeEnv) {
+    this(literalValue, typeEnv.resolveJavaTypeMirror("java.lang.String"));
   }
 
   @Override

@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.gen.JavadocGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
@@ -803,7 +803,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(PrimitiveType node) {
-    sb.print(node.getTypeBinding().getName());
+    sb.print(node.getTypeMirror().toString());
     return false;
   }
 
@@ -824,7 +824,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(QualifiedType node) {
-    sb.print(node.getTypeBinding().getQualifiedName());
+    sb.print(node.getTypeMirror().toString());
     return false;
   }
 
@@ -848,7 +848,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(SimpleType node) {
-    sb.print(node.getTypeBinding().getName());
+    sb.print(node.getTypeMirror().toString());
     return false;
   }
 
@@ -865,7 +865,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(SingleVariableDeclaration node) {
     sb.printIndent();
-    printModifiers(node.getVariableBinding().getModifiers());
+    printModifiers(ElementUtil.fromModifierSet(node.getVariableElement().getModifiers()));
     node.getType().accept(this);
     if (node.isVarargs()) {
       sb.print("...");
@@ -1123,7 +1123,6 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    printModifiers(TypeUtil.getModifiers(node.getTypeMirror()));
     node.getType().accept(this);
     sb.print(' ');
     for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
@@ -1152,7 +1151,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(VariableDeclarationStatement node) {
     sb.printIndent();
-    printModifiers(node.getType().getTypeBinding().getModifiers());
+    printModifiers(node.getModifiers());
     node.getType().accept(this);
     sb.print(' ');
     for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
@@ -1224,7 +1223,7 @@ public class DebugASTPrinter extends TreeVisitor {
     if (Modifier.isTransient(modifiers)) {
       sb.print("transient ");
     }
-    if ((modifiers & BindingUtil.ACC_SYNTHETIC) > 0) {
+    if ((modifiers & ElementUtil.ACC_SYNTHETIC) > 0) {
       sb.print("synthetic ");
     }
   }

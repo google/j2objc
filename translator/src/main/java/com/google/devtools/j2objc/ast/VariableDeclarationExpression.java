@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
 
@@ -44,7 +43,7 @@ public class VariableDeclarationExpression extends Expression {
   @Override
   public TypeMirror getTypeMirror() {
     Type typeNode = type.get();
-    return typeNode != null ? BindingConverter.getType(typeNode.getTypeBinding()) : null;
+    return typeNode != null ? typeNode.getTypeMirror() : null;
   }
 
   public Type getType() {
