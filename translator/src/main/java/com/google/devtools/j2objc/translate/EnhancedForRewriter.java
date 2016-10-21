@@ -31,9 +31,9 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
@@ -90,8 +90,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     VariableElement loopVariable = node.getParameter().getVariableElement();
     TypeMirror componentType = expressionType.getComponentType();
     TypeElement iosArrayType = typeEnv.resolveArrayType(componentType);
-    TypeMirror bufferType = BindingConverter.getType(typeEnv.getPointerType(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(componentType)));
+    TypeMirror bufferType = new PointerType(componentType);
     VariableElement arrayVariable = new GeneratedVariableElement(
         "a__", expressionType, ElementKind.LOCAL_VARIABLE, null);
     VariableElement bufferVariable = new GeneratedVariableElement(

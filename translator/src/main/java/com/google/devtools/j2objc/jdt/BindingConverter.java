@@ -21,6 +21,8 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
+import com.google.devtools.j2objc.types.PointerType;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -397,6 +399,9 @@ public final class BindingConverter {
       return null;
     } else if (t instanceof NativeType) {
       return new NativeTypeBinding(((NativeType) t).toString());
+    } else if (t instanceof PointerType) {
+      return new PointerTypeBinding(unwrapTypeMirrorIntoTypeBinding(
+          ((PointerType) t).getPointeeType()));
     } else if (t instanceof GeneratedTypeElement.Mirror) {
       return ((GeneratedTypeElement.Mirror) t).asTypeBinding();
     }

@@ -289,6 +289,7 @@ JAVA_SOURCES = \
 	types/LambdaTypeElement.java \
 	types/NativeType.java \
 	types/NativeTypeBinding.java \
+	types/PointerType.java \
 	types/PointerTypeBinding.java \
 	types/Types.java \
 	util/BindingUtil.java \
