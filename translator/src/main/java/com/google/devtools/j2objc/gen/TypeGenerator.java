@@ -251,7 +251,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return hasInitializeMethod()
         || hasStaticAccessorMethods()
         || BindingUtil.isRuntimeAnnotation(typeBinding)
-        || BindingUtil.hasDefaultMethodsInFamily(typeBinding)
         || BindingUtil.hasStaticInterfaceMethods(typeBinding);
   }
 

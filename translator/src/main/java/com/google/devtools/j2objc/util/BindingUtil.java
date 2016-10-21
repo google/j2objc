@@ -741,28 +741,6 @@ public final class BindingUtil {
     return false;
   }
 
-
-  /**
-   * Returns true if any of the declared methods in the interface or its supers is default.
-   */
-  public static boolean hasDefaultMethodsInFamily(ITypeBinding type) {
-    assert type.isInterface();
-
-    for (IMethodBinding method : type.getDeclaredMethods()) {
-      if (isDefault(method)) {
-        return true;
-      }
-    }
-
-    for (ITypeBinding parent : type.getInterfaces()) {
-      if (hasDefaultMethodsInFamily(parent)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   /**
    * Returns true if any of the declared methods in the interface is static.
    */

@@ -39,9 +39,7 @@ public class DefaultMethodsTest extends GenerationTest {
 
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
-    assertTranslation(header, "@interface Foo : NSObject < Foo >");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
-    assertTranslatedLines(impl, "- (void)g {", "Foo_g(self);", "}");
     assertTranslatedLines(impl, "void Foo_g(id<Foo> self) {", "[self f];", "}");
   }
 
@@ -52,29 +50,10 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl =  getTranslatedFile("Test.m");
 
-    // Even when reflection info is stripped, the companion class should still be generated.
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
-    assertTranslation(header, "@interface Foo : NSObject < Foo >");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
-    assertTranslatedLines(impl, "- (void)g {", "Foo_g(self);", "}");
     assertTranslatedLines(impl, "void Foo_g(id<Foo> self) {", "[self f];", "}");
-  }
-
-  public void testCompanionClassDefaultMethodImplementation() throws IOException {
-    String source = "interface A { void f(); default void a() { f(); } }"
-        + "interface B extends A { default void f() {} }"
-        + "interface C extends B { void f(); }"
-        + "interface D { default void d() {} }"
-        + "interface E extends A, C, D {}";
-
-    String header = translateSourceFile(source, "Test", "Test.h");
-    String impl =  getTranslatedFile("Test.m");
-
-    assertTranslation(header, "@interface E : NSObject < E >");
-    assertOccurrences(impl, "A_a(self)", 4); // From -[A a], -[B a], -[C a], and -[E a].
-    assertOccurrences(impl, "B_f(self)", 1); // From -[B f].
-    assertOccurrences(impl, "D_d(self)", 2); // From -[D d] and -[E d].
   }
 
   public void testSuperDefaultMethodInvocation() throws IOException {
@@ -195,7 +174,7 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(impl, "void B_f(id<B> self)");
     assertNotInTranslation(impl, "void B_g(id<A> self)");
     assertTranslatedLines(impl, "- (void)f {", "B_f(self);", "}");
-    assertOccurrences(impl, "A_g(self);", 1); // From @implementation A.
+    assertNotInTranslation(impl, "A_g(self);");
     assertNotInTranslation(impl, "B_g(self);");
   }
 
@@ -208,8 +187,8 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
 
     assertOccurrences(header, "- (void)f;", 1); // Declared once by A.
-    assertOccurrences(impl, "A_f(self);", 3); // Called by -[A f], -[B f], and -[P f].
-    assertOccurrences(impl, "B_g(self);", 2); // Called by -[B g] and -[Q g].
+    assertOccurrences(impl, "A_f(self);", 1); // Called by -[P f].
+    assertOccurrences(impl, "B_g(self);", 1); // Called by -[Q g].
   }
 
   public void testConcreteMethodPrecedence() throws Exception {
@@ -220,7 +199,8 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
 
     assertOccurrences(header, "- (void)f;", 2); // Declared once by A and another by P.
-    assertOccurrences(impl, "A_f(self);", 1); // Used only once in @implementation A.
+    // f() is inherited from P so the default declaration in A is not used.
+    assertNotInTranslation(impl, "A_f(self);");
   }
 
   public void testAnonymousClass() throws IOException {
@@ -249,8 +229,8 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
     assertTranslation(header, "void A_P_f(id<A_P> self);");
 
-    // This is called by the shims -[A_P f], -[A_B f], -[A_B_C f], and -[A_D f].
-    assertOccurrences(impl, "A_P_f(self);", 4);
+    // This is called by the shims -[A_B f], -[A_B_C f], and -[A_D f].
+    assertOccurrences(impl, "A_P_f(self);", 3);
   }
 
   public void testFunctionizedMethodRenaming() throws Exception {
@@ -276,7 +256,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
     assertOccurrences(header, "- (void)f;", 1); // From P, but not A and C
-    assertOccurrences(impl, "P_f(self);", 2); // From -[P f] and -[A f], but not from B or C.
+    assertOccurrences(impl, "P_f(self);", 1); // From -[A f], but not from B or C.
   }
 
   public void testInterfaceTraversalOrder() throws Exception {
@@ -300,8 +280,8 @@ public class DefaultMethodsTest extends GenerationTest {
         + "interface C extends B { default void f() {} }"
         + "class D implements A, C {}";
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertOccurrences(impl, "A_f(self);", 2); // From -[A f] and -[B f]
-    assertOccurrences(impl, "C_f(self);", 2); // From -[C f] and -[D f]
+    assertNotInTranslation(impl, "A_f(self);");
+    assertOccurrences(impl, "C_f(self);", 1); // -[D f]
   }
 
   public void testGenericDefaultMethods() throws Exception {
@@ -366,46 +346,8 @@ public class DefaultMethodsTest extends GenerationTest {
     // From the default method of A.
     assertTranslatedLines(impl, "id A_f(id<A> self) {", "return nil;", "}");
 
-    // From @implementation A.
-    assertTranslatedLines(impl, "- (id)f {", "return A_f(self);", "}");
-    assertOccurrences(impl, "return A_f(self)", 1);
-
     // From @implementation B.
     assertTranslatedLines(impl, "- (NSString *)f {", "return @\"\";", "}");
-  }
-
-  public void testIncompleteImplPragmasInCompanionClasses() throws IOException {
-    addSourceFile("interface A { void f(); } ", "A.java");
-    addSourceFile("interface B extends A {}", "B.java");
-    addSourceFile("interface C extends A { default void g() {} }", "C.java");
-    addSourceFile("interface D extends C { }", "D.java");
-    String implA = translateSourceFile("A", "A.m");
-    String implB = translateSourceFile("B", "B.m");
-    String implC = translateSourceFile("C", "C.m");
-    String implD = translateSourceFile("D", "D.m");
-    String ignoreProtocol = "#pragma clang diagnostic ignored \"-Wprotocol\"";
-    assertNotInTranslation(implA, ignoreProtocol);
-    assertNotInTranslation(implB, ignoreProtocol);
-    assertTranslation(implC, ignoreProtocol);
-    assertTranslation(implD, ignoreProtocol);
-  }
-
-  public void testIncompleteImplPragmasInCompanionClassesWithNoReflection() throws IOException {
-    Options.setStripReflection(true);
-
-    addSourceFile("interface A { void f(); } ", "A.java");
-    addSourceFile("interface B extends A {}", "B.java");
-    addSourceFile("interface C extends A { default void g() {} }", "C.java");
-    addSourceFile("interface D extends C { }", "D.java");
-    String implA = translateSourceFile("A", "A.m");
-    String implB = translateSourceFile("B", "B.m");
-    String implC = translateSourceFile("C", "C.m");
-    String implD = translateSourceFile("D", "D.m");
-    String ignoreProtocol = "#pragma clang diagnostic ignored \"-Wprotocol\"";
-    assertNotInTranslation(implA, ignoreProtocol);
-    assertNotInTranslation(implB, ignoreProtocol);
-    assertTranslation(implC, ignoreProtocol);
-    assertTranslation(implD, ignoreProtocol);
   }
 
   public void testAccessingOuterType() throws IOException {
@@ -440,7 +382,8 @@ public class DefaultMethodsTest extends GenerationTest {
         + "    throw new IndexOutOfBoundsException();"
         + "  }"
         + "}"
-        + "interface OfInt extends OfPrimitive<Integer, OfInt> {}}", "Node", "Node.m");
+        + "interface OfInt extends OfPrimitive<Integer, OfInt> {}"
+        + "static class OfIntImpl implements OfInt {}}", "Node", "Node.m");
     assertTranslatedLines(translation,
         "return ((id<Node_OfInt>) Node_OfPrimitive_getChildWithInt_(self, arg0));");
   }
@@ -451,8 +394,7 @@ public class DefaultMethodsTest extends GenerationTest {
     addSourceFile("interface Sink<T> { default void test(long size) {}}", "Sink.java");
     String translation = translateSourceFile("class Test {"
         + "private interface AccumulatingSink<T> extends Sink<T> {}}", "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "@interface Test_AccumulatingSink : NSObject < Test_AccumulatingSink >");
+    assertTranslatedLines(translation, "@interface Test_AccumulatingSink : NSObject");
   }
 
   public void testExtraSelectorsFromMultipleOverrides() throws IOException {

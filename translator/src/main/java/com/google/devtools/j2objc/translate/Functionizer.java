@@ -282,7 +282,13 @@ public class Functionizer extends UnitTreeVisitor {
           || (TranslationUtil.needsReflection(BindingConverter.getTypeElement(declaringClass))
               && !isEnumConstructor);
       if (keepMethod) {
-        setFunctionCaller(node, binding);
+        if (isDefaultMethod) {
+          // For default methods keep only the declaration. Implementing classes will add a shim.
+          node.setBody(null);
+          node.addModifiers(Modifier.ABSTRACT);
+        } else {
+          setFunctionCaller(node, binding);
+        }
       } else {
         node.remove();
       }

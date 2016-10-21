@@ -351,8 +351,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
     printf("\n@interface %s : NSObject", typeName);
-    if (BindingUtil.isRuntimeAnnotation(typeBinding)
-        || BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
+    if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
     }

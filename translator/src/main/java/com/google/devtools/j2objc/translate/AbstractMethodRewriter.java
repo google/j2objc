@@ -120,12 +120,6 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
 
   private void checkForIncompleteProtocol(AbstractTypeDeclaration node) {
     ITypeBinding typeBinding = node.getTypeBinding();
-    if (typeBinding.isInterface() && BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
-      // If there are default methods, then the interface's companion class will
-      // be declared to conform to the protocol.
-      unit.setHasIncompleteProtocol();
-      return;
-    }
     if (!Modifier.isAbstract(node.getModifiers()) && !typeBinding.isEnum()) {
       return;
     }
