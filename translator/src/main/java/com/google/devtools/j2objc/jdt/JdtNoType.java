@@ -25,13 +25,13 @@ import javax.lang.model.type.TypeVisitor;
 
 class JdtNoType extends JdtTypeMirror implements NoType {
 
-  JdtNoType() {
-    super(null);
+  JdtNoType(JdtTypeBinding binding) {
+    super(binding);
   }
 
   @Override
   public TypeKind getKind() {
-    return TypeKind.NONE;
+    return binding != null ? TypeKind.VOID : TypeKind.NONE;
   }
 
   @Override

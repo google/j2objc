@@ -28,6 +28,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -213,6 +214,10 @@ public final class TypeUtil {
 
   public PrimitiveType getPrimitiveType(TypeKind kind) {
     return javacTypes.getPrimitiveType(kind);
+  }
+
+  public NoType getVoidType() {
+    return javacTypes.getNoType(TypeKind.VOID);
   }
 
   public PrimitiveType unboxedType(TypeMirror t) {

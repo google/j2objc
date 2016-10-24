@@ -58,7 +58,7 @@ public final class BindingConverter {
   private static Map<String, Name> nameCache = new HashMap<>();
   private static Map<JdtBinding, JdtTypeMirror> typeCache = new HashMap<>();
 
-  public static final JdtTypeMirror NO_TYPE = new JdtNoType();
+  public static final JdtNoType NO_TYPE = new JdtNoType(null);
   public static final JdtTypeMirror NULL_TYPE = new JdtNullType();
 
   public static JdtAnnotationBinding wrapBinding(IAnnotationBinding binding) {
@@ -253,6 +253,8 @@ public final class BindingConverter {
     } else if (binding.isPrimitive()) {
       if (jdtType instanceof NativeTypeBinding) {
         type = new JdtNativeType(jdtType);
+      } else if (jdtType.getBinaryName().charAt(0) == 'V') {
+        type = new JdtNoType(jdtType);
       } else {
         type = new JdtPrimitiveType(jdtType);
       }

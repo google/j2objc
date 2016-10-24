@@ -45,9 +45,11 @@ class JdtTypes implements Types {
   private final Map<TypeKind, PrimitiveType> primitiveTypes = new EnumMap<>(TypeKind.class);
   private final Map<TypeKind, TypeElement> boxedClasses = new EnumMap<>(TypeKind.class);
   private final Map<TypeElement, PrimitiveType> unboxedTypes = new HashMap<>();
+  private final NoType voidType;
 
   JdtTypes(AST ast) {
     populatePrimitiveMaps(ast);
+    voidType = (NoType) BindingConverter.getType(ast.resolveWellKnownType("void"));
   }
 
   private void populatePrimitiveMaps(AST ast) {
@@ -137,7 +139,14 @@ class JdtTypes implements Types {
 
   @Override
   public NoType getNoType(TypeKind kind) {
-    throw new AssertionError("not implemented");
+    switch (kind) {
+      case NONE:
+        return BindingConverter.NO_TYPE;
+      case VOID:
+        return voidType;
+      default:
+        throw new IllegalArgumentException("Not a valid NoType kind: " + kind);
+    }
   }
 
   @Override
