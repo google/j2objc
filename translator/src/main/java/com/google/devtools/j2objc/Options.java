@@ -96,6 +96,7 @@ public class Options {
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private boolean includeGeneratedSources = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
+  private boolean dumpAST = false;
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.JDT;
@@ -528,6 +529,8 @@ public class Options {
         javaFrontEnd = FrontEnd.JDT;
       } else if (arg.equals("-Xuse-javac")) {
         javaFrontEnd = FrontEnd.JAVAC;
+      } else if (arg.equals("-Xdump-ast")) {
+        dumpAST = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -859,15 +862,15 @@ public class Options {
   public static void setProGuardUsageFile(File newProGuardUsageFile) {
     proGuardUsageFile = newProGuardUsageFile;
   }
-  
+
   public static void setTreeShakerUsageFile(File newTreeShakerUsageFile) {
     treeShakerUsageFile = newTreeShakerUsageFile;
   }
-  
+
   public static File getProGuardUsageFile() {
     return proGuardUsageFile;
   }
-  
+
   public static File getTreeShakerUsageFile() {
     return treeShakerUsageFile;
   }
@@ -1037,6 +1040,10 @@ public class Options {
 
   public static TimingLevel timingLevel() {
     return instance.timingLevel;
+  }
+
+  public static boolean dumpAST() {
+    return instance.dumpAST;
   }
 
   // TODO(tball): remove after front-end conversion is complete.

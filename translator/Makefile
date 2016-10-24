@@ -85,6 +85,7 @@ JAVA_SOURCES = \
 	ast/ConstructorInvocation.java \
 	ast/ContinueStatement.java \
 	ast/CreationReference.java \
+	ast/DebugASTDump.java \
 	ast/DebugASTPrinter.java \
 	ast/Dimension.java \
 	ast/DoStatement.java \

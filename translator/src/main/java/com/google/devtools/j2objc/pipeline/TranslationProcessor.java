@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.pipeline;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
@@ -102,22 +103,27 @@ public class TranslationProcessor extends FileProcessor {
       System.out.println("translating " + unitName);
     }
     TimeTracker ticker = TimeTracker.getTicker(unitName);
-    applyMutations(unit, deadCodeMap, treeShakerMap, ticker);
-    ticker.tick("Tree mutations");
-    ticker.printResults(System.out);
+    if (Options.dumpAST()) {
+      // Dump compilation unit to an .ast output file instead of translating.
+      DebugASTDump.dumpUnit(unit);
+    } else {
+      applyMutations(unit, deadCodeMap, treeShakerMap, ticker);
+      ticker.tick("Tree mutations");
+      ticker.printResults(System.out);
+
+      GenerationUnit genUnit = input.getGenerationUnit();
+      genUnit.addCompilationUnit(unit);
+
+      // Add out-of-date dependencies to translation list.
+      if (closureQueue != null) {
+        checkDependencies(unit);
+      }
+
+      if (genUnit.isFullyParsed()) {
+        generateObjectiveCSource(genUnit);
+      }
+    }
     processedCount++;
-
-    GenerationUnit genUnit = input.getGenerationUnit();
-    genUnit.addCompilationUnit(unit);
-
-    // Add out-of-date dependencies to translation list.
-    if (closureQueue != null) {
-      checkDependencies(unit);
-    }
-
-    if (genUnit.isFullyParsed()) {
-      generateObjectiveCSource(genUnit);
-    }
   }
 
   /**
