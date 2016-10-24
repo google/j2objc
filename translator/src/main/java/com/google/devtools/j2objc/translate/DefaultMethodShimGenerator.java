@@ -146,8 +146,13 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
         }
       }
 
-      if (ElementUtil.isDefault(impl.element()) && newMethods.contains(impl)) {
-        addDefaultMethodShim(mainSelector, impl);
+      if (newMethods.contains(impl)) {
+        if (ElementUtil.isDefault(impl.element())) {
+          addDefaultMethodShim(mainSelector, impl);
+        } else {
+          // Must be an abstract class.
+          unit.setHasIncompleteProtocol();
+        }
       }
       for (Map.Entry<String, ExecutablePair> entry : newSelectors.entrySet()) {
         addRenamingMethodShim(entry.getKey(), entry.getValue(), impl);

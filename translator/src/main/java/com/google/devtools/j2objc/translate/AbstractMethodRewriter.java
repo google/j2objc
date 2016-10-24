@@ -31,13 +31,8 @@ import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -114,50 +109,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
-    checkForIncompleteProtocol(node);
     addReturnTypeNarrowingDeclarations(node);
-  }
-
-  private void checkForIncompleteProtocol(AbstractTypeDeclaration node) {
-    ITypeBinding typeBinding = node.getTypeBinding();
-    if (!Modifier.isAbstract(node.getModifiers()) && !typeBinding.isEnum()) {
-      return;
-    }
-    // Find any interface methods that aren't defined by this abstract type so
-    // we can silence incomplete protocol errors.
-    // Collect needed methods from this interface and all super-interfaces.
-    Queue<ITypeBinding> interfaceQueue = new LinkedList<>();
-    Set<IMethodBinding> interfaceMethods = new LinkedHashSet<>();
-    interfaceQueue.addAll(Arrays.asList(typeBinding.getInterfaces()));
-    ITypeBinding intrface;
-    while ((intrface = interfaceQueue.poll()) != null) {
-      interfaceMethods.addAll(Arrays.asList(intrface.getDeclaredMethods()));
-      interfaceQueue.addAll(Arrays.asList(intrface.getInterfaces()));
-    }
-
-    // Check if any interface methods are missing from the implementation
-    for (IMethodBinding interfaceMethod : interfaceMethods) {
-      if (!isMethodImplemented(typeBinding, interfaceMethod)) {
-        unit.setHasIncompleteProtocol();
-      }
-    }
-  }
-
-  private boolean isMethodImplemented(ITypeBinding type, IMethodBinding method) {
-    if (type == null) {
-      return false;
-    }
-
-    for (IMethodBinding m : type.getDeclaredMethods()) {
-      if (method.isSubsignature(m)
-          || (method.getName().equals(m.getName())
-          && method.getReturnType().getErasure().isEqualTo(m.getReturnType().getErasure())
-          && Arrays.equals(method.getParameterTypes(), m.getParameterTypes()))) {
-        return true;
-      }
-    }
-
-    return isMethodImplemented(type.getSuperclass(), method);
   }
 
   // Adds declarations for any methods where the known return type is more
