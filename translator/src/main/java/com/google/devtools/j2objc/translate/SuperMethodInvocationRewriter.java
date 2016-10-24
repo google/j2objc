@@ -95,8 +95,9 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
   }
 
   private String getSuperFunctionName(SuperMethodBindingPair superMethod) {
-    return UnicodeUtils.format("%s_super$_%s", nameTable.getFullName(superMethod.type),
-                         nameTable.getFunctionName(superMethod.method));
+    return UnicodeUtils.format(
+        "%s_super$_%s", nameTable.getFullName(superMethod.type),
+        nameTable.getFunctionName(BindingConverter.getExecutableElement(superMethod.method)));
   }
 
   @Override
@@ -108,7 +109,7 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     // Handle default method invocation: SomeInterface.super.method(...)
     if (BindingUtil.isDefault(method)) {
       FunctionBinding binding = new FunctionBinding(
-          nameTable.getFullFunctionName(method), exprType,
+          nameTable.getFullFunctionName(BindingConverter.getExecutableElement(method)), exprType,
           BindingConverter.getTypeElement(method.getDeclaringClass()));
       binding.addParameters(typeEnv.getIdTypeMirror());
       binding.addParameters(method.getParameterTypes());

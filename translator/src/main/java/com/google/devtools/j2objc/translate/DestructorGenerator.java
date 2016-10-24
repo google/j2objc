@@ -38,17 +38,16 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
+import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.List;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds release methods to Java classes, in preparation for translation
@@ -84,11 +83,11 @@ public class DestructorGenerator extends UnitTreeVisitor {
       return;
     }
 
-    ITypeBinding voidType = typeEnv.resolveJavaType("void");
-    int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
-    GeneratedMethodBinding deallocBinding = GeneratedMethodBinding.newMethod(
-        NameTable.DEALLOC_METHOD, modifiers, voidType, type);
-    MethodDeclaration deallocDecl = new MethodDeclaration(deallocBinding);
+    ExecutableElement deallocElement = (ExecutableElement)
+        GeneratedExecutableElement.newMethodWithSelector(
+        NameTable.DEALLOC_METHOD, typeUtil.getVoidType(), BindingConverter.getTypeElement(type))
+        .addModifiers(Modifier.PUBLIC);
+    MethodDeclaration deallocDecl = new MethodDeclaration(deallocElement);
     deallocDecl.setHasDeclaration(false);
     Block block = new Block();
     deallocDecl.setBody(block);

@@ -212,7 +212,8 @@ public class EnumRewriter extends UnitTreeVisitor {
           new SimpleName(localEnum), new NativeExpression(UnicodeUtils.format(
               "objc_constructInstance(%s, (void *)ptr)", classExpr), type))),
           new NativeExpression("ptr += " + sizeName, voidType))));
-      String initName = nameTable.getFullFunctionName(methodBinding);
+      String initName = nameTable.getFullFunctionName(
+          BindingConverter.getExecutableElement(methodBinding));
       FunctionBinding initBinding = new FunctionBinding(initName, voidType, valueType);
       initBinding.addParameters(valueType);
       initBinding.addParameters(methodBinding.getParameterTypes());

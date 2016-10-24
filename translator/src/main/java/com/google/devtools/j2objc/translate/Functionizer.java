@@ -56,6 +56,7 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -164,7 +165,8 @@ public class Functionizer extends UnitTreeVisitor {
   private FunctionBinding newFunctionBinding(IMethodBinding method) {
     ITypeBinding declaringClass = method.getDeclaringClass();
     FunctionBinding binding = new FunctionBinding(
-        nameTable.getFullFunctionName(method), method.getReturnType(), declaringClass);
+        nameTable.getFullFunctionName(BindingConverter.getExecutableElement(method)),
+        method.getReturnType(), declaringClass);
     if (method.isConstructor() || !BindingUtil.isStatic(method)) {
       binding.addParameters(declaringClass);
     }
@@ -173,10 +175,11 @@ public class Functionizer extends UnitTreeVisitor {
   }
 
   private FunctionBinding newAllocatingConstructorBinding(IMethodBinding method) {
+    ExecutableElement element = BindingConverter.getExecutableElement(method);
     ITypeBinding declaringClass = method.getDeclaringClass();
     FunctionBinding binding = new FunctionBinding(
-        nameTable.getReleasingConstructorName(method),
-        nameTable.getAllocatingConstructorName(method), declaringClass, declaringClass);
+        nameTable.getReleasingConstructorName(element),
+        nameTable.getAllocatingConstructorName(element), declaringClass, declaringClass);
     binding.addParameters(method.getParameterTypes());
     return binding;
   }
@@ -301,11 +304,12 @@ public class Functionizer extends UnitTreeVisitor {
    */
   private FunctionDeclaration makeFunction(MethodDeclaration method) {
     IMethodBinding m = method.getMethodBinding();
+    ExecutableElement elem = method.getExecutableElement();
     ITypeBinding declaringClass = m.getDeclaringClass();
     boolean isInstanceMethod = !BindingUtil.isStatic(m) && !m.isConstructor();
 
     FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getFullFunctionName(m), m.getReturnType(), declaringClass);
+        nameTable.getFullFunctionName(elem), m.getReturnType(), declaringClass);
     function.setJniSignature(SignatureGenerator.createJniFunctionSignature(m, elementUtil));
     function.setLineNumber(method.getName().getLineNumber());
 
@@ -353,10 +357,11 @@ public class Functionizer extends UnitTreeVisitor {
       MethodDeclaration method, boolean releasing) {
     assert method.isConstructor();
     IMethodBinding binding = method.getMethodBinding();
+    ExecutableElement element = method.getExecutableElement();
     ITypeBinding declaringClass = binding.getDeclaringClass();
 
-    String name = releasing ? nameTable.getReleasingConstructorName(binding)
-        : nameTable.getAllocatingConstructorName(binding);
+    String name = releasing ? nameTable.getReleasingConstructorName(element)
+        : nameTable.getAllocatingConstructorName(element);
     FunctionDeclaration function = new FunctionDeclaration(name, declaringClass, declaringClass);
     function.setLineNumber(method.getName().getLineNumber());
     function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
@@ -367,7 +372,7 @@ public class Functionizer extends UnitTreeVisitor {
 
     StringBuilder sb = new StringBuilder(releasing ? "J2OBJC_CREATE_IMPL(" : "J2OBJC_NEW_IMPL(");
     sb.append(nameTable.getFullName(declaringClass));
-    sb.append(", ").append(nameTable.getFunctionName(binding));
+    sb.append(", ").append(nameTable.getFunctionName(element));
     for (SingleVariableDeclaration param : function.getParameters()) {
       sb.append(", ").append(nameTable.getVariableQualifiedName(param.getVariableBinding()));
     }

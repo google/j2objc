@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -581,8 +580,9 @@ public class NameTable {
   }
 
   public String getMethodSelector(ExecutableElement method) {
-    if (ElementUtil.isSynthetic(method)) {
-      return ElementUtil.getName(method);
+    String selector = ElementUtil.getSelector(method);
+    if (selector != null) {
+      return selector;
     }
     if (ElementUtil.isInstanceMethod(method)) {
       method = getOriginalMethod(method);
@@ -615,9 +615,6 @@ public class NameTable {
   }
 
   private String selectorForOriginalBinding(IMethodBinding method) {
-    if (method instanceof IOSMethodBinding) {
-      return ((IOSMethodBinding) method).getSelector();
-    }
     String selector = getRenamedMethodName(method);
     return selectorForMethodName(
         method, selector != null ? selector : getMethodName(method));
@@ -628,12 +625,9 @@ public class NameTable {
    * enum types. A combination of classname plus modified selector is
    * guaranteed to be unique within the app.
    */
-  public String getFullFunctionName(IMethodBinding method) {
-    return getFullName(method.getDeclaringClass()) + '_' + getFunctionName(method);
-  }
-
   public String getFullFunctionName(ExecutableElement method) {
-    return getFullFunctionName((IMethodBinding) BindingConverter.unwrapElement(method));
+    return getFullName(BindingConverter.unwrapTypeElement(ElementUtil.getDeclaringClass(method)))
+        + '_' + getFunctionName(method);
   }
 
   /**
@@ -661,7 +655,7 @@ public class NameTable {
    * Returns the name of the allocating constructor that returns a retained
    * object. The name will take the form of "new_TypeName_ConstructorName".
    */
-  public String getAllocatingConstructorName(IMethodBinding method) {
+  public String getAllocatingConstructorName(ExecutableElement method) {
     return "new_" + getFullFunctionName(method);
   }
 
@@ -669,7 +663,7 @@ public class NameTable {
    * Returns the name of the allocating constructor that returns a released
    * object. The name will take the form of "create_TypeName_ConstructorName".
    */
-  public String getReleasingConstructorName(IMethodBinding method) {
+  public String getReleasingConstructorName(ExecutableElement method) {
     return "create_" + getFullFunctionName(method);
   }
 
@@ -679,21 +673,17 @@ public class NameTable {
    * class have a renaming. The returned name should be given an appropriate
    * prefix to avoid collisions with methods from other classes.
    */
-  public String getFunctionName(IMethodBinding method) {
-    method = method.getMethodDeclaration();
-    if (BindingUtil.isSynthetic(method)) {
-      return method.getName().replaceAll(":", "_");
+  public String getFunctionName(ExecutableElement method) {
+    IMethodBinding binding = BindingConverter.unwrapExecutableElement(method);
+    String name = ElementUtil.getSelector(method);
+    if (name == null) {
+      name = getRenamedMethodName(binding);
     }
-    String name = getRenamedMethodName(method);
     if (name != null) {
       return name.replaceAll(":", "_");
     } else {
-      return addParamNames(method, getMethodName(method), '_');
+      return addParamNames(binding, getMethodName(binding), '_');
     }
-  }
-
-  public String getFunctionName(ExecutableElement method) {
-    return getFunctionName((IMethodBinding) BindingConverter.unwrapElement(method));
   }
 
   public static String getMethodNameFromAnnotation(IMethodBinding method) {

@@ -42,15 +42,17 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class GeneratedExecutableElement extends GeneratedElement implements ExecutableElement {
 
+  private final String selector;
   private final List<VariableElement> parameters = Lists.newArrayList();
   private final TypeMirror returnType;
   private final boolean varargs;
   private final IMethodBinding binding = new Binding();
 
   public GeneratedExecutableElement(
-      String name, ElementKind kind, TypeMirror returnType, Element enclosingElement,
-      boolean varargs) {
+      String name, String selector, ElementKind kind, TypeMirror returnType,
+      Element enclosingElement, boolean varargs) {
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, true);
+    this.selector = selector;
     this.returnType = returnType;
     this.varargs = varargs;
   }
@@ -58,16 +60,17 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private GeneratedExecutableElement(ExecutableElement m) {
     super(m.getSimpleName().toString(), m.getKind(),  m.getEnclosingElement(),
         ElementUtil.isSynthetic(m));
+    this.selector = null;
     addModifiers(m.getModifiers());
     parameters.addAll(m.getParameters());
     this.returnType = m.getReturnType();
     this.varargs = m.isVarArgs();
   }
 
-  public static GeneratedExecutableElement newMethod(
-      String name, TypeMirror returnType, Element enclosingElement) {
+  public static GeneratedExecutableElement newMethodWithSelector(
+      String selector, TypeMirror returnType, Element enclosingElement) {
     return new GeneratedExecutableElement(
-        name, ElementKind.METHOD, returnType, enclosingElement, false);
+        selector, selector, ElementKind.METHOD, returnType, enclosingElement, false);
   }
 
   /**
@@ -82,6 +85,10 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private static ElementKind checkElementKind(ElementKind kind) {
     Preconditions.checkArgument(kind == ElementKind.METHOD || kind == ElementKind.CONSTRUCTOR);
     return kind;
+  }
+
+  public String getSelector() {
+    return selector;
   }
 
   public void addParametersPlaceholderFront(List<TypeMirror> types) {
@@ -330,6 +337,8 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
       return new IAnnotationBinding[0];
     }
 
+    // Internal JDT has a different version than external.
+    @SuppressWarnings("MissingOverride")
     public IBinding getDeclaringMember() {
       return null;
     }

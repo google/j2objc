@@ -33,20 +33,20 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.lang.model.element.ExecutableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Adds fields and properties to annotation types.
@@ -189,9 +189,10 @@ public class AnnotationRewriter extends UnitTreeVisitor {
   }
 
   private MethodDeclaration createDescriptionMethod(ITypeBinding type) {
-    GeneratedMethodBinding descriptionBinding = GeneratedMethodBinding.newMethod(
-        "description", BindingUtil.ACC_SYNTHETIC, typeEnv.getNSString(), type);
-    MethodDeclaration descriptionMethod = new MethodDeclaration(descriptionBinding);
+    ExecutableElement descriptionElement = GeneratedExecutableElement.newMethodWithSelector(
+        "description", BindingConverter.getType(typeEnv.getNSString()),
+        BindingConverter.getTypeElement(type));
+    MethodDeclaration descriptionMethod = new MethodDeclaration(descriptionElement);
     descriptionMethod.setHasDeclaration(false);
     Block descriptionBody = new Block();
     descriptionMethod.setBody(descriptionBody);

@@ -183,7 +183,8 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     private void addShimWithInvocation(
         String selector, ExecutablePair method, Expression invocation, List<Expression> args) {
       ExecutableElement element = (ExecutableElement)
-          GeneratedExecutableElement.newMethod(selector, method.type().getReturnType(), typeElem)
+          GeneratedExecutableElement.newMethodWithSelector(
+              selector, method.type().getReturnType(), typeElem)
           .addModifiers(method.element().getModifiers())
           .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT);
 

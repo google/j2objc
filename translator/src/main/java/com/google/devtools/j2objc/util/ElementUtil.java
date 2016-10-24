@@ -18,7 +18,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedElement;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
@@ -42,6 +44,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -203,6 +206,18 @@ public final class ElementUtil {
       return binding.isSynthetic();
     }
     return false;
+  }
+
+  public static String getSelector(ExecutableElement e) {
+    if (e instanceof GeneratedExecutableElement) {
+      return ((GeneratedExecutableElement) e).getSelector();
+    }
+    // TODO(kstanger): Remove when javac switch is complete.
+    IMethodBinding binding = BindingConverter.unwrapExecutableElement(e);
+    if (binding instanceof IOSMethodBinding) {
+      return ((IOSMethodBinding) binding).getSelector();
+    }
+    return null;
   }
 
   public static boolean isPackageInfo(TypeElement type) {
