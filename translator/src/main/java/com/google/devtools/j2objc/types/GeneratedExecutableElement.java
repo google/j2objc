@@ -17,6 +17,8 @@ package com.google.devtools.j2objc.types;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.DebugASTPrinter;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.AnnotationValue;
@@ -27,6 +29,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Element class for methods created during translation.
@@ -38,6 +45,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private final List<VariableElement> parameters = Lists.newArrayList();
   private final TypeMirror returnType;
   private final boolean varargs;
+  private final IMethodBinding binding = new Binding();
 
   public GeneratedExecutableElement(
       String name, ElementKind kind, TypeMirror returnType, Element enclosingElement,
@@ -155,5 +163,175 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   @Override
   public AnnotationValue getDefaultValue() {
     throw new AssertionError("not implemented");
+  }
+
+  public IMethodBinding asMethodBinding() {
+    return binding;
+  }
+
+  /**
+   * An associated IMethodBinding implementation.
+   */
+  public class Binding implements IMethodBinding {
+
+    public ExecutableElement asElement() {
+      return GeneratedExecutableElement.this;
+    }
+
+    @Override
+    public int getKind() {
+      return IBinding.METHOD;
+    }
+
+    @Override
+    public String getKey() {
+      return getName();
+    }
+
+    @Override
+    public boolean isEqualTo(IBinding binding) {
+      return binding == this;
+    }
+
+    @Override
+    public boolean isSynthetic() {
+      return GeneratedExecutableElement.this.isSynthetic();
+    }
+
+    @Override
+    public int getModifiers() {
+      return ElementUtil.fromModifierSet(GeneratedExecutableElement.this.getModifiers())
+          | (isSynthetic() ? BindingUtil.ACC_SYNTHETIC : 0);
+    }
+
+    @Override
+    public ITypeBinding getDeclaredReceiverType() {
+      return null;
+    }
+
+    @Override
+    public ITypeBinding getDeclaringClass() {
+      return BindingConverter.unwrapTypeElement(
+          ElementUtil.getDeclaringClass(GeneratedExecutableElement.this));
+    }
+
+    @Override
+    public Object getDefaultValue() {
+      return null;
+    }
+
+    @Override
+    public ITypeBinding[] getExceptionTypes() {
+      return new ITypeBinding[0];
+    }
+
+    @Override
+    public IMethodBinding getMethodDeclaration() {
+      return this;
+    }
+
+    @Override
+    public String getName() {
+      return GeneratedExecutableElement.this.getSimpleName().toString();
+    }
+
+    @Override
+    public IAnnotationBinding[] getParameterAnnotations(int paramIndex) {
+      return new IAnnotationBinding[0];
+    }
+
+    @Override
+    public ITypeBinding[] getParameterTypes() {
+      ITypeBinding[] paramTypes = new ITypeBinding[parameters.size()];
+      for (int i = 0; i < parameters.size(); i++) {
+        paramTypes[i] = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
+            parameters.get(i).asType());
+      }
+      return paramTypes;
+    }
+
+    @Override
+    public ITypeBinding getReturnType() {
+      return BindingConverter.unwrapTypeMirrorIntoTypeBinding(returnType);
+    }
+
+    @Override
+    public ITypeBinding[] getTypeArguments() {
+      return new ITypeBinding[0];
+    }
+
+    @Override
+    public ITypeBinding[] getTypeParameters() {
+      return new ITypeBinding[0];
+    }
+
+    @Override
+    public boolean isAnnotationMember() {
+      return false;
+    }
+
+    @Override
+    public boolean isConstructor() {
+      return GeneratedExecutableElement.this.getKind() == ElementKind.CONSTRUCTOR;
+    }
+
+    @Override
+    public boolean isDefaultConstructor() {
+      return false;
+    }
+
+    @Override
+    public boolean isGenericMethod() {
+      return false;
+    }
+
+    @Override
+    public boolean isParameterizedMethod() {
+      return false;
+    }
+
+    @Override
+    public boolean isRawMethod() {
+      return false;
+    }
+
+    @Override
+    public boolean isSubsignature(IMethodBinding otherMethod) {
+      return false;
+    }
+
+    @Override
+    public boolean isVarargs() {
+      return GeneratedExecutableElement.this.isVarArgs();
+    }
+
+    @Override
+    public boolean overrides(IMethodBinding method) {
+      return false;
+    }
+
+    @Override
+    public IJavaElement getJavaElement() {
+      throw new AssertionError("not implemented");
+    }
+
+    @Override
+    public boolean isRecovered() {
+      return false;
+    }
+
+    @Override
+    public boolean isDeprecated() {
+      return false;
+    }
+
+    @Override
+    public IAnnotationBinding[] getAnnotations() {
+      return new IAnnotationBinding[0];
+    }
+
+    public IBinding getDeclaringMember() {
+      return null;
+    }
   }
 }

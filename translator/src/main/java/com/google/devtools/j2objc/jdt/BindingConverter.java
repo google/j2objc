@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
@@ -287,6 +286,8 @@ public final class BindingConverter {
   public static Element getElement(IBinding binding) {
     if (binding instanceof GeneratedTypeElement.Binding) {
       return ((GeneratedTypeElement.Binding) binding).asElement();
+    } else if (binding instanceof GeneratedExecutableElement.Binding) {
+      return ((GeneratedExecutableElement.Binding) binding).asElement();
     }
     return getElement(wrapBinding(binding));
   }
@@ -360,21 +361,7 @@ public final class BindingConverter {
       return newBinding;
     }
     if (element instanceof GeneratedExecutableElement) {
-      GeneratedExecutableElement gElement = (GeneratedExecutableElement) element;
-      GeneratedMethodBinding newOne = new GeneratedMethodBinding(
-          null, gElement.getSimpleName().toString(),
-          ElementUtil.fromModifierSet(gElement.getModifiers()),
-          BindingConverter.unwrapTypeMirrorIntoTypeBinding(gElement.getReturnType()), null,
-          BindingConverter.unwrapTypeElement((TypeElement) gElement.getEnclosingElement()),
-          element.getKind() == ElementKind.CONSTRUCTOR, gElement.isVarArgs());
-      if (gElement.isSynthetic()) {
-        newOne.addModifiers(BindingUtil.ACC_SYNTHETIC);
-      }
-      for (VariableElement p : gElement.getParameters()) {
-        newOne.getParameters().add(
-            BindingConverter.unwrapTypeMirrorIntoTypeBinding(p.asType()));
-      }
-      return newOne;
+      return ((GeneratedExecutableElement) element).asMethodBinding();
     }
     if (element instanceof GeneratedTypeElement) {
       return ((GeneratedTypeElement) element).asTypeBinding();
