@@ -40,10 +40,8 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -81,6 +79,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
     private ExecutableElement functionalInterface;
     private ExecutableType functionalInterfaceType;
     private TypeDeclaration typeDecl;
+    private GeneratedExecutableElement implElement;
     private MethodDeclaration implDecl;
     private ClassInstanceCreation creation;
 
@@ -120,25 +119,22 @@ public class LambdaRewriter extends UnitTreeVisitor {
 
     private void createImplementation() {
       String selector = nameTable.getMethodSelector(functionalInterface);
-      IOSMethodBinding implBinding = IOSMethodBinding.newMappedMethod(
-          selector, BindingConverter.unwrapExecutableElement(functionalInterface));
-      implBinding.setDeclaringClass(BindingConverter.unwrapTypeElement(lambdaType));
-      implBinding.removeModifiers(java.lang.reflect.Modifier.ABSTRACT);
-      implDecl = new MethodDeclaration(implBinding);
+      implElement = GeneratedExecutableElement.newMethodWithSelector(
+          selector, functionalInterface.getReturnType(), lambdaType);
+      implDecl = new MethodDeclaration(implElement);
       typeDecl.addBodyDeclaration(implDecl);
     }
 
     private void createCreation() {
-      GeneratedMethodBinding constructorBinding = GeneratedMethodBinding.newConstructor(
-          BindingConverter.unwrapTypeElement(lambdaType), java.lang.reflect.Modifier.PRIVATE,
-          typeEnv);
+      ExecutableElement constructorElement =
+          GeneratedExecutableElement.newConstructor(lambdaType, typeUtil);
 
       // Add the implicit constructor to call.
-      MethodDeclaration constructorDecl = new MethodDeclaration(constructorBinding);
+      MethodDeclaration constructorDecl = new MethodDeclaration(constructorElement);
       constructorDecl.setBody(new Block());
       typeDecl.addBodyDeclaration(constructorDecl);
 
-      creation = new ClassInstanceCreation(constructorBinding, Type.newType(lambdaType.asType()));
+      creation = new ClassInstanceCreation(constructorElement, Type.newType(lambdaType.asType()));
       creation.setExpression(TreeUtil.remove(node.getLambdaOuterArg()));
       TreeUtil.moveList(node.getLambdaCaptureArgs(), creation.getCaptureArgs());
     }
@@ -180,7 +176,9 @@ public class LambdaRewriter extends UnitTreeVisitor {
 
     private void rewriteLambdaExpression(LambdaExpression node) {
       for (VariableDeclaration decl : node.getParameters()) {
-        implDecl.addParameter(new SingleVariableDeclaration(decl.getVariableElement()));
+        VariableElement var = decl.getVariableElement();
+        implElement.addParameter(var);
+        implDecl.addParameter(new SingleVariableDeclaration(var));
       }
       setImplementationBody(TreeUtil.remove(node.getBody()));
     }
@@ -193,6 +191,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
         GeneratedVariableElement param = new GeneratedVariableElement(
             getParamName(i++), type, ElementKind.PARAMETER, null);
         params.add(param);
+        implElement.addParameter(param);
         implDecl.addParameter(new SingleVariableDeclaration(param));
       }
       return params.iterator();

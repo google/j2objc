@@ -558,8 +558,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
     print(getMethodSignature(m));
     String methodName = nameTable.getMethodSelector(methodBinding);
-    if (!m.isConstructor() && !BindingUtil.isSynthetic(m.getModifiers())
-        && NameTable.needsObjcMethodFamilyNoneAttribute(methodName)) {
+    if (!m.isConstructor() && NameTable.needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.
       // clang assumes that methods with names starting with new, alloc or copy
       // return objects of the same type as the receiving class, regardless of

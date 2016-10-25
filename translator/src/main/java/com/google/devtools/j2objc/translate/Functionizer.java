@@ -131,8 +131,8 @@ public class Functionizer extends UnitTreeVisitor {
     int modifiers = node.getModifiers();
 
     // Never functionize these types of methods.
-    if (Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers)
-        || BindingUtil.isSynthetic(modifiers) || m.isAnnotationMember()) {
+    if (Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers) || !node.hasDeclaration()
+        || m.isAnnotationMember()) {
       return false;
     }
 
@@ -254,9 +254,9 @@ public class Functionizer extends UnitTreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
-    // Don't functionize synthetic methods like dealloc or __annotations, since
+    // Don't functionize certain ObjC methods like dealloc or __annotations, since
     // they are added by the translator and need to remain in method form.
-    if (BindingUtil.isSynthetic(binding)) {
+    if (!node.hasDeclaration()) {
       return;
     }
     boolean isInstanceMethod = !BindingUtil.isStatic(binding) && !binding.isConstructor();

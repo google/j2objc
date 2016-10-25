@@ -20,6 +20,8 @@ import com.google.devtools.j2objc.ast.DebugASTPrinter;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Collection;
 import java.util.List;
 import javax.lang.model.element.AnnotationValue;
@@ -28,6 +30,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -73,6 +76,13 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
       String selector, TypeMirror returnType, Element enclosingElement) {
     return new GeneratedExecutableElement(
         selector, selector, ElementKind.METHOD, returnType, enclosingElement, false);
+  }
+
+  public static GeneratedExecutableElement newConstructor(
+      TypeElement enclosingElement, TypeUtil typeUtil) {
+    return new GeneratedExecutableElement(
+        NameTable.INIT_NAME, null, ElementKind.CONSTRUCTOR, typeUtil.getVoidType(),
+        enclosingElement, false);
   }
 
   /**
