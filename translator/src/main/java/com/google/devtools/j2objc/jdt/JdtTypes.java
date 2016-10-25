@@ -186,7 +186,8 @@ class JdtTypes implements Types {
 
   @Override
   public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
-    throw new AssertionError("not implemented");
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t1).isSubTypeCompatible(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(t2));
   }
 
   @Override

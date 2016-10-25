@@ -83,8 +83,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
       return;
     }
 
-    ExecutableElement deallocElement = (ExecutableElement)
-        GeneratedExecutableElement.newMethodWithSelector(
+    ExecutableElement deallocElement = GeneratedExecutableElement.newMethodWithSelector(
         NameTable.DEALLOC_METHOD, typeUtil.getVoidType(), BindingConverter.getTypeElement(type))
         .addModifiers(Modifier.PUBLIC);
     MethodDeclaration deallocDecl = new MethodDeclaration(deallocElement);

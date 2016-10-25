@@ -56,7 +56,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 
@@ -98,19 +97,19 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     public void resolveFunctionalInterface() {
-      List<DeclaredType> declaredTypes = typeUtil.getInheritedDeclaredTypesInclusive(typeMirror);
-      for (DeclaredType baseType : declaredTypes) {
+      typeUtil.visitTypeHierarchy(typeMirror, baseType -> {
         TypeElement element = (TypeElement) baseType.asElement();
         for (ExecutableElement method : ElementUtil.filterEnclosedElements(
             element, ExecutableElement.class, ElementKind.METHOD)) {
           if (!ElementUtil.isDefault(method) && !ElementUtil.isStatic(method)) {
             functionalInterface = method;
             functionalInterfaceType = typeUtil.asMemberOf(baseType, method);
-            return;
+            return false;
           }
         }
-      }
-      throw new AssertionError("Could not find functional interface for " + typeMirror);
+        return true;
+      });
+      assert functionalInterface != null : "Could not find functional interface for " + typeMirror;
     }
 
     private void createTypeDeclaration() {

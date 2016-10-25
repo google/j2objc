@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
@@ -65,6 +66,9 @@ public final class ElementUtil {
 
   // Class files can only use the lower 16 bits.
   public static final int ACC_FLAG_MASK = 0xFFFF;
+
+  private static final Set<Modifier> VISIBILITY_MODIFIERS = EnumSet.of(
+      Modifier.PUBLIC, Modifier.PROTECTED, Modifier.PRIVATE);
 
   private final Elements javacElements;
 
@@ -355,6 +359,10 @@ public final class ElementUtil {
 
   public String getBinaryName(TypeElement e) {
     return javacElements.getBinaryName(e).toString();
+  }
+
+  public static Set<Modifier> getVisibilityModifiers(Element e) {
+    return Sets.intersection(e.getModifiers(), VISIBILITY_MODIFIERS);
   }
 
   public static Set<Modifier> toModifierSet(int modifiers) {

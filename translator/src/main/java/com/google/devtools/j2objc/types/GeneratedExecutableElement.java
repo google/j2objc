@@ -20,12 +20,14 @@ import com.google.devtools.j2objc.ast.DebugASTPrinter;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
+import java.util.Collection;
 import java.util.List;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -91,6 +93,10 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     return selector;
   }
 
+  public void addParameter(VariableElement param) {
+    parameters.add(param);
+  }
+
   public void addParametersPlaceholderFront(List<TypeMirror> types) {
     for (int i = types.size() - 1; i >= 0; i--) {
       addParameterPlaceholderFront(types.get(i));
@@ -100,6 +106,21 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   public void addParameterPlaceholderFront(TypeMirror type) {
     parameters.add(0, new GeneratedVariableElement(
         "placeholder", type, ElementKind.PARAMETER, null));
+  }
+
+  @Override
+  public GeneratedExecutableElement addModifiers(Modifier... newModifiers) {
+    return (GeneratedExecutableElement) super.addModifiers(newModifiers);
+  }
+
+  @Override
+  public GeneratedExecutableElement addModifiers(Collection<? extends Modifier> newModifiers) {
+    return (GeneratedExecutableElement) super.addModifiers(newModifiers);
+  }
+
+  @Override
+  public GeneratedExecutableElement removeModifiers(Modifier... modifiersToRemove) {
+    return (GeneratedExecutableElement) super.removeModifiers(modifiersToRemove);
   }
 
   @Override

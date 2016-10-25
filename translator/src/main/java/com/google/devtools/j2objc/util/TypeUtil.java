@@ -17,10 +17,8 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtIntersectionType;
 import com.google.devtools.j2objc.types.ExecutablePair;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -128,6 +126,10 @@ public final class TypeUtil {
     return (ExecutableType) javacTypes.asMemberOf(containing, method);
   }
 
+  public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
+    return javacTypes.isSubtype(t1, t2);
+  }
+
   public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
     return javacTypes.isSubsignature(m1, m2);
   }
@@ -170,30 +172,74 @@ public final class TypeUtil {
     return null;
   }
 
-  public List<DeclaredType> getInheritedDeclaredTypesInclusive(TypeMirror type) {
-    List<DeclaredType> typeElements = new ArrayList<>();
-    for (TypeMirror superType : getOrderedInheritedTypesInclusive(type)) {
-      if (!TypeUtil.isIntersection(superType)) {
-        typeElements.add((DeclaredType) superType);
-      }
-    }
-    return typeElements;
-  }
-
-  public LinkedHashSet<TypeMirror> getOrderedInheritedTypesInclusive(TypeMirror type) {
-    LinkedHashSet<TypeMirror> inheritedTypes = new LinkedHashSet<>();
-    collectInheritedTypesInclusive(type, inheritedTypes);
+  public LinkedHashSet<DeclaredType> getObjcOrderedInheritedTypes(TypeMirror type) {
+    LinkedHashSet<DeclaredType> inheritedTypes = new LinkedHashSet<>();
+    visitTypeHierarchyObjcOrder(type, visitType -> {
+      inheritedTypes.add(visitType);
+      return true;
+    });
     return inheritedTypes;
   }
 
-  private void collectInheritedTypesInclusive(TypeMirror type, Set<TypeMirror> inheritedTypes) {
+  /**
+   * Visitor type for calling the methods below. Return true to continue visiting, false to
+   * short-circuit.
+   */
+  public interface TypeVisitor {
+    boolean accept(DeclaredType type);
+  }
+
+  /**
+   * Visit all declared types in the hierarchy using a depth-first traversal, visiting classes
+   * before interfaces.
+   */
+  public boolean visitTypeHierarchy(TypeMirror type, TypeVisitor visitor) {
+    boolean result = true;
     if (type == null) {
-      return;
+      return result;
     }
-    inheritedTypes.add(type);
+    if (type.getKind() == TypeKind.DECLARED) {
+      result = visitor.accept((DeclaredType) type);
+    }
     for (TypeMirror superType : directSupertypes(type)) {
-      collectInheritedTypesInclusive(superType, inheritedTypes);
+      if (!result) {
+        return false;
+      }
+      result = visitTypeHierarchy(superType, visitor);
     }
+    return result;
+  }
+
+  /**
+   * Visit all declared types in the order that Objective-C compilation will visit when resolving
+   * the type signature of a method. Uses a depth-first traversal, visiting interfaces before
+   * classes.
+   */
+  public boolean visitTypeHierarchyObjcOrder(TypeMirror type, TypeVisitor visitor) {
+    boolean result = true;
+    if (type == null) {
+      return result;
+    }
+    if (type.getKind() == TypeKind.DECLARED) {
+      result = visitor.accept((DeclaredType) type);
+    }
+    // Visit the class type after interface types which is the order the ObjC compiler visits the
+    // hierarchy.
+    TypeMirror classType = null;
+    for (TypeMirror superType : directSupertypes(type)) {
+      if (!result) {
+        return false;
+      }
+      if (isClass(superType)) {
+        classType = superType;
+      } else {
+        visitTypeHierarchyObjcOrder(superType, visitor);
+      }
+    }
+    if (classType != null && result) {
+      result = visitTypeHierarchyObjcOrder(classType, visitor);
+    }
+    return result;
   }
 
   public static boolean isReferenceType(TypeMirror t) {

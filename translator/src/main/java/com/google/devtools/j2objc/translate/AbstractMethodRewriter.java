@@ -24,20 +24,24 @@ import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashMap;
 import java.util.Map;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Checks for missing methods that would cause an ObjC compilation error. Adds stubs for existing
@@ -68,7 +72,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     // method is from an interface.
     TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
     if (declaringClass.getKind().isInterface()) {
-      node.addModifiers(Modifier.ABSTRACT);
+      node.addModifiers(java.lang.reflect.Modifier.ABSTRACT);
       return;
     }
 
@@ -90,7 +94,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     }
     body.addStatement(new NativeStatement(bodyCode));
     node.setBody(body);
-    node.removeModifiers(Modifier.ABSTRACT);
+    node.removeModifiers(java.lang.reflect.Modifier.ABSTRACT);
   }
 
   @Override
@@ -109,7 +113,9 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
-    addReturnTypeNarrowingDeclarations(node);
+    if (deadCodeMap == null || !deadCodeMap.containsClass(node)) {
+      addReturnTypeNarrowingDeclarations(node);
+    }
   }
 
   // Adds declarations for any methods where the known return type is more
@@ -121,58 +127,62 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
       return;
     }
 
-    ITypeBinding type = node.getTypeBinding();
-    Map<String, IMethodBinding> newDeclarations = new HashMap<>();
-    Map<String, ITypeBinding> declaredReturnTypes = new HashMap<>();
-    for (ITypeBinding inheritedType : BindingUtil.getOrderedInheritedTypesInclusive(type)) {
-      for (IMethodBinding method : inheritedType.getDeclaredMethods()) {
-        ITypeBinding returnType = method.getReturnType().getErasure();
-        if (returnType.isPrimitive()) {
+    TypeElement type = node.getTypeElement();
+    Map<String, ExecutablePair> newDeclarations = new HashMap<>();
+    Map<String, TypeMirror> resolvedReturnTypes = new HashMap<>();
+    for (DeclaredType inheritedType : typeUtil.getObjcOrderedInheritedTypes(type.asType())) {
+      for (ExecutableElement methodElem : ElementUtil.filterEnclosedElements(
+          inheritedType.asElement(), ExecutableElement.class, ElementKind.METHOD)) {
+        TypeMirror declaredReturnType = typeUtil.erasure(methodElem.getReturnType());
+        if (!TypeUtil.isReferenceType(declaredReturnType)) {
           continue;  // Short circuit
         }
-        String selector = nameTable.getMethodSelector(method);
-        ITypeBinding declaredReturnType = declaredReturnTypes.get(selector);
-        if (declaredReturnType == null) {
-          declaredReturnType = method.getMethodDeclaration().getReturnType().getErasure();
-          declaredReturnTypes.put(selector, declaredReturnType);
-        } else if (!returnType.isSubTypeCompatible(declaredReturnType)) {
+        String selector = nameTable.getMethodSelector(methodElem);
+        ExecutableType methodType = typeUtil.asMemberOf(inheritedType, methodElem);
+        TypeMirror returnType = typeUtil.erasure(methodType.getReturnType());
+        TypeMirror resolvedReturnType = resolvedReturnTypes.get(selector);
+        if (resolvedReturnType == null) {
+          resolvedReturnType = declaredReturnType;
+          resolvedReturnTypes.put(selector, resolvedReturnType);
+        } else if (!typeUtil.isSubtype(returnType, resolvedReturnType)) {
           continue;
         }
-        if (declaredReturnType != returnType
-            && !nameTable.getObjCType(declaredReturnType).equals(
+        if (resolvedReturnType != returnType
+            && !nameTable.getObjCType(resolvedReturnType).equals(
                 nameTable.getObjCType(returnType))) {
-          newDeclarations.put(selector, method);
-          declaredReturnTypes.put(selector, returnType);
+          newDeclarations.put(selector, new ExecutablePair(methodElem, methodType));
+          resolvedReturnTypes.put(selector, returnType);
         }
       }
     }
 
-    for (IMethodBinding method : newDeclarations.values()) {
-      if (deadCodeMap != null && deadCodeMap.containsMethod(method.getMethodDeclaration())) {
+    for (Map.Entry<String, ExecutablePair> newDecl : newDeclarations.entrySet()) {
+      if (deadCodeMap != null && deadCodeMap.containsMethod(
+          BindingConverter.unwrapExecutableElement(newDecl.getValue().element()))) {
         continue;
       }
-
-      node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(method, type));
+      node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(
+          newDecl.getKey(), newDecl.getValue(), type));
     }
   }
 
   private MethodDeclaration newReturnTypeNarrowingDeclaration(
-      IMethodBinding method, ITypeBinding declaringClass) {
-    String selector = nameTable.getMethodSelector(method);
-    IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(selector, method);
-    // Remove all modifiers except the visibility.
-    binding.removeModifiers(~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE));
-    // Mark synthetic to avoid writing metadata.
-    binding.addModifiers(Modifier.ABSTRACT | BindingUtil.ACC_SYNTHETIC);
-    binding.setDeclaringClass(declaringClass);
-    MethodDeclaration decl = new MethodDeclaration(binding);
-    if (!declaringClass.isInterface()) {
+      String selector, ExecutablePair method, TypeElement declaringClass) {
+    GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
+        selector, method.type().getReturnType(), declaringClass)
+        // Preserve visibility of the original method.
+        .addModifiers(ElementUtil.getVisibilityModifiers(method.element()))
+        .addModifiers(Modifier.ABSTRACT);
+    MethodDeclaration decl = new MethodDeclaration(element);
+    if (!declaringClass.getKind().isInterface()) {
       unit.setHasIncompleteImplementation();
     }
     int argCount = 0;
-    for (ITypeBinding paramType : binding.getParameterTypes()) {
-      decl.addParameter(new SingleVariableDeclaration(new GeneratedVariableBinding(
-          "arg" + argCount++, 0, paramType, false, true, null, binding)));
+    for (TypeMirror paramType : method.type().getParameterTypes()) {
+      VariableElement param = new GeneratedVariableElement(
+          "arg" + argCount++, paramType, ElementKind.PARAMETER, element);
+      element.addParameter(param);
+      decl.addParameter(new SingleVariableDeclaration(param));
     }
     return decl;
   }

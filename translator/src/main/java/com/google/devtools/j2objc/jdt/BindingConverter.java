@@ -351,12 +351,15 @@ public final class BindingConverter {
 
   public static IBinding unwrapElement(Element element) {
     if (element instanceof GeneratedVariableElement) {
-      Element possibleEnclosing = element.getEnclosingElement();
+      IBinding enclosing = unwrapElement(element.getEnclosingElement());
+      ITypeBinding enclosingType =
+          enclosing instanceof ITypeBinding ? (ITypeBinding) enclosing : null;
+      IMethodBinding enclosingMethod =
+          enclosing instanceof IMethodBinding ? (IMethodBinding) enclosing : null;
       GeneratedVariableBinding newBinding = new GeneratedVariableBinding(
           element.toString(), ElementUtil.fromModifierSet(element.getModifiers()),
-          element.asType(), element.getKind() == ElementKind.FIELD,
-          element.getKind() == ElementKind.PARAMETER,
-          possibleEnclosing != null ? possibleEnclosing.asType() : null, null);
+          unwrapTypeMirrorIntoTypeBinding(element.asType()), element.getKind() == ElementKind.FIELD,
+          element.getKind() == ElementKind.PARAMETER, enclosingType, enclosingMethod);
       newBinding.addAnnotations(element.getAnnotationMirrors());
       newBinding.setNonnull(((GeneratedVariableElement) element).isNonnull());
       newBinding.setTypeQualifiers(((GeneratedVariableElement) element).getTypeQualifiers());
