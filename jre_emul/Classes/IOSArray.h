@@ -46,7 +46,7 @@
 - (IOSClass *)elementType;
 
 /** Creates and returns an array containing the values from this array. */
-- (id)clone;
+- (id)java_clone;
 
 /**
  * @brief Returns a pointer to the underlying array of elements.

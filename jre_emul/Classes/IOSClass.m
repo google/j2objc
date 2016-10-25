@@ -1042,7 +1042,7 @@ static IOSObjectArray *GetEnumConstants(IOSClass *cls) {
 }
 
 - (IOSObjectArray *)getEnumConstants {
-  return [GetEnumConstants(self) clone];
+  return [GetEnumConstants(self) java_clone];
 }
 
 // Package private method. In OpenJDK it differentiated from the above because

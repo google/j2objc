@@ -39,11 +39,17 @@
 # another class), and the wrapper method used here.
 
 # java.lang.Object
+java.lang.Object.clone()Ljava/lang/Object; = java_clone
 java.lang.Object.equals(Ljava/lang/Object;)Z = isEqual:
+java.lang.Object.finalize()V = java_finalize
 java.lang.Object.getClass()Ljava/lang/Class; = java_getClass
 java.lang.Object.hashCode()I = hash
+java.lang.Object.notify()V = java_notify
+java.lang.Object.notifyAll()V = java_notifyAll
 java.lang.Object.toString()Ljava/lang/String; = description
-java.lang.Object.finalize()V = javaFinalize
+java.lang.Object.wait()V = java_wait
+java.lang.Object.wait(J)V = java_waitWithLong:
+java.lang.Object.wait(JI)V = java_waitWithLong:withInt:
 
 # java.lang.Class
 java.lang.Class.asSubclass(Ljava/lang/Class;)Ljava/lang/Class; = asSubclass:

@@ -104,7 +104,7 @@ public class MethodReferenceTest extends GenerationTest {
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (id)copy__WithIntArray:(IOSIntArray *)a {",
-        "  return [((IOSIntArray *) nil_chk(a)) clone];",
+        "  return [((IOSIntArray *) nil_chk(a)) java_clone];",
         "}");
   }
 

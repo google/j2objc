@@ -41,10 +41,10 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "- (Example *)copy__ OBJC_METHOD_FAMILY_NONE;");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation,
-        "return (Example *) cast_chk([self clone], [Example class]);");
+        "return (Example *) cast_chk([self java_clone], [Example class]);");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation,
-        "Example *e = (Example *) cast_chk([super clone], [Example class]);");
+        "Example *e = (Example *) cast_chk([super java_clone], [Example class]);");
     assertTranslation(translation, "((Example *) nil_chk(e))->i_ = i_");
   }
 
@@ -189,9 +189,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         + "  return e;"
         + "}}",
         "Example", "Example.h");
-    assertTranslation(translation, "- (id)clone;");
+    assertTranslation(translation, "- (id)java_clone;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "- (id)clone {");
+    assertTranslation(translation, "- (id)java_clone {");
   }
 
   // Verify that if a Cloneable class doesn't have a clone method,
@@ -200,7 +200,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "public class Example implements Cloneable { int i; }",
         "Example", "Example.m");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
-    assertTranslation(translation, "return [[self clone] retain];");
+    assertTranslation(translation, "return [[self java_clone] retain];");
   }
 
   public void testCloneRenamingWithSuperClone() throws IOException {
@@ -216,10 +216,10 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "- (Example *)copy__ OBJC_METHOD_FAMILY_NONE;");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation,
-        "return (Example *) cast_chk([self clone], [Example class]);");
+        "return (Example *) cast_chk([self java_clone], [Example class]);");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation, "Example_Inner *inner = "
-        + "(Example_Inner *) cast_chk([super clone], [Example_Inner class]);");
+        + "(Example_Inner *) cast_chk([super java_clone], [Example_Inner class]);");
     assertTranslation(translation, "((Example_Inner *) nil_chk(inner))->i_ = i_;");
   }
 

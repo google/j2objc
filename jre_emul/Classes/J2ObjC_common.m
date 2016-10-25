@@ -65,7 +65,7 @@ id nil_chk(id __unsafe_unretained p) {
 
 void JreFinalize(id self) {
   @try {
-    [self javaFinalize];
+    [self java_finalize];
   } @catch (NSException *e) {
     [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
         logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()

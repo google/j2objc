@@ -152,7 +152,7 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
   return copy;
 }
 
-- (id)clone {
+- (id)java_clone {
   id result = [self copyWithZone:nil];
 #if ! __has_feature(objc_arc)
   [result autorelease];

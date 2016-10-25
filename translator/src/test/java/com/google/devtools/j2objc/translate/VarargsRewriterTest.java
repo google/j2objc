@@ -90,7 +90,7 @@ public class VarargsRewriterTest extends GenerationTest {
         + "void test() { Object[] objs = new Object[] { \"\", \"\" };"
         + "varargs(\"objects\", objs.clone()); }}", "A", "A.m");
     assertTranslation(translation,
-        "[self varargsWithNSString:@\"objects\" withNSObjectArray:[objs clone]];");
+        "[self varargsWithNSString:@\"objects\" withNSObjectArray:[objs java_clone]];");
   }
 
   public void testGenericSuperMethodInvocation() throws IOException {

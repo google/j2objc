@@ -144,7 +144,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
   if (info->formalTypeParameters_->size_ == 0) {
     return info->formalTypeParameters_;
   }
-  return [info->formalTypeParameters_ clone];
+  return [info->formalTypeParameters_ java_clone];
 }
 
 - (IOSObjectArray *)getGenericParameterTypes {

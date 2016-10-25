@@ -36,7 +36,7 @@
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
 
-- (id)clone {
+- (id)java_clone {
   if (![NSCopying_class_() isInstance:self]) {
     @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
   }
@@ -91,7 +91,7 @@
   return 0;
 }
 
-- (void)notify {
+- (void)java_notify {
   int result = objc_sync_notify(self);
   if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
     return;
@@ -104,7 +104,7 @@
   }
 }
 
-- (void)notifyAll {
+- (void)java_notifyAll {
   int result = objc_sync_notifyAll(self);
   if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
     return;
@@ -148,22 +148,22 @@ static void doWait(id obj, long long timeout) {
   }
 }
 
-- (void)wait {
+- (void)java_wait {
   doWait(self, 0LL);
 }
 
-- (void)waitWithLong:(long long)timeout {
+- (void)java_waitWithLong:(long long)timeout {
   doWait(self, timeout);
 }
 
-- (void)waitWithLong:(long long)timeout withInt:(int)nanos {
+- (void)java_waitWithLong:(long long)timeout withInt:(int)nanos {
   if (nanos < 0) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }
   doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
-- (void)javaFinalize {
+- (void)java_finalize {
 }
 
 - (void)__javaClone:(id)original {
@@ -175,14 +175,14 @@ static void doWait(id obj, long long timeout) {
     { NULL, "LIOSClass;", 0x11, 0, -1, -1, 1, -1, -1 },
     { NULL, "I", 0x1, 2, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, 3, 4, -1, -1, -1, -1 },
-    { NULL, "LNSObject;", 0x4, -1, -1, 5, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 6, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x4, 7, -1, 8, -1, -1, -1 },
-    { NULL, "V", 0x11, -1, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x11, -1, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x11, 9, 10, 11, -1, -1, -1 },
-    { NULL, "V", 0x11, 9, 12, 11, -1, -1, -1 },
-    { NULL, "V", 0x11, -1, -1, 11, -1, -1, -1 },
+    { NULL, "LNSObject;", 0x4, 5, -1, 6, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 7, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x4, 8, -1, 9, -1, -1, -1 },
+    { NULL, "V", 0x11, 10, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x11, 11, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x11, 12, 13, 14, -1, -1, -1 },
+    { NULL, "V", 0x11, 12, 15, 14, -1, -1, -1 },
+    { NULL, "V", 0x11, 12, -1, 14, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
@@ -190,19 +190,19 @@ static void doWait(id obj, long long timeout) {
   methods[1].selector = @selector(java_getClass);
   methods[2].selector = @selector(hash);
   methods[3].selector = @selector(isEqual:);
-  methods[4].selector = @selector(clone);
+  methods[4].selector = @selector(java_clone);
   methods[5].selector = @selector(description);
-  methods[6].selector = @selector(javaFinalize);
-  methods[7].selector = @selector(notify);
-  methods[8].selector = @selector(notifyAll);
-  methods[9].selector = @selector(waitWithLong:);
-  methods[10].selector = @selector(waitWithLong:withInt:);
-  methods[11].selector = @selector(wait);
+  methods[6].selector = @selector(java_finalize);
+  methods[7].selector = @selector(java_notify);
+  methods[8].selector = @selector(java_notifyAll);
+  methods[9].selector = @selector(java_waitWithLong:);
+  methods[10].selector = @selector(java_waitWithLong:withInt:);
+  methods[11].selector = @selector(java_wait);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
-    "getClass", "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;",
-    "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LNSException;", "wait", "J",
-    "LJavaLangInterruptedException;", "JI" };
+    "getClass", "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;", "clone",
+    "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LNSException;", "notify",
+    "notifyAll", "wait", "J", "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {
     "Object", "java.lang", ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };
   return &_NSObject;
