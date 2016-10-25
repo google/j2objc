@@ -37,14 +37,13 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.lang.model.element.TypeElement;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Extracts OCNI code blocks into NativeDeclaration and NativeStatement nodes.
@@ -142,6 +141,7 @@ public class OcniExtractor extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
+    TypeElement type = node.getTypeElement();
     Set<String> methodsPrinted = Sets.newHashSet();
     List<BodyDeclaration> bodyDeclarations = node.getBodyDeclarations();
     int minPos = 0;
@@ -174,7 +174,7 @@ public class OcniExtractor extends UnitTreeVisitor {
     // methods are always live.
     if (BindingUtil.findInterface(node.getTypeBinding(), "java.lang.Iterable") != null
         && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")
-        && (deadCodeMap == null || !deadCodeMap.containsClass(node))) {
+        && (deadCodeMap == null || !deadCodeMap.containsClass(type, elementUtil))) {
       bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
           "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
           + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"

@@ -23,13 +23,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Table;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.lang.model.element.ExecutableElement;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
+import javax.lang.model.element.TypeElement;
 
 /**
  * Tracks classes, fields, and methods that are referenced in source code.
@@ -99,8 +96,8 @@ public class CodeReferenceMap {
     return deadClasses.contains(clazz);
   }
 
-  public boolean containsClass(AbstractTypeDeclaration node) {
-    return containsClass(node.getTypeBinding().getBinaryName());
+  public boolean containsClass(TypeElement clazz, ElementUtil elementUtil) {
+    return containsClass(elementUtil.getBinaryName(clazz));
   }
 
   public boolean containsMethod(String clazz, String name, String signature) {
@@ -108,17 +105,10 @@ public class CodeReferenceMap {
         || (deadMethods.contains(clazz, name) && deadMethods.get(clazz, name).contains(signature));
   }
 
-  public boolean containsMethod(IMethodBinding binding) {
-    String className = binding.getDeclaringClass().getBinaryName();
-    String methodName = binding.getName();
-    String methodSig = BindingUtil.getSignature(binding);
-    return containsMethod(className, methodName, methodSig);
-  }
-
   //TODO(user): Revisit this method and remove typeUtil
   //  Problem: need access to a typeUtil for ProguardNameUtil.getSignature method.
   public boolean containsMethod(ExecutableElement method, TypeUtil typeUtil) {
-    String className = ElementUtil.getName(ElementUtil.getDeclaringClass(method));
+    String className = typeUtil.elementUtil().getBinaryName(ElementUtil.getDeclaringClass(method));
     String methodName = ProguardNameUtil.getProGuardName(method);
     String methodSig = ProguardNameUtil.getProGuardSignature(method, typeUtil);
     return containsMethod(className, methodName, methodSig);

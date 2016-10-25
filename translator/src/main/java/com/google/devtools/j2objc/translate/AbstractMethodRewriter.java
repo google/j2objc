@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
@@ -113,21 +112,19 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
-    if (deadCodeMap == null || !deadCodeMap.containsClass(node)) {
-      addReturnTypeNarrowingDeclarations(node);
-    }
+    addReturnTypeNarrowingDeclarations(node);
   }
 
   // Adds declarations for any methods where the known return type is more
   // specific than what is already declared in inherited types.
   private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
+    TypeElement type = node.getTypeElement();
 
     // No need to run this if the entire class is dead.
-    if (deadCodeMap != null && deadCodeMap.containsClass(node)) {
+    if (deadCodeMap != null && deadCodeMap.containsClass(type, elementUtil)) {
       return;
     }
 
-    TypeElement type = node.getTypeElement();
     Map<String, ExecutablePair> newDeclarations = new HashMap<>();
     Map<String, TypeMirror> resolvedReturnTypes = new HashMap<>();
     for (DeclaredType inheritedType : typeUtil.getObjcOrderedInheritedTypes(type.asType())) {
@@ -157,8 +154,8 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     }
 
     for (Map.Entry<String, ExecutablePair> newDecl : newDeclarations.entrySet()) {
-      if (deadCodeMap != null && deadCodeMap.containsMethod(
-          BindingConverter.unwrapExecutableElement(newDecl.getValue().element()))) {
+      if (deadCodeMap != null
+          && deadCodeMap.containsMethod(newDecl.getValue().element(), typeUtil)) {
         continue;
       }
       node.addBodyDeclaration(newReturnTypeNarrowingDeclaration(

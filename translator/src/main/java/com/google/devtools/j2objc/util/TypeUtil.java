@@ -47,6 +47,10 @@ public final class TypeUtil {
     this.elementUtil = elementUtil;
   }
 
+  public ElementUtil elementUtil() {
+    return elementUtil;
+  }
+
   public static ElementKind getDeclaredTypeKind(TypeMirror t) {
     return t.getKind() == TypeKind.DECLARED ? ((DeclaredType) t).asElement().getKind() : null;
   }
