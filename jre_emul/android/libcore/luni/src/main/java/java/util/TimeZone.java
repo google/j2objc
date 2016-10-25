@@ -64,8 +64,11 @@ import java.util.regex.Pattern;
 public abstract class TimeZone implements Serializable, Cloneable {
     private static final long serialVersionUID = 3581463369166924961L;
 
-    private static final Pattern CUSTOM_ZONE_ID_PATTERN =
-        Pattern.compile("^GMT[-+](\\d{1,2})([:.]?(\\d\\d))?$");
+    /** j2objc: Compiling regex is expensive in static initializer. This makes it lazy. */
+    private static final class CustomZoneIdPatternGetter {
+        static final Pattern CUSTOM_ZONE_ID_PATTERN =
+                Pattern.compile("^GMT[-+](\\d{1,2})([:.]?(\\d\\d))?$");
+    }
 
     /**
      * The short display name style, such as {@code PDT}. Requests for this
@@ -388,7 +391,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * Returns a new SimpleTimeZone for an ID of the form "GMT[+|-]hh[[:]mm]", or null.
      */
     private static TimeZone getCustomTimeZone(String id) {
-        Matcher m = CUSTOM_ZONE_ID_PATTERN.matcher(id);
+        Matcher m = CustomZoneIdPatternGetter.CUSTOM_ZONE_ID_PATTERN.matcher(id);
         if (!m.matches()) {
             return null;
         }
