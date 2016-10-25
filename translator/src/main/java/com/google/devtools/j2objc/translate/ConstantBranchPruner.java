@@ -20,7 +20,6 @@ import static java.lang.Boolean.FALSE;
 
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
-import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
@@ -228,12 +227,7 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
    */
   private Statement getSideEffects(Expression expr) {
     Expression sideEffectsExpr = extractSideEffects(expr);
-    if (sideEffectsExpr == null) {
-      return null;
-    }
-    return new ExpressionStatement(new CastExpression(
-        typeEnv.resolveJavaTypeMirror("void"), 
-        ParenthesizedExpression.parenthesize(sideEffectsExpr)));
+    return sideEffectsExpr == null ? null : new ExpressionStatement(sideEffectsExpr);
   }
 
   /**
