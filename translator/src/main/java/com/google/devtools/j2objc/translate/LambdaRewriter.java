@@ -151,8 +151,8 @@ public class LambdaRewriter extends UnitTreeVisitor {
         node.replaceWith(creation);
       } else {
         // For non-capturing lambdas, create a static final instance.
-        VariableElement instanceVar = new GeneratedVariableElement(
-            "instance", lambdaType.asType(), ElementKind.FIELD, lambdaType)
+        VariableElement instanceVar = GeneratedVariableElement.newField(
+            "instance", lambdaType.asType(), lambdaType)
             .addModifiers(Modifier.STATIC, Modifier.FINAL);
         typeDecl.addBodyDeclaration(new FieldDeclaration(instanceVar, creation));
         node.replaceWith(new SimpleName(instanceVar));
@@ -188,8 +188,8 @@ public class LambdaRewriter extends UnitTreeVisitor {
       List<VariableElement> params = new ArrayList<>(paramTypes.size());
       int i = 0;
       for (TypeMirror type : paramTypes) {
-        GeneratedVariableElement param = new GeneratedVariableElement(
-            getParamName(i++), type, ElementKind.PARAMETER, null);
+        GeneratedVariableElement param = GeneratedVariableElement.newParameter(
+            getParamName(i++), type, implElement);
         params.add(param);
         implElement.addParameter(param);
         implDecl.addParameter(new SingleVariableDeclaration(param));

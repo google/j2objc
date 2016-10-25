@@ -44,7 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -182,7 +181,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
     private void addShimWithInvocation(
         String selector, ExecutablePair method, Expression invocation, List<Expression> args) {
-      ExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
+      GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
               selector, method.type().getReturnType(), typeElem)
           .addModifiers(method.element().getModifiers())
           .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT);
@@ -192,8 +191,9 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
       int i = 0;
       for (TypeMirror paramType : method.type().getParameterTypes()) {
-        GeneratedVariableElement newParam = new GeneratedVariableElement(
-            "arg" + i++, paramType, ElementKind.PARAMETER, null);
+        GeneratedVariableElement newParam = GeneratedVariableElement.newParameter(
+            "arg" + i++, paramType, element);
+        element.addParameter(newParam);
         methodDecl.addParameter(new SingleVariableDeclaration(newParam));
         args.add(new SimpleName(newParam));
       }

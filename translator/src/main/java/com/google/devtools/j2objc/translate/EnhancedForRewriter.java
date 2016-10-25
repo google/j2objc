@@ -41,7 +41,6 @@ import com.google.j2objc.annotations.LoopTranslation;
 import com.google.j2objc.annotations.LoopTranslation.LoopStyle;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -91,19 +90,17 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     TypeMirror componentType = expressionType.getComponentType();
     TypeElement iosArrayType = typeEnv.resolveArrayType(componentType);
     TypeMirror bufferType = new PointerType(componentType);
-    VariableElement arrayVariable = new GeneratedVariableElement(
-        "a__", expressionType, ElementKind.LOCAL_VARIABLE, null);
-    VariableElement bufferVariable = new GeneratedVariableElement(
-        "b__", bufferType, ElementKind.LOCAL_VARIABLE, null)
+    VariableElement arrayVariable = GeneratedVariableElement.newLocalVar(
+        "a__", expressionType, null);
+    VariableElement bufferVariable = GeneratedVariableElement.newLocalVar("b__", bufferType, null)
         .setTypeQualifiers("const*");
-    VariableElement endVariable = new GeneratedVariableElement(
-        "e__", bufferType, ElementKind.LOCAL_VARIABLE, null)
+    VariableElement endVariable = GeneratedVariableElement.newLocalVar("e__", bufferType, null)
         .setTypeQualifiers("const*");
-    VariableElement bufferField = new GeneratedVariableElement(
-        "buffer", bufferType, ElementKind.FIELD, iosArrayType)
+    VariableElement bufferField = GeneratedVariableElement.newField(
+        "buffer", bufferType, iosArrayType)
         .addModifiers(Modifier.PUBLIC);
-    VariableElement sizeField = new GeneratedVariableElement(
-        "size", typeUtil.getPrimitiveType(TypeKind.INT), ElementKind.FIELD, iosArrayType)
+    VariableElement sizeField = GeneratedVariableElement.newField(
+        "size", typeUtil.getPrimitiveType(TypeKind.INT), iosArrayType)
         .addModifiers(Modifier.PUBLIC);
 
     VariableDeclarationStatement arrayDecl =
@@ -161,8 +158,8 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     ExecutablePair nextMethod = typeUtil.findMethod(iteratorType, "next");
     assert hasNextMethod != null && nextMethod != null;
 
-    VariableElement iteratorVariable = new GeneratedVariableElement(
-        "iter__", iteratorType, ElementKind.LOCAL_VARIABLE, null);
+    VariableElement iteratorVariable = GeneratedVariableElement.newLocalVar(
+        "iter__", iteratorType, null);
 
     MethodInvocation iteratorInvocation =
         new MethodInvocation(iteratorMethod, TreeUtil.remove(expression));
@@ -204,8 +201,8 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     DeclaredType iterableType = typeUtil.findSupertype(expressionType, "java.lang.Iterable");
     List<? extends TypeMirror> typeArgs = iterableType.getTypeArguments();
     assert typeArgs.size() == 1 && typeUtil.isBoxedType(typeArgs.get(0));
-    VariableElement boxVariable = new GeneratedVariableElement(
-        "boxed__", typeArgs.get(0), ElementKind.LOCAL_VARIABLE, null);
+    VariableElement boxVariable = GeneratedVariableElement.newLocalVar(
+        "boxed__", typeArgs.get(0), null);
     node.setParameter(new SingleVariableDeclaration(boxVariable));
     makeBlock(node.getBody()).addStatement(
         0, new VariableDeclarationStatement(loopVariable, new SimpleName(boxVariable)));

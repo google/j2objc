@@ -179,8 +179,8 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     }
     int argCount = 0;
     for (TypeMirror paramType : method.type().getParameterTypes()) {
-      VariableElement param = new GeneratedVariableElement(
-          "arg" + argCount++, paramType, ElementKind.PARAMETER, element);
+      VariableElement param = GeneratedVariableElement.newParameter(
+          "arg" + argCount++, paramType, element);
       element.addParameter(param);
       decl.addParameter(new SingleVariableDeclaration(param));
     }

@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -108,8 +107,8 @@ public class AnonymousClassConverter extends UnitTreeVisitor {
     // constructor and passed to the super call.
     int argCount = 0;
     for (VariableElement param : constructorElement.getParameters()) {
-      GeneratedVariableElement newParam = new GeneratedVariableElement(
-          "arg$" + argCount++, param.asType(), ElementKind.PARAMETER, constructorElement);
+      GeneratedVariableElement newParam = GeneratedVariableElement.newParameter(
+          "arg$" + argCount++, param.asType(), constructorElement);
       constructor.addParameter(new SingleVariableDeclaration(newParam));
       superCall.addArgument(new SimpleName(newParam));
     }

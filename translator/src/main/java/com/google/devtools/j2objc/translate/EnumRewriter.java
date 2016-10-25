@@ -58,7 +58,6 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.util.ArrayList;
 import java.util.List;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -153,8 +152,7 @@ public class EnumRewriter extends UnitTreeVisitor {
 
     TypeMirror intType = typeEnv.resolveJavaTypeMirror("int");
     GeneratedVariableElement loopCounterElement =
-        new GeneratedVariableElement("i", intType,
-            ElementKind.LOCAL_VARIABLE, TreeUtil.getEnclosingElement(node));
+        GeneratedVariableElement.newLocalVar("i", intType, TreeUtil.getEnclosingElement(node));
     VariableDeclarationExpression loopCounter =
         new VariableDeclarationExpression().setType(Type.newType(loopCounterElement.asType()))
             .addFragment(new VariableDeclarationFragment(

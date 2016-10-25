@@ -114,8 +114,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   }
 
   public void addParameterPlaceholderFront(TypeMirror type) {
-    parameters.add(0, new GeneratedVariableElement(
-        "placeholder", type, ElementKind.PARAMETER, null));
+    parameters.add(0, GeneratedVariableElement.newParameter("placeholder", type, this));
   }
 
   @Override

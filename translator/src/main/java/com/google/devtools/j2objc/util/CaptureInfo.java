@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -150,8 +149,7 @@ public class CaptureInfo {
   public VariableElement getOrCreateOuterParam(TypeElement type) {
     VariableElement outerParam = outerParams.get(type);
     if (outerParam == null) {
-      outerParam = new GeneratedVariableElement(
-          "outer$", getDeclaringType(type), ElementKind.PARAMETER, type)
+      outerParam = GeneratedVariableElement.newParameter("outer$", getDeclaringType(type), type)
           .setNonnull(true);
       outerParams.put(type, outerParam);
     }
@@ -163,8 +161,8 @@ public class CaptureInfo {
     getOrCreateOuterParam(type);
     VariableElement outerField = outerFields.get(type);
     if (outerField == null) {
-      outerField = new GeneratedVariableElement(
-          getOuterFieldName(type), getDeclaringType(type), ElementKind.FIELD, type)
+      outerField = GeneratedVariableElement.newField(
+          getOuterFieldName(type), getDeclaringType(type), type)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .setNonnull(true);
       outerFields.put(type, outerField);
@@ -179,8 +177,8 @@ public class CaptureInfo {
         return localCapture;
       }
     }
-    LocalCapture newCapture = new LocalCapture(var, new GeneratedVariableElement(
-        "capture$" + capturesForType.size(), var.asType(), ElementKind.PARAMETER, declaringType));
+    LocalCapture newCapture = new LocalCapture(var, GeneratedVariableElement.newParameter(
+        "capture$" + capturesForType.size(), var.asType(), declaringType));
     capturesForType.add(newCapture);
     return newCapture;
   }
@@ -192,8 +190,8 @@ public class CaptureInfo {
   public VariableElement getOrCreateCaptureField(VariableElement var, TypeElement declaringType) {
     LocalCapture capture = getOrCreateLocalCapture(var, declaringType);
     if (capture.field == null) {
-      capture.field = new GeneratedVariableElement(
-          getCaptureFieldName(var, declaringType), var.asType(), ElementKind.FIELD, declaringType)
+      capture.field = GeneratedVariableElement.newField(
+          getCaptureFieldName(var, declaringType), var.asType(), declaringType)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .addAnnotationMirrors(var.getAnnotationMirrors());
     }
@@ -202,8 +200,8 @@ public class CaptureInfo {
 
   public VariableElement createSuperOuterParam(TypeElement type, TypeMirror superOuterType) {
     assert !superOuterParams.containsKey(type);
-    VariableElement param = new GeneratedVariableElement(
-        "superOuter$", superOuterType, ElementKind.PARAMETER, type)
+    VariableElement param = GeneratedVariableElement.newParameter(
+        "superOuter$", superOuterType, type)
         .setNonnull(true);
     superOuterParams.put(type, param);
     return param;
@@ -212,11 +210,9 @@ public class CaptureInfo {
   public void addMethodReferenceReceiver(TypeElement type, TypeMirror receiverType) {
     assert !outerParams.containsKey(type) && !outerFields.containsKey(type);
     // Add the target field as an outer field even though it's not really pointing to outer scope.
-    outerParams.put(type, new GeneratedVariableElement(
-        "outer$", receiverType, ElementKind.PARAMETER, type)
+    outerParams.put(type, GeneratedVariableElement.newParameter("outer$", receiverType, type)
         .setNonnull(true));
-    outerFields.put(type, new GeneratedVariableElement(
-        "target$", receiverType, ElementKind.FIELD, type)
+    outerFields.put(type, GeneratedVariableElement.newField("target$", receiverType, type)
         .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
         .setNonnull(true));
   }

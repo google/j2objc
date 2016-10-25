@@ -43,15 +43,26 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
             var.getKind(), var.getEnclosingElement(), ElementUtil.isSynthetic(var));
   }
 
-  public GeneratedVariableElement(
-      String name, TypeMirror type, ElementKind kind, Element enclosingElement) {
-    this(name, type, kind, enclosingElement, true);
-  }
-
   private GeneratedVariableElement(
       String name, TypeMirror type, ElementKind kind, Element enclosingElement, boolean synthetic) {
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.type = type;
+  }
+
+  public static GeneratedVariableElement newField(
+      String name, TypeMirror type, Element enclosingElement) {
+    return new GeneratedVariableElement(name, type, ElementKind.FIELD, enclosingElement, true);
+  }
+
+  public static GeneratedVariableElement newParameter(
+      String name, TypeMirror type, Element enclosingElement) {
+    return new GeneratedVariableElement(name, type, ElementKind.PARAMETER, enclosingElement, true);
+  }
+
+  public static GeneratedVariableElement newLocalVar(
+      String name, TypeMirror type, Element enclosingElement) {
+    return new GeneratedVariableElement(
+        name, type, ElementKind.LOCAL_VARIABLE, enclosingElement, true);
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
