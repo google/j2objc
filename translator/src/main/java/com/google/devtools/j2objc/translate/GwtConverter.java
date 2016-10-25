@@ -140,15 +140,13 @@ public class GwtConverter extends UnitTreeVisitor {
   }
 
   /**
-   * Returns true if expression is a method invocation, and that
-   * method refers to GWT.isClient() or GWT.isScript().
+   * Returns true if expression is a method invocation, and that method refers to GWT.isClient() or
+   * GWT.isScript().
    *
-   * NOTE: this method only checks for GWT.isClient() method invocations,
-   * not any other boolean expression that might contain them.  For
-   * example, !GWT.isClient() won't detect the method, since the binding
-   * for that expression will be a boolean type rather than a method
-   * binding.  The isGwtTest() call in visit(MethodInvocation) warns when
-   * code like this is translated.
+   * NOTE: this method only checks for GWT.isClient() method invocations, not any other boolean
+   * expression that might contain them. For example, !GWT.isClient() won't detect the method, since
+   * that expression won't have a method element. The isGwtTest() call in visit(MethodInvocation)
+   * warns when code like this is translated.
    */
   private boolean isGwtTest(Expression node) {
     ExecutableElement method = TreeUtil.getExecutableElement(node);
@@ -162,7 +160,7 @@ public class GwtConverter extends UnitTreeVisitor {
   }
 
   private boolean isIncompatible(List<Annotation> annotations) {
-    // Annotation bindings don't have the annotation's package.
+    // Annotation mirrors don't have the annotation's package.
     for (Annotation annotationNode : annotations) {
       String annotationName =
           TypeUtil.getQualifiedName(annotationNode.getAnnotationMirror().getAnnotationType());

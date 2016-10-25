@@ -262,7 +262,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
       if (!TypeUtil.isArray(node.getType().getTypeMirror())) {
         return node.getExecutableElement();
       }
-      // JDT does not provide the correct method binding on array types, so we find it from
+      // JDT does not provide the correct method on array types, so we find it from
       // java.lang.Object.
       String name = node.getName().getIdentifier();
       int numParams = functionalInterface.getParameters().size() - 1;
