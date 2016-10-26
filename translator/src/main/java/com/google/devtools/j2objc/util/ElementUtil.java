@@ -319,6 +319,10 @@ public final class ElementUtil {
         elem.getEnclosedElements(), e -> kindsList.contains(e.getKind())), resultClass::cast);
   }
 
+  public static Iterable<ExecutableElement> getConstructors(TypeElement e) {
+    return filterEnclosedElements(e, ExecutableElement.class, ElementKind.CONSTRUCTOR);
+  }
+
   public static List<ExecutableElement> getDeclaredMethods(Element e) {
     return Lists.newArrayList(filterEnclosedElements(
         e, ExecutableElement.class, ElementKind.CONSTRUCTOR, ElementKind.METHOD));

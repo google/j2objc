@@ -37,19 +37,17 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.CaptureInfo;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.WeakOuter;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Adds support for inner and anonymous classes, and extracts them to be
@@ -116,8 +114,8 @@ public class InnerClassExtractor extends UnitTreeVisitor {
         parentNode.remove();
       }
 
-      ITypeBinding type = node.getTypeBinding();
-      if (!type.isInterface() && !type.isAnnotation() && !Modifier.isStatic(type.getModifiers())) {
+      TypeElement type = node.getTypeElement();
+      if (type.getKind().isClass() && !ElementUtil.isStatic(type)) {
         addOuterFields(node);
         updateConstructors(node);
       }
@@ -128,7 +126,7 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       unitTypes.add(insertIdx, node);
 
       // Check for erroneous WeakOuter annotation on static inner class.
-      if (BindingUtil.isStatic(type) && BindingUtil.hasAnnotation(type, WeakOuter.class)) {
+      if (ElementUtil.isStatic(type) && ElementUtil.hasAnnotation(type, WeakOuter.class)) {
         ErrorUtil.warning("static class " + type.getQualifiedName() + " has WeakOuter annotation");
       }
     }
@@ -152,88 +150,99 @@ public class InnerClassExtractor extends UnitTreeVisitor {
     // Insert new parameters for each constructor in class.
     for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
       if (method.isConstructor()) {
-        addOuterParameters(node, method);
+        addOuterParameters(method, node.getTypeElement());
       }
     }
   }
 
-  protected void addOuterParameters(
-      AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
-    ITypeBinding type = typeNode.getTypeBinding();
-    TypeElement typeE = typeNode.getTypeElement();
-    VariableElement outerParam = captureInfo.getOuterParam(typeE);
-    VariableElement superOuterParam = captureInfo.getSuperOuterParam(typeE);
-
-    GeneratedMethodBinding constructorBinding =
-        new GeneratedMethodBinding(constructor.getMethodBinding().getMethodDeclaration());
-    constructor.setMethodBinding(constructorBinding);
+  protected void addOuterParameters(MethodDeclaration constructor, TypeElement type) {
+    GeneratedExecutableElement constructorElement =
+        GeneratedExecutableElement.mutableCopy(constructor.getExecutableElement());
+    constructor.setExecutableElement(constructorElement);
 
     // Adds the outer and captured parameters to the declaration.
     List<SingleVariableDeclaration> captureDecls = constructor.getParameters().subList(0, 0);
-    List<ITypeBinding> captureTypes = constructorBinding.getParameters().subList(0, 0);
+    List<VariableElement> captureParams = constructorElement.getParameters().subList(0, 0);
+
+    VariableElement outerParam = captureInfo.getOuterParam(type);
     if (outerParam != null) {
       captureDecls.add(new SingleVariableDeclaration(outerParam));
-      captureTypes.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerParam.asType()));
+      captureParams.add(outerParam);
     }
+    VariableElement superOuterParam = captureInfo.getSuperOuterParam(type);
     if (superOuterParam != null) {
       captureDecls.add(new SingleVariableDeclaration(superOuterParam));
-      captureTypes.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(superOuterParam.asType()));
+      captureParams.add(superOuterParam);
     }
-    for (VariableElement captureParam : captureInfo.getCaptureParams(typeE)) {
+    for (VariableElement captureParam : captureInfo.getCaptureParams(type)) {
       captureDecls.add(new SingleVariableDeclaration(captureParam));
-      captureTypes.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(captureParam.asType()));
+      captureParams.add(captureParam);
     }
 
-    ConstructorInvocation thisCall = null;
-    SuperConstructorInvocation superCall = null;
-
-    List<Statement> statements = constructor.getBody().getStatements();
-    for (Statement stmt : statements) {
-      if (stmt instanceof ConstructorInvocation) {
-        thisCall = (ConstructorInvocation) stmt;
-        break;
-      } else if (stmt instanceof SuperConstructorInvocation) {
-        superCall = (SuperConstructorInvocation) stmt;
-        break;
-      }
-    }
-
+    ConstructorInvocation thisCall = findThisCall(constructor);
     if (thisCall != null) {
-      GeneratedMethodBinding newThisBinding =
-          new GeneratedMethodBinding(thisCall.getMethodBinding().getMethodDeclaration());
-      thisCall.setMethodBinding(newThisBinding);
-      List<Expression> args = thisCall.getArguments().subList(0, 0);
-      List<ITypeBinding> params = newThisBinding.getParameters().subList(0, 0);
-      if (outerParam != null) {
-        args.add(new SimpleName(outerParam));
-        params.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(outerParam.asType()));
-      }
-      for (VariableElement captureParam : captureInfo.getCaptureParams(typeE)) {
-        args.add(new SimpleName(captureParam));
-        params.add(BindingConverter.unwrapTypeMirrorIntoTypeBinding(captureParam.asType()));
-      }
+      forwardOuterArgs(thisCall, type);
     } else {
-      ITypeBinding superType = type.getSuperclass().getTypeDeclaration();
-      if (superCall == null) {
-        superCall = new SuperConstructorInvocation(
-            TranslationUtil.findDefaultConstructorBinding(superType, typeEnv));
-        statements.add(0, superCall);
-      }
-      VariableElement outerField = captureInfo.getOuterField(typeE);
-      int idx = 0;
-      if (outerField != null) {
-        assert outerParam != null;
-        statements.add(idx++, new ExpressionStatement(
-            new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
-      }
-      for (CaptureInfo.LocalCapture capture : captureInfo.getLocalCaptures(typeE)) {
-        if (capture.hasField()) {
-          statements.add(idx++, new ExpressionStatement(new Assignment(
-              new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));
-        }
-      }
+      addCaptureAssignments(constructor, type);
     }
     assert constructor.getParameters().size()
-        == constructor.getMethodBinding().getParameterTypes().length;
+        == constructor.getExecutableElement().getParameters().size();
+  }
+
+  private void forwardOuterArgs(ConstructorInvocation thisCall, TypeElement type) {
+    GeneratedExecutableElement newThisElement =
+        GeneratedExecutableElement.mutableCopy(thisCall.getExecutableElement());
+    thisCall.setExecutableElement(newThisElement);
+    List<Expression> args = thisCall.getArguments().subList(0, 0);
+    List<VariableElement> params = newThisElement.getParameters().subList(0, 0);
+    VariableElement outerParam = captureInfo.getOuterParam(type);
+    if (outerParam != null) {
+      args.add(new SimpleName(outerParam));
+      params.add(outerParam);
+    }
+    for (VariableElement captureParam : captureInfo.getCaptureParams(type)) {
+      args.add(new SimpleName(captureParam));
+      params.add(captureParam);
+    }
+  }
+
+  private void addCaptureAssignments(MethodDeclaration constructor, TypeElement type) {
+    List<Statement> statements = constructor.getBody().getStatements().subList(0, 0);
+    VariableElement outerField = captureInfo.getOuterField(type);
+    if (outerField != null) {
+      VariableElement outerParam = captureInfo.getOuterParam(type);
+      assert outerParam != null;
+      statements.add(new ExpressionStatement(
+          new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
+    }
+    for (CaptureInfo.LocalCapture capture : captureInfo.getLocalCaptures(type)) {
+      if (capture.hasField()) {
+        statements.add(new ExpressionStatement(new Assignment(
+            new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));
+      }
+    }
+    if (!hasSuperCall(constructor)) {
+      TypeElement superType = ElementUtil.getSuperclass(type);
+      statements.add(new SuperConstructorInvocation(
+          TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
+    }
+  }
+
+  private static ConstructorInvocation findThisCall(MethodDeclaration constructor) {
+    for (Statement stmt : constructor.getBody().getStatements()) {
+      if (stmt instanceof ConstructorInvocation) {
+        return (ConstructorInvocation) stmt;
+      }
+    }
+    return null;
+  }
+
+  private static boolean hasSuperCall(MethodDeclaration constructor) {
+    for (Statement stmt : constructor.getBody().getStatements()) {
+      if (stmt instanceof SuperConstructorInvocation) {
+        return true;
+      }
+    }
+    return false;
   }
 }

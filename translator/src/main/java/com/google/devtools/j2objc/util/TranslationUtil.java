@@ -36,14 +36,14 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -169,29 +169,22 @@ public final class TranslationUtil {
     }
   }
 
-  public static IMethodBinding findDefaultConstructorBinding(ITypeBinding type, Types typeEnv) {
-    // Search for a non-varargs match.
-    for (IMethodBinding m : type.getDeclaredMethods()) {
-      if (m.isConstructor() && m.getParameterTypes().length == 0) {
-        return m;
+  public static ExecutableElement findDefaultConstructorElement(
+      TypeElement type, TypeUtil typeUtil) {
+    ExecutableElement result = null;
+    for (ExecutableElement c : ElementUtil.getConstructors(type)) {
+      // Search for a non-varargs match.
+      if (c.getParameters().isEmpty()) {
+        return c;
+      // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
+      } else if (c.isVarArgs() && c.getParameters().size() == 1
+          && (result == null || typeUtil.isAssignable(
+              c.getParameters().get(0).asType(), result.getParameters().get(0).asType()))) {
+        result = c;
       }
     }
-    // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
-    IMethodBinding result = null;
-    for (IMethodBinding m : type.getDeclaredMethods()) {
-      ITypeBinding[] paramTypes = m.getParameterTypes();
-      if (m.isConstructor() && m.isVarargs() && paramTypes.length == 1) {
-        if (result == null || paramTypes[0].isAssignmentCompatible(result.getParameterTypes()[0])) {
-          result = m;
-        }
-      }
-    }
-    if (result != null) {
-      return result;
-    }
-    // Sometimes there won't be a default constructor (eg. enums), so just
-    // create our own binding.
-    return GeneratedMethodBinding.newConstructor(type, type.getModifiers(), typeEnv);
+    // Sometimes there won't be a default constructor (eg. enums), so just create our own binding.
+    return result != null ? result : GeneratedExecutableElement.newConstructor(type, typeUtil);
   }
 
   public static boolean isAssigned(Expression node) {

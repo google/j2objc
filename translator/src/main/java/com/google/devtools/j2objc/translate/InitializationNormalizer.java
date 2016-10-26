@@ -37,10 +37,12 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -178,7 +180,8 @@ public class InitializationNormalizer extends UnitTreeVisitor {
    */
   void normalizeMethod(MethodDeclaration node, List<Statement> initStatements) {
     if (isDesignatedConstructor(node)) {
-      ITypeBinding superType = node.getMethodBinding().getDeclaringClass().getSuperclass();
+      TypeElement superType = ElementUtil.getSuperclass(
+          ElementUtil.getDeclaringClass(node.getExecutableElement()));
       if (superType == null) {  // java.lang.Object supertype is null.
         return;
       }
@@ -190,7 +193,7 @@ public class InitializationNormalizer extends UnitTreeVisitor {
       // isn't a super invocation, add one (like all Java compilers do).
       if (superCallIdx == -1) {
         stmts.add(0, new SuperConstructorInvocation(
-            TranslationUtil.findDefaultConstructorBinding(superType, typeEnv)));
+            TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
         superCallIdx = 0;
       }
 

@@ -171,7 +171,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   }
 
   @Override
-  public List<? extends VariableElement> getParameters() {
+  public List<VariableElement> getParameters() {
     return parameters;
   }
 

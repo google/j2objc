@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.HashSet;
 import java.util.Set;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 
 /**
@@ -48,9 +47,7 @@ public class DefaultConstructorAdder extends TreeVisitor {
     for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
       declaredInAst.add(methodDecl.getExecutableElement());
     }
-    Iterable<ExecutableElement> constructors = ElementUtil.filterEnclosedElements(
-        node.getTypeElement(), ExecutableElement.class, ElementKind.CONSTRUCTOR);
-    for (ExecutableElement constructor : constructors) {
+    for (ExecutableElement constructor : ElementUtil.getConstructors(node.getTypeElement())) {
       if (constructor.getParameters().isEmpty() && !declaredInAst.contains(constructor)) {
         node.addBodyDeclaration(new MethodDeclaration(constructor).setBody(new Block()));
       }
