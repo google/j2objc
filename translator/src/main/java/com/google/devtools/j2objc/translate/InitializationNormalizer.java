@@ -36,14 +36,12 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -64,37 +62,28 @@ public class InitializationNormalizer extends UnitTreeVisitor {
   @Override
   public void endVisit(TypeDeclaration node) {
     normalizeMembers(node);
-    super.endVisit(node);
   }
 
   @Override
   public void endVisit(EnumDeclaration node) {
     normalizeMembers(node);
-    super.endVisit(node);
   }
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
     normalizeMembers(node);
-    super.endVisit(node);
   }
 
 
   void normalizeMembers(AbstractTypeDeclaration node) {
     List<Statement> initStatements = Lists.newArrayList();
     List<Statement> classInitStatements = node.getClassInitStatements();
-    List<MethodDeclaration> methods = Lists.newArrayList();
-    ITypeBinding binding = node.getTypeBinding();
 
     // Scan class, gathering initialization statements in declaration order.
-    List<BodyDeclaration> members = node.getBodyDeclarations();
-    Iterator<BodyDeclaration> iterator = members.iterator();
+    Iterator<BodyDeclaration> iterator = node.getBodyDeclarations().iterator();
     while (iterator.hasNext()) {
       BodyDeclaration member = iterator.next();
       switch (member.getKind()) {
-        case METHOD_DECLARATION:
-          methods.add((MethodDeclaration) member);
-          break;
         case INITIALIZER:
           addInitializer((Initializer) member, initStatements, classInitStatements);
           iterator.remove();
@@ -108,9 +97,11 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     }
 
     // Update any primary constructors with init statements.
-    if (!binding.isInterface()) {
-      for (MethodDeclaration md : methods) {
-        normalizeMethod(md, initStatements);
+    if (node.getTypeElement().getKind().isClass()) {
+      for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
+        if (isDesignatedConstructor(methodDecl)) {
+          TreeUtil.copyList(initStatements, getInitLocation(methodDecl));
+        }
       }
     }
   }
@@ -134,13 +125,11 @@ public class InitializationNormalizer extends UnitTreeVisitor {
       FieldDeclaration field, List<Statement> initStatements, List<Statement> classInitStatements) {
     for (VariableDeclarationFragment frag : field.getFragments()) {
       if (frag.getInitializer() != null) {
-        if (BindingUtil.isInstanceVar(frag.getVariableBinding())) {
+        if (ElementUtil.isInstanceVar(frag.getVariableElement())) {
           // always initialize instance variables, since they can't be constants
           initStatements.add(makeAssignmentStatement(frag));
-          frag.setInitializer(null);
         } else if (requiresInitializer(frag)) {
           classInitStatements.add(makeAssignmentStatement(frag));
-          frag.setInitializer(null);
         }
       }
     }
@@ -167,47 +156,28 @@ public class InitializationNormalizer extends UnitTreeVisitor {
 
   private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {
     return new ExpressionStatement(new Assignment(
-        new SimpleName(fragment.getVariableBinding()), fragment.getInitializer().copy()));
+        new SimpleName(fragment.getVariableElement()), TreeUtil.remove(fragment.getInitializer())));
   }
 
   /**
-   * Insert initialization statements into "primary" constructors.  A
-   * "primary" construction is defined here as a constructor that doesn't
-   * call other constructors in this class, and is similar in concept to
-   * Objective-C's "designated initializers."
-   *
-   * @return true if constructor was normalized
+   * Finds the location in a constructor where init statements should be added.
    */
-  void normalizeMethod(MethodDeclaration node, List<Statement> initStatements) {
-    if (isDesignatedConstructor(node)) {
-      TypeElement superType = ElementUtil.getSuperclass(
-          ElementUtil.getDeclaringClass(node.getExecutableElement()));
-      if (superType == null) {  // java.lang.Object supertype is null.
-        return;
-      }
-
-      List<Statement> stmts = node.getBody().getStatements();
-      int superCallIdx = findSuperConstructorInvocation(stmts);
-
-      // Insert initializer statements after the super invocation. If there
-      // isn't a super invocation, add one (like all Java compilers do).
-      if (superCallIdx == -1) {
-        stmts.add(0, new SuperConstructorInvocation(
-            TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
-        superCallIdx = 0;
-      }
-
-      TreeUtil.copyList(initStatements, stmts.subList(0, superCallIdx + 1));
-    }
-  }
-
-  private int findSuperConstructorInvocation(List<Statement> statements) {
+  private List<Statement> getInitLocation(MethodDeclaration node) {
+    List<Statement> statements = node.getBody().getStatements();
     for (int i = 0; i < statements.size(); i++) {
       if (statements.get(i) instanceof SuperConstructorInvocation) {
-        return i;
+        return statements.subList(0, i + 1);
       }
     }
-    return -1;
+    TypeElement superType = ElementUtil.getSuperclass(
+        ElementUtil.getDeclaringClass(node.getExecutableElement()));
+    if (superType == null) {  // java.lang.Object supertype is null.
+      return statements.subList(0, 0);
+    }
+    // If there isn't a super invocation, add one (like all Java compilers do).
+    statements.add(0, new SuperConstructorInvocation(
+        TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
+    return statements.subList(0, 1);
   }
 
   /**
