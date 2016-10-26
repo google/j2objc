@@ -416,7 +416,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
     }
     TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionElement element = new FunctionElement("nil_chk", idType, null).addParameters(idType);
-    FunctionInvocation nilChkInvocation = new FunctionInvocation(element, node.getTypeBinding());
+    FunctionInvocation nilChkInvocation = new FunctionInvocation(element, node.getTypeMirror());
     node.replaceWith(nilChkInvocation);
     nilChkInvocation.addArgument(node);
   }
