@@ -52,16 +52,15 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Detects unsequenced modifications which are errors in ObjC and extracts
@@ -75,7 +74,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  */
 public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
-  private IMethodBinding currentMethod = null;
+  private ExecutableElement currentMethod = null;
   private int count = 1;
   private List<VariableAccess> orderedAccesses = Lists.newArrayList();
   private TreeNode currentTopNode = null;
@@ -91,20 +90,20 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
    */
   private static class VariableAccess {
 
-    private final IVariableBinding variable;
+    private final VariableElement variable;
     private final Expression expression;
     private final boolean isModification;
 
     private VariableAccess(
-        IVariableBinding variable, Expression expression, boolean isModification) {
+        VariableElement variable, Expression expression, boolean isModification) {
       this.variable = variable;
       this.expression = expression;
       this.isModification = isModification;
     }
   }
 
-  private void addVariableAccess(IVariableBinding var, Expression node, boolean isModification) {
-    if (var != null && !BindingUtil.isInstanceVar(var)) {
+  private void addVariableAccess(VariableElement var, Expression node, boolean isModification) {
+    if (var != null && !ElementUtil.isInstanceVar(var)) {
       hasModification |= isModification;
       orderedAccesses.add(new VariableAccess(var, node, isModification));
     }
@@ -118,7 +117,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    currentMethod = node.getMethodBinding();
+    currentMethod = node.getExecutableElement();
     count = 1;
     return true;
   }
@@ -132,12 +131,12 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
     if (!hasModification) {
       return Collections.emptyList();
     }
-    ListMultimap<IVariableBinding, VariableAccess> accessesByVar = ArrayListMultimap.create();
+    ListMultimap<VariableElement, VariableAccess> accessesByVar = ArrayListMultimap.create();
     for (VariableAccess access : orderedAccesses) {
       accessesByVar.put(access.variable, access);
     }
     Set<VariableAccess> unsequencedAccesses = Sets.newHashSet();
-    for (IVariableBinding var : accessesByVar.keySet()) {
+    for (VariableElement var : accessesByVar.keySet()) {
       findUnsequenced(accessesByVar.get(var), unsequencedAccesses);
     }
     List<VariableAccess> orderedUnsequencedAccesses =
@@ -194,9 +193,8 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
         }
         i = j - 1;
       } else {
-        IVariableBinding newVar = new GeneratedVariableBinding(
-            "unseq$" + count++, 0, access.expression.getTypeBinding(), false, false, null,
-            currentMethod);
+        VariableElement newVar = GeneratedVariableElement.newLocalVar(
+            "unseq$" + count++, access.expression.getTypeMirror(), currentMethod);
         stmtList.add(new VariableDeclarationStatement(newVar, access.expression.copy()));
         access.expression.replaceWith(new SimpleName(newVar));
       }
@@ -247,8 +245,8 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
     // The recursive call might replace the condition child.
     condition = conditional.getExpression();
     if (needsExtraction) {
-      IVariableBinding resultVar = new GeneratedVariableBinding(
-          "unseq$" + count++, 0, conditional.getTypeBinding(), false, false, null, currentMethod);
+      VariableElement resultVar = GeneratedVariableElement.newLocalVar(
+          "unseq$" + count++, conditional.getTypeMirror(), currentMethod);
       conditional.replaceWith(new SimpleName(resultVar));
       stmtList.add(new VariableDeclarationStatement(resultVar, null));
       IfStatement newIf = new IfStatement();
@@ -281,7 +279,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
     InfixExpression.Operator op = conditional.getOperator();
     List<Expression> branches = conditional.getOperands();
     int lastIfExtractIdx = 0;
-    IVariableBinding conditionalVar = null;
+    VariableElement conditionalVar = null;
     int lastExtracted = 0;
     Expression lastBranch = null;
     for (int i = 0; i < toExtract.size(); i++) {
@@ -302,10 +300,10 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
       // If there's a new access in a new branch, then we extract an if-statement.
       if (branch != branches.get(lastIfExtractIdx)) {
-        ITypeBinding boolType = typeEnv.resolveJavaType("boolean");
+        TypeMirror boolType = typeUtil.getPrimitiveType(TypeKind.BOOLEAN);
         if (conditionalVar == null) {
-          conditionalVar = new GeneratedVariableBinding(
-              "unseq$" + count++, 0, boolType, false, false, null, currentMethod);
+          conditionalVar = GeneratedVariableElement.newLocalVar(
+              "unseq$" + count++, boolType, currentMethod);
           conditional.replaceWith(new SimpleName(conditionalVar));
           stmtList.add(new VariableDeclarationStatement(conditionalVar, null));
         }
@@ -315,7 +313,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
             new SimpleName(conditionalVar), conditionalFromSubBranches(subBranches, op));
         if (op == InfixExpression.Operator.CONDITIONAL_OR) {
           ifExpr = new PrefixExpression(
-              BindingConverter.getType(boolType), PrefixExpression.Operator.NOT,
+              boolType, PrefixExpression.Operator.NOT,
               ParenthesizedExpression.parenthesize(ifExpr));
         }
         newIf.setExpression(ifExpr);
@@ -448,8 +446,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SimpleName node) {
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
-    addVariableAccess(var, node, false);
+    addVariableAccess(TreeUtil.getVariableElement(node), node, false);
   }
 
   @Override
@@ -476,8 +473,8 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
       if (!toExtract.isEmpty()) {
         // If the message expression needs any extraction, then we first extract
         // the entire boolean expression to preserve ordering between the two.
-        IVariableBinding exprVar = new GeneratedVariableBinding(
-            "unseq$" + count++, 0, expr.getTypeBinding(), false, false, null, currentMethod);
+        VariableElement exprVar = GeneratedVariableElement.newLocalVar(
+            "unseq$" + count++, expr.getTypeMirror(), currentMethod);
         TreeUtil.insertBefore(node, new VariableDeclarationStatement(
             exprVar, node.getExpression().copy()));
         node.setExpression(new SimpleName(exprVar));
@@ -558,8 +555,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
   private IfStatement createLoopTermination(Expression loopCondition) {
     IfStatement newIf = new IfStatement();
     newIf.setExpression(new PrefixExpression(
-        BindingConverter.getType(typeEnv.resolveJavaType("boolean")),
-        PrefixExpression.Operator.NOT,
+        typeUtil.getPrimitiveType(TypeKind.BOOLEAN), PrefixExpression.Operator.NOT,
         ParenthesizedExpression.parenthesize(loopCondition.copy())));
     newIf.setThenStatement(new BreakStatement());
     return newIf;
@@ -681,7 +677,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
   @Override
   public boolean visit(Assignment node) {
     Expression lhs = node.getLeftHandSide();
-    IVariableBinding lhsVar = TreeUtil.getVariableBinding(lhs);
+    VariableElement lhsVar = TreeUtil.getVariableElement(lhs);
     // Access order is important. If the lhs is a variable, then we must record
     // its access after visiting the rhs. Otherwise, visit both sides.
     if (lhsVar == null) {
@@ -696,7 +692,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
   public boolean visit(PrefixExpression node) {
     PrefixExpression.Operator op = node.getOperator();
     if (op == PrefixExpression.Operator.INCREMENT || op == PrefixExpression.Operator.DECREMENT) {
-      addVariableAccess(TreeUtil.getVariableBinding(node.getOperand()), node, true);
+      addVariableAccess(TreeUtil.getVariableElement(node.getOperand()), node, true);
     } else {
       node.getOperand().accept(this);
     }
@@ -707,7 +703,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
   public boolean visit(PostfixExpression node) {
     PostfixExpression.Operator op = node.getOperator();
     assert op == PostfixExpression.Operator.INCREMENT || op == PostfixExpression.Operator.DECREMENT;
-    addVariableAccess(TreeUtil.getVariableBinding(node.getOperand()), node, true);
+    addVariableAccess(TreeUtil.getVariableElement(node.getOperand()), node, true);
     return false;
   }
 }
