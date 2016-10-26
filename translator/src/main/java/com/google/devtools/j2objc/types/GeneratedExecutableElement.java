@@ -88,10 +88,8 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   /**
    * Clone a method element, so parameters can be added to it.
    */
-  public static GeneratedExecutableElement asMutable(ExecutableElement method) {
-    return method instanceof GeneratedExecutableElement
-        ? (GeneratedExecutableElement) method
-        : new GeneratedExecutableElement(method);
+  public static GeneratedExecutableElement mutableCopy(ExecutableElement method) {
+    return new GeneratedExecutableElement(method);
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {

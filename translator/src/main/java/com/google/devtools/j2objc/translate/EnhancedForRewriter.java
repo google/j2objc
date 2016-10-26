@@ -77,7 +77,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     } else if (loopVariable.asType().getKind().isPrimitive()) {
       boxLoopVariable(node, expressionType, loopVariable);
     } else {
-      VariableElement newLoopVariable = GeneratedVariableElement.asMutable(loopVariable)
+      VariableElement newLoopVariable = GeneratedVariableElement.mutableCopy(loopVariable)
           .setTypeQualifiers("__strong");
       node.getParameter().setVariableElement(newLoopVariable);
     }

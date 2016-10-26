@@ -50,20 +50,18 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   private final NestingKind nestingKind;
   private final ITypeBinding binding = new Binding();
 
-  public static GeneratedTypeElement asMutable(TypeElement element) {
-    return element instanceof GeneratedTypeElement
-        ? (GeneratedTypeElement) element
-        : new GeneratedTypeElement(element.getSimpleName().toString(), element.getKind(),
-            element.getEnclosingElement(), element.getSuperclass(), element.getNestingKind(),
-            ElementUtil.isSynthetic(element));
-  }
-
   protected GeneratedTypeElement(
       String name, ElementKind kind, Element enclosingElement, TypeMirror superclass,
       NestingKind nestingKind, boolean synthetic) {
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.superclass = superclass;
     this.nestingKind = nestingKind;
+  }
+
+  public static GeneratedTypeElement mutableCopy(TypeElement element) {
+    return new GeneratedTypeElement(
+        element.getSimpleName().toString(), element.getKind(), element.getEnclosingElement(),
+        element.getSuperclass(), element.getNestingKind(), ElementUtil.isSynthetic(element));
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {

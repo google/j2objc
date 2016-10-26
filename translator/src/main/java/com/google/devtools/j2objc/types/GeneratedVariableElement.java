@@ -36,17 +36,16 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
   private boolean nonnull = false;
   private String typeQualifiers;
 
-  public static GeneratedVariableElement asMutable(VariableElement var) {
-    return var instanceof GeneratedVariableElement
-        ? (GeneratedVariableElement) var
-        : new GeneratedVariableElement(var.getSimpleName().toString(), var.asType(),
-            var.getKind(), var.getEnclosingElement(), ElementUtil.isSynthetic(var));
-  }
-
   private GeneratedVariableElement(
       String name, TypeMirror type, ElementKind kind, Element enclosingElement, boolean synthetic) {
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.type = type;
+  }
+
+  public static GeneratedVariableElement mutableCopy(VariableElement var) {
+    return new GeneratedVariableElement(
+        var.getSimpleName().toString(), var.asType(), var.getKind(), var.getEnclosingElement(),
+        ElementUtil.isSynthetic(var));
   }
 
   public static GeneratedVariableElement newField(
