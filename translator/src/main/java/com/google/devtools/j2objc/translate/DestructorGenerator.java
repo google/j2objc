@@ -37,7 +37,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -147,13 +147,13 @@ public class DestructorGenerator extends UnitTreeVisitor {
     }
     ITypeBinding voidType = typeEnv.resolveJavaType("void");
     TypeMirror idType = typeEnv.getIdTypeMirror();
-    FunctionBinding binding = new FunctionBinding(funcName, voidType, null);
-    FunctionInvocation releaseInvocation = new FunctionInvocation(binding, voidType);
+    FunctionElement element = new FunctionElement(funcName, voidType, null);
+    FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
     if (isRetainedWith) {
-      binding.addParameters(idType);
+      element.addParameters(idType);
       releaseInvocation.addArgument(new ThisExpression(var.getDeclaringClass()));
     }
-    binding.addParameters(isVolatile ? typeEnv.getPointerType(idType) : idType);
+    element.addParameters(isVolatile ? typeEnv.getPointerType(idType) : idType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(

@@ -26,7 +26,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
-public class FunctionBinding {
+public class FunctionElement {
 
   private final String name;
   // Some functions (eg. constructors) have an equivalent function that returns
@@ -37,7 +37,7 @@ public class FunctionBinding {
   private List<TypeMirror> parameterTypes = new ArrayList<>();
   private boolean isVarargs = false;
 
-  public FunctionBinding(
+  public FunctionElement(
       String name, String retainedResultName, TypeMirror returnType,
       TypeElement declaringClass) {
     this.name = name;
@@ -46,18 +46,18 @@ public class FunctionBinding {
     this.declaringClass = declaringClass;
   }
 
-  public FunctionBinding(String name, String retainedResultName, ITypeBinding returnType,
+  public FunctionElement(String name, String retainedResultName, ITypeBinding returnType,
       ITypeBinding declaringClass) {
     this(name, retainedResultName, BindingConverter.getType(returnType),
         BindingConverter.getTypeElement(declaringClass));
   }
 
-  public FunctionBinding(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
+  public FunctionElement(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
     this(name, null, BindingConverter.getType(returnType),
         BindingConverter.getTypeElement(declaringClass));
   }
 
-  public FunctionBinding(String name, TypeMirror returnType, TypeElement declaringClass) {
+  public FunctionElement(String name, TypeMirror returnType, TypeElement declaringClass) {
     this(name, null, returnType, declaringClass);
   }
 
@@ -81,30 +81,34 @@ public class FunctionBinding {
     return parameterTypes;
   }
 
-  public void addParameters(ITypeBinding... paramTypes) {
+  public FunctionElement addParameters(ITypeBinding... paramTypes) {
     for (ITypeBinding paramType : paramTypes) {
       parameterTypes.add(BindingConverter.getType(paramType));
     }
+    return this;
   }
 
-  public void addParameters(TypeMirror... paramTypes) {
+  public FunctionElement addParameters(TypeMirror... paramTypes) {
     for (TypeMirror paramType : paramTypes) {
       parameterTypes.add(paramType);
     }
+    return this;
   }
 
-  public void addParameters(Iterable<? extends TypeMirror> paramTypes) {
+  public FunctionElement addParameters(Iterable<? extends TypeMirror> paramTypes) {
     for (TypeMirror paramType : paramTypes) {
       parameterTypes.add(paramType);
     }
+    return this;
   }
 
   public boolean isVarargs() {
     return isVarargs;
   }
 
-  public void setIsVarargs(boolean value) {
+  public FunctionElement setIsVarargs(boolean value) {
     isVarargs = value;
+    return this;
   }
 
   @Override
@@ -123,11 +127,11 @@ public class FunctionBinding {
 
   @Override
   public boolean equals(Object other) {
-    if (!(other instanceof FunctionBinding)) {
+    if (!(other instanceof FunctionElement)) {
       return false;
     }
     // C functions can't be overloaded, so it is sufficient to compare the names.
-    return ((FunctionBinding) other).getName().equals(name);
+    return ((FunctionElement) other).getName().equals(name);
   }
 
   @Override

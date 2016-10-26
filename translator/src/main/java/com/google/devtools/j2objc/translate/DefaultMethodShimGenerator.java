@@ -34,7 +34,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -210,11 +210,12 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       // if required.
       TypeElement declaringClass = ElementUtil.getDeclaringClass(method.element());
       String name = nameTable.getFullFunctionName(method.element());
-      FunctionBinding fb = new FunctionBinding(
-          name, method.element().getReturnType(), declaringClass);
-      fb.addParameters(declaringClass.asType());
-      fb.addParameters(((ExecutableType) method.element().asType()).getParameterTypes());
-      FunctionInvocation invocation = new FunctionInvocation(fb, method.type().getReturnType());
+      FunctionElement funcElement = new FunctionElement(
+          name, method.element().getReturnType(), declaringClass)
+          .addParameters(declaringClass.asType())
+          .addParameters(((ExecutableType) method.element().asType()).getParameterTypes());
+      FunctionInvocation invocation =
+          new FunctionInvocation(funcElement, method.type().getReturnType());
 
       // All default method implementations require self as the first function call argument.
       invocation.addArgument(new ThisExpression(typeElem.asType()));

@@ -40,7 +40,7 @@ import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import java.util.ArrayList;
@@ -109,9 +109,9 @@ public class CastResolver extends UnitTreeVisitor {
 
   private Expression rewriteFloatToIntegralCast(
       ITypeBinding castType, Expression expr, String funcName, ITypeBinding funcReturnType) {
-    FunctionBinding binding = new FunctionBinding(funcName, funcReturnType, null);
-    binding.addParameters(typeEnv.resolveJavaTypeMirror("double"));
-    FunctionInvocation invocation = new FunctionInvocation(binding, funcReturnType);
+    FunctionElement element = new FunctionElement(funcName, funcReturnType, null)
+        .addParameters(typeEnv.resolveJavaTypeMirror("double"));
+    FunctionInvocation invocation = new FunctionInvocation(element, funcReturnType);
     invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
     if (!castType.isEqualTo(funcReturnType)) {
@@ -126,15 +126,15 @@ public class CastResolver extends UnitTreeVisitor {
     FunctionInvocation invocation = null;
     if ((type.isInterface() && !type.isAnnotation())
         || (type.isArray() && !type.getComponentType().isPrimitive())) {
-      FunctionBinding binding = new FunctionBinding("cast_check", idType, null);
-      binding.addParameters(idType, typeEnv.getIOSClassMirror());
-      invocation = new FunctionInvocation(binding, idType);
+      FunctionElement element = new FunctionElement("cast_check", idType, null)
+          .addParameters(idType, typeEnv.getIOSClassMirror());
+      invocation = new FunctionInvocation(element, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       invocation.addArgument(new TypeLiteral(type, typeEnv));
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
-      FunctionBinding binding = new FunctionBinding("cast_chk", idType, null);
-      binding.addParameters(idType, idType);
-      invocation = new FunctionInvocation(binding, idType);
+      FunctionElement element = new FunctionElement("cast_chk", idType, null)
+          .addParameters(idType, idType);
+      invocation = new FunctionInvocation(element, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       IOSMethodBinding classBinding = IOSMethodBinding.newMethod(
           "class", Modifier.STATIC, idType, BindingConverter.getType(type));
@@ -207,7 +207,7 @@ public class CastResolver extends UnitTreeVisitor {
         return typeEnv.getIdType();
       case FUNCTION_INVOCATION:
         return BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-            ((FunctionInvocation) expr).getFunctionBinding().getReturnType());
+            ((FunctionInvocation) expr).getFunctionElement().getReturnType());
       case LAMBDA_EXPRESSION:
         // Lambda expressions are generated as function calls that return "id".
         return typeEnv.getIdType();
@@ -336,7 +336,7 @@ public class CastResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(FunctionInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getFunctionBinding().getParameterTypes());
+    maybeCastArguments(node.getArguments(), node.getFunctionElement().getParameterTypes());
   }
 
   @Override

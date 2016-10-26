@@ -32,7 +32,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -149,12 +149,12 @@ class RuntimeAnnotationGenerator {
 
   private Expression createAnnotation(IAnnotationBinding annotationBinding) {
     ITypeBinding annotationType = annotationBinding.getAnnotationType();
-    FunctionBinding binding = new FunctionBinding(
+    FunctionElement element = new FunctionElement(
         "create_" + nameTable.getFullName(annotationType), annotationType, annotationType);
-    FunctionInvocation invocation = new FunctionInvocation(binding, annotationType);
+    FunctionInvocation invocation = new FunctionInvocation(element, annotationType);
     for (IMemberValuePairBinding valueBinding :
          BindingUtil.getSortedMemberValuePairs(annotationBinding)) {
-      binding.addParameters(valueBinding.getMethodBinding().getReturnType());
+      element.addParameters(valueBinding.getMethodBinding().getReturnType());
       invocation.addArgument(createAnnotationValue(valueBinding.getValue()));
     }
     return invocation;

@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -28,7 +28,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class FunctionInvocation extends Expression {
 
-  private FunctionBinding functionBinding = null;
+  private FunctionElement functionElement = null;
   // The context-specific known type of this expression.
   private TypeMirror typeMirror = null;
   private boolean hasRetainedResult = false;
@@ -36,18 +36,18 @@ public class FunctionInvocation extends Expression {
 
   public FunctionInvocation(FunctionInvocation other) {
     super(other);
-    functionBinding = other.getFunctionBinding();
+    functionElement = other.getFunctionElement();
     typeMirror = other.getTypeMirror();
     arguments.copyFrom(other.getArguments());
   }
 
-  public FunctionInvocation(FunctionBinding functionBinding, ITypeBinding typeBinding) {
-    this.functionBinding = functionBinding;
+  public FunctionInvocation(FunctionElement functionElement, ITypeBinding typeBinding) {
+    this.functionElement = functionElement;
     this.typeMirror = BindingConverter.getType(typeBinding);
   }
 
-  public FunctionInvocation(FunctionBinding functionBinding, TypeMirror typeMirror) {
-    this.functionBinding = functionBinding;
+  public FunctionInvocation(FunctionElement functionElement, TypeMirror typeMirror) {
+    this.functionElement = functionElement;
     this.typeMirror = typeMirror;
   }
 
@@ -56,12 +56,12 @@ public class FunctionInvocation extends Expression {
     return Kind.FUNCTION_INVOCATION;
   }
 
-  public FunctionBinding getFunctionBinding() {
-    return functionBinding;
+  public FunctionElement getFunctionElement() {
+    return functionElement;
   }
 
   public String getName() {
-    return hasRetainedResult ? functionBinding.getRetainedResultName() : functionBinding.getName();
+    return hasRetainedResult ? functionElement.getRetainedResultName() : functionElement.getName();
   }
 
   @Override

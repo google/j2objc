@@ -46,7 +46,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -212,10 +212,10 @@ public class EnumRewriter extends UnitTreeVisitor {
           new NativeExpression("ptr += " + sizeName, voidType))));
       String initName = nameTable.getFullFunctionName(
           BindingConverter.getExecutableElement(methodBinding));
-      FunctionBinding initBinding = new FunctionBinding(initName, voidType, valueType);
-      initBinding.addParameters(valueType);
-      initBinding.addParameters(methodBinding.getParameterTypes());
-      FunctionInvocation initFunc = new FunctionInvocation(initBinding, type);
+      FunctionElement initElement = new FunctionElement(initName, voidType, valueType)
+          .addParameters(valueType)
+          .addParameters(methodBinding.getParameterTypes());
+      FunctionInvocation initFunc = new FunctionInvocation(initElement, type);
       initFunc.addArgument(new SimpleName(localEnum));
       TreeUtil.copyList(constant.getArguments(), initFunc.getArguments());
       initFunc.addArgument(new StringLiteral(varBinding.getName(), typeEnv));

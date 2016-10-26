@@ -32,7 +32,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -141,8 +141,8 @@ public class SwitchRewriter extends UnitTreeVisitor {
       }
     }
     TypeMirror intType = typeEnv.resolveJavaTypeMirror("int");
-    FunctionBinding indexOfFunc = new FunctionBinding("JreIndexOfStr", intType, null);
-    indexOfFunc.addParameters(type, arrayType, intType);
+    FunctionElement indexOfFunc = new FunctionElement("JreIndexOfStr", intType, null)
+        .addParameters(type, arrayType, intType);
     FunctionInvocation invocation = new FunctionInvocation(indexOfFunc, intType);
     invocation.addArgument(TreeUtil.remove(expr))
         .addArgument(arrayInit)

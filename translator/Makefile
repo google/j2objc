@@ -273,7 +273,7 @@ JAVA_SOURCES = \
 	translate/VariableRenamer.java \
 	types/AbstractTypeBinding.java \
 	types/ExecutablePair.java \
-	types/FunctionBinding.java \
+	types/FunctionElement.java \
 	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \
 	types/GeneratedMethodBinding.java \

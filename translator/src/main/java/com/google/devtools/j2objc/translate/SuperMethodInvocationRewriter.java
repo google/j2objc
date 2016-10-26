@@ -29,7 +29,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -108,12 +108,12 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
     // Handle default method invocation: SomeInterface.super.method(...)
     if (BindingUtil.isDefault(method)) {
-      FunctionBinding binding = new FunctionBinding(
+      FunctionElement element = new FunctionElement(
           nameTable.getFullFunctionName(BindingConverter.getExecutableElement(method)), exprType,
-          BindingConverter.getTypeElement(method.getDeclaringClass()));
-      binding.addParameters(typeEnv.getIdTypeMirror());
-      binding.addParameters(method.getParameterTypes());
-      FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
+          BindingConverter.getTypeElement(method.getDeclaringClass()))
+          .addParameters(typeEnv.getIdTypeMirror())
+          .addParameters(method.getParameterTypes());
+      FunctionInvocation invocation = new FunctionInvocation(element, exprType);
       List<Expression> args = invocation.getArguments();
       if (receiver == null) {
         args.add(new ThisExpression(TreeUtil.getEnclosingTypeBinding(node)));
@@ -136,11 +136,11 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     SuperMethodBindingPair superMethod = new SuperMethodBindingPair(receiverType, method);
     superMethods.add(superMethod);
 
-    FunctionBinding binding = new FunctionBinding(
-        getSuperFunctionName(superMethod), exprType, TypeUtil.asTypeElement(receiverType));
-    binding.addParameters(receiverType, typeEnv.getIdTypeMirror());
-    binding.addParameters(method.getParameterTypes());
-    FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
+    FunctionElement element = new FunctionElement(
+        getSuperFunctionName(superMethod), exprType, TypeUtil.asTypeElement(receiverType))
+        .addParameters(receiverType, typeEnv.getIdTypeMirror())
+        .addParameters(method.getParameterTypes());
+    FunctionInvocation invocation = new FunctionInvocation(element, exprType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(receiver));
     String selectorExpr = UnicodeUtils.format("@selector(%s)", nameTable.getMethodSelector(method));

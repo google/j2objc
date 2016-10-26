@@ -46,7 +46,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -162,26 +162,25 @@ public class Functionizer extends UnitTreeVisitor {
     return result[0];
   }
 
-  private FunctionBinding newFunctionBinding(IMethodBinding method) {
+  private FunctionElement newFunctionElement(IMethodBinding method) {
     ITypeBinding declaringClass = method.getDeclaringClass();
-    FunctionBinding binding = new FunctionBinding(
+    FunctionElement element = new FunctionElement(
         nameTable.getFullFunctionName(BindingConverter.getExecutableElement(method)),
         method.getReturnType(), declaringClass);
     if (method.isConstructor() || !BindingUtil.isStatic(method)) {
-      binding.addParameters(declaringClass);
+      element.addParameters(declaringClass);
     }
-    binding.addParameters(method.getParameterTypes());
-    return binding;
+    element.addParameters(method.getParameterTypes());
+    return element;
   }
 
-  private FunctionBinding newAllocatingConstructorBinding(IMethodBinding method) {
+  private FunctionElement newAllocatingConstructorElement(IMethodBinding method) {
     ExecutableElement element = BindingConverter.getExecutableElement(method);
     ITypeBinding declaringClass = method.getDeclaringClass();
-    FunctionBinding binding = new FunctionBinding(
+    return new FunctionElement(
         nameTable.getReleasingConstructorName(element),
-        nameTable.getAllocatingConstructorName(element), declaringClass, declaringClass);
-    binding.addParameters(method.getParameterTypes());
-    return binding;
+        nameTable.getAllocatingConstructorName(element), declaringClass, declaringClass)
+        .addParameters(method.getParameterTypes());
   }
 
   @Override
@@ -192,7 +191,7 @@ public class Functionizer extends UnitTreeVisitor {
     }
 
     FunctionInvocation functionInvocation = new FunctionInvocation(
-        newFunctionBinding(binding), node.getTypeBinding());
+        newFunctionElement(binding), node.getTypeBinding());
     List<Expression> args = functionInvocation.getArguments();
     TreeUtil.moveList(node.getArguments(), args);
 
@@ -216,7 +215,7 @@ public class Functionizer extends UnitTreeVisitor {
     }
 
     FunctionInvocation functionInvocation = new FunctionInvocation(
-        newFunctionBinding(binding), node.getTypeBinding());
+        newFunctionElement(binding), node.getTypeBinding());
     TreeUtil.moveList(node.getArguments(), functionInvocation.getArguments());
     node.replaceWith(functionInvocation);
   }
@@ -224,7 +223,7 @@ public class Functionizer extends UnitTreeVisitor {
   private void visitConstructorInvocation(
       Statement node, IMethodBinding binding, List<Expression> args) {
     FunctionInvocation invocation = new FunctionInvocation(
-        newFunctionBinding(binding), binding.getReturnType());
+        newFunctionElement(binding), binding.getReturnType());
     invocation.addArgument(new ThisExpression(binding.getDeclaringClass()));
     TreeUtil.moveList(args, invocation.getArguments());
     node.replaceWith(new ExpressionStatement(invocation));
@@ -245,7 +244,7 @@ public class Functionizer extends UnitTreeVisitor {
     IMethodBinding binding = node.getMethodBinding();
     ITypeBinding type = binding.getDeclaringClass();
     FunctionInvocation invocation =
-        new FunctionInvocation(newAllocatingConstructorBinding(binding), type);
+        new FunctionInvocation(newAllocatingConstructorElement(binding), type);
     invocation.setHasRetainedResult(node.hasRetainedResult() || Options.useARC());
     TreeUtil.moveList(node.getArguments(), invocation.getArguments());
     node.replaceWith(invocation);
@@ -338,8 +337,8 @@ public class Functionizer extends UnitTreeVisitor {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = UnicodeUtils.format("%s_initialize", nameTable.getFullName(declaringClass));
       ITypeBinding voidType = typeEnv.resolveJavaType("void");
-      FunctionBinding initBinding = new FunctionBinding(initName, voidType, declaringClass);
-      FunctionInvocation initCall = new FunctionInvocation(initBinding, voidType);
+      FunctionElement initElement = new FunctionElement(initName, voidType, declaringClass);
+      FunctionInvocation initCall = new FunctionInvocation(initElement, voidType);
       function.getBody().addStatement(0, new ExpressionStatement(initCall));
     }
 
@@ -393,7 +392,7 @@ public class Functionizer extends UnitTreeVisitor {
     method.removeModifiers(Modifier.NATIVE);
     List<Statement> stmts = body.getStatements();
     FunctionInvocation invocation = new FunctionInvocation(
-        newFunctionBinding(methodBinding), returnType);
+        newFunctionElement(methodBinding), returnType);
     List<Expression> args = invocation.getArguments();
     if (!BindingUtil.isStatic(methodBinding)) {
       args.add(new ThisExpression(methodBinding.getDeclaringClass()));

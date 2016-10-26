@@ -46,7 +46,7 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -169,9 +169,9 @@ public class Autoboxer extends UnitTreeVisitor {
     String funcName = "JreBoxed" + getAssignFunctionName(node.getOperator())
         + TranslationUtil.getOperatorFunctionModifier(lhs)
         + NameTable.capitalize(primitiveType.toString());
-    FunctionBinding binding = new FunctionBinding(funcName, type, TypeUtil.asTypeElement(type));
-    binding.addParameters(pointerType, primitiveType);
-    FunctionInvocation invocation = new FunctionInvocation(binding, type);
+    FunctionElement element = new FunctionElement(funcName, type, TypeUtil.asTypeElement(type))
+        .addParameters(pointerType, primitiveType);
+    FunctionInvocation invocation = new FunctionInvocation(element, type);
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
     invocation.addArgument(TreeUtil.remove(rhs));
@@ -378,9 +378,9 @@ public class Autoboxer extends UnitTreeVisitor {
     TypeMirror pointerType = typeEnv.getPointerType(type);
     funcName = "JreBoxed" + funcName + TranslationUtil.getOperatorFunctionModifier(operand)
         + NameTable.capitalize(typeEnv.getPrimitiveType(type).toString());
-    FunctionBinding binding = new FunctionBinding(funcName, type, TypeUtil.asTypeElement(type));
-    binding.addParameters(pointerType);
-    FunctionInvocation invocation = new FunctionInvocation(binding, type);
+    FunctionElement element = new FunctionElement(funcName, type, TypeUtil.asTypeElement(type))
+        .addParameters(pointerType);
+    FunctionInvocation invocation = new FunctionInvocation(element, type);
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));
     node.replaceWith(invocation);

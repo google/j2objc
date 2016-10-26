@@ -148,7 +148,7 @@ public final class TranslationUtil {
         return TreeUtil.remove(node);
       case FUNCTION_INVOCATION: {
         FunctionInvocation invocation = (FunctionInvocation) node;
-        if (invocation.getFunctionBinding().getRetainedResultName() != null) {
+        if (invocation.getFunctionElement().getRetainedResultName() != null) {
           invocation.setHasRetainedResult(true);
           return TreeUtil.remove(node);
         }

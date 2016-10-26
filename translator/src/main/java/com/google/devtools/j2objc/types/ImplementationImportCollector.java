@@ -147,12 +147,12 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(FunctionInvocation node) {
-    FunctionBinding binding = node.getFunctionBinding();
-    addImports(binding.getDeclaringClass());
+    FunctionElement element = node.getFunctionElement();
+    addImports(element.getDeclaringClass());
     for (Expression arg : node.getArguments()) {
       addImports(arg.getTypeMirror());
     }
-    addImports(binding.getReturnType());
+    addImports(element.getReturnType());
     return true;
   }
 

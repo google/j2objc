@@ -33,7 +33,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -115,9 +115,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
   private Statement createReleaseStatement(IVariableBinding var) {
     if (Options.useARC()) {
       ITypeBinding voidType = typeEnv.resolveJavaType("void");
-      FunctionBinding binding = new FunctionBinding("JreRelease", voidType, null);
-      binding.addParameters(typeEnv.getIdTypeMirror());
-      FunctionInvocation invocation = new FunctionInvocation(binding, voidType);
+      FunctionElement element = new FunctionElement("JreRelease", voidType, null)
+          .addParameters(typeEnv.getIdTypeMirror());
+      FunctionInvocation invocation = new FunctionInvocation(element, voidType);
       invocation.addArgument(new SimpleName(var));
       return new ExpressionStatement(invocation);
     } else {
@@ -131,9 +131,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
     TypeMirror voidType = typeEnv.resolveJavaTypeMirror("void");
     TypeMirror pointerType = typeEnv.getPointerType(BindingConverter.getType(var.getType()));
     String funcName = "JreCloneVolatile" + (isWeak ? "" : "Strong");
-    FunctionBinding binding = new FunctionBinding(funcName, voidType, null);
-    binding.addParameters(pointerType, pointerType);
-    FunctionInvocation invocation = new FunctionInvocation(binding, voidType);
+    FunctionElement element = new FunctionElement(funcName, voidType, null)
+        .addParameters(pointerType, pointerType);
+    FunctionInvocation invocation = new FunctionInvocation(element, voidType);
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
     invocation.addArgument(new PrefixExpression(

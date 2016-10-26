@@ -33,7 +33,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -255,9 +255,9 @@ public class ArrayRewriter extends UnitTreeVisitor {
       funcName += "Ref";
       returnType = declaredReturnType = typeEnv.getPointerType(componentType);
     }
-    FunctionBinding binding = new FunctionBinding(funcName, declaredReturnType, iosArrayElement);
-    binding.addParameters(iosArrayElement.asType(), typeEnv.resolveJavaTypeMirror("int"));
-    FunctionInvocation invocation = new FunctionInvocation(binding, returnType);
+    FunctionElement element = new FunctionElement(funcName, declaredReturnType, iosArrayElement)
+        .addParameters(iosArrayElement.asType(), typeEnv.resolveJavaTypeMirror("int"));
+    FunctionInvocation invocation = new FunctionInvocation(element, returnType);
     invocation.addArgument(arrayAccessNode.getArray().copy());
     invocation.addArgument(arrayAccessNode.getIndex().copy());
     if (assignable) {
@@ -281,9 +281,9 @@ public class ArrayRewriter extends UnitTreeVisitor {
     }
     TypeElement objArrayType = typeEnv.getObjectArrayElement();
     TypeMirror idType = typeEnv.getIdTypeMirror();
-    FunctionBinding binding = new FunctionBinding(funcName, idType, objArrayType);
-    binding.addParameters(objArrayType.asType(), typeEnv.resolveJavaTypeMirror("int"), idType);
-    FunctionInvocation invocation = new FunctionInvocation(binding, componentType);
+    FunctionElement element = new FunctionElement(funcName, idType, objArrayType)
+        .addParameters(objArrayType.asType(), typeEnv.resolveJavaTypeMirror("int"), idType);
+    FunctionInvocation invocation = new FunctionInvocation(element, componentType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(arrayAccessNode.getArray()));
     args.add(TreeUtil.remove(arrayAccessNode.getIndex()));

@@ -39,7 +39,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -105,9 +105,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
       while (operandIter.hasNext()) {
         Expression rightOperand = operandIter.next();
         operandIter.remove();
-        FunctionBinding binding = new FunctionBinding(funcName, nodeType, null);
-        binding.addParameters(leftOperand.getTypeMirror(), rightOperand.getTypeMirror());
-        FunctionInvocation invocation = new FunctionInvocation(binding, nodeType);
+        FunctionElement element = new FunctionElement(funcName, nodeType, null)
+            .addParameters(leftOperand.getTypeMirror(), rightOperand.getTypeMirror());
+        FunctionInvocation invocation = new FunctionInvocation(element, nodeType);
         List<Expression> args = invocation.getArguments();
         args.add(leftOperand);
         args.add(rightOperand);
@@ -161,9 +161,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
     if (var.getKind() == ElementKind.LOCAL_VARIABLE
         && ElementUtil.hasAnnotation(var, RetainedLocalRef.class)
         && Options.useReferenceCounting()) {
-      FunctionBinding binding = new FunctionBinding(
+      FunctionElement element = new FunctionElement(
           "JreRetainedLocalValue", typeEnv.getIdTypeMirror(), null);
-      FunctionInvocation invocation = new FunctionInvocation(binding, rhs.getTypeMirror());
+      FunctionInvocation invocation = new FunctionInvocation(element, rhs.getTypeMirror());
       rhs.replaceWith(invocation);
       invocation.addArgument(rhs);
     }
@@ -176,9 +176,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
       TypeMirror idType = typeEnv.getIdTypeMirror();
       TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
       String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.toString());
-      FunctionBinding binding = new FunctionBinding(funcName, declaredType, null);
-      binding.addParameters(typeEnv.getPointerType(idType));
-      FunctionInvocation invocation = new FunctionInvocation(binding, type);
+      FunctionElement element = new FunctionElement(funcName, declaredType, null)
+          .addParameters(typeEnv.getPointerType(idType));
+      FunctionInvocation invocation = new FunctionInvocation(element, type);
       node.replaceWith(invocation);
       invocation.addArgument(new PrefixExpression(
           typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, node));
@@ -260,14 +260,14 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror idType = typeEnv.getIdTypeMirror();
     TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
-    FunctionBinding binding = new FunctionBinding(funcName, declaredType, null);
-    FunctionInvocation invocation = new FunctionInvocation(binding, type);
+    FunctionElement element = new FunctionElement(funcName, declaredType, null);
+    FunctionInvocation invocation = new FunctionInvocation(element, type);
     List<Expression> args = invocation.getArguments();
     if (isRetainedWith) {
-      binding.addParameters(idType);
+      element.addParameters(idType);
       args.add(getRetainedWithTarget(node, var));
     }
-    binding.addParameters(typeEnv.getPointerType(idType), idType);
+    element.addParameters(typeEnv.getPointerType(idType), idType);
     args.add(new PrefixExpression(
         typeEnv.getPointerType(lhs.getTypeMirror()), PrefixExpression.Operator.ADDRESS_OF,
         TreeUtil.remove(lhs)));
@@ -375,9 +375,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror lhsPointerType = typeEnv.getPointerType(lhsType);
     String funcName = "Jre" + node.getOperator().getName() + (isVolatile(lhs) ? "Volatile" : "")
         + NameTable.capitalize(lhsType.toString()) + getPromotionSuffix(node);
-    FunctionBinding binding = new FunctionBinding(funcName, lhsType, null);
-    binding.addParameters(lhsPointerType, rhs.getTypeMirror());
-    FunctionInvocation invocation = new FunctionInvocation(binding, lhsType);
+    FunctionElement element = new FunctionElement(funcName, lhsType, null)
+        .addParameters(lhsPointerType, rhs.getTypeMirror());
+    FunctionInvocation invocation = new FunctionInvocation(element, lhsType);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(
         lhsPointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
@@ -405,10 +405,10 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
 
     ITypeBinding stringType = typeEnv.resolveIOSType("NSString");
-    FunctionBinding binding = new FunctionBinding("JreStrcat", stringType, null);
-    binding.addParameters(typeEnv.getPointerType(typeEnv.resolveJavaTypeMirror("char")));
-    binding.setIsVarargs(true);
-    FunctionInvocation invocation = new FunctionInvocation(binding, stringType);
+    FunctionElement element = new FunctionElement("JreStrcat", stringType, null)
+        .addParameters(typeEnv.getPointerType(typeEnv.resolveJavaTypeMirror("char")))
+        .setIsVarargs(true);
+    FunctionInvocation invocation = new FunctionInvocation(element, stringType);
     List<Expression> args = invocation.getArguments();
     args.add(getStrcatTypesCString(operands));
     args.addAll(operands);
@@ -435,11 +435,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror lhsType = lhs.getTypeMirror();
     TypeMirror idType = typeEnv.getIdTypeMirror();
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
-    FunctionBinding binding = new FunctionBinding(funcName, idType, null);
-    binding.addParameters(
-        typeEnv.getPointerType(idType), typeEnv.getPointerType(
-        typeEnv.resolveJavaTypeMirror("char")));
-    FunctionInvocation invocation = new FunctionInvocation(binding, lhsType);
+    FunctionElement element = new FunctionElement(funcName, idType, null)
+        .addParameters(
+            typeEnv.getPointerType(idType),
+            typeEnv.getPointerType(typeEnv.resolveJavaTypeMirror("char")));
+    FunctionInvocation invocation = new FunctionInvocation(element, lhsType);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(
         typeEnv.getPointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF,

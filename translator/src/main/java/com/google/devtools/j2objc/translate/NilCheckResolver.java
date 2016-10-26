@@ -59,7 +59,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Collections;
@@ -415,9 +415,8 @@ public class NilCheckResolver extends UnitTreeVisitor {
       addSafeVar(var);
     }
     TypeMirror idType = typeEnv.getIdTypeMirror();
-    FunctionBinding binding = new FunctionBinding("nil_chk", idType, null);
-    binding.addParameters(idType);
-    FunctionInvocation nilChkInvocation = new FunctionInvocation(binding, node.getTypeBinding());
+    FunctionElement element = new FunctionElement("nil_chk", idType, null).addParameters(idType);
+    FunctionInvocation nilChkInvocation = new FunctionInvocation(element, node.getTypeBinding());
     node.replaceWith(nilChkInvocation);
     nilChkInvocation.addArgument(node);
   }
