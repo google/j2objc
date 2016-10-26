@@ -70,6 +70,10 @@ public class MethodInvocation extends Expression {
     name.set(new SimpleName(BindingConverter.unwrapElement(method)));
   }
 
+  public MethodInvocation(ExecutableElement method, Expression expression) {
+    this(method, (ExecutableType) method.asType(), expression);
+  }
+
   public MethodInvocation(ExecutablePair method, Expression expression) {
     this(method.element(), method.type(), expression);
   }

@@ -94,7 +94,7 @@ class JdtTypes implements Types {
 
   @Override
   public TypeElement boxedClass(PrimitiveType p) {
-    throw new AssertionError("not implemented");
+    return boxedClasses.get(p.getKind());
   }
 
   @Override
@@ -170,7 +170,8 @@ class JdtTypes implements Types {
 
   @Override
   public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
-    throw new AssertionError("not implemented");
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t1).isAssignmentCompatible(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(t2));
   }
 
   @Override

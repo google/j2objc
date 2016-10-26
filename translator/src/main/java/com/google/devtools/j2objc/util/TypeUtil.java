@@ -130,6 +130,10 @@ public final class TypeUtil {
     return (ExecutableType) javacTypes.asMemberOf(containing, method);
   }
 
+  public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
+    return javacTypes.isAssignable(t1, t2);
+  }
+
   public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
     return javacTypes.isSubtype(t1, t2);
   }
@@ -280,6 +284,10 @@ public final class TypeUtil {
 
   public boolean isBoxedType(TypeMirror t) {
     return unboxedType(t) != null;
+  }
+
+  public TypeElement boxedClass(PrimitiveType t) {
+    return javacTypes.boxedClass(t);
   }
 
   public static String getName(TypeMirror t) {

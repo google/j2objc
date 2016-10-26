@@ -445,7 +445,7 @@ public class TreeConverter {
     ArrayInitializer newNode = new ArrayInitializer();
     convertExpression(node, newNode);
     return newNode
-        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
+        .setTypeMirror((JdtArrayType) BindingConverter.getType(node.resolveTypeBinding()))
         .setExpressions(expressions);
   }
 

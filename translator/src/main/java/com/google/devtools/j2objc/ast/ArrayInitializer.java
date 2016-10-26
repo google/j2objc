@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.ArrayType;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class ArrayInitializer extends Expression {
 
-  private TypeMirror typeMirror = null;
+  private ArrayType typeMirror = null;
 
   private ChildList<Expression> expressions = ChildList.create(Expression.class, this);
 
@@ -37,10 +37,10 @@ public class ArrayInitializer extends Expression {
   }
 
   public ArrayInitializer(ITypeBinding typeBinding) {
-    typeMirror = BindingConverter.getType(typeBinding);
+    typeMirror = (ArrayType) BindingConverter.getType(typeBinding);
   }
 
-  public ArrayInitializer(TypeMirror typeMirror) {
+  public ArrayInitializer(ArrayType typeMirror) {
     this.typeMirror = typeMirror;
   }
 
@@ -50,11 +50,11 @@ public class ArrayInitializer extends Expression {
   }
 
   @Override
-  public TypeMirror getTypeMirror() {
+  public ArrayType getTypeMirror() {
     return typeMirror;
   }
 
-  public ArrayInitializer setTypeMirror(TypeMirror newTypeMirror) {
+  public ArrayInitializer setTypeMirror(ArrayType newTypeMirror) {
     typeMirror = newTypeMirror;
     return this;
   }

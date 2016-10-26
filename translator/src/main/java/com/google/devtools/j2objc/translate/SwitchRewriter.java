@@ -41,6 +41,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
@@ -127,7 +128,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!typeEnv.isJavaStringType(type)) {
       return;
     }
-    TypeMirror arrayType = typeUtil.getArrayType(type);
+    ArrayType arrayType = typeUtil.getArrayType(type);
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     int idx = 0;
     for (Statement stmt : node.getStatements()) {

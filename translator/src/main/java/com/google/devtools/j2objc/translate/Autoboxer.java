@@ -47,15 +47,16 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -77,41 +78,27 @@ public class Autoboxer extends UnitTreeVisitor {
    * wrapper class has a static valueOf factory method, so "expr" gets
    * translated to "Wrapper.valueOf(expr)".
    */
-  private Expression box(Expression expr) {
-    ITypeBinding wrapperBinding = typeEnv.getWrapperType(expr.getTypeBinding());
-    if (wrapperBinding != null) {
-      return newBoxExpression(expr, wrapperBinding);
+  private void box(Expression expr) {
+    boxWithClass(expr, typeUtil.boxedClass((PrimitiveType) expr.getTypeMirror()));
+  }
+
+  private void box(Expression expr, TypeMirror boxedType) {
+    if (typeUtil.isBoxedType(boxedType)) {
+      boxWithClass(expr, TypeUtil.asTypeElement(boxedType));
     } else {
-      return expr.copy();
+      box(expr);
     }
   }
 
-  private Expression boxWithType(Expression expr, ITypeBinding wrapperType) {
-    if (typeEnv.isBoxedPrimitive(wrapperType)) {
-      return newBoxExpression(expr, wrapperType);
-    }
-    return box(expr);
-  }
-
-  private Expression newBoxExpression(Expression expr, ITypeBinding wrapperType) {
-    ITypeBinding primitiveType = typeEnv.getPrimitiveType(wrapperType);
+  private void boxWithClass(Expression expr, TypeElement boxedClass) {
+    PrimitiveType primitiveType = typeUtil.unboxedType(boxedClass.asType());
     assert primitiveType != null;
-    IMethodBinding wrapperMethod = BindingUtil.findDeclaredMethod(
-        wrapperType, VALUEOF_METHOD, primitiveType.getName());
-    assert wrapperMethod != null : "could not find valueOf method for " + wrapperType;
-    MethodInvocation invocation = new MethodInvocation(wrapperMethod, new SimpleName(wrapperType));
-    invocation.addArgument(expr.copy());
-    return invocation;
-  }
-
-  private ITypeBinding findWrapperSuperclass(ITypeBinding type) {
-    while (type != null) {
-      if (typeEnv.isBoxedPrimitive(type)) {
-        return type;
-      }
-      type = type.getSuperclass();
-    }
-    return null;
+    ExecutableElement wrapperMethod = ElementUtil.findMethod(
+        boxedClass, VALUEOF_METHOD, TypeUtil.getQualifiedName(primitiveType));
+    assert wrapperMethod != null : "could not find valueOf method for " + boxedClass;
+    MethodInvocation invocation = new MethodInvocation(wrapperMethod, new SimpleName(boxedClass));
+    expr.replaceWith(invocation);
+    invocation.addArgument(expr);
   }
 
   /**
@@ -120,44 +107,53 @@ public class Autoboxer extends UnitTreeVisitor {
    * booleanValue().  This method therefore converts "expr" to
    * "expr.classValue()".
    */
-  private Expression unbox(Expression expr) {
-    ITypeBinding wrapperType = findWrapperSuperclass(expr.getTypeBinding());
-    ITypeBinding primitiveType = typeEnv.getPrimitiveType(wrapperType);
-    if (primitiveType != null) {
-      IMethodBinding valueMethod = BindingUtil.findDeclaredMethod(
-          wrapperType, primitiveType.getName() + VALUE_METHOD);
-      assert valueMethod != null : "could not find value method for " + wrapperType;
-      return new MethodInvocation(valueMethod, expr.copy());
-    } else {
-      return expr.copy();
-    }
+  private void unbox(Expression expr) {
+    unbox(expr, null);
   }
 
   /**
    * Convert a wrapper class instance to a specified primitive equivalent.
    */
-  private Expression unbox(Expression expr, ITypeBinding primitiveType) {
-    ITypeBinding wrapperType = findWrapperSuperclass(expr.getTypeBinding());
-    IMethodBinding valueMethod = BindingUtil.findDeclaredMethod(
-        wrapperType, primitiveType.getName() + VALUE_METHOD);
-    assert valueMethod != null
-        : "could not find " + primitiveType + " value method for " + wrapperType;
-    return new MethodInvocation(valueMethod, expr.copy());
+  private void unbox(Expression expr, PrimitiveType primitiveType) {
+    TypeElement boxedClass = findBoxedSuperclass(expr.getTypeMirror());
+    if (primitiveType == null && boxedClass != null) {
+      primitiveType = typeUtil.unboxedType(boxedClass.asType());
+    }
+    if (primitiveType == null) {
+      return;
+    }
+    ExecutableElement valueMethod = ElementUtil.findMethod(
+        boxedClass, TypeUtil.getName(primitiveType) + VALUE_METHOD);
+    assert valueMethod != null : "could not find value method for " + boxedClass;
+    MethodInvocation invocation = new MethodInvocation(valueMethod, null);
+    expr.replaceWith(invocation);
+    invocation.setExpression(expr);
+  }
+
+  private TypeElement findBoxedSuperclass(TypeMirror type) {
+    while (type != null) {
+      if (typeUtil.isBoxedType(type)) {
+        return TypeUtil.asTypeElement(type);
+      }
+      type = typeUtil.getSuperclass(type);
+    }
+    return null;
   }
 
   @Override
   public void endVisit(Assignment node) {
-    Expression lhs = node.getLeftHandSide();
-    ITypeBinding lhType = lhs.getTypeBinding();
+    TypeMirror lhType = node.getLeftHandSide().getTypeMirror();
+    boolean lhPrimitive = lhType.getKind().isPrimitive();
     Expression rhs = node.getRightHandSide();
-    ITypeBinding rhType = rhs.getTypeBinding();
+    TypeMirror rhType = rhs.getTypeMirror();
+    boolean rhPrimitive = rhType.getKind().isPrimitive();
     Assignment.Operator op = node.getOperator();
-    if (op != Assignment.Operator.ASSIGN && !lhType.isPrimitive()) {
+    if (op != Assignment.Operator.ASSIGN && !lhPrimitive) {
       rewriteBoxedAssignment(node);
-    } else if (lhType.isPrimitive() && !rhType.isPrimitive()) {
-      node.setRightHandSide(unbox(rhs));
-    } else if (!lhType.isPrimitive() && rhType.isPrimitive()) {
-      node.setRightHandSide(boxWithType(rhs, lhType));
+    } else if (lhPrimitive && !rhPrimitive) {
+      unbox(rhs);
+    } else if (!lhPrimitive && rhPrimitive) {
+      box(rhs, lhType);
     }
   }
 
@@ -178,7 +174,8 @@ public class Autoboxer extends UnitTreeVisitor {
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
-    invocation.addArgument(unbox(rhs));
+    invocation.addArgument(TreeUtil.remove(rhs));
+    unbox(rhs);
     node.replaceWith(invocation);
   }
 
@@ -214,154 +211,140 @@ public class Autoboxer extends UnitTreeVisitor {
   @Override
   public void endVisit(ArrayAccess node) {
     Expression index = node.getIndex();
-    if (!index.getTypeBinding().isPrimitive()) {
-      node.setIndex(unbox(index));
+    if (!index.getTypeMirror().getKind().isPrimitive()) {
+      unbox(index);
     }
   }
 
   @Override
   public void endVisit(ArrayInitializer node) {
-    ITypeBinding type = node.getTypeBinding().getElementType();
-    List<Expression> expressions = node.getExpressions();
-    for (int i = 0; i < expressions.size(); i++) {
-      Expression expr = expressions.get(i);
-      Expression result = boxOrUnboxExpression(expr, type);
-      if (expr != result) {
-        expressions.set(i, result);
-      }
+    TypeMirror type = node.getTypeMirror().getComponentType();
+    for (Expression expr : node.getExpressions()) {
+      boxOrUnboxExpression(expr, type);
     }
   }
 
   @Override
   public void endVisit(AssertStatement node) {
     Expression expression = node.getMessage();
-    if (expression != null) {
-      ITypeBinding exprType = expression.getTypeBinding();
-      if (exprType.isPrimitive()) {
-        node.setMessage(box(expression));
-      }
+    if (expression != null && expression.getTypeMirror().getKind().isPrimitive()) {
+      box(expression);
     }
   }
 
   @Override
   public void endVisit(CastExpression node) {
-    ITypeBinding type = node.getTypeBinding();
+    TypeMirror castType = node.getTypeMirror();
     Expression expr = node.getExpression();
-    ITypeBinding exprType = expr.getTypeBinding();
-    Expression newExpr;
-    if (type.isPrimitive() && !exprType.isPrimitive()) {
-      if (exprType.isAssignmentCompatible(typeEnv.resolveJavaType("java.lang.Number"))) {
+    TypeMirror exprType = expr.getTypeMirror();
+    if (castType.getKind().isPrimitive() && !exprType.getKind().isPrimitive()) {
+      if (typeUtil.isAssignable(exprType, typeEnv.resolveJavaTypeMirror("java.lang.Number"))) {
         // Casting a Number object to a primitive, convert to value method.
-        newExpr = unbox(expr, type);
+        unbox(expr, (PrimitiveType) castType);
       } else {
         // Casting an object to a primitive. Convert the cast type to the wrapper
         // so that we do a proper cast check, as Java would.
-        type = typeEnv.getWrapperType(type);
-        node.setType(Type.newType(type));
-        newExpr = boxOrUnboxExpression(expr, type);
+        castType = typeUtil.boxedClass((PrimitiveType) castType).asType();
+        node.setType(Type.newType(castType));
+        boxOrUnboxExpression(expr, castType);
       }
     } else {
-      newExpr = boxOrUnboxExpression(expr, type);
+      boxOrUnboxExpression(expr, castType);
     }
+    Expression newExpr = node.getExpression();
     if (newExpr != expr) {
       TreeNode parent = node.getParent();
       if (parent instanceof ParenthesizedExpression) {
-        parent.replaceWith(newExpr);
+        parent.replaceWith(TreeUtil.remove(newExpr));
       } else {
-        node.replaceWith(newExpr);
+        node.replaceWith(TreeUtil.remove(newExpr));
       }
     }
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    convertArguments(node.getMethodBinding(), node.getArguments());
+    convertArguments(node.getExecutableElement(), node.getArguments());
   }
 
   @Override
   public void endVisit(ConditionalExpression node) {
     Expression expr = node.getExpression();
-    ITypeBinding exprType = expr.getTypeBinding();
-    if (!exprType.isPrimitive()) {
-      node.setExpression(unbox(expr));
+    if (!expr.getTypeMirror().getKind().isPrimitive()) {
+      unbox(expr);
     }
 
-    ITypeBinding nodeType = node.getTypeBinding();
+    boolean nodeIsPrimitive = node.getTypeMirror().getKind().isPrimitive();
     Expression thenExpr = node.getThenExpression();
-    ITypeBinding thenType = thenExpr.getTypeBinding();
+    boolean thenIsPrimitive = thenExpr.getTypeMirror().getKind().isPrimitive();
     Expression elseExpr = node.getElseExpression();
-    ITypeBinding elseType = elseExpr.getTypeBinding();
+    boolean elseIsPrimitive = elseExpr.getTypeMirror().getKind().isPrimitive();
 
-    if (thenType.isPrimitive() && !nodeType.isPrimitive()) {
-      node.setThenExpression(box(thenExpr));
-    } else if (!thenType.isPrimitive() && nodeType.isPrimitive()) {
-      node.setThenExpression(unbox(thenExpr));
+    if (thenIsPrimitive && !nodeIsPrimitive) {
+      box(thenExpr);
+    } else if (!thenIsPrimitive && nodeIsPrimitive) {
+      unbox(thenExpr);
     }
 
-    if (elseType.isPrimitive() && !nodeType.isPrimitive()) {
-      node.setElseExpression(box(elseExpr));
-    } else if (!elseType.isPrimitive() && nodeType.isPrimitive()) {
-      node.setElseExpression(unbox(elseExpr));
+    if (elseIsPrimitive && !nodeIsPrimitive) {
+      box(elseExpr);
+    } else if (!elseIsPrimitive && nodeIsPrimitive) {
+      unbox(elseExpr);
     }
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    convertArguments(node.getMethodBinding(), node.getArguments());
+    convertArguments(node.getExecutableElement(), node.getArguments());
   }
 
   @Override
   public void endVisit(DoStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding exprType = expression.getTypeBinding();
-    if (!exprType.isPrimitive()) {
-      node.setExpression(unbox(expression));
+    if (!expression.getTypeMirror().getKind().isPrimitive()) {
+      unbox(expression);
     }
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    convertArguments(node.getMethodBinding(), node.getArguments());
+    convertArguments(node.getExecutableElement(), node.getArguments());
   }
 
   @Override
   public void endVisit(IfStatement node) {
     Expression expr = node.getExpression();
-    ITypeBinding binding = expr.getTypeBinding();
-
-    if (!binding.isPrimitive()) {
-      node.setExpression(unbox(expr));
+    if (!expr.getTypeMirror().getKind().isPrimitive()) {
+      unbox(expr);
     }
   }
 
   @Override
   public void endVisit(InfixExpression node) {
-    ITypeBinding type = node.getTypeBinding();
     InfixExpression.Operator op = node.getOperator();
     List<Expression> operands = node.getOperands();
 
     // Don't unbox for equality tests where both operands are boxed types.
     if ((op == InfixExpression.Operator.EQUALS || op == InfixExpression.Operator.NOT_EQUALS)
-        && !operands.get(0).getTypeBinding().isPrimitive()
-        && !operands.get(1).getTypeBinding().isPrimitive()) {
+        && !operands.get(0).getTypeMirror().getKind().isPrimitive()
+        && !operands.get(1).getTypeMirror().getKind().isPrimitive()) {
       return;
     }
     // Don't unbox for string concatenation.
-    if (op == InfixExpression.Operator.PLUS && typeEnv.isJavaStringType(type)) {
+    if (op == InfixExpression.Operator.PLUS && typeEnv.isJavaStringType(node.getTypeMirror())) {
       return;
     }
 
-    for (int i = 0; i < operands.size(); i++) {
-      Expression expr = operands.get(i);
-      if (!expr.getTypeBinding().isPrimitive()) {
-        operands.set(i, unbox(expr));
+    for (Expression operand : operands) {
+      if (!operand.getTypeMirror().getKind().isPrimitive()) {
+        unbox(operand);
       }
     }
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
-    convertArguments(node.getMethodBinding(), node.getArguments());
+    convertArguments(node.getExecutableElement(), node.getArguments());
   }
 
   @Override
@@ -372,8 +355,8 @@ public class Autoboxer extends UnitTreeVisitor {
       rewriteBoxedPrefixOrPostfix(node, operand, "PreIncr");
     } else if (op == PrefixExpression.Operator.DECREMENT) {
       rewriteBoxedPrefixOrPostfix(node, operand, "PreDecr");
-    } else if (!operand.getTypeBinding().isPrimitive()) {
-      node.setOperand(unbox(operand));
+    } else if (!operand.getTypeMirror().getKind().isPrimitive()) {
+      unbox(operand);
     }
   }
 
@@ -407,37 +390,38 @@ public class Autoboxer extends UnitTreeVisitor {
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
     if (expr != null) {
-      TypeMirror returnType = TreeUtil.getOwningReturnType(node);
-      ITypeBinding exprType = expr.getTypeBinding();
-      if (returnType.getKind().isPrimitive() && !exprType.isPrimitive()) {
-        node.setExpression(unbox(expr));
+      boolean returnsPrimitive = TreeUtil.getOwningReturnType(node).getKind().isPrimitive();
+      boolean exprIsPrimitive = expr.getTypeMirror().getKind().isPrimitive();
+      if (returnsPrimitive && !exprIsPrimitive) {
+        unbox(expr);
       }
-      if (!returnType.getKind().isPrimitive() && exprType.isPrimitive()) {
-        node.setExpression(box(expr));
+      if (!returnsPrimitive && exprIsPrimitive) {
+        box(expr);
       }
     }
   }
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    convertArguments(node.getMethodBinding(), node.getArguments());
+    convertArguments(node.getExecutableElement(), node.getArguments());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    convertArguments(node.getMethodBinding(), node.getArguments());
+    convertArguments(node.getExecutableElement(), node.getArguments());
   }
 
   @Override
   public void endVisit(VariableDeclarationFragment node) {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
-      ITypeBinding nodeType = node.getVariableBinding().getType();
-      ITypeBinding initType = initializer.getTypeBinding();
-      if (nodeType.isPrimitive() && !initType.isPrimitive()) {
-        node.setInitializer(unbox(initializer));
-      } else if (!nodeType.isPrimitive() && initType.isPrimitive()) {
-        node.setInitializer(boxWithType(initializer, nodeType));
+      TypeMirror varType = node.getVariableElement().asType();
+      boolean varIsPrimitive = varType.getKind().isPrimitive();
+      boolean initIsPrimitive = initializer.getTypeMirror().getKind().isPrimitive();
+      if (varIsPrimitive && !initIsPrimitive) {
+        unbox(initializer);
+      } else if (!varIsPrimitive && initIsPrimitive) {
+        box(initializer, varType);
       }
     }
   }
@@ -445,46 +429,39 @@ public class Autoboxer extends UnitTreeVisitor {
   @Override
   public void endVisit(WhileStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding exprType = expression.getTypeBinding();
-    if (!exprType.isPrimitive()) {
-      node.setExpression(unbox(expression));
+    if (!expression.getTypeMirror().getKind().isPrimitive()) {
+      unbox(expression);
     }
   }
 
   @Override
   public void endVisit(SwitchStatement node) {
     Expression expression = node.getExpression();
-    ITypeBinding exprType = expression.getTypeBinding();
-    if (!exprType.isPrimitive()) {
-      node.setExpression(unbox(expression));
+    if (!expression.getTypeMirror().getKind().isPrimitive()) {
+      unbox(expression);
     }
   }
 
-  private void convertArguments(IMethodBinding methodBinding, List<Expression> args) {
-    ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
+  private void convertArguments(ExecutableElement method, List<Expression> args) {
+    List<? extends VariableElement> params = method.getParameters();
     for (int i = 0; i < args.size(); i++) {
-      ITypeBinding paramType;
-      if (methodBinding.isVarargs() && i >= paramTypes.length - 1) {
-        paramType = paramTypes[paramTypes.length - 1].getComponentType();
+      TypeMirror paramType;
+      if (method.isVarArgs() && i >= params.size() - 1) {
+        paramType = ((ArrayType) params.get(params.size() - 1).asType()).getComponentType();
       } else {
-        paramType = paramTypes[i];
+        paramType = params.get(i).asType();
       }
-      Expression arg = args.get(i);
-      Expression replacementArg = boxOrUnboxExpression(arg, paramType);
-      if (replacementArg != arg) {
-        args.set(i, replacementArg);
-      }
+      boxOrUnboxExpression(args.get(i), paramType);
     }
   }
 
-  private Expression boxOrUnboxExpression(Expression arg, ITypeBinding argType) {
-    ITypeBinding argBinding = arg.getTypeBinding();
-    if (argType.isPrimitive() && !argBinding.isPrimitive()) {
-      return unbox(arg);
-    } else if (!argType.isPrimitive() && argBinding.isPrimitive()) {
-      return box(arg);
-    } else {
-      return arg;
+  private void boxOrUnboxExpression(Expression expr, TypeMirror type) {
+    boolean exprIsPrimitive = expr.getTypeMirror().getKind().isPrimitive();
+    boolean typeIsPrimitive = type.getKind().isPrimitive();
+    if (typeIsPrimitive && !exprIsPrimitive) {
+      unbox(expr);
+    } else if (!typeIsPrimitive && exprIsPrimitive) {
+      box(expr);
     }
   }
 }
