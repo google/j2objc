@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Dumps a specified AST to show a specified tree's graph. Unlike
@@ -56,11 +57,15 @@ public class DebugASTDump extends TreeVisitor {
   public static String dump(TreeNode node) {
     DebugASTDump dumper = new DebugASTDump();
     node.accept(dumper);
-    return dumper.sb.toString();
+    dumper.sb.newline();
+    return dumper.toString();
   }
 
   @Override
   public boolean preVisit(TreeNode node) {
+    if (sb.length() > 0) {
+      sb.newline();
+    }
     sb.printIndent();
     sb.print(node.getClass().getSimpleName());
     sb.indent();
@@ -69,7 +74,185 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public void postVisit(TreeNode node) {
-    sb.newline();
     sb.unindent();
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeMemberDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(ArrayType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(EnumConstantDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(EnumDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(ExpressionMethodReference node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(FieldAccess node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(IntersectionType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(MemberValuePair node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(MethodDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(MethodInvocation node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(NameQualifiedType node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(PackageDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(ParameterizedType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(PrimitiveType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(QualifiedName node) {
+    printName(node);
+    return true;
+  }
+
+  @Override
+  public boolean visit(QualifiedType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(SimpleName node) {
+    printName(node);
+    return true;
+  }
+
+  @Override
+  public boolean visit(SimpleType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(SingleVariableDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(SuperFieldAccess node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(SuperMethodInvocation node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(SuperMethodReference node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(TypeDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(TypeMethodReference node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(UnionType node) {
+    printType(node.getTypeMirror());
+    return true;
+  }
+
+  @Override
+  public boolean visit(VariableDeclarationFragment node) {
+    printName(node.getName());
+    return true;
+  }
+
+  private void printName(Name name) {
+    if (name != null) {
+      sb.print(": ");
+      sb.print(name.toString());
+    }
+  }
+
+  private void printType(TypeMirror type) {
+    sb.print(": ");
+    sb.print(type.toString());
+  }
+
+  @Override
+  public String toString() {
+    return sb.toString();
   }
 }
