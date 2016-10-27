@@ -319,11 +319,11 @@ public class System {
       if (!fileEncoding) {
         fileEncoding = getenv("file.encoding");
       }
-      if (fileEncoding) {
-        NSString *enc = [NSString stringWithCString:fileEncoding
-                                           encoding:[NSString defaultCStringEncoding]];
-        [JavaLangSystem_props setPropertyWithNSString:@"file.encoding" withNSString:enc];
+      if (!fileEncoding) {
+        fileEncoding = "UTF8";
       }
+      NSString *enc = [NSString stringWithUTF8String:fileEncoding];
+      [JavaLangSystem_props setPropertyWithNSString:@"file.encoding" withNSString:enc];
 
       // These properties are used to define the default Locale.
       NSString *localeId = [[NSLocale currentLocale] localeIdentifier];
