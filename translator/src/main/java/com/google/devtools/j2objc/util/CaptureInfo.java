@@ -110,6 +110,22 @@ public class CaptureInfo {
         localCaptures.get(type), LocalCapture::hasField), capture -> capture.field);
   }
 
+  /**
+   * Returns all the implicit params that come before explicit params in a constructor.
+   */
+  public Iterable<VariableElement> getImplicitPrefixParams(TypeElement type) {
+    Iterable<VariableElement> result = getCaptureParams(type);
+    VariableElement superOuter = getSuperOuterParam(type);
+    if (superOuter != null) {
+      result = Iterables.concat(Collections.singletonList(superOuter), result);
+    }
+    VariableElement outer = getOuterParam(type);
+    if (outer != null) {
+      result = Iterables.concat(Collections.singletonList(outer), result);
+    }
+    return result;
+  }
+
   public boolean isCapturing(TypeElement type) {
     return outerFields.containsKey(type)
         || !Iterables.isEmpty(Iterables.filter(localCaptures.get(type), LocalCapture::hasField));

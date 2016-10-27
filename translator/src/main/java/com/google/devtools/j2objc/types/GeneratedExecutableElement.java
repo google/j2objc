@@ -62,16 +62,6 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     this.varargs = varargs;
   }
 
-  private GeneratedExecutableElement(ExecutableElement m) {
-    super(m.getSimpleName().toString(), m.getKind(),  m.getEnclosingElement(),
-        ElementUtil.isSynthetic(m));
-    this.selector = null;
-    addModifiers(m.getModifiers());
-    parameters.addAll(m.getParameters());
-    this.returnType = m.getReturnType();
-    this.varargs = m.isVarArgs();
-  }
-
   public static GeneratedExecutableElement newMethodWithSelector(
       String selector, TypeMirror returnType, Element enclosingElement) {
     return new GeneratedExecutableElement(
@@ -85,13 +75,6 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
         enclosingElement, false);
   }
 
-  /**
-   * Clone a method element, so parameters can be added to it.
-   */
-  public static GeneratedExecutableElement mutableCopy(ExecutableElement method) {
-    return new GeneratedExecutableElement(method);
-  }
-
   private static ElementKind checkElementKind(ElementKind kind) {
     Preconditions.checkArgument(kind == ElementKind.METHOD || kind == ElementKind.CONSTRUCTOR);
     return kind;
@@ -103,16 +86,6 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   public void addParameter(VariableElement param) {
     parameters.add(param);
-  }
-
-  public void addParametersPlaceholderFront(List<TypeMirror> types) {
-    for (int i = types.size() - 1; i >= 0; i--) {
-      addParameterPlaceholderFront(types.get(i));
-    }
-  }
-
-  public void addParameterPlaceholderFront(TypeMirror type) {
-    parameters.add(0, GeneratedVariableElement.newParameter("placeholder", type, this));
   }
 
   @Override

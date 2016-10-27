@@ -58,6 +58,7 @@ public class NameTable {
 
   private final Types typeEnv;
   private final ElementUtil elementUtil;
+  private final CaptureInfo captureInfo;
   private final Map<IVariableBinding, String> variableNames = new HashMap<>();
 
   public static final String INIT_NAME = "init";
@@ -329,8 +330,8 @@ public class NameTable {
       }
     }
 
-    public NameTable newNameTable(Types typeEnv, ElementUtil elementUtil) {
-      return new NameTable(typeEnv, elementUtil, prefixMap, methodMappings);
+    public NameTable newNameTable(Types typeEnv, ElementUtil elementUtil, CaptureInfo captureInfo) {
+      return new NameTable(typeEnv, elementUtil, captureInfo, prefixMap, methodMappings);
     }
   }
 
@@ -339,10 +340,11 @@ public class NameTable {
   }
 
   private NameTable(
-      Types typeEnv, ElementUtil elementUtil, PackagePrefixes prefixMap,
+      Types typeEnv, ElementUtil elementUtil, CaptureInfo captureInfo, PackagePrefixes prefixMap,
       Map<String, String> methodMappings) {
     this.typeEnv = typeEnv;
     this.elementUtil = elementUtil;
+    this.captureInfo = captureInfo;
     this.prefixMap = prefixMap;
     this.methodMappings = methodMappings;
   }
@@ -565,16 +567,29 @@ public class NameTable {
     return name;
   }
 
+  private boolean appendParamKeyword(
+      StringBuilder sb, ITypeBinding paramType, char delim, boolean first) {
+    String keyword = parameterKeyword(paramType);
+    if (first) {
+      keyword = capitalize(keyword);
+    }
+    sb.append(keyword).append(delim);
+    return false;
+  }
+
   private String addParamNames(IMethodBinding method, String name, char delim) {
     method = method.getMethodDeclaration();
     StringBuilder sb = new StringBuilder(name);
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    for (int i = 0; i < paramTypes.length; i++) {
-      String keyword = parameterKeyword(paramTypes[i]);
-      if (i == 0) {
-        keyword = capitalize(keyword);
+    boolean first = true;
+    if (method.isConstructor()) {
+      TypeElement declaringClass = BindingConverter.getTypeElement(method.getDeclaringClass());
+      for (VariableElement param : captureInfo.getImplicitPrefixParams(declaringClass)) {
+        first = appendParamKeyword(
+            sb, BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()), delim, first);
       }
-      sb.append(keyword).append(delim);
+    }
+    for (ITypeBinding paramType : method.getParameterTypes()) {
+      first = appendParamKeyword(sb, paramType, delim, first);
     }
     return sb.toString();
   }

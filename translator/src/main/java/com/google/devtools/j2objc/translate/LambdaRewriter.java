@@ -66,9 +66,9 @@ public class LambdaRewriter extends UnitTreeVisitor {
 
   private final CaptureInfo captureInfo;
 
-  public LambdaRewriter(CompilationUnit unit, CaptureInfo captureInfo) {
+  public LambdaRewriter(CompilationUnit unit) {
     super(unit);
-    this.captureInfo = captureInfo;
+    this.captureInfo = unit.getEnv().captureInfo();
   }
 
   private class RewriteContext {

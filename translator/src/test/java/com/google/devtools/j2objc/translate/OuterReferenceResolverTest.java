@@ -51,7 +51,6 @@ public class OuterReferenceResolverTest extends GenerationTest {
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    captureInfo = new CaptureInfo();
   }
 
   @Override
@@ -211,7 +210,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
 
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
-    new OuterReferenceResolver(unit, captureInfo).run();
+    captureInfo = unit.getEnv().captureInfo();
+    new OuterReferenceResolver(unit).run();
     findTypeDeclarations(unit);
   }
 

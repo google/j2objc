@@ -259,7 +259,6 @@ JAVA_SOURCES = \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \
 	translate/OperatorRewriter.java \
-	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \
 	translate/PackageInfoRewriter.java \
 	translate/PrivateDeclarationResolver.java \

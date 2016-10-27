@@ -43,6 +43,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -350,6 +351,10 @@ public final class ElementUtil {
     return Iterables.getFirst(Iterables.filter(
         filterEnclosedElements(type, ExecutableElement.class, ElementKind.METHOD),
         method -> getName(method).equals(name) && paramsMatch(method, paramTypes)), null);
+  }
+
+  public static Iterable<TypeMirror> asTypes(Iterable<? extends Element> elements) {
+    return Iterables.transform(elements, elem -> elem.asType());
   }
 
   public boolean overrides(

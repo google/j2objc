@@ -19,19 +19,23 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
@@ -86,6 +90,26 @@ public final class TranslationUtil {
       result.add(type.getTypeBinding());
     }
     return result;
+  }
+
+  /**
+   * Returns true if this is a constructor that doesn't call "this(...)".  This constructors are
+   * skipped so initializers aren't run more than once per instance creation.
+   */
+  public static boolean isDesignatedConstructor(MethodDeclaration node) {
+    if (!node.isConstructor()) {
+      return false;
+    }
+    Block body = node.getBody();
+    if (body == null) {
+      return false;
+    }
+    List<Statement> stmts = body.getStatements();
+    if (stmts.isEmpty()) {
+      return true;
+    }
+    Statement firstStmt = stmts.get(0);
+    return !(firstStmt instanceof ConstructorInvocation);
   }
 
   public static boolean needsReflection(AbstractTypeDeclaration node) {

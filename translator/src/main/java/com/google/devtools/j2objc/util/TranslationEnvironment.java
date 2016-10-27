@@ -25,6 +25,7 @@ public class TranslationEnvironment {
   private final ElementUtil elementUtil;
   private final TypeUtil typeUtil;
   private final Types typeEnv;
+  private final CaptureInfo captureInfo;
   private final NameTable nameTable;
 
   public TranslationEnvironment(NameTable.Factory nameTableFactory, ParserEnvironment parserEnv) {
@@ -32,7 +33,8 @@ public class TranslationEnvironment {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
     typeUtil = new TypeUtil(parserEnv.typeUtilities(), elementUtil);
     typeEnv = new Types(parserEnv);
-    nameTable = nameTableFactory.newNameTable(typeEnv, elementUtil);
+    captureInfo = new CaptureInfo();
+    nameTable = nameTableFactory.newNameTable(typeEnv, elementUtil, captureInfo);
   }
 
   public ElementUtil elementUtil() {
@@ -45,6 +47,10 @@ public class TranslationEnvironment {
 
   public Types types() {
     return typeEnv;
+  }
+
+  public CaptureInfo captureInfo() {
+    return captureInfo;
   }
 
   public NameTable nameTable() {

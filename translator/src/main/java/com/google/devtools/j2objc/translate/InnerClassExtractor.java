@@ -22,9 +22,7 @@ import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -37,7 +35,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -63,9 +60,9 @@ public class InnerClassExtractor extends UnitTreeVisitor {
   // Helps keep types in the order they are visited.
   private ArrayList<Integer> typeOrderStack = Lists.newArrayList();
 
-  public InnerClassExtractor(CompilationUnit unit, CaptureInfo captureInfo) {
+  public InnerClassExtractor(CompilationUnit unit) {
     super(unit);
-    this.captureInfo = captureInfo;
+    this.captureInfo = unit.getEnv().captureInfo();
     unitTypes = unit.getTypes();
   }
 
@@ -156,53 +153,23 @@ public class InnerClassExtractor extends UnitTreeVisitor {
   }
 
   protected void addOuterParameters(MethodDeclaration constructor, TypeElement type) {
-    GeneratedExecutableElement constructorElement =
-        GeneratedExecutableElement.mutableCopy(constructor.getExecutableElement());
-    constructor.setExecutableElement(constructorElement);
-
     // Adds the outer and captured parameters to the declaration.
     List<SingleVariableDeclaration> captureDecls = constructor.getParameters().subList(0, 0);
-    List<VariableElement> captureParams = constructorElement.getParameters().subList(0, 0);
 
     VariableElement outerParam = captureInfo.getOuterParam(type);
     if (outerParam != null) {
       captureDecls.add(new SingleVariableDeclaration(outerParam));
-      captureParams.add(outerParam);
     }
     VariableElement superOuterParam = captureInfo.getSuperOuterParam(type);
     if (superOuterParam != null) {
       captureDecls.add(new SingleVariableDeclaration(superOuterParam));
-      captureParams.add(superOuterParam);
     }
     for (VariableElement captureParam : captureInfo.getCaptureParams(type)) {
       captureDecls.add(new SingleVariableDeclaration(captureParam));
-      captureParams.add(captureParam);
     }
 
-    ConstructorInvocation thisCall = findThisCall(constructor);
-    if (thisCall != null) {
-      forwardOuterArgs(thisCall, type);
-    } else {
+    if (TranslationUtil.isDesignatedConstructor(constructor)) {
       addCaptureAssignments(constructor, type);
-    }
-    assert constructor.getParameters().size()
-        == constructor.getExecutableElement().getParameters().size();
-  }
-
-  private void forwardOuterArgs(ConstructorInvocation thisCall, TypeElement type) {
-    GeneratedExecutableElement newThisElement =
-        GeneratedExecutableElement.mutableCopy(thisCall.getExecutableElement());
-    thisCall.setExecutableElement(newThisElement);
-    List<Expression> args = thisCall.getArguments().subList(0, 0);
-    List<VariableElement> params = newThisElement.getParameters().subList(0, 0);
-    VariableElement outerParam = captureInfo.getOuterParam(type);
-    if (outerParam != null) {
-      args.add(new SimpleName(outerParam));
-      params.add(outerParam);
-    }
-    for (VariableElement captureParam : captureInfo.getCaptureParams(type)) {
-      args.add(new SimpleName(captureParam));
-      params.add(captureParam);
     }
   }
 
@@ -226,15 +193,6 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       statements.add(new SuperConstructorInvocation(
           TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
     }
-  }
-
-  private static ConstructorInvocation findThisCall(MethodDeclaration constructor) {
-    for (Statement stmt : constructor.getBody().getStatements()) {
-      if (stmt instanceof ConstructorInvocation) {
-        return (ConstructorInvocation) stmt;
-      }
-    }
-    return null;
   }
 
   private static boolean hasSuperCall(MethodDeclaration constructor) {

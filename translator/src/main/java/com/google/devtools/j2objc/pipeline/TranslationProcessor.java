@@ -50,7 +50,6 @@ import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
-import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.PackageInfoRewriter;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolver;
@@ -64,7 +63,6 @@ import com.google.devtools.j2objc.translate.VariableRenamer;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -138,8 +136,6 @@ public class TranslationProcessor extends FileProcessor {
       CodeReferenceMap treeShakerMap, TimeTracker ticker) {
     ticker.push();
 
-    CaptureInfo captureInfo = new CaptureInfo();
-
     // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
     new LambdaTypeElementAdder(unit).run();
     ticker.tick("LambdaTypeElementAdder");
@@ -159,7 +155,7 @@ public class TranslationProcessor extends FileProcessor {
       ticker.tick("TreeShaker");
     }
 
-    new OuterReferenceResolver(unit, captureInfo).run();
+    new OuterReferenceResolver(unit).run();
     ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
@@ -188,7 +184,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("EnhancedForRewriter");
 
     // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
-    new LambdaRewriter(unit, captureInfo).run();
+    new LambdaRewriter(unit).run();
     ticker.tick("LambdaRewriter");
 
     // Add auto-boxing conversions.
@@ -199,7 +195,7 @@ public class TranslationProcessor extends FileProcessor {
     new AnonymousClassConverter(unit).run();
     ticker.tick("AnonymousClassConverter");
 
-    new InnerClassExtractor(unit, captureInfo).run();
+    new InnerClassExtractor(unit).run();
     ticker.tick("InnerClassExtractor");
 
     // Generate method shims for classes implementing interfaces that have default methods
@@ -213,15 +209,10 @@ public class TranslationProcessor extends FileProcessor {
     // Adds nil_chk calls wherever an expression is dereferenced.
     // After: InnerClassExtractor - Cannot handle local classes.
     // After: InitializationNormalizer
-    // Before: OuterReferenceFixer - Must resolve before outer references are substituted.
     // Before: LabelRewriter - Control flow analysis requires original Java
     //   labels.
     new NilCheckResolver(unit).run();
     ticker.tick("NilCheckResolver");
-
-    // Fix references to outer scope and captured variables.
-    unit.accept(new OuterReferenceFixer(captureInfo));
-    ticker.tick("OuterReferenceFixer");
 
     // Rewrites expressions that would cause unsequenced compile errors.
     if (Options.extractUnsequencedModifications()) {
@@ -281,8 +272,7 @@ public class TranslationProcessor extends FileProcessor {
     new Functionizer(unit).run();
     ticker.tick("Functionizer");
 
-    // After: OuterReferenceFixer, Functionizer - Those passes edit the
-    //   qualifier on SuperMethodInvocation nodes.
+    // After: Functionizer - Edits the qualifier on SuperMethodInvocation nodes.
     new SuperMethodInvocationRewriter(unit).run();
     ticker.tick("SuperMethodInvocationRewriter");
 

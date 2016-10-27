@@ -20,10 +20,8 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -99,7 +97,7 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     // Update any primary constructors with init statements.
     if (node.getTypeElement().getKind().isClass()) {
       for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
-        if (isDesignatedConstructor(methodDecl)) {
+        if (TranslationUtil.isDesignatedConstructor(methodDecl)) {
           TreeUtil.copyList(initStatements, getInitLocation(methodDecl));
         }
       }
@@ -178,26 +176,5 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     statements.add(0, new SuperConstructorInvocation(
         TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
     return statements.subList(0, 1);
-  }
-
-  /**
-   * Returns true if this is a constructor that doesn't doesn't call
-   * "this(...)".  This constructors are skipped so initializers
-   * aren't run more than once per instance creation.
-   */
-  private static boolean isDesignatedConstructor(MethodDeclaration node) {
-    if (!node.isConstructor()) {
-      return false;
-    }
-    Block body = node.getBody();
-    if (body == null) {
-      return false;
-    }
-    List<Statement> stmts = body.getStatements();
-    if (stmts.isEmpty()) {
-      return true;
-    }
-    Statement firstStmt = stmts.get(0);
-    return !(firstStmt instanceof ConstructorInvocation);
   }
 }
