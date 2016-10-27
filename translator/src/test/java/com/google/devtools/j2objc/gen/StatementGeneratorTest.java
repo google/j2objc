@@ -707,7 +707,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    return new Runnable() { "
         + "      public void run() { String s = new String(new char[10]); } }; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "s = [NSString stringWith");
+    assertTranslation(translation, "s = [NSString java_stringWith");
   }
 
   public void testMostNegativeIntegers() throws IOException {

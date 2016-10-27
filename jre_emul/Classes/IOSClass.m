@@ -492,14 +492,15 @@ static NSString *FindRenamedPackagePrefix(NSString *package) {
       // Same translation as j2objc's PackagePrefixes.wildcardToRegex().
       NSString *regex;
       if ([key hasSuffix:@".*"]) {
-        NSString *root = [[key substring:0 endIndex:((jint) [key length]) - 2]
-                          replace:@"." withSequence:@"\\."];
+        NSString *root = [[key java_substring:0 endIndex:((jint) [key length]) - 2]
+                          java_replace:@"." withSequence:@"\\."];
         regex = [NSString stringWithFormat:@"^(%@|%@\\..*)$", root, root];
       } else {
         regex = [NSString stringWithFormat:@"^%@$",
-                 [[key replace:@"." withSequence:@"\\."]replace:@"\\*" withSequence:@".*"]];
+                 [[key java_replace:@"." withSequence:@"\\."]
+                  java_replace:@"\\*" withSequence:@".*"]];
       }
-      if ([package matches:regex]) {
+      if ([package java_matches:regex]) {
         prefix = [prefixMapping getPropertyWithNSString:key];
         break;
       }
@@ -1234,7 +1235,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
 
     // Verify that these categories successfully loaded.
     if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
-        [[NSString class] instanceMethodSignatureForSelector:@selector(trim)] == NULL ||
+        [[NSString class] instanceMethodSignatureForSelector:@selector(java_trim)] == NULL ||
         ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
       [NSException raise:@"J2ObjCLinkError"
                   format:@"Your project is not configured to load categories from the JRE "

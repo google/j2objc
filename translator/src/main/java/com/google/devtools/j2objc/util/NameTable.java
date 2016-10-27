@@ -280,23 +280,25 @@ public class NameTable {
       ImmutableMap.<String, String>builder()
       .put("java.lang.String.String()V", "string")
       .put("java.lang.String.String(Ljava/lang/String;)V", "stringWithString:")
-      .put("java.lang.String.String([B)V", "stringWithBytes:")
-      .put("java.lang.String.String([BLjava/lang/String;)V", "stringWithBytes:charsetName:")
-      .put("java.lang.String.String([BLjava/nio/charset/Charset;)V", "stringWithBytes:charset:")
-      .put("java.lang.String.String([BI)V", "stringWithBytes:hibyte:")
-      .put("java.lang.String.String([BII)V", "stringWithBytes:offset:length:")
-      .put("java.lang.String.String([BIII)V", "stringWithBytes:hibyte:offset:length:")
+      .put("java.lang.String.String([B)V", "java_stringWithBytes:")
+      .put("java.lang.String.String([BLjava/lang/String;)V", "java_stringWithBytes:charsetName:")
+      .put("java.lang.String.String([BLjava/nio/charset/Charset;)V",
+          "java_stringWithBytes:charset:")
+      .put("java.lang.String.String([BI)V", "java_stringWithBytes:hibyte:")
+      .put("java.lang.String.String([BII)V", "java_stringWithBytes:offset:length:")
+      .put("java.lang.String.String([BIII)V", "java_stringWithBytes:hibyte:offset:length:")
       .put("java.lang.String.String([BIILjava/lang/String;)V",
-           "stringWithBytes:offset:length:charsetName:")
+           "java_stringWithBytes:offset:length:charsetName:")
       .put("java.lang.String.String([BIILjava/nio/charset/Charset;)V",
-           "stringWithBytes:offset:length:charset:")
-      .put("java.lang.String.String([C)V", "stringWithCharacters:")
-      .put("java.lang.String.String([CII)V", "stringWithCharacters:offset:length:")
-      .put("java.lang.String.String([III)V", "stringWithInts:offset:length:")
-      .put("java.lang.String.String(II[C)V", "stringWithOffset:length:characters:")
-      .put("java.lang.String.String(Ljava/lang/StringBuffer;)V", "stringWithJavaLangStringBuffer:")
+           "java_stringWithBytes:offset:length:charset:")
+      .put("java.lang.String.String([C)V", "java_stringWithCharacters:")
+      .put("java.lang.String.String([CII)V", "java_stringWithCharacters:offset:length:")
+      .put("java.lang.String.String([III)V", "java_stringWithInts:offset:length:")
+      .put("java.lang.String.String(II[C)V", "java_stringWithOffset:length:characters:")
+      .put("java.lang.String.String(Ljava/lang/StringBuffer;)V",
+          "java_stringWithJavaLangStringBuffer:")
       .put("java.lang.String.String(Ljava/lang/StringBuilder;)V",
-           "stringWithJavaLangStringBuilder:")
+           "java_stringWithJavaLangStringBuilder:")
       .build();
 
   /**

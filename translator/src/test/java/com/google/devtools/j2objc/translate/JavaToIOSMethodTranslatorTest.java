@@ -54,9 +54,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("NSString *trueString = NSString_valueOfBool_(true);", result);
+    assertEquals("NSString *trueString = NSString_java_valueOfBool_(true);", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("NSString *falseString = NSString_valueOfBool_(false);", result);
+    assertEquals("NSString *falseString = NSString_java_valueOfBool_(false);", result);
   }
 
   /**
@@ -68,7 +68,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (NSString *)toStringWithBoolean:(jboolean)value {",
-        "return NSString_valueOfBool_(value);");
+        "return NSString_java_valueOfBool_(value);");
   }
 
   public void testStringDefaultConstructor() throws IOException {
@@ -129,9 +129,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s2 = [s1 substring:2];", result);
+    assertEquals("NSString *s2 = [s1 java_substring:2];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s3 = [s1 substring:2 endIndex:4];", result);
+    assertEquals("NSString *s3 = [s1 java_substring:2 endIndex:4];", result);
   }
 
   public void testStringIndexOf() throws IOException {
@@ -143,21 +143,21 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(9, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jint idx = [s indexOf:'g'];", result);
+    assertEquals("jint idx = [s java_indexOf:'g'];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("idx = [s indexOfString:@\"brillig\"];", result);
+    assertEquals("idx = [s java_indexOfString:@\"brillig\"];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("idx = [s lastIndexOf:'v'];", result);
+    assertEquals("idx = [s java_lastIndexOf:'v'];", result);
     result = generateStatement(stmts.get(4));
-    assertEquals("idx = [s lastIndexOfString:@\"the\"];", result);
+    assertEquals("idx = [s java_lastIndexOfString:@\"the\"];", result);
     result = generateStatement(stmts.get(5));
-    assertEquals("idx = [s indexOf:'g' fromIndex:1];", result);
+    assertEquals("idx = [s java_indexOf:'g' fromIndex:1];", result);
     result = generateStatement(stmts.get(6));
-    assertEquals("idx = [s indexOfString:@\"brillig\" fromIndex:2];", result);
+    assertEquals("idx = [s java_indexOfString:@\"brillig\" fromIndex:2];", result);
     result = generateStatement(stmts.get(7));
-    assertEquals("idx = [s lastIndexOf:'v' fromIndex:3];", result);
+    assertEquals("idx = [s java_lastIndexOf:'v' fromIndex:3];", result);
     result = generateStatement(stmts.get(8));
-    assertEquals("idx = [s lastIndexOfString:@\"the\" fromIndex:4];", result);
+    assertEquals("idx = [s java_lastIndexOfString:@\"the\" fromIndex:4];", result);
   }
 
   public void testStringToCharArray() throws IOException {
@@ -165,7 +165,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("IOSCharArray *array = [s toCharArray];", result);
+    assertEquals("IOSCharArray *array = [s java_toCharArray];", result);
   }
 
   public void testNewInstanceMapping() throws IOException {

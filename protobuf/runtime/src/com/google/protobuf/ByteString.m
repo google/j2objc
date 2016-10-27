@@ -123,7 +123,7 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
 }
 
 - (NSString *)toStringWithNSString:(NSString *)charsetName {
-  return [NSString stringWithBytes:[self toByteArray] charsetName:charsetName];
+  return [NSString java_stringWithBytes:[self toByteArray] charsetName:charsetName];
 }
 
 - (NSString *)toStringUtf8 {
