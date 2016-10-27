@@ -105,12 +105,10 @@ public class CodeReferenceMap {
         || (deadMethods.contains(clazz, name) && deadMethods.get(clazz, name).contains(signature));
   }
 
-  //TODO(user): Revisit this method and remove typeUtil
-  //  Problem: need access to a typeUtil for ProguardNameUtil.getSignature method.
   public boolean containsMethod(ExecutableElement method, TypeUtil typeUtil) {
     String className = typeUtil.elementUtil().getBinaryName(ElementUtil.getDeclaringClass(method));
-    String methodName = ProguardNameUtil.getProGuardName(method);
-    String methodSig = ProguardNameUtil.getProGuardSignature(method, typeUtil);
+    String methodName = typeUtil.getReferenceName(method);
+    String methodSig = typeUtil.getReferenceSignature(method);
     return containsMethod(className, methodName, methodSig);
   }
 

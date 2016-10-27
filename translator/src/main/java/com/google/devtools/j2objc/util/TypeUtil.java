@@ -14,15 +14,19 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.base.Joiner;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.jdt.JdtIntersectionType;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -41,6 +45,8 @@ public final class TypeUtil {
 
   private final Types javacTypes;
   private final ElementUtil elementUtil;
+
+  private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(Types javacTypes, ElementUtil elementUtil) {
     this.javacTypes = javacTypes;
@@ -368,5 +374,54 @@ public final class TypeUtil {
       default:
         throw new AssertionError("Cannot resolve binary name for type: " + t);
     }
+  }
+
+  /**
+   * Get the "Reference" name of a method.
+   * For non-constructors this is the method's name.
+   * For constructors of top-level classes, this is the name of the class.
+   * For constructors of inner classes, this is the $-delimited name path
+   * from the outermost class declaration to the inner class declaration.
+   */
+  public String getReferenceName(ExecutableElement element) {
+    if (!ElementUtil.isConstructor(element)
+        || ElementUtil.getDeclaringClass(element).getNestingKind() != NestingKind.MEMBER) {
+      return ElementUtil.getName(element);
+    }
+    TypeElement parent = ElementUtil.getDeclaringClass(element);
+    assert parent != null;
+    List<String> components = new LinkedList<>(); // LinkedList is faster for prepending.
+    do {
+      components.add(0, ElementUtil.getName(parent));
+      parent = ElementUtil.getDeclaringClass(parent);
+    } while (parent != null);
+    return INNER_CLASS_JOINER.join(components);
+  }
+
+  /**
+   * Get the "Reference" signature of a method.
+   */
+  public String getReferenceSignature(ExecutableElement element) {
+    StringBuilder sb = new StringBuilder("(");
+
+    // If the method is an inner class constructor, prepend the outer class type.
+    if (ElementUtil.isConstructor(element)) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+      if (ElementUtil.hasOuterContext(declaringClass)) {
+        TypeElement outerClass = ElementUtil.getDeclaringClass(declaringClass);
+        sb.append(getSignatureName(outerClass.asType()));
+      }
+    }
+
+    for (VariableElement param : element.getParameters()) {
+      sb.append(getSignatureName(param.asType()));
+    }
+
+    sb.append(')');
+    TypeMirror returnType = element.getReturnType();
+    if (returnType != null) {
+      sb.append(getSignatureName(returnType));
+    }
+    return sb.toString();
   }
 }

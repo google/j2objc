@@ -14,10 +14,12 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.util.CodeReferenceMap;
-
+import com.google.devtools.j2objc.translate.ElementReferenceMapper.MethodReferenceNode;
+import com.google.devtools.j2objc.translate.ElementReferenceMapper.ReferenceNode;
 import java.io.IOException;
 
 /**
@@ -40,12 +42,16 @@ public class ElementReferenceMapperTest extends GenerationTest {
     CompilationUnit unit = compileType("test", source);
     ElementReferenceMapper setup = new ElementReferenceMapper(unit);
     setup.run();
-    CodeReferenceMap codeMap = setup.getCodeMap();
+    ImmutableSet<String> elementSet = setup.getElementReferenceMap().keySet();
 
-    assertTrue(codeMap.containsClass("A"));
-    assertTrue(codeMap.containsClass("A$B"));
-    assertTrue(codeMap.containsMethod("A$B", "bar", "()Ljava/lang/String;"));
-    assertTrue(codeMap.containsMethod("A", "baz", "()V"));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A$B")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$B", "bar", "()Ljava/lang/String;")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A", "baz", "()V")));
+    assertFalse(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A", "abc", "()V")));
   }
 
   public void testMethod_AnonymousClassMemberReference() throws IOException {
@@ -59,11 +65,13 @@ public class ElementReferenceMapperTest extends GenerationTest {
     CompilationUnit unit = compileType("test", source);
     ElementReferenceMapper setup = new ElementReferenceMapper(unit);
     setup.run();
-    CodeReferenceMap codeMap = setup.getCodeMap();
+    ImmutableSet<String> elementSet = setup.getElementReferenceMap().keySet();
 
-    assertTrue(codeMap.containsClass("A"));
-    assertTrue(codeMap.containsClass("B"));
-    assertTrue(codeMap.containsField("A", "b"));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("B")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "b")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$1", "foo", "()V")));
   }
 
   public void testMethod_InnerClassConstructorReference() throws IOException {
@@ -76,11 +84,12 @@ public class ElementReferenceMapperTest extends GenerationTest {
     CompilationUnit unit = compileType("test", source);
     ElementReferenceMapper setup = new ElementReferenceMapper(unit);
     setup.run();
-    CodeReferenceMap codeMap = setup.getCodeMap();
+    ImmutableSet<String> elementSet = setup.getElementReferenceMap().keySet();
 
-    assertTrue(codeMap.containsClass("A"));
-    assertTrue(codeMap.containsClass("A$B"));
-    assertTrue(codeMap.containsMethod("A$B", "B", "(LA;I)V"));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A$B")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$B", "A$B", "(LA;I)V")));
   }
 
   public void testFieldsReference() throws IOException {
@@ -97,15 +106,15 @@ public class ElementReferenceMapperTest extends GenerationTest {
     CompilationUnit unit = compileType("test", source);
     ElementReferenceMapper setup = new ElementReferenceMapper(unit);
     setup.run();
-    CodeReferenceMap codeMap = setup.getCodeMap();
+    ImmutableSet<String> elementSet = setup.getElementReferenceMap().keySet();
 
-    assertTrue(codeMap.containsClass("A"));
-    assertTrue(codeMap.containsField("A", "foo"));
-    assertTrue(codeMap.containsField("A", "bar"));
-    assertTrue(codeMap.containsField("A", "pi"));
-    assertTrue(codeMap.containsField("A", "baz"));
-    assertTrue(codeMap.containsField("A", "bah"));
-    assertTrue(codeMap.containsField("A", "abc"));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "foo")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "bar")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "pi")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "baz")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "bah")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "abc")));
   }
 
   public void testInitializerReference() throws IOException {
@@ -118,10 +127,10 @@ public class ElementReferenceMapperTest extends GenerationTest {
     CompilationUnit unit = compileType("test", source);
     ElementReferenceMapper setup = new ElementReferenceMapper(unit);
     setup.run();
-    CodeReferenceMap codeMap = setup.getCodeMap();
+    ImmutableSet<String> elementSet = setup.getElementReferenceMap().keySet();
 
-    assertTrue(codeMap.containsClass("A"));
-    assertTrue(codeMap.containsField("A", "baz"));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "baz")));
   }
 
   public void testEnumReference() throws IOException {
@@ -139,11 +148,43 @@ public class ElementReferenceMapperTest extends GenerationTest {
     CompilationUnit unit = compileType("test", source);
     ElementReferenceMapper setup = new ElementReferenceMapper(unit);
     setup.run();
-    CodeReferenceMap codeMap = setup.getCodeMap();
+    ImmutableSet<String> elementSet = setup.getElementReferenceMap().keySet();
 
-    assertTrue(codeMap.containsClass("A"));
-    assertTrue(codeMap.containsClass("A$Thing"));
-    assertTrue(codeMap.containsMethod("A$Thing", "Thing", "()V"));
-    assertTrue(codeMap.containsMethod("A$Thing", "Thing", "(I)V"));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A$Thing")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A", "foo", "()V")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$Thing", "A$Thing", "()V")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$Thing", "A$Thing", "(I)V")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$Thing$1", "bar", "()V")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A$Thing$2", "bar", "()V")));
+  }
+
+  public void testMethodCall() throws IOException {
+    String source = "class A {\n"
+        + "  private static void foo(String s) {}\n"
+        + "  private static void bar(String s) {foo(\"boo\");}\n"
+        + "  static { bar(\"bro\"); }\n"
+        + "}\n";
+
+    CompilationUnit unit = compileType("test", source);
+    ElementReferenceMapper setup = new ElementReferenceMapper(unit);
+    setup.run();
+    ImmutableMap<String, ReferenceNode> elementMap = setup.getElementReferenceMap();
+    ImmutableSet<String> elementSet = elementMap.keySet();
+
+    assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A", "foo", "(Ljava/lang/String;)V")));
+    assertTrue(elementSet.contains(ElementReferenceMapper
+        .stitchMethodIdentifier("A", "bar", "(Ljava/lang/String;)V")));
+    assertTrue(((MethodReferenceNode) elementMap.get(ElementReferenceMapper
+        .stitchMethodIdentifier("A", "bar", "(Ljava/lang/String;)V")))
+        .invokedMethods.contains(ElementReferenceMapper
+            .stitchMethodIdentifier("A", "foo", "(Ljava/lang/String;)V")));
   }
 }

@@ -34,9 +34,9 @@ import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DefaultConstructorAdder;
 import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
+import com.google.devtools.j2objc.translate.ElementReferenceMapper;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
-import com.google.devtools.j2objc.translate.ElementReferenceMapper;
 import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
@@ -151,7 +151,8 @@ public class TranslationProcessor extends FileProcessor {
 
     if (treeShakerMap != null) {
 //    TODO(user): Add algorithm step, report step, and elimination step to treeshaker
-      new ElementReferenceMapper(unit).run();
+      ElementReferenceMapper mapper = new ElementReferenceMapper(unit);
+      mapper.run();
       ticker.tick("TreeShaker");
     }
 

@@ -14,14 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import java.lang.reflect.Modifier;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
-
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -34,7 +26,12 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.ProguardNameUtil;
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
+import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Updates the Java AST to remove methods and classes reported as dead
@@ -161,8 +158,8 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
           continue;
         }
         ExecutableElement elem = method.getExecutableElement();
-        String name = ProguardNameUtil.getProGuardName(elem);
-        String signature = ProguardNameUtil.getProGuardSignature(elem, typeUtil);
+        String name = typeUtil.getReferenceName(elem);
+        String signature = typeUtil.getReferenceSignature(elem);
         if (deadCodeMap.containsMethod(clazz, name, signature)) {
           if (method.isConstructor()) {
             deadCodeMap.addConstructorRemovedClass(clazz);
