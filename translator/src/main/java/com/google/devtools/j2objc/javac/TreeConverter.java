@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.Comment;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
@@ -46,18 +47,24 @@ import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.LineComment;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.PrimitiveType;
+import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -67,11 +74,13 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree.Kind;
+import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
@@ -230,7 +239,7 @@ public class TreeConverter {
       case SWITCH:
         return convertSwitch((JCTree.JCSwitch) javacNode);
       case VARIABLE:
-        return convertVariable((JCTree.JCVariableDecl) javacNode);
+        return convertVariableDeclaration((JCTree.JCVariableDecl) javacNode);
 
       case BOOLEAN_LITERAL:
         return convertBooleanLiteral((JCTree.JCLiteral) javacNode);
@@ -455,6 +464,10 @@ public class TreeConverter {
   }
 
   private TreeNode convertExpressionStatement(JCTree.JCExpressionStatement node) {
+    TreeNode expr = convert(node.getExpression());
+    if (expr instanceof Statement) {
+      return expr;
+    }
     return new ExpressionStatement()
         .setExpression((Expression) convert(node.getExpression()));
   }
@@ -488,20 +501,45 @@ public class TreeConverter {
   }
 
   private TreeNode convertFieldAccess(JCTree.JCFieldAccess node) {
+    String fieldName = node.name.toString();
+    JCTree.JCExpression selected = node.getExpression();
+    if (fieldName.equals("this")) {
+      return new ThisExpression()
+          .setQualifier((Name) convert(selected));
+    }
+    if (selected.toString().equals("super")) {
+      return new SuperFieldAccess()
+          .setVariableElement((VariableElement) node.sym)
+          .setName(new SimpleName(fieldName));
+    }
+    if (selected.getKind() == Kind.IDENTIFIER || selected.getKind() == Kind.MEMBER_SELECT) {
+      return new QualifiedName()
+          .setName(new SimpleName(node.sym))
+          .setQualifier((Name) convert(selected));
+    }
     return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
-        .setExpression((Expression) convert(node.getExpression()))
-        .setName(new SimpleName(node.getIdentifier().toString()));
+        .setExpression((Expression) convert(selected))
+        .setName(new SimpleName(fieldName));
   }
 
   private TreeNode convertMethodDeclaration(JCTree.JCMethodDecl node) {
-    MethodDeclaration newNode = new MethodDeclaration(node.sym);
+    MethodDeclaration newNode = new MethodDeclaration();
     List<Annotation> annotations = new ArrayList<>();
     for (AnnotationTree annotation : node.getModifiers().getAnnotations()) {
       annotations.add((Annotation) convert(annotation));
     }
+    for (JCTree.JCVariableDecl param : node.getParameters()) {
+      newNode.addParameter((SingleVariableDeclaration) convert(param));
+    }
+    boolean isConstructor = ElementUtil.isConstructor(node.sym);
+    newNode.setName(convertName(
+        isConstructor ? ElementUtil.getDeclaringClass(node.sym) : node.sym));
     return newNode
+        .setExecutableElement(node.sym)
+        .setReturnType((Type) convert(node.getReturnType()))
         .setBody((Block) convert(node.getBody()))
+        .setIsConstructor(isConstructor)
         .setModifiers((int) node.getModifiers().flags)
         .setAnnotations(annotations)
         .setJavadoc((Javadoc) convert(getAssociatedJavaDoc(node)));
@@ -509,6 +547,42 @@ public class TreeConverter {
 
   private TreeNode convertMethodInvocation(JCTree.JCMethodInvocation node) {
     JCTree.JCExpression method = node.getMethodSelect();
+    if (method.getKind() == Kind.IDENTIFIER) {
+      ExecutableElement element = (ExecutableElement) ((JCTree.JCIdent) method).sym;
+      if (method.toString().equals("this")) {
+        ConstructorInvocation newNode = new ConstructorInvocation()
+            .setExecutableElement(element);
+        for (JCTree.JCExpression arg : node.getArguments()) {
+          newNode.addArgument((Expression) convert(arg));
+        }
+        return newNode;
+      }
+      if (method.toString().equals("super")) {
+        SuperConstructorInvocation newNode = new SuperConstructorInvocation()
+            .setExecutableElement(element);
+        for (JCTree.JCExpression arg : node.getArguments()) {
+          newNode.addArgument((Expression) convert(arg));
+        }
+        // If there's no expression node, javac sets it to be "<init>" which we don't want.
+        Expression expr = ((Expression) convert(method));
+        if (!expr.toString().equals("<init>")) {
+          newNode.setExpression(expr);
+        }
+        return newNode;
+      }
+
+    }
+    if (method.getKind() == Kind.MEMBER_SELECT
+        && ((JCTree.JCFieldAccess) method).name.toString().equals("super")) {
+      SuperConstructorInvocation newNode = new SuperConstructorInvocation()
+          .setExecutableElement((ExecutableElement) ((JCTree.JCFieldAccess) method).sym)
+          .setExpression((Expression) convert(method));
+      for (JCTree.JCExpression arg : node.getArguments()) {
+        newNode.addArgument((Expression) convert(arg));
+      }
+      return newNode;
+    }
+
     MethodInvocation newNode = new MethodInvocation();
     if (method.getKind() == Kind.IDENTIFIER) {
       newNode
@@ -562,7 +636,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertPrimitiveType(JCTree.JCPrimitiveTypeTree node) {
-    return Type.newType(node.type);
+    return new PrimitiveType(node.type);
   }
 
   private TreeNode convertReturn(JCTree.JCReturn node) {
@@ -585,12 +659,12 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertType(JCTree.JCExpression node, Type newNode) {
-    return newNode
+  private TreeNode convertType(JCTree.JCExpression node, Type newType) {
+    return newType
         .setTypeMirror(node.type);
   }
 
-  private TreeNode convertVariable(JCTree.JCVariableDecl node) {
+  private TreeNode convertVariableDeclaration(JCTree.JCVariableDecl node) {
     VarSymbol var = node.sym;
     if (var.getKind() == ElementKind.FIELD) {
       return new FieldDeclaration(var, (Expression) convert(node.getInitializer()));
@@ -598,7 +672,18 @@ public class TreeConverter {
     if (var.getKind() == ElementKind.LOCAL_VARIABLE) {
       return new VariableDeclarationStatement(var, (Expression) convert(node.getInitializer()));
     }
-    return new SingleVariableDeclaration(var)
+    boolean isVarargs = (node.sym.flags() & Flags.VARARGS) > 0;
+    Type newType;
+    if (isVarargs) {
+      newType = Type.newType(((javax.lang.model.type.ArrayType) var.asType()).getComponentType());
+    } else {
+      newType = Type.newType(var.asType());
+    }
+    return new SingleVariableDeclaration()
+        .setType(newType)
+        .setIsVarargs(isVarargs)
+        .setName(convertName(var))
+        .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
   }
 
