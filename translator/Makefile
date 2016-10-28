@@ -304,7 +304,6 @@ JAVA_SOURCES = \
 	util/Parser.java \
 	util/ParserEnvironment.java \
 	util/ProGuardUsageParser.java \
-	util/ProguardNameUtil.java \
 	util/SourceVersion.java \
 	util/TimeTracker.java \
 	util/TranslationEnvironment.java \
