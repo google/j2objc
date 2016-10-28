@@ -24,7 +24,6 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,17 +46,17 @@ import org.eclipse.jdt.core.dom.Modifier;
 public class ReferenceGraph {
 
   private final Map<String, ITypeBinding> allTypes;
-  private final CaptureInfo captureInfo;
+  private final CaptureFields captureFields;
   private final NameList whitelist;
   private final NameList blacklist;
   private SetMultimap<String, Edge> edges = HashMultimap.create();
   private List<List<Edge>> cycles = Lists.newArrayList();
 
   public ReferenceGraph(
-      TypeCollector typeCollector, CaptureInfo captureInfo, NameList whitelist,
+      TypeCollector typeCollector, CaptureFields captureFields, NameList whitelist,
       NameList blacklist) {
     this.allTypes = typeCollector.getTypes();
-    this.captureInfo = captureInfo;
+    this.captureFields = captureFields;
     this.whitelist = whitelist;
     this.blacklist = blacklist;
   }
@@ -162,7 +161,7 @@ public class ReferenceGraph {
     for (ITypeBinding type : allTypes.values()) {
       Element element = BindingConverter.getElement(type.getTypeDeclaration());
       if (ElementUtil.isTypeElement(element)
-          && captureInfo.needsOuterReference((TypeElement) element)
+          && captureFields.hasOuterReference((TypeElement) element)
           && !BindingUtil.hasNamedAnnotation(type, "WeakOuter")
           && !BindingUtil.isWeakOuterAnonymousClass(type)) {
         ITypeBinding declaringType = type.getDeclaringClass();
@@ -178,7 +177,7 @@ public class ReferenceGraph {
     for (ITypeBinding type : allTypes.values()) {
       if (type.isAnonymous()) {
         for (VariableElement capturedVarElement :
-             captureInfo.getCaptureFields(
+             captureFields.getCaptureFields(
                  BindingConverter.getTypeElement(type.getTypeDeclaration()))) {
           IVariableBinding capturedVarBinding = (IVariableBinding) BindingConverter.unwrapElement(
               capturedVarElement);

@@ -81,12 +81,6 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     this.captureInfo = unit.getEnv().captureInfo();
   }
 
-  // Separate constructor provided for CycleFinder which uses a single global CaptureInfo instance.
-  public OuterReferenceResolver(CompilationUnit unit, CaptureInfo captureInfo) {
-    super(unit);
-    this.captureInfo = captureInfo;
-  }
-
   private enum ScopeKind { CLASS, LAMBDA, METHOD }
 
   /**

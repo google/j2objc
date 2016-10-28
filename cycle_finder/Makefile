@@ -34,6 +34,7 @@ TEST_CLASS_DIR = $(BUILD_DIR)/test
 TRANSLATOR_CLASS_DIR = $(J2OBJC_ROOT)/translator/$(CLASS_DIR)
 
 JAVA_SOURCES = \
+    com/google/devtools/cyclefinder/CaptureFields.java \
     com/google/devtools/cyclefinder/CycleFinder.java \
     com/google/devtools/cyclefinder/Edge.java \
     com/google/devtools/cyclefinder/NameList.java \
