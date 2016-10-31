@@ -14,13 +14,13 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -47,11 +47,11 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -73,18 +74,11 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class EnumRewriter extends UnitTreeVisitor {
 
-  private GeneratedVariableBinding nameVar = null;
-  private GeneratedVariableBinding ordinalVar = null;
+  private final CaptureInfo captureInfo;
 
   public EnumRewriter(CompilationUnit unit) {
     super(unit);
-  }
-
-  private GeneratedMethodBinding addEnumConstructorParams(IMethodBinding method) {
-    GeneratedMethodBinding newMethod = new GeneratedMethodBinding(method);
-    newMethod.addParameter(typeEnv.resolveIOSType("NSString"));
-    newMethod.addParameter(typeEnv.resolveJavaType("int"));
-    return newMethod;
+    captureInfo = unit.getEnv().captureInfo();
   }
 
   @Override
@@ -190,9 +184,9 @@ public class EnumRewriter extends UnitTreeVisitor {
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       IVariableBinding varBinding = constant.getVariableBinding();
-      IMethodBinding methodBinding = constant.getMethodBinding().getMethodDeclaration();
-      ITypeBinding valueType = methodBinding.getDeclaringClass();
-      methodBinding = addEnumConstructorParams(methodBinding);
+      ExecutableElement methodElement = constant.getExecutableElement();
+      ITypeBinding valueType = BindingConverter.unwrapTypeElement(
+          ElementUtil.getDeclaringClass(methodElement));
       boolean isAnonymous = valueType != type;
       String classExpr = isAnonymous ? "[" + nameTable.getFullName(valueType) + " class]" : "self";
       String sizeName = "objSize" + (isAnonymous ? "_" + varBinding.getName() : "");
@@ -210,11 +204,10 @@ public class EnumRewriter extends UnitTreeVisitor {
           new SimpleName(localEnum), new NativeExpression(UnicodeUtils.format(
               "objc_constructInstance(%s, (void *)ptr)", classExpr), type))),
           new NativeExpression("ptr += " + sizeName, voidType))));
-      String initName = nameTable.getFullFunctionName(
-          BindingConverter.getExecutableElement(methodBinding));
+      String initName = nameTable.getFullFunctionName(methodElement);
       FunctionElement initElement = new FunctionElement(initName, voidType, valueType)
           .addParameters(valueType)
-          .addParameters(methodBinding.getParameterTypes());
+          .addParameters(ElementUtil.asTypes(methodElement.getParameters()));
       FunctionInvocation initFunc = new FunctionInvocation(initElement, type);
       initFunc.addArgument(new SimpleName(localEnum));
       TreeUtil.copyList(constant.getArguments(), initFunc.getArguments());
@@ -244,8 +237,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       IVariableBinding varBinding = constant.getVariableBinding();
-      IMethodBinding binding =
-          addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
+      IMethodBinding binding = constant.getMethodBinding().getMethodDeclaration();
       ClassInstanceCreation creation = new ClassInstanceCreation(binding);
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
       creation.addArgument(new StringLiteral(varBinding.getName(), typeEnv));
@@ -257,46 +249,30 @@ public class EnumRewriter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    assert nameVar == null && ordinalVar == null;
     IMethodBinding binding = node.getMethodBinding();
     ITypeBinding declaringClass = binding.getDeclaringClass();
     if (!binding.isConstructor() || !declaringClass.isEnum()) {
       return false;
     }
-    GeneratedMethodBinding newBinding = addEnumConstructorParams(node.getMethodBinding());
-    node.setExecutableElement(BindingConverter.getExecutableElement(newBinding));
     node.removeModifiers(Modifier.PUBLIC | Modifier.PROTECTED);
     node.addModifiers(Modifier.PRIVATE);
-    newBinding.setModifiers((newBinding.getModifiers() & ~(Modifier.PUBLIC | Modifier.PROTECTED))
-        | Modifier.PRIVATE);
-    nameVar = new GeneratedVariableBinding(
-        "__name", 0, typeEnv.resolveIOSType("NSString"), false, true, declaringClass, newBinding);
-    ordinalVar = new GeneratedVariableBinding(
-        "__ordinal", 0, typeEnv.resolveJavaType("int"), false, true, declaringClass, newBinding);
-    node.addParameter(new SingleVariableDeclaration(nameVar));
-    node.addParameter(new SingleVariableDeclaration(ordinalVar));
     return true;
   }
 
   @Override
-  public void endVisit(MethodDeclaration node) {
-    nameVar = ordinalVar = null;
-  }
-
-  @Override
-  public void endVisit(ConstructorInvocation node) {
-    assert nameVar != null && ordinalVar != null;
-    node.setMethodBinding(addEnumConstructorParams(node.getMethodBinding()));
-    node.addArgument(new SimpleName(nameVar));
-    node.addArgument(new SimpleName(ordinalVar));
-  }
-
-  @Override
   public void endVisit(SuperConstructorInvocation node) {
-    assert nameVar != null && ordinalVar != null;
-    node.setMethodBinding(addEnumConstructorParams(node.getMethodBinding()));
-    node.addArgument(new SimpleName(nameVar));
-    node.addArgument(new SimpleName(ordinalVar));
+    TypeElement type = ElementUtil.getDeclaringClass(node.getExecutableElement());
+    if (ElementUtil.isEnum(type)) {
+      return;
+    }
+    // The java.lang.Enum class is not itself an enum, so we need to add the implicit params here.
+    // java.lang.Enum should have only one constructor.
+    ExecutableElement newElement = Iterables.getFirst(ElementUtil.getConstructors(type), null);
+    assert newElement.getParameters().size() == 2;
+    node.setExecutableElement(newElement);
+    for (VariableElement param : captureInfo.getImplicitEnumParams()) {
+      node.addArgument(new SimpleName(param));
+    }
   }
 
   private void addValuesMethod(EnumDeclaration node) {

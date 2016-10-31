@@ -15,9 +15,11 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.Types;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.Map;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -37,6 +40,15 @@ public class CaptureInfo {
   private final Map<TypeElement, VariableElement> outerFields = new HashMap<>();
   private final Map<TypeElement, VariableElement> superOuterParams = new HashMap<>();
   private final ListMultimap<TypeElement, LocalCapture> localCaptures = ArrayListMultimap.create();
+  private final List<VariableElement> implicitEnumParams;
+
+  public CaptureInfo(Types typeEnv, TypeUtil typeUtil) {
+    implicitEnumParams = ImmutableList.of(
+        GeneratedVariableElement.newParameter(
+            "__name", typeEnv.resolveJavaTypeMirror("java.lang.String"), null),
+        GeneratedVariableElement.newParameter(
+            "__ordinal", typeUtil.getPrimitiveType(TypeKind.INT), null));
+  }
 
   /**
    * Information about a captured local variable.
@@ -110,6 +122,10 @@ public class CaptureInfo {
         localCaptures.get(type), LocalCapture::hasField), capture -> capture.field);
   }
 
+  public List<VariableElement> getImplicitEnumParams() {
+    return implicitEnumParams;
+  }
+
   /**
    * Returns all the implicit params that come before explicit params in a constructor.
    */
@@ -124,6 +140,16 @@ public class CaptureInfo {
       result = Iterables.concat(Collections.singletonList(outer), result);
     }
     return result;
+  }
+
+  /**
+   * returns all the implicit params that come after explicit params in a constructor.
+   */
+  public Iterable<VariableElement> getImplicitPostfixParams(TypeElement type) {
+    if (ElementUtil.isEnum(type)) {
+      return implicitEnumParams;
+    }
+    return Collections.emptyList();
   }
 
   public boolean isCapturing(TypeElement type) {

@@ -583,8 +583,8 @@ public class NameTable {
     method = method.getMethodDeclaration();
     StringBuilder sb = new StringBuilder(name);
     boolean first = true;
+    TypeElement declaringClass = BindingConverter.getTypeElement(method.getDeclaringClass());
     if (method.isConstructor()) {
-      TypeElement declaringClass = BindingConverter.getTypeElement(method.getDeclaringClass());
       for (VariableElement param : captureInfo.getImplicitPrefixParams(declaringClass)) {
         first = appendParamKeyword(
             sb, BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()), delim, first);
@@ -592,6 +592,12 @@ public class NameTable {
     }
     for (ITypeBinding paramType : method.getParameterTypes()) {
       first = appendParamKeyword(sb, paramType, delim, first);
+    }
+    if (method.isConstructor()) {
+      for (VariableElement param : captureInfo.getImplicitPostfixParams(declaringClass)) {
+        first = appendParamKeyword(
+            sb, BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()), delim, first);
+      }
     }
     return sb.toString();
   }

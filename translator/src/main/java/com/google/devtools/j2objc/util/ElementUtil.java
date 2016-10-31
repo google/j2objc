@@ -126,6 +126,10 @@ public final class ElementUtil {
     return type.getKind() == ElementKind.INTERFACE;
   }
 
+  public static boolean isEnum(Element e) {
+    return e.getKind() == ElementKind.ENUM;
+  }
+
   public static boolean isTypeElement(Element e) {
     ElementKind kind = e.getKind();
     return kind.isClass() || kind.isInterface();

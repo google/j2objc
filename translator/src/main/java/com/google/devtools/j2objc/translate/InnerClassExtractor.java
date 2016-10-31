@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -146,30 +145,9 @@ public class InnerClassExtractor extends UnitTreeVisitor {
   private void updateConstructors(AbstractTypeDeclaration node) {
     // Insert new parameters for each constructor in class.
     for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
-      if (method.isConstructor()) {
-        addOuterParameters(method, node.getTypeElement());
+      if (TranslationUtil.isDesignatedConstructor(method)) {
+        addCaptureAssignments(method, node.getTypeElement());
       }
-    }
-  }
-
-  protected void addOuterParameters(MethodDeclaration constructor, TypeElement type) {
-    // Adds the outer and captured parameters to the declaration.
-    List<SingleVariableDeclaration> captureDecls = constructor.getParameters().subList(0, 0);
-
-    VariableElement outerParam = captureInfo.getOuterParam(type);
-    if (outerParam != null) {
-      captureDecls.add(new SingleVariableDeclaration(outerParam));
-    }
-    VariableElement superOuterParam = captureInfo.getSuperOuterParam(type);
-    if (superOuterParam != null) {
-      captureDecls.add(new SingleVariableDeclaration(superOuterParam));
-    }
-    for (VariableElement captureParam : captureInfo.getCaptureParams(type)) {
-      captureDecls.add(new SingleVariableDeclaration(captureParam));
-    }
-
-    if (TranslationUtil.isDesignatedConstructor(constructor)) {
-      addCaptureAssignments(constructor, type);
     }
   }
 

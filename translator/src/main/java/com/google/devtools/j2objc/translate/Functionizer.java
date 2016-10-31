@@ -174,7 +174,7 @@ public class Functionizer extends UnitTreeVisitor {
     if (ElementUtil.isConstructor(method) || !ElementUtil.isStatic(method)) {
       element.addParameters(declaringClass.asType());
     }
-    transferParams(method, element);
+    transferParams(method, element, declaringClass);
     return element;
   }
 
@@ -183,16 +183,21 @@ public class Functionizer extends UnitTreeVisitor {
     FunctionElement element = new FunctionElement(
         nameTable.getReleasingConstructorName(method),
         nameTable.getAllocatingConstructorName(method), declaringClass.asType(), declaringClass);
-    transferParams(method, element);
+    transferParams(method, element, declaringClass);
     return element;
   }
 
-  private void transferParams(ExecutableElement method, FunctionElement function) {
+  private void transferParams(
+      ExecutableElement method, FunctionElement function, TypeElement declaringClass) {
     if (ElementUtil.isConstructor(method)) {
       function.addParameters(ElementUtil.asTypes(
-          captureInfo.getImplicitPrefixParams(ElementUtil.getDeclaringClass(method))));
+          captureInfo.getImplicitPrefixParams(declaringClass)));
     }
     function.addParameters(ElementUtil.asTypes(method.getParameters()));
+    if (ElementUtil.isConstructor(method)) {
+      function.addParameters(ElementUtil.asTypes(
+          captureInfo.getImplicitPostfixParams(declaringClass)));
+    }
   }
 
   @Override
@@ -247,6 +252,11 @@ public class Functionizer extends UnitTreeVisitor {
     }
     TreeUtil.moveList(typeDecl.getSuperCaptureArgs(), args);
     TreeUtil.moveList(node.getArguments(), args);
+    if (ElementUtil.isEnum(superType)) {
+      for (VariableElement param : captureInfo.getImplicitEnumParams()) {
+        args.add(new SimpleName(param));
+      }
+    }
     node.replaceWith(new ExpressionStatement(invocation));
     assert funcElement.getParameterTypes().size() == args.size();
   }
@@ -259,14 +269,13 @@ public class Functionizer extends UnitTreeVisitor {
     FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoidType());
     List<Expression> args = invocation.getArguments();
     args.add(new ThisExpression(declaringClass.asType()));
-    VariableElement outerParam = captureInfo.getOuterParam(declaringClass);
-    if (outerParam != null) {
-      args.add(new SimpleName(outerParam));
-    }
-    for (VariableElement captureParam : captureInfo.getCaptureParams(declaringClass)) {
+    for (VariableElement captureParam : captureInfo.getImplicitPrefixParams(declaringClass)) {
       args.add(new SimpleName(captureParam));
     }
     TreeUtil.moveList(node.getArguments(), args);
+    for (VariableElement captureParam : captureInfo.getImplicitPostfixParams(declaringClass)) {
+      args.add(new SimpleName(captureParam));
+    }
     node.replaceWith(new ExpressionStatement(invocation));
     assert funcElement.getParameterTypes().size() == args.size();
   }
@@ -305,13 +314,15 @@ public class Functionizer extends UnitTreeVisitor {
     }
     boolean isInstanceMethod = !BindingUtil.isStatic(binding) && !binding.isConstructor();
     boolean isDefaultMethod = Modifier.isDefault(node.getModifiers());
-    FunctionDeclaration function = null;
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     if (!isInstanceMethod || isDefaultMethod || Modifier.isNative(node.getModifiers())
         || functionizableMethods.contains(binding)) {
       ITypeBinding declaringClass = binding.getDeclaringClass();
       boolean isEnumConstructor = binding.isConstructor() && declaringClass.isEnum();
-      function = makeFunction(node);
+      if (binding.isConstructor()) {
+        addImplicitParameters(node, BindingConverter.getTypeElement(declaringClass));
+      }
+      FunctionDeclaration function = makeFunction(node);
       declarationList.add(function);
       if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)
           && !isEnumConstructor) {
@@ -340,6 +351,17 @@ public class Functionizer extends UnitTreeVisitor {
         node.remove();
       }
       ErrorUtil.functionizedMethod();
+    }
+  }
+
+  private void addImplicitParameters(MethodDeclaration node, TypeElement type) {
+    List<SingleVariableDeclaration> methodParams = node.getParameters().subList(0, 0);
+    for (VariableElement param : captureInfo.getImplicitPrefixParams(type)) {
+      methodParams.add(new SingleVariableDeclaration(param));
+    }
+    methodParams = node.getParameters();
+    for (VariableElement param : captureInfo.getImplicitPostfixParams(type)) {
+      methodParams.add(new SingleVariableDeclaration(param));
     }
   }
 
