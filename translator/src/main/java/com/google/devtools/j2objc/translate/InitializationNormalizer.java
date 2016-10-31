@@ -16,12 +16,15 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -34,12 +37,14 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -53,8 +58,11 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class InitializationNormalizer extends UnitTreeVisitor {
 
+  private final CaptureInfo captureInfo;
+
   public InitializationNormalizer(CompilationUnit unit) {
     super(unit);
+    captureInfo = unit.getEnv().captureInfo();
   }
 
   @Override
@@ -74,6 +82,7 @@ public class InitializationNormalizer extends UnitTreeVisitor {
 
 
   void normalizeMembers(AbstractTypeDeclaration node) {
+    TypeElement type = node.getTypeElement();
     List<Statement> initStatements = Lists.newArrayList();
     List<Statement> classInitStatements = node.getClassInitStatements();
 
@@ -95,10 +104,11 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     }
 
     // Update any primary constructors with init statements.
-    if (node.getTypeElement().getKind().isClass()) {
+    if (type.getKind().isClass()) {
       for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
-        if (TranslationUtil.isDesignatedConstructor(methodDecl)) {
+        if (isDesignatedConstructor(methodDecl)) {
           TreeUtil.copyList(initStatements, getInitLocation(methodDecl));
+          addCaptureAssignments(methodDecl, type);
         }
       }
     }
@@ -161,20 +171,82 @@ public class InitializationNormalizer extends UnitTreeVisitor {
    * Finds the location in a constructor where init statements should be added.
    */
   private List<Statement> getInitLocation(MethodDeclaration node) {
-    List<Statement> statements = node.getBody().getStatements();
-    for (int i = 0; i < statements.size(); i++) {
-      if (statements.get(i) instanceof SuperConstructorInvocation) {
-        return statements.subList(0, i + 1);
-      }
+    List<Statement> stmts = node.getBody().getStatements();
+    if (!stmts.isEmpty() && stmts.get(0) instanceof SuperConstructorInvocation) {
+      return stmts.subList(0, 1);
     }
     TypeElement superType = ElementUtil.getSuperclass(
         ElementUtil.getDeclaringClass(node.getExecutableElement()));
     if (superType == null) {  // java.lang.Object supertype is null.
-      return statements.subList(0, 0);
+      return stmts.subList(0, 0);
     }
     // If there isn't a super invocation, add one (like all Java compilers do).
-    statements.add(0, new SuperConstructorInvocation(
-        TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
-    return statements.subList(0, 1);
+    stmts.add(0, createDefaultSuperCall(superType));
+    return stmts.subList(0, 1);
+  }
+
+  private void addCaptureAssignments(MethodDeclaration constructor, TypeElement type) {
+    List<Statement> statements = constructor.getBody().getStatements().subList(0, 0);
+    VariableElement outerField = captureInfo.getOuterField(type);
+    if (outerField != null) {
+      VariableElement outerParam = captureInfo.getOuterParam(type);
+      assert outerParam != null;
+      statements.add(new ExpressionStatement(
+          new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
+    }
+    for (CaptureInfo.LocalCapture capture : captureInfo.getLocalCaptures(type)) {
+      if (capture.hasField()) {
+        statements.add(new ExpressionStatement(new Assignment(
+            new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));
+      }
+    }
+  }
+
+  private SuperConstructorInvocation createDefaultSuperCall(TypeElement type) {
+    if (ElementUtil.getQualifiedName(type).equals("java.lang.Enum")) {
+      // Enums are a special case where instead of a default no-param constructor it has a single
+      // two param constructor that accepts the implicit name and ordinal values.
+      ExecutableElement element = Iterables.getFirst(ElementUtil.getConstructors(type), null);
+      assert element != null && element.getParameters().size() == 2;
+      SuperConstructorInvocation superCall = new SuperConstructorInvocation(element);
+      for (VariableElement param : captureInfo.getImplicitEnumParams()) {
+        superCall.addArgument(new SimpleName(param));
+      }
+      return superCall;
+    }
+    return new SuperConstructorInvocation(findDefaultConstructorElement(type));
+  }
+
+  private ExecutableElement findDefaultConstructorElement(TypeElement type) {
+    ExecutableElement result = null;
+    for (ExecutableElement c : ElementUtil.getConstructors(type)) {
+      // Search for a non-varargs match.
+      if (c.getParameters().isEmpty()) {
+        return c;
+      // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
+      } else if (c.isVarArgs() && c.getParameters().size() == 1
+          && (result == null || typeUtil.isAssignable(
+              c.getParameters().get(0).asType(), result.getParameters().get(0).asType()))) {
+        result = c;
+      }
+    }
+    assert result != null : "Couldn't find default constructor for " + type;
+    return result;
+  }
+
+  /**
+   * Returns true if this is a constructor that doesn't call "this(...)".  This constructors are
+   * skipped so initializers aren't run more than once per instance creation.
+   */
+  public static boolean isDesignatedConstructor(MethodDeclaration node) {
+    if (!node.isConstructor()) {
+      return false;
+    }
+    Block body = node.getBody();
+    if (body == null) {
+      return false;
+    }
+    List<Statement> stmts = body.getStatements();
+    return (stmts.isEmpty() || !(stmts.get(0) instanceof ConstructorInvocation));
   }
 }

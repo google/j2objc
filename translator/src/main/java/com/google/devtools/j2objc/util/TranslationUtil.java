@@ -19,35 +19,29 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
-import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
-import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -90,26 +84,6 @@ public final class TranslationUtil {
       result.add(type.getTypeBinding());
     }
     return result;
-  }
-
-  /**
-   * Returns true if this is a constructor that doesn't call "this(...)".  This constructors are
-   * skipped so initializers aren't run more than once per instance creation.
-   */
-  public static boolean isDesignatedConstructor(MethodDeclaration node) {
-    if (!node.isConstructor()) {
-      return false;
-    }
-    Block body = node.getBody();
-    if (body == null) {
-      return false;
-    }
-    List<Statement> stmts = body.getStatements();
-    if (stmts.isEmpty()) {
-      return true;
-    }
-    Statement firstStmt = stmts.get(0);
-    return !(firstStmt instanceof ConstructorInvocation);
   }
 
   public static boolean needsReflection(AbstractTypeDeclaration node) {
@@ -191,24 +165,6 @@ public final class TranslationUtil {
       default:
         return null;
     }
-  }
-
-  public static ExecutableElement findDefaultConstructorElement(
-      TypeElement type, TypeUtil typeUtil) {
-    ExecutableElement result = null;
-    for (ExecutableElement c : ElementUtil.getConstructors(type)) {
-      // Search for a non-varargs match.
-      if (c.getParameters().isEmpty()) {
-        return c;
-      // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
-      } else if (c.isVarArgs() && c.getParameters().size() == 1
-          && (result == null || typeUtil.isAssignable(
-              c.getParameters().get(0).asType(), result.getParameters().get(0).asType()))) {
-        result = c;
-      }
-    }
-    // Sometimes there won't be a default constructor (eg. enums), so just create our own binding.
-    return result != null ? result : GeneratedExecutableElement.newConstructor(type, typeUtil);
   }
 
   public static boolean isAssigned(Expression node) {

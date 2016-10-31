@@ -19,25 +19,17 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.WeakOuter;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -113,7 +105,6 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       TypeElement type = node.getTypeElement();
       if (type.getKind().isClass() && !ElementUtil.isStatic(type)) {
         addOuterFields(node);
-        updateConstructors(node);
       }
 
       // Make this node non-private, if necessary, and add it to the unit's type
@@ -140,45 +131,5 @@ public class InnerClassExtractor extends UnitTreeVisitor {
     for (VariableElement field : captureInfo.getCaptureFields(clazz)) {
       node.addBodyDeclaration(new FieldDeclaration(field, null));
     }
-  }
-
-  private void updateConstructors(AbstractTypeDeclaration node) {
-    // Insert new parameters for each constructor in class.
-    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
-      if (TranslationUtil.isDesignatedConstructor(method)) {
-        addCaptureAssignments(method, node.getTypeElement());
-      }
-    }
-  }
-
-  private void addCaptureAssignments(MethodDeclaration constructor, TypeElement type) {
-    List<Statement> statements = constructor.getBody().getStatements().subList(0, 0);
-    VariableElement outerField = captureInfo.getOuterField(type);
-    if (outerField != null) {
-      VariableElement outerParam = captureInfo.getOuterParam(type);
-      assert outerParam != null;
-      statements.add(new ExpressionStatement(
-          new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
-    }
-    for (CaptureInfo.LocalCapture capture : captureInfo.getLocalCaptures(type)) {
-      if (capture.hasField()) {
-        statements.add(new ExpressionStatement(new Assignment(
-            new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));
-      }
-    }
-    if (!hasSuperCall(constructor)) {
-      TypeElement superType = ElementUtil.getSuperclass(type);
-      statements.add(new SuperConstructorInvocation(
-          TranslationUtil.findDefaultConstructorElement(superType, typeUtil)));
-    }
-  }
-
-  private static boolean hasSuperCall(MethodDeclaration constructor) {
-    for (Statement stmt : constructor.getBody().getStatements()) {
-      if (stmt instanceof SuperConstructorInvocation) {
-        return true;
-      }
-    }
-    return false;
   }
 }

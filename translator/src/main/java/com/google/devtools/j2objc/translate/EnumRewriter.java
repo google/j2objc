@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
@@ -38,7 +37,6 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
-import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -51,7 +49,6 @@ import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -60,7 +57,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -74,11 +70,8 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class EnumRewriter extends UnitTreeVisitor {
 
-  private final CaptureInfo captureInfo;
-
   public EnumRewriter(CompilationUnit unit) {
     super(unit);
-    captureInfo = unit.getEnv().captureInfo();
   }
 
   @Override
@@ -257,22 +250,6 @@ public class EnumRewriter extends UnitTreeVisitor {
     node.removeModifiers(Modifier.PUBLIC | Modifier.PROTECTED);
     node.addModifiers(Modifier.PRIVATE);
     return true;
-  }
-
-  @Override
-  public void endVisit(SuperConstructorInvocation node) {
-    TypeElement type = ElementUtil.getDeclaringClass(node.getExecutableElement());
-    if (ElementUtil.isEnum(type)) {
-      return;
-    }
-    // The java.lang.Enum class is not itself an enum, so we need to add the implicit params here.
-    // java.lang.Enum should have only one constructor.
-    ExecutableElement newElement = Iterables.getFirst(ElementUtil.getConstructors(type), null);
-    assert newElement.getParameters().size() == 2;
-    node.setExecutableElement(newElement);
-    for (VariableElement param : captureInfo.getImplicitEnumParams()) {
-      node.addArgument(new SimpleName(param));
-    }
   }
 
   private void addValuesMethod(EnumDeclaration node) {
