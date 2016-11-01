@@ -90,8 +90,9 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     return selector;
   }
 
-  public void addParameter(VariableElement param) {
+  public GeneratedExecutableElement addParameter(VariableElement param) {
     parameters.add(param);
+    return this;
   }
 
   @Override

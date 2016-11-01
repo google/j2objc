@@ -32,17 +32,16 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.PointerType;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -61,21 +60,20 @@ public class JavaCloneWriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    IVariableBinding originalVar = new GeneratedVariableBinding(
-        "original", 0, type, false, true, null, null);
+    TypeElement type = node.getTypeElement();
+    VariableElement originalVar =
+        GeneratedVariableElement.newParameter("original", type.asType(), null);
     List<Statement> adjustments = getFieldAdjustments(node, originalVar);
     if (adjustments.isEmpty()) {
       return;
     }
 
-    ITypeBinding voidType = typeEnv.resolveJavaType("void");
-    int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
-    IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        JAVA_CLONE_METHOD, modifiers, voidType, type);
-    methodBinding.addParameter(type);
+    TypeMirror voidType = typeUtil.getVoidType();
+    ExecutableElement javaCloneElement =
+        GeneratedExecutableElement.newMethodWithSelector(JAVA_CLONE_METHOD, voidType, type)
+        .addParameter(originalVar);
 
-    MethodDeclaration declaration = new MethodDeclaration(methodBinding);
+    MethodDeclaration declaration = new MethodDeclaration(javaCloneElement);
     declaration.setHasDeclaration(false);
     node.addBodyDeclaration(declaration);
     declaration.addParameter(new SingleVariableDeclaration(originalVar));
@@ -84,25 +82,25 @@ public class JavaCloneWriter extends UnitTreeVisitor {
     declaration.setBody(body);
     List<Statement> statements = body.getStatements();
 
-    ITypeBinding nsObjectType = typeEnv.resolveIOSType("NSObject");
-    IOSMethodBinding cloneMethod = IOSMethodBinding.newMethod(
-        JAVA_CLONE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
-    SuperMethodInvocation superCall = new SuperMethodInvocation(cloneMethod);
+    ExecutableElement javaCloneSuperElement = GeneratedExecutableElement.newMethodWithSelector(
+        JAVA_CLONE_METHOD, voidType, typeEnv.getJavaObjectElement());
+    SuperMethodInvocation superCall =
+        new SuperMethodInvocation(new ExecutablePair(javaCloneSuperElement));
     superCall.addArgument(new SimpleName(originalVar));
     statements.add(new ExpressionStatement(superCall));
 
     statements.addAll(adjustments);
   }
 
-  private List<Statement> getFieldAdjustments(TypeDeclaration node, IVariableBinding originalVar) {
+  private List<Statement> getFieldAdjustments(TypeDeclaration node, VariableElement originalVar) {
     List<Statement> adjustments = Lists.newArrayList();
     for (VariableDeclarationFragment decl : TreeUtil.getAllFields(node)) {
-      IVariableBinding var = decl.getVariableBinding();
-      if (BindingUtil.isStatic(var) || var.getType().isPrimitive()) {
+      VariableElement var = decl.getVariableElement();
+      if (ElementUtil.isStatic(var) || var.asType().getKind().isPrimitive()) {
         continue;
       }
-      boolean isWeak = BindingUtil.isWeakReference(var);
-      boolean isVolatile = BindingUtil.isVolatile(var);
+      boolean isWeak = ElementUtil.isWeakReference(var);
+      boolean isVolatile = ElementUtil.isVolatile(var);
       if (isVolatile) {
         adjustments.add(createVolatileCloneStatement(var, originalVar, isWeak));
       } else if (isWeak) {
@@ -112,9 +110,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
     return adjustments;
   }
 
-  private Statement createReleaseStatement(IVariableBinding var) {
+  private Statement createReleaseStatement(VariableElement var) {
     if (Options.useARC()) {
-      ITypeBinding voidType = typeEnv.resolveJavaType("void");
+      TypeMirror voidType = typeUtil.getVoidType();
       FunctionElement element = new FunctionElement("JreRelease", voidType, null)
           .addParameters(typeEnv.getIdTypeMirror());
       FunctionInvocation invocation = new FunctionInvocation(element, voidType);
@@ -127,9 +125,9 @@ public class JavaCloneWriter extends UnitTreeVisitor {
   }
 
   private Statement createVolatileCloneStatement(
-      IVariableBinding var, IVariableBinding originalVar, boolean isWeak) {
+      VariableElement var, VariableElement originalVar, boolean isWeak) {
     TypeMirror voidType = typeEnv.resolveJavaTypeMirror("void");
-    TypeMirror pointerType = typeEnv.getPointerType(BindingConverter.getType(var.getType()));
+    TypeMirror pointerType = new PointerType(var.asType());
     String funcName = "JreCloneVolatile" + (isWeak ? "" : "Strong");
     FunctionElement element = new FunctionElement(funcName, voidType, null)
         .addParameters(pointerType, pointerType);
@@ -138,7 +136,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
         pointerType, PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
     invocation.addArgument(new PrefixExpression(
         pointerType, PrefixExpression.Operator.ADDRESS_OF,
-        new FieldAccess(BindingConverter.getVariableElement(var), new SimpleName(originalVar))));
+        new FieldAccess(var, new SimpleName(originalVar))));
     return new ExpressionStatement(invocation);
   }
 }
