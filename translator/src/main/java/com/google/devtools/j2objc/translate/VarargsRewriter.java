@@ -26,11 +26,12 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
+import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites the arguments of vararg method invocation nodes.
@@ -44,18 +45,18 @@ public class VarargsRewriter extends UnitTreeVisitor {
     super(unit);
   }
 
-  private void rewriteVarargs(IMethodBinding method, List<Expression> args) {
-    if (!method.isVarargs()) {
+  private void rewriteVarargs(ExecutablePair method, List<Expression> args) {
+    if (!method.element().isVarArgs()) {
       return;
     }
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    ITypeBinding lastParam = paramTypes[paramTypes.length - 1];
-    assert lastParam.isArray();
-    int varargsSize = args.size() - paramTypes.length + 1;
+    List<? extends TypeMirror> paramTypes = method.type().getParameterTypes();
+    TypeMirror varargType = paramTypes.get(paramTypes.size() - 1);
+    assert TypeUtil.isArray(varargType);
+    int varargsSize = args.size() - paramTypes.size() + 1;
     if (varargsSize == 1) {
       Expression lastArg = args.get(args.size() - 1);
-      ITypeBinding lastArgType = lastArg.getTypeBinding();
-      if (lastArgType.isAssignmentCompatible(lastParam)) {
+      TypeMirror lastArgType = lastArg.getTypeMirror();
+      if (typeUtil.isAssignable(lastArgType, varargType)) {
         // Last argument is already an array.
         return;
       }
@@ -63,21 +64,21 @@ public class VarargsRewriter extends UnitTreeVisitor {
       // type is declared as Object but it always returns the caller's type.
       if (lastArg instanceof MethodInvocation) {
         MethodInvocation invocation = (MethodInvocation) lastArg;
-        if (invocation.getMethodBinding().getName().equals("clone")
+        if (ElementUtil.getName(invocation.getExecutableElement()).equals("clone")
             && invocation.getArguments().isEmpty()
-            && invocation.getExpression().getTypeBinding().isAssignmentCompatible(lastParam)) {
+            && typeUtil.isAssignable(invocation.getExpression().getTypeMirror(), varargType)) {
           return;
         }
       }
     }
 
-    List<Expression> varargs = args.subList(paramTypes.length - 1, args.size());
+    List<Expression> varargs = args.subList(paramTypes.size() - 1, args.size());
     List<Expression> varargsCopy = Lists.newArrayList(varargs);
     varargs.clear();
     if (varargsCopy.isEmpty()) {
-      args.add(new ArrayCreation(lastParam.getErasure(), typeEnv, 0));
+      args.add(new ArrayCreation((ArrayType) typeUtil.erasure(varargType), typeEnv, 0));
     } else {
-      ArrayInitializer newInit = new ArrayInitializer(lastParam.getErasure());
+      ArrayInitializer newInit = new ArrayInitializer((ArrayType) typeUtil.erasure(varargType));
       newInit.getExpressions().addAll(varargsCopy);
       args.add(new ArrayCreation(newInit));
     }
@@ -86,7 +87,7 @@ public class VarargsRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(ArrayInitializer node) {
     if (!(node.getParent() instanceof ArrayCreation)) {
-      ArrayCreation newArray = new ArrayCreation(node.getTypeBinding(), typeEnv);
+      ArrayCreation newArray = new ArrayCreation(node.getTypeMirror(), typeEnv);
       node.replaceWith(newArray);
       newArray.setInitializer(node);
     }
@@ -94,31 +95,31 @@ public class VarargsRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
+    rewriteVarargs(node.getExecutablePair(), node.getArguments());
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
+    rewriteVarargs(node.getExecutablePair(), node.getArguments());
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
+    rewriteVarargs(node.getExecutablePair(), node.getArguments());
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
+    rewriteVarargs(node.getExecutablePair(), node.getArguments());
   }
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
+    rewriteVarargs(node.getExecutablePair(), node.getArguments());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
+    rewriteVarargs(node.getExecutablePair(), node.getArguments());
   }
 }
