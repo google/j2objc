@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.jdt.JdtTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.ParserEnvironment;
-import java.util.HashMap;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -38,10 +37,6 @@ public class Types {
 
   private final ParserEnvironment env;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
-  private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
-      new HashMap<ITypeBinding, ITypeBinding>();
-  private final Map<ITypeBinding, ITypeBinding> wrapperToPrimitiveTypes =
-      new HashMap<ITypeBinding, ITypeBinding>();
 
   // Commonly used java types.
   private final ITypeBinding javaObjectType;
@@ -107,7 +102,6 @@ public class Types {
     initializeArrayTypes();
     initializeTypeMap();
     initializeCommonJavaTypes();
-    populatePrimitiveAndWrapperTypeMaps();
 
     ITypeBinding voidType = resolveWellKnownType("void");
 
@@ -172,27 +166,8 @@ public class Types {
     arrayBindingMap.put(javaType, iosType);
   }
 
-  private void populatePrimitiveAndWrapperTypeMaps() {
-    loadPrimitiveAndWrapperTypes("boolean", "java.lang.Boolean");
-    loadPrimitiveAndWrapperTypes("byte", "java.lang.Byte");
-    loadPrimitiveAndWrapperTypes("char", "java.lang.Character");
-    loadPrimitiveAndWrapperTypes("short", "java.lang.Short");
-    loadPrimitiveAndWrapperTypes("int", "java.lang.Integer");
-    loadPrimitiveAndWrapperTypes("long", "java.lang.Long");
-    loadPrimitiveAndWrapperTypes("float", "java.lang.Float");
-    loadPrimitiveAndWrapperTypes("double", "java.lang.Double");
-    loadPrimitiveAndWrapperTypes("void", "java.lang.Void");
-  }
-
   private JdtTypeBinding resolveWellKnownType(String name) {
     return (JdtTypeBinding) BindingConverter.unwrapElement(env.resolve(name));
-  }
-
-  private void loadPrimitiveAndWrapperTypes(String primitiveName, String wrapperName) {
-    ITypeBinding primitive = resolveWellKnownType(primitiveName);
-    ITypeBinding wrapper = resolveWellKnownType(wrapperName);
-    primitiveToWrapperTypes.put(primitive, wrapper);
-    wrapperToPrimitiveTypes.put(wrapper, primitive);
   }
 
   /**
@@ -295,30 +270,24 @@ public class Types {
     return type.isEqualTo(javaVoidType);
   }
 
-  public ITypeBinding getWrapperType(ITypeBinding primitiveType) {
-    return primitiveToWrapperTypes.get(primitiveType);
-  }
-
-  public ITypeBinding getPrimitiveType(ITypeBinding wrapperType) {
-    return wrapperToPrimitiveTypes.get(wrapperType);
-  }
-
   public TypeMirror getPrimitiveType(TypeMirror wrapperType) {
-    return BindingConverter.getType(wrapperToPrimitiveTypes.get(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(wrapperType)));
+    try {
+      return env.typeUtilities().unboxedType(wrapperType);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   public boolean isBoxedPrimitive(TypeElement type) {
-    return isBoxedPrimitive(BindingConverter.unwrapTypeElement(type));
-  }
-
-  public boolean isBoxedPrimitive(ITypeBinding type) {
-    return wrapperToPrimitiveTypes.containsKey(type);
+    return isBoxedPrimitive(type.asType());
   }
 
   public boolean isBoxedPrimitive(TypeMirror type) {
-    return wrapperToPrimitiveTypes.containsKey(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
+    try {
+      return !type.getKind().isPrimitive() && env.typeUtilities().unboxedType(type) != null;
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
   }
 
   public ITypeBinding getNSNumber() {

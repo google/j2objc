@@ -32,22 +32,23 @@ import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.type.PrimitiveType;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Base class for generating type declarations, either public or private.
@@ -474,15 +475,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printBoxedOperators() {
-    ITypeBinding primitiveType = typeEnv.getPrimitiveType(typeBinding);
+    PrimitiveType primitiveType = env.typeUtil().unboxedType(BindingConverter.getType(typeBinding));
     if (primitiveType == null) {
       return;
     }
-    char binaryName = primitiveType.getBinaryName().charAt(0);
-    if ("ZV".indexOf(binaryName) >= 0) {
-      return; // No special operators are needed for java.lang.Boolean or java.lang.Void.
-    }
-    String primitiveName = primitiveType.getName();
+    char binaryName = env.typeUtil().getSignatureName(primitiveType).charAt(0);
+    String primitiveName = TypeUtil.getName(primitiveType);
     String capName = NameTable.capitalize(primitiveName);
     String primitiveTypeName = NameTable.getPrimitiveObjCType(primitiveType);
     String valueMethod = primitiveName + "Value";
