@@ -29,8 +29,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class MethodInvocation extends Expression {
 
-  private ExecutableElement method = null;
-  private ExecutableType methodType = null;
+  private ExecutablePair method = ExecutablePair.NULL;
   // The context-specific known type of this expression.
   private TypeMirror typeMirror = null;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
@@ -41,8 +40,7 @@ public class MethodInvocation extends Expression {
 
   public MethodInvocation(MethodInvocation other) {
     super(other);
-    method = other.getExecutableElement();
-    methodType = other.getExecutableType();
+    method = other.getExecutablePair();
     typeMirror = other.getTypeMirror();
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
@@ -50,32 +48,25 @@ public class MethodInvocation extends Expression {
   }
 
   public MethodInvocation(IMethodBinding binding, ITypeBinding typeBinding, Expression expression) {
-    method = BindingConverter.getExecutableElement(binding);
-    methodType = BindingConverter.getType(binding);
-    typeMirror = BindingConverter.getType(typeBinding);
-    this.expression.set(expression);
-    name.set(new SimpleName(binding));
+    this(
+        new ExecutablePair(
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)),
+        BindingConverter.getType(typeBinding), expression);
   }
 
   public MethodInvocation(IMethodBinding binding, Expression expression) {
     this(binding, binding.getReturnType(), expression);
   }
 
-  public MethodInvocation(
-      ExecutableElement method, ExecutableType methodType, Expression expression) {
+  public MethodInvocation(ExecutablePair method, TypeMirror typeMirror, Expression expression) {
     this.method = method;
-    this.methodType = methodType;
-    typeMirror = methodType.getReturnType();
+    this.typeMirror = typeMirror;
     this.expression.set(expression);
-    name.set(new SimpleName(BindingConverter.unwrapElement(method)));
-  }
-
-  public MethodInvocation(ExecutableElement method, Expression expression) {
-    this(method, (ExecutableType) method.asType(), expression);
+    name.set(new SimpleName(method.element()));
   }
 
   public MethodInvocation(ExecutablePair method, Expression expression) {
-    this(method.element(), method.type(), expression);
+    this(method, method.type().getReturnType(), expression);
   }
 
   @Override
@@ -84,30 +75,30 @@ public class MethodInvocation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(methodType);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
   }
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
-    method = BindingConverter.getExecutableElement(newMethodBinding);
-    methodType = BindingConverter.getType(newMethodBinding);
+    method = new ExecutablePair(
+        BindingConverter.getExecutableElement(newMethodBinding),
+        BindingConverter.getType(newMethodBinding));
   }
 
-  public ExecutableElement getExecutableElement() {
+  public ExecutablePair getExecutablePair() {
     return method;
   }
 
-  public MethodInvocation setExecutableElement(ExecutableElement newElement) {
-    method = newElement;
+  public MethodInvocation setExecutablePair(ExecutablePair newMethod) {
+    method = newMethod;
     return this;
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method.element();
   }
 
   public ExecutableType getExecutableType() {
-    return methodType;
-  }
-
-  public MethodInvocation setExecutableType(ExecutableType newType) {
-    methodType = newType;
-    return this;
+    return method.type();
   }
 
   @Override

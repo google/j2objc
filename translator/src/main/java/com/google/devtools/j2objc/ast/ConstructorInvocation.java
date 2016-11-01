@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -24,14 +25,14 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public class ConstructorInvocation extends Statement {
 
-  private ExecutableElement method = null;
+  private ExecutablePair method = ExecutablePair.NULL;
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public ConstructorInvocation() {}
 
   public ConstructorInvocation(ConstructorInvocation other) {
     super(other);
-    method = other.getExecutableElement();
+    method = other.getExecutablePair();
     arguments.copyFrom(other.getArguments());
   }
 
@@ -41,20 +42,26 @@ public class ConstructorInvocation extends Statement {
   }
 
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(method);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
   }
 
   public void setMethodBinding(IMethodBinding methodBinding) {
-    method = BindingConverter.getExecutableElement(methodBinding);
+    method = new ExecutablePair(
+        BindingConverter.getExecutableElement(methodBinding),
+        BindingConverter.getType(methodBinding));
+  }
+
+  public ExecutablePair getExecutablePair() {
+    return method;
+  }
+
+  public ConstructorInvocation setExecutablePair(ExecutablePair newMethod) {
+    method = newMethod;
+    return this;
   }
 
   public ExecutableElement getExecutableElement() {
-    return method;
-  }
-  
-  public ConstructorInvocation setExecutableElement(ExecutableElement newMethod) {
-    method = newMethod;
-    return this;
+    return method.element();
   }
 
   public List<Expression> getArguments() {

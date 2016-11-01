@@ -230,8 +230,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       IVariableBinding varBinding = constant.getVariableBinding();
-      IMethodBinding binding = constant.getMethodBinding().getMethodDeclaration();
-      ClassInstanceCreation creation = new ClassInstanceCreation(binding);
+      ClassInstanceCreation creation = new ClassInstanceCreation(constant.getExecutablePair());
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
       creation.addArgument(new StringLiteral(varBinding.getName(), typeEnv));
       creation.addArgument(new NumberLiteral(i++, typeEnv));

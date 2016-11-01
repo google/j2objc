@@ -74,6 +74,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
@@ -551,7 +552,8 @@ public class TreeConverter {
       ExecutableElement element = (ExecutableElement) ((JCTree.JCIdent) method).sym;
       if (method.toString().equals("this")) {
         ConstructorInvocation newNode = new ConstructorInvocation()
-            .setExecutableElement(element);
+            // TODO(tball): Add the appropriate ExecutableType.
+            .setExecutablePair(new ExecutablePair(element, null));
         for (JCTree.JCExpression arg : node.getArguments()) {
           newNode.addArgument((Expression) convert(arg));
         }
@@ -559,7 +561,8 @@ public class TreeConverter {
       }
       if (method.toString().equals("super")) {
         SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-            .setExecutableElement(element);
+            // TODO(tball): Add the appropriate ExecutableType.
+            .setExecutablePair(new ExecutablePair(element, null));
         for (JCTree.JCExpression arg : node.getArguments()) {
           newNode.addArgument((Expression) convert(arg));
         }
@@ -575,7 +578,9 @@ public class TreeConverter {
     if (method.getKind() == Kind.MEMBER_SELECT
         && ((JCTree.JCFieldAccess) method).name.toString().equals("super")) {
       SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-          .setExecutableElement((ExecutableElement) ((JCTree.JCFieldAccess) method).sym)
+          .setExecutablePair(new ExecutablePair(
+              // TODO(tball): Add the appropriate ExecutableType.
+              (ExecutableElement) ((JCTree.JCFieldAccess) method).sym, null))
           .setExpression((Expression) convert(method));
       for (JCTree.JCExpression arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg));
@@ -587,13 +592,16 @@ public class TreeConverter {
     if (method.getKind() == Kind.IDENTIFIER) {
       newNode
           .setName((SimpleName) convert(method))
-          .setExecutableElement((ExecutableElement) ((JCTree.JCIdent) method).sym);
+          // TODO(tball): Add the appropriate ExecutableType.
+          .setExecutablePair(new ExecutablePair(
+              (ExecutableElement) ((JCTree.JCIdent) method).sym, null));
     } else {
       JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
       newNode
           .setName((SimpleName) convertName(select.sym))
           .setExpression((Expression) convert(select.selected))
-          .setExecutableElement((ExecutableElement) select.sym);
+          // TODO(tball): Add the appropriate ExecutableType.
+          .setExecutablePair(new ExecutablePair((ExecutableElement) select.sym, null));
     }
     for (JCTree.JCExpression arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg));
@@ -607,7 +615,8 @@ public class TreeConverter {
 
   private TreeNode convertNewClass(JCTree.JCNewClass node) {
     ClassInstanceCreation newNode = new ClassInstanceCreation()
-        .setExecutableElement((ExecutableElement) node.constructor)
+        // TODO(tball): Add the appropriate ExecutableType.
+        .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor, null))
         .setExpression((Expression) convert(node.getEnclosingExpression()))
         .setType(Type.newType(node.type))
         .setAnonymousClassDeclaration((AnonymousClassDeclaration) convert(node.getClassBody()));

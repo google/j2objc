@@ -115,6 +115,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
@@ -533,9 +534,10 @@ public class TreeConverter {
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) TreeConverter.convert(argument));
     }
+    IMethodBinding binding = node.resolveConstructorBinding();
     return newNode
-        .setExecutableElement(
-            BindingConverter.getExecutableElement(node.resolveConstructorBinding()))
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)))
         .setType((Type) TreeConverter.convert(node.getType()))
         .setExpression((Expression) TreeConverter.convert(node.getExpression()))
         .setAnonymousClassDeclaration(
@@ -553,10 +555,10 @@ public class TreeConverter {
 
   private static TreeNode convertConstructorInvocation(
       org.eclipse.jdt.core.dom.ConstructorInvocation node) {
-    ExecutableElement method =
-        BindingConverter.getExecutableElement(node.resolveConstructorBinding());
+    IMethodBinding binding = node.resolveConstructorBinding();
     ConstructorInvocation newNode = new ConstructorInvocation()
-        .setExecutableElement(method);
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
     }
@@ -603,10 +605,12 @@ public class TreeConverter {
       org.eclipse.jdt.core.dom.EnumConstantDeclaration node) {
     EnumConstantDeclaration newNode = new EnumConstantDeclaration();
     convertBodyDeclaration(node, newNode);
+    IMethodBinding methodBinding = node.resolveConstructorBinding();
     newNode
         .setVariableElement(BindingConverter.getVariableElement(node.resolveVariable()))
-        .setExecutableElement(
-            BindingConverter.getExecutableElement(node.resolveConstructorBinding()))
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(methodBinding),
+            BindingConverter.getType(methodBinding)))
         .setName((SimpleName) convert(node.getName()))
         .setAnonymousClassDeclaration(
             (AnonymousClassDeclaration) convert(node.getAnonymousClassDeclaration()));
@@ -838,8 +842,9 @@ public class TreeConverter {
     }
     IMethodBinding methodBinding = BindingConverter.wrapBinding(node.resolveMethodBinding());
     return newNode
-        .setExecutableElement(BindingConverter.getExecutableElement(methodBinding))
-        .setExecutableType(BindingConverter.getType(methodBinding))
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(methodBinding),
+            BindingConverter.getType(methodBinding)))
         .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
         .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setExpression((Expression) TreeConverter.convert(node.getExpression()));
@@ -851,8 +856,10 @@ public class TreeConverter {
     for (Object x : node.typeArguments()) {
       newNode.addTypeArgument((Type) TreeConverter.convert(x));
     }
+    IMethodBinding binding = node.resolveMethodBinding();
     return newNode
-        .setExecutableElement(BindingConverter.getExecutableElement(node.resolveMethodBinding()));
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)));
   }
 
   private static TreeNode convertName(org.eclipse.jdt.core.dom.Name node, Name newNode) {
@@ -1003,10 +1010,10 @@ public class TreeConverter {
 
   private static TreeNode convertSuperConstructorInvocation(
       org.eclipse.jdt.core.dom.SuperConstructorInvocation node) {
-    ExecutableElement method =
-        BindingConverter.getExecutableElement(node.resolveConstructorBinding());
+    IMethodBinding binding = node.resolveConstructorBinding();
     SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-        .setExecutableElement(method);
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
     }
@@ -1061,8 +1068,9 @@ public class TreeConverter {
     }
     IMethodBinding methodBinding = node.resolveMethodBinding();
     return newNode
-        .setExecutableElement(BindingConverter.getExecutableElement(methodBinding))
-        .setExecutableType(BindingConverter.getType(methodBinding))
+        .setExecutablePair(new ExecutablePair(
+            BindingConverter.getExecutableElement(methodBinding),
+            BindingConverter.getType(methodBinding)))
         .setQualifier((Name) TreeConverter.convert(node.getQualifier()))
         .setName((SimpleName) TreeConverter.convert(node.getName()));
   }

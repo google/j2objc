@@ -37,14 +37,18 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -175,13 +179,13 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     if (!stmts.isEmpty() && stmts.get(0) instanceof SuperConstructorInvocation) {
       return stmts.subList(0, 1);
     }
-    TypeElement superType = ElementUtil.getSuperclass(
-        ElementUtil.getDeclaringClass(node.getExecutableElement()));
-    if (superType == null) {  // java.lang.Object supertype is null.
+    TypeMirror superType =
+        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass();
+    if (TypeUtil.isNone(superType)) {  // java.lang.Object supertype is null.
       return stmts.subList(0, 0);
     }
     // If there isn't a super invocation, add one (like all Java compilers do).
-    stmts.add(0, createDefaultSuperCall(superType));
+    stmts.add(0, createDefaultSuperCall((DeclaredType) superType));
     return stmts.subList(0, 1);
   }
 
@@ -202,19 +206,24 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     }
   }
 
-  private SuperConstructorInvocation createDefaultSuperCall(TypeElement type) {
-    if (ElementUtil.getQualifiedName(type).equals("java.lang.Enum")) {
+  private SuperConstructorInvocation createDefaultSuperCall(DeclaredType type) {
+    TypeElement typeElem = TypeUtil.asTypeElement(type);
+    if (ElementUtil.getQualifiedName(typeElem).equals("java.lang.Enum")) {
       // Enums are a special case where instead of a default no-param constructor it has a single
       // two param constructor that accepts the implicit name and ordinal values.
-      ExecutableElement element = Iterables.getFirst(ElementUtil.getConstructors(type), null);
-      assert element != null && element.getParameters().size() == 2;
-      SuperConstructorInvocation superCall = new SuperConstructorInvocation(element);
+      ExecutableElement enumConstructor =
+          Iterables.getFirst(ElementUtil.getConstructors(typeElem), null);
+      assert enumConstructor != null && enumConstructor.getParameters().size() == 2;
+      SuperConstructorInvocation superCall = new SuperConstructorInvocation(
+          new ExecutablePair(enumConstructor, typeUtil.asMemberOf(type, enumConstructor)));
       for (VariableElement param : captureInfo.getImplicitEnumParams()) {
         superCall.addArgument(new SimpleName(param));
       }
       return superCall;
     }
-    return new SuperConstructorInvocation(findDefaultConstructorElement(type));
+    ExecutableElement defaultConstructor = findDefaultConstructorElement(typeElem);
+    return new SuperConstructorInvocation(new ExecutablePair(
+        defaultConstructor, typeUtil.asMemberOf(type, defaultConstructor)));
   }
 
   private ExecutableElement findDefaultConstructorElement(TypeElement type) {

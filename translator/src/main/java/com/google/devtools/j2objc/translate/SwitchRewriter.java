@@ -32,18 +32,15 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -157,11 +154,8 @@ public class SwitchRewriter extends UnitTreeVisitor {
       return;
     }
     DeclaredType enumType = typeUtil.getSuperclass(type);
-    TypeElement enumElem = (TypeElement) enumType.asElement();
-    ExecutableElement ordinalMethod = ElementUtil.findMethod(enumElem, "ordinal");
-    ExecutableType ordinalType = typeUtil.asMemberOf(enumType, ordinalMethod);
-    MethodInvocation invocation =
-        new MethodInvocation(ordinalMethod, ordinalType, TreeUtil.remove(expr));
+    ExecutablePair ordinalMethod = typeUtil.findMethod(enumType, "ordinal");
+    MethodInvocation invocation = new MethodInvocation(ordinalMethod, TreeUtil.remove(expr));
     node.setExpression(invocation);
   }
 }

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
@@ -27,7 +28,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class EnumConstantDeclaration extends BodyDeclaration {
 
   private VariableElement variableElement = null;
-  private ExecutableElement method = null;
+  private ExecutablePair method = ExecutablePair.NULL;
   private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
   private final ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
@@ -38,7 +39,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   public EnumConstantDeclaration(EnumConstantDeclaration other) {
     super(other);
     variableElement = other.getVariableElement();
-    method = other.getExecutableElement();
+    method = other.getExecutablePair();
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
@@ -64,16 +65,20 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   // TODO(tball): remove when javac migration is complete.
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(method);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
   }
 
-  public ExecutableElement getExecutableElement() {
+  public ExecutablePair getExecutablePair() {
     return method;
   }
 
-  public EnumConstantDeclaration setExecutableElement(ExecutableElement newMethod) {
+  public EnumConstantDeclaration setExecutablePair(ExecutablePair newMethod) {
     method = newMethod;
     return this;
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method.element();
   }
 
   public SimpleName getName() {

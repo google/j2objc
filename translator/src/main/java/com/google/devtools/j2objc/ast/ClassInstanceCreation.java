@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
@@ -25,7 +26,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public class ClassInstanceCreation extends Expression {
 
-  private ExecutableElement method = null;
+  private ExecutablePair method = ExecutablePair.NULL;
   // Indicates that this expression leaves the created object with a retain
   // count of 1. (i.e. does not call autorelease)
   private boolean hasRetainedResult = false;
@@ -43,7 +44,7 @@ public class ClassInstanceCreation extends Expression {
 
   public ClassInstanceCreation(ClassInstanceCreation other) {
     super(other);
-    method = other.getExecutableElement();
+    method = other.getExecutablePair();
     hasRetainedResult = other.hasRetainedResult();
     expression.copyFrom(other.getExpression());
     superOuterArg.copyFrom(other.getSuperOuterArg());
@@ -53,19 +54,13 @@ public class ClassInstanceCreation extends Expression {
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
-  public ClassInstanceCreation(ExecutableElement method, Type type) {
+  public ClassInstanceCreation(ExecutablePair method, TypeMirror type) {
     this.method = method;
-    this.type.set(type);
+    this.type.set(Type.newType(type));
   }
 
-  public ClassInstanceCreation(IMethodBinding methodBinding, Type type) {
-    method = BindingConverter.getExecutableElement(methodBinding);
-    this.type.set(type);
-  }
-
-  public ClassInstanceCreation(IMethodBinding methodBinding) {
-    method = BindingConverter.getExecutableElement(methodBinding);
-    type.set(Type.newType(methodBinding.getDeclaringClass()));
+  public ClassInstanceCreation(ExecutablePair method) {
+    this(method, method.element().getEnclosingElement().asType());
   }
 
   @Override
@@ -74,26 +69,27 @@ public class ClassInstanceCreation extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(method);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
   }
 
-  public void setMethodBinding(IMethodBinding methodBinding) {
-    method = BindingConverter.getExecutableElement(methodBinding);
-  }
-
-  public ExecutableElement getExecutableElement() {
+  public ExecutablePair getExecutablePair() {
     return method;
   }
 
-  public ClassInstanceCreation setExecutableElement(ExecutableElement element) {
-    method = element;
+  public ClassInstanceCreation setExecutablePair(ExecutablePair newMethod) {
+    method = newMethod;
     return this;
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method.element();
   }
 
   @Override
   public TypeMirror getTypeMirror() {
-    return method != null
-        ? method.getEnclosingElement().asType() : null;
+    //return method.element() != null ? method.element().getEnclosingElement().asType() : null;
+    Type typeNode = type.get();
+    return typeNode != null ? typeNode.getTypeMirror() : null;
   }
 
   public boolean hasRetainedResult() {

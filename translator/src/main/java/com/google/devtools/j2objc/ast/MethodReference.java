@@ -13,10 +13,9 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Abstract base class of all AST node types that represent a method reference expression (added in
@@ -32,28 +31,28 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public abstract class MethodReference extends FunctionalExpression {
 
-  protected ExecutableElement methodElement;
+  protected ExecutablePair method;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
 
   public MethodReference() {}
 
   public MethodReference(MethodReference other) {
     super(other);
-    methodElement = other.getExecutableElement();
+    method = other.getExecutablePair();
     typeArguments.copyFrom(other.getTypeArguments());
   }
 
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(methodElement);
+  public ExecutablePair getExecutablePair() {
+    return method;
+  }
+
+  public MethodReference setExecutablePair(ExecutablePair newMethod) {
+    method = newMethod;
+    return this;
   }
 
   public ExecutableElement getExecutableElement() {
-    return methodElement;
-  }
-
-  public MethodReference setExecutableElement(ExecutableElement newElement) {
-    methodElement = newElement;
-    return this;
+    return method.element();
   }
 
   public List<Type> getTypeArguments() {

@@ -22,8 +22,10 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -33,7 +35,11 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.TypeVisitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -125,7 +131,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   @Override
   public TypeMirror asType() {
-    throw new AssertionError("not implemented");
+    return new Mirror();
   }
 
   @Override
@@ -175,6 +181,70 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   public IMethodBinding asMethodBinding() {
     return binding;
+  }
+
+  /**
+   * The associated ExecutableType.
+   * TODO(kstanger): Make private when BindingConverter is removed.
+   */
+  public class Mirror implements ExecutableType {
+
+    private final List<? extends TypeMirror> parameterTypes =
+        Lists.transform(parameters, param -> param.asType());
+
+    public IMethodBinding asMethodBinding() {
+      return GeneratedExecutableElement.this.asMethodBinding();
+    }
+
+    @Override
+    public TypeKind getKind() {
+      return TypeKind.EXECUTABLE;
+    }
+
+    @Override
+    public TypeMirror getReturnType() {
+      return GeneratedExecutableElement.this.getReturnType();
+    }
+
+    @Override
+    public List<? extends TypeMirror> getParameterTypes() {
+      return parameterTypes;
+    }
+
+    @Override
+    public List<? extends TypeVariable> getTypeVariables() {
+      throw new AssertionError("not implemented");
+    }
+
+    @Override
+    public List<? extends TypeMirror> getThrownTypes() {
+      return GeneratedExecutableElement.this.getThrownTypes();
+    }
+
+    @Override
+    public TypeMirror getReceiverType() {
+      return GeneratedExecutableElement.this.getReceiverType();
+    }
+
+    @Override
+    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+      return GeneratedExecutableElement.this.getAnnotation(annotationType);
+    }
+
+    @Override
+    public List<? extends AnnotationMirror> getAnnotationMirrors() {
+      return GeneratedExecutableElement.this.getAnnotationMirrors();
+    }
+
+    @Override
+    public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+      return GeneratedExecutableElement.this.getAnnotationsByType(annotationType);
+    }
+
+    @Override
+    public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+      return v.visitExecutable(this, p);
+    }
   }
 
   /**

@@ -79,6 +79,11 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.VOID;
   }
 
+  public static boolean isNone(TypeMirror t) {
+    // Check for null because BindingConverter converts null bindings to null types.
+    return t == null || t.getKind() == TypeKind.NONE;
+  }
+
   public static boolean isArray(TypeMirror t) {
     return t.getKind() == TypeKind.ARRAY;
   }

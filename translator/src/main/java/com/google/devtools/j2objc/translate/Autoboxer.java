@@ -46,6 +46,7 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -96,7 +97,8 @@ public class Autoboxer extends UnitTreeVisitor {
     ExecutableElement wrapperMethod = ElementUtil.findMethod(
         boxedClass, VALUEOF_METHOD, TypeUtil.getQualifiedName(primitiveType));
     assert wrapperMethod != null : "could not find valueOf method for " + boxedClass;
-    MethodInvocation invocation = new MethodInvocation(wrapperMethod, new SimpleName(boxedClass));
+    MethodInvocation invocation = new MethodInvocation(
+        new ExecutablePair(wrapperMethod), new SimpleName(boxedClass));
     expr.replaceWith(invocation);
     invocation.addArgument(expr);
   }
@@ -125,7 +127,7 @@ public class Autoboxer extends UnitTreeVisitor {
     ExecutableElement valueMethod = ElementUtil.findMethod(
         boxedClass, TypeUtil.getName(primitiveType) + VALUE_METHOD);
     assert valueMethod != null : "could not find value method for " + boxedClass;
-    MethodInvocation invocation = new MethodInvocation(valueMethod, null);
+    MethodInvocation invocation = new MethodInvocation(new ExecutablePair(valueMethod), null);
     expr.replaceWith(invocation);
     invocation.setExpression(expr);
   }

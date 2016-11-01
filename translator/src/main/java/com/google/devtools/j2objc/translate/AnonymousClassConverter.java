@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -100,8 +101,8 @@ public class AnonymousClassConverter extends UnitTreeVisitor {
     MethodDeclaration constructor = new MethodDeclaration(constructorElement);
     constructor.setBody(new Block());
 
-    ExecutableElement superCallElement = findSuperConstructorElement(constructorElement);
-    SuperConstructorInvocation superCall = new SuperConstructorInvocation(superCallElement);
+    ExecutablePair superConstructor = findSuperConstructor(constructorElement);
+    SuperConstructorInvocation superCall = new SuperConstructorInvocation(superConstructor);
 
     // The invocation arguments must become parameters of the generated
     // constructor and passed to the super call.
@@ -112,9 +113,10 @@ public class AnonymousClassConverter extends UnitTreeVisitor {
       constructor.addParameter(new SingleVariableDeclaration(newParam));
       superCall.addArgument(new SimpleName(newParam));
     }
-    assert (superCall.getArguments().size() == superCallElement.getParameters().size())
-        || (superCallElement.isVarArgs()
-            && superCall.getArguments().size() >= superCallElement.getParameters().size() - 1);
+    int numSuperParams = superConstructor.element().getParameters().size();
+    assert (superCall.getArguments().size() == numSuperParams)
+        || (superConstructor.element().isVarArgs()
+            && superCall.getArguments().size() >= numSuperParams - 1);
 
     constructor.getBody().addStatement(superCall);
 
@@ -122,14 +124,14 @@ public class AnonymousClassConverter extends UnitTreeVisitor {
     assert constructor.getParameters().size() == constructorElement.getParameters().size();
   }
 
-  private ExecutableElement findSuperConstructorElement(ExecutableElement constructorElement) {
+  private ExecutablePair findSuperConstructor(ExecutableElement constructorElement) {
     DeclaredType superClass =
         (DeclaredType) ElementUtil.getDeclaringClass(constructorElement).getSuperclass();
     for (ExecutableElement m : ElementUtil.getDeclaredMethods(TypeUtil.asTypeElement(superClass))) {
       if (ElementUtil.isConstructor(m)) {
         ExecutableType mType = typeUtil.asMemberOf(superClass, m);
         if (typeUtil.isSubsignature((ExecutableType) constructorElement.asType(), mType)) {
-          return m;
+          return new ExecutablePair(m, typeUtil.asMemberOf(superClass, m));
         }
       }
     }

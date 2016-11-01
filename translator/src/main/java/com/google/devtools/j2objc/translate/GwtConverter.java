@@ -35,12 +35,12 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.type.ExecutableType;
 
 /**
  * Updates the Java AST to remove code bound by GWT.isClient and
@@ -131,8 +131,7 @@ public class GwtConverter extends UnitTreeVisitor {
       node.setName(new SimpleName(newMethod));
       Expression clazz = args.remove(0);
       node.setExpression(clazz);
-      node.setExecutableElement(newMethod);
-      node.setExecutableType((ExecutableType) newMethod.asType());
+      node.setExecutablePair(new ExecutablePair(newMethod));
     } else if (isGwtTest(node)) {
       node.replaceWith(new BooleanLiteral(false, typeEnv));
     }

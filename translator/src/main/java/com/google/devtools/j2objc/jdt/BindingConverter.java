@@ -396,6 +396,8 @@ public final class BindingConverter {
           ((PointerType) t).getPointeeType()));
     } else if (t instanceof GeneratedTypeElement.Mirror) {
       return ((GeneratedTypeElement.Mirror) t).asTypeBinding();
+    } else if (t instanceof GeneratedExecutableElement.Mirror) {
+      return ((GeneratedExecutableElement.Mirror) t).asMethodBinding();
     }
     return ((JdtTypeMirror) t).binding;
   }

@@ -39,11 +39,37 @@ public class VarargsRewriterTest extends GenerationTest {
   }
 
   // Verify that a single object array argument to an object varargs method is passed unchanged.
+  // Covers all kinds of invocation.
   public void testObjectArrayVarargs() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test(Object[] array) { java.util.Arrays.asList(array); }}",
+        "import java.util.Arrays;"
+        + "interface Baz { void baz(Object[] o); } class Foo<T> { Foo(T... t) {} } class Bar {"
+        + "<T> Bar(T... t) {} Bar(int i, Object[] array) { this(array); } <T> void bar(T... t) {} }"
+        + "enum E { A(new Object[] { }); <T> E(T... t) {} }"
+        + "class Test extends Bar { Test(Object[] array) { super(array); }"
+        + "void test(Object[] array) { "
+        + "Arrays.asList(array); super.bar(array); new Foo(array); Baz b = Arrays::asList;}}",
         "Test", "Test.m");
-    assertTranslation(translation, "JavaUtilArrays_asListWithNSObjectArray_(array);");
+    assertTranslation(translation,
+        "E_initWithNSObjectArray_withNSString_withInt_(e, [IOSObjectArray arrayWithObjects:"
+        + "(id[]){  } count:0 type:NSObject_class_()], @\"A\", 0);");
+    assertTranslatedLines(translation,
+        "void Bar_initWithInt_withNSObjectArray_(Bar *self, jint i, IOSObjectArray *array) {",
+        "  Bar_initWithNSObjectArray_(self, array);",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_initWithNSObjectArray_(Test *self, IOSObjectArray *array) {",
+        "  Bar_initWithNSObjectArray_(self, array);",
+        "}");
+    assertTranslatedLines(translation,
+        "JavaUtilArrays_asListWithNSObjectArray_(array);",
+        "[super barWithNSObjectArray:array];",
+        "create_Foo_initWithNSObjectArray_(array);");
+    // Lambda implementation for Arrays::asList.
+    assertTranslatedLines(translation,
+        "- (void)bazWithNSObjectArray:(IOSObjectArray *)a {",
+        "  JavaUtilArrays_asListWithNSObjectArray_(a);",
+        "}");
   }
 
   // Verify that a single primitive array argument to a primitive varargs method is

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -24,7 +25,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public class SuperConstructorInvocation extends Statement {
 
-  private ExecutableElement method = null;
+  private ExecutablePair method = ExecutablePair.NULL;
   private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
@@ -32,17 +33,13 @@ public class SuperConstructorInvocation extends Statement {
 
   public SuperConstructorInvocation(SuperConstructorInvocation other) {
     super(other);
-    method = other.getExecutableElement();
+    method = other.getExecutablePair();
     expression.copyFrom(other.getExpression());
     arguments.copyFrom(other.getArguments());
   }
 
-  public SuperConstructorInvocation(ExecutableElement executableElement) {
-    method = executableElement;
-  }
-
-  public SuperConstructorInvocation(IMethodBinding methodBinding) {
-    method = BindingConverter.getExecutableElement(methodBinding);
+  public SuperConstructorInvocation(ExecutablePair method) {
+    this.method = method;
   }
 
   @Override
@@ -51,20 +48,20 @@ public class SuperConstructorInvocation extends Statement {
   }
 
   public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapElement(method);
+    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
   }
 
-  public void setMethodBinding(IMethodBinding newMethodBinding) {
-    method = BindingConverter.getExecutableElement(newMethodBinding);
-  }
-
-  public ExecutableElement getExecutableElement() {
+  public ExecutablePair getExecutablePair() {
     return method;
   }
 
-  public SuperConstructorInvocation setExecutableElement(ExecutableElement element) {
-    method = element;
+  public SuperConstructorInvocation setExecutablePair(ExecutablePair newMethod) {
+    method = newMethod;
     return this;
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method.element();
   }
 
   public Expression getExpression() {

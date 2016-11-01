@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
@@ -26,8 +27,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public class SuperMethodInvocation extends Expression {
 
-  private ExecutableElement method = null;
-  private ExecutableType methodType = null;
+  private ExecutablePair method = ExecutablePair.NULL;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   // Resolved by OuterReferenceResolver.
@@ -38,8 +38,7 @@ public class SuperMethodInvocation extends Expression {
 
   public SuperMethodInvocation(SuperMethodInvocation other) {
     super(other);
-    method = other.getExecutableElement();
-    methodType = other.getExecutableType();
+    method = other.getExecutablePair();
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
     receiver.copyFrom(other.getReceiver());
@@ -47,15 +46,14 @@ public class SuperMethodInvocation extends Expression {
   }
 
   public SuperMethodInvocation(IMethodBinding methodBinding) {
-    method = BindingConverter.getExecutableElement(methodBinding);
-    methodType = BindingConverter.getType(methodBinding);
-    name.set(new SimpleName(methodBinding));
+    this(new ExecutablePair(
+        BindingConverter.getExecutableElement(methodBinding),
+        BindingConverter.getType(methodBinding)));
   }
 
-  public SuperMethodInvocation(ExecutableElement element) {
-    method = element;
-    methodType = (ExecutableType) element.asType();
-    name.set(new SimpleName(element));
+  public SuperMethodInvocation(ExecutablePair method) {
+    this.method = method;
+    name.set(new SimpleName(method.element()));
   }
 
   @Override
@@ -67,22 +65,21 @@ public class SuperMethodInvocation extends Expression {
     return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(getExecutableType());
   }
 
-  public ExecutableElement getExecutableElement() {
+  public ExecutablePair getExecutablePair() {
     return method;
   }
 
-  public SuperMethodInvocation setExecutableElement(ExecutableElement newElement) {
-    method = newElement;
+  public SuperMethodInvocation setExecutablePair(ExecutablePair newMethod) {
+    method = newMethod;
     return this;
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return method.element();
   }
 
   public ExecutableType getExecutableType() {
-    return methodType;
-  }
-
-  public SuperMethodInvocation setExecutableType(ExecutableType newType) {
-    methodType = newType;
-    return this;
+    return method.type();
   }
 
   @Override

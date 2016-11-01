@@ -23,12 +23,18 @@ import javax.lang.model.type.ExecutableType;
  */
 public class ExecutablePair {
 
+  public static final ExecutablePair NULL = new ExecutablePair(null, null);
+
   private final ExecutableElement element;
   private final ExecutableType type;
 
   public ExecutablePair(ExecutableElement element, ExecutableType type) {
     this.element = element;
     this.type = type;
+  }
+
+  public ExecutablePair(ExecutableElement element) {
+    this(element, (ExecutableType) element.asType());
   }
 
   public ExecutableElement element() {

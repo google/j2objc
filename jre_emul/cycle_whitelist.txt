@@ -33,6 +33,10 @@ FIELD java.util.stream.AbstractTask.leftChild
 FIELD java.util.stream.AbstractTask.rightChild
 # Tasks remove themself from completionMap upon completion.
 FIELD java.util.stream.ForEachOps.ForEachOrderedTask.completionMap
+FIELD java.util.stream.Nodes.AbstractConcNode.left
+FIELD java.util.stream.Nodes.AbstractConcNode.right
+FIELD java.util.stream.Nodes.InternalNodeSpliterator.lastNodeSpliterator
+FIELD java.util.stream.Nodes.InternalNodeSpliterator.tryAdvanceSpliterator
 # Spliterators use a chaining pattern which causes plenty of false cycles.
 FIELD java.util.stream.StreamSpliterators.DelegatingSpliterator.s
 FIELD java.util.stream.StreamSpliterators.SliceSpliterator.s

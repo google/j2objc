@@ -35,11 +35,11 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.CaptureInfo;
@@ -134,7 +134,8 @@ public class LambdaRewriter extends UnitTreeVisitor {
       constructorDecl.setBody(new Block());
       typeDecl.addBodyDeclaration(constructorDecl);
 
-      creation = new ClassInstanceCreation(constructorElement, Type.newType(lambdaType.asType()));
+      creation = new ClassInstanceCreation(
+          new ExecutablePair(constructorElement), lambdaType.asType());
       creation.setExpression(TreeUtil.remove(node.getLambdaOuterArg()));
       TreeUtil.moveList(node.getLambdaCaptureArgs(), creation.getCaptureArgs());
     }
@@ -210,8 +211,8 @@ public class LambdaRewriter extends UnitTreeVisitor {
         forwardRemainingArgs(createParameters(), creation.getDimensions());
         setImplementationBody(creation);
       } else {
-        ClassInstanceCreation creation = new ClassInstanceCreation(
-            node.getExecutableElement(), Type.newType(creationType));
+        ClassInstanceCreation creation =
+            new ClassInstanceCreation(node.getExecutablePair(), creationType);
         forwardRemainingArgs(createParameters(), creation.getArguments());
         creation.setExpression(TreeUtil.remove(node.getCreationOuterArg()));
         TreeUtil.moveList(node.getCreationCaptureArgs(), creation.getCaptureArgs());
@@ -220,11 +221,11 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     private void rewriteExpressionMethodReference(ExpressionMethodReference node) {
-      ExecutableElement methodElem = node.getExecutableElement();
+      ExecutablePair method = node.getExecutablePair();
       Iterator<VariableElement> params = createParameters();
       Expression invocationTarget = null;
 
-      if (!ElementUtil.isStatic(methodElem)) {
+      if (!ElementUtil.isStatic(method.element())) {
         VariableElement targetField = captureInfo.getOuterField(lambdaType);
         if (targetField != null) {
           invocationTarget = new SimpleName(targetField);
@@ -235,32 +236,30 @@ public class LambdaRewriter extends UnitTreeVisitor {
         }
       }
 
-      MethodInvocation invocation = new MethodInvocation(
-          methodElem, (ExecutableType) methodElem.asType(), invocationTarget);
+      MethodInvocation invocation = new MethodInvocation(method, invocationTarget);
       forwardRemainingArgs(params, invocation.getArguments());
       setImplementationBody(invocation);
     }
 
     private void rewriteSuperMethodReference(SuperMethodReference node) {
-      SuperMethodInvocation invocation = new SuperMethodInvocation(node.getExecutableElement());
+      SuperMethodInvocation invocation = new SuperMethodInvocation(node.getExecutablePair());
       invocation.setReceiver(TreeUtil.remove(node.getReceiver()));
       forwardRemainingArgs(createParameters(), invocation.getArguments());
       setImplementationBody(invocation);
     }
 
     private void rewriteTypeMethodReference(TypeMethodReference node) {
-      ExecutableElement methodElem = getExecutableElement(node);
+      ExecutablePair method = getExecutablePair(node);
       Iterator<VariableElement> params = createParameters();
       MethodInvocation invocation = new MethodInvocation(
-          methodElem, (ExecutableType) methodElem.asType(),
-          ElementUtil.isStatic(methodElem) ? null : new SimpleName(params.next()));
+          method, ElementUtil.isStatic(method.element()) ? null : new SimpleName(params.next()));
       forwardRemainingArgs(params, invocation.getArguments());
       setImplementationBody(invocation);
     }
 
-    private ExecutableElement getExecutableElement(TypeMethodReference node) {
+    private ExecutablePair getExecutablePair(TypeMethodReference node) {
       if (!TypeUtil.isArray(node.getType().getTypeMirror())) {
-        return node.getExecutableElement();
+        return node.getExecutablePair();
       }
       // JDT does not provide the correct method on array types, so we find it from
       // java.lang.Object.
@@ -270,7 +269,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
       for (ExecutableElement method : ElementUtil.getDeclaredMethods(javaObject)) {
         if (ElementUtil.getName(method).equals(name)
             && method.getParameters().size() == numParams) {
-          return method;
+          return new ExecutablePair(method);
         }
       }
       throw new AssertionError("Can't find method element for method: " + name);
