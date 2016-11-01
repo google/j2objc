@@ -38,9 +38,10 @@ document.onreadystatechange = function () {
       console.log(nav_state);
 
       var f = function (menu, index) {
-        if (nav_state.indexOf(index.toString()) != -1){
+        // TODO(tball): fix menu collapsing.
+        //if (nav_state.indexOf(index.toString()) != -1){
           expandMenu(menu);
-        }
+        //}
         menu.addEventListener('click', function() {
           saveCollapseState();
         });
