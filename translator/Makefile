@@ -300,6 +300,7 @@ JAVA_SOURCES = \
 	util/FileUtil.java \
 	util/HeaderMap.java \
 	util/NameTable.java \
+	util/PackageInfoLookup.java \
 	util/PackagePrefixes.java \
 	util/Parser.java \
 	util/ParserEnvironment.java \

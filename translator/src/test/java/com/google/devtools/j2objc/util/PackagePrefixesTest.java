@@ -68,7 +68,7 @@ public class PackagePrefixesTest extends GenerationTest {
   // Verify class name with prefix.
   public void testGetFullNameWithPrefix() {
     String source = "package foo.bar; public class SomeClass {}";
-    Options.addPackagePrefix("foo.bar", "FB");
+    Options.getPackagePrefixes().addPrefix("foo.bar", "FB");
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
@@ -78,7 +78,7 @@ public class PackagePrefixesTest extends GenerationTest {
   // Verify inner class name with prefix.
   public void testGetFullNameWithInnerClassAndPrefix() {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
-    Options.addPackagePrefix("foo.bar", "FB");
+    Options.getPackagePrefixes().addPrefix("foo.bar", "FB");
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
@@ -87,7 +87,7 @@ public class PackagePrefixesTest extends GenerationTest {
 
   public void testPackageWildcards() throws IOException {
     String source = "package foo.bar; public class SomeClass {}";
-    Options.addPackagePrefix("foo.*", "FB");
+    Options.getPackagePrefixes().addPrefix("foo.*", "FB");
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getEnv().nameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);

@@ -127,7 +127,7 @@ public class InputFilePreprocessor {
             ObjectiveCName.class.getCanonicalName())) {
           String key = unit.getPackage().getName().getFullyQualifiedName();
           String val = (String) ((SingleMemberAnnotation) annotation).getValue().getConstantValue();
-          Options.addPackagePrefix(key, val);
+          Options.getPackagePrefixes().addPrefix(key, val);
         }
       }
     }

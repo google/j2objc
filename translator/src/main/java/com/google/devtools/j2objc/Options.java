@@ -25,15 +25,12 @@ import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
+import com.google.devtools.j2objc.util.PackageInfoLookup;
 import com.google.devtools.j2objc.util.PackagePrefixes;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
-
-import org.eclipse.jdt.core.JavaCore;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -48,8 +45,8 @@ import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.annotation.Nullable;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * The set of tool properties, initialized by the command-line arguments.
@@ -101,7 +98,8 @@ public class Options {
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.JDT;
 
-  private PackagePrefixes packagePrefixes = new PackagePrefixes();
+  private PackageInfoLookup packageInfoLookup = new PackageInfoLookup();
+  private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
 
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
@@ -430,7 +428,7 @@ public class Options {
         if (++nArg == args.length) {
           usage("--prefixes requires an argument");
         }
-        addPrefixesFile(args[nArg]);
+        packagePrefixes.addPrefixesFile(args[nArg]);
       } else if (arg.equals("-x")) {
         if (++nArg == args.length) {
           usage("-x requires an argument");
@@ -609,26 +607,12 @@ public class Options {
   /**
    * Add prefix option, which has a format of "<package>=<prefix>".
    */
-  private static void addPrefixOption(String arg) {
+  private void addPrefixOption(String arg) {
     int i = arg.indexOf('=');
     if (i < 1) {
       usage("invalid prefix format");
     }
-    String pkg = arg.substring(0, i);
-    String prefix = arg.substring(i + 1);
-    addPackagePrefix(pkg, prefix);
-  }
-
-  /**
-   * Add a file map of packages to their respective prefixes, using the
-   * Properties file format.
-   */
-  private static void addPrefixesFile(String filename) throws IOException {
-    Properties props = new Properties();
-    FileInputStream fis = new FileInputStream(filename);
-    props.load(fis);
-    fis.close();
-    instance.packagePrefixes.addPrefixProperties(props);
+    packagePrefixes.addPrefix(arg.substring(0, i), arg.substring(i + 1));
   }
 
   private void addMappingsFiles(String[] filenames) throws IOException {
@@ -888,12 +872,12 @@ public class Options {
     return getPathArgument(bootclasspath);
   }
 
-  public static PackagePrefixes getPackagePrefixes() {
-    return instance.packagePrefixes;
+  public static PackageInfoLookup getPackageInfoLookup() {
+    return instance.packageInfoLookup;
   }
 
-  public static void addPackagePrefix(String pkg, String prefix) {
-    instance.packagePrefixes.addPrefix(pkg, prefix);
+  public static PackagePrefixes getPackagePrefixes() {
+    return instance.packagePrefixes;
   }
 
   public static String fileEncoding() {

@@ -31,31 +31,21 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
+import java.util.Iterator;
+import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.lang.model.element.PackageElement;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.lang.model.element.PackageElement;
 
 /**
  * The base class for TypeDeclarationGenerator and TypeImplementationGenerator,
@@ -342,41 +332,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (BindingUtil.hasAnnotation(typeBinding, ParametersAreNonnullByDefault.class)) {
       return true;
     }
-    try {
-      PackageElement pkg = env.elementUtil().getPackage(BindingConverter.getElement(typeBinding));
-      String pkgName = pkg.getQualifiedName().toString();
-      // See if a package-info source file has a ParametersAreNonnullByDefault annotation.
-      InputFile file = FileUtil.findOnSourcePath(pkgName + ".package-info");
-      if (file != null) {
-        String pkgInfo = FileUtil.readFile(file);
-        if (pkgInfo.indexOf("@ParametersAreNonnullByDefault") >= 0) {
-          return true;
-        }
-        if (pkgInfo.indexOf("@javax.annotation.ParametersAreNonnullByDefault") >= 0) {
-          return true;
-        }
-      }
-
-      // See if the package-info class file has it.
-      final boolean[] result = new boolean[1];
-      file = FileUtil.findOnClassPath(pkgName + ".package-info");
-      if (file != null) {
-        ClassReader classReader = new ClassReader(file.getInputStream());
-        classReader.accept(new ClassVisitor(Opcodes.ASM5) {
-          @Override
-          public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            if (desc.equals("Ljavax/annotation/ParametersAreNonnullByDefault;")) {
-              result[0] = true;
-            }
-            return null;
-          }
-        }, 0);
-        return result[0];
-      }
-    } catch (IOException e) {
-      // fall-through
-    }
-    return false;
+    PackageElement pkg = env.elementUtil().getPackage(BindingConverter.getElement(typeBinding));
+    String pkgName = pkg.getQualifiedName().toString();
+    return Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
   }
 
   private boolean hasNullabilityAnnotations() {
