@@ -37,9 +37,13 @@ public class TypeLiteral extends Expression {
     type.copyFrom(other.getType());
   }
 
-  public TypeLiteral(ITypeBinding literalType, Types typeEnv) {
-    typeMirror = BindingConverter.getType(typeEnv.resolveJavaType("java.lang.Class"));
+  public TypeLiteral(TypeMirror literalType, Types typeEnv) {
+    typeMirror = typeEnv.resolveJavaTypeMirror("java.lang.Class");
     type.set(Type.newType(literalType));
+  }
+
+  public TypeLiteral(ITypeBinding literalType, Types typeEnv) {
+    this(BindingConverter.getType(literalType), typeEnv);
   }
 
   @Override

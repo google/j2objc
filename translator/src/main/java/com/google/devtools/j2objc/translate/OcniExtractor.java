@@ -34,16 +34,15 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Extracts OCNI code blocks into NativeDeclaration and NativeStatement nodes.
@@ -116,10 +115,10 @@ public class OcniExtractor extends UnitTreeVisitor {
       }
     }
     if (Modifier.isSynchronized(modifiers)) {
-      ITypeBinding declaringClass = node.getMethodBinding().getDeclaringClass();
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(node.getExecutableElement());
       SynchronizedStatement syncStmt = new SynchronizedStatement(
-          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass, typeEnv)
-          : new ThisExpression(declaringClass));
+          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass.asType(), typeEnv)
+          : new ThisExpression(declaringClass.asType()));
       syncStmt.setBody(TreeUtil.remove(node.getBody()));
       Block newBody = new Block();
       newBody.addStatement(syncStmt);
@@ -172,7 +171,7 @@ public class OcniExtractor extends UnitTreeVisitor {
     // no need to check if any Iterable methods are dead, since ProGuard is
     // conservative -- if a class is live and implements Iterable, those
     // methods are always live.
-    if (BindingUtil.findInterface(node.getTypeBinding(), "java.lang.Iterable") != null
+    if (typeUtil.findSupertype(type.asType(), "java.lang.Iterable") != null
         && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")
         && (deadCodeMap == null || !deadCodeMap.containsClass(type, elementUtil))) {
       bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
