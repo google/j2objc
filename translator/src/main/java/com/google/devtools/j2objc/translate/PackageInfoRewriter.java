@@ -23,18 +23,16 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedTypeBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.ObjectiveCName;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 /**
  * Creates a TypeDeclaration for a package-info.java file.
@@ -65,15 +63,13 @@ public class PackageInfoRewriter {
       return;
     }
 
-    GeneratedTypeBinding typeBinding = new GeneratedTypeBinding(
-        NameTable.PACKAGE_INFO_CLASS_NAME, pkg.getPackageElement(), typeEnv.getNSObject(), false,
-        null);
-    typeBinding.setModifiers(Modifier.PRIVATE);
-    TypeDeclaration typeDecl = new TypeDeclaration(BindingConverter.getTypeElement(typeBinding));
+    TypeElement typeElement =
+        GeneratedTypeElement.newPackageInfoClass(pkg.getPackageElement(), typeEnv);
+    TypeDeclaration typeDecl = new TypeDeclaration(typeElement);
     TreeUtil.moveList(pkg.getAnnotations(), typeDecl.getAnnotations());
 
     if (prefix != null) {
-      typeDecl.addBodyDeclaration(createPrefixMethod(prefix, typeBinding));
+      typeDecl.addBodyDeclaration(createPrefixMethod(prefix, typeElement));
     }
 
     unit.addType(0, typeDecl);
@@ -87,10 +83,11 @@ public class PackageInfoRewriter {
     return null;
   }
 
-  private MethodDeclaration createPrefixMethod(String prefix, ITypeBinding type) {
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-        "__prefix", Modifier.STATIC | BindingUtil.ACC_SYNTHETIC, typeEnv.getNSString(), type);
-    MethodDeclaration method = new MethodDeclaration(binding);
+  private MethodDeclaration createPrefixMethod(String prefix, TypeElement type) {
+    ExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
+        "__prefix", typeEnv.resolveJavaTypeMirror("java.lang.String"), type)
+        .addModifiers(Modifier.STATIC);
+    MethodDeclaration method = new MethodDeclaration(element);
     method.setHasDeclaration(false);
     Block body = new Block();
     method.setBody(body);

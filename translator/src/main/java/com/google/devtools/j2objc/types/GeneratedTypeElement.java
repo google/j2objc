@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.NameTable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,8 +27,10 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.NestingKind;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
@@ -62,6 +65,13 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     return new GeneratedTypeElement(
         element.getSimpleName().toString(), element.getKind(), element.getEnclosingElement(),
         element.getSuperclass(), element.getNestingKind(), ElementUtil.isSynthetic(element));
+  }
+
+  public static GeneratedTypeElement newPackageInfoClass(PackageElement pkgElem, Types typeEnv) {
+    return (GeneratedTypeElement) new GeneratedTypeElement(
+        NameTable.PACKAGE_INFO_CLASS_NAME, ElementKind.CLASS, pkgElem,
+        typeEnv.getJavaObjectElement().asType(), NestingKind.TOP_LEVEL, false)
+        .addModifiers(Modifier.PRIVATE);
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
@@ -173,8 +183,6 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
    */
   public class Binding extends AbstractTypeBinding implements ITypeBinding {
 
-    private final IPackageBinding packageBinding = new GeneratedPackageBinding("");
-
     public TypeElement asElement() {
       return GeneratedTypeElement.this;
     }
@@ -240,7 +248,11 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
     @Override
     public IPackageBinding getPackage() {
-      return packageBinding;
+      Element e = GeneratedTypeElement.this.getEnclosingElement();
+      while (e != null && e.getKind() != ElementKind.PACKAGE) {
+        e = e.getEnclosingElement();
+      }
+      return (IPackageBinding) BindingConverter.unwrapElement(e);
     }
 
     @Override
