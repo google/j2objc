@@ -131,6 +131,10 @@ public final class ElementUtil {
     return e.getKind() == ElementKind.ENUM;
   }
 
+  public static boolean isPackage(Element e) {
+    return e.getKind() == ElementKind.PACKAGE;
+  }
+
   public static boolean isTypeElement(Element e) {
     ElementKind kind = e.getKind();
     return kind.isClass() || kind.isInterface();

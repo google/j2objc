@@ -276,6 +276,7 @@ JAVA_SOURCES = \
 	types/GeneratedExecutableElement.java \
 	types/GeneratedMethodBinding.java \
 	types/GeneratedPackageBinding.java \
+	types/GeneratedPackageElement.java \
 	types/GeneratedTypeBinding.java \
 	types/GeneratedTypeElement.java \
 	types/GeneratedVariableBinding.java \

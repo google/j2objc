@@ -73,7 +73,7 @@ public class StaticVarRewriter extends UnitTreeVisitor {
     code.append(nameTable.getVariableShortName(var));
     code.append(")");
     NativeExpression nativeExpr = new NativeExpression(code.toString(), exprType);
-    nativeExpr.addImportType(var.getDeclaringClass());
+    nativeExpr.addImportType(BindingConverter.getType(var.getDeclaringClass()));
     Expression newNode = nativeExpr;
     if (assignable) {
       newNode = new PrefixExpression(

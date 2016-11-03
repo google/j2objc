@@ -103,8 +103,8 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
     Import.addImports(type, imports, unit.getEnv());
   }
 
-  private void addImports(Iterable<ITypeBinding> types) {
-    for (ITypeBinding type : types) {
+  private void addImports(Iterable<TypeMirror> types) {
+    for (TypeMirror type : types) {
       addImports(type);
     }
   }

@@ -34,7 +34,7 @@ import javax.lang.model.element.Name;
  */
 public abstract class GeneratedElement implements Element {
 
-  private final String name;
+  private final Name name;
   private final ElementKind kind;
   private final boolean synthetic;
   private Set<Modifier> modifiers = new HashSet<>();
@@ -43,14 +43,14 @@ public abstract class GeneratedElement implements Element {
 
   protected GeneratedElement(String name, ElementKind kind, Element enclosingElement,
       boolean synthetic) {
-    this.name = name;
+    this.name = new NameImpl(name);
     this.kind = kind;
     this.synthetic = synthetic;
     this.enclosingElement = enclosingElement;
   }
 
   public String getName() {
-    return name;
+    return name.toString();
   }
 
   @Override
@@ -60,32 +60,7 @@ public abstract class GeneratedElement implements Element {
 
   @Override
   public Name getSimpleName() {
-    return new Name() {
-      @Override
-      public int length() {
-        return name.length();
-      }
-
-      @Override
-      public char charAt(int index) {
-        return name.charAt(index);
-      }
-
-      @Override
-      public CharSequence subSequence(int start, int end) {
-        return name.subSequence(start, end);
-      }
-
-      @Override
-      public boolean contentEquals(CharSequence cs) {
-        return name.equals(cs);
-      }
-
-      @Override
-      public String toString() {
-        return name;
-      }
-    };
+    return name;
   }
 
   @Override
@@ -139,7 +114,7 @@ public abstract class GeneratedElement implements Element {
 
   @Override
   public String toString() {
-    return name;
+    return name.toString();
   }
 
   @Override
@@ -151,4 +126,41 @@ public abstract class GeneratedElement implements Element {
   public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
     throw new AssertionError("not implemented");
   }
+
+  /**
+   * Concrete implementation for Javac's Name element.
+   */
+  protected static class NameImpl implements Name {
+
+    private final String str;
+
+    protected NameImpl(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public int length() {
+      return str.length();
+    }
+
+    @Override
+    public char charAt(int index) {
+      return str.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+      return str.subSequence(start, end);
+    }
+
+    @Override
+    public boolean contentEquals(CharSequence cs) {
+      return str.equals(cs);
+    }
+
+    @Override
+    public String toString() {
+      return str;
+    }
+  };
 }

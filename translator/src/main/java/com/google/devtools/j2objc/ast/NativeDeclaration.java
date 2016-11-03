@@ -14,10 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * A native declaration. Contains string contents without any structural context
@@ -30,7 +29,7 @@ public class NativeDeclaration extends BodyDeclaration {
   private boolean isOuter = false;
   private String headerCode = null;
   private String implementationCode = null;
-  private List<ITypeBinding> implementationImportTypes = new ArrayList<>();
+  private List<TypeMirror> implementationImportTypes = new ArrayList<>();
 
   public NativeDeclaration(NativeDeclaration other) {
     isOuter = other.isOuter();
@@ -81,7 +80,7 @@ public class NativeDeclaration extends BodyDeclaration {
     return implementationCode;
   }
 
-  public List<ITypeBinding> getImplementationImportTypes() {
+  public List<TypeMirror> getImplementationImportTypes() {
     return implementationImportTypes;
   }
 
@@ -96,7 +95,7 @@ public class NativeDeclaration extends BodyDeclaration {
     return new NativeDeclaration(this);
   }
 
-  public NativeDeclaration addImplementationImportType(ITypeBinding type) {
+  public NativeDeclaration addImplementationImportType(TypeMirror type) {
     implementationImportTypes.add(type);
     return this;
   }

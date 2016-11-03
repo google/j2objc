@@ -51,6 +51,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   private final TypeMirror superclass;
   private List<TypeMirror> interfaces = new ArrayList<>();
   private final NestingKind nestingKind;
+  private final Name qualifiedName;
   private final ITypeBinding binding = new Binding();
 
   protected GeneratedTypeElement(
@@ -59,12 +60,22 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.superclass = superclass;
     this.nestingKind = nestingKind;
+    qualifiedName = new NameImpl(getQualifiedPrefix(enclosingElement) + name);
   }
 
   public static GeneratedTypeElement mutableCopy(TypeElement element) {
     return new GeneratedTypeElement(
         element.getSimpleName().toString(), element.getKind(), element.getEnclosingElement(),
         element.getSuperclass(), element.getNestingKind(), ElementUtil.isSynthetic(element));
+  }
+
+  public static GeneratedTypeElement newEmulatedClass(String qualifiedName, TypeMirror superclass) {
+    int idx = qualifiedName.lastIndexOf('.');
+    String packageName = idx < 0 ? "" : qualifiedName.substring(0, idx);
+    PackageElement packageElement = new GeneratedPackageElement(packageName);
+    return new GeneratedTypeElement(
+        qualifiedName.substring(idx + 1), ElementKind.CLASS, packageElement, superclass,
+        NestingKind.TOP_LEVEL, false);
   }
 
   public static GeneratedTypeElement newPackageInfoClass(PackageElement pkgElem, Types typeEnv) {
@@ -79,6 +90,19 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     return kind;
   }
 
+  private static String getQualifiedPrefix(Element enclosing) {
+    if (enclosing == null) {
+      return "";
+    } else if (ElementUtil.isTypeElement(enclosing)) {
+      return ((TypeElement) enclosing).getQualifiedName().toString() + '.';
+    } else if (ElementUtil.isPackage(enclosing)) {
+      PackageElement pkg = (PackageElement) enclosing;
+      return pkg.isUnnamed() ? "" : pkg.getQualifiedName().toString() + '.';
+    } else {
+      return getQualifiedPrefix(enclosing.getEnclosingElement());
+    }
+  }
+
   @Override
   public TypeMirror asType() {
     return new Mirror();
@@ -86,7 +110,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
   @Override
   public Name getQualifiedName() {
-    return getSimpleName();
+    return qualifiedName;
   }
 
   @Override
@@ -214,7 +238,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
     @Override
     public String getQualifiedName() {
-      return getName();
+      return GeneratedTypeElement.this.getQualifiedName().toString();
     }
 
     @Override
