@@ -27,6 +27,7 @@ public class TranslationEnvironment {
   private final Types typeEnv;
   private final CaptureInfo captureInfo;
   private final NameTable nameTable;
+  private final TranslationUtil translationUtil;
 
   public TranslationEnvironment(NameTable.Factory nameTableFactory, ParserEnvironment parserEnv) {
     Preconditions.checkNotNull(nameTableFactory);
@@ -35,6 +36,7 @@ public class TranslationEnvironment {
     typeEnv = new Types(parserEnv);
     captureInfo = new CaptureInfo(typeEnv, typeUtil);
     nameTable = nameTableFactory.newNameTable(typeEnv, elementUtil, captureInfo);
+    translationUtil = new TranslationUtil(typeEnv, nameTable);
   }
 
   public ElementUtil elementUtil() {
@@ -55,5 +57,9 @@ public class TranslationEnvironment {
 
   public NameTable nameTable() {
     return nameTable;
+  }
+
+  public TranslationUtil translationUtil() {
+    return translationUtil;
   }
 }

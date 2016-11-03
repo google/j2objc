@@ -17,9 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
@@ -58,7 +56,6 @@ import com.google.devtools.j2objc.ast.IntersectionType;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
-import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NameQualifiedType;
@@ -101,7 +98,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -109,13 +105,10 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -128,7 +121,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class StatementGenerator extends UnitTreeVisitor {
 
   private final SourceBuilder buffer;
-  private final boolean useReferenceCounting;
 
   public static String generate(TreeNode node, int currentLine) {
     StatementGenerator generator = new StatementGenerator(node, currentLine);
@@ -142,7 +134,6 @@ public class StatementGenerator extends UnitTreeVisitor {
   private StatementGenerator(TreeNode node, int currentLine) {
     super(TreeUtil.getCompilationUnit(node));
     buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
-    useReferenceCounting = !Options.useARC();
   }
 
   private String getResult() {
@@ -592,8 +583,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MarkerAnnotation node) {
-    printAnnotationCreation(node);
-    return false;
+    throw new AssertionError("Annotation nodes should not exist within method bodies.");
   }
 
   @Override
@@ -637,52 +627,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(NormalAnnotation node) {
-    printAnnotationCreation(node);
-    return false;
-  }
-
-  private void printAnnotationCreation(Annotation node) {
-    IAnnotationBinding annotation =
-        BindingConverter.unwrapAnnotationMirror(node.getAnnotationMirror());
-    buffer.append(useReferenceCounting ? "[[[" : "[[");
-    buffer.append(nameTable.getFullName(annotation.getAnnotationType()));
-    buffer.append(" alloc] init");
-
-    if (node instanceof NormalAnnotation) {
-      Map<String, Expression> args = Maps.newHashMap();
-      for (MemberValuePair pair : ((NormalAnnotation) node).getValues()) {
-        args.put(pair.getName().getIdentifier(), pair.getValue());
-      }
-      IMemberValuePairBinding[] members = BindingUtil.getSortedMemberValuePairs(annotation);
-      for (int i = 0; i < members.length; i++) {
-        if (i == 0) {
-          buffer.append("With");
-        } else {
-          buffer.append(" with");
-        }
-        IMemberValuePairBinding member = members[i];
-        String name = NameTable.getAnnotationPropertyName(member.getMethodBinding());
-        buffer.append(NameTable.capitalize(name));
-        buffer.append(':');
-        Expression value = args.get(name);
-        if (value != null) {
-          value.accept(this);
-        }
-      }
-    } else if (node instanceof SingleMemberAnnotation) {
-      SingleMemberAnnotation sma = (SingleMemberAnnotation) node;
-      buffer.append("With");
-      IMethodBinding accessorBinding = annotation.getAllMemberValuePairs()[0].getMethodBinding();
-      String name = NameTable.getAnnotationPropertyName(accessorBinding);
-      buffer.append(NameTable.capitalize(name));
-      buffer.append(':');
-      sma.getValue();
-    }
-
-    buffer.append(']');
-    if (useReferenceCounting) {
-      buffer.append(" autorelease]");
-    }
+    throw new AssertionError("Annotation nodes should not exist within method bodies.");
   }
 
   @Override
@@ -801,8 +746,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SingleMemberAnnotation node) {
-    printAnnotationCreation(node);
-    return false;
+    throw new AssertionError("Annotation nodes should not exist within method bodies.");
   }
 
   @Override

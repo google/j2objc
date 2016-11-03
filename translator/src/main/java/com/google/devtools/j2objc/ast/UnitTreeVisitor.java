@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 
 /**
@@ -30,6 +31,7 @@ public class UnitTreeVisitor extends TreeVisitor {
   protected final TypeUtil typeUtil;
   protected final Types typeEnv;
   protected final NameTable nameTable;
+  protected final TranslationUtil translationUtil;
 
   public UnitTreeVisitor(CompilationUnit unit) {
     this.unit = unit;
@@ -38,6 +40,7 @@ public class UnitTreeVisitor extends TreeVisitor {
     typeUtil = env.typeUtil();
     typeEnv = env.types();
     nameTable = env.nameTable();
+    translationUtil = env.translationUtil();
   }
 
   public void run() {

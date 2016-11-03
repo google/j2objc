@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
+import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -28,15 +29,20 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +50,8 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -54,6 +62,14 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  * @author Keith Stanger
  */
 public final class TranslationUtil {
+
+  private final Types typeEnv;
+  private final NameTable nameTable;
+
+  public TranslationUtil(Types typeEnv, NameTable nameTable) {
+    this.typeEnv = typeEnv;
+    this.nameTable = nameTable;
+  }
 
   public static ITypeBinding getSuperType(AbstractTypeDeclaration node) {
     // Use the AST as the source of truth where possible.
@@ -266,5 +282,51 @@ public final class TranslationUtil {
       modifier += "Strong";
     }
     return modifier;
+  }
+
+  public Expression createObjectArray(List<Expression> expressions, ITypeBinding arrayType) {
+    if (expressions.isEmpty()) {
+      return new ArrayCreation(arrayType, typeEnv, 0);
+    }
+    ArrayCreation creation = new ArrayCreation(arrayType, typeEnv);
+    ArrayInitializer initializer = new ArrayInitializer(arrayType);
+    initializer.getExpressions().addAll(expressions);
+    creation.setInitializer(initializer);
+    return creation;
+  }
+
+  public Expression createAnnotation(IAnnotationBinding annotationBinding) {
+    ITypeBinding annotationType = annotationBinding.getAnnotationType();
+    FunctionElement element = new FunctionElement(
+        "create_" + nameTable.getFullName(annotationType), annotationType, annotationType);
+    FunctionInvocation invocation = new FunctionInvocation(element, annotationType);
+    for (IMemberValuePairBinding valueBinding :
+         BindingUtil.getSortedMemberValuePairs(annotationBinding)) {
+      ITypeBinding valueType = valueBinding.getMethodBinding().getReturnType();
+      element.addParameters(valueType);
+      invocation.addArgument(createAnnotationValue(valueType, valueBinding.getValue()));
+    }
+    return invocation;
+  }
+
+  public Expression createAnnotationValue(ITypeBinding type, Object value) {
+    if (value == null) {
+      return new NullLiteral();
+    } else if (value instanceof IVariableBinding) {
+      return new SimpleName((IVariableBinding) value);
+    } else if (value instanceof ITypeBinding) {
+      return new TypeLiteral((ITypeBinding) value, typeEnv);
+    } else if (value instanceof IAnnotationBinding) {
+      return createAnnotation((IAnnotationBinding) value);
+    } else if (value instanceof Object[]) {
+      Object[] array = (Object[]) value;
+      List<Expression> generatedValues = new ArrayList<>();
+      for (Object elem : array) {
+        generatedValues.add(createAnnotationValue(type.getComponentType(), elem));
+      }
+      return createObjectArray(generatedValues, type);
+    } else {  // Boolean, Character, Number, String
+      return TreeUtil.newLiteral(value, typeEnv);
+    }
   }
 }

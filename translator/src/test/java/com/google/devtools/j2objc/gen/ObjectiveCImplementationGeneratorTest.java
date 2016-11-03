@@ -802,7 +802,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public @interface OuterAnn { InnerAnn test() default @InnerAnn(); }}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "+ (id<A_InnerAnn>)testDefault {", "return [[[A_InnerAnn alloc] init] autorelease];", "}");
+        "+ (id<A_InnerAnn>)testDefault {", "return create_A_InnerAnn();", "}");
   }
 
   public void testAnnotationWithDefaultAnnotationWithArguments() throws IOException {
@@ -815,7 +815,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "A", "A.m");
     assertTranslatedLines(translation,
         "+ (id<A_InnerAnn>)testDefault {",
-        "return [[[A_InnerAnn alloc] initWithFoo:@\"bar\" withNum:5] autorelease];",
+        "return create_A_InnerAnn(@\"bar\", 5);",
         "}");
   }
 

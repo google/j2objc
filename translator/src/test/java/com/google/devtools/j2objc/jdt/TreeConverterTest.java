@@ -35,7 +35,7 @@ public class TreeConverterTest extends GenerationTest {
         + "@Retention(RUNTIME) @Target({TYPE, METHOD, FIELD}) public @interface Complex { "
         + "Simple member() default @Simple; }", "Complex", "Complex.m");
     assertTranslatedLines(translation,
-        "+ (id<Simple>)memberDefault {", "return [[[Simple alloc] init] autorelease];", "}");
+        "+ (id<Simple>)memberDefault {", "return create_Simple(@\"default_value\");", "}");
   }
 
   // Issue 471: ClassCastException converting annotation with array members.

@@ -19,7 +19,6 @@ import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -128,13 +127,12 @@ public class AnnotationRewriter extends UnitTreeVisitor {
       AnnotationTypeDeclaration node, List<AnnotationTypeMemberDeclaration> members) {
     ITypeBinding type = node.getTypeBinding();
     for (AnnotationTypeMemberDeclaration member : members) {
-      Expression defaultExpr = member.getDefault();
-      if (defaultExpr == null) {
+      IMethodBinding memberBinding = BindingConverter.unwrapExecutableElement(member.getElement());
+      Object defaultValue = memberBinding.getDefaultValue();
+      if (defaultValue == null) {
         continue;
       }
 
-      IMethodBinding memberBinding = (IMethodBinding)
-          BindingConverter.unwrapElement(member.getElement());
       ITypeBinding memberType = memberBinding.getReturnType();
       String propName = NameTable.getAnnotationPropertyName(memberBinding);
 
@@ -144,7 +142,8 @@ public class AnnotationRewriter extends UnitTreeVisitor {
       defaultGetter.setHasDeclaration(false);
       Block defaultGetterBody = new Block();
       defaultGetter.setBody(defaultGetterBody);
-      defaultGetterBody.addStatement(new ReturnStatement(TreeUtil.remove(defaultExpr)));
+      defaultGetterBody.addStatement(new ReturnStatement(
+          translationUtil.createAnnotationValue(memberType, defaultValue)));
       node.addBodyDeclaration(defaultGetter);
     }
   }
