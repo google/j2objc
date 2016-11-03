@@ -429,7 +429,7 @@ public class TreeUtil {
     } else if (value instanceof String) {
       return new StringLiteral((String) value, typeEnv);
     }
-    throw new AssertionError("unknown constant type");
+    throw new AssertionError("unknown constant type: " + value.getClass().getName());
   }
 
   /**

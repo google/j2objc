@@ -32,9 +32,9 @@ class JdtAnnotationValue implements AnnotationValue {
       this.value = BindingConverter.getType((ITypeBinding) value);
     } else if (value instanceof IAnnotationBinding) {
       this.value = new JdtAnnotationMirror((IAnnotationBinding) value);
-    } else if (value instanceof List) {
+    } else if (value instanceof Object[]) {
       List<AnnotationValue> newValues = new ArrayList<AnnotationValue>();
-      for (Object o : ((List<?>) value)) {
+      for (Object o : ((Object[]) value)) {
         newValues.add(new JdtAnnotationValue(o));
       }
       this.value = newValues;

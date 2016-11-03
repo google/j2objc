@@ -121,7 +121,6 @@ import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
 import java.util.List;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -402,7 +401,7 @@ public class TreeConverter {
     AnnotationTypeMemberDeclaration newNode = new AnnotationTypeMemberDeclaration();
     convertBodyDeclaration(node, newNode);
     return newNode
-        .setElement((ExecutableElement) BindingConverter.getElement(node.resolveBinding()))
+        .setExecutableElement(BindingConverter.getExecutableElement(node.resolveBinding()))
         .setName((SimpleName) convert(node.getName()))
         .setType((Type) convert(node.getType()))
         .setDefault((Expression) convert(node.getDefault()));

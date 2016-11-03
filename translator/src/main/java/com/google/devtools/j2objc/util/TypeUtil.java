@@ -75,6 +75,10 @@ public final class TypeUtil {
     return getDeclaredTypeKind(t) == ElementKind.ENUM;
   }
 
+  public static boolean isAnnotation(TypeMirror t) {
+    return getDeclaredTypeKind(t) == ElementKind.ANNOTATION_TYPE;
+  }
+
   public static boolean isVoid(TypeMirror t) {
     return t.getKind() == TypeKind.VOID;
   }

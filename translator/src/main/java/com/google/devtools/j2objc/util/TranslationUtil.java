@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -48,8 +49,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -307,6 +311,32 @@ public final class TranslationUtil {
       invocation.addArgument(createAnnotationValue(valueType, valueBinding.getValue()));
     }
     return invocation;
+  }
+
+  public Expression createAnnotationValue(TypeMirror type, AnnotationValue aValue) {
+    Object value = aValue.getValue();
+    if (value == null) {
+      return new NullLiteral();
+    } else if (value instanceof VariableElement) {
+      return new SimpleName((VariableElement) value);
+    } else if (TypeUtil.isArray(type)) {
+      assert value instanceof List;
+      @SuppressWarnings("unchecked")
+      List<? extends AnnotationValue> list = (List<? extends AnnotationValue>) value;
+      List<Expression> generatedValues = new ArrayList<>();
+      for (AnnotationValue elem : list) {
+        generatedValues.add(createAnnotationValue(((ArrayType) type).getComponentType(), elem));
+      }
+      return createObjectArray(
+          generatedValues, BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
+    } else if (TypeUtil.isAnnotation(type)) {
+      assert value instanceof AnnotationMirror;
+      return createAnnotation(BindingConverter.unwrapAnnotationMirror((AnnotationMirror) value));
+    } else if (value instanceof TypeMirror) {
+      return new TypeLiteral((TypeMirror) value, typeEnv);
+    } else {  // Boolean, Character, Number, String
+      return TreeUtil.newLiteral(value, typeEnv);
+    }
   }
 
   public Expression createAnnotationValue(ITypeBinding type, Object value) {

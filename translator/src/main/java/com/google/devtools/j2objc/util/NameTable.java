@@ -467,8 +467,12 @@ public class NameTable {
   }
 
   /**
-   * Returns the name of an annotation property variable, extracted from its accessor binding.
+   * Returns the name of an annotation property variable, extracted from its accessor element.
    */
+  public static String getAnnotationPropertyName(ExecutableElement element) {
+    return getAnnotationPropertyName(BindingConverter.unwrapExecutableElement(element));
+  }
+
   public static String getAnnotationPropertyName(IMethodBinding binding) {
     return getMethodName(binding);
   }
@@ -893,6 +897,11 @@ public class NameTable {
     return typeName + "_Enum";
   }
 
+  public String getFullName(TypeElement e) {
+    return getFullName(BindingConverter.unwrapTypeElement(e));
+  }
+
+  // TODO(kstanger): Remove this. Callers should use a TypeElement
   public String getFullName(TypeMirror t) {
     return getFullName(BindingConverter.unwrapTypeMirrorIntoTypeBinding(t));
   }

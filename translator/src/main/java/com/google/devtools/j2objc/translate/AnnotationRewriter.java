@@ -31,21 +31,21 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Adds fields and properties to annotation types.
@@ -60,56 +60,52 @@ public class AnnotationRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    if (!BindingUtil.isRuntimeAnnotation(type)) {
+    TypeElement type = node.getTypeElement();
+    if (!ElementUtil.isRuntimeAnnotation(type)) {
       return;
     }
     List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(node);
     List<BodyDeclaration> bodyDecls = node.getBodyDeclarations();
 
-    Map<IMethodBinding, IVariableBinding> fieldBindings = createMemberFields(node, members);
-    addMemberProperties(node, members, fieldBindings);
+    Map<ExecutableElement, VariableElement> fieldElements = createMemberFields(node, members);
+    addMemberProperties(node, members, fieldElements);
     addDefaultAccessors(node, members);
     bodyDecls.add(createAnnotationTypeMethod(type));
     bodyDecls.add(createDescriptionMethod(type));
-    addConstructor(node, fieldBindings);
+    addConstructor(node, fieldElements);
   }
 
   // Create an instance field for each member.
-  private Map<IMethodBinding, IVariableBinding> createMemberFields(
+  private Map<ExecutableElement, VariableElement> createMemberFields(
       AnnotationTypeDeclaration node, List<AnnotationTypeMemberDeclaration> members) {
-    ITypeBinding type = node.getTypeBinding();
-    Map<IMethodBinding, IVariableBinding> fieldBindings = new HashMap<>();
+    TypeElement type = node.getTypeElement();
+    Map<ExecutableElement, VariableElement> fieldElements = new HashMap<>();
     for (AnnotationTypeMemberDeclaration member : members) {
-      IMethodBinding memberBinding = (IMethodBinding)
-          BindingConverter.unwrapElement(member.getElement());
-      ITypeBinding memberType = memberBinding.getReturnType();
-      String propName = NameTable.getAnnotationPropertyName(memberBinding);
-      GeneratedVariableBinding field = new GeneratedVariableBinding(
-          propName, BindingUtil.ACC_SYNTHETIC, memberType, true, false, type, null);
+      ExecutableElement memberElement = member.getExecutableElement();
+      String propName = NameTable.getAnnotationPropertyName(memberElement);
+      VariableElement field = GeneratedVariableElement.newField(
+          propName, memberElement.getReturnType(), type);
       node.addBodyDeclaration(new FieldDeclaration(field, null));
-      fieldBindings.put(memberBinding, field);
+      fieldElements.put(memberElement, field);
     }
-    return fieldBindings;
+    return fieldElements;
   }
 
   // Generate the property declarations and synthesize statements.
   private void addMemberProperties(
       AnnotationTypeDeclaration node, List<AnnotationTypeMemberDeclaration> members,
-      Map<IMethodBinding, IVariableBinding> fieldBindings) {
+      Map<ExecutableElement, VariableElement> fieldElements) {
     if (members.isEmpty()) {
       return;
     }
     StringBuilder propertyDecls = new StringBuilder();
     StringBuilder propertyImpls = new StringBuilder();
     for (AnnotationTypeMemberDeclaration member : members) {
-      IMethodBinding memberBinding = (IMethodBinding)
-          BindingConverter.unwrapElement(member.getElement());
-      ITypeBinding memberType = memberBinding.getReturnType();
-      String propName = NameTable.getAnnotationPropertyName(memberBinding);
-      String memberTypeStr = nameTable.getObjCType(memberType);
+      ExecutableElement memberElement = member.getExecutableElement();
+      String propName = NameTable.getAnnotationPropertyName(memberElement);
+      String memberTypeStr = nameTable.getObjCType(memberElement.getReturnType());
 
-      String fieldName = nameTable.getVariableShortName(fieldBindings.get(memberBinding));
+      String fieldName = nameTable.getVariableShortName(fieldElements.get(memberElement));
       propertyDecls.append(UnicodeUtils.format("@property (readonly) %s%s%s;\n",
           memberTypeStr, memberTypeStr.endsWith("*") ? "" : " ", propName));
       if (NameTable.needsObjcMethodFamilyNoneAttribute(propName)) {
@@ -125,20 +121,21 @@ public class AnnotationRewriter extends UnitTreeVisitor {
   // Create accessors for properties that have default values.
   private void addDefaultAccessors(
       AnnotationTypeDeclaration node, List<AnnotationTypeMemberDeclaration> members) {
-    ITypeBinding type = node.getTypeBinding();
+    TypeElement type = node.getTypeElement();
     for (AnnotationTypeMemberDeclaration member : members) {
-      IMethodBinding memberBinding = BindingConverter.unwrapExecutableElement(member.getElement());
-      Object defaultValue = memberBinding.getDefaultValue();
-      if (defaultValue == null) {
+      ExecutableElement memberElement = member.getExecutableElement();
+      AnnotationValue defaultValue = memberElement.getDefaultValue();
+      if (defaultValue == null || defaultValue.getValue() == null) {
         continue;
       }
 
-      ITypeBinding memberType = memberBinding.getReturnType();
-      String propName = NameTable.getAnnotationPropertyName(memberBinding);
+      TypeMirror memberType = memberElement.getReturnType();
+      String propName = NameTable.getAnnotationPropertyName(memberElement);
 
-      GeneratedMethodBinding defaultGetterBinding = GeneratedMethodBinding.newMethod(
-          propName + "Default", Modifier.STATIC | BindingUtil.ACC_SYNTHETIC, memberType, type);
-      MethodDeclaration defaultGetter = new MethodDeclaration(defaultGetterBinding);
+      ExecutableElement defaultGetterElement = GeneratedExecutableElement.newMethodWithSelector(
+          propName + "Default", memberType, type)
+          .addModifiers(Modifier.STATIC);
+      MethodDeclaration defaultGetter = new MethodDeclaration(defaultGetterElement);
       defaultGetter.setHasDeclaration(false);
       Block defaultGetterBody = new Block();
       defaultGetter.setBody(defaultGetterBody);
@@ -149,10 +146,11 @@ public class AnnotationRewriter extends UnitTreeVisitor {
   }
 
   private void addConstructor(
-      AnnotationTypeDeclaration node, Map<IMethodBinding, IVariableBinding> fieldBindings) {
-    ITypeBinding type = node.getTypeBinding();
+      AnnotationTypeDeclaration node, Map<ExecutableElement, VariableElement> fieldElements) {
+    TypeElement type = node.getTypeElement();
     String typeName = nameTable.getFullName(type);
-    FunctionDeclaration constructorDecl = new FunctionDeclaration("create_" + typeName, type, type);
+    FunctionDeclaration constructorDecl =
+        new FunctionDeclaration("create_" + typeName, type.asType(), type.asType());
     Block constructorBody = new Block();
     constructorDecl.setBody(constructorBody);
     List<Statement> stmts = constructorBody.getStatements();
@@ -160,15 +158,14 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     stmts.add(new NativeStatement(UnicodeUtils.format(
         "%s *self = AUTORELEASE([[%s alloc] init]);", typeName, typeName)));
 
-    for (IMethodBinding memberBinding : BindingUtil.getSortedAnnotationMembers(type)) {
-      ITypeBinding memberType = memberBinding.getReturnType();
-      String propName = NameTable.getAnnotationPropertyName(memberBinding);
-      String fieldName = nameTable.getVariableShortName(fieldBindings.get(memberBinding));
+    for (ExecutableElement memberElement : ElementUtil.getSortedAnnotationMembers(type)) {
+      TypeMirror memberType = memberElement.getReturnType();
+      String propName = NameTable.getAnnotationPropertyName(memberElement);
+      String fieldName = nameTable.getVariableShortName(fieldElements.get(memberElement));
 
-      GeneratedVariableBinding param = new GeneratedVariableBinding(
-          propName, 0, memberType, false, true, null, null);
+      VariableElement param = GeneratedVariableElement.newParameter(propName, memberType, null);
       constructorDecl.addParameter(new SingleVariableDeclaration(param));
-      String rhs = memberType.isPrimitive() ? propName : "RETAIN_(" + propName + ")";
+      String rhs = TypeUtil.isReferenceType(memberType) ? "RETAIN_(" + propName + ")" : propName;
       stmts.add(new NativeStatement("self->" + fieldName + " = " + rhs + ";"));
     }
 
@@ -176,27 +173,26 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     node.addBodyDeclaration(constructorDecl);
   }
 
-  private MethodDeclaration createAnnotationTypeMethod(ITypeBinding type) {
-    GeneratedMethodBinding annotationTypeBinding = GeneratedMethodBinding.newMethod(
-        "annotationType", BindingUtil.ACC_SYNTHETIC, typeEnv.getIOSClass(), type);
-    MethodDeclaration annotationTypeMethod = new MethodDeclaration(annotationTypeBinding);
+  private MethodDeclaration createAnnotationTypeMethod(TypeElement type) {
+    ExecutableElement annotationTypeElement = GeneratedExecutableElement.newMethodWithSelector(
+        "annotationType", typeEnv.resolveJavaTypeMirror("java.lang.Class"), type);
+    MethodDeclaration annotationTypeMethod = new MethodDeclaration(annotationTypeElement);
     annotationTypeMethod.setHasDeclaration(false);
     Block annotationTypeBody = new Block();
     annotationTypeMethod.setBody(annotationTypeBody);
-    annotationTypeBody.addStatement(new ReturnStatement(new TypeLiteral(type, typeEnv)));
+    annotationTypeBody.addStatement(new ReturnStatement(new TypeLiteral(type.asType(), typeEnv)));
     return annotationTypeMethod;
   }
 
-  private MethodDeclaration createDescriptionMethod(ITypeBinding type) {
+  private MethodDeclaration createDescriptionMethod(TypeElement type) {
     ExecutableElement descriptionElement = GeneratedExecutableElement.newMethodWithSelector(
-        "description", BindingConverter.getType(typeEnv.getNSString()),
-        BindingConverter.getTypeElement(type));
+        "description", typeEnv.resolveJavaTypeMirror("java.lang.String"), type);
     MethodDeclaration descriptionMethod = new MethodDeclaration(descriptionElement);
     descriptionMethod.setHasDeclaration(false);
     Block descriptionBody = new Block();
     descriptionMethod.setBody(descriptionBody);
     descriptionBody.addStatement(new ReturnStatement(
-        new StringLiteral("@" + type.getBinaryName() + "()", typeEnv)));
+        new StringLiteral("@" + elementUtil.getBinaryName(type) + "()", typeEnv)));
     return descriptionMethod;
   }
 }

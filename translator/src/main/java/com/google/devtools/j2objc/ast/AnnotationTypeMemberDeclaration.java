@@ -30,7 +30,7 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 
   public AnnotationTypeMemberDeclaration(AnnotationTypeMemberDeclaration other) {
     super(other);
-    element = other.getElement();
+    element = other.getExecutableElement();
     type.copyFrom(other.getType());
     name.copyFrom(other.getName());
     defaultValue.copyFrom(other.getDefault());
@@ -41,20 +41,40 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
     return Kind.ANNOTATION_TYPE_MEMBER_DECLARATION;
   }
 
-  public ExecutableElement getElement() {
+  public ExecutableElement getExecutableElement() {
     return element;
+  }
+
+  public AnnotationTypeMemberDeclaration setExecutableElement(ExecutableElement newElement) {
+    element = newElement;
+    return this;
   }
 
   public Type getType() {
     return type.get();
   }
 
+  public AnnotationTypeMemberDeclaration setType(Type newType) {
+    type.set(newType);
+    return this;
+  }
+
   public SimpleName getName() {
     return name.get();
   }
 
+  public AnnotationTypeMemberDeclaration setName(SimpleName newName) {
+    name.set(newName);
+    return this;
+  }
+
   public Expression getDefault() {
     return defaultValue.get();
+  }
+
+  public AnnotationTypeMemberDeclaration setDefault(Expression newDefault) {
+    defaultValue.set(newDefault);
+    return this;
   }
 
   @Override
@@ -72,25 +92,5 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
   @Override
   public AnnotationTypeMemberDeclaration copy() {
     return new AnnotationTypeMemberDeclaration(this);
-  }
-
-  public AnnotationTypeMemberDeclaration setDefault(Expression newDefault) {
-    defaultValue.set(newDefault);
-    return this;
-  }
-
-  public AnnotationTypeMemberDeclaration setElement(ExecutableElement newElement) {
-    element = newElement;
-    return this;
-  }
-
-  public AnnotationTypeMemberDeclaration setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
-  public AnnotationTypeMemberDeclaration setType(Type newType) {
-    type.set(newType);
-    return this;
   }
 }

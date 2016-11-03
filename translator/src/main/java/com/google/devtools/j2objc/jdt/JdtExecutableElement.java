@@ -76,6 +76,7 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
     return params;
   }
 
+  @Override
   public TypeMirror getReceiverType() {
     throw new AssertionError("not implemented");
   }
@@ -90,6 +91,7 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
     return ((JdtMethodBinding) binding).isVarargs();
   }
 
+  @Override
   public boolean isDefault() {
    throw new AssertionError("not implemented");
   }
@@ -105,7 +107,8 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
   @Override
   public AnnotationValue getDefaultValue() {
-    return new JdtAnnotationValue(((JdtMethodBinding) binding).getDefaultValue());
+    Object value = ((JdtMethodBinding) binding).getDefaultValue();
+    return value == null ? null : new JdtAnnotationValue(value);
   }
 
   @Override

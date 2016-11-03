@@ -648,23 +648,6 @@ public final class BindingUtil {
   }
 
   /**
-   * Returns an alphabetically sorted list of an annotation type's members.
-   * This is necessary since an annotation's values can be specified in any
-   * order, but the annotation's constructor needs to be invoked using its
-   * declaration order.
-   */
-  public static IMethodBinding[] getSortedAnnotationMembers(ITypeBinding annotation) {
-    IMethodBinding[] members = annotation.getDeclaredMethods();
-    Arrays.sort(members, new Comparator<IMethodBinding>() {
-      @Override
-      public int compare(IMethodBinding o1, IMethodBinding o2) {
-        return o1.getName().compareTo(o2.getName());
-      }
-    });
-    return members;
-  }
-
-  /**
    * Returns an alphabetically sorted list of an annotation's member values.
    * This is necessary since an annotation's values can be specified in any
    * order, but the annotation's constructor needs to be invoked using its

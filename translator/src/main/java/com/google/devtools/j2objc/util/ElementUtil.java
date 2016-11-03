@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.types.LambdaTypeElement;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -324,6 +325,10 @@ public final class ElementUtil {
         elem.getEnclosedElements(), e -> kindsList.contains(e.getKind())), resultClass::cast);
   }
 
+  public static Iterable<ExecutableElement> getMethods(TypeElement e) {
+    return filterEnclosedElements(e, ExecutableElement.class, ElementKind.METHOD);
+  }
+
   public static Iterable<ExecutableElement> getConstructors(TypeElement e) {
     return filterEnclosedElements(e, ExecutableElement.class, ElementKind.CONSTRUCTOR);
   }
@@ -522,5 +527,17 @@ public final class ElementUtil {
       }
     }
     return null;
+  }
+
+  /**
+   * Returns an alphabetically sorted list of an annotation type's members.
+   * This is necessary since an annotation's values can be specified in any
+   * order, but the annotation's constructor needs to be invoked using its
+   * declaration order.
+   */
+  public static List<ExecutableElement> getSortedAnnotationMembers(TypeElement annotation) {
+    List<ExecutableElement> members = Lists.newArrayList(getMethods(annotation));
+    Collections.sort(members, (m1, m2) -> getName(m1).compareTo(getName(m2)));
+    return members;
   }
 }
