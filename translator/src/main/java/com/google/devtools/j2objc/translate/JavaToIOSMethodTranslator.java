@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -85,7 +86,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
 
     IMethodBinding binding = node.getMethodBinding();
     String key = BindingUtil.getMethodKey(binding);
-    String selector = NameTable.STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS.get(key);
+    String selector = Mappings.STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS.get(key);
     if (selector != null) {
       assert !node.hasRetainedResult();
       if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {

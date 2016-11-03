@@ -274,82 +274,22 @@ public class NameTable {
       "version");
 
   /**
-   * We convert all the String constructor invocations to factory method
-   * invocations because we want to avoid calling [NSString alloc].
-   */
-  public static final Map<String, String> STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS =
-      ImmutableMap.<String, String>builder()
-      .put("java.lang.String.String()V", "string")
-      .put("java.lang.String.String(Ljava/lang/String;)V", "stringWithString:")
-      .put("java.lang.String.String([B)V", "java_stringWithBytes:")
-      .put("java.lang.String.String([BLjava/lang/String;)V", "java_stringWithBytes:charsetName:")
-      .put("java.lang.String.String([BLjava/nio/charset/Charset;)V",
-          "java_stringWithBytes:charset:")
-      .put("java.lang.String.String([BI)V", "java_stringWithBytes:hibyte:")
-      .put("java.lang.String.String([BII)V", "java_stringWithBytes:offset:length:")
-      .put("java.lang.String.String([BIII)V", "java_stringWithBytes:hibyte:offset:length:")
-      .put("java.lang.String.String([BIILjava/lang/String;)V",
-           "java_stringWithBytes:offset:length:charsetName:")
-      .put("java.lang.String.String([BIILjava/nio/charset/Charset;)V",
-           "java_stringWithBytes:offset:length:charset:")
-      .put("java.lang.String.String([C)V", "java_stringWithCharacters:")
-      .put("java.lang.String.String([CII)V", "java_stringWithCharacters:offset:length:")
-      .put("java.lang.String.String([III)V", "java_stringWithInts:offset:length:")
-      .put("java.lang.String.String(II[C)V", "java_stringWithOffset:length:characters:")
-      .put("java.lang.String.String(Ljava/lang/StringBuffer;)V",
-          "java_stringWithJavaLangStringBuffer:")
-      .put("java.lang.String.String(Ljava/lang/StringBuilder;)V",
-           "java_stringWithJavaLangStringBuilder:")
-      .build();
-
-  /**
    * Map of package names to their specified prefixes.  Multiple packages
    * can share a prefix; for example, the com.google.common packages in
    * Guava could share a "GG" (Google Guava) or simply "Guava" prefix.
    */
   private final PackagePrefixes prefixMap;
 
-  private final Map<String, String> methodMappings;
+  private final ImmutableMap<String, String> classMappings;
+  private final ImmutableMap<String, String> methodMappings;
 
-  /**
-   * Factory class for creating new NameTable instances.
-   */
-  public static class Factory {
-
-    // Currently a shared map.
-    // TODO(kstanger): For thread safety this will either need to be a
-    // concurrent map, or make a copy for each NameTable.
-    private PackagePrefixes prefixMap = Options.getPackagePrefixes();
-
-    private final Map<String, String> methodMappings = ImmutableMap.<String, String>builder()
-        .putAll(Options.getMethodMappings())
-        .putAll(STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS)
-        .build();
-
-    private Factory() {
-      // Make sure the input mapping files have valid selectors.
-      for (String selector : methodMappings.values()) {
-        validateMethodSelector(selector);
-      }
-    }
-
-    public NameTable newNameTable(Types typeEnv, ElementUtil elementUtil, CaptureInfo captureInfo) {
-      return new NameTable(typeEnv, elementUtil, captureInfo, prefixMap, methodMappings);
-    }
-  }
-
-  public static Factory newFactory() {
-    return new Factory();
-  }
-
-  private NameTable(
-      Types typeEnv, ElementUtil elementUtil, CaptureInfo captureInfo, PackagePrefixes prefixMap,
-      Map<String, String> methodMappings) {
+  public NameTable(Types typeEnv, ElementUtil elementUtil, CaptureInfo captureInfo) {
     this.typeEnv = typeEnv;
     this.elementUtil = elementUtil;
     this.captureInfo = captureInfo;
-    this.prefixMap = prefixMap;
-    this.methodMappings = methodMappings;
+    prefixMap = Options.getPackagePrefixes();
+    classMappings = Options.getMappings().getClassMappings();
+    methodMappings = Options.getMappings().getMethodMappings();
   }
 
   public void setVariableName(IVariableBinding var, String name) {
@@ -626,6 +566,7 @@ public class NameTable {
     method = method.getMethodDeclaration();
     String selector = methodMappings.get(BindingUtil.getMethodKey(method));
     if (selector != null) {
+      validateMethodSelector(selector);
       return selector;
     }
     selector = getMethodNameFromAnnotation(method);
@@ -931,8 +872,9 @@ public class NameTable {
     String name = binding.getQualifiedName();
 
     // Use mapping file entry, if it exists.
-    if (Options.getClassMappings().containsKey(name)) {
-      return Options.getClassMappings().get(name);
+    String mappedName = classMappings.get(name);
+    if (mappedName != null) {
+      return mappedName;
     }
 
     // Use camel-cased package+class name.

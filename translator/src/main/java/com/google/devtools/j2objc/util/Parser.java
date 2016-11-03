@@ -30,7 +30,6 @@ public abstract class Parser {
   protected List<String> sourcepathEntries = Lists.newArrayList();
   protected String encoding = null;
   protected boolean includeRunningVMBootclasspath = true;
-  protected final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
   protected static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
 

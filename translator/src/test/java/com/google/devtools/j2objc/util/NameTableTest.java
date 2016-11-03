@@ -146,18 +146,13 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testRenameMapping() throws IOException {
-    Options.getClassMappings().put("foo.bar.A",  "Test2Name");
-    try {
-      addSourceFile("package foo.bar; public class A { static void test() {}}", "foo/bar/A.java");
-      addSourceFile(
-          "package foo.bar; public class B { void test() { A.test(); }}", "foo/bar/B.java");
-      String translation = translateSourceFile("foo.bar.A", "foo/bar/A.h");
-      assertTranslation(translation, "@interface Test2Name : NSObject");
-      translation = translateSourceFile("foo.bar.B", "foo/bar/B.m");
-      assertTranslation(translation, "Test2Name_test();");
-    } finally {
-      Options.getClassMappings().remove("foo.bar.A");
-    }
+    Options.getMappings().addClass("foo.bar.A",  "Test2Name");
+    addSourceFile("package foo.bar; public class A { static void test() {}}", "foo/bar/A.java");
+    addSourceFile("package foo.bar; public class B { void test() { A.test(); }}", "foo/bar/B.java");
+    String translation = translateSourceFile("foo.bar.A", "foo/bar/A.h");
+    assertTranslation(translation, "@interface Test2Name : NSObject");
+    translation = translateSourceFile("foo.bar.B", "foo/bar/B.m");
+    assertTranslation(translation, "Test2Name_test();");
   }
 
   public void testRenameMethodAnnotation() throws IOException {

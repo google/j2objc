@@ -20,11 +20,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
+import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.PackageInfoLookup;
 import com.google.devtools.j2objc.util.PackagePrefixes;
 import com.google.devtools.j2objc.util.Parser;
@@ -32,15 +31,12 @@ import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -73,8 +69,6 @@ public class Options {
   private boolean deprecatedDeclarations = false;
   private HeaderMap headerMap = new HeaderMap();
   private File outputHeaderMappingFile = null;
-  private Map<String, String> classMappings = Maps.newLinkedHashMap();
-  private Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private boolean stripGwtIncompatible = false;
   private boolean segmentedHeaders = true;
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
@@ -98,6 +92,7 @@ public class Options {
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.JDT;
 
+  private Mappings mappings = new Mappings();
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup();
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
 
@@ -110,8 +105,6 @@ public class Options {
 
   public static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
   // Null if not set (means we use the default). Can be empty also (means we use no mapping files).
-
-  private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
 
   private static String fileHeader;
   private static final String FILE_HEADER_KEY = "file-header";
@@ -355,7 +348,7 @@ public class Options {
   private String[] loadInternal(String[] args) throws IOException {
     setLogLevel(Level.INFO);
 
-    addJreMappings();
+    mappings.addJreMappings();
 
     // Create a temporary directory as the sourcepath's first entry, so that
     // modified sources will take precedence over regular files.
@@ -393,7 +386,7 @@ public class Options {
         if (++nArg == args.length) {
           usage("--mapping requires an argument");
         }
-        addMappingsFiles(args[nArg].split(","));
+        mappings.addMappingsFiles(args[nArg].split(","));
       } else if (arg.equals("--header-mapping")) {
         if (++nArg == args.length) {
           usage("--header-mapping requires an argument");
@@ -615,45 +608,6 @@ public class Options {
     packagePrefixes.addPrefix(arg.substring(0, i), arg.substring(i + 1));
   }
 
-  private void addMappingsFiles(String[] filenames) throws IOException {
-    for (String filename : filenames) {
-      if (!filename.isEmpty()) {
-        addMappingsProperties(FileUtil.loadProperties(filename));
-      }
-    }
-  }
-
-  private void addJreMappings() throws IOException {
-    InputStream stream = J2ObjC.class.getResourceAsStream(JRE_MAPPINGS_FILE);
-    addMappingsProperties(FileUtil.loadProperties(stream));
-  }
-
-  private void addMappingsProperties(Properties mappings) {
-    Enumeration<?> keyIterator = mappings.propertyNames();
-    while (keyIterator.hasMoreElements()) {
-      String key = (String) keyIterator.nextElement();
-      if (key.indexOf('(') > 0) {
-        // All method mappings have parentheses characters, classes don't.
-        String iosMethod = mappings.getProperty(key);
-        addMapping(methodMappings, key, iosMethod, "method mapping");
-      } else {
-        String iosClass = mappings.getProperty(key);
-        addMapping(classMappings, key, iosClass, "class mapping");
-      }
-    }
-  }
-
-  /**
-   * Adds a class, method or package-prefix property to its map, reporting an error
-   * if that mapping was previously specified.
-   */
-  private static void addMapping(Map<String, String> map, String key, String value, String kind) {
-    String oldValue = map.put(key,  value);
-    if (oldValue != null && !oldValue.equals(value)) {
-      ErrorUtil.error(kind + " redefined; was \"" + oldValue + ", now " + value);
-    }
-  }
-
   /**
    * Check that the memory management option wasn't previously set to a
    * different value.  If okay, then set the option.
@@ -810,14 +764,6 @@ public class Options {
     return instance.deprecatedDeclarations;
   }
 
-  public static Map<String, String> getClassMappings() {
-    return instance.classMappings;
-  }
-
-  public static Map<String, String> getMethodMappings() {
-    return instance.methodMappings;
-  }
-
   public static HeaderMap getHeaderMap() {
     return instance.headerMap;
   }
@@ -870,6 +816,10 @@ public class Options {
 
   public static List<String> getBootClasspath() {
     return getPathArgument(bootclasspath);
+  }
+
+  public static Mappings getMappings() {
+    return instance.mappings;
   }
 
   public static PackageInfoLookup getPackageInfoLookup() {

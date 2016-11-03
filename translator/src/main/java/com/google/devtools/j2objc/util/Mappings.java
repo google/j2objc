@@ -1,0 +1,120 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.devtools.j2objc.util;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.J2ObjC;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+/**
+ * Manages class and method name mappings.
+ */
+public class Mappings {
+
+  /**
+   * We convert all the String constructor invocations to factory method
+   * invocations because we want to avoid calling [NSString alloc].
+   */
+  public static final Map<String, String> STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS =
+      ImmutableMap.<String, String>builder()
+      .put("java.lang.String.String()V", "string")
+      .put("java.lang.String.String(Ljava/lang/String;)V", "stringWithString:")
+      .put("java.lang.String.String([B)V", "java_stringWithBytes:")
+      .put("java.lang.String.String([BLjava/lang/String;)V", "java_stringWithBytes:charsetName:")
+      .put("java.lang.String.String([BLjava/nio/charset/Charset;)V",
+          "java_stringWithBytes:charset:")
+      .put("java.lang.String.String([BI)V", "java_stringWithBytes:hibyte:")
+      .put("java.lang.String.String([BII)V", "java_stringWithBytes:offset:length:")
+      .put("java.lang.String.String([BIII)V", "java_stringWithBytes:hibyte:offset:length:")
+      .put("java.lang.String.String([BIILjava/lang/String;)V",
+           "java_stringWithBytes:offset:length:charsetName:")
+      .put("java.lang.String.String([BIILjava/nio/charset/Charset;)V",
+           "java_stringWithBytes:offset:length:charset:")
+      .put("java.lang.String.String([C)V", "java_stringWithCharacters:")
+      .put("java.lang.String.String([CII)V", "java_stringWithCharacters:offset:length:")
+      .put("java.lang.String.String([III)V", "java_stringWithInts:offset:length:")
+      .put("java.lang.String.String(II[C)V", "java_stringWithOffset:length:characters:")
+      .put("java.lang.String.String(Ljava/lang/StringBuffer;)V",
+          "java_stringWithJavaLangStringBuffer:")
+      .put("java.lang.String.String(Ljava/lang/StringBuilder;)V",
+           "java_stringWithJavaLangStringBuilder:")
+      .build();
+
+  private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
+
+  private final Map<String, String> classMappings = new HashMap<>();
+  private final Map<String, String> methodMappings = new HashMap<>();
+  {
+    methodMappings.putAll(STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS);
+  }
+
+  public ImmutableMap<String, String> getClassMappings() {
+    return ImmutableMap.copyOf(classMappings);
+  }
+
+  public ImmutableMap<String, String> getMethodMappings() {
+    return ImmutableMap.copyOf(methodMappings);
+  }
+
+  @VisibleForTesting
+  void addClass(String key, String name) {
+    classMappings.put(key, name);
+  }
+
+  public void addMappingsFiles(String[] filenames) throws IOException {
+    for (String filename : filenames) {
+      if (!filename.isEmpty()) {
+        addMappingsProperties(FileUtil.loadProperties(filename));
+      }
+    }
+  }
+
+  public void addJreMappings() throws IOException {
+    InputStream stream = J2ObjC.class.getResourceAsStream(JRE_MAPPINGS_FILE);
+    addMappingsProperties(FileUtil.loadProperties(stream));
+  }
+
+  private void addMappingsProperties(Properties mappings) {
+    Enumeration<?> keyIterator = mappings.propertyNames();
+    while (keyIterator.hasMoreElements()) {
+      String key = (String) keyIterator.nextElement();
+      if (key.indexOf('(') > 0) {
+        // All method mappings have parentheses characters, classes don't.
+        String iosMethod = mappings.getProperty(key);
+        addMapping(methodMappings, key, iosMethod, "method mapping");
+      } else {
+        String iosClass = mappings.getProperty(key);
+        addMapping(classMappings, key, iosClass, "class mapping");
+      }
+    }
+  }
+
+  /**
+   * Adds a class, method or package-prefix property to its map, reporting an error
+   * if that mapping was previously specified.
+   */
+  private static void addMapping(Map<String, String> map, String key, String value, String kind) {
+    String oldValue = map.put(key,  value);
+    if (oldValue != null && !oldValue.equals(value)) {
+      ErrorUtil.error(kind + " redefined; was \"" + oldValue + ", now " + value);
+    }
+  }
+}

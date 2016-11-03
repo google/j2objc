@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.types.Types;
 
 /**
@@ -29,13 +28,12 @@ public class TranslationEnvironment {
   private final NameTable nameTable;
   private final TranslationUtil translationUtil;
 
-  public TranslationEnvironment(NameTable.Factory nameTableFactory, ParserEnvironment parserEnv) {
-    Preconditions.checkNotNull(nameTableFactory);
+  public TranslationEnvironment(ParserEnvironment parserEnv) {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
     typeUtil = new TypeUtil(parserEnv.typeUtilities(), elementUtil);
     typeEnv = new Types(parserEnv);
     captureInfo = new CaptureInfo(typeEnv, typeUtil);
-    nameTable = nameTableFactory.newNameTable(typeEnv, elementUtil, captureInfo);
+    nameTable = new NameTable(typeEnv, elementUtil, captureInfo);
     translationUtil = new TranslationUtil(typeEnv, nameTable);
   }
 

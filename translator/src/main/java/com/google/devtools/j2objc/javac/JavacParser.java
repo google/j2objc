@@ -122,7 +122,7 @@ public class JavacParser extends Parser {
     JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(
         null, fileManager, diagnostics, javacOptions, null, fileObjects);
     JavacEnvironment parserEnv = new JavacEnvironment(task.getContext());
-    TranslationEnvironment env = new TranslationEnvironment(nameTableFactory, parserEnv);
+    TranslationEnvironment env = new TranslationEnvironment(parserEnv);
 
     List<CompilationUnitTree> units = new ArrayList<>();
     try {

@@ -298,6 +298,7 @@ JAVA_SOURCES = \
 	util/ErrorUtil.java \
 	util/FileUtil.java \
 	util/HeaderMap.java \
+	util/Mappings.java \
 	util/NameTable.java \
 	util/PackageInfoLookup.java \
 	util/PackagePrefixes.java \
