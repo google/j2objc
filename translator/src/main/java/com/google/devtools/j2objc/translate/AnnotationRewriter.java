@@ -150,7 +150,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     TypeElement type = node.getTypeElement();
     String typeName = nameTable.getFullName(type);
     FunctionDeclaration constructorDecl =
-        new FunctionDeclaration("create_" + typeName, type.asType(), type.asType());
+        new FunctionDeclaration("create_" + typeName, type.asType());
     Block constructorBody = new Block();
     constructorDecl.setBody(constructorBody);
     List<Statement> stmts = constructorBody.getStatements();

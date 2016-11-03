@@ -127,12 +127,10 @@ public class AnonymousClassConverter extends UnitTreeVisitor {
   private ExecutablePair findSuperConstructor(ExecutableElement constructorElement) {
     DeclaredType superClass =
         (DeclaredType) ElementUtil.getDeclaringClass(constructorElement).getSuperclass();
-    for (ExecutableElement m : ElementUtil.getDeclaredMethods(TypeUtil.asTypeElement(superClass))) {
-      if (ElementUtil.isConstructor(m)) {
-        ExecutableType mType = typeUtil.asMemberOf(superClass, m);
-        if (typeUtil.isSubsignature((ExecutableType) constructorElement.asType(), mType)) {
-          return new ExecutablePair(m, typeUtil.asMemberOf(superClass, m));
-        }
+    for (ExecutableElement m : ElementUtil.getConstructors(TypeUtil.asTypeElement(superClass))) {
+      ExecutableType mType = typeUtil.asMemberOf(superClass, m);
+      if (typeUtil.isSubsignature((ExecutableType) constructorElement.asType(), mType)) {
+        return new ExecutablePair(m, typeUtil.asMemberOf(superClass, m));
       }
     }
     throw new AssertionError("could not find constructor");

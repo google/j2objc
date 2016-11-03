@@ -399,7 +399,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
   }
 
   private static boolean isValue(Expression expr) {
-    return !(expr instanceof Name) || !ElementUtil.isType(((Name) expr).getElement());
+    return !(expr instanceof Name) || ElementUtil.isVariable(((Name) expr).getElement());
   }
 
   @Override

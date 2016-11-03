@@ -266,7 +266,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
       String name = node.getName().getIdentifier();
       int numParams = functionalInterface.getParameters().size() - 1;
       TypeElement javaObject = typeEnv.getJavaObjectElement();
-      for (ExecutableElement method : ElementUtil.getDeclaredMethods(javaObject)) {
+      for (ExecutableElement method : ElementUtil.getMethods(javaObject)) {
         if (ElementUtil.getName(method).equals(name)
             && method.getParameters().size() == numParams) {
           return new ExecutablePair(method);

@@ -59,7 +59,7 @@ public class VariableRenamer extends UnitTreeVisitor {
       }
       // Look for methods that might conflict with a static variable when functionized.
       Set<String> staticMethodNames = new HashSet<>();
-      for (ExecutableElement method : ElementUtil.getDeclaredMethods(type)) {
+      for (ExecutableElement method : ElementUtil.getExecutables(type)) {
         if (method.getParameters().size() == 0) {
           staticMethodNames.add(nameTable.getFunctionName(method));
         }

@@ -322,7 +322,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     print(function.getJniSignature());
     print("(&J2ObjC_JNIEnv");
     if (Modifier.isStatic(function.getModifiers())) {
-      printf(", %s_class_()", nameTable.getFullName(function.getDeclaringClass()));
+      printf(", %s_class_()", typeName);
     }
     for (SingleVariableDeclaration param : function.getParameters()) {
       printf(", %s", nameTable.getVariableBaseName(param.getVariableBinding()));

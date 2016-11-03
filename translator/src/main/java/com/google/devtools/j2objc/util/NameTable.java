@@ -756,7 +756,7 @@ public class NameTable {
     if (declaringClass == currentType) {
       return topMethod;
     }
-    for (ExecutableElement candidate : ElementUtil.getDeclaredMethods(currentType)) {
+    for (ExecutableElement candidate : ElementUtil.getMethods(currentType)) {
       if (ElementUtil.isInstanceMethod(candidate)
           && elementUtil.overrides(topMethod, candidate, declaringClass)) {
         return candidate;
@@ -897,13 +897,8 @@ public class NameTable {
     return typeName + "_Enum";
   }
 
-  public String getFullName(TypeElement e) {
-    return getFullName(BindingConverter.unwrapTypeElement(e));
-  }
-
-  // TODO(kstanger): Remove this. Callers should use a TypeElement
-  public String getFullName(TypeMirror t) {
-    return getFullName(BindingConverter.unwrapTypeMirrorIntoTypeBinding(t));
+  public String getFullName(TypeElement element) {
+    return getFullName(BindingConverter.unwrapTypeElement(element));
   }
 
   /**

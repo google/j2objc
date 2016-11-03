@@ -106,6 +106,7 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -685,8 +686,8 @@ public class StatementGenerator extends UnitTreeVisitor {
         return false;
       }
     }
-    if (ElementUtil.isType(element)) {
-      buffer.append(nameTable.getFullName(element.asType()));
+    if (ElementUtil.isTypeElement(element)) {
+      buffer.append(nameTable.getFullName((TypeElement) element));
       return false;
     }
     Name qualifier = node.getQualifier();
@@ -725,8 +726,8 @@ public class StatementGenerator extends UnitTreeVisitor {
       buffer.append(nameTable.getVariableQualifiedName((VariableElement) element));
       return false;
     }
-    if (element != null && ElementUtil.isType(element)) {
-      buffer.append(nameTable.getFullName(element.asType()));
+    if (element != null && ElementUtil.isTypeElement(element)) {
+      buffer.append(nameTable.getFullName((TypeElement) element));
     } else {
       buffer.append(node.getIdentifier());
     }

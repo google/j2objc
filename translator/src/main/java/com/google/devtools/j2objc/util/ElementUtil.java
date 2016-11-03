@@ -271,18 +271,11 @@ public final class ElementUtil {
     return element.getModifiers().contains(modifier);
   }
 
-  public static boolean isType(Element element) {
-    ElementKind kind = element.getKind();
-    return kind == ElementKind.ANNOTATION_TYPE || kind == ElementKind.CLASS
-        || kind == ElementKind.ENUM || kind == ElementKind.INTERFACE
-        || kind == ElementKind.TYPE_PARAMETER;
-  }
-
   public static boolean isVariable(Element element) {
     ElementKind kind = element.getKind();
     return kind == ElementKind.FIELD || kind == ElementKind.LOCAL_VARIABLE
         || kind == ElementKind.PARAMETER || kind == ElementKind.EXCEPTION_PARAMETER
-        || kind == ElementKind.RESOURCE_VARIABLE;
+        || kind == ElementKind.RESOURCE_VARIABLE || kind == ElementKind.ENUM_CONSTANT;
   }
 
   public static boolean isField(Element element) {
@@ -333,7 +326,7 @@ public final class ElementUtil {
     return filterEnclosedElements(e, ExecutableElement.class, ElementKind.CONSTRUCTOR);
   }
 
-  public static List<ExecutableElement> getDeclaredMethods(Element e) {
+  public static List<ExecutableElement> getExecutables(TypeElement e) {
     return Lists.newArrayList(filterEnclosedElements(
         e, ExecutableElement.class, ElementKind.CONSTRUCTOR, ElementKind.METHOD));
   }

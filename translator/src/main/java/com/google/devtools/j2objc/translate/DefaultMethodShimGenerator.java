@@ -116,7 +116,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       visitedTypes.add(typeElem);
 
       for (ExecutableElement methodElem : Iterables.filter(
-          ElementUtil.getDeclaredMethods(typeElem), ElementUtil::isInstanceMethod)) {
+          ElementUtil.getMethods(typeElem), ElementUtil::isInstanceMethod)) {
         ExecutablePair method = new ExecutablePair(
             methodElem, typeUtil.asMemberOf(type, methodElem));
         collector.put(getOverrideSignature(method), method);

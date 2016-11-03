@@ -14,10 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for a function declaration.
@@ -30,8 +29,6 @@ public class FunctionDeclaration extends BodyDeclaration {
   private final ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
   private final ChildLink<Block> body = ChildLink.create(Block.class, this);
-  //TODO(user): declaringClass should more properly be an Element.
-  private final TypeMirror declaringClass;
   private String jniSignature = null;
 
   public FunctionDeclaration(FunctionDeclaration other) {
@@ -41,20 +38,17 @@ public class FunctionDeclaration extends BodyDeclaration {
     returnType.copyFrom(other.getReturnType());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
-    declaringClass = other.declaringClass;
     jniSignature = other.jniSignature;
   }
 
-  public FunctionDeclaration(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
+  public FunctionDeclaration(String name, ITypeBinding returnType) {
     this.name = name;
     this.returnType.set(Type.newType(returnType));
-    this.declaringClass = BindingConverter.getType(declaringClass);
   }
 
-  public FunctionDeclaration(String name, TypeMirror returnType, TypeMirror declaringClass) {
+  public FunctionDeclaration(String name, TypeMirror returnType) {
     this.name = name;
     this.returnType.set(Type.newType(returnType));
-    this.declaringClass = declaringClass;
   }
 
   @Override
@@ -100,10 +94,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 
   public void setJniSignature(String s) {
     this.jniSignature = s;
-  }
-
-  public TypeMirror getDeclaringClass() {
-    return declaringClass;
   }
 
   @Override

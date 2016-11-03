@@ -400,8 +400,7 @@ public class MetadataWriter extends UnitTreeVisitor {
 
     private String addAnnotationsFunction(Expression result) {
       String name = className + "__Annotations$" + annotationFuncCount++;
-      FunctionDeclaration decl = new FunctionDeclaration(
-          name, result.getTypeBinding(), typeNode.getTypeBinding());
+      FunctionDeclaration decl = new FunctionDeclaration(name, result.getTypeBinding());
       decl.addModifiers(Modifier.PRIVATE);
       Block body = new Block();
       decl.setBody(body);

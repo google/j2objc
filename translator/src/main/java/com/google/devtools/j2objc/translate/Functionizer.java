@@ -374,8 +374,8 @@ public class Functionizer extends UnitTreeVisitor {
     ITypeBinding declaringClass = m.getDeclaringClass();
     boolean isInstanceMethod = !BindingUtil.isStatic(m) && !m.isConstructor();
 
-    FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getFullFunctionName(elem), m.getReturnType(), declaringClass);
+    FunctionDeclaration function =
+        new FunctionDeclaration(nameTable.getFullFunctionName(elem), m.getReturnType());
     function.setJniSignature(SignatureGenerator.createJniFunctionSignature(m, elementUtil));
     function.setLineNumber(method.getName().getLineNumber());
 
@@ -428,7 +428,7 @@ public class Functionizer extends UnitTreeVisitor {
 
     String name = releasing ? nameTable.getReleasingConstructorName(element)
         : nameTable.getAllocatingConstructorName(element);
-    FunctionDeclaration function = new FunctionDeclaration(name, declaringClass, declaringClass);
+    FunctionDeclaration function = new FunctionDeclaration(name, declaringClass);
     function.setLineNumber(method.getName().getLineNumber());
     function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
     function.setReturnsRetained(!releasing);

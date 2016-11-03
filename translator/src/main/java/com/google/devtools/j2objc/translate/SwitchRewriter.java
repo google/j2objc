@@ -76,7 +76,8 @@ public class SwitchRewriter extends UnitTreeVisitor {
     }
     TypeMirror type = var.asType();
     if (TypeUtil.isEnum(type)) {
-      String enumValue = NameTable.getNativeEnumName(nameTable.getFullName(type)) + "_"
+      String enumValue =
+          NameTable.getNativeEnumName(nameTable.getFullName(TypeUtil.asTypeElement(type))) + "_"
           + nameTable.getVariableBaseName(var);
       node.setExpression(new NativeExpression(enumValue, typeEnv.resolveJavaTypeMirror("int")));
     } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
