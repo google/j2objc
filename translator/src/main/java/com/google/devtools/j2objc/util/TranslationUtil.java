@@ -40,7 +40,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -48,14 +47,15 @@ import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -288,7 +288,7 @@ public final class TranslationUtil {
     return modifier;
   }
 
-  public Expression createObjectArray(List<Expression> expressions, ITypeBinding arrayType) {
+  public Expression createObjectArray(List<Expression> expressions, ArrayType arrayType) {
     if (expressions.isEmpty()) {
       return new ArrayCreation(arrayType, typeEnv, 0);
     }
@@ -299,16 +299,18 @@ public final class TranslationUtil {
     return creation;
   }
 
-  public Expression createAnnotation(IAnnotationBinding annotationBinding) {
-    ITypeBinding annotationType = annotationBinding.getAnnotationType();
-    FunctionElement element = new FunctionElement(
-        "create_" + nameTable.getFullName(annotationType), annotationType, annotationType);
-    FunctionInvocation invocation = new FunctionInvocation(element, annotationType);
-    for (IMemberValuePairBinding valueBinding :
-         BindingUtil.getSortedMemberValuePairs(annotationBinding)) {
-      ITypeBinding valueType = valueBinding.getMethodBinding().getReturnType();
+  public Expression createAnnotation(AnnotationMirror annotationMirror) {
+    DeclaredType type = annotationMirror.getAnnotationType();
+    TypeElement typeElem = (TypeElement) type.asElement();
+    FunctionElement element =
+        new FunctionElement("create_" + nameTable.getFullName(typeElem), type, typeElem);
+    FunctionInvocation invocation = new FunctionInvocation(element, type);
+    Map<? extends ExecutableElement, ? extends AnnotationValue> values =
+        annotationMirror.getElementValues();
+    for (ExecutableElement member : ElementUtil.getSortedAnnotationMembers(typeElem)) {
+      TypeMirror valueType = member.getReturnType();
       element.addParameters(valueType);
-      invocation.addArgument(createAnnotationValue(valueType, valueBinding.getValue()));
+      invocation.addArgument(createAnnotationValue(valueType, values.get(member)));
     }
     return invocation;
   }
@@ -321,40 +323,19 @@ public final class TranslationUtil {
       return new SimpleName((VariableElement) value);
     } else if (TypeUtil.isArray(type)) {
       assert value instanceof List;
+      ArrayType arrayType = (ArrayType) type;
       @SuppressWarnings("unchecked")
       List<? extends AnnotationValue> list = (List<? extends AnnotationValue>) value;
       List<Expression> generatedValues = new ArrayList<>();
       for (AnnotationValue elem : list) {
-        generatedValues.add(createAnnotationValue(((ArrayType) type).getComponentType(), elem));
+        generatedValues.add(createAnnotationValue(arrayType.getComponentType(), elem));
       }
-      return createObjectArray(
-          generatedValues, BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
+      return createObjectArray(generatedValues, arrayType);
     } else if (TypeUtil.isAnnotation(type)) {
       assert value instanceof AnnotationMirror;
-      return createAnnotation(BindingConverter.unwrapAnnotationMirror((AnnotationMirror) value));
+      return createAnnotation((AnnotationMirror) value);
     } else if (value instanceof TypeMirror) {
       return new TypeLiteral((TypeMirror) value, typeEnv);
-    } else {  // Boolean, Character, Number, String
-      return TreeUtil.newLiteral(value, typeEnv);
-    }
-  }
-
-  public Expression createAnnotationValue(ITypeBinding type, Object value) {
-    if (value == null) {
-      return new NullLiteral();
-    } else if (value instanceof IVariableBinding) {
-      return new SimpleName((IVariableBinding) value);
-    } else if (value instanceof ITypeBinding) {
-      return new TypeLiteral((ITypeBinding) value, typeEnv);
-    } else if (value instanceof IAnnotationBinding) {
-      return createAnnotation((IAnnotationBinding) value);
-    } else if (value instanceof Object[]) {
-      Object[] array = (Object[]) value;
-      List<Expression> generatedValues = new ArrayList<>();
-      for (Object elem : array) {
-        generatedValues.add(createAnnotationValue(type.getComponentType(), elem));
-      }
-      return createObjectArray(generatedValues, type);
     } else {  // Boolean, Character, Number, String
       return TreeUtil.newLiteral(value, typeEnv);
     }

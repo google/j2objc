@@ -22,7 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -645,24 +644,6 @@ public final class BindingUtil {
       }
     }
     return false;
-  }
-
-  /**
-   * Returns an alphabetically sorted list of an annotation's member values.
-   * This is necessary since an annotation's values can be specified in any
-   * order, but the annotation's constructor needs to be invoked using its
-   * declaration order.
-   */
-  public static IMemberValuePairBinding[] getSortedMemberValuePairs(
-      IAnnotationBinding annotation) {
-    IMemberValuePairBinding[] valuePairs = annotation.getAllMemberValuePairs();
-    Arrays.sort(valuePairs, new Comparator<IMemberValuePairBinding>() {
-      @Override
-      public int compare(IMemberValuePairBinding o1, IMemberValuePairBinding o2) {
-        return o1.getName().compareTo(o2.getName());
-      }
-    });
-    return valuePairs;
   }
 
   /**

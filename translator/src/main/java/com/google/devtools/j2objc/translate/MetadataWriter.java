@@ -42,7 +42,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedTypeBinding;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -51,7 +51,8 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -67,15 +68,15 @@ public class MetadataWriter extends UnitTreeVisitor {
 
   private static final NativeTypeBinding CLASS_INFO_TYPE =
       new NativeTypeBinding("const J2ObjcClassInfo *");
-  private static final GeneratedTypeBinding ANNOTATION_TYPE = GeneratedTypeBinding.newTypeBinding(
-      "java.lang.annotation.Annotation", null, true);
-  private static final GeneratedTypeBinding ANNOTATION_ARRAY =
-      GeneratedTypeBinding.newArrayType(ANNOTATION_TYPE);
-  private static final GeneratedTypeBinding ANNOTATION_2D_ARRAY =
-      GeneratedTypeBinding.newArrayType(ANNOTATION_ARRAY);
+  private final ArrayType annotationArray;
+  private final ArrayType annotationArray2D;
 
   public MetadataWriter(CompilationUnit unit) {
     super(unit);
+    TypeMirror annotationType =
+        GeneratedTypeElement.newEmulatedInterface("java.lang.annotation.Annotation").asType();
+    annotationArray = typeUtil.getArrayType(annotationType);
+    annotationArray2D = typeUtil.getArrayType(annotationArray);
   }
 
   @Override
@@ -395,7 +396,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       }
 
       return addAnnotationsFunction(
-          translationUtil.createObjectArray(subArrays, ANNOTATION_2D_ARRAY));
+          translationUtil.createObjectArray(subArrays, annotationArray2D));
     }
 
     private String addAnnotationsFunction(Expression result) {
@@ -413,11 +414,9 @@ public class MetadataWriter extends UnitTreeVisitor {
   private Expression createAnnotations(List<Annotation> annotations) {
     List<Expression> expressions = new ArrayList<>();
     for (Annotation annotation : annotations) {
-      IAnnotationBinding annotationBinding =
-          BindingConverter.unwrapAnnotationMirror(annotation.getAnnotationMirror());
-      expressions.add(translationUtil.createAnnotation(annotationBinding));
+      expressions.add(translationUtil.createAnnotation(annotation.getAnnotationMirror()));
     }
-    return translationUtil.createObjectArray(expressions, ANNOTATION_ARRAY);
+    return translationUtil.createObjectArray(expressions, annotationArray);
   }
 
   private static String getRawValueField(IVariableBinding var) {
