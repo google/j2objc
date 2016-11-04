@@ -36,18 +36,17 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.PointerType;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Adds release methods to Java classes, in preparation for translation
@@ -76,7 +75,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
   }
 
   private void addDeallocMethod(AbstractTypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
+    TypeElement type = node.getTypeElement();
     boolean hasFinalize = hasFinalizeMethod(type);
     List<Statement> releaseStatements = createReleaseStatements(node);
     if (releaseStatements.isEmpty() && !hasFinalize) {
@@ -84,7 +83,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     }
 
     ExecutableElement deallocElement = GeneratedExecutableElement.newMethodWithSelector(
-        NameTable.DEALLOC_METHOD, typeUtil.getVoidType(), BindingConverter.getTypeElement(type))
+        NameTable.DEALLOC_METHOD, typeUtil.getVoidType(), type)
         .addModifiers(Modifier.PUBLIC);
     MethodDeclaration deallocDecl = new MethodDeclaration(deallocElement);
     deallocDecl.setHasDeclaration(false);
@@ -103,23 +102,23 @@ public class DestructorGenerator extends UnitTreeVisitor {
     node.addBodyDeclaration(deallocDecl);
   }
 
-  private boolean hasFinalizeMethod(ITypeBinding type) {
-    if (type == null || typeEnv.isJavaObjectType(type)) {
+  private boolean hasFinalizeMethod(TypeElement type) {
+    if (type == null || ElementUtil.getQualifiedName(type).equals("java.lang.Object")) {
       return false;
     }
-    for (IMethodBinding method : type.getDeclaredMethods()) {
-      if (method.getName().equals(NameTable.FINALIZE_METHOD)
-          && method.getParameterTypes().length == 0) {
+    for (ExecutableElement method : ElementUtil.getMethods(type)) {
+      if (ElementUtil.getName(method).equals(NameTable.FINALIZE_METHOD)
+          && method.getParameters().isEmpty()) {
         return true;
       }
     }
-    return hasFinalizeMethod(type.getSuperclass());
+    return hasFinalizeMethod(ElementUtil.getSuperclass(type));
   }
 
   private List<Statement> createReleaseStatements(AbstractTypeDeclaration node) {
     List<Statement> statements = Lists.newArrayList();
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
-      Statement releaseStmt = createRelease(fragment.getVariableBinding());
+      Statement releaseStmt = createRelease(fragment.getVariableElement());
       if (releaseStmt != null) {
         statements.add(releaseStmt);
       }
@@ -127,13 +126,14 @@ public class DestructorGenerator extends UnitTreeVisitor {
     return statements;
   }
 
-  private Statement createRelease(IVariableBinding var) {
-    ITypeBinding varType = var.getType();
-    if (BindingUtil.isStatic(var) || varType.isPrimitive() || BindingUtil.isWeakReference(var)) {
+  private Statement createRelease(VariableElement var) {
+    TypeMirror varType = var.asType();
+    if (ElementUtil.isStatic(var) || varType.getKind().isPrimitive()
+        || ElementUtil.isWeakReference(var)) {
       return null;
     }
-    boolean isVolatile = BindingUtil.isVolatile(var);
-    boolean isRetainedWith = BindingUtil.isRetainedWithField(var);
+    boolean isVolatile = ElementUtil.isVolatile(var);
+    boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
     String funcName = null;
     if (isRetainedWith) {
       funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
@@ -145,20 +145,20 @@ public class DestructorGenerator extends UnitTreeVisitor {
     if (funcName == null) {
       return null;
     }
-    ITypeBinding voidType = typeEnv.resolveJavaType("void");
+    TypeMirror voidType = typeUtil.getVoidType();
     TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionElement element = new FunctionElement(funcName, voidType, null);
     FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
     if (isRetainedWith) {
       element.addParameters(idType);
-      releaseInvocation.addArgument(new ThisExpression(var.getDeclaringClass()));
+      releaseInvocation.addArgument(
+          new ThisExpression(ElementUtil.getDeclaringClass(var).asType()));
     }
     element.addParameters(isVolatile ? typeEnv.getPointerType(idType) : idType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(
-          typeEnv.getPointerType(BindingConverter.getType(varType)),
-          PrefixExpression.Operator.ADDRESS_OF, arg);
+          new PointerType(varType), PrefixExpression.Operator.ADDRESS_OF, arg);
     }
     releaseInvocation.addArgument(arg);
     return new ExpressionStatement(releaseInvocation);

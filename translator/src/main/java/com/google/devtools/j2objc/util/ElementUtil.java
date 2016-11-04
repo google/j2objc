@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import java.util.Arrays;
@@ -308,6 +309,10 @@ public final class ElementUtil {
         || BindingUtil.hasWeakPropertyAttribute(var)
         || (var.getName().startsWith("this$")
         && BindingUtil.hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
+  }
+
+  public static boolean isRetainedWithField(VariableElement varElement) {
+    return hasAnnotation(varElement, RetainedWith.class);
   }
 
   public static boolean isLocal(TypeElement type) {

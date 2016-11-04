@@ -227,10 +227,6 @@ public class Types {
     return iosBindingMap.get(name);
   }
 
-  public boolean isJavaObjectType(ITypeBinding type) {
-    return javaObjectType.equals(type);
-  }
-
   public boolean isJavaStringType(ITypeBinding type) {
     return javaStringType.equals(type);
   }
