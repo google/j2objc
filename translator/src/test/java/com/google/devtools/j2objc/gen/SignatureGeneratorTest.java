@@ -22,8 +22,9 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.io.IOException;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Verifies generic signature generation. Signature strings used here were created by
@@ -48,39 +49,40 @@ public class SignatureGeneratorTest extends GenerationTest {
     assertEquals(6, decls.size());
 
     // Verify A doesn't return a signature, since it isn't a generic type.
-    assertNull(SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
+    assertNull(SignatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
 
     assertEquals("<X:Ljava/lang/Object;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(1).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(1).getTypeElement()));
     assertEquals("<X:Ljava/lang/Object;Y:Ljava/lang/Object;Z:Ljava/lang/Object;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(2).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(2).getTypeElement()));
     assertEquals("Ljava/util/AbstractList<Ljava/lang/String;>;",
-        SignatureGenerator.createClassSignature(decls.get(3).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(3).getTypeElement()));
     assertEquals("<C::Ljava/lang/Comparable<-TC;>;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(4).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(4).getTypeElement()));
     assertEquals("Ljava/lang/ref/WeakReference<Ljava/util/concurrent/ForkJoinTask<*>;>;",
-        SignatureGenerator.createClassSignature(decls.get(5).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(5).getTypeElement()));
   }
 
   public void testFieldSignatures() throws IOException {
     CompilationUnit unit = translateType("A", "class A<X,Y,Z> { int a; double[] b; X c; Y[] d; "
         + "Class<?> e; java.util.List<X> f; Comparable<? super X> g; "
         + "A<? extends Number, ?, String> h; }");
-    IVariableBinding[] vars = unit.getTypes().get(0).getTypeBinding().getDeclaredFields();
-    assertEquals(8, vars.length);
+    List<VariableElement> vars =
+        ElementUtil.getDeclaredFields(unit.getTypes().get(0).getTypeElement());
+    assertEquals(8, vars.size());
 
     // Verify a and b don't return a signature, since they aren't generic types.
-    assertNull(SignatureGenerator.createFieldTypeSignature(vars[0]));
-    assertNull(SignatureGenerator.createFieldTypeSignature(vars[1]));
+    assertNull(SignatureGenerator.createFieldTypeSignature(vars.get(0)));
+    assertNull(SignatureGenerator.createFieldTypeSignature(vars.get(1)));
 
-    assertEquals("TX;", SignatureGenerator.createFieldTypeSignature(vars[2]));
-    assertEquals("[TY;", SignatureGenerator.createFieldTypeSignature(vars[3]));
-    assertEquals("Ljava/lang/Class<*>;", SignatureGenerator.createFieldTypeSignature(vars[4]));
-    assertEquals("Ljava/util/List<TX;>;", SignatureGenerator.createFieldTypeSignature(vars[5]));
+    assertEquals("TX;", SignatureGenerator.createFieldTypeSignature(vars.get(2)));
+    assertEquals("[TY;", SignatureGenerator.createFieldTypeSignature(vars.get(3)));
+    assertEquals("Ljava/lang/Class<*>;", SignatureGenerator.createFieldTypeSignature(vars.get(4)));
+    assertEquals("Ljava/util/List<TX;>;", SignatureGenerator.createFieldTypeSignature(vars.get(5)));
     assertEquals("Ljava/lang/Comparable<-TX;>;",
-        SignatureGenerator.createFieldTypeSignature(vars[6]));
+        SignatureGenerator.createFieldTypeSignature(vars.get(6)));
     assertEquals("LA<+Ljava/lang/Number;*Ljava/lang/String;>;",
-        SignatureGenerator.createFieldTypeSignature(vars[7]));
+        SignatureGenerator.createFieldTypeSignature(vars.get(7)));
   }
 
   public void testMethodSignatures() throws IOException {
@@ -93,19 +95,20 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "void f() throws Z {} "
         + "<T extends Throwable> void rethrow(Throwable t) {}"
         + "}");
-    IMethodBinding[] methods = unit.getTypes().get(0).getTypeBinding().getDeclaredMethods();
-    assertEquals(8, methods.length); // methods[0] is the default constructor.
+    List<ExecutableElement> methods =
+        ElementUtil.getExecutables(unit.getTypes().get(0).getTypeElement());
+    assertEquals(8, methods.size()); // methods[0] is the default constructor.
 
     // Verify a, b and c don't return a signature, since they aren't generic types.
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods[1]));
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods[2]));
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods[3]));
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(1)));
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(2)));
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(3)));
 
-    assertEquals("()TX;", SignatureGenerator.createMethodTypeSignature(methods[4]));
-    assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(methods[5]));
-    assertEquals("()V^TZ;", SignatureGenerator.createMethodTypeSignature(methods[6]));
+    assertEquals("()TX;", SignatureGenerator.createMethodTypeSignature(methods.get(4)));
+    assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(methods.get(5)));
+    assertEquals("()V^TZ;", SignatureGenerator.createMethodTypeSignature(methods.get(6)));
     assertEquals("<T:Ljava/lang/Throwable;>(Ljava/lang/Throwable;)V",
-        SignatureGenerator.createMethodTypeSignature(methods[7]));
+        SignatureGenerator.createMethodTypeSignature(methods.get(7)));
   }
 
   public void testMultipleBounds() throws IOException {
@@ -114,7 +117,7 @@ public class SignatureGeneratorTest extends GenerationTest {
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(1, decls.size());
     assertEquals("<T:Ljava/lang/Number;:Ljava/io/Serializable;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
   }
 
   public void testGenericInterface() throws IOException {
@@ -123,7 +126,7 @@ public class SignatureGeneratorTest extends GenerationTest {
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(1, decls.size());
     assertEquals("<E:Ljava/lang/Object;>Ljava/lang/Object;Ljava/util/Collection<TE;>;",
-        SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
+        SignatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
   }
 
   public void testJniSignatures() throws IOException {
@@ -202,11 +205,13 @@ public class SignatureGeneratorTest extends GenerationTest {
     CompilationUnit unit = translateType("MyList",
         "abstract class MyList extends java.util.AbstractList<String> { "
         + "public boolean add(String s) { return true; }}");
-    IMethodBinding[] methods = unit.getTypes().get(0).getTypeBinding().getDeclaredMethods();
-    assertEquals(2, methods.length); // methods[0] is the default constructor.
+    List<ExecutableElement> methods =
+        ElementUtil.getExecutables(unit.getTypes().get(0).getTypeElement());
+    assertEquals(2, methods.size()); // methods[0] is the default constructor.
 
     // Verify a signature is created for add(String), even though it isn't itself generic.
-    assertEquals("(Ljava/lang/String;)Z", SignatureGenerator.createMethodTypeSignature(methods[1]));
+    assertEquals("(Ljava/lang/String;)Z",
+        SignatureGenerator.createMethodTypeSignature(methods.get(1)));
   }
 
   public void testGenericClassWithArrayTypeVariable() throws IOException {

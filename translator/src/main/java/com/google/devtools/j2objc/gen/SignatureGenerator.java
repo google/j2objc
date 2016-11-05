@@ -17,10 +17,12 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -47,10 +49,11 @@ public class SignatureGenerator {
    *
    * @return the signature if class is generic, else null.
    */
-  public static String createClassSignature(ITypeBinding type) {
-    boolean create = needsSignature(type) || needsSignature(type.getSuperclass());
+  public static String createClassSignature(TypeElement type) {
+    ITypeBinding typeB = BindingConverter.unwrapTypeElement(type);
+    boolean create = needsSignature(typeB) || needsSignature(typeB.getSuperclass());
     if (!create) {
-      for (ITypeBinding intf : type.getInterfaces()) {
+      for (ITypeBinding intf : typeB.getInterfaces()) {
         if (needsSignature(intf)) {
           create = true;
           break;
@@ -61,7 +64,7 @@ public class SignatureGenerator {
       return null;
     }
     SignatureGenerator builder = new SignatureGenerator();
-    builder.genClassSignature(type);
+    builder.genClassSignature(typeB);
     return builder.toString();
   }
 
@@ -70,8 +73,8 @@ public class SignatureGenerator {
    *
    * @return the signature if field type is a type variable, else null.
    */
-  public static String createFieldTypeSignature(IVariableBinding variable) {
-    ITypeBinding type = variable.getType();
+  public static String createFieldTypeSignature(VariableElement variable) {
+    ITypeBinding type = BindingConverter.unwrapTypeMirrorIntoTypeBinding(variable.asType());
     if (type.isArray()) {
       if (!type.getElementType().isTypeVariable() && !type.getElementType().isParameterizedType()) {
         return null;
@@ -89,12 +92,13 @@ public class SignatureGenerator {
    *
    * @return the signature if method is generic or use type variables, else null.
    */
-  public static String createMethodTypeSignature(IMethodBinding method) {
-    if (!hasGenericSignature(method)) {
+  public static String createMethodTypeSignature(ExecutableElement method) {
+    IMethodBinding methodB = BindingConverter.unwrapExecutableElement(method);
+    if (!hasGenericSignature(methodB)) {
       return null;
     }
     SignatureGenerator builder = new SignatureGenerator();
-    builder.genMethodTypeSignature(method);
+    builder.genMethodTypeSignature(methodB);
     return builder.toString();
   }
 

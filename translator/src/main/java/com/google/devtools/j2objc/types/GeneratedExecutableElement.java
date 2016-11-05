@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -142,7 +143,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   @Override
   public List<? extends TypeParameterElement> getTypeParameters() {
-    throw new AssertionError("not implemented");
+    return Collections.emptyList();
   }
 
   @Override
@@ -172,7 +173,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
 
   @Override
   public List<? extends TypeMirror> getThrownTypes() {
-    throw new AssertionError("not implemented");
+    return Collections.emptyList();
   }
 
   @Override

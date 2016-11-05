@@ -239,4 +239,15 @@ public class MetadataWriterTest extends GenerationTest {
         "return [IOSObjectArray arrayWithObjects:(id[]){ create_FooBar(@\"mynames\") } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
+
+  public void testOuterAndCaptureFieldsInMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int i; void test(int j) { class Inner { int foo() { return i + j; } } } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "static const J2ObjcFieldInfo fields[] = {",
+        "  { \"this$0_\", \"LTest;\", .constantValue.asLong = 0, 0x1012, -1, -1, -1, -1 },",
+        "  { \"val$j_\", \"I\", .constantValue.asLong = 0, 0x1012, -1, -1, -1, -1 },",
+        "};");
+  }
 }

@@ -55,14 +55,14 @@ class JdtVariableElement extends JdtElement implements VariableElement {
       return ElementKind.PARAMETER;
     }
     IVariableBinding var = (IVariableBinding) binding;
+    if (var.isEnumConstant()) {
+      return ElementKind.ENUM_CONSTANT;
+    }
     if (var.isField()) {
       return ElementKind.FIELD;
     }
     if (var.isParameter()) {
       return ElementKind.PARAMETER;
-    }
-    if (var.isEnumConstant()) {
-      return ElementKind.ENUM_CONSTANT;
     }
     return ElementKind.LOCAL_VARIABLE;
   }

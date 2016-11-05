@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.NestingKind;
@@ -57,8 +56,12 @@ public final class TypeUtil {
     return elementUtil;
   }
 
+  public static boolean isDeclaredType(TypeMirror t) {
+    return t.getKind() == TypeKind.DECLARED;
+  }
+
   public static ElementKind getDeclaredTypeKind(TypeMirror t) {
-    return t.getKind() == TypeKind.DECLARED ? ((DeclaredType) t).asElement().getKind() : null;
+    return isDeclaredType(t) ? ((DeclaredType) t).asElement().getKind() : null;
   }
 
   public static boolean isClass(TypeMirror t) {
@@ -99,19 +102,7 @@ public final class TypeUtil {
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
-    if (t.getKind() != TypeKind.DECLARED) {
-      return null;
-    }
-    Element e = ((DeclaredType) t).asElement();
-    switch (e.getKind()) {
-      case ANNOTATION_TYPE:
-      case CLASS:
-      case ENUM:
-      case INTERFACE:
-        return (TypeElement) e;
-      default:
-        return null;
-    }
+    return isDeclaredType(t) ? (TypeElement) ((DeclaredType) t).asElement() : null;
   }
 
   public DeclaredType getSuperclass(TypeMirror t) {
@@ -363,23 +354,34 @@ public final class TypeUtil {
       case DECLARED:
         return "L" + elementUtil.getBinaryName(asTypeElement(t)).replace('.', '/') + ";";
       case BOOLEAN:
-        return "Z";
       case BYTE:
-        return "B";
       case CHAR:
-        return "C";
       case DOUBLE:
-        return "D";
       case FLOAT:
-        return "F";
       case INT:
-        return "I";
       case LONG:
-        return "J";
       case SHORT:
-        return "S";
       case VOID:
-        return "V";
+        return getBinaryName(t);
+      default:
+        throw new AssertionError("Cannot resolve signature name for type: " + t);
+    }
+  }
+
+  /**
+   * Returns the binary name for a primitive or void type.
+   */
+  public String getBinaryName(TypeMirror t) {
+    switch (t.getKind()) {
+      case BOOLEAN: return "Z";
+      case BYTE: return "B";
+      case CHAR: return "C";
+      case DOUBLE: return "D";
+      case FLOAT: return "F";
+      case INT: return "I";
+      case LONG: return "J";
+      case SHORT: return "S";
+      case VOID: return "V";
       default:
         throw new AssertionError("Cannot resolve binary name for type: " + t);
     }

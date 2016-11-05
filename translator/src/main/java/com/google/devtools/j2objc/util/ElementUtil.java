@@ -120,6 +120,10 @@ public final class ElementUtil {
     return hasModifier(element, Modifier.VOLATILE);
   }
 
+  public static boolean isAnonymous(TypeElement type) {
+    return type.getNestingKind() == NestingKind.ANONYMOUS;
+  }
+
   public static boolean isLambda(TypeElement type) {
     return type instanceof LambdaTypeElement;
   }
@@ -128,8 +132,16 @@ public final class ElementUtil {
     return type.getKind() == ElementKind.INTERFACE;
   }
 
+  public static boolean isAnnotationType(Element type) {
+    return type.getKind() == ElementKind.ANNOTATION_TYPE;
+  }
+
   public static boolean isEnum(Element e) {
     return e.getKind() == ElementKind.ENUM;
+  }
+
+  public static boolean isEnumConstant(Element e) {
+    return e.getKind() == ElementKind.ENUM_CONSTANT;
   }
 
   public static boolean isPackage(Element e) {
@@ -342,6 +354,12 @@ public final class ElementUtil {
 
   public static List<VariableElement> getDeclaredFields(Element e) {
     return Lists.newArrayList(filterEnclosedElements(e, VariableElement.class, ElementKind.FIELD));
+  }
+
+  public static Iterable<TypeElement> getDeclaredTypes(TypeElement e) {
+    return filterEnclosedElements(
+        e, TypeElement.class, ElementKind.ANNOTATION_TYPE, ElementKind.ENUM, ElementKind.CLASS,
+        ElementKind.INTERFACE);
   }
 
   private static boolean paramsMatch(ExecutableElement method, String[] paramTypes) {

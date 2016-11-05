@@ -16,8 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.util.BindingUtil;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -43,7 +42,7 @@ public class TreeUtilTest extends GenerationTest {
     unit.accept(new TreeVisitor() {
       @Override
       public void endVisit(MethodDeclaration node) {
-        if (!BindingUtil.isSynthetic(node.getModifiers())) {
+        if (!ElementUtil.isSynthetic(node.getExecutableElement())) {
           methods.add(node);
         }
       }

@@ -40,23 +40,24 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
-import com.google.devtools.j2objc.types.NativeTypeBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Adds the __metadata method to classes to support reflection.
@@ -66,8 +67,7 @@ public class MetadataWriter extends UnitTreeVisitor {
   // Metadata structure version. Increment it when any structure changes are made.
   public static final int METADATA_VERSION = 7;
 
-  private static final NativeTypeBinding CLASS_INFO_TYPE =
-      new NativeTypeBinding("const J2ObjcClassInfo *");
+  private static final NativeType CLASS_INFO_TYPE = new NativeType("const J2ObjcClassInfo *");
   private final ArrayType annotationArray;
   private final ArrayType annotationArray2D;
 
@@ -95,15 +95,15 @@ public class MetadataWriter extends UnitTreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    if (!TranslationUtil.needsReflection(BindingConverter.getTypeElement(type))) {
+    TypeElement type = node.getTypeElement();
+    if (!TranslationUtil.needsReflection(type)) {
       return;
     }
 
-    GeneratedMethodBinding metadataBinding = GeneratedMethodBinding.newMethod(
-        "__metadata", Modifier.STATIC | Modifier.PRIVATE | BindingUtil.ACC_SYNTHETIC,
-        CLASS_INFO_TYPE, type);
-    MethodDeclaration metadataDecl = new MethodDeclaration(metadataBinding);
+    ExecutableElement metadataElement =
+        GeneratedExecutableElement.newMethodWithSelector("__metadata", CLASS_INFO_TYPE, type)
+        .addModifiers(Modifier.STATIC, Modifier.PRIVATE);
+    MethodDeclaration metadataDecl = new MethodDeclaration(metadataElement);
     metadataDecl.setHasDeclaration(false);
 
     Block body = new Block();
@@ -120,7 +120,7 @@ public class MetadataWriter extends UnitTreeVisitor {
   private class MetadataGenerator {
 
     private final AbstractTypeDeclaration typeNode;
-    private final ITypeBinding type;
+    private final TypeElement type;
     private final String className;
     private final List<Statement> stmts;
     // Use a LinkedHashMap so that we can de-dupe values that are added to the pointer table.
@@ -129,7 +129,7 @@ public class MetadataWriter extends UnitTreeVisitor {
 
     private MetadataGenerator(AbstractTypeDeclaration typeNode, List<Statement> stmts) {
       this.typeNode = typeNode;
-      type = typeNode.getTypeBinding();
+      type = typeNode.getTypeElement();
       className = nameTable.getFullName(type);
       this.stmts = stmts;
     }
@@ -143,16 +143,16 @@ public class MetadataWriter extends UnitTreeVisitor {
           "static const J2ObjcClassInfo _%s = { "
           + "%s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
           fullName,
-          cStr(type.isAnonymous() ? "" : type.getName()),
-          cStr(Strings.emptyToNull(type.getPackage().getName())),
+          cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type)),
+          cStr(Strings.emptyToNull(ElementUtil.getName(elementUtil.getPackage(type)))),
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
           METADATA_VERSION,
           getTypeModifiers(type),
           methodMetadataCount,
           fieldMetadataCount,
-          cStrIdx(getTypeName(type.getDeclaringClass())),
-          cStrIdx(getTypeList(type.getDeclaredTypes())),
+          cStrIdx(getTypeName(ElementUtil.getDeclaringClass(type))),
+          cStrIdx(getTypeList(ElementUtil.asTypes(ElementUtil.getDeclaredTypes(type)))),
           cStrIdx(getEnclosingMethodSelector()),
           cStrIdx(SignatureGenerator.createClassSignature(type)),
           funcPtrIdx(annotationsFunc));
@@ -187,17 +187,16 @@ public class MetadataWriter extends UnitTreeVisitor {
       List<String> selectorMetadata = new ArrayList<>();
       int methodCount = 0;
       for (MethodDeclaration decl : TreeUtil.getMethodDeclarations(typeNode)) {
-        IMethodBinding binding = decl.getMethodBinding();
-        // Skip synthetic methods
-        if (BindingUtil.isSynthetic(decl.getModifiers()) || binding.isSynthetic()
-            // Skip enum constructors.
-            || (type.isEnum() && binding.isConstructor())) {
+        ExecutableElement element = decl.getExecutableElement();
+        // Skip synthetic methods and enum constructors.
+        if (ElementUtil.isSynthetic(element)
+            || (ElementUtil.isEnum(type) && ElementUtil.isConstructor(element))) {
           continue;
         }
         String annotationsFunc = createAnnotationsFunction(decl);
         String paramAnnotationsFunc = createParamAnnotationsFunction(decl);
-        methodMetadata.add(getMethodMetadata(binding, annotationsFunc, paramAnnotationsFunc));
-        String selector = nameTable.getMethodSelector(binding);
+        methodMetadata.add(getMethodMetadata(element, annotationsFunc, paramAnnotationsFunc));
+        String selector = nameTable.getMethodSelector(element);
         String metadata = UnicodeUtils.format("methods[%d].selector = @selector(%s);",
             methodCount, selector);
         ++methodCount;
@@ -207,9 +206,7 @@ public class MetadataWriter extends UnitTreeVisitor {
         // Add property accessor and static default methods.
         for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
           String name = decl.getName().getIdentifier();
-          IMethodBinding memberBinding =
-              BindingConverter.unwrapExecutableElement(decl.getExecutableElement());
-          String returnType = getTypeName(memberBinding.getReturnType());
+          String returnType = getTypeName(decl.getExecutableElement().getReturnType());
           String metadata = UnicodeUtils.format("    { NULL, %s, 0x%x, -1, -1, -1, -1, -1, -1 },\n",
               cStr(returnType),
               java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
@@ -239,20 +236,20 @@ public class MetadataWriter extends UnitTreeVisitor {
     }
 
     private String getMethodMetadata(
-        IMethodBinding method, String annotationsFunc, String paramAnnotationsFunc) {
-      String methodName = method instanceof GeneratedMethodBinding
-          ? ((GeneratedMethodBinding) method).getJavaName() : method.getName();
+        ExecutableElement method, String annotationsFunc, String paramAnnotationsFunc) {
+      String methodName = ElementUtil.getName(method);
       String selector = nameTable.getMethodSelector(method);
-      if (selector.equals(methodName) || method.isConstructor()) {
+      boolean isConstructor = ElementUtil.isConstructor(method);
+      if (selector.equals(methodName) || isConstructor) {
         methodName = null;  // Reduce redundant data.
       }
 
-      int modifiers = getMethodModifiers(method) & BindingUtil.ACC_FLAG_MASK;
-      String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
+      int modifiers = getMethodModifiers(method) & ElementUtil.ACC_FLAG_MASK;
+      String returnTypeStr = isConstructor ? null : getTypeName(method.getReturnType());
       return UnicodeUtils.format("    { NULL, %s, 0x%x, %s, %s, %s, %s, %s, %s },\n",
           cStr(returnTypeStr), modifiers, cStrIdx(methodName),
-          cStrIdx(getTypeList(method.getParameterTypes())),
-          cStrIdx(getTypeList(method.getExceptionTypes())),
+          cStrIdx(getTypeList(ElementUtil.asTypes(method.getParameters()))),
+          cStrIdx(getTypeList(method.getThrownTypes())),
           cStrIdx(SignatureGenerator.createMethodTypeSignature(method)),
           funcPtrIdx(annotationsFunc), funcPtrIdx(paramAnnotationsFunc));
     }
@@ -262,14 +259,14 @@ public class MetadataWriter extends UnitTreeVisitor {
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
           String annotationsFunc = createAnnotationsFunction(decl);
-          fieldMetadata.add(generateFieldMetadata(decl.getVariableBinding(), annotationsFunc));
+          fieldMetadata.add(generateFieldMetadata(decl.getVariableElement(), annotationsFunc));
         }
       }
       for (FieldDeclaration decl : TreeUtil.getFieldDeclarations(typeNode)) {
         // Fields that share a declaration can share an annotations function.
         String annotationsFunc = createAnnotationsFunction(decl);
         for (VariableDeclarationFragment f : decl.getFragments()) {
-          String metadata = generateFieldMetadata(f.getVariableBinding(), annotationsFunc);
+          String metadata = generateFieldMetadata(f.getVariableElement(), annotationsFunc);
           if (metadata != null) {
             fieldMetadata.add(metadata);
           }
@@ -286,13 +283,10 @@ public class MetadataWriter extends UnitTreeVisitor {
       return fieldMetadata.size();
     }
 
-    private String generateFieldMetadata(IVariableBinding var, String annotationsFunc) {
-      if (BindingUtil.isSynthetic(var)) {
-        return null;
-      }
+    private String generateFieldMetadata(VariableElement var, String annotationsFunc) {
       int modifiers = getFieldModifiers(var);
-      boolean isStatic = BindingUtil.isStatic(var);
-      String javaName = var.getName();
+      boolean isStatic = ElementUtil.isStatic(var);
+      String javaName = ElementUtil.getName(var);
       String objcName = nameTable.getVariableShortName(var);
       if ((isStatic && objcName.equals(javaName))
           || (!isStatic && objcName.equals(javaName + '_'))) {
@@ -301,7 +295,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       }
       String staticRef = null;
       String constantValue;
-      if (BindingUtil.isPrimitiveConstant(var)) {
+      if (ElementUtil.isPrimitiveConstant(var)) {
         constantValue = UnicodeUtils.format(".constantValue.%s = %s",
             getRawValueField(var), nameTable.getVariableQualifiedName(var));
       } else {
@@ -313,24 +307,15 @@ public class MetadataWriter extends UnitTreeVisitor {
       }
       return UnicodeUtils.format(
           "    { %s, %s, %s, 0x%x, %s, %s, %s, %s },\n",
-          cStr(objcName), cStr(getTypeName(var.getType())), constantValue, modifiers,
+          cStr(objcName), cStr(getTypeName(var.asType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
           cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
     }
 
     private String getEnclosingMethodSelector() {
-      IMethodBinding enclosingMethod = type.getDeclaringMethod();
-      if (enclosingMethod == null) {
-        return null;
-      }
-
-      // Method isn't enclosing if this type is defined in a type also enclosed
-      // by this method.
-      if (enclosingMethod.isEqualTo(type.getDeclaringClass().getDeclaringMethod())) {
-        return null;
-      }
-
-      return nameTable.getMethodSelector(enclosingMethod);
+      Element enclosing = type.getEnclosingElement();
+      return ElementUtil.isExecutableElement(enclosing)
+          ? nameTable.getMethodSelector((ExecutableElement) enclosing) : null;
     }
 
     private String cStrIdx(String str) {
@@ -401,8 +386,8 @@ public class MetadataWriter extends UnitTreeVisitor {
 
     private String addAnnotationsFunction(Expression result) {
       String name = className + "__Annotations$" + annotationFuncCount++;
-      FunctionDeclaration decl = new FunctionDeclaration(name, result.getTypeBinding());
-      decl.addModifiers(Modifier.PRIVATE);
+      FunctionDeclaration decl = new FunctionDeclaration(name, result.getTypeMirror());
+      decl.addModifiers(java.lang.reflect.Modifier.PRIVATE);
       Block body = new Block();
       decl.setBody(body);
       body.addStatement(new ReturnStatement(result));
@@ -419,42 +404,44 @@ public class MetadataWriter extends UnitTreeVisitor {
     return translationUtil.createObjectArray(expressions, annotationArray);
   }
 
-  private static String getRawValueField(IVariableBinding var) {
-    ITypeBinding type = var.getType();
-    assert type.isPrimitive();
-    switch (type.getBinaryName().charAt(0)) {
-      case 'B': return "asChar";
-      case 'C': return "asUnichar";
-      case 'D': return "asDouble";
-      case 'F': return "asFloat";
-      case 'I': return "asInt";
-      case 'J': return "asLong";
-      case 'S': return "asShort";
-      case 'Z': return "asBOOL";
+  private static String getRawValueField(VariableElement var) {
+    switch (var.asType().getKind()) {
+      case BOOLEAN: return "asBOOL";
+      case BYTE: return "asChar";
+      case CHAR: return "asUnichar";
+      case DOUBLE: return "asDouble";
+      case FLOAT: return "asFloat";
+      case INT: return "asInt";
+      case LONG: return "asLong";
+      case SHORT: return "asShort";
+      default: throw new AssertionError("Expected a primitive type.");
     }
-    throw new AssertionError();
   }
 
-  private String getTypeName(ITypeBinding type) {
+  private String getTypeName(TypeMirror type) {
     if (type == null) {
       return null;
     }
-    type = type.getErasure();
-    if (type.isPrimitive()) {
-      return type.getBinaryName();
-    } else if (type.isArray()) {
-      return "[" + getTypeName(type.getComponentType());
+    type = typeUtil.erasure(type);
+    if (TypeUtil.isDeclaredType(type)) {
+      return getTypeName(TypeUtil.asTypeElement(type));
+    } else if (TypeUtil.isArray(type)) {
+      return "[" + getTypeName(((ArrayType) type).getComponentType());
     } else {
-      return "L" + nameTable.getFullName(type) + ";";
+      return typeUtil.getBinaryName(type);
     }
   }
 
-  private String getTypeList(ITypeBinding[] types) {
-    if (types.length == 0) {
+  private String getTypeName(TypeElement type) {
+    return type == null ? null : "L" + nameTable.getFullName(type) + ";";
+  }
+
+  private String getTypeList(Iterable<? extends TypeMirror> types) {
+    if (Iterables.isEmpty(types)) {
       return null;
     }
     StringBuilder sb = new StringBuilder();
-    for (ITypeBinding type : types) {
+    for (TypeMirror type : types) {
       sb.append(getTypeName(type));
     }
     return sb.toString();
@@ -464,24 +451,24 @@ public class MetadataWriter extends UnitTreeVisitor {
    * Returns the modifiers for a specified type, including internal ones.
    * All class modifiers are defined in the JVM specification, table 4.1.
    */
-  private static int getTypeModifiers(ITypeBinding type) {
-    int modifiers = type.getModifiers();
-    if (type.isInterface()) {
+  private static int getTypeModifiers(TypeElement type) {
+    int modifiers = ElementUtil.fromModifierSet(type.getModifiers());
+    if (type.getKind().isInterface()) {
       modifiers |= java.lang.reflect.Modifier.INTERFACE | java.lang.reflect.Modifier.ABSTRACT
           | java.lang.reflect.Modifier.STATIC;
     }
-    if (type.isSynthetic()) {
-      modifiers |= BindingUtil.ACC_SYNTHETIC;
+    if (ElementUtil.isSynthetic(type)) {
+      modifiers |= ElementUtil.ACC_SYNTHETIC;
     }
-    if (type.isAnnotation()) {
-      modifiers |= BindingUtil.ACC_ANNOTATION;
+    if (ElementUtil.isAnnotationType(type)) {
+      modifiers |= ElementUtil.ACC_ANNOTATION;
     }
-    if (type.isEnum()) {
-      modifiers |= BindingUtil.ACC_ENUM;
+    if (ElementUtil.isEnum(type)) {
+      modifiers |= ElementUtil.ACC_ENUM;
     }
-    if (type.isAnonymous()) {
+    if (ElementUtil.isAnonymous(type)) {
       // Anonymous classes are always static, though their closure may include an instance.
-      modifiers |= BindingUtil.ACC_ANONYMOUS | java.lang.reflect.Modifier.STATIC;
+      modifiers |= ElementUtil.ACC_ANONYMOUS | java.lang.reflect.Modifier.STATIC;
     }
     return modifiers;
   }
@@ -490,13 +477,13 @@ public class MetadataWriter extends UnitTreeVisitor {
    * Returns the modifiers for a specified method, including internal ones.
    * All method modifiers are defined in the JVM specification, table 4.5.
    */
-  private static int getMethodModifiers(IMethodBinding type) {
-    int modifiers = type.getModifiers();
-    if (type.isVarargs()) {
-      modifiers |= BindingUtil.ACC_VARARGS;
+  private static int getMethodModifiers(ExecutableElement method) {
+    int modifiers = ElementUtil.fromModifierSet(method.getModifiers());
+    if (method.isVarArgs()) {
+      modifiers |= ElementUtil.ACC_VARARGS;
     }
-    if (type.isSynthetic()) {
-      modifiers |= BindingUtil.ACC_SYNTHETIC;
+    if (ElementUtil.isSynthetic(method)) {
+      modifiers |= ElementUtil.ACC_SYNTHETIC;
     }
     return modifiers;
   }
@@ -505,13 +492,13 @@ public class MetadataWriter extends UnitTreeVisitor {
    * Returns the modifiers for a specified field, including internal ones.
    * All method modifiers are defined in the JVM specification, table 4.4.
    */
-  private static int getFieldModifiers(IVariableBinding type) {
-    int modifiers = type.getModifiers();
-    if (type.isSynthetic()) {
-      modifiers |= BindingUtil.ACC_SYNTHETIC;
+  private static int getFieldModifiers(VariableElement var) {
+    int modifiers = ElementUtil.fromModifierSet(var.getModifiers());
+    if (ElementUtil.isSynthetic(var)) {
+      modifiers |= ElementUtil.ACC_SYNTHETIC;
     }
-    if (type.isEnumConstant()) {
-      modifiers |= BindingUtil.ACC_ENUM;
+    if (ElementUtil.isEnumConstant(var)) {
+      modifiers |= ElementUtil.ACC_ENUM;
     }
     return modifiers;
   }
