@@ -96,7 +96,6 @@ public class Types {
     NSString = mapIOSType(IOSTypeBinding.newClass("NSString", javaStringType, NSObject));
     NSException = mapIOSType(IOSTypeBinding.newClass("NSException", javaThrowableType, NSObject));
     IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
-    mapIOSType(IOSTypeBinding.newUnmappedClass("NSZone"));
     idType = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
 
     initializeArrayTypes();

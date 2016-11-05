@@ -60,10 +60,10 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private final boolean varargs;
   private final IMethodBinding binding = new Binding();
 
-  public GeneratedExecutableElement(
+  private GeneratedExecutableElement(
       String name, String selector, ElementKind kind, TypeMirror returnType,
-      Element enclosingElement, boolean varargs) {
-    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, true);
+      Element enclosingElement, boolean varargs, boolean synthetic) {
+    super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.selector = selector;
     this.returnType = returnType;
     this.varargs = varargs;
@@ -72,14 +72,23 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   public static GeneratedExecutableElement newMethodWithSelector(
       String selector, TypeMirror returnType, Element enclosingElement) {
     return new GeneratedExecutableElement(
-        selector, selector, ElementKind.METHOD, returnType, enclosingElement, false);
+        selector, selector, ElementKind.METHOD, returnType, enclosingElement, false, true);
   }
 
   public static GeneratedExecutableElement newConstructor(
       TypeElement enclosingElement, TypeUtil typeUtil) {
     return new GeneratedExecutableElement(
         NameTable.INIT_NAME, null, ElementKind.CONSTRUCTOR, typeUtil.getVoidType(),
-        enclosingElement, false);
+        enclosingElement, false, true);
+  }
+
+  public static GeneratedExecutableElement newMappedMethod(
+      String selector, ExecutableElement method) {
+    TypeMirror returnType = ElementUtil.isConstructor(method)
+        ? ElementUtil.getDeclaringClass(method).asType() : method.getReturnType();
+    return new GeneratedExecutableElement(
+        selector, selector, ElementKind.METHOD, returnType, method.getEnclosingElement(),
+        method.isVarArgs(), ElementUtil.isSynthetic(method));
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {

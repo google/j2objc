@@ -312,7 +312,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
             IMethodBinding getter = BindingUtil.findGetterMethod(
                 propertyName, varType, varBinding.getDeclaringClass());
             if (getter != null) {
-              attributes.add("getter=" + NameTable.getMethodName(getter));
+              attributes.add("getter=" + NameTable.getMethodName(
+                  BindingConverter.getExecutableElement(getter)));
               if (!BindingUtil.isSynchronized(getter)) {
                 attributes.add("nonatomic");
               }
@@ -322,7 +323,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
             IMethodBinding setter = BindingUtil.findSetterMethod(
                 propertyName, varBinding.getDeclaringClass());
             if (setter != null) {
-              attributes.add("setter=" + NameTable.getMethodName(setter));
+              attributes.add("setter=" + NameTable.getMethodName(
+                  BindingConverter.getExecutableElement(setter)));
               if (!BindingUtil.isSynchronized(setter)) {
                 attributes.add("nonatomic");
               }

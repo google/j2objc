@@ -23,6 +23,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Manages class and method name mappings.
@@ -116,5 +118,19 @@ public class Mappings {
     if (oldValue != null && !oldValue.equals(value)) {
       ErrorUtil.error(kind + " redefined; was \"" + oldValue + ", now " + value);
     }
+  }
+
+  public static String getMethodKey(ExecutableElement method, TypeUtil typeUtil) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(typeUtil.elementUtil().getBinaryName(ElementUtil.getDeclaringClass(method)));
+    sb.append('.');
+    sb.append(ElementUtil.getName(method));
+    sb.append('(');
+    for (VariableElement param : method.getParameters()) {
+      sb.append(typeUtil.getSignatureName(param.asType()));
+    }
+    sb.append(')');
+    sb.append(typeUtil.getSignatureName(method.getReturnType()));
+    return sb.toString();
   }
 }

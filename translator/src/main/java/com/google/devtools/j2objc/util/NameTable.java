@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -400,21 +401,10 @@ public class NameTable {
   }
 
   /**
-   * Returns the name of an annotation property variable, extracted from its accessor binding.
-   */
-  public static String getAnnotationPropertyVariableName(IMethodBinding binding) {
-    return getAnnotationPropertyName(binding) + '_';
-  }
-
-  /**
    * Returns the name of an annotation property variable, extracted from its accessor element.
    */
   public static String getAnnotationPropertyName(ExecutableElement element) {
-    return getAnnotationPropertyName(BindingConverter.unwrapExecutableElement(element));
-  }
-
-  public static String getAnnotationPropertyName(IMethodBinding binding) {
-    return getMethodName(binding);
+    return getMethodName(element);
   }
 
   /**
@@ -476,22 +466,23 @@ public class NameTable {
     return name;
   }
 
-  private String getParameterTypeKeyword(ITypeBinding type) {
-    if (typeEnv.isIdType(type) || type.isTypeVariable()) {
-      ITypeBinding[] bounds = type.getTypeBounds();
+  private String getParameterTypeKeyword(TypeMirror type) {
+    ITypeBinding typeB = BindingConverter.unwrapTypeMirrorIntoTypeBinding(type);
+    if (typeEnv.isIdType(typeB) || typeB.isTypeVariable()) {
+      ITypeBinding[] bounds = typeB.getTypeBounds();
       if (bounds.length > 0) {
-        return getParameterTypeKeyword(bounds[0]);
+        return getParameterTypeKeyword(BindingConverter.getType(bounds[0]));
       }
       return ID_TYPE;
-    } else if (type.isPrimitive()) {
-      return type.getName();
-    } else if (type.isArray()) {
-      return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions());
+    } else if (typeB.isPrimitive()) {
+      return typeB.getName();
+    } else if (typeB.isArray()) {
+      return getArrayTypeParameterKeyword(typeB.getElementType(), typeB.getDimensions());
     }
-    return getFullName(type);
+    return getFullName(typeB);
   }
 
-  public String parameterKeyword(ITypeBinding type) {
+  private String parameterKeyword(TypeMirror type) {
     return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
@@ -503,11 +494,11 @@ public class NameTable {
     }
   }
 
-  public static String getMethodName(IMethodBinding method) {
-    if (method.isConstructor()) {
+  public static String getMethodName(ExecutableElement method) {
+    if (ElementUtil.isConstructor(method)) {
       return "init";
     }
-    String name = method.getName();
+    String name = ElementUtil.getName(method);
     if (isReservedName(name)) {
       name += "__";
     }
@@ -515,7 +506,7 @@ public class NameTable {
   }
 
   private boolean appendParamKeyword(
-      StringBuilder sb, ITypeBinding paramType, char delim, boolean first) {
+      StringBuilder sb, TypeMirror paramType, char delim, boolean first) {
     String keyword = parameterKeyword(paramType);
     if (first) {
       keyword = capitalize(keyword);
@@ -524,24 +515,21 @@ public class NameTable {
     return false;
   }
 
-  private String addParamNames(IMethodBinding method, String name, char delim) {
-    method = method.getMethodDeclaration();
+  private String addParamNames(ExecutableElement method, String name, char delim) {
     StringBuilder sb = new StringBuilder(name);
     boolean first = true;
-    TypeElement declaringClass = BindingConverter.getTypeElement(method.getDeclaringClass());
-    if (method.isConstructor()) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
+    if (ElementUtil.isConstructor(method)) {
       for (VariableElement param : captureInfo.getImplicitPrefixParams(declaringClass)) {
-        first = appendParamKeyword(
-            sb, BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()), delim, first);
+        first = appendParamKeyword(sb, param.asType(), delim, first);
       }
     }
-    for (ITypeBinding paramType : method.getParameterTypes()) {
-      first = appendParamKeyword(sb, paramType, delim, first);
+    for (VariableElement param : method.getParameters()) {
+      first = appendParamKeyword(sb, param.asType(), delim, first);
     }
-    if (method.isConstructor()) {
+    if (ElementUtil.isConstructor(method)) {
       for (VariableElement param : captureInfo.getImplicitPostfixParams(declaringClass)) {
-        first = appendParamKeyword(
-            sb, BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()), delim, first);
+        first = appendParamKeyword(sb, param.asType(), delim, first);
       }
     }
     return sb.toString();
@@ -555,7 +543,7 @@ public class NameTable {
     if (ElementUtil.isInstanceMethod(method)) {
       method = getOriginalMethod(method);
     }
-    return selectorForOriginalBinding(BindingConverter.unwrapExecutableElement(method));
+    return selectorForOriginalBinding(method);
   }
 
   public String getMethodSelector(IMethodBinding method) {
@@ -569,22 +557,22 @@ public class NameTable {
       validateMethodSelector(selector);
       return selector;
     }
-    selector = getMethodNameFromAnnotation(method);
+    selector = getMethodNameFromAnnotation(BindingConverter.getExecutableElement(method));
     if (selector != null) {
       return selector;
     }
     return null;
   }
 
-  public String selectorForMethodName(IMethodBinding method, String name) {
+  public String selectorForMethodName(ExecutableElement method, String name) {
     if (name.contains(":")) {
       return name;
     }
     return addParamNames(method, name, ':');
   }
 
-  private String selectorForOriginalBinding(IMethodBinding method) {
-    String selector = getRenamedMethodName(method);
+  private String selectorForOriginalBinding(ExecutableElement method) {
+    String selector = getRenamedMethodName(BindingConverter.unwrapExecutableElement(method));
     return selectorForMethodName(
         method, selector != null ? selector : getMethodName(method));
   }
@@ -643,22 +631,21 @@ public class NameTable {
    * prefix to avoid collisions with methods from other classes.
    */
   public String getFunctionName(ExecutableElement method) {
-    IMethodBinding binding = BindingConverter.unwrapExecutableElement(method);
     String name = ElementUtil.getSelector(method);
     if (name == null) {
-      name = getRenamedMethodName(binding);
+      name = getRenamedMethodName(BindingConverter.unwrapExecutableElement(method));
     }
     if (name != null) {
       return name.replaceAll(":", "_");
     } else {
-      return addParamNames(binding, getMethodName(binding), '_');
+      return addParamNames(method, getMethodName(method), '_');
     }
   }
 
-  public static String getMethodNameFromAnnotation(IMethodBinding method) {
-    IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
+  public static String getMethodNameFromAnnotation(ExecutableElement method) {
+    AnnotationMirror annotation = ElementUtil.getAnnotation(method, ObjectiveCName.class);
     if (annotation != null) {
-      String value = (String) BindingUtil.getAnnotationValue(annotation, "value");
+      String value = (String) ElementUtil.getAnnotationValue(annotation, "value");
       validateMethodSelector(value);
       return value;
     }
