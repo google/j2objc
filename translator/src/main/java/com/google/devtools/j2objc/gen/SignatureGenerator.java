@@ -23,7 +23,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Generates signatures for classes, fields and methods, as defined by the JVM spec, 4.3.4,
@@ -102,15 +101,16 @@ public class SignatureGenerator {
     return builder.toString();
   }
 
-  public static String createJniFunctionSignature(IMethodBinding method, ElementUtil elementUtil) {
+  public static String createJniFunctionSignature(
+      ExecutableElement method, ElementUtil elementUtil) {
     // Mangle function name as described in JNI specification.
     // http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/design.html#wp615
     StringBuilder sb = new StringBuilder();
     sb.append("Java_");
 
-    String methodName = method.getName();
-    ITypeBinding declaringClass = method.getDeclaringClass();
-    PackageElement pkg = elementUtil.getPackage(BindingConverter.getElement(declaringClass));
+    String methodName = ElementUtil.getName(method);
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
+    PackageElement pkg = elementUtil.getPackage(declaringClass);
     if (pkg != null && !pkg.isUnnamed()) {
       String pkgName = pkg.getQualifiedName().toString();
       for (String part : pkgName.split("\\.")) {
@@ -118,23 +118,23 @@ public class SignatureGenerator {
         sb.append('_');
       }
     }
-    jniMangleClass(declaringClass, sb);
+    jniMangleClass(BindingConverter.unwrapTypeElement(declaringClass), sb);
     sb.append('_');
     sb.append(jniMangle(methodName));
 
     // Check whether the method is overloaded.
     int nameCount = 0;
-    for (IMethodBinding m : declaringClass.getDeclaredMethods()) {
-      if (methodName.equals(m.getName()) && Modifier.isNative(m.getModifiers())) {
+    for (ExecutableElement m : ElementUtil.getExecutables(declaringClass)) {
+      if (methodName.equals(ElementUtil.getName(m)) && ElementUtil.isNative(m)) {
         nameCount++;
       }
     }
     if (nameCount >= 2) {
       // Overloaded native methods, append JNI-mangled parameter types.
       sb.append("__");
-      ITypeBinding[] parameters = method.getParameterTypes();
-      for (int iParam = 0; iParam < parameters.length; iParam++) {
-        String type = createTypeSignature(parameters[iParam]);
+      for (VariableElement param : method.getParameters()) {
+        String type = createTypeSignature(
+            BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()));
         sb.append(jniMangle(type));
       }
     }

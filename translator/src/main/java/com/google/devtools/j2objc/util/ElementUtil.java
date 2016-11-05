@@ -158,6 +158,10 @@ public final class ElementUtil {
     return kind == ElementKind.CONSTRUCTOR || kind == ElementKind.METHOD;
   }
 
+  public static boolean isAnnotationMember(ExecutableElement e) {
+    return isAnnotationType(getDeclaringClass(e));
+  }
+
   public static TypeElement getDeclaringClass(Element element) {
     do {
       element = element.getEnclosingElement();

@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -24,7 +25,6 @@ import java.io.IOException;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Verifies generic signature generation. Signature strings used here were created by
@@ -141,39 +141,40 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "static class 测试 { native void mumble(); }}");
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(2, decls.size());
-    IMethodBinding[] methods = decls.get(0).getTypeBinding().getDeclaredMethods();
-    assertEquals(8, methods.length); // methods[0] is the default constructor.
+    List<ExecutableElement> methods = Lists.newArrayList(
+        ElementUtil.getMethods(decls.get(0).getTypeElement()));
+    assertEquals(7, methods.size());
 
     // Expected JNI signatures were copied from javah output.
 
     ElementUtil elementUtil = unit.getEnv().elementUtil();
     // Verify no parameters, since foo isn't overloaded.
     assertEquals("Java_foo_bar_D_foo",
-        SignatureGenerator.createJniFunctionSignature(methods[6], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(5), elementUtil));
 
     // Verify underscores and dollar signs in names are mangled.
     assertEquals("Java_foo_bar_D_a_1b_00024c",
-        SignatureGenerator.createJniFunctionSignature(methods[1], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(0), elementUtil));
 
     // Verify Unicode characters are mangled.
     assertEquals("Java_foo_bar_D__04f60_0597d_04e16_0754c",
-        SignatureGenerator.createJniFunctionSignature(methods[7], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(6), elementUtil));
 
     // Verify overloaded methods have parameter suffixes.
     assertEquals("Java_foo_bar_D_bar__",
-        SignatureGenerator.createJniFunctionSignature(methods[2], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(1), elementUtil));
     assertEquals("Java_foo_bar_D_bar__Ljava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods[3], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(2), elementUtil));
     assertEquals("Java_foo_bar_D_bar__ZLjava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods[4], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(3), elementUtil));
     assertEquals("Java_foo_bar_D_bar___3Ljava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods[5], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(4), elementUtil));
 
     // Check Unicode class name mangling.
-    methods = decls.get(1).getTypeBinding().getDeclaredMethods();
-    assertEquals(2, methods.length);
+    methods = Lists.newArrayList(ElementUtil.getMethods(decls.get(1).getTypeElement()));
+    assertEquals(1, methods.size());
     assertEquals("Java_foo_bar_D_00024_06d4b_08bd5_mumble",
-        SignatureGenerator.createJniFunctionSignature(methods[1], elementUtil));
+        SignatureGenerator.createJniFunctionSignature(methods.get(0), elementUtil));
   }
 
   public void testGenericTypeMetadata() throws IOException {
