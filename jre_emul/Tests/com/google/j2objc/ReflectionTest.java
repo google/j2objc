@@ -41,8 +41,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
-
 import junit.framework.TestCase;
 
 /**
@@ -168,5 +168,37 @@ public class ReflectionTest extends TestCase {
     assertFalse("isDefault true for non-default method", m.isDefault());
     m = defaultClass.getMethod("unrelatedMethod");
     assertFalse("isDefault true for unrelated method", m.isDefault());
+  }
+
+  enum Color { RED, GREEN, BLUE }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface OtherAnnotation {
+    String value() default "hello";
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface AnnotationWithDefaults {
+    int intValue() default 123;
+    String stringValue() default "abc";
+    Color enumValue() default Color.RED;
+    String[] stringArrayValue() default { "foo", "bar" };
+    int[] intArrayValue() default { 4, 5, 6 };
+    OtherAnnotation annotationValue() default @OtherAnnotation;
+    Class<?> classValue() default Iterable.class;
+  }
+
+  @AnnotationWithDefaults
+  static class AnnotatedClass {}
+
+  public void testAnnotationInitializedWithDefaults() {
+    AnnotationWithDefaults a = AnnotatedClass.class.getAnnotation(AnnotationWithDefaults.class);
+    assertEquals(123, a.intValue());
+    assertEquals("abc", a.stringValue());
+    assertEquals(Color.RED, a.enumValue());
+    assertTrue(Arrays.equals(new String[] { "foo", "bar" }, a.stringArrayValue()));
+    assertTrue(Arrays.equals(new int[] { 4, 5, 6 }, a.intArrayValue()));
+    assertEquals("hello", a.annotationValue().value());
+    assertEquals(Iterable.class, a.classValue());
   }
 }
