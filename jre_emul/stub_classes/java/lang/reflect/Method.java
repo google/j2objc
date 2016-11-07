@@ -101,6 +101,10 @@ public class Method extends Executable {
     return null;
   }
 
+  public boolean isBridge() {
+    return false;
+  }
+
   public boolean isDefault() {
     return false;
   }

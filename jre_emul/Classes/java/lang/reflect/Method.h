@@ -67,6 +67,9 @@
 // Returns whether this is a default method.
 - (jboolean)isDefault;
 
+// Returns false, since the J2ObjC translator doesn't generate bridge methods.
+- (jboolean)isBridge;
+
 // Internal methods.
 - (NSMethodSignature *)getSignature;
 
