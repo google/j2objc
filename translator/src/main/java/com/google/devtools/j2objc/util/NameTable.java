@@ -706,8 +706,8 @@ public class NameTable {
    */
   public static String getPrimitiveObjCType(TypeMirror type) {
     TypeKind kind = type.getKind();
-    return kind.isPrimitive() ? (kind.equals(TypeKind.VOID)
-        ? "void" : "j" + type.toString()) : "id";
+    return kind == TypeKind.VOID ? "void"
+        : kind.isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
   }
 
   /**

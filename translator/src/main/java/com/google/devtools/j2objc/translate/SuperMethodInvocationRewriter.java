@@ -28,9 +28,8 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -39,10 +38,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Some super method invocations cannot be translated directly as an ObjC super
@@ -55,8 +54,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  */
 public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
-  private Set<SuperMethodBindingPair> superMethods = new LinkedHashSet<>();
-  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap = new HashMap<>();
+  private Set<SuperMethodElementPair> superMethods = new LinkedHashSet<>();
+  private Map<TypeElement, AbstractTypeDeclaration> typeMap = new HashMap<>();
 
   public SuperMethodInvocationRewriter(CompilationUnit unit) {
     super(unit);
@@ -64,7 +63,7 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(CompilationUnit unit) {
-    for (SuperMethodBindingPair superMethod : superMethods) {
+    for (SuperMethodElementPair superMethod : superMethods) {
       String funcName = getSuperFunctionName(superMethod);
       String signature = getSuperFunctionSignature(superMethod.method);
 
@@ -73,9 +72,9 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
           null, "static " + UnicodeUtils.format(signature, funcName) + ";"));
 
       // Look up the implementations in the static initialization.
-      AbstractTypeDeclaration typeNode = typeMap.get(superMethod.type.getTypeDeclaration());
+      AbstractTypeDeclaration typeNode = typeMap.get(superMethod.type);
       assert typeNode != null : "Type is expected to be in this compilation unit";
-      String superclassName = nameTable.getFullName(superMethod.type.getSuperclass());
+      String superclassName = nameTable.getFullName(ElementUtil.getSuperclass(superMethod.type));
       typeNode.addClassInitStatement(0, new NativeStatement(UnicodeUtils.format(
           "%s = (%s)[%s instanceMethodForSelector:@selector(%s)];",
           funcName, UnicodeUtils.format(signature, ""), superclassName,
@@ -83,40 +82,39 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     }
   }
 
-  private static String getSuperFunctionSignature(IMethodBinding method) {
+  private static String getSuperFunctionSignature(ExecutableElement method) {
     StringBuilder signature = new StringBuilder(
         NameTable.getPrimitiveObjCType(method.getReturnType()));
     signature.append(" (*%s)(id, SEL");
-    for (ITypeBinding paramType : method.getParameterTypes()) {
-      signature.append(", ").append(NameTable.getPrimitiveObjCType(paramType));
+    for (VariableElement param : method.getParameters()) {
+      signature.append(", ").append(NameTable.getPrimitiveObjCType(param.asType()));
     }
     signature.append(")");
     return signature.toString();
   }
 
-  private String getSuperFunctionName(SuperMethodBindingPair superMethod) {
+  private String getSuperFunctionName(SuperMethodElementPair superMethod) {
     return UnicodeUtils.format(
         "%s_super$_%s", nameTable.getFullName(superMethod.type),
-        nameTable.getFunctionName(BindingConverter.getExecutableElement(superMethod.method)));
+        nameTable.getFunctionName(superMethod.method));
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
     Expression receiver = node.getReceiver();
-    IMethodBinding method = node.getMethodBinding();
+    ExecutableElement method = node.getExecutableElement();
     TypeMirror exprType = node.getTypeMirror();
 
     // Handle default method invocation: SomeInterface.super.method(...)
-    if (BindingUtil.isDefault(method)) {
+    if (ElementUtil.isDefault(method)) {
       FunctionElement element = new FunctionElement(
-          nameTable.getFullFunctionName(BindingConverter.getExecutableElement(method)), exprType,
-          BindingConverter.getTypeElement(method.getDeclaringClass()))
+          nameTable.getFullFunctionName(method), exprType, ElementUtil.getDeclaringClass(method))
           .addParameters(typeEnv.getIdTypeMirror())
-          .addParameters(method.getParameterTypes());
+          .addParameters(ElementUtil.asTypes(method.getParameters()));
       FunctionInvocation invocation = new FunctionInvocation(element, exprType);
       List<Expression> args = invocation.getArguments();
       if (receiver == null) {
-        args.add(new ThisExpression(TreeUtil.getEnclosingTypeBinding(node)));
+        args.add(new ThisExpression(TreeUtil.getEnclosingTypeElement(node).asType()));
       } else {
         // OuterReferenceResolver has provided an outer path.
         args.add(TreeUtil.remove(receiver));
@@ -129,17 +127,18 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     if (receiver == null) {
       return;
     }
-    IVariableBinding var = TreeUtil.getVariableBinding(receiver);
+    VariableElement var = TreeUtil.getVariableElement(receiver);
     assert var != null : "Expected receiver to be a variable";
-    TypeMirror receiverType = BindingConverter.getType(var.getType());
+    TypeMirror receiverType = var.asType();
+    TypeElement receiverElem = TypeUtil.asTypeElement(receiverType);
 
-    SuperMethodBindingPair superMethod = new SuperMethodBindingPair(receiverType, method);
+    SuperMethodElementPair superMethod = new SuperMethodElementPair(receiverElem, method);
     superMethods.add(superMethod);
 
-    FunctionElement element = new FunctionElement(
-        getSuperFunctionName(superMethod), exprType, TypeUtil.asTypeElement(receiverType))
+    FunctionElement element =
+        new FunctionElement(getSuperFunctionName(superMethod), exprType, receiverElem)
         .addParameters(receiverType, typeEnv.getIdTypeMirror())
-        .addParameters(method.getParameterTypes());
+        .addParameters(ElementUtil.asTypes(method.getParameters()));
     FunctionInvocation invocation = new FunctionInvocation(element, exprType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(receiver));
@@ -151,34 +150,34 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    typeMap.put(node.getTypeBinding(), node);
+    typeMap.put(node.getTypeElement(), node);
   }
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    typeMap.put(node.getTypeBinding(), node);
+    typeMap.put(node.getTypeElement(), node);
   }
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    typeMap.put(node.getTypeBinding(), node);
+    typeMap.put(node.getTypeElement(), node);
   }
 
-  private static class SuperMethodBindingPair {
-    private final ITypeBinding type;
-    private final IMethodBinding method;
+  private static class SuperMethodElementPair {
+    private final TypeElement type;
+    private final ExecutableElement method;
 
-    private SuperMethodBindingPair(TypeMirror type, IMethodBinding method) {
-      this.type = BindingConverter.unwrapTypeMirrorIntoTypeBinding(type);
+    private SuperMethodElementPair(TypeElement type, ExecutableElement method) {
+      this.type = type;
       this.method = method;
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (!(obj instanceof SuperMethodBindingPair)) {
+      if (!(obj instanceof SuperMethodElementPair)) {
         return false;
       }
-      SuperMethodBindingPair other = (SuperMethodBindingPair) obj;
+      SuperMethodElementPair other = (SuperMethodElementPair) obj;
       return other.type == type && other.method == method;
     }
 
