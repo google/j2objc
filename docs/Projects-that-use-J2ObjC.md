@@ -39,7 +39,7 @@ layout: docs
  <tr><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple18/v4/30/01/25/300125cb-b3f4-e73d-2563-dc544a0f4af8/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/codeword-unlimited-free/id643961117?mt=8">Codeword&nbsp;Unlimited&nbsp;Free</a></b>
  </td><td>
- <img src="http://a3.mzstatic.com/us/r30/Purple6/v4/af/a4/ab/afa4ab14-fbca-6c0e-4c3b-d984b4730214/mzl.oqjfevxa.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/crossword-solver-free-version/id668459828?ls=1&mt=8">Crossword&nbsp;Solver&nbsp;Free&nbsp;Version</a></b>
+ <img src="http://a2.mzstatic.com/us/r30/Purple71/v4/f6/3e/23/f63e2392-02a1-6522-7a28-82afd4b0594d/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/crossword-solver-free-version/id668459828?ls=1&mt=8">Crossword&nbsp;Solver&nbsp;Free&nbsp;Version</a></b>
  </td></tr>
 
  <tr><td>
@@ -60,7 +60,7 @@ layout: docs
  </td></tr>
 
  <tr><td>
- <img src="http://a1.mzstatic.com/us/r1000/060/Purple/v4/c2/b4/0d/c2b40dbf-2c34-8994-d86b-9556b1c5595a/mzl.aaxqdidd.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/ligretto/id627380827?mt=8">Ligretto</a></b>
+ <img src="http://a5.mzstatic.com/us/r30/Purple62/v4/63/d8/ce/63d8ce8b-2b98-0584-4643-47544c649684/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/ligretto/id627380827?mt=8">Ligretto</a></b>
  </td><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple7/v4/2d/6d/78/2d6d785c-c685-6e17-1234-18353b57af31/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/monnaie-de-paris/id1024977735?mt=8">Monnaie&nbsp;de&nbsp;Paris</a></b> 
  </td></tr>
@@ -74,7 +74,7 @@ layout: docs
  <tr><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple62/v4/15/a8/88/15a88812-9c32-019f-82f5-1190ae5532cf/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/pop-poker/id1120261979">Pop Poker</a></b>
  </td><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple/v4/66/be/c9/66bec9a8-fd60-5c07-876c-a8e4acbd3029/mzl.nzvhdrln.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/quadrus/id773251281?mt=8">Quadrus</a></b>
+ <img src="http://a4.mzstatic.com/us/r30/Purple4/v4/44/1b/dc/441bdc30-b20e-2fbc-c2dd-e20b826c0d33/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/quadrus/id773251281?mt=8">Quadrus</a></b>
  </td></tr>
 
  <tr><td>
