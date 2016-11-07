@@ -14,22 +14,20 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ReferenceType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceType {
 
-  JdtDeclaredType(JdtTypeBinding binding) {
+  JdtDeclaredType(ITypeBinding binding) {
     super(binding);
   }
 
@@ -50,11 +48,11 @@ class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceTy
 
   @Override
   public TypeMirror getEnclosingType() {
-    IMethodBinding enclosingMethod = ((JdtTypeBinding) binding).getDeclaringMethod();
+    IMethodBinding enclosingMethod = ((ITypeBinding) binding).getDeclaringMethod();
     if (enclosingMethod != null) {
       return BindingConverter.getType(enclosingMethod);
     }
-    ITypeBinding enclosingType = ((JdtTypeBinding) binding).getDeclaringClass();
+    ITypeBinding enclosingType = ((ITypeBinding) binding).getDeclaringClass();
     return enclosingType != null
         ? BindingConverter.getType(enclosingType)
         : BindingConverter.NO_TYPE;
@@ -63,7 +61,7 @@ class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceTy
   @Override
   public List<? extends TypeMirror> getTypeArguments() {
     List<TypeMirror> typeArgs = new ArrayList<TypeMirror>();
-    for (ITypeBinding typeArg : ((JdtTypeBinding) binding).getTypeArguments()) {
+    for (ITypeBinding typeArg : ((ITypeBinding) binding).getTypeArguments()) {
       typeArgs.add(BindingConverter.getType(typeArg));
     }
     return typeArgs;

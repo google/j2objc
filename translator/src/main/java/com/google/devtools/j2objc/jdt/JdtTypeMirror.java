@@ -14,24 +14,23 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
 
 abstract class JdtTypeMirror implements TypeMirror {
-  protected JdtBinding binding;
 
-  JdtTypeMirror(JdtBinding binding) {
+  protected IBinding binding;
+
+  JdtTypeMirror(IBinding binding) {
     this.binding = binding;
   }
 
-  // TODO(tball): enable when Java 8 is minimum version.
-  // @Override
+  @Override
   public List<? extends AnnotationMirror> getAnnotationMirrors() {
     List<AnnotationMirror> mirrors = new ArrayList<>();
     for (IAnnotationBinding annotation : binding.getAnnotations()) {

@@ -18,36 +18,30 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtAnnotationBinding;
-import com.google.devtools.j2objc.jdt.JdtMethodBinding;
-import com.google.devtools.j2objc.jdt.JdtTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Binding class for methods created during translation.
  *
  * @author Tom Ball
  */
-public class GeneratedMethodBinding extends JdtMethodBinding {
+public class GeneratedMethodBinding extends AbstractBinding implements IMethodBinding {
 
-  private final JdtMethodBinding delegate;
+  private final IMethodBinding delegate;
   private final String name;
   private int modifiers;
   private final List<ITypeBinding> parameters = Lists.newArrayList();
-  private final JdtTypeBinding returnType;
-  private final JdtMethodBinding methodDeclaration;
-  private JdtTypeBinding declaringClass;
+  private final ITypeBinding returnType;
+  private final IMethodBinding methodDeclaration;
+  private ITypeBinding declaringClass;
   private final boolean varargs;
   private final boolean isConstructor;
 
@@ -55,13 +49,12 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
       IMethodBinding delegate, String name, int modifiers, ITypeBinding returnType,
       IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean isConstructor,
       boolean varargs) {
-    super(null);
-    this.delegate = BindingConverter.wrapBinding(delegate);
+    this.delegate = delegate;
     this.name = Preconditions.checkNotNull(name);
     this.modifiers = modifiers;
-    this.returnType = BindingConverter.wrapBinding(returnType);
-    this.methodDeclaration = BindingConverter.wrapBinding(methodDeclaration);
-    this.declaringClass = BindingConverter.wrapBinding(declaringClass);
+    this.returnType = returnType;
+    this.methodDeclaration = methodDeclaration;
+    this.declaringClass = declaringClass;
     this.isConstructor = isConstructor;
     this.varargs = varargs;
   }
@@ -150,7 +143,7 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
   }
 
   public void setDeclaringClass(ITypeBinding newClass) {
-    declaringClass = BindingConverter.wrapBinding(newClass);
+    declaringClass = newClass;
   }
 
   @Override
@@ -160,7 +153,7 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
 
   @Override
   public IAnnotationBinding[] getParameterAnnotations(int paramIndex) {
-    return new JdtAnnotationBinding[0];
+    return new IAnnotationBinding[0];
   }
 
   @Override
@@ -169,15 +162,15 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
   }
 
   public void addParameter(ITypeBinding param) {
-    parameters.add(BindingConverter.wrapBinding(param));
+    parameters.add(param);
   }
 
   public void addParameter(int index, ITypeBinding param) {
-    parameters.add(index, BindingConverter.wrapBinding(param));
+    parameters.add(index, param);
   }
 
   public void addParameters(IMethodBinding method) {
-    parameters.addAll(Arrays.asList(BindingConverter.wrapBinding(method).getParameterTypes()));
+    parameters.addAll(Arrays.asList(method.getParameterTypes()));
   }
 
   public List<ITypeBinding> getParameters() {
@@ -192,7 +185,7 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
   @Override
   public ITypeBinding[] getExceptionTypes() {
     // Obj-C doesn't have declared exceptions
-    return new JdtTypeBinding[0];
+    return new ITypeBinding[0];
   }
 
   @Override
@@ -217,7 +210,7 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
 
   @Override
   public ITypeBinding[] getTypeArguments() {
-    return new JdtTypeBinding[0];
+    return new ITypeBinding[0];
   }
 
   @Override
@@ -278,6 +271,12 @@ public class GeneratedMethodBinding extends JdtMethodBinding {
 
   @Override
   public ITypeBinding getDeclaredReceiverType() {
+    return null;
+  }
+
+  // Internal JDT has a different version than external.
+  @SuppressWarnings("MissingOverride")
+  public IBinding getDeclaringMember() {
     return null;
   }
 }

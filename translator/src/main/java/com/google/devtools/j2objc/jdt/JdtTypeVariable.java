@@ -14,17 +14,16 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtTypeVariable extends JdtTypeMirror implements TypeVariable {
 
-  JdtTypeVariable(JdtTypeBinding binding) {
+  JdtTypeVariable(ITypeBinding binding) {
     super(binding);
     assert binding.isTypeVariable();
   }

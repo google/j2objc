@@ -31,14 +31,10 @@ import org.eclipse.jdt.core.dom.IBinding;
 abstract class JdtElement implements Element {
   protected Name name;
   protected int flags;
-  protected JdtBinding binding;
+  protected IBinding binding;
 
   protected JdtElement(IBinding binding, String name, int flags) {
-    if (binding instanceof JdtBinding) {
-      this.binding = (JdtBinding) binding;
-    } else {
-      this.binding = BindingConverter.wrapBinding(binding);
-    }
+    this.binding = binding;
     this.name = BindingConverter.getName(name);
     this.flags = flags;
   }

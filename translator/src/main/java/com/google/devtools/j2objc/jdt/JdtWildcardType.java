@@ -14,16 +14,15 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
 import javax.lang.model.type.WildcardType;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtWildcardType extends JdtTypeMirror implements WildcardType {
 
-  JdtWildcardType(JdtTypeBinding binding) {
+  JdtWildcardType(ITypeBinding binding) {
     super(binding);
     assert binding.isWildcardType();
   }

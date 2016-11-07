@@ -14,22 +14,21 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.DeclaredType;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 
 class JdtAnnotationMirror implements AnnotationMirror {
-  final JdtAnnotationBinding binding;
+
+  final IAnnotationBinding binding;
 
   JdtAnnotationMirror(IAnnotationBinding binding) {
-    this.binding = BindingConverter.wrapBinding(binding);
+    this.binding = binding;
   }
 
   @Override

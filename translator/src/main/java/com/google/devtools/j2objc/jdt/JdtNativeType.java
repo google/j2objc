@@ -17,10 +17,11 @@ package com.google.devtools.j2objc.jdt;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtNativeType extends JdtTypeMirror implements PrimitiveType {
 
-  JdtNativeType(JdtTypeBinding binding) {
+  JdtNativeType(ITypeBinding binding) {
     super(binding);
   }
 

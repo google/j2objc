@@ -58,7 +58,7 @@ class JdtTypeElement extends JdtElement implements TypeElement {
 
   @Override
   public NestingKind getNestingKind() {
-    JdtTypeBinding type = (JdtTypeBinding) binding;
+    ITypeBinding type = (ITypeBinding) binding;
     if (type.isAnonymous()) {
       return NestingKind.ANONYMOUS;
     }
@@ -73,7 +73,7 @@ class JdtTypeElement extends JdtElement implements TypeElement {
 
   @Override
   public Name getQualifiedName() {
-    return BindingConverter.getName(((JdtTypeBinding) binding).getQualifiedName());
+    return BindingConverter.getName(((ITypeBinding) binding).getQualifiedName());
   }
 
   @Override

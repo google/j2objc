@@ -17,17 +17,18 @@ package com.google.devtools.j2objc.jdt;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtPrimitiveType extends JdtTypeMirror implements PrimitiveType {
 
-  JdtPrimitiveType(JdtTypeBinding binding) {
+  JdtPrimitiveType(ITypeBinding binding) {
     super(binding);
     assert binding.isPrimitive();
   }
 
   @Override
   public TypeKind getKind() {
-    String binaryName = ((JdtTypeBinding) binding).getBinaryName();
+    String binaryName = ((ITypeBinding) binding).getBinaryName();
     if (binaryName.length() == 1) {
       switch (binaryName.charAt(0)) {
         case 'B': return TypeKind.BYTE;

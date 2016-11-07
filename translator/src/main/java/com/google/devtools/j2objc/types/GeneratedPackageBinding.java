@@ -16,20 +16,19 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.jdt.JdtPackageBinding;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 
 /**
  * Binding class for types created during translation.
  *
  * @author Keith Stanger
  */
-public class GeneratedPackageBinding extends JdtPackageBinding {
+public class GeneratedPackageBinding extends AbstractBinding implements IPackageBinding {
 
   private final String name;
 
   public GeneratedPackageBinding(String name) {
-    super(null);
     this.name = name;
   }
 

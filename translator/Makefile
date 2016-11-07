@@ -191,34 +191,26 @@ JAVA_SOURCES = \
 	javac/JavacParser.java \
 	javac/TreeConverter.java \
 	jdt/BindingConverter.java \
-	jdt/JdtAnnotationBinding.java \
 	jdt/JdtAnnotationMirror.java \
 	jdt/JdtAnnotationValue.java \
 	jdt/JdtArrayType.java \
-	jdt/JdtBinding.java \
 	jdt/JdtDeclaredType.java \
 	jdt/JdtElement.java \
 	jdt/JdtElements.java \
 	jdt/JdtExecutableElement.java \
 	jdt/JdtExecutableType.java \
-	jdt/JdtExtendedModifier.java \
 	jdt/JdtIntersectionType.java \
-	jdt/JdtMemberValuePairBinding.java \
-	jdt/JdtMethodBinding.java \
 	jdt/JdtNoType.java \
 	jdt/JdtNativeType.java \
 	jdt/JdtNullType.java \
-	jdt/JdtPackageBinding.java \
 	jdt/JdtPackageElement.java \
 	jdt/JdtParser.java \
 	jdt/JdtPrimitiveType.java \
-	jdt/JdtTypeBinding.java \
 	jdt/JdtTypeElement.java \
 	jdt/JdtTypeMirror.java \
 	jdt/JdtTypeParameterElement.java \
 	jdt/JdtTypes.java \
 	jdt/JdtTypeVariable.java \
-	jdt/JdtVariableBinding.java \
 	jdt/JdtVariableElement.java \
 	jdt/JdtWildcardType.java \
 	jdt/StringName.java \
@@ -269,6 +261,7 @@ JAVA_SOURCES = \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \
+	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
 	types/ExecutablePair.java \
 	types/FunctionElement.java \

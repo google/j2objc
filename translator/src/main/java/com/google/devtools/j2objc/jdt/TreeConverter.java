@@ -124,7 +124,6 @@ import java.util.List;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -793,9 +792,8 @@ public class TreeConverter {
   private static TreeNode convertAnnotation(org.eclipse.jdt.core.dom.Annotation node,
       Annotation newNode) {
     convertExpression(node, newNode);
-    IAnnotationBinding binding = BindingConverter.wrapBinding(node.resolveAnnotationBinding());
     return newNode
-        .setAnnotationMirror(new JdtAnnotationMirror(binding))
+        .setAnnotationMirror(new JdtAnnotationMirror(node.resolveAnnotationBinding()))
         .setTypeName((Name) convert(node.getTypeName()));
   }
 
@@ -839,7 +837,7 @@ public class TreeConverter {
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) TreeConverter.convert(argument));
     }
-    IMethodBinding methodBinding = BindingConverter.wrapBinding(node.resolveMethodBinding());
+    IMethodBinding methodBinding = node.resolveMethodBinding();
     return newNode
         .setExecutablePair(new ExecutablePair(
             BindingConverter.getExecutableElement(methodBinding),
@@ -886,7 +884,7 @@ public class TreeConverter {
     Object constantValue = node.resolveConstantExpressionValue();
     assert constantValue instanceof Number;
     Number value = (Number) constantValue;
-    ITypeBinding typeBinding = BindingConverter.wrapBinding(node.resolveTypeBinding());
+    ITypeBinding typeBinding = node.resolveTypeBinding();
     return convertExpression(node, new NumberLiteral(value, BindingConverter.getType(typeBinding))
         .setToken(node.getToken()));
   }

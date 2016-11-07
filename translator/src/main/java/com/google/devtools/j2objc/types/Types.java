@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.ParserEnvironment;
@@ -165,8 +164,8 @@ public class Types {
     arrayBindingMap.put(javaType, iosType);
   }
 
-  private JdtTypeBinding resolveWellKnownType(String name) {
-    return (JdtTypeBinding) BindingConverter.unwrapElement(env.resolve(name));
+  private ITypeBinding resolveWellKnownType(String name) {
+    return BindingConverter.unwrapTypeElement((TypeElement) env.resolve(name));
   }
 
   /**

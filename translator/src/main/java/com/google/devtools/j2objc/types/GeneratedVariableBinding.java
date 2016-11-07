@@ -18,29 +18,26 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtMethodBinding;
-import com.google.devtools.j2objc.jdt.JdtTypeBinding;
-import com.google.devtools.j2objc.jdt.JdtVariableBinding;
+import javax.annotation.Nullable;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
-import javax.annotation.Nullable;
-import javax.lang.model.type.TypeMirror;
-
 /**
  * Binding class for variables and parameters created during translation.
  *
  * @author Tom Ball
  */
-public class GeneratedVariableBinding extends JdtVariableBinding {
+public class GeneratedVariableBinding extends AbstractBinding implements IVariableBinding {
+
   private final String name;
   private final int modifiers;
-  private final JdtTypeBinding type;
-  private JdtTypeBinding declaringClass;
-  private JdtMethodBinding declaringMethod;  // optional
+  private final ITypeBinding type;
+  private ITypeBinding declaringClass;
+  private IMethodBinding declaringMethod;  // optional
   private final boolean isParameter;
   private final boolean isField;
   private String typeQualifiers;
@@ -51,14 +48,13 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
   public GeneratedVariableBinding(String name, int modifiers, ITypeBinding type,
       boolean isField, boolean isParameter, @Nullable ITypeBinding declaringClass,
       @Nullable IMethodBinding declaringMethod) {
-    super(null);
     Preconditions.checkNotNull(name);
     this.name = name;
     this.modifiers = modifiers;
-    this.type = BindingConverter.wrapBinding(type);
+    this.type = type;
     this.isParameter = isParameter;
-    this.declaringClass = BindingConverter.wrapBinding(declaringClass);
-    this.declaringMethod = BindingConverter.wrapBinding(declaringMethod);
+    this.declaringClass = declaringClass;
+    this.declaringMethod = declaringMethod;
     this.isField = isField;
   }
 
@@ -144,16 +140,16 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
   }
 
   @Override
-  public JdtTypeBinding getDeclaringClass() {
+  public ITypeBinding getDeclaringClass() {
     return declaringClass;
   }
 
   public void setDeclaringClass(ITypeBinding newBinding) {
-    declaringClass = BindingConverter.wrapBinding(newBinding);
+    declaringClass = newBinding;
   }
 
   @Override
-  public JdtTypeBinding getType() {
+  public ITypeBinding getType() {
     return type;
   }
 
@@ -168,12 +164,12 @@ public class GeneratedVariableBinding extends JdtVariableBinding {
   }
 
   @Override
-  public JdtMethodBinding getDeclaringMethod() {
+  public IMethodBinding getDeclaringMethod() {
     return declaringMethod;
   }
 
   @Override
-  public JdtVariableBinding getVariableDeclaration() {
+  public IVariableBinding getVariableDeclaration() {
     return this;
   }
 

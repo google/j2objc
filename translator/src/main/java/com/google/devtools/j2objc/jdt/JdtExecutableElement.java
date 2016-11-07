@@ -13,12 +13,8 @@
  */
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -27,6 +23,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * An ExecutableElement implementation backed by a JDT method binding.
@@ -47,7 +45,7 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
   @Override
   public List<? extends TypeParameterElement> getTypeParameters() {
     List<TypeParameterElement> typeParams = new ArrayList<>();
-    for (ITypeBinding tp : ((JdtMethodBinding) binding).getTypeParameters()) {
+    for (ITypeBinding tp : ((IMethodBinding) binding).getTypeParameters()) {
       Element tpe = BindingConverter.getElement(tp);
       assert tpe instanceof TypeParameterElement;
       typeParams.add((TypeParameterElement) tpe);
@@ -57,12 +55,12 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
   @Override
   public TypeMirror getReturnType() {
-    return BindingConverter.getType(((JdtMethodBinding) binding).getReturnType());
+    return BindingConverter.getType(((IMethodBinding) binding).getReturnType());
   }
 
   @Override
   public TypeMirror asType() {
-    return BindingConverter.getType((JdtMethodBinding) binding);
+    return BindingConverter.getType((IMethodBinding) binding);
   }
 
   @Override
@@ -88,7 +86,7 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
   @Override
   public boolean isVarArgs() {
-    return ((JdtMethodBinding) binding).isVarargs();
+    return ((IMethodBinding) binding).isVarargs();
   }
 
   @Override
@@ -107,7 +105,7 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
   @Override
   public AnnotationValue getDefaultValue() {
-    Object value = ((JdtMethodBinding) binding).getDefaultValue();
+    Object value = ((IMethodBinding) binding).getDefaultValue();
     return value == null ? null : new JdtAnnotationValue(value);
   }
 

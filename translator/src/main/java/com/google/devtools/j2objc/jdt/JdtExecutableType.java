@@ -14,20 +14,19 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
 
-  JdtExecutableType(JdtMethodBinding binding) {
+  JdtExecutableType(IMethodBinding binding) {
     super(binding);
   }
 
@@ -44,7 +43,7 @@ class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
   @Override
   public List<? extends TypeVariable> getTypeVariables() {
     List<TypeVariable> typeVars = new ArrayList<TypeVariable>();
-    for (ITypeBinding typeVar : ((JdtMethodBinding) binding).getTypeParameters()) {
+    for (ITypeBinding typeVar : ((IMethodBinding) binding).getTypeParameters()) {
       typeVars.add((TypeVariable) BindingConverter.getType(typeVar));
     }
     return typeVars;
@@ -52,13 +51,13 @@ class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
 
   @Override
   public TypeMirror getReturnType() {
-    return BindingConverter.getType(((JdtMethodBinding) binding).getReturnType());
+    return BindingConverter.getType(((IMethodBinding) binding).getReturnType());
   }
 
   @Override
   public List<? extends TypeMirror> getParameterTypes() {
     List<TypeMirror> params = new ArrayList<TypeMirror>();
-    for (ITypeBinding param : ((JdtMethodBinding) binding).getParameterTypes()) {
+    for (ITypeBinding param : ((IMethodBinding) binding).getParameterTypes()) {
       params.add(BindingConverter.getType(param));
     }
     return params;
@@ -72,7 +71,7 @@ class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
   @Override
   public List<? extends TypeMirror> getThrownTypes() {
     List<TypeMirror> exceptions = new ArrayList<TypeMirror>();
-    for (ITypeBinding exception : ((JdtMethodBinding) binding).getExceptionTypes()) {
+    for (ITypeBinding exception : ((IMethodBinding) binding).getExceptionTypes()) {
       exceptions.add((TypeVariable) BindingConverter.getType(exception));
     }
     return exceptions;

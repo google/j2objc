@@ -26,10 +26,7 @@ import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -41,190 +38,24 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
-import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 /**
- * Factory for wrapping JDT IBindings, and (soon) generating
- * javax.lang.model.element and javax.lang.model.type wrappers of them.
- * This factory should only be called during AST conversion.
+ * Factory for wrapping JDT IBindings, and generating javax.lang.model.element and
+ * javax.lang.model.type wrappers of them.
  */
 public final class BindingConverter {
-  private static Map<IBinding, JdtBinding> bindingCache = new IdentityHashMap<>();
-  private static Map<JdtBinding, JdtElement> elementCache = new HashMap<>();
+
+  private static Map<IBinding, JdtElement> elementCache = new HashMap<>();
   private static Map<String, Name> nameCache = new HashMap<>();
-  private static Map<JdtBinding, JdtTypeMirror> typeCache = new HashMap<>();
+  private static Map<IBinding, JdtTypeMirror> typeCache = new HashMap<>();
 
   public static final JdtNoType NO_TYPE = new JdtNoType(null);
   public static final JdtTypeMirror NULL_TYPE = new JdtNullType();
-
-  public static JdtAnnotationBinding wrapBinding(IAnnotationBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    if (binding instanceof JdtAnnotationBinding) {
-      return (JdtAnnotationBinding) binding;
-    }
-    if (bindingCache.containsKey(binding)) {
-      return (JdtAnnotationBinding) bindingCache.get(binding);
-    }
-    JdtAnnotationBinding result = new JdtAnnotationBinding(binding);
-    bindingCache.put(binding, result);
-    return result;
-  }
-
-  public static JdtAnnotationBinding[] wrapBindings(IAnnotationBinding[] bindings) {
-    JdtAnnotationBinding[] wrappedBindings = new JdtAnnotationBinding[bindings.length];
-    for (int i = 0; i < bindings.length; i++) {
-      wrappedBindings[i] = BindingConverter.wrapBinding(bindings[i]);
-    }
-    return wrappedBindings;
-  }
-
-  public static JdtExtendedModifier wrapExtendedModifier(IExtendedModifier modifier) {
-    if (modifier == null) {
-      return null;
-    }
-    if (modifier instanceof JdtExtendedModifier) {
-      return (JdtExtendedModifier) modifier;
-    }
-    return new JdtExtendedModifier(modifier);
-  }
-
-  public static JdtMemberValuePairBinding wrapBinding(IMemberValuePairBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    if (binding instanceof JdtMemberValuePairBinding) {
-      return (JdtMemberValuePairBinding) binding;
-    }
-    if (bindingCache.containsKey(binding)) {
-      return (JdtMemberValuePairBinding) bindingCache.get(binding);
-    }
-    JdtMemberValuePairBinding result = new JdtMemberValuePairBinding(binding);
-    bindingCache.put(binding, result);
-    return result;
-  }
-
-  public static JdtMemberValuePairBinding[] wrapBindings(IMemberValuePairBinding[] bindings) {
-    JdtMemberValuePairBinding[] wrappedBindings = new JdtMemberValuePairBinding[bindings.length];
-    for (int i = 0; i < bindings.length; i++) {
-      wrappedBindings[i] = BindingConverter.wrapBinding(bindings[i]);
-    }
-    return wrappedBindings;
-  }
-
-  public static JdtMethodBinding wrapBinding(IMethodBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    if (binding instanceof JdtMethodBinding) {
-      return (JdtMethodBinding) binding;
-    }
-    if (bindingCache.containsKey(binding)) {
-      return (JdtMethodBinding) bindingCache.get(binding);
-    }
-    JdtMethodBinding result = new JdtMethodBinding(binding);
-    bindingCache.put(binding, result);
-    return result;
-  }
-
-  public static JdtMethodBinding[] wrapBindings(IMethodBinding[] bindings) {
-    JdtMethodBinding[] wrappedBindings = new JdtMethodBinding[bindings.length];
-    for (int i = 0; i < bindings.length; i++) {
-      wrappedBindings[i] = BindingConverter.wrapBinding(bindings[i]);
-    }
-    return wrappedBindings;
-  }
-
-  public static JdtPackageBinding wrapBinding(IPackageBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    if (binding instanceof JdtPackageBinding) {
-      return (JdtPackageBinding) binding;
-    }
-    if (bindingCache.containsKey(binding)) {
-      return (JdtPackageBinding) bindingCache.get(binding);
-    }
-    JdtPackageBinding result = new JdtPackageBinding(binding);
-    bindingCache.put(binding, result);
-    return result;
-  }
-
-  public static JdtTypeBinding wrapBinding(ITypeBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    if (binding instanceof JdtTypeBinding) {
-      return (JdtTypeBinding) binding;
-    }
-    if (bindingCache.containsKey(binding)) {
-      return (JdtTypeBinding) bindingCache.get(binding);
-    }
-    JdtTypeBinding result = new JdtTypeBinding(binding);
-    bindingCache.put(binding, result);
-    return result;
-  }
-
-  public static JdtTypeBinding[] wrapBindings(ITypeBinding[] bindings) {
-    JdtTypeBinding[] wrappedBindings = new JdtTypeBinding[bindings.length];
-    for (int i = 0; i < bindings.length; i++) {
-      wrappedBindings[i] = BindingConverter.wrapBinding(bindings[i]);
-    }
-    return wrappedBindings;
-  }
-
-  public static JdtVariableBinding wrapBinding(IVariableBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    if (binding instanceof JdtVariableBinding) {
-      return (JdtVariableBinding) binding;
-    }
-    if (bindingCache.containsKey(binding)) {
-      return (JdtVariableBinding) bindingCache.get(binding);
-    }
-    JdtVariableBinding result = new JdtVariableBinding(binding);
-    bindingCache.put(binding, result);
-    return result;
-  }
-
-  public static JdtVariableBinding[] wrapBindings(IVariableBinding[] bindings) {
-    JdtVariableBinding[] wrappedBindings = new JdtVariableBinding[bindings.length];
-    for (int i = 0; i < bindings.length; i++) {
-      wrappedBindings[i] = BindingConverter.wrapBinding(bindings[i]);
-    }
-    return wrappedBindings;
-  }
-
-  public static List<JdtVariableBinding> wrapBindings(List<IVariableBinding> bindings) {
-    List<JdtVariableBinding> wrappedBindings = new ArrayList<>();
-    for (IVariableBinding binding : bindings) {
-      wrappedBindings.add(BindingConverter.wrapBinding(binding));
-    }
-    return wrappedBindings;
-  }
-
-  public static JdtBinding wrapBinding(IBinding binding) {
-    if (binding == null) {
-      return null;
-    }
-    switch (binding.getKind()) {
-      case IBinding.ANNOTATION: return wrapBinding((IAnnotationBinding) binding);
-      case IBinding.MEMBER_VALUE_PAIR: return wrapBinding((IMemberValuePairBinding) binding);
-      case IBinding.METHOD: return wrapBinding((IMethodBinding) binding);
-      case IBinding.PACKAGE: return wrapBinding((IPackageBinding) binding);
-      case IBinding.TYPE: return wrapBinding((ITypeBinding) binding);
-      case IBinding.VARIABLE: return wrapBinding((IVariableBinding) binding);
-      default:
-        throw new AssertionError("unknown binding type: " + binding.getKind());
-    }
-  }
 
   public static Name getName(String s) {
     if (s == null) {
@@ -242,57 +73,41 @@ public final class BindingConverter {
     if (binding == null) {
       return null;
     }
-    JdtTypeMirror type = getTypeMirror(binding);
+    JdtTypeMirror type = typeCache.get(binding);
     if (type != null) {
       return type;
     }
-    JdtTypeBinding jdtType = wrapBinding(binding);
     if (binding.isArray()) {
-      type = new JdtArrayType(jdtType);
+      type = new JdtArrayType(binding);
     } else if (BindingUtil.isIntersectionType(binding)) {
-      type = new JdtIntersectionType(jdtType);
+      type = new JdtIntersectionType(binding);
     } else if (binding.isPrimitive()) {
-      if (jdtType instanceof NativeTypeBinding) {
-        type = new JdtNativeType(jdtType);
-      } else if (jdtType.getBinaryName().charAt(0) == 'V') {
-        type = new JdtNoType(jdtType);
+      if (binding instanceof NativeTypeBinding) {
+        type = new JdtNativeType(binding);
+      } else if (binding.getBinaryName().charAt(0) == 'V') {
+        type = new JdtNoType(binding);
       } else {
-        type = new JdtPrimitiveType(jdtType);
+        type = new JdtPrimitiveType(binding);
       }
     } else if (binding.isTypeVariable()) {
-      type = new JdtTypeVariable(jdtType);
+      type = new JdtTypeVariable(binding);
     } else if (binding.isWildcardType()) {
-      type = new JdtWildcardType(jdtType);
+      type = new JdtWildcardType(binding);
     } else {
-      type = new JdtDeclaredType(jdtType);
+      type = new JdtDeclaredType(binding);
     }
-    typeCache.put(jdtType, type);
+    typeCache.put(binding, type);
     return type;
   }
 
   public static JdtExecutableType getType(IMethodBinding binding) {
-    JdtTypeMirror type = getTypeMirror(binding);
+    JdtTypeMirror type = typeCache.get(binding);
     if (type != null) {
       return (JdtExecutableType) type;
     }
-    JdtMethodBinding wrappedBinding = wrapBinding(binding);
-    JdtExecutableType executableType = new JdtExecutableType(wrappedBinding);
-    typeCache.put(wrappedBinding, executableType);
+    JdtExecutableType executableType = new JdtExecutableType(binding);
+    typeCache.put(binding, executableType);
     return executableType;
-  }
-
-  private static JdtTypeMirror getTypeMirror(IBinding binding) {
-    JdtBinding wrappedBinding = wrapBinding(binding);
-    return typeCache.get(wrappedBinding);
-  }
-
-  public static Element getElement(IBinding binding) {
-    if (binding instanceof GeneratedTypeElement.Binding) {
-      return ((GeneratedTypeElement.Binding) binding).asElement();
-    } else if (binding instanceof GeneratedExecutableElement.Binding) {
-      return ((GeneratedExecutableElement.Binding) binding).asElement();
-    }
-    return getElement(wrapBinding(binding));
   }
 
   public static VariableElement getVariableElement(IVariableBinding binding) {
@@ -307,7 +122,7 @@ public final class BindingConverter {
     return (TypeElement) getElement(binding);
   }
 
-  public static JdtElement getElement(JdtBinding binding) {
+  public static Element getElement(IBinding binding) {
     if (binding == null) {
       return null;
     }
@@ -315,16 +130,20 @@ public final class BindingConverter {
     if (element != null) {
       return element;
     }
-    if (binding instanceof JdtMethodBinding) {
-      element = new JdtExecutableElement((JdtMethodBinding) binding);
-    } else if (binding instanceof JdtPackageBinding) {
-      element = new JdtPackageElement((JdtPackageBinding) binding);
-    } else if (binding instanceof JdtTypeBinding) {
-      JdtTypeBinding typeBinding = (JdtTypeBinding) binding;
+    if (binding instanceof GeneratedTypeElement.Binding) {
+      return ((GeneratedTypeElement.Binding) binding).asElement();
+    } else if (binding instanceof GeneratedExecutableElement.Binding) {
+      return ((GeneratedExecutableElement.Binding) binding).asElement();
+    } else if (binding instanceof IMethodBinding) {
+      element = new JdtExecutableElement((IMethodBinding) binding);
+    } else if (binding instanceof IPackageBinding) {
+      element = new JdtPackageElement((IPackageBinding) binding);
+    } else if (binding instanceof ITypeBinding) {
+      ITypeBinding typeBinding = (ITypeBinding) binding;
       element = typeBinding.isTypeVariable()
           ? new JdtTypeParameterElement(typeBinding) : new JdtTypeElement(typeBinding);
-    } else if (binding instanceof JdtVariableBinding) {
-      element = new JdtVariableElement((JdtVariableBinding) binding);
+    } else if (binding instanceof IVariableBinding) {
+      element = new JdtVariableElement((IVariableBinding) binding);
     } else {
       throw new AssertionError("unknown element binding: " + binding.getClass().getSimpleName());
     }
@@ -336,9 +155,8 @@ public final class BindingConverter {
    * JDT package bindings do not include annotations, so add them from the
    * package's AST node.
    */
-  public static JdtPackageElement getPackageElement(
-      org.eclipse.jdt.core.dom.PackageDeclaration pkg) {
-    JdtPackageBinding binding = wrapBinding(pkg.resolveBinding());
+  public static JdtPackageElement getPackageElement(PackageDeclaration pkg) {
+    IPackageBinding binding = pkg.resolveBinding();
     JdtPackageElement pkgElement = (JdtPackageElement) getElement(binding);
     if (pkgElement.getAnnotationMirrors().isEmpty() && pkg.annotations().size() > 0) {
       for (Object modifier : pkg.annotations()) {
@@ -361,7 +179,9 @@ public final class BindingConverter {
           element.toString(), ElementUtil.fromModifierSet(element.getModifiers()),
           unwrapTypeMirrorIntoTypeBinding(element.asType()), element.getKind() == ElementKind.FIELD,
           element.getKind() == ElementKind.PARAMETER, enclosingType, enclosingMethod);
-      newBinding.addAnnotations(element.getAnnotationMirrors());
+      for (AnnotationMirror m : element.getAnnotationMirrors()) {
+        newBinding.addAnnotation(unwrapAnnotationMirror(m));
+      }
       newBinding.setNonnull(((GeneratedVariableElement) element).isNonnull());
       newBinding.setTypeQualifiers(((GeneratedVariableElement) element).getTypeQualifiers());
       return newBinding;
@@ -416,7 +236,6 @@ public final class BindingConverter {
   }
 
   public static void reset() {
-    bindingCache.clear();
     elementCache.clear();
     nameCache.clear();
     typeCache.clear();

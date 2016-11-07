@@ -17,15 +17,15 @@ package com.google.devtools.j2objc.jdt;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtNoType extends JdtTypeMirror implements NoType {
 
-  JdtNoType(JdtTypeBinding binding) {
+  JdtNoType(ITypeBinding binding) {
     super(binding);
   }
 

@@ -14,19 +14,19 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 class JdtVariableElement extends JdtElement implements VariableElement {
-  private final JdtBinding owner;
+
+  private final IBinding owner;
 
   JdtVariableElement(IVariableBinding binding) {
     this(binding, binding.getName(), binding.getModifiers(),
@@ -45,8 +45,7 @@ class JdtVariableElement extends JdtElement implements VariableElement {
   private JdtVariableElement(IBinding declaration, String name, int modifiers,
       IMethodBinding declaringMethod, ITypeBinding declaringClass) {
     super(declaration, name, modifiers);
-    this.owner =
-        BindingConverter.wrapBinding(declaringMethod != null ? declaringMethod : declaringClass);
+    this.owner = declaringMethod != null ? declaringMethod : declaringClass;
   }
 
   @Override

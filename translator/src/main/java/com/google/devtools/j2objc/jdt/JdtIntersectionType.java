@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.jdt;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
@@ -26,26 +27,23 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  * getKind() should return TypeKind.INTERSECTION, accept should visitIntersection,
  * and this should implement getBounds().
  */
-public class JdtIntersectionType extends JdtTypeMirror {
-//class JdtIntersectionType extends JdtTypeMirror implements IntersectionType {
+public class JdtIntersectionType extends JdtTypeMirror implements IntersectionType {
 
-  JdtIntersectionType(JdtTypeBinding binding) {
+  JdtIntersectionType(ITypeBinding binding) {
     super(binding);
   }
 
   @Override
   public TypeKind getKind() {
-    return TypeKind.OTHER;
-    //return TypeKind.INTERSECTION;
+    return TypeKind.INTERSECTION;
   }
 
   @Override
   public <R, P> R accept(TypeVisitor<R, P> v, P p) {
-    return v.visitUnknown(this, p);
-    //return v.visitIntersection(this, p);
+    return v.visitIntersection(this, p);
   }
 
-//  @Override
+  @Override
   public List<? extends TypeMirror> getBounds() {
     List<TypeMirror> bounds = new ArrayList<>();
     for (ITypeBinding bound : ((ITypeBinding) binding).getInterfaces()) {

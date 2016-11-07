@@ -18,10 +18,11 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtArrayType extends JdtTypeMirror implements ArrayType {
 
-  JdtArrayType(JdtTypeBinding binding) {
+  JdtArrayType(ITypeBinding binding) {
     super(binding);
     assert binding.isArray();
   }
@@ -38,6 +39,6 @@ class JdtArrayType extends JdtTypeMirror implements ArrayType {
 
   @Override
   public TypeMirror getComponentType() {
-    return BindingConverter.getType(((JdtTypeBinding) binding).getComponentType());
+    return BindingConverter.getType(((ITypeBinding) binding).getComponentType());
   }
 }
