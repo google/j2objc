@@ -499,7 +499,7 @@ public class Functionizer extends UnitTreeVisitor {
     @Override
     public void endVisit(SimpleName node) {
       VariableElement var = TreeUtil.getVariableElement(node);
-      if (var != null && ElementUtil.isField(var)) {
+      if (var != null && var.getKind().isField()) {
         // Convert name to self->name.
         node.replaceWith(new QualifiedName(var, new SimpleName(selfParam)));
       }

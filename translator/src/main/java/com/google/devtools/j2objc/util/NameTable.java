@@ -373,7 +373,7 @@ public class NameTable {
 
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
-    if (ElementUtil.isField(var) && !ElementUtil.isGlobalVar(var)) {
+    if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
       return baseName + '_';
     }
     return baseName;

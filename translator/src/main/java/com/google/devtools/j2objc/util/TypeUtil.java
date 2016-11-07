@@ -95,6 +95,11 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.ARRAY;
   }
 
+  public static boolean isFloatingPoint(TypeMirror t) {
+    TypeKind kind = t.getKind();
+    return kind == TypeKind.FLOAT || kind == TypeKind.DOUBLE;
+  }
+
   // Ugly, but we can't have it actually implement IntersectionType or return TypeKind.INTERSECTION
   // until Java 8.
   public static boolean isIntersection(TypeMirror t) {
@@ -371,7 +376,7 @@ public final class TypeUtil {
   /**
    * Returns the binary name for a primitive or void type.
    */
-  public String getBinaryName(TypeMirror t) {
+  public static String getBinaryName(TypeMirror t) {
     switch (t.getKind()) {
       case BOOLEAN: return "Z";
       case BYTE: return "B";

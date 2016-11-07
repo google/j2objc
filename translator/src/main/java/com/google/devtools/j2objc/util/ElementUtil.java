@@ -300,7 +300,11 @@ public final class ElementUtil {
   }
 
   public static boolean isField(Element element) {
-    return element.getKind().isField();
+    return element.getKind() == ElementKind.FIELD;
+  }
+
+  public static boolean isLocalVariable(Element element) {
+    return element.getKind() == ElementKind.LOCAL_VARIABLE;
   }
 
   public static boolean isMethod(Element element) {

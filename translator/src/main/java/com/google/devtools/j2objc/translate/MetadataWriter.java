@@ -428,7 +428,7 @@ public class MetadataWriter extends UnitTreeVisitor {
     } else if (TypeUtil.isArray(type)) {
       return "[" + getTypeName(((ArrayType) type).getComponentType());
     } else {
-      return typeUtil.getBinaryName(type);
+      return TypeUtil.getBinaryName(type);
     }
   }
 

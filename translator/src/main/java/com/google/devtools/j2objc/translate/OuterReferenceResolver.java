@@ -421,7 +421,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
       Expression path = null;
       if (ElementUtil.isInstanceVar(var)) {
         path = getPathForField(var);
-      } else if (!ElementUtil.isField(var)) {
+      } else if (!var.getKind().isField()) {
         path = getPathForLocalVar(var);
       }
       if (path != null) {
