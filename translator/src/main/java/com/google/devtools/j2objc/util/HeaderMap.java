@@ -46,7 +46,6 @@ public class HeaderMap {
   private static final Set<String> PLATFORM_PACKAGES = Sets.newHashSet(new String[] {
       "android",
       "com.android.internal.util",
-      "com.google.android",
       "com.google.common",
       "com.google.common.annotations",
       "com.google.common.base",
