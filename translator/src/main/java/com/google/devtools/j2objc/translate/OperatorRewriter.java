@@ -273,7 +273,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     node.replaceWith(invocation);
   }
 
-  private static String intOrLong(TypeMirror type) {
+  private static String intSizePostfix(TypeMirror type) {
     switch (type.getKind()) {
       case INT: return "32";
       case LONG: return "64";
@@ -291,11 +291,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
           default: return null;
         }
       case LEFT_SHIFT:
-        return "JreLShift" + intOrLong(nodeType);
+        return "JreLShift" + intSizePostfix(nodeType);
       case RIGHT_SHIFT_SIGNED:
-        return "JreRShift" + intOrLong(nodeType);
+        return "JreRShift" + intSizePostfix(nodeType);
       case RIGHT_SHIFT_UNSIGNED:
-        return "JreURShift" + intOrLong(nodeType);
+        return "JreURShift" + intSizePostfix(nodeType);
       default:
         return null;
     }
