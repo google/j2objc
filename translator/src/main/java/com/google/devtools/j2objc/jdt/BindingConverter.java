@@ -18,19 +18,16 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedPackageBinding;
 import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.HashMap;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
@@ -134,6 +131,8 @@ public final class BindingConverter {
       return ((GeneratedTypeElement.Binding) binding).asElement();
     } else if (binding instanceof GeneratedExecutableElement.Binding) {
       return ((GeneratedExecutableElement.Binding) binding).asElement();
+    } else if (binding instanceof GeneratedVariableElement.Binding) {
+      return ((GeneratedVariableElement.Binding) binding).asElement();
     } else if (binding instanceof IMethodBinding) {
       element = new JdtExecutableElement((IMethodBinding) binding);
     } else if (binding instanceof IPackageBinding) {
@@ -170,21 +169,7 @@ public final class BindingConverter {
 
   public static IBinding unwrapElement(Element element) {
     if (element instanceof GeneratedVariableElement) {
-      IBinding enclosing = unwrapElement(element.getEnclosingElement());
-      ITypeBinding enclosingType =
-          enclosing instanceof ITypeBinding ? (ITypeBinding) enclosing : null;
-      IMethodBinding enclosingMethod =
-          enclosing instanceof IMethodBinding ? (IMethodBinding) enclosing : null;
-      GeneratedVariableBinding newBinding = new GeneratedVariableBinding(
-          element.toString(), ElementUtil.fromModifierSet(element.getModifiers()),
-          unwrapTypeMirrorIntoTypeBinding(element.asType()), element.getKind() == ElementKind.FIELD,
-          element.getKind() == ElementKind.PARAMETER, enclosingType, enclosingMethod);
-      for (AnnotationMirror m : element.getAnnotationMirrors()) {
-        newBinding.addAnnotation(unwrapAnnotationMirror(m));
-      }
-      newBinding.setNonnull(((GeneratedVariableElement) element).isNonnull());
-      newBinding.setTypeQualifiers(((GeneratedVariableElement) element).getTypeQualifiers());
-      return newBinding;
+      return ((GeneratedVariableElement) element).asVariableBinding();
     }
     if (element instanceof GeneratedExecutableElement) {
       return ((GeneratedExecutableElement) element).asMethodBinding();
