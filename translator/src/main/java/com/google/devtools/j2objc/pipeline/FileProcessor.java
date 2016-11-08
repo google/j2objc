@@ -52,7 +52,7 @@ abstract class FileProcessor {
     this.parser = Preconditions.checkNotNull(parser);
     if (Options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
-      assert !Options.shouldMapHeaders();
+      assert !Options.getHeaderMap().useSourceDirectories();
       closureQueue = new BuildClosureQueue();
     } else {
       closureQueue = null;

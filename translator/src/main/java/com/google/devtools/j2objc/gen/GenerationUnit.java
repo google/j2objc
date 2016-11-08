@@ -21,14 +21,11 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.file.InputFile;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.TreeMap;
-
 import javax.annotation.Nullable;
 
 /**
@@ -72,7 +69,7 @@ public class GenerationUnit {
 
   public static GenerationUnit newSingleFileUnit(InputFile file) {
     GenerationUnit unit = new GenerationUnit(file.getPath(), 1);
-    if (Options.useSourceDirectories()) {
+    if (Options.getHeaderMap().useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
       unit.outputPath = outputPath;
@@ -151,7 +148,7 @@ public class GenerationUnit {
       // be compiled and translated as a single task. When we support
       // parallelization, each parallel task needs to be constrained this way.
       assert receivedUnits == 1;
-      outputPath = getDefaultOutputPath(unit);
+      outputPath = Options.getHeaderMap().getOutputPath(unit);
     }
 
     hasIncompleteProtocol = hasIncompleteProtocol || unit.hasIncompleteProtocol();
@@ -203,21 +200,6 @@ public class GenerationUnit {
 
   public boolean isFullyParsed() {
     return receivedUnits == numUnits;
-  }
-
-  /**
-   * Gets the output path if there isn't one already.
-   * For example, foo/bar/Mumble.java translates to $(OUTPUT_DIR)/foo/bar/Mumble.
-   * If --no-package-directories is specified, though, the output file is $(OUTPUT_DIR)/Mumble.
-   */
-  private static String getDefaultOutputPath(CompilationUnit unit) {
-    String path = unit.getMainTypeName();
-    PackageDeclaration pkg = unit.getPackage();
-    if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
-      path = pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
-          + File.separatorChar + path;
-    }
-    return path;
   }
 
   public void failed() {

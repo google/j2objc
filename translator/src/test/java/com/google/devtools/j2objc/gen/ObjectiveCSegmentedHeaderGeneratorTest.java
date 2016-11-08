@@ -16,8 +16,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.Options.OutputStyleOption;
-
 import java.io.IOException;
 
 /**
@@ -114,7 +112,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     addJarFile("some/path/test.jar", "foo/Test.java",
                "package foo; import abc.Bar; class Test extends Bar {}");
     addJarFile("other/path/test2.jar", "abc/Bar.java", "package abc; public class Bar {}");
-    Options.setOutputStyle(OutputStyleOption.SOURCE_COMBINED);
+    Options.getHeaderMap().setCombineJars();
     runPipeline("some/path/test.jar", "other/path/test2.jar");
     String translation = getTranslatedFile("some/path/test.h");
     // Check that the RESTRICT and INCLUDE_ALL variables are prefixed with a

@@ -16,15 +16,12 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.SourceVersion;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
@@ -128,7 +125,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testHeaderFileMapping() throws IOException {
-    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     loadHeaderMappings();
@@ -150,8 +147,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testNoHeaderMapping() throws IOException {
-    // Should be able to turn off header mappings by passing empty collection
-    Options.setHeaderMappingFiles(Collections.<String>emptyList());
+    // Should be able to turn off header mappings by passing empty list.
+    Options.getHeaderMap().setMappingFiles("");
     addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
     loadHeaderMappings();
     String translation = translateSourceFile(
@@ -162,8 +159,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testOutputHeaderFileMapping() throws IOException {
-    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
-    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
+    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
+    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     addSourceFile("package unit.test; public class Dummy {}", "unit/test/Dummy.java");
     addSourceFile(
         "package unit.test;"
@@ -179,15 +176,16 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "#include \"unit/test/Dummy.h\"");
 
     HeaderMap headerMap = Options.getHeaderMap();
-    assertEquals(headerMap.get("unit.test.Dummy"), "unit/test/Dummy.h");
-    assertEquals(headerMap.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
-    assertEquals(headerMap.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
-    assertEquals(headerMap.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
+    assertEquals("unit/test/Dummy.h", headerMap.getMapped("unit.test.Dummy"));
+    assertEquals("unit/test/AnotherDummy.h", headerMap.getMapped("unit.test.AnotherDummy"));
+    assertEquals("my/mapping/custom/Test.h", headerMap.getMapped("unit.mapping.custom.Test"));
+    assertEquals("my/mapping/custom/Test.h",
+                 headerMap.getMapped("unit.mapping.custom.AnotherTest"));
   }
 
   public void testOutputHeaderFileMappingWithMultipleClassesInOneHeader() throws IOException {
-    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
-    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
+    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
+    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     addSourceFile("package unit.mapping.custom; public class AnotherTest { }",
@@ -216,10 +214,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translationForAnotherDummy, "#include \"my/mapping/custom/Test.h\"");
 
     HeaderMap headerMap = Options.getHeaderMap();
-    assertEquals(headerMap.get("unit.test.Dummy"), "unit/test/Dummy.h");
-    assertEquals(headerMap.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
-    assertEquals(headerMap.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
-    assertEquals(headerMap.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
+    assertEquals("unit/test/Dummy.h", headerMap.getMapped("unit.test.Dummy"));
+    assertEquals("unit/test/AnotherDummy.h", headerMap.getMapped("unit.test.AnotherDummy"));
+    assertEquals("my/mapping/custom/Test.h", headerMap.getMapped("unit.mapping.custom.Test"));
+    assertEquals("my/mapping/custom/Test.h",
+                 headerMap.getMapped("unit.mapping.custom.AnotherTest"));
   }
 
   public void testCombinedGeneration() throws IOException {
@@ -278,8 +277,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testCombinedJarHeaderMapping() throws IOException {
     File outputHeaderMappingFile = new File(tempDir, "mappings.j2objc");
-    Options.setOutputHeaderMappingFile(outputHeaderMappingFile);
-    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
+    Options.getHeaderMap().setOutputMappingFile(outputHeaderMappingFile);
+    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     addSourceFile("package unit; public class Test { }",
         "unit/Test.java");
     addSourceFile("package unit; public class AnotherTest extends Test { }",
@@ -298,11 +297,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "unit2/Foo", ".h", "unit2/AnotherTest.java", "unit2/YetAnotherTest.java");
 
     HeaderMap headerMap = Options.getHeaderMap();
-    assertEquals("unit/Foo.h", headerMap.get("unit.Test"));
-    assertEquals("unit/Foo.h", headerMap.get("unit.AnotherTest"));
+    assertEquals("unit/Foo.h", headerMap.getMapped("unit.Test"));
+    assertEquals("unit/Foo.h", headerMap.getMapped("unit.AnotherTest"));
     assertTranslation(header2, "#include \"unit/Foo.h\"");
-    assertEquals("unit2/Foo.h", headerMap.get("unit2.AnotherTest"));
-    assertEquals("unit2/Foo.h", headerMap.get("unit2.YetAnotherTest"));
+    assertEquals("unit2/Foo.h", headerMap.getMapped("unit2.AnotherTest"));
+    assertEquals("unit2/Foo.h", headerMap.getMapped("unit2.YetAnotherTest"));
   }
 
   public void testForwardDeclarationTranslation() throws IOException {

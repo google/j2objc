@@ -165,7 +165,7 @@ public class GenerationBatch {
       } finally {
         zfile.close();  // Also closes input stream.
       }
-      if (Options.combineSourceJars()) {
+      if (Options.getHeaderMap().combineSourceJars()) {
         addCombinedJar(filename, inputFiles);
       } else {
         for (InputFile file : inputFiles) {

@@ -16,8 +16,7 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.devtools.j2objc.Options.OutputStyleOption;
-
+import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -175,13 +174,13 @@ public class J2ObjCTest extends GenerationTest {
   }
 
   public void testCombinedJar() throws Exception {
-    Options.setOutputStyle(OutputStyleOption.SOURCE_COMBINED);
+    Options.getHeaderMap().setCombineJars();
     J2ObjC.run(Collections.singletonList(jarPath));
     makeAssertionsForCombinedJar();
   }
 
   public void testSourceDirsOption() throws Exception {
-    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
+    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath));
     String exampleH = getTranslatedFile(exampleJavaPath.replace(".java", ".h"));
     String exampleM = getTranslatedFile(exampleJavaPath.replace(".java", ".m"));

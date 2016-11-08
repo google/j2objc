@@ -14,23 +14,25 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.collect.Lists;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import javax.lang.model.element.PackageElement;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Manages the mapping of types to their header files.
@@ -76,7 +78,78 @@ public class HeaderMap {
       "sun.misc",
   });
 
+  private static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
+
+  /**
+   * Types of output file generation. Output files are generated in
+   * the specified output directory in an optional sub-directory.
+   */
+  public static enum OutputStyleOption {
+    /** Use the class's package, like javac.*/
+    PACKAGE,
+
+    /** Use the relative directory of the input file. */
+    SOURCE,
+
+    /** Don't use a relative directory. */
+    NONE
+  }
+
+  private OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
+
+  // Variant of SOURCE style. Sources from .jar files are combined into a single output header and
+  // source file.
+  private boolean combineJars = false;
+  // Variant of SOURCE style. Annotation generated sources are included in the same output as the
+  // source they are generated from.
+  private boolean includeGeneratedSources = false;
+
+  private List<String> inputMappingFiles = null;
+  private File outputMappingFile = null;
   private final Map<String, String> map = Maps.newHashMap();
+
+  public void setOutputStyle(OutputStyleOption outputStyle) {
+    this.outputStyle = outputStyle;
+  }
+
+  public void setCombineJars() {
+    outputStyle = OutputStyleOption.SOURCE;
+    combineJars = true;
+  }
+
+  public void setIncludeGeneratedSources() {
+    outputStyle = OutputStyleOption.SOURCE;
+    includeGeneratedSources = true;
+  }
+
+  public void setMappingFiles(String fileList) {
+    if (fileList.isEmpty()) {
+      // For when user supplies an empty mapping files list. Otherwise the default will be used.
+      inputMappingFiles = Collections.emptyList();
+    } else {
+      inputMappingFiles = ImmutableList.copyOf(fileList.split(","));
+    }
+  }
+
+  public void setOutputMappingFile(File outputMappingFile) {
+    this.outputMappingFile = outputMappingFile;
+  }
+
+  /**
+   * If true, generated source locations are determined as a function of the input source location
+   * and not the package of the input source.
+   */
+  public boolean useSourceDirectories() {
+    return outputStyle == OutputStyleOption.SOURCE;
+  }
+
+  public boolean combineSourceJars() {
+    return outputStyle == OutputStyleOption.SOURCE && combineJars;
+  }
+
+  public boolean includeGeneratedSources() {
+    return outputStyle == OutputStyleOption.SOURCE && includeGeneratedSources;
+  }
 
   public String get(ITypeBinding type) {
     if (type instanceof IOSTypeBinding) {
@@ -87,21 +160,43 @@ public class HeaderMap {
       }
     }
 
-    return get(type.getErasure().getQualifiedName());
-  }
+    String qualifiedName = type.getErasure().getQualifiedName();
 
-  public String get(String qualifiedName) {
     String mappedHeader = map.get(qualifiedName);
     if (mappedHeader != null) {
       return mappedHeader;
     }
 
-    // Use package directories for platform classes if they do not have an entry in the header
-    // mapping.
-    if (Options.usePackageDirectories() || isPlatformClass(qualifiedName)) {
-      return qualifiedName.replace('.', '/') + ".h";
-    } else {
-      return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1) + ".h";
+    String name = type.getErasure().getName();
+    PackageElement pkg = BindingConverter.getPackageElement(type.getPackage());
+    return outputDirFromPackage(pkg) + name + ".h";
+  }
+
+  @VisibleForTesting
+  public String getMapped(String qualifiedName) {
+    return map.get(qualifiedName);
+  }
+
+  public String getOutputPath(CompilationUnit unit) {
+    return outputDirFromPackage(unit.getPackage().getPackageElement()) + unit.getMainTypeName();
+  }
+
+  private String outputDirFromPackage(PackageElement pkg) {
+    if (pkg == null || pkg.isUnnamed()) {
+      return "";
+    }
+    String pkgName = ElementUtil.getName(pkg);
+    OutputStyleOption style = outputStyle;
+    if (isPlatformPackage(pkgName)) {
+      // Use package directories for platform classes if they do not have an entry in the header
+      // mapping.
+      style = OutputStyleOption.PACKAGE;
+    }
+    switch (style) {
+      case PACKAGE:
+        return ElementUtil.getName(pkg).replace('.', File.separatorChar) + File.separatorChar;
+      default:
+        return "";
     }
   }
 
@@ -109,8 +204,8 @@ public class HeaderMap {
     map.put(qualifiedName, header);
   }
 
-  private static boolean isPlatformClass(String className) {
-    String[] parts = className.split("\\.");
+  private static boolean isPlatformPackage(String pkgName) {
+    String[] parts = pkgName.split("\\.");
     String pkg = null;
     for (int i = 0; i < parts.length; i++) {
       pkg = i == 0 ? parts[0] : UnicodeUtils.format("%s.%s", pkg, parts[i]);
@@ -122,45 +217,41 @@ public class HeaderMap {
   }
 
   public void loadMappings() {
-    List<String> headerMappingFiles = Options.getHeaderMappingFiles();
-    List<Properties> headerMappingProps = Lists.newArrayList();
-
     try {
-      if (headerMappingFiles == null) {
+      if (inputMappingFiles == null) {
         try {
-          headerMappingProps.add(FileUtil.loadProperties(Options.DEFAULT_HEADER_MAPPING_FILE));
+          loadMappingsFromProperties(FileUtil.loadProperties(DEFAULT_HEADER_MAPPING_FILE));
         } catch (FileNotFoundException e) {
           // Don't fail if mappings aren't configured and the default mapping is absent.
         }
       } else {
-        for (String resourceName : headerMappingFiles) {
-          headerMappingProps.add(FileUtil.loadProperties(resourceName));
+        for (String resourceName : inputMappingFiles) {
+          loadMappingsFromProperties(FileUtil.loadProperties(resourceName));
         }
       }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
+  }
 
-    for (Properties mappings : headerMappingProps) {
-      Enumeration<?> keyIterator = mappings.propertyNames();
-      while (keyIterator.hasMoreElements()) {
-        String key = (String) keyIterator.nextElement();
-        map.put(key, mappings.getProperty(key));
-      }
+  private void loadMappingsFromProperties(Properties mappings) {
+    Enumeration<?> keyIterator = mappings.propertyNames();
+    while (keyIterator.hasMoreElements()) {
+      String key = (String) keyIterator.nextElement();
+      map.put(key, mappings.getProperty(key));
     }
   }
 
   public void printMappings() {
-    File outputFile = Options.getOutputHeaderMappingFile();
-    if (outputFile == null) {
+    if (outputMappingFile == null) {
       return;
     }
     try {
-      if (!outputFile.exists()) {
-        outputFile.getParentFile().mkdirs();
-        outputFile.createNewFile();
+      if (!outputMappingFile.exists()) {
+        outputMappingFile.getParentFile().mkdirs();
+        outputMappingFile.createNewFile();
       }
-      PrintWriter writer = new PrintWriter(outputFile);
+      PrintWriter writer = new PrintWriter(outputMappingFile, "UTF-8");
 
       for (Map.Entry<String, String> entry : map.entrySet()) {
         writer.println(UnicodeUtils.format("%s=%s", entry.getKey(), entry.getValue()));

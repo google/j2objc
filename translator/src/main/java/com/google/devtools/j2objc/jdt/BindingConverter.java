@@ -167,6 +167,10 @@ public final class BindingConverter {
     return pkgElement;
   }
 
+  public static JdtPackageElement getPackageElement(IPackageBinding binding) {
+    return (JdtPackageElement) getElement(binding);
+  }
+
   public static IBinding unwrapElement(Element element) {
     if (element instanceof GeneratedVariableElement) {
       return ((GeneratedVariableElement) element).asVariableBinding();

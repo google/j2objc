@@ -78,8 +78,9 @@ public class InputFilePreprocessor {
   private void processRegularSource(ProcessingContext input) throws IOException {
     InputFile file = input.getFile();
     String source = FileUtil.readFile(file);
+    boolean shouldMapHeaders = Options.getHeaderMap().useSourceDirectories();
     boolean doIncompatibleStripping = source.contains("J2ObjCIncompatible");
-    if (!(Options.shouldMapHeaders() || doIncompatibleStripping)) {
+    if (!(shouldMapHeaders || doIncompatibleStripping)) {
       // No need to parse.
       return;
     }
@@ -90,7 +91,7 @@ public class InputFilePreprocessor {
       return;
     }
     String qualifiedName = FileUtil.getQualifiedMainTypeName(file, compilationUnit);
-    if (Options.shouldMapHeaders()) {
+    if (shouldMapHeaders) {
       Options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
     }
     if (doIncompatibleStripping) {

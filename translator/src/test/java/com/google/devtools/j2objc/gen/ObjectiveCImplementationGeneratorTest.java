@@ -54,7 +54,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testHeaderFileMapping() throws IOException {
-    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
     loadHeaderMappings();
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");

@@ -123,7 +123,7 @@ public class AnnotationPreProcessor {
       // Any compilation errors will already by displayed.
       ErrorUtil.error("failed batch processing sources");
     }
-    if (!Options.includeGeneratedSources() && tmpDirectory != null) {
+    if (!Options.getHeaderMap().includeGeneratedSources() && tmpDirectory != null) {
       collectGeneratedInputs(tmpDirectory, "", inputs);
     }
     return generatedInputs;
@@ -171,7 +171,7 @@ public class AnnotationPreProcessor {
     @Override
     public JavaFileObject createSourceFile(CharSequence name, Element... originatingElements)
         throws IOException {
-      if (!Options.includeGeneratedSources()) {
+      if (!Options.getHeaderMap().includeGeneratedSources()) {
         return super.createSourceFile(name, originatingElements);
       }
       String referenceFile = null;

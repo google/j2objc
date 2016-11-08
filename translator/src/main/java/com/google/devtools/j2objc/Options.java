@@ -34,14 +34,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
 import org.eclipse.jdt.core.JavaCore;
 
 /**
@@ -61,14 +59,12 @@ public class Options {
   private List<String> classPathEntries = Lists.newArrayList(".");
   private List<String> processorPathEntries = Lists.newArrayList();
   private File outputDirectory = new File(".");
-  private OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
   private HeaderMap headerMap = new HeaderMap();
-  private File outputHeaderMappingFile = null;
   private boolean stripGwtIncompatible = false;
   private boolean segmentedHeaders = true;
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
@@ -79,13 +75,11 @@ public class Options {
   private boolean docCommentsEnabled = false;
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = -1;
-  private List<String> headerMappingFiles = null;
   private String processors = null;
   private boolean disallowInheritedConstructors = false;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
-  private boolean includeGeneratedSources = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
 
@@ -102,9 +96,6 @@ public class Options {
 
   private static File proGuardUsageFile = null;
   private static File treeShakerUsageFile = null;
-
-  public static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
-  // Null if not set (means we use the default). Can be empty also (means we use no mapping files).
 
   private static String fileHeader;
   private static final String FILE_HEADER_KEY = "file-header";
@@ -148,26 +139,6 @@ public class Options {
    * Types of memory management to be used by translated code.
    */
   public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
-
-  /**
-   * Types of output file generation. Output files are generated in
-   * the specified output directory in an optional sub-directory.
-   */
-  public static enum OutputStyleOption {
-    /** Use the class's package, like javac.*/
-    PACKAGE,
-
-    /** Use the relative directory of the input file. */
-    SOURCE,
-
-    /** Use the relative directory of the input file, even (especially) if it is a jar. */
-    SOURCE_COMBINED,
-
-    /** Don't use a relative directory. */
-    NONE
-  }
-  public static final OutputStyleOption DEFAULT_OUTPUT_STYLE_OPTION =
-      OutputStyleOption.PACKAGE;
 
   /**
    * What languages can be generated.
@@ -391,17 +362,12 @@ public class Options {
         if (++nArg == args.length) {
           usage("--header-mapping requires an argument");
         }
-        if (args[nArg].isEmpty()) {
-          // For when user supplies an empty mapping files list. Otherwise the default will be used.
-          headerMappingFiles = Collections.<String>emptyList();
-        } else {
-          headerMappingFiles = Lists.newArrayList(args[nArg].split(","));
-        }
+        headerMap.setMappingFiles(args[nArg]);
       } else if (arg.equals("--output-header-mapping")) {
         if (++nArg == args.length) {
           usage("--output-header-mapping requires an argument");
         }
-        outputHeaderMappingFile = new File(args[nArg]);
+        headerMap.setOutputMappingFile(new File(args[nArg]));
       } else if (arg.equals("--dead-code-report")) {
         if (++nArg == args.length) {
           usage("--dead-code-report requires an argument");
@@ -439,13 +405,13 @@ public class Options {
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
       } else if (arg.equals("--no-package-directories")) {
-        outputStyle = OutputStyleOption.NONE;
+        headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
       } else if (arg.equals("--preserve-full-paths")) {
-        outputStyle = OutputStyleOption.SOURCE;
+        headerMap.setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
       } else if (arg.equals("-XcombineJars")) {
-        outputStyle = OutputStyleOption.SOURCE_COMBINED;
+        headerMap.setCombineJars();
       } else if (arg.equals("-XincludeGeneratedSources")) {
-        includeGeneratedSources = true;
+        headerMap.setIncludeGeneratedSources();
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
@@ -561,9 +527,10 @@ public class Options {
       ++nArg;
     }
 
-    if (shouldMapHeaders() && buildClosure) {
+    if (headerMap.useSourceDirectories() && buildClosure) {
       ErrorUtil.error(
-          "--build-closure is not supported with -XcombineJars or --preserve-full-paths");
+          "--build-closure is not supported with -XcombineJars or --preserve-full-paths or "
+          + "-XincludeGeneratedSources");
     }
 
     if (memoryManagementOption == null) {
@@ -691,32 +658,6 @@ public class Options {
     return instance.outputDirectory;
   }
 
-  /**
-   * If true, put output files in sub-directories defined by
-   * package declaration (like javac does).
-   */
-  public static boolean usePackageDirectories() {
-    return instance.outputStyle == OutputStyleOption.PACKAGE;
-  }
-
-  /**
-   * If true, put output files in the same directories from
-   * which the input files were read.
-   */
-  public static boolean useSourceDirectories() {
-    return instance.outputStyle == OutputStyleOption.SOURCE
-        || instance.outputStyle == OutputStyleOption.SOURCE_COMBINED;
-  }
-
-  public static boolean combineSourceJars() {
-    return instance.outputStyle == OutputStyleOption.SOURCE_COMBINED;
-  }
-
-  @VisibleForTesting
-  public static void setOutputStyle(OutputStyleOption style) {
-    instance.outputStyle = style;
-  }
-
   public static OutputLanguageOption getLanguage() {
     return instance.language;
   }
@@ -768,15 +709,6 @@ public class Options {
     return instance.headerMap;
   }
 
-  @Nullable
-  public static List<String> getHeaderMappingFiles() {
-    return instance.headerMappingFiles;
-  }
-
-  public static void setHeaderMappingFiles(List<String> headerMappingFiles) {
-    instance.headerMappingFiles = headerMappingFiles;
-  }
-
   public static String getUsageMessage() {
     return usageMessage;
   }
@@ -803,15 +735,6 @@ public class Options {
 
   public static File getTreeShakerUsageFile() {
     return treeShakerUsageFile;
-  }
-
-  public static File getOutputHeaderMappingFile() {
-    return instance.outputHeaderMappingFile;
-  }
-
-  @VisibleForTesting
-  public static void setOutputHeaderMappingFile(File outputHeaderMappingFile) {
-    instance.outputHeaderMappingFile = outputHeaderMappingFile;
   }
 
   public static List<String> getBootClasspath() {
@@ -900,10 +823,6 @@ public class Options {
     instance.batchTranslateMaximum = max;
   }
 
-  public static boolean shouldMapHeaders() {
-    return useSourceDirectories() || combineSourceJars() || includeGeneratedSources();
-  }
-
   public static SourceVersion getSourceVersion(){
     return instance.sourceVersion;
   }
@@ -966,10 +885,6 @@ public class Options {
 
   public static EnumSet<LintOption> lintOptions() {
     return instance.lintOptions;
-  }
-
-  public static boolean includeGeneratedSources() {
-    return instance.includeGeneratedSources;
   }
 
   public static TimingLevel timingLevel() {

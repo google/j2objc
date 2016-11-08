@@ -18,7 +18,7 @@ package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-
+import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.IOException;
 
 /**
@@ -27,12 +27,6 @@ import java.io.IOException;
  * @author Tom Ball
  */
 public class ImplementationImportCollectorTest extends GenerationTest {
-
-  @Override
-  protected void tearDown() throws Exception {
-    Options.setOutputStyle(Options.DEFAULT_OUTPUT_STYLE_OPTION);
-    super.tearDown();
-  }
 
   // Verify that invoked method's return value has associated header.
   public void testMethodReturnHasHeader() throws IOException {
@@ -152,7 +146,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that platform class packages aren't truncated with --no-package-directories.
   public void testPlatformImports() throws IOException {
-    Options.setOutputStyle(Options.OutputStyleOption.NONE);
+    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.NONE);
     String translation = translateSourceFile(
         "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; "
         + "class Test { XMLReader test() { "
@@ -171,7 +165,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that platform class packages aren't changed with --preserve-full-paths.
   public void testPlatformImportsSourceDirs() throws IOException {
-    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
+    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     String translation = translateSourceFile(
         "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; "
         + "class Test { XMLReader test() { "
