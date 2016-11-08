@@ -26,13 +26,11 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Converts static variable access to static method calls where necessary.
@@ -45,39 +43,39 @@ public class StaticVarRewriter extends UnitTreeVisitor {
     super(unit);
   }
 
-  private boolean needsStaticLoad(TreeNode currentNode, IVariableBinding var) {
-    if (!BindingUtil.isStatic(var) || BindingUtil.isConstant(var)) {
+  private boolean needsStaticLoad(TreeNode currentNode, VariableElement var) {
+    if (!ElementUtil.isStatic(var) || ElementUtil.isConstant(var)) {
       return false;
     }
-    ITypeBinding enclosingType = TreeUtil.getEnclosingTypeBinding(currentNode);
-    return enclosingType == null || !enclosingType.getTypeDeclaration().isEqualTo(
-        var.getDeclaringClass().getTypeDeclaration());
+    TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(currentNode);
+    return enclosingType == null || !enclosingType.equals(ElementUtil.getDeclaringClass(var));
   }
 
   private void rewriteStaticAccess(Expression node) {
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    VariableElement var = TreeUtil.getVariableElement(node);
     if (var == null || !needsStaticLoad(node, var)) {
       return;
     }
 
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
     boolean assignable = TranslationUtil.isAssigned(node);
-    StringBuilder code = new StringBuilder(var.isEnumConstant() ? "JreLoadEnum" : "JreLoadStatic");
-    ITypeBinding exprType = var.getType();
+    StringBuilder code = new StringBuilder(
+        ElementUtil.isEnumConstant(var) ? "JreLoadEnum" : "JreLoadStatic");
+    TypeMirror exprType = var.asType();
     if (assignable) {
       code.append("Ref");
       exprType = typeEnv.getPointerType(exprType);
     }
     code.append("(");
-    code.append(nameTable.getFullName(var.getDeclaringClass()));
+    code.append(nameTable.getFullName(declaringClass));
     code.append(", ");
     code.append(nameTable.getVariableShortName(var));
     code.append(")");
     NativeExpression nativeExpr = new NativeExpression(code.toString(), exprType);
-    nativeExpr.addImportType(BindingConverter.getType(var.getDeclaringClass()));
+    nativeExpr.addImportType(declaringClass.asType());
     Expression newNode = nativeExpr;
     if (assignable) {
-      newNode = new PrefixExpression(
-          BindingConverter.getType(var.getType()), PrefixExpression.Operator.DEREFERENCE, newNode);
+      newNode = new PrefixExpression(var.asType(), PrefixExpression.Operator.DEREFERENCE, newNode);
     }
     node.replaceWith(newNode);
   }

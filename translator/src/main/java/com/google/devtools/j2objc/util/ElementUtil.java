@@ -181,6 +181,14 @@ public final class ElementUtil {
         && element.getKind().isField();
   }
 
+  public static boolean isConstant(VariableElement element) {
+    Object constantValue = element.getConstantValue();
+    return constantValue != null
+        && (element.asType().getKind().isPrimitive()
+            || (constantValue instanceof String
+                && UnicodeUtils.hasValidCppCharacters((String) constantValue)));
+  }
+
   public static boolean isStringConstant(VariableElement element) {
     Object constantValue = element.getConstantValue();
     return constantValue != null && constantValue instanceof String
