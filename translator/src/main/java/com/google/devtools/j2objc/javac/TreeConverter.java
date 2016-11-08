@@ -37,6 +37,8 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -66,6 +68,7 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
@@ -186,7 +189,7 @@ public class TreeConverter {
   private TreeNode convertInner(JCTree javacNode) {
     switch (javacNode.getKind()) {
       default:
-        throw new AssertionError("Unknown node type: " + javacNode.getClass().getName());
+        throw new AssertionError("Unknown node type: " + javacNode.getKind());
 
       case ANNOTATION_TYPE:
         return convertAnnotationTypeDeclaration((JCTree.JCClassDecl) javacNode);
@@ -219,12 +222,16 @@ public class TreeConverter {
         return convertDoStatement((JCTree.JCDoWhileLoop) javacNode);
       case ENHANCED_FOR_LOOP:
         return convertEnhancedForStatement((JCTree.JCEnhancedForLoop) javacNode);
+      case ENUM:
+        return convertEnum((JCTree.JCClassDecl) javacNode);
       case EXPRESSION_STATEMENT:
         return convertExpressionStatement((JCTree.JCExpressionStatement) javacNode);
       case FOR_LOOP:
         return convertForLoop((JCTree.JCForLoop) javacNode);
       case IDENTIFIER:
         return convertIdent((JCTree.JCIdent) javacNode);
+      case INTERFACE:
+        return convertClassDeclaration((JCTree.JCClassDecl) javacNode);
       case MEMBER_SELECT:
         return convertFieldAccess((JCTree.JCFieldAccess) javacNode);
       case METHOD:
@@ -304,7 +311,10 @@ public class TreeConverter {
     convertBodyDeclaration(node, newNode);
     List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
     for (Object bodyDecl : node.getMembers()) {
-      bodyDeclarations.add((BodyDeclaration) convert(bodyDecl));
+      Object member = convert(bodyDecl);
+      if (member instanceof BodyDeclaration) {  // Not true for enum constants.
+        bodyDeclarations.add((BodyDeclaration) member);
+      }
     }
     return newNode
         .setName(convertName(node.sym))
@@ -413,9 +423,6 @@ public class TreeConverter {
     if (node.sym.isAnonymous()) {
       throw new AssertionError("Anonymous class declaration tree conversion not implemented");
     }
-    if (node.sym.getKind() == ElementKind.ENUM) {
-      throw new AssertionError("Enum declaration tree conversion not implemented");
-    }
     if (node.sym.getKind() == ElementKind.ANNOTATION_TYPE) {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
     }
@@ -456,6 +463,22 @@ public class TreeConverter {
         .setParameter((SingleVariableDeclaration) convert(node.getVariable()))
         .setExpression((Expression) convert(node.getExpression()))
         .setBody((Statement) convert(node.getStatement()));
+  }
+
+  private TreeNode convertEnum(JCTree.JCClassDecl node) {
+    EnumDeclaration newNode =
+        (EnumDeclaration) convertAbstractTypeDeclaration(node, new EnumDeclaration());
+    for (Object superInterface : node.getImplementsClause()) {
+      newNode.addSuperInterfaceType((Type) convert(superInterface));
+    }
+    for (Object bodyDecl : node.getMembers()) {
+      Object member = convert(bodyDecl);
+      if (member instanceof EnumConstantDeclaration) {
+        // Other members were converted by convertAbstractTypeDeclaration().
+        newNode.addEnumConstant((EnumConstantDeclaration) member);
+      }
+    }
+    return newNode;
   }
 
   private TreeNode convertExpression(
@@ -618,10 +641,16 @@ public class TreeConverter {
         // TODO(tball): Add the appropriate ExecutableType.
         .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor, null))
         .setExpression((Expression) convert(node.getEnclosingExpression()))
-        .setType(Type.newType(node.type))
-        .setAnonymousClassDeclaration((AnonymousClassDeclaration) convert(node.getClassBody()));
+        .setType(Type.newType(node.type));
     for (JCTree.JCExpression arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg));
+    }
+    Object classBody = convert(node.getClassBody());
+    if (classBody != null) {
+      EnumDeclaration anonymousEnum = (EnumDeclaration) classBody;
+      AnonymousClassDeclaration anonymousEnumType = new AnonymousClassDeclaration()
+          .setTypeElement(anonymousEnum.getTypeElement());
+      newNode.setAnonymousClassDeclaration(anonymousEnumType);
     }
     return newNode;
   }
@@ -680,6 +709,20 @@ public class TreeConverter {
     }
     if (var.getKind() == ElementKind.LOCAL_VARIABLE) {
       return new VariableDeclarationStatement(var, (Expression) convert(node.getInitializer()));
+    }
+    if (var.getKind() == ElementKind.ENUM_CONSTANT) {
+      EnumConstantDeclaration newNode = new EnumConstantDeclaration()
+          .setName(convertName(var))
+          .setVariableElement(var);
+      ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
+      for (Expression arg : init.getArguments()) {
+        newNode.addArgument(arg);
+      }
+      if (init.getAnonymousClassDeclaration() != null) {
+        newNode.setAnonymousClassDeclaration(TreeUtil.remove(init.getAnonymousClassDeclaration()));
+      }
+      return newNode
+          .setExecutablePair(init.getExecutablePair());
     }
     boolean isVarargs = (node.sym.flags() & Flags.VARARGS) > 0;
     Type newType;
