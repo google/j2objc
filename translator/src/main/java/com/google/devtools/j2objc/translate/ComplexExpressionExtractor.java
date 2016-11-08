@@ -34,16 +34,13 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 
 /**
  * Detects deep expression trees and extracts them into separate statements.
@@ -57,7 +54,7 @@ public class ComplexExpressionExtractor extends TreeVisitor {
 
   private static int maxDepth = DEFAULT_MAX_DEPTH;
   private Map<Expression, Integer> depths = Maps.newHashMap();
-  private IMethodBinding currentMethod;
+  private ExecutableElement currentMethod;
   private Statement currentStatement;
   private int count = 1;
 
@@ -81,9 +78,8 @@ public class ComplexExpressionExtractor extends TreeVisitor {
       depth = Math.max(depth, childDepth != null ? childDepth : 1);
     }
     if (depth >= maxDepth) {
-      ITypeBinding type = node.getTypeBinding();
-      IVariableBinding newVar = new GeneratedVariableBinding(
-          "complex$" + count++, 0, type, false, false, null, currentMethod);
+      VariableElement newVar = GeneratedVariableElement.newLocalVar(
+          "complex$" + count++, node.getTypeMirror(), currentMethod);
       Statement newStmt = new VariableDeclarationStatement(newVar, node.copy());
       assert currentStatement != null;
       TreeUtil.insertBefore(currentStatement, newStmt);
@@ -104,7 +100,7 @@ public class ComplexExpressionExtractor extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    currentMethod = node.getMethodBinding();
+    currentMethod = node.getExecutableElement();
     return true;
   }
 
@@ -167,7 +163,7 @@ public class ComplexExpressionExtractor extends TreeVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    if (BindingUtil.isBoolean(node.getTypeBinding())) {
+    if (node.getTypeMirror().getKind() == TypeKind.BOOLEAN) {
       if (node.getRightHandSide() instanceof InfixExpression) {
         // Avoid clang precedence warning by putting parentheses around expression.
         ParenthesizedExpression.parenthesizeAndReplace(node.getRightHandSide());
