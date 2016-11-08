@@ -32,21 +32,23 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.types.GeneratedTypeBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.IOSTypeBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Rewrites array creation into a method invocation on an IOSArray class.
@@ -65,8 +67,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
   }
 
   private MethodInvocation createInvocation(ArrayCreation node) {
-    ITypeBinding arrayType = node.getTypeBinding();
-    assert arrayType.isArray();
+    ArrayType arrayType = node.getTypeMirror();
     boolean retainedResult = node.hasRetainedResult() || Options.useARC();
     ArrayInitializer initializer = node.getInitializer();
     if (initializer != null) {
@@ -82,20 +83,24 @@ public class ArrayRewriter extends UnitTreeVisitor {
   }
 
   private MethodInvocation newInitializedArrayInvocation(
-      ITypeBinding arrayType, List<Expression> elements, boolean retainedResult) {
-    ITypeBinding componentType = arrayType.getComponentType();
-    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
+      ArrayType arrayType, List<Expression> elements, boolean retainedResult) {
+    TypeMirror componentType = arrayType.getComponentType();
+    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
 
-    IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        getInitializeSelector(componentType, retainedResult), Modifier.PUBLIC | Modifier.STATIC,
-        iosArrayBinding, iosArrayBinding);
-    methodBinding.addParameter(iosArrayBinding);
-    methodBinding.addParameter(typeEnv.resolveJavaType("int"));
-    if (!componentType.isPrimitive()) {
-      methodBinding.addParameter(typeEnv.getIOSClass());
+    GeneratedExecutableElement methodElement = GeneratedExecutableElement.newMethodWithSelector(
+        getInitializeSelector(componentType, retainedResult), iosArrayElement.asType(),
+        iosArrayElement)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+    methodElement.addParameter(GeneratedVariableElement.newParameter(
+        "values", new PointerType(componentType), methodElement));
+    methodElement.addParameter(GeneratedVariableElement.newParameter(
+        "count", typeUtil.getPrimitiveType(TypeKind.INT), methodElement));
+    if (!componentType.getKind().isPrimitive()) {
+      methodElement.addParameter(GeneratedVariableElement.newParameter(
+          "type", typeEnv.getIOSClassMirror(), methodElement));
     }
-    MethodInvocation invocation =
-        new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
+    MethodInvocation invocation = new MethodInvocation(
+        new ExecutablePair(methodElement), arrayType, new SimpleName(iosArrayElement));
 
     // Create the array initializer and add it as the first parameter.
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
@@ -109,35 +114,35 @@ public class ArrayRewriter extends UnitTreeVisitor {
         NumberLiteral.newIntLiteral(arrayInit.getExpressions().size(), typeEnv));
 
     // Add the type argument for object arrays.
-    if (!componentType.isPrimitive()) {
+    if (!componentType.getKind().isPrimitive()) {
       invocation.addArgument(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
   }
 
-  private String paramNameForPrimitive(char binaryName) {
-    switch (binaryName) {
-      case 'B': return "Bytes";
-      case 'C': return "Chars";
-      case 'D': return "Doubles";
-      case 'F': return "Floats";
-      case 'I': return "Ints";
-      case 'J': return "Longs";
-      case 'S': return "Shorts";
-      case 'Z': return "Booleans";
+  private String paramNameForPrimitive(TypeMirror t) {
+    switch (t.getKind()) {
+      case BOOLEAN: return "Booleans";
+      case BYTE: return "Bytes";
+      case CHAR: return "Chars";
+      case DOUBLE: return "Doubles";
+      case FLOAT: return "Floats";
+      case INT: return "Ints";
+      case LONG: return "Longs";
+      case SHORT: return "Shorts";
+      default: throw new AssertionError("Not a  primitive type: " + t);
     }
-    throw new AssertionError("Unknown primitive type: " + binaryName);
   }
 
-  private String getInitializeSelector(ITypeBinding componentType, boolean retainedResult) {
+  private String getInitializeSelector(TypeMirror componentType, boolean retainedResult) {
     String selectorFmt = "arrayWith%s:count:";
     if (retainedResult) {
       selectorFmt = "newArrayWith%s:count:";
     }
     String paramName;
-    if (componentType.isPrimitive()) {
-      paramName = paramNameForPrimitive(componentType.getBinaryName().charAt(0));
+    if (componentType.getKind().isPrimitive()) {
+      paramName = paramNameForPrimitive(componentType);
     } else {
       paramName = "Objects";
       selectorFmt += "type:";
@@ -146,26 +151,30 @@ public class ArrayRewriter extends UnitTreeVisitor {
   }
 
   private MethodInvocation newSingleDimensionArrayInvocation(
-      ITypeBinding arrayType, Expression dimensionExpr, boolean retainedResult) {
-    ITypeBinding componentType = arrayType.getComponentType();
-    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
+      ArrayType arrayType, Expression dimensionExpr, boolean retainedResult) {
+    TypeMirror componentType = arrayType.getComponentType();
+    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
+    boolean isPrimitive = componentType.getKind().isPrimitive();
 
     String selector = (retainedResult ? "newArray" : "array") + "WithLength:"
-        + (componentType.isPrimitive() ? "" : "type:");
-    IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        selector, Modifier.PUBLIC | Modifier.STATIC, iosArrayBinding, iosArrayBinding);
-    methodBinding.addParameter(typeEnv.resolveJavaType("int"));
-    if (!componentType.isPrimitive()) {
-      methodBinding.addParameter(typeEnv.getIOSClass());
+        + (isPrimitive ? "" : "type:");
+    GeneratedExecutableElement methodElement = GeneratedExecutableElement.newMethodWithSelector(
+        selector, iosArrayElement.asType(), iosArrayElement)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+    methodElement.addParameter(GeneratedVariableElement.newParameter(
+        "length", typeUtil.getPrimitiveType(TypeKind.INT), methodElement));
+    if (!isPrimitive) {
+      methodElement.addParameter(GeneratedVariableElement.newParameter(
+          "type", typeEnv.getIOSClassMirror(), methodElement));
     }
-    MethodInvocation invocation =
-        new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
+    MethodInvocation invocation = new MethodInvocation(
+        new ExecutablePair(methodElement), arrayType, new SimpleName(iosArrayElement));
 
     // Add the array length argument.
     invocation.addArgument(dimensionExpr.copy());
 
     // Add the type argument for object arrays.
-    if (!componentType.isPrimitive()) {
+    if (!isPrimitive) {
       invocation.addArgument(new TypeLiteral(componentType, typeEnv));
     }
 
@@ -173,51 +182,55 @@ public class ArrayRewriter extends UnitTreeVisitor {
   }
 
   private MethodInvocation newMultiDimensionArrayInvocation(
-      ITypeBinding arrayType, List<Expression> dimensions, boolean retainedResult) {
+      ArrayType arrayType, List<Expression> dimensions, boolean retainedResult) {
     assert dimensions.size() > 1;
-    ITypeBinding componentType = arrayType;
+    TypeMirror componentType = arrayType;
     for (int i = 0; i < dimensions.size(); i++) {
-      componentType = componentType.getComponentType();
+      assert TypeUtil.isArray(componentType);
+      componentType = ((ArrayType) componentType).getComponentType();
     }
-    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
+    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
 
-    IOSMethodBinding methodBinding = getMultiDimensionMethod(
-        componentType, iosArrayBinding, retainedResult);
-    MethodInvocation invocation =
-        new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
+    ExecutableElement methodElement =
+        getMultiDimensionMethod(componentType, iosArrayElement, retainedResult);
+    MethodInvocation invocation = new MethodInvocation(
+        new ExecutablePair(methodElement), arrayType, new SimpleName(iosArrayElement));
 
     // Add the dimension count argument.
     invocation.addArgument(NumberLiteral.newIntLiteral(dimensions.size(), typeEnv));
 
     // Create the dimensions array.
     ArrayInitializer dimensionsArg = new ArrayInitializer(
-        GeneratedTypeBinding.newArrayType(typeEnv.resolveJavaType("int")));
+        typeUtil.getArrayType(typeUtil.getPrimitiveType(TypeKind.INT)));
     for (Expression e : dimensions) {
       dimensionsArg.addExpression(e.copy());
     }
     invocation.addArgument(dimensionsArg);
 
-    if (!componentType.isPrimitive()) {
+    if (!componentType.getKind().isPrimitive()) {
       invocation.addArgument(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
   }
 
-  private IOSMethodBinding getMultiDimensionMethod(
-      ITypeBinding componentType, IOSTypeBinding iosArrayType, boolean retainedResult) {
+  private ExecutableElement getMultiDimensionMethod(
+      TypeMirror componentType, TypeElement iosArrayType, boolean retainedResult) {
+    boolean isPrimitive = componentType.getKind().isPrimitive();
     String selector = (retainedResult ? "newArray" : "array") + "WithDimensions:lengths:"
-        + (componentType.isPrimitive() ? "" : "type:");
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        selector, Modifier.PUBLIC | Modifier.STATIC, typeEnv.resolveIOSType("IOSObjectArray"),
-        iosArrayType);
-    ITypeBinding intType = typeEnv.resolveJavaType("int");
-    binding.addParameter(intType);
-    binding.addParameter(GeneratedTypeBinding.newArrayType(intType));
-    if (!componentType.isPrimitive()) {
-      binding.addParameter(typeEnv.getIOSClass());
+        + (isPrimitive ? "" : "type:");
+    GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
+        selector, typeEnv.getObjectArrayElement().asType(), iosArrayType)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+    TypeMirror intType = typeUtil.getPrimitiveType(TypeKind.INT);
+    element.addParameter(GeneratedVariableElement.newParameter("dimensions", intType, element));
+    element.addParameter(GeneratedVariableElement.newParameter(
+        "dimensionLengths", new PointerType(intType), element));
+    if (!isPrimitive) {
+      element.addParameter(GeneratedVariableElement.newParameter(
+          "type", typeEnv.getIOSClassMirror(), element));
     }
-    return binding;
+    return element;
   }
 
   // We must handle object array assignment before its children because if the
@@ -225,8 +238,8 @@ public class ArrayRewriter extends UnitTreeVisitor {
   @Override
   public boolean visit(Assignment node) {
     Expression lhs = node.getLeftHandSide();
-    ITypeBinding lhsType = lhs.getTypeBinding();
-    if (lhs instanceof ArrayAccess && !lhsType.isPrimitive()) {
+    TypeMirror lhsType = lhs.getTypeMirror();
+    if (lhs instanceof ArrayAccess && !lhsType.getKind().isPrimitive()) {
       FunctionInvocation newAssignment = newArrayAssignment(node, (ArrayAccess) lhs, lhsType);
       node.replaceWith(newAssignment);
       newAssignment.accept(this);
@@ -267,9 +280,9 @@ public class ArrayRewriter extends UnitTreeVisitor {
   }
 
   private FunctionInvocation newArrayAssignment(
-      Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType) {
+      Assignment assignmentNode, ArrayAccess arrayAccessNode, TypeMirror componentType) {
     Assignment.Operator op = assignmentNode.getOperator();
-    assert !componentType.isPrimitive();
+    assert !componentType.getKind().isPrimitive();
     assert op == Assignment.Operator.ASSIGN;
 
     Expression value = TreeUtil.remove(assignmentNode.getRightHandSide());
@@ -302,25 +315,27 @@ public class ArrayRewriter extends UnitTreeVisitor {
   }
 
   private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {
-    ITypeBinding exprType = expr.getTypeBinding();
-    if (name.getIdentifier().equals("length") && exprType.isArray()) {
-      VariableElement sizeField = BindingConverter.getVariableElement(new GeneratedVariableBinding(
-          "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false,
-          typeEnv.mapType(exprType), null));
+    TypeMirror exprType = expr.getTypeMirror();
+    if (name.getIdentifier().equals("length") && TypeUtil.isArray(exprType)) {
+      VariableElement sizeField = GeneratedVariableElement.newField(
+          "size", typeUtil.getPrimitiveType(TypeKind.INT),
+          typeEnv.resolveArrayType(((ArrayType) exprType).getComponentType()));
       node.replaceWith(new FieldAccess(sizeField, TreeUtil.remove(expr)));
     }
   }
 
   @Override
   public void endVisit(InstanceofExpression node) {
-    ITypeBinding type = node.getRightOperand().getTypeBinding();
-    if (!type.isArray() || type.getComponentType().isPrimitive()) {
+    TypeMirror type = node.getRightOperand().getTypeMirror();
+    if (!TypeUtil.isArray(type) || ((ArrayType) type).getComponentType().getKind().isPrimitive()) {
       return;
     }
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        "isInstance", Modifier.PUBLIC, typeEnv.resolveJavaType("boolean"), typeEnv.getIOSClass());
-    binding.addParameter(typeEnv.resolveIOSType("id"));
-    MethodInvocation invocation = new MethodInvocation(binding, new TypeLiteral(type, typeEnv));
+    GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
+        "isInstance", typeUtil.getPrimitiveType(TypeKind.BOOLEAN), typeEnv.getIOSClassElement());
+    element.addParameter(GeneratedVariableElement.newParameter(
+        "object", typeEnv.getIdTypeMirror(), element));
+    MethodInvocation invocation =
+        new MethodInvocation(new ExecutablePair(element), new TypeLiteral(type, typeEnv));
     invocation.addArgument(TreeUtil.remove(node.getLeftOperand()));
     node.replaceWith(invocation);
   }

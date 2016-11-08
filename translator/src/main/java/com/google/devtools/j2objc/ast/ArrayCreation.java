@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 import java.util.List;
-import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -65,7 +64,7 @@ public class ArrayCreation extends Expression {
   }
 
   @Override
-  public TypeMirror getTypeMirror() {
+  public javax.lang.model.type.ArrayType getTypeMirror() {
     ArrayType arrayTypeNode = arrayType.get();
     return arrayTypeNode != null ? arrayTypeNode.getTypeMirror() : null;
   }

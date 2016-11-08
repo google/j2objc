@@ -40,6 +40,11 @@ public class ArrayType extends Type {
     return Kind.ARRAY_TYPE;
   }
 
+  @Override
+  public javax.lang.model.type.ArrayType getTypeMirror() {
+    return (javax.lang.model.type.ArrayType) typeMirror;
+  }
+
   public Type getComponentType() {
     return componentType.get();
   }

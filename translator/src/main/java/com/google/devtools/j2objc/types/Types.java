@@ -313,6 +313,10 @@ public class Types {
     return BindingConverter.getType(IOSClass);
   }
 
+  public TypeElement getIOSClassElement() {
+    return BindingConverter.getTypeElement(IOSClass);
+  }
+
   public ITypeBinding getIdType() {
     return idType;
   }
