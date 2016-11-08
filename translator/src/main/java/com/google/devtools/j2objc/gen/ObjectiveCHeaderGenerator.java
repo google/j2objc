@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
 import java.util.Set;
 
 /**
@@ -76,6 +75,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("#ifndef %s_H\n", varPrefix);
     printf("#define %s_H\n", varPrefix);
     pushIgnoreDeprecatedDeclarationsPragma();
+    pushIgnoreNullabilityCompletenessPragma();
 
     Set<String> seenTypes = Sets.newHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
@@ -117,6 +117,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected void generateFileFooter() {
     newline();
+    popIgnoreNullabilityCompletenessPragma();
     popIgnoreDeprecatedDeclarationsPragma();
     printf("#endif // %s_H\n", varPrefix);
   }
@@ -126,5 +127,29 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       header = header.substring(0, header.length() - 2);
     }
     return UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(header));
+  }
+
+  /**
+   * Ignores nullability completeness warnings. If clang finds any nullability
+   * annotations, it checks that all annotatable sites have annotations. Java
+   * checker frameworks don't have that requirement.
+   */
+  protected void pushIgnoreNullabilityCompletenessPragma() {
+    if (getGenerationUnit().hasNullabilityAnnotations()) {
+      newline();
+      println("#if __has_feature(nullability)");
+      println("#pragma clang diagnostic push");
+      println("#pragma GCC diagnostic ignored \"-Wnullability-completeness\"");
+      println("#endif");
+    }
+  }
+
+  protected void popIgnoreNullabilityCompletenessPragma() {
+    if (getGenerationUnit().hasNullabilityAnnotations()) {
+      newline();
+      println("#if __has_feature(nullability)");
+      println("#pragma clang diagnostic pop");
+      println("#endif");
+    }
   }
 }

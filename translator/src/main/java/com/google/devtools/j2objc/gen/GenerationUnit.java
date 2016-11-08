@@ -54,6 +54,7 @@ public class GenerationUnit {
   private State state = State.ACTIVE;
   private boolean hasIncompleteProtocol = false;
   private boolean hasIncompleteImplementation = false;
+  private boolean hasNullabilityAnnotations = false;
 
   private enum State {
     ACTIVE,   // Initial state, still collecting CompilationUnits.
@@ -101,6 +102,10 @@ public class GenerationUnit {
 
   public boolean hasIncompleteImplementation() {
     return hasIncompleteImplementation;
+  }
+
+  public boolean hasNullabilityAnnotations() {
+    return hasNullabilityAnnotations;
   }
 
   public Collection<String> getJavadocBlocks() {
@@ -153,9 +158,11 @@ public class GenerationUnit {
 
     hasIncompleteProtocol = hasIncompleteProtocol || unit.hasIncompleteProtocol();
     hasIncompleteImplementation = hasIncompleteImplementation || unit.hasIncompleteImplementation();
+    if (unit.hasNullabilityAnnotations()) {
+      hasNullabilityAnnotations = true;
+    }
 
     String qualifiedMainType = TreeUtil.getQualifiedMainTypeName(unit);
-
     addPackageJavadoc(unit, qualifiedMainType);
     addNativeBlocks(unit, qualifiedMainType);
 

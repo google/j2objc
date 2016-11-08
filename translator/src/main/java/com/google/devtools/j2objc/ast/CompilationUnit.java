@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.util.List;
@@ -33,6 +34,7 @@ public class CompilationUnit extends TreeNode {
   private final int[] newlines;
   private boolean hasIncompleteProtocol = false;
   private boolean hasIncompleteImplementation = false;
+  private boolean hasNullabilityAnnotations = false;
   private final ChildLink<PackageDeclaration> packageDeclaration =
       ChildLink.create(PackageDeclaration.class, this);
   private final ChildList<Comment> comments = ChildList.create(Comment.class, this);
@@ -132,6 +134,16 @@ public class CompilationUnit extends TreeNode {
 
   public void setHasIncompleteImplementation() {
     hasIncompleteImplementation = true;
+  }
+
+  public boolean hasNullabilityAnnotations() {
+    String pkgName = packageDeclaration.get().getName().toString();
+    return hasNullabilityAnnotations
+        || Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
+  }
+
+  public void setHasNullabilityAnnotations() {
+    hasNullabilityAnnotations = true;
   }
 
   public PackageDeclaration getPackage() {

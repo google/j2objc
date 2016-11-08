@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
@@ -34,12 +35,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -555,6 +559,43 @@ public final class ElementUtil {
     return getAnnotation(element, annotationClass) != null;
   }
 
+  /**
+   * Less strict version of the above where we don't care about the annotation's package.
+   */
+  public static boolean hasNamedAnnotation(Element element, String annotationName) {
+    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+      Name annotationTypeName = annotation.getAnnotationType().asElement().getSimpleName();
+      if (annotationTypeName.toString().equals(annotationName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Return true if a binding has a named "Nullable" annotation. Package names aren't
+   * checked because different nullable annotations are defined by several different
+   * Java frameworks.
+   */
+  public static boolean hasNullableAnnotation(Element element) {
+    return hasNamedAnnotation(element, "Nullable");
+  }
+
+  /**
+   * Return true if a binding has a named "Nonnull" annotation. Package names aren't
+   * checked because different nonnull annotations are defined in several Java
+   * frameworks, with varying but similar names.
+   */
+  public static boolean hasNonnullAnnotation(Element element) {
+    Pattern p = Pattern.compile("No[nt][Nn]ull");
+    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+      if (p.matcher(annotation.getClass().getSimpleName()).matches()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static Object getAnnotationValue(AnnotationMirror annotation, String name) {
     for (Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
         : annotation.getElementValues().entrySet()) {
@@ -575,5 +616,14 @@ public final class ElementUtil {
     List<ExecutableElement> members = Lists.newArrayList(getMethods(annotation));
     Collections.sort(members, (m1, m2) -> getName(m1).compareTo(getName(m2)));
     return members;
+  }
+
+  public boolean areParametersNonnullByDefault(TypeElement typeElement) {
+    if (ElementUtil.hasAnnotation(typeElement, ParametersAreNonnullByDefault.class)) {
+      return true;
+    }
+    PackageElement pkg = getPackage(typeElement);
+    String pkgName = pkg.getQualifiedName().toString();
+    return Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
   }
 }

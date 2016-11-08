@@ -83,9 +83,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     // If the type is private, then generate nothing in the header. The initial
     // declaration will go in the implementation file instead.
     if (!typeNode.hasPrivateDeclaration()) {
-      pushNullabilityCompletenessPragma();
       generateInitialDeclaration();
-      popNullabilityCompletenessPragma();
     }
   }
 
@@ -737,29 +735,5 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
     }
     return sb.toString();
-  }
-
-  /**
-   * Ignores nullability completeness warnings. If clang finds any nullability
-   * annotations, it checks that all annotatable sites have annotations. Java
-   * checker frameworks don't have that requirement.
-   */
-  protected void pushNullabilityCompletenessPragma() {
-    if (hasNullabilityAnnotations) {
-      newline();
-      println("#if __has_feature(nullability)");
-      println("#pragma clang diagnostic push");
-      println("#pragma GCC diagnostic ignored \"-Wnullability-completeness\"");
-      println("#endif");
-    }
-  }
-
-  protected void popNullabilityCompletenessPragma() {
-    if (hasNullabilityAnnotations) {
-      newline();
-      println("#if __has_feature(nullability)");
-      println("#pragma clang diagnostic pop");
-      println("#endif");
-    }
   }
 }

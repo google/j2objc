@@ -17,9 +17,12 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -33,6 +36,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -45,6 +49,7 @@ import com.google.j2objc.annotations.Weak;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -76,6 +81,10 @@ public class Rewriter extends UnitTreeVisitor {
       } else if (node.getBody() != null) {
         node.getBody().setHasAutoreleasePool(true);
       }
+    }
+
+    if (ElementUtil.hasNullableAnnotation(element) || ElementUtil.hasNonnullAnnotation(element)) {
+      unit.setHasNullabilityAnnotations();
     }
     return true;
   }
@@ -192,6 +201,11 @@ public class Rewriter extends UnitTreeVisitor {
     if (node.getExtraDimensions() > 0) {
       node.setType(Type.newType(node.getVariableElement().asType()));
       node.setExtraDimensions(0);
+    }
+
+    VariableElement var = node.getVariableElement();
+    if (ElementUtil.hasNullableAnnotation(var) || ElementUtil.hasNonnullAnnotation(var)) {
+      unit.setHasNullabilityAnnotations();
     }
   }
 
@@ -325,6 +339,27 @@ public class Rewriter extends UnitTreeVisitor {
           ErrorUtil.error(field, "Non-existent setter specified: " + setter);
         }
       }
+    }
+  }
+
+  @Override
+  public void endVisit(AnnotationTypeDeclaration node) {
+    checkForNullabilityAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(EnumDeclaration node) {
+    checkForNullabilityAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    checkForNullabilityAnnotation(node);
+  }
+
+  private void checkForNullabilityAnnotation(AbstractTypeDeclaration node) {
+    if (ElementUtil.hasAnnotation(node.getTypeElement(), ParametersAreNonnullByDefault.class)) {
+      unit.setHasNullabilityAnnotations();
     }
   }
 }

@@ -340,18 +340,12 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "}";
     Options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
-    assertNotInTranslation(translation, "nullability");
-    translation = getTranslatedFile("foo/bar/Test.m");
     assertTranslatedLines(translation,
         "#if __has_feature(nullability)",
         "#pragma clang diagnostic push",
         "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
-        "#endif",
-        "",
-        "@interface FooBarTest_Inner : NSObject");
+        "#endif");
     assertTranslatedLines(translation,
-        "J2OBJC_TYPE_LITERAL_HEADER(FooBarTest_Inner)",
-        "",
         "#if __has_feature(nullability)",
         "#pragma clang diagnostic pop",
         "#endif");

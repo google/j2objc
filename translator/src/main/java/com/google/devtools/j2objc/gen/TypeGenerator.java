@@ -29,9 +29,7 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -39,8 +37,6 @@ import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.lang.model.element.PackageElement;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -63,7 +59,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
-  protected final boolean hasNullabilityAnnotations;
 
   private final List<BodyDeclaration> declarations;
   private final boolean parametersNonnullByDefault;
@@ -79,9 +74,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeName = nameTable.getFullName(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
     parametersNonnullByDefault = Options.nullability()
-        && areParametersNonnullByDefault();
-    hasNullabilityAnnotations = Options.nullability()
-        && (parametersNonnullByDefault || hasNullabilityAnnotations());
+        && env.elementUtil().areParametersNonnullByDefault(node.getTypeElement());
   }
 
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
@@ -326,39 +319,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       }
     }
     return "";
-  }
-
-  private boolean areParametersNonnullByDefault() {
-    if (BindingUtil.hasAnnotation(typeBinding, ParametersAreNonnullByDefault.class)) {
-      return true;
-    }
-    PackageElement pkg = env.elementUtil().getPackage(BindingConverter.getElement(typeBinding));
-    String pkgName = pkg.getQualifiedName().toString();
-    return Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
-  }
-
-  private boolean hasNullabilityAnnotations() {
-    final boolean[] hasAnnotation = new boolean[1];
-    typeNode.accept(new TreeVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        IMethodBinding method = node.getMethodBinding();
-        if (BindingUtil.hasNullableAnnotation(method)
-            || BindingUtil.hasNonnullAnnotation(method)) {
-          hasAnnotation[0] = true;
-        } else {
-          for (SingleVariableDeclaration param : node.getParameters()) {
-            IVariableBinding paramBinding = param.getVariableBinding();
-            if (BindingUtil.hasNullableAnnotation(paramBinding)
-                || BindingUtil.hasNonnullAnnotation(paramBinding)) {
-              hasAnnotation[0] = true;
-              break;
-            }
-          }
-        }
-      }
-    });
-    return hasAnnotation[0];
   }
 
   protected String getFunctionSignature(FunctionDeclaration function) {
