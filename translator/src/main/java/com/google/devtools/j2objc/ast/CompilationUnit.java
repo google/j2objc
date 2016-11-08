@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.util.List;
@@ -137,9 +136,7 @@ public class CompilationUnit extends TreeNode {
   }
 
   public boolean hasNullabilityAnnotations() {
-    String pkgName = packageDeclaration.get().getName().toString();
-    return hasNullabilityAnnotations
-        || Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
+    return hasNullabilityAnnotations;
   }
 
   public void setHasNullabilityAnnotations() {

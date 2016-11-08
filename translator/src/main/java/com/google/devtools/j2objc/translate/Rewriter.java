@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
@@ -29,6 +30,7 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -359,6 +361,14 @@ public class Rewriter extends UnitTreeVisitor {
 
   private void checkForNullabilityAnnotation(AbstractTypeDeclaration node) {
     if (ElementUtil.hasAnnotation(node.getTypeElement(), ParametersAreNonnullByDefault.class)) {
+      unit.setHasNullabilityAnnotations();
+    }
+  }
+
+  @Override
+  public void endVisit(PackageDeclaration node) {
+    String pkgName = node.getName().toString();
+    if (Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName)) {
       unit.setHasNullabilityAnnotations();
     }
   }
