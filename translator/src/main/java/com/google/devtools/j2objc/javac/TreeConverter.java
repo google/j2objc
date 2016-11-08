@@ -71,6 +71,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -310,7 +311,17 @@ public class TreeConverter {
       JCTree.JCClassDecl node, AbstractTypeDeclaration newNode) {
     convertBodyDeclaration(node, newNode);
     List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
-    for (Object bodyDecl : node.getMembers()) {
+    for (JCTree bodyDecl : node.getMembers()) {
+      // Skip synthetic methods. Synthetic default constructors are not marked
+      // synthetic for backwards-compatibility reasons, so they are detected
+      // by a source position that's the same as their declaring class.
+      // TODO(tball): keep synthetic default constructors after front-end switch,
+      // and get rid of DefaultConstructorAdder translator.
+      if (bodyDecl.getKind() == Kind.METHOD
+          && (ElementUtil.isSynthetic(((JCTree.JCMethodDecl) bodyDecl).sym)
+              || bodyDecl.pos == node.pos)) {
+        continue;
+      }
       Object member = convert(bodyDecl);
       if (member instanceof BodyDeclaration) {  // Not true for enum constants.
         bodyDeclarations.add((BodyDeclaration) member);
@@ -535,6 +546,11 @@ public class TreeConverter {
       return new SuperFieldAccess()
           .setVariableElement((VariableElement) node.sym)
           .setName(new SimpleName(fieldName));
+    }
+    if (node.getIdentifier().toString().equals("class")) {
+      com.sun.tools.javac.code.Type type = node.sym.asType();
+      return new TypeLiteral(type)
+          .setType(Type.newType(type));
     }
     if (selected.getKind() == Kind.IDENTIFIER || selected.getKind() == Kind.MEMBER_SELECT) {
       return new QualifiedName()
