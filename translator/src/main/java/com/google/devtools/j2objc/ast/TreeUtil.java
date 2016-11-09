@@ -141,6 +141,9 @@ public class TreeUtil {
     return getNearestAncestorWithType(MethodDeclaration.class, node);
   }
 
+  private static final List<Class<?>> EXECUTABLE_DECLARATION_TYPES =
+      ImmutableList.of(MethodDeclaration.class, FunctionDeclaration.class);
+
   /**
    * With lambdas and methodbindings, the return type of the method binding does not necessarily
    * match the return type of the functional interface, which enforces the type contracts. To get
@@ -148,8 +151,13 @@ public class TreeUtil {
    * interface.
    */
   public static TypeMirror getOwningReturnType(TreeNode node) {
-    MethodDeclaration enclosingMethod = getEnclosingMethod(node);
-    return enclosingMethod == null ? null : enclosingMethod.getExecutableElement().getReturnType();
+    TreeNode enclosingNode = getNearestAncestorWithTypeOneOf(EXECUTABLE_DECLARATION_TYPES, node);
+    if (enclosingNode instanceof MethodDeclaration) {
+      return ((MethodDeclaration) enclosingNode).getExecutableElement().getReturnType();
+    } else if (enclosingNode instanceof FunctionDeclaration) {
+      return ((FunctionDeclaration) enclosingNode).getReturnType().getTypeMirror();
+    }
+    return null;
   }
 
   /**
