@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.type.IntersectionType;
@@ -29,8 +30,23 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class JdtIntersectionType extends JdtTypeMirror implements IntersectionType {
 
-  JdtIntersectionType(ITypeBinding binding) {
+  private final List<? extends TypeMirror> bounds;
+
+  JdtIntersectionType(ITypeBinding binding, List<? extends TypeMirror> bounds) {
     super(binding);
+    this.bounds = bounds;
+  }
+
+  static JdtIntersectionType fromJdtIntersection(ITypeBinding t) {
+    List<TypeMirror> bounds = new ArrayList<>();
+    ITypeBinding superclass = t.getSuperclass();
+    if (superclass != null) {
+      bounds.add(BindingConverter.getType(superclass));
+    }
+    for (ITypeBinding intrface : t.getInterfaces()) {
+      bounds.add(BindingConverter.getType(intrface));
+    }
+    return new JdtIntersectionType(t, bounds);
   }
 
   @Override
@@ -45,10 +61,11 @@ public class JdtIntersectionType extends JdtTypeMirror implements IntersectionTy
 
   @Override
   public List<? extends TypeMirror> getBounds() {
-    List<TypeMirror> bounds = new ArrayList<>();
-    for (ITypeBinding bound : ((ITypeBinding) binding).getInterfaces()) {
-      bounds.add(BindingConverter.getType(bound));
-    }
     return bounds;
+  }
+
+  @Override
+  public String toString() {
+    return Joiner.on('&').join(bounds);
   }
 }

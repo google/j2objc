@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -23,9 +26,41 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtTypeVariable extends JdtTypeMirror implements TypeVariable {
 
-  JdtTypeVariable(ITypeBinding binding) {
+  private final TypeMirror upperBound;
+
+  private JdtTypeVariable(ITypeBinding binding, TypeMirror upperBound) {
     super(binding);
-    assert binding.isTypeVariable();
+    this.upperBound = upperBound;
+  }
+
+  static JdtTypeVariable fromTypeVariable(ITypeBinding binding) {
+    return new JdtTypeVariable(
+        binding, createUpperBound(binding, Arrays.asList(binding.getTypeBounds())));
+  }
+
+  static TypeMirror createUpperBound(ITypeBinding binding, List<ITypeBinding> bounds) {
+    if (bounds.isEmpty()) {
+      return BindingConverter.getType(binding.getSuperclass());  // java.lang.Object or null.
+    } else if (bounds.size() == 1) {
+      return BindingConverter.getType(bounds.get(0));
+    }
+    List<TypeMirror> upperBounds = new ArrayList<>();
+    for (ITypeBinding bound : bounds) {
+      upperBounds.add(BindingConverter.getType(bound));
+    }
+    return new JdtIntersectionType(null, upperBounds);
+  }
+
+  static JdtTypeVariable fromCapture(ITypeBinding binding) {
+    List<ITypeBinding> bounds = new ArrayList<>();
+    ITypeBinding superclass = binding.getSuperclass();
+    if (superclass != null) {
+      bounds.add(superclass);
+    }
+    for (ITypeBinding intrface : binding.getInterfaces()) {
+      bounds.add(intrface);
+    }
+    return new JdtTypeVariable(binding, createUpperBound(binding, bounds));
   }
 
   @Override
@@ -46,13 +81,11 @@ class JdtTypeVariable extends JdtTypeMirror implements TypeVariable {
 
   @Override
   public TypeMirror getUpperBound() {
-    ITypeBinding bound = ((ITypeBinding) binding).getBound();
-    return bound.isUpperbound() ? BindingConverter.getType(bound) : BindingConverter.NULL_TYPE;
+    return upperBound;
   }
 
   @Override
   public TypeMirror getLowerBound() {
-    ITypeBinding bound = ((ITypeBinding) binding).getBound();
-    return bound != null ? BindingConverter.getType(bound) : BindingConverter.NULL_TYPE;
+    return null;  // getLowerBound isn't used by J2ObjC.
   }
 }

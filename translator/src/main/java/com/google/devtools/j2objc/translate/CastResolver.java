@@ -193,8 +193,9 @@ public class CastResolver extends UnitTreeVisitor {
     if (typeEnv.isIdType(type)) {
       return true;
     }
-    List<ITypeBinding> bounds = BindingUtil.getTypeBounds(type);
-    return bounds.size() == 1 && typeEnv.isIdType(bounds.get(0));
+    List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(BindingConverter.getType(type));
+    return bounds.size() == 1 && typeEnv.isIdType(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(bounds.get(0)));
   }
 
   private ITypeBinding getDeclaredType(Expression expr) {
@@ -254,7 +255,8 @@ public class CastResolver extends UnitTreeVisitor {
     // most narrow return type, because AbstractMethodRewriter will ensure that
     // a declaration exists with the most narrow return type.
     String selector = nameTable.getMethodSelector(methodDecl);
-    for (ITypeBinding typeBound : BindingUtil.getTypeBounds(receiverType)) {
+    for (TypeMirror typeBoundT : typeUtil.getUpperBounds(BindingConverter.getType(receiverType))) {
+      ITypeBinding typeBound = BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeBoundT);
       ITypeBinding returnType = null;
       for (ITypeBinding inheritedType :
            BindingUtil.getOrderedInheritedTypesInclusive(typeBound.getTypeDeclaration())) {

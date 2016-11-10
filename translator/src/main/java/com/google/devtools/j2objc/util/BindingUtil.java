@@ -254,6 +254,10 @@ public final class BindingUtil {
   private static List<ITypeBinding> getIntersectionTypeBounds(ITypeBinding type) {
     ITypeBinding[] interfaces = type.getInterfaces();
     List<ITypeBinding> bounds = new ArrayList<>(interfaces.length);
+    ITypeBinding superclass = type.getSuperclass();
+    if (superclass != null) {
+      bounds.add(superclass.getErasure());
+    }
     for (ITypeBinding bound : interfaces) {
       bounds.add(bound.getErasure());
     }
@@ -263,11 +267,6 @@ public final class BindingUtil {
   private static void collectBounds(ITypeBinding type, List<ITypeBinding> bounds) {
     ITypeBinding[] boundsArr = type.getTypeBounds();
     if (boundsArr.length == 0) {
-      if (type.isWildcardType()) {
-        for (ITypeBinding intrface : type.getInterfaces()) {
-          addBound(intrface, bounds);
-        }
-      }
       addBound(type, bounds);
     } else {
       for (ITypeBinding bound : boundsArr) {
@@ -728,7 +727,8 @@ public final class BindingUtil {
    * type's qualified name.
    */
   public static boolean isIntersectionType(ITypeBinding binding) {
-    return binding.isInterface() && binding.getQualifiedName().isEmpty();
+    return (binding.isInterface() && binding.getQualifiedName().isEmpty())
+        || (binding.isWildcardType() && binding.getTypeBounds().length == 0);
   }
 
   /**

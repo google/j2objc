@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
@@ -59,6 +60,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 public class NameTable {
 
   private final Types typeEnv;
+  private final TypeUtil typeUtil;
   private final ElementUtil elementUtil;
   private final CaptureInfo captureInfo;
   private final Map<IVariableBinding, String> variableNames = new HashMap<>();
@@ -285,9 +287,10 @@ public class NameTable {
   private final ImmutableMap<String, String> classMappings;
   private final ImmutableMap<String, String> methodMappings;
 
-  public NameTable(Types typeEnv, ElementUtil elementUtil, CaptureInfo captureInfo) {
+  public NameTable(Types typeEnv, TypeUtil typeUtil, CaptureInfo captureInfo) {
     this.typeEnv = typeEnv;
-    this.elementUtil = elementUtil;
+    this.typeUtil = typeUtil;
+    this.elementUtil = typeUtil.elementUtil();
     this.captureInfo = captureInfo;
     prefixMap = Options.getPackagePrefixes();
     classMappings = Options.getMappings().getClassMappings();
@@ -770,7 +773,9 @@ public class NameTable {
     } else if (type.isPrimitive()) {
       objCType = getPrimitiveObjCType(type);
     } else {
-      objCType = constructObjCType(BindingUtil.getTypeBounds(type));
+      objCType = constructObjCType(Iterables.transform(
+          typeUtil.getUpperBounds(BindingConverter.getType(type)),
+          BindingConverter::unwrapTypeMirrorIntoTypeBinding));
     }
     if (qualifiers != null) {
       qualifiers = qualifiers.trim();

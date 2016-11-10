@@ -19,14 +19,14 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.Collection;
 import java.util.Set;
+import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Description of an imported type. Imports are equal if their fully qualified
@@ -123,7 +123,8 @@ public class Import implements Comparable<Import> {
       addImports(((PointerTypeBinding) binding).getPointeeType(), imports, env);
       return;
     }
-    for (ITypeBinding bound : BindingUtil.getTypeBounds(binding)) {
+    for (TypeMirror boundT : env.typeUtil().getUpperBounds(BindingConverter.getType(binding))) {
+      ITypeBinding bound = BindingConverter.unwrapTypeMirrorIntoTypeBinding(boundT);
       bound = env.types().mapType(bound);
       if (!FOUNDATION_TYPES.contains(bound.getName())) {
         imports.add(new Import(bound, env.nameTable()));

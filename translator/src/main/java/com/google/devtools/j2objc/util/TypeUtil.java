@@ -16,8 +16,8 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.jdt.JdtIntersectionType;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,10 +29,13 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 
 /**
@@ -42,13 +45,15 @@ import javax.lang.model.util.Types;
  */
 public final class TypeUtil {
 
+  private final ParserEnvironment env;
   private final Types javacTypes;
   private final ElementUtil elementUtil;
 
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
-  public TypeUtil(Types javacTypes, ElementUtil elementUtil) {
-    this.javacTypes = javacTypes;
+  public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
+    this.env = env;
+    this.javacTypes = env.typeUtilities();
     this.elementUtil = elementUtil;
   }
 
@@ -100,10 +105,8 @@ public final class TypeUtil {
     return kind == TypeKind.FLOAT || kind == TypeKind.DOUBLE;
   }
 
-  // Ugly, but we can't have it actually implement IntersectionType or return TypeKind.INTERSECTION
-  // until Java 8.
   public static boolean isIntersection(TypeMirror t) {
-    return t instanceof JdtIntersectionType;
+    return t.getKind() == TypeKind.INTERSECTION;
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
@@ -299,6 +302,22 @@ public final class TypeUtil {
 
   public TypeElement boxedClass(PrimitiveType t) {
     return javacTypes.boxedClass(t);
+  }
+
+  public List<? extends TypeMirror> getUpperBounds(TypeMirror t) {
+    if (t == null) {
+      return Collections.singletonList(env.resolve("java.lang.Object").asType());
+    }
+    switch (t.getKind()) {
+      case INTERSECTION:
+        return ((IntersectionType) t).getBounds();
+      case TYPEVAR:
+        return getUpperBounds(((TypeVariable) t).getUpperBound());
+      case WILDCARD:
+        return getUpperBounds(((WildcardType) t).getExtendsBound());
+      default:
+        return Collections.singletonList(t);
+    }
   }
 
   public static String getName(TypeMirror t) {

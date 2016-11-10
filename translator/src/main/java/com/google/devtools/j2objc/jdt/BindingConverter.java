@@ -77,7 +77,7 @@ public final class BindingConverter {
     if (binding.isArray()) {
       type = new JdtArrayType(binding);
     } else if (BindingUtil.isIntersectionType(binding)) {
-      type = new JdtIntersectionType(binding);
+      type = JdtIntersectionType.fromJdtIntersection(binding);
     } else if (binding.isPrimitive()) {
       if (binding instanceof NativeTypeBinding) {
         type = new JdtNativeType(binding);
@@ -87,9 +87,11 @@ public final class BindingConverter {
         type = new JdtPrimitiveType(binding);
       }
     } else if (binding.isTypeVariable()) {
-      type = new JdtTypeVariable(binding);
+      type = JdtTypeVariable.fromTypeVariable(binding);
     } else if (binding.isWildcardType()) {
       type = new JdtWildcardType(binding);
+    } else if (binding.isCapture()) {
+      type = JdtTypeVariable.fromCapture(binding);
     } else {
       type = new JdtDeclaredType(binding);
     }
