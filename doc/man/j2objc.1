@@ -43,7 +43,7 @@ Specify character encoding used by source files
 Provide source compatibility with specified release
 .TP
 .BI \-g
-Generate debugging support
+Generate Java source debugging support
 .TP
 \fB\-q\fR, \fB\-\-quiet\fR
 Do not print status messages
@@ -77,6 +77,9 @@ Translate Javadoc comments into Xcode-compatible comments.
 .TP
 .BI \-\-no\-extract\-unsequenced
 Don't rewrite expressions that would produce unsequenced modification errors.
+.TP
+.BI \-g:none
+Do not generate Java source debugging support.
 .TP
 .BI \-\-generate\-deprecated
 Generate deprecated attributes for deprecated methods, classes, and interfaces.
@@ -169,45 +172,45 @@ Enable recommended warnings. In this release, all available warnings are recomme
 Disable all warnings not mandated by the Java Language Specification.
 .TP
 .BI \-Xlint:- xxx
-Disable warning \f2xxx\fR, where \f2xxx\fR is one of the warning 
+Disable warning \f2xxx\fR, where \f2xxx\fR is one of the warning
 names supported for \f3\-Xlint:\f2xxx\fR, below.
 .TP
-.B \-Xlint:cast 
+.B \-Xlint:cast
 Warn about unnecessary and redundant cast expressions.
 .TP
 .B \-Xlint:deprecation
-Warn about the use of deprecated items. 
+Warn about the use of deprecated items.
 .TP
 .B \-Xlint:dep-ann
-Warn about items that are documented with an @deprecated Javadoc comment, 
+Warn about items that are documented with an @deprecated Javadoc comment,
 but do not have a @Deprecated annotation.
 .TP
 .B \-Xlint:empty
-Warn about empty statements. 
+Warn about empty statements.
 .TP
-.B \-Xlint:fallthrough 
-Check switch blocks for fall-through cases and provide a 
+.B \-Xlint:fallthrough
+Check switch blocks for fall-through cases and provide a
 warning message for any that are
-found. 
+found.
 .TP
 .B \-Xlint:finally
-Warn about finally clauses that cannot complete normally. 
+Warn about finally clauses that cannot complete normally.
 .TP
 .B \-Xlint:rawtypes
-Warn about unchecked operations on raw types. 
+Warn about unchecked operations on raw types.
 .TP
 .B \-Xlint:serial
-Warn about missing serialVersionUID definitions on serializable classes. 
+Warn about missing serialVersionUID definitions on serializable classes.
 .TP
 .B \-Xlint:static
-Warn about serial methods called on instances. 
+Warn about serial methods called on instances.
 .TP
-.B \-Xlint:unchecked 
-Give more detail for unchecked conversion warnings 
-that are mandated by the Java Language Specification. 
+.B \-Xlint:unchecked
+Give more detail for unchecked conversion warnings
+that are mandated by the Java Language Specification.
 .TP
 .B \-Xlint:varargs
-Warn about unsafe usages of variable arguments (varargs) methods, 
+Warn about unsafe usages of variable arguments (varargs) methods,
 in particular, those that contain non-reifiable arguments.
 .TP
 .BI \-Xno\-jsni\-warnings

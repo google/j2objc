@@ -416,6 +416,8 @@ public class Options {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
         emitLineDirectives = true;
+      } else if (arg.equals("-g:none")) {
+        emitLineDirectives = false;
       } else if (arg.equals("-Werror")) {
         warningsAsErrors = true;
       } else if (arg.equals("--generate-deprecated")) {
