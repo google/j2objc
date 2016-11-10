@@ -98,7 +98,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -218,13 +217,8 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(ArrayType node) {
-    ITypeBinding binding = typeEnv.mapType(node.getTypeBinding());
-    if (binding instanceof IOSTypeBinding) {
-      buffer.append(binding.getName());
-    } else {
-      node.getComponentType().accept(this);
-      buffer.append("[]");
-    }
+    TypeElement iosArray = typeUtil.getIosArray(node.getTypeMirror().getComponentType());
+    buffer.append(ElementUtil.getName(iosArray));
     return false;
   }
 

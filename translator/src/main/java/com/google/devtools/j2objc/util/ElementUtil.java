@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
@@ -249,6 +250,10 @@ public final class ElementUtil {
       return binding.isSynthetic();
     }
     return false;
+  }
+
+  public static String getHeader(TypeElement e) {
+    return e instanceof GeneratedTypeElement ? ((GeneratedTypeElement) e).getHeader() : null;
   }
 
   public static String getSelector(ExecutableElement e) {

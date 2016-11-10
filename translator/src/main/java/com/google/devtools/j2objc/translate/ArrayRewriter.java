@@ -85,7 +85,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
   private MethodInvocation newInitializedArrayInvocation(
       ArrayType arrayType, List<Expression> elements, boolean retainedResult) {
     TypeMirror componentType = arrayType.getComponentType();
-    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
+    TypeElement iosArrayElement = typeUtil.getIosArray(componentType);
 
     GeneratedExecutableElement methodElement = GeneratedExecutableElement.newMethodWithSelector(
         getInitializeSelector(componentType, retainedResult), iosArrayElement.asType(),
@@ -153,7 +153,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
   private MethodInvocation newSingleDimensionArrayInvocation(
       ArrayType arrayType, Expression dimensionExpr, boolean retainedResult) {
     TypeMirror componentType = arrayType.getComponentType();
-    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
+    TypeElement iosArrayElement = typeUtil.getIosArray(componentType);
     boolean isPrimitive = componentType.getKind().isPrimitive();
 
     String selector = (retainedResult ? "newArray" : "array") + "WithLength:"
@@ -189,7 +189,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
       assert TypeUtil.isArray(componentType);
       componentType = ((ArrayType) componentType).getComponentType();
     }
-    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
+    TypeElement iosArrayElement = typeUtil.getIosArray(componentType);
 
     ExecutableElement methodElement =
         getMultiDimensionMethod(componentType, iosArrayElement, retainedResult);
@@ -220,7 +220,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
     String selector = (retainedResult ? "newArray" : "array") + "WithDimensions:lengths:"
         + (isPrimitive ? "" : "type:");
     GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
-        selector, typeEnv.getObjectArrayElement().asType(), iosArrayType)
+        selector, TypeUtil.IOS_OBJECT_ARRAY.asType(), iosArrayType)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
     TypeMirror intType = typeUtil.getPrimitiveType(TypeKind.INT);
     element.addParameter(GeneratedVariableElement.newParameter("dimensions", intType, element));
@@ -251,7 +251,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(ArrayAccess node) {
     TypeMirror componentType = node.getTypeMirror();
-    TypeElement iosArrayElement = typeEnv.resolveArrayType(componentType);
+    TypeElement iosArrayElement = typeUtil.getIosArray(componentType);
 
     node.replaceWith(newArrayAccess(
         node, componentType, iosArrayElement, TranslationUtil.isAssigned(node)));
@@ -292,7 +292,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
       funcName = "IOSObjectArray_SetAndConsume";
       value = retainedValue;
     }
-    TypeElement objArrayType = typeEnv.getObjectArrayElement();
+    TypeElement objArrayType = TypeUtil.IOS_OBJECT_ARRAY;
     TypeMirror idType = typeEnv.getIdTypeMirror();
     FunctionElement element = new FunctionElement(funcName, idType, objArrayType)
         .addParameters(objArrayType.asType(), typeEnv.resolveJavaTypeMirror("int"), idType);
@@ -319,7 +319,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
     if (name.getIdentifier().equals("length") && TypeUtil.isArray(exprType)) {
       VariableElement sizeField = GeneratedVariableElement.newField(
           "size", typeUtil.getPrimitiveType(TypeKind.INT),
-          typeEnv.resolveArrayType(((ArrayType) exprType).getComponentType()));
+          typeUtil.getIosArray(((ArrayType) exprType).getComponentType()));
       node.replaceWith(new FieldAccess(sizeField, TreeUtil.remove(expr)));
     }
   }

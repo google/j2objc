@@ -20,7 +20,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.IOSTypeBinding;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -152,12 +151,9 @@ public class HeaderMap {
   }
 
   public String get(ITypeBinding type) {
-    if (type instanceof IOSTypeBinding) {
-      // Some IOS types are declared in a different header.
-      String header = ((IOSTypeBinding) type).getHeader();
-      if (header != null) {
-        return header;
-      }
+    String explicitHeader = ElementUtil.getHeader(BindingConverter.getTypeElement(type));
+    if (explicitHeader != null) {
+      return explicitHeader;
     }
 
     String qualifiedName = type.getErasure().getQualifiedName();

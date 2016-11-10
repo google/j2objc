@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.ParserEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -35,6 +36,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 public class Types {
 
   private final ParserEnvironment env;
+  private final TypeUtil typeUtil;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
 
   // Commonly used java types.
@@ -54,16 +56,11 @@ public class Types {
   private final IOSTypeBinding NSException;
   private final IOSTypeBinding IOSClass;
 
-  private IOSTypeBinding IOSObjectArray;
-
   // Special IOS types.
   private final IOSTypeBinding idType;
 
   private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
   private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
-
-  // Map a primitive type to its emulation array type.
-  private final Map<ITypeBinding, IOSTypeBinding> arrayBindingMap = Maps.newHashMap();
 
   // Cache of pointer types.
   private final Map<ITypeBinding, PointerTypeBinding> pointerTypeMap = Maps.newHashMap();
@@ -75,8 +72,9 @@ public class Types {
   private final IOSMethodBinding allocMethod;
   private final IOSMethodBinding deallocMethod;
 
-  public Types(ParserEnvironment env) {
+  public Types(ParserEnvironment env, TypeUtil typeUtil) {
     this.env = env;
+    this.typeUtil = typeUtil;
 
     // Find core java types.
     javaObjectType = resolveWellKnownType("java.lang.Object");
@@ -97,7 +95,6 @@ public class Types {
     IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
     idType = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
 
-    initializeArrayTypes();
     initializeTypeMap();
     initializeCommonJavaTypes();
 
@@ -119,18 +116,6 @@ public class Types {
   private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
     iosBindingMap.put(type.getName(), type);
     return type;
-  }
-
-  private void initializeArrayTypes() {
-    initializePrimitiveArray("boolean", "IOSBooleanArray");
-    initializePrimitiveArray("byte", "IOSByteArray");
-    initializePrimitiveArray("char", "IOSCharArray");
-    initializePrimitiveArray("double", "IOSDoubleArray");
-    initializePrimitiveArray("float", "IOSFloatArray");
-    initializePrimitiveArray("int", "IOSIntArray");
-    initializePrimitiveArray("long", "IOSLongArray");
-    initializePrimitiveArray("short", "IOSShortArray");
-    IOSObjectArray = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSObjectArray"));
   }
 
   /**
@@ -157,13 +142,6 @@ public class Types {
     javaBindingMap.put("java.lang.Throwable", javaThrowableType);
   }
 
-  private void initializePrimitiveArray(String javaTypeName, String iosTypeName) {
-    ITypeBinding javaType = resolveWellKnownType(javaTypeName);
-    IOSTypeBinding iosType = mapIOSType(IOSTypeBinding.newUnmappedClass(iosTypeName));
-    iosType.setHeader("IOSPrimitiveArray.h");
-    arrayBindingMap.put(javaType, iosType);
-  }
-
   private ITypeBinding resolveWellKnownType(String name) {
     return BindingConverter.unwrapTypeElement((TypeElement) env.resolve(name));
   }
@@ -181,7 +159,8 @@ public class Types {
     // not strip type annotations.
     binding = binding.getTypeDeclaration();
     if (binding.isArray()) {
-      return resolveArrayType(binding.getComponentType());
+      return BindingConverter.unwrapTypeElement(
+          typeUtil.getIosArray(BindingConverter.getType(binding.getComponentType())));
     }
     ITypeBinding newBinding = typeMap.get(binding);
     if (newBinding == null && binding.isAssignmentCompatible(javaClassType)) {
@@ -243,21 +222,6 @@ public class Types {
 
   public boolean isIdType(ITypeBinding type) {
     return type == idType || type == NSObject || type == javaObjectType;
-  }
-
-  public IOSTypeBinding resolveArrayType(ITypeBinding binding) {
-    IOSTypeBinding arrayBinding = arrayBindingMap.get(binding);
-    return arrayBinding != null ? arrayBinding : IOSObjectArray;
-  }
-
-  public TypeElement resolveArrayType(TypeMirror mirror) {
-    IOSTypeBinding arrayBinding = arrayBindingMap.get(
-        BindingConverter.unwrapTypeMirrorIntoBinding(mirror));
-    return BindingConverter.getTypeElement(arrayBinding != null ? arrayBinding : IOSObjectArray);
-  }
-
-  public TypeElement getObjectArrayElement() {
-    return BindingConverter.getTypeElement(IOSObjectArray);
   }
 
   public boolean isJavaVoidType(ITypeBinding type) {
@@ -323,10 +287,6 @@ public class Types {
 
   public TypeMirror getIdTypeMirror() {
     return BindingConverter.getType(idType);
-  }
-
-  public ITypeBinding getIOSObjectArray() {
-    return IOSObjectArray;
   }
 
   public PointerTypeBinding getPointerType(ITypeBinding type) {

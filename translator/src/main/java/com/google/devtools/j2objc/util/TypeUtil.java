@@ -17,10 +17,13 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Joiner;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.NestingKind;
@@ -44,6 +47,25 @@ import javax.lang.model.util.Types;
  * @author Nathan Braswell
  */
 public final class TypeUtil {
+
+  public static final TypeElement NS_OBJECT =
+      GeneratedTypeElement.newIosClass("NSObject", null, "");
+  public static final TypeElement IOS_OBJECT_ARRAY =
+      GeneratedTypeElement.newIosClass("IOSObjectArray", NS_OBJECT, "IOSObjectArray.h");
+  private static final Map<TypeKind, TypeElement> PRIMITIVE_IOS_ARRAYS;
+
+  static {
+    Map<TypeKind, TypeElement> map = new EnumMap<>(TypeKind.class);
+    map.put(TypeKind.BOOLEAN, newPrimitiveIosArray("IOSBooleanArray"));
+    map.put(TypeKind.BYTE, newPrimitiveIosArray("IOSByteArray"));
+    map.put(TypeKind.CHAR, newPrimitiveIosArray("IOSCharArray"));
+    map.put(TypeKind.DOUBLE, newPrimitiveIosArray("IOSDoubleArray"));
+    map.put(TypeKind.FLOAT, newPrimitiveIosArray("IOSFloatArray"));
+    map.put(TypeKind.INT, newPrimitiveIosArray("IOSIntArray"));
+    map.put(TypeKind.LONG, newPrimitiveIosArray("IOSLongArray"));
+    map.put(TypeKind.SHORT, newPrimitiveIosArray("IOSShortArray"));
+    PRIMITIVE_IOS_ARRAYS = map;
+  }
 
   private final ParserEnvironment env;
   private final Types javacTypes;
@@ -166,6 +188,11 @@ public final class TypeUtil {
 
   public ArrayType getArrayType(TypeMirror componentType) {
     return javacTypes.getArrayType(componentType);
+  }
+
+  public TypeElement getIosArray(TypeMirror componentType) {
+    return componentType.getKind().isPrimitive()
+        ? PRIMITIVE_IOS_ARRAYS.get(componentType.getKind()) : IOS_OBJECT_ARRAY;
   }
 
   /**
@@ -458,5 +485,9 @@ public final class TypeUtil {
       sb.append(getSignatureName(returnType));
     }
     return sb.toString();
+  }
+
+  private static TypeElement newPrimitiveIosArray(String name) {
+    return GeneratedTypeElement.newIosClass(name, NS_OBJECT, "IOSPrimitiveArray.h");
   }
 }

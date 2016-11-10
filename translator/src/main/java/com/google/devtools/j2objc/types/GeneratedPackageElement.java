@@ -22,10 +22,13 @@ import javax.lang.model.type.TypeMirror;
 
 /**
  * Element class for packages created during translation.
+ * TODO(kstanger): Eliminate this class in favor of Javac's Elements.getPackageElement().
  *
  * @author Keith Stanger
  */
 public class GeneratedPackageElement extends GeneratedElement implements PackageElement {
+
+  public static final PackageElement EMPTY_PACKAGE = new GeneratedPackageElement("");
 
   public GeneratedPackageElement(String name) {
     super(name, ElementKind.PACKAGE, null, false);

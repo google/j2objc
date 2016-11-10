@@ -52,21 +52,24 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   private List<TypeMirror> interfaces = new ArrayList<>();
   private final NestingKind nestingKind;
   private final Name qualifiedName;
+  private final String header;
   private final ITypeBinding binding = new Binding();
 
   protected GeneratedTypeElement(
       String name, ElementKind kind, Element enclosingElement, TypeMirror superclass,
-      NestingKind nestingKind, boolean synthetic) {
+      NestingKind nestingKind, String header, boolean synthetic) {
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.superclass = superclass;
     this.nestingKind = nestingKind;
     qualifiedName = new NameImpl(getQualifiedPrefix(enclosingElement) + name);
+    this.header = header;
   }
 
   public static GeneratedTypeElement mutableCopy(TypeElement element) {
     return new GeneratedTypeElement(
         element.getSimpleName().toString(), element.getKind(), element.getEnclosingElement(),
-        element.getSuperclass(), element.getNestingKind(), ElementUtil.isSynthetic(element));
+        element.getSuperclass(), element.getNestingKind(), ElementUtil.getHeader(element),
+        ElementUtil.isSynthetic(element));
   }
 
   private static GeneratedTypeElement newEmulatedType(
@@ -76,7 +79,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     PackageElement packageElement = new GeneratedPackageElement(packageName);
     return new GeneratedTypeElement(
         qualifiedName.substring(idx + 1), kind, packageElement, superclass, NestingKind.TOP_LEVEL,
-        false);
+        null, false);
   }
 
   public static GeneratedTypeElement newEmulatedClass(String qualifiedName, TypeMirror superclass) {
@@ -87,10 +90,17 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     return newEmulatedType(qualifiedName, ElementKind.INTERFACE, null);
   }
 
+  public static GeneratedTypeElement newIosClass(
+      String name, TypeElement superclass, String header) {
+    return new GeneratedTypeElement(
+        name, ElementKind.CLASS, GeneratedPackageElement.EMPTY_PACKAGE,
+        superclass != null ? superclass.asType() : null, NestingKind.TOP_LEVEL, header, false);
+  }
+
   public static GeneratedTypeElement newPackageInfoClass(PackageElement pkgElem, Types typeEnv) {
     return (GeneratedTypeElement) new GeneratedTypeElement(
         NameTable.PACKAGE_INFO_CLASS_NAME, ElementKind.CLASS, pkgElem,
-        typeEnv.getJavaObjectElement().asType(), NestingKind.TOP_LEVEL, false)
+        typeEnv.getJavaObjectElement().asType(), NestingKind.TOP_LEVEL, null, false)
         .addModifiers(Modifier.PRIVATE);
   }
 
@@ -120,6 +130,10 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   @Override
   public Name getQualifiedName() {
     return qualifiedName;
+  }
+
+  public String getHeader() {
+    return header;
   }
 
   @Override
