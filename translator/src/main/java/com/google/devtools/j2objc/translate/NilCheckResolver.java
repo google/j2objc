@@ -365,7 +365,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
   private boolean isBoxingMethod(ExecutableElement method) {
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
     // Autoboxing methods.
-    if (typeEnv.isBoxedPrimitive(declaringClass)) {
+    if (typeUtil.isBoxedType(declaringClass.asType())) {
       String name = ElementUtil.getName(method);
       TypeMirror returnType = method.getReturnType();
       List<? extends VariableElement> params = method.getParameters();

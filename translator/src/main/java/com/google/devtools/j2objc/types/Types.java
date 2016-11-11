@@ -222,26 +222,6 @@ public class Types {
     return type == idType || type == NSObject || type == javaObjectType;
   }
 
-  public TypeMirror getPrimitiveType(TypeMirror wrapperType) {
-    try {
-      return env.typeUtilities().unboxedType(wrapperType);
-    } catch (IllegalArgumentException e) {
-      return null;
-    }
-  }
-
-  public boolean isBoxedPrimitive(TypeElement type) {
-    return isBoxedPrimitive(type.asType());
-  }
-
-  public boolean isBoxedPrimitive(TypeMirror type) {
-    try {
-      return !type.getKind().isPrimitive() && env.typeUtilities().unboxedType(type) != null;
-    } catch (IllegalArgumentException e) {
-      return false;
-    }
-  }
-
   public ITypeBinding getNSNumber() {
     return NSNumber;
   }

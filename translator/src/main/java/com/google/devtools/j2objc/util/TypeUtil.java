@@ -18,6 +18,7 @@ import com.google.common.base.Joiner;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
+import com.google.devtools.j2objc.types.NativeType;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -52,6 +53,7 @@ public final class TypeUtil {
       GeneratedTypeElement.newIosClass("NSObject", null, "");
   public static final TypeElement IOS_OBJECT_ARRAY =
       GeneratedTypeElement.newIosClass("IOSObjectArray", NS_OBJECT, "IOSObjectArray.h");
+  public static final TypeMirror NATIVE_CHAR_PTR = new NativeType("char *");
   private static final Map<TypeKind, TypeElement> PRIMITIVE_IOS_ARRAYS;
 
   static {

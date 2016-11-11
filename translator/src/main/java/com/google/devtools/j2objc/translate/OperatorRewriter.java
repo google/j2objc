@@ -387,7 +387,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     for (Expression expr : operands) {
       typeArg.append(getStringConcatenationTypeCharacter(expr));
     }
-    return new CStringLiteral(typeArg.toString(), typeEnv);
+    return new CStringLiteral(typeArg.toString());
   }
 
   private void rewriteStringConcatenation(InfixExpression node) {
@@ -403,7 +403,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
     TypeMirror stringType = typeEnv.resolveJavaTypeMirror("java.lang.String");
     FunctionElement element = new FunctionElement("JreStrcat", stringType, null)
-        .addParameters(typeEnv.getPointerType(typeEnv.resolveJavaTypeMirror("char")))
+        .addParameters(TypeUtil.NATIVE_CHAR_PTR)
         .setIsVarargs(true);
     FunctionInvocation invocation = new FunctionInvocation(element, stringType);
     List<Expression> args = invocation.getArguments();
@@ -433,9 +433,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror idType = typeEnv.getIdTypeMirror();
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
     FunctionElement element = new FunctionElement(funcName, idType, null)
-        .addParameters(
-            typeEnv.getPointerType(idType),
-            typeEnv.getPointerType(typeEnv.resolveJavaTypeMirror("char")));
+        .addParameters(typeEnv.getPointerType(idType), TypeUtil.NATIVE_CHAR_PTR)
+        .setIsVarargs(true);
     FunctionInvocation invocation = new FunctionInvocation(element, lhsType);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(

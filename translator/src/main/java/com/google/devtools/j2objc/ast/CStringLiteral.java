@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.Types;
-
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -25,17 +23,14 @@ import javax.lang.model.type.TypeMirror;
 public class CStringLiteral extends Expression {
 
   private String literalValue = null;
-  private final TypeMirror typeMirror;
 
   public CStringLiteral(CStringLiteral other) {
     super(other);
     literalValue = other.getLiteralValue();
-    typeMirror = other.getTypeMirror();
   }
 
-  public CStringLiteral(String literalValue, Types typeEnv) {
+  public CStringLiteral(String literalValue) {
     this.literalValue = literalValue;
-    typeMirror = BindingConverter.getType(typeEnv.getPointerType(typeEnv.resolveJavaType("char")));
   }
 
   @Override
@@ -45,7 +40,7 @@ public class CStringLiteral extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    return typeMirror;
+    return TypeUtil.NATIVE_CHAR_PTR;
   }
 
   public String getLiteralValue() {

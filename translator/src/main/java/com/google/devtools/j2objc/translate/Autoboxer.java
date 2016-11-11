@@ -163,10 +163,10 @@ public class Autoboxer extends UnitTreeVisitor {
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
     TypeMirror type = lhs.getTypeMirror();
-    if (!typeEnv.isBoxedPrimitive(type)) {
+    TypeMirror primitiveType = typeUtil.unboxedType(type);
+    if (primitiveType == null) {
       return;
     }
-    TypeMirror primitiveType = typeEnv.getPrimitiveType(type);
     TypeMirror pointerType = typeEnv.getPointerType(type);
     String funcName = "JreBoxed" + getAssignFunctionName(node.getOperator())
         + TranslationUtil.getOperatorFunctionModifier(lhs)
@@ -374,12 +374,13 @@ public class Autoboxer extends UnitTreeVisitor {
 
   private void rewriteBoxedPrefixOrPostfix(TreeNode node, Expression operand, String funcName) {
     TypeMirror type = operand.getTypeMirror();
-    if (!typeEnv.isBoxedPrimitive(type)) {
+    TypeMirror primitiveType = typeUtil.unboxedType(type);
+    if (primitiveType == null) {
       return;
     }
     TypeMirror pointerType = typeEnv.getPointerType(type);
     funcName = "JreBoxed" + funcName + TranslationUtil.getOperatorFunctionModifier(operand)
-        + NameTable.capitalize(typeEnv.getPrimitiveType(type).toString());
+        + NameTable.capitalize(primitiveType.toString());
     FunctionElement element = new FunctionElement(funcName, type, TypeUtil.asTypeElement(type))
         .addParameters(pointerType);
     FunctionInvocation invocation = new FunctionInvocation(element, type);
