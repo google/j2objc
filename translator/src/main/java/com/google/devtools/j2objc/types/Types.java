@@ -46,7 +46,6 @@ public class Types {
   private final ITypeBinding javaNumberType;
   private final ITypeBinding javaStringType;
   private final ITypeBinding javaThrowableType;
-  private final ITypeBinding javaVoidType;
 
   // Non-standard naming pattern is used, since in this case it's more readable.
   private final IOSTypeBinding NSCopying;
@@ -82,7 +81,6 @@ public class Types {
     javaCloneableType = resolveWellKnownType("java.lang.Cloneable");
     javaStringType = resolveWellKnownType("java.lang.String");
     javaThrowableType = resolveWellKnownType("java.lang.Throwable");
-    javaVoidType = resolveWellKnownType("java.lang.Void");
     ITypeBinding binding = resolveWellKnownType("java.lang.Integer");
     javaNumberType = binding.getSuperclass();
 
@@ -222,10 +220,6 @@ public class Types {
 
   public boolean isIdType(ITypeBinding type) {
     return type == idType || type == NSObject || type == javaObjectType;
-  }
-
-  public boolean isJavaVoidType(ITypeBinding type) {
-    return type.isEqualTo(javaVoidType);
   }
 
   public TypeMirror getPrimitiveType(TypeMirror wrapperType) {

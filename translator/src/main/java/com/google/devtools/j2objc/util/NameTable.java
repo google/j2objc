@@ -790,7 +790,7 @@ public class NameTable {
     String classType = null;
     List<String> interfaces = new ArrayList<>();
     for (ITypeBinding type : types) {
-      if (typeEnv.isIdType(type) || typeEnv.isJavaVoidType(type)) {
+      if (typeEnv.isIdType(type)) {
         continue;
       }
       if (type.isInterface()) {
