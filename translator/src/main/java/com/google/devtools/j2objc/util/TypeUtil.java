@@ -49,8 +49,19 @@ import javax.lang.model.util.Types;
  */
 public final class TypeUtil {
 
+  public static final TypeMirror ID_TYPE = new NativeType("id");
   public static final TypeElement NS_OBJECT =
       GeneratedTypeElement.newIosClass("NSObject", null, "");
+  public static final TypeElement NS_STRING =
+      GeneratedTypeElement.newIosClass("NSString", NS_OBJECT, "");
+  public static final TypeElement NS_EXCEPTION =
+      GeneratedTypeElement.newIosClass("NSException", NS_OBJECT, "");
+  public static final TypeElement NS_NUMBER =
+      GeneratedTypeElement.newIosClass("NSNumber", NS_OBJECT, "");
+  public static final TypeElement IOS_CLASS =
+      GeneratedTypeElement.newIosClass("IOSClass", NS_OBJECT, "IOSClass.h");
+  public static final TypeElement NS_COPYING =
+      GeneratedTypeElement.newIosInterface("NSCopying", "");
   public static final TypeElement IOS_OBJECT_ARRAY =
       GeneratedTypeElement.newIosClass("IOSObjectArray", NS_OBJECT, "IOSObjectArray.h");
   public static final TypeMirror NATIVE_CHAR_PTR = new NativeType("char *");

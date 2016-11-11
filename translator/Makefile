@@ -276,7 +276,6 @@ JAVA_SOURCES = \
 	types/GeneratedVariableElement.java \
 	types/HeaderImportCollector.java \
 	types/IOSMethodBinding.java \
-	types/IOSTypeBinding.java \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
 	types/LambdaTypeElement.java \

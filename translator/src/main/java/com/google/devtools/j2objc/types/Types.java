@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -48,18 +47,17 @@ public class Types {
   private final ITypeBinding javaThrowableType;
 
   // Non-standard naming pattern is used, since in this case it's more readable.
-  private final IOSTypeBinding NSCopying;
-  private final IOSTypeBinding NSObject;
-  private final IOSTypeBinding NSNumber;
-  private final IOSTypeBinding NSString;
-  private final IOSTypeBinding NSException;
-  private final IOSTypeBinding IOSClass;
+  private final ITypeBinding NSCopying;
+  private final ITypeBinding NSObject;
+  private final ITypeBinding NSNumber;
+  private final ITypeBinding NSString;
+  private final ITypeBinding NSException;
+  private final ITypeBinding IOSClass;
 
   // Special IOS types.
-  private final IOSTypeBinding idType;
+  private final ITypeBinding idType;
 
   private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
-  private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
 
   // Cache of pointer types.
   private final Map<ITypeBinding, PointerTypeBinding> pointerTypeMap = Maps.newHashMap();
@@ -85,16 +83,15 @@ public class Types {
     javaNumberType = binding.getSuperclass();
 
     // Create core IOS types.
-    NSCopying = mapIOSType(IOSTypeBinding.newInterface("NSCopying", javaCloneableType));
-    NSObject = mapIOSType(IOSTypeBinding.newClass("NSObject", javaObjectType));
-    NSNumber = mapIOSType(IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject));
-    NSString = mapIOSType(IOSTypeBinding.newClass("NSString", javaStringType, NSObject));
-    NSException = mapIOSType(IOSTypeBinding.newClass("NSException", javaThrowableType, NSObject));
-    IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
-    idType = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
+    NSCopying = BindingConverter.unwrapTypeElement(TypeUtil.NS_COPYING);
+    NSObject = BindingConverter.unwrapTypeElement(TypeUtil.NS_OBJECT);
+    NSNumber = BindingConverter.unwrapTypeElement(TypeUtil.NS_NUMBER);
+    NSString = BindingConverter.unwrapTypeElement(TypeUtil.NS_STRING);
+    NSException = BindingConverter.unwrapTypeElement(TypeUtil.NS_EXCEPTION);
+    IOSClass = BindingConverter.unwrapTypeElement(TypeUtil.IOS_CLASS);
+    idType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(TypeUtil.ID_TYPE);
 
     initializeTypeMap();
-    initializeCommonJavaTypes();
 
     ITypeBinding voidType = resolveWellKnownType("void");
 
@@ -111,11 +108,6 @@ public class Types {
         NameTable.DEALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
   }
 
-  private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
-    iosBindingMap.put(type.getName(), type);
-    return type;
-  }
-
   /**
    * Initialize type map with classes that are explicitly mapped to an iOS
    * type.
@@ -130,14 +122,6 @@ public class Types {
     typeMap.put(javaNumberType, NSNumber);
     typeMap.put(javaStringType, NSString);
     typeMap.put(javaThrowableType, NSException);
-  }
-
-  private void initializeCommonJavaTypes() {
-    ITypeBinding charSequence = BindingUtil.findInterface(javaStringType, "java.lang.CharSequence");
-    javaBindingMap.put("java.lang.CharSequence", charSequence);
-    iosBindingMap.put("JavaLangCharSequence", charSequence);
-    javaBindingMap.put("java.lang.Number", javaNumberType);
-    javaBindingMap.put("java.lang.Throwable", javaThrowableType);
   }
 
   private ITypeBinding resolveWellKnownType(String name) {
@@ -198,10 +182,6 @@ public class Types {
     return result;
   }
 
-  public ITypeBinding resolveIOSType(String name) {
-    return iosBindingMap.get(name);
-  }
-
   public boolean isJavaStringType(ITypeBinding type) {
     return javaStringType.equals(type);
   }
@@ -222,14 +202,6 @@ public class Types {
     return type == idType || type == NSObject || type == javaObjectType;
   }
 
-  public ITypeBinding getNSNumber() {
-    return NSNumber;
-  }
-
-  public ITypeBinding getNSObject() {
-    return NSObject;
-  }
-
   // Used by SignatureGenerator. Other classes should use getNSObject().
   public ITypeBinding getJavaObject() {
     return javaObjectType;
@@ -237,14 +209,6 @@ public class Types {
 
   public TypeElement getJavaObjectElement() {
     return BindingConverter.getTypeElement(javaObjectType);
-  }
-
-  public ITypeBinding getNSString() {
-    return NSString;
-  }
-
-  public ITypeBinding getIOSClass() {
-    return IOSClass;
   }
 
   public TypeMirror getIOSClassMirror() {

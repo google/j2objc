@@ -28,8 +28,6 @@ import javax.lang.model.type.TypeMirror;
  */
 public class GeneratedPackageElement extends GeneratedElement implements PackageElement {
 
-  public static final PackageElement EMPTY_PACKAGE = new GeneratedPackageElement("");
-
   public GeneratedPackageElement(String name) {
     super(name, ElementKind.PACKAGE, null, false);
   }

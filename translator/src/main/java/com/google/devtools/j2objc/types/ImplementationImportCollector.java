@@ -49,6 +49,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
@@ -269,9 +270,9 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
   public boolean visit(TypeLiteral node) {
     TypeMirror type = node.getType().getTypeMirror();
     if (type.getKind().isPrimitive()) {
-      addImports(typeEnv.resolveIOSType("IOSClass"));
+      addImports(TypeUtil.IOS_CLASS);
     } else if (type.getKind().equals(TypeKind.ARRAY)) {
-      addImports(typeEnv.resolveIOSType("IOSClass"));
+      addImports(TypeUtil.IOS_CLASS);
       addImports(((ArrayType) type).getComponentType());
     } else {
       addImports(node.getType());

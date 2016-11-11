@@ -256,6 +256,10 @@ public final class ElementUtil {
     return e instanceof GeneratedTypeElement ? ((GeneratedTypeElement) e).getHeader() : null;
   }
 
+  public static boolean isIosType(TypeElement e) {
+    return e instanceof GeneratedTypeElement && ((GeneratedTypeElement) e).isIosType();
+  }
+
   public static String getSelector(ExecutableElement e) {
     if (e instanceof GeneratedExecutableElement) {
       return ((GeneratedExecutableElement) e).getSelector();

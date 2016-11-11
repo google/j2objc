@@ -21,6 +21,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.util.Collection;
@@ -51,8 +52,8 @@ public class Import implements Comparable<Import> {
       mainType = mainType.getDeclaringClass();
     }
     this.importFileName = Options.getHeaderMap().get(mainType);
-    this.javaQualifiedName =
-        mainType instanceof IOSTypeBinding ? null : mainType.getQualifiedName();
+    this.javaQualifiedName = ElementUtil.isIosType(BindingConverter.getTypeElement(mainType))
+        ? null : mainType.getQualifiedName();
     this.isInterface = type.isInterface();
   }
 

@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.LintOption;
 import com.google.devtools.j2objc.file.InputFile;
@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -41,6 +42,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Adapts JDT's ASTParser to a more convenient interface for parsing source
@@ -55,7 +57,7 @@ public class JdtParser extends Parser {
   private Map<String, String> compilerOptions = initCompilerOptions(Options.getSourceVersion());
 
   private static Map<String, String> initCompilerOptions(SourceVersion sourceVersion) {
-    Map<String, String> compilerOptions = Maps.newHashMap();
+    Map<String, String> compilerOptions = new HashMap<>();
     String version = sourceVersion.flag();
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, version);
@@ -238,15 +240,21 @@ public class JdtParser extends Parser {
 
     private final AST ast;
     private final Types types;
+    private final Map<String, Element> knownTypes;
 
     JdtParserEnvironment(AST ast) {
       this.ast = ast;
       types = new JdtTypes(ast);
+
+      ITypeBinding javaLangInteger = ast.resolveWellKnownType("java.lang.Integer");
+      knownTypes = ImmutableMap.of(
+          "java.lang.Number", BindingConverter.getTypeElement(javaLangInteger.getSuperclass()));
     }
 
     @Override
     public Element resolve(String name) {
-      return BindingConverter.getElement(ast.resolveWellKnownType(name));
+      Element result = knownTypes.get(name);
+      return result != null ? result : BindingConverter.getElement(ast.resolveWellKnownType(name));
     }
 
     @Override
