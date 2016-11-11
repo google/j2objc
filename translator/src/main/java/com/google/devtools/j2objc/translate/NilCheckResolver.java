@@ -414,7 +414,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
     if (var != null) {
       addSafeVar(var);
     }
-    TypeMirror idType = typeEnv.getIdTypeMirror();
+    TypeMirror idType = TypeUtil.ID_TYPE;
     FunctionElement element = new FunctionElement("nil_chk", idType, null).addParameters(idType);
     FunctionInvocation nilChkInvocation = new FunctionInvocation(element, node.getTypeMirror());
     node.replaceWith(nilChkInvocation);

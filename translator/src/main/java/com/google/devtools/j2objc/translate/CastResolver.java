@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
@@ -122,12 +123,12 @@ public class CastResolver extends UnitTreeVisitor {
 
   private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
     type = type.getErasure();
-    TypeMirror idType = typeEnv.getIdTypeMirror();
+    TypeMirror idType = TypeUtil.ID_TYPE;
     FunctionInvocation invocation = null;
     if ((type.isInterface() && !type.isAnnotation())
         || (type.isArray() && !type.getComponentType().isPrimitive())) {
       FunctionElement element = new FunctionElement("cast_check", idType, null)
-          .addParameters(idType, typeEnv.getIOSClassMirror());
+          .addParameters(idType, TypeUtil.IOS_CLASS.asType());
       invocation = new FunctionInvocation(element, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       invocation.addArgument(new TypeLiteral(type, typeEnv));
@@ -431,7 +432,7 @@ public class CastResolver extends UnitTreeVisitor {
       List<Expression> operands = node.getOperands();
       if (incompatibleTypes(operands.get(0), operands.get(1))) {
         // Add (id) cast to right-hand operand(s).
-        operands.add(1, new CastExpression(typeEnv.getIdTypeMirror(), operands.remove(1)));
+        operands.add(1, new CastExpression(TypeUtil.ID_TYPE, operands.remove(1)));
       }
     }
   }
@@ -442,8 +443,7 @@ public class CastResolver extends UnitTreeVisitor {
     Expression elseExpr = node.getElseExpression();
     if (incompatibleTypes(thenExpr, elseExpr)) {
       // Add (id) cast to else expression.
-      node.setElseExpression(
-          new CastExpression(typeEnv.getIdTypeMirror(), TreeUtil.remove(elseExpr)));
+      node.setElseExpression(new CastExpression(TypeUtil.ID_TYPE, TreeUtil.remove(elseExpr)));
     }
   }
 

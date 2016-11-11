@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -114,7 +115,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
     if (Options.useARC()) {
       TypeMirror voidType = typeUtil.getVoidType();
       FunctionElement element = new FunctionElement("JreRelease", voidType, null)
-          .addParameters(typeEnv.getIdTypeMirror());
+          .addParameters(TypeUtil.ID_TYPE);
       FunctionInvocation invocation = new FunctionInvocation(element, voidType);
       invocation.addArgument(new SimpleName(var));
       return new ExpressionStatement(invocation);

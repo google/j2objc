@@ -109,7 +109,7 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     if (ElementUtil.isDefault(method)) {
       FunctionElement element = new FunctionElement(
           nameTable.getFullFunctionName(method), exprType, ElementUtil.getDeclaringClass(method))
-          .addParameters(typeEnv.getIdTypeMirror())
+          .addParameters(TypeUtil.ID_TYPE)
           .addParameters(ElementUtil.asTypes(method.getParameters()));
       FunctionInvocation invocation = new FunctionInvocation(element, exprType);
       List<Expression> args = invocation.getArguments();
@@ -137,7 +137,7 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
     FunctionElement element =
         new FunctionElement(getSuperFunctionName(superMethod), exprType, receiverElem)
-        .addParameters(receiverType, typeEnv.getIdTypeMirror())
+        .addParameters(receiverType, TypeUtil.ID_TYPE)
         .addParameters(ElementUtil.asTypes(method.getParameters()));
     FunctionInvocation invocation = new FunctionInvocation(element, exprType);
     List<Expression> args = invocation.getArguments();

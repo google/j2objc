@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -129,7 +130,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
   private void addCopyWithZoneMethod(TypeDeclaration node) {
     // Create copyWithZone: method.
     GeneratedExecutableElement copyElement = GeneratedExecutableElement.newMethodWithSelector(
-        "copyWithZone:", typeEnv.getIdTypeMirror(), node.getTypeElement());
+        "copyWithZone:", TypeUtil.ID_TYPE, node.getTypeElement());
     MethodDeclaration copyDecl = new MethodDeclaration(copyElement);
     copyDecl.setHasDeclaration(false);
 

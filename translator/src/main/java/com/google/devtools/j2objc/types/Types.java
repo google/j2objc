@@ -199,7 +199,8 @@ public class Types {
   }
 
   public boolean isIdType(ITypeBinding type) {
-    return type == idType || type == NSObject || type == javaObjectType;
+    return type == idType || type == NSObject || type == javaObjectType
+        || (type instanceof NativeTypeBinding && type.getName().equals("id"));
   }
 
   // Used by SignatureGenerator. Other classes should use getNSObject().
@@ -211,20 +212,8 @@ public class Types {
     return BindingConverter.getTypeElement(javaObjectType);
   }
 
-  public TypeMirror getIOSClassMirror() {
-    return BindingConverter.getType(IOSClass);
-  }
-
-  public TypeElement getIOSClassElement() {
-    return BindingConverter.getTypeElement(IOSClass);
-  }
-
   public ITypeBinding getIdType() {
     return idType;
-  }
-
-  public TypeMirror getIdTypeMirror() {
-    return BindingConverter.getType(idType);
   }
 
   public PointerTypeBinding getPointerType(ITypeBinding type) {

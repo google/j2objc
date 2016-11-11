@@ -41,6 +41,7 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -146,7 +147,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
       return null;
     }
     TypeMirror voidType = typeUtil.getVoidType();
-    TypeMirror idType = typeEnv.getIdTypeMirror();
+    TypeMirror idType = TypeUtil.ID_TYPE;
     FunctionElement element = new FunctionElement(funcName, voidType, null);
     FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
     if (isRetainedWith) {

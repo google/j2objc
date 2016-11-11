@@ -158,8 +158,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
   private void handleRetainedLocal(VariableElement var, Expression rhs) {
     if (ElementUtil.isLocalVariable(var) && ElementUtil.hasAnnotation(var, RetainedLocalRef.class)
         && Options.useReferenceCounting()) {
-      FunctionElement element = new FunctionElement(
-          "JreRetainedLocalValue", typeEnv.getIdTypeMirror(), null);
+      FunctionElement element =
+          new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
       FunctionInvocation invocation = new FunctionInvocation(element, rhs.getTypeMirror());
       rhs.replaceWith(invocation);
       invocation.addArgument(rhs);
@@ -170,7 +170,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     VariableElement var = TreeUtil.getVariableElement(node);
     if (var != null && ElementUtil.isVolatile(var) && !TranslationUtil.isAssigned(node)) {
       TypeMirror type = node.getTypeMirror();
-      TypeMirror idType = typeEnv.getIdTypeMirror();
+      TypeMirror idType = TypeUtil.ID_TYPE;
       TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
       String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.toString());
       FunctionElement element = new FunctionElement(funcName, declaredType, null)
@@ -255,7 +255,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
       return;
     }
     TypeMirror type = node.getTypeMirror();
-    TypeMirror idType = typeEnv.getIdTypeMirror();
+    TypeMirror idType = TypeUtil.ID_TYPE;
     TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
     FunctionElement element = new FunctionElement(funcName, declaredType, null);
@@ -430,7 +430,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
-    TypeMirror idType = typeEnv.getIdTypeMirror();
+    TypeMirror idType = TypeUtil.ID_TYPE;
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
     FunctionElement element = new FunctionElement(funcName, idType, null)
         .addParameters(typeEnv.getPointerType(idType), TypeUtil.NATIVE_CHAR_PTR)

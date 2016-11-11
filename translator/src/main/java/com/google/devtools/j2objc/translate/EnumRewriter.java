@@ -48,6 +48,7 @@ import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.lang.reflect.Modifier;
@@ -121,8 +122,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     stmts.add(new NativeStatement(UnicodeUtils.format(
         "size_t allocSize = %s * objSize;", constants.size())));
     stmts.add(new NativeStatement("uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);"));
-    VariableElement localEnum =
-        GeneratedVariableElement.newLocalVar("e", typeEnv.getIdTypeMirror(), null);
+    VariableElement localEnum = GeneratedVariableElement.newLocalVar("e", TypeUtil.ID_TYPE, null);
     stmts.add(new VariableDeclarationStatement(localEnum, null));
 
     StringBuffer sb = new StringBuffer("id names[] = {\n  ");
@@ -165,8 +165,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     List<Statement> sizeStatements = new ArrayList<>();
     List<Statement> initStatements = new ArrayList<>();
     TypeMirror voidType = typeUtil.getVoidType();
-    VariableElement localEnum =
-        GeneratedVariableElement.newLocalVar("e", typeEnv.getIdTypeMirror(), null);
+    VariableElement localEnum = GeneratedVariableElement.newLocalVar("e", TypeUtil.ID_TYPE, null);
 
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
