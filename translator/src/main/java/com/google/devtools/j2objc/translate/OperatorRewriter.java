@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -170,15 +171,14 @@ public class OperatorRewriter extends UnitTreeVisitor {
     VariableElement var = TreeUtil.getVariableElement(node);
     if (var != null && ElementUtil.isVolatile(var) && !TranslationUtil.isAssigned(node)) {
       TypeMirror type = node.getTypeMirror();
-      TypeMirror idType = TypeUtil.ID_TYPE;
-      TypeMirror declaredType = type.getKind().isPrimitive() ? type : idType;
+      TypeMirror declaredType = type.getKind().isPrimitive() ? type : TypeUtil.ID_TYPE;
       String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.toString());
       FunctionElement element = new FunctionElement(funcName, declaredType, null)
-          .addParameters(typeEnv.getPointerType(idType));
+          .addParameters(TypeUtil.ID_PTR_TYPE);
       FunctionInvocation invocation = new FunctionInvocation(element, type);
       node.replaceWith(invocation);
       invocation.addArgument(new PrefixExpression(
-          typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, node));
+          new PointerType(type), PrefixExpression.Operator.ADDRESS_OF, node));
     }
   }
 
@@ -265,9 +265,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
       element.addParameters(idType);
       args.add(getRetainedWithTarget(node, var));
     }
-    element.addParameters(typeEnv.getPointerType(idType), idType);
+    element.addParameters(TypeUtil.ID_PTR_TYPE, idType);
     args.add(new PrefixExpression(
-        typeEnv.getPointerType(lhs.getTypeMirror()), PrefixExpression.Operator.ADDRESS_OF,
+        new PointerType(lhs.getTypeMirror()), PrefixExpression.Operator.ADDRESS_OF,
         TreeUtil.remove(lhs)));
     args.add(TreeUtil.remove(node.getRightHandSide()));
     node.replaceWith(invocation);
@@ -369,7 +369,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
-    TypeMirror lhsPointerType = typeEnv.getPointerType(lhsType);
+    TypeMirror lhsPointerType = new PointerType(lhsType);
     String funcName = "Jre" + node.getOperator().getName() + (isVolatile(lhs) ? "Volatile" : "")
         + NameTable.capitalize(lhsType.toString()) + getPromotionSuffix(node);
     FunctionElement element = new FunctionElement(funcName, lhsType, null)
@@ -430,16 +430,14 @@ public class OperatorRewriter extends UnitTreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
-    TypeMirror idType = TypeUtil.ID_TYPE;
     String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
-    FunctionElement element = new FunctionElement(funcName, idType, null)
-        .addParameters(typeEnv.getPointerType(idType), TypeUtil.NATIVE_CHAR_PTR)
+    FunctionElement element = new FunctionElement(funcName, TypeUtil.ID_TYPE, null)
+        .addParameters(TypeUtil.ID_PTR_TYPE, TypeUtil.NATIVE_CHAR_PTR)
         .setIsVarargs(true);
     FunctionInvocation invocation = new FunctionInvocation(element, lhsType);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(
-        typeEnv.getPointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF,
-        TreeUtil.remove(lhs)));
+        new PointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
     args.add(getStrcatTypesCString(operands));
     args.addAll(operands);
     node.replaceWith(invocation);

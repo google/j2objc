@@ -59,9 +59,6 @@ public class Types {
 
   private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
 
-  // Cache of pointer types.
-  private final Map<ITypeBinding, PointerTypeBinding> pointerTypeMap = Maps.newHashMap();
-
   // Commonly used methods.
   private final IOSMethodBinding retainMethod;
   private final IOSMethodBinding releaseMethod;
@@ -214,20 +211,6 @@ public class Types {
 
   public ITypeBinding getIdType() {
     return idType;
-  }
-
-  public PointerTypeBinding getPointerType(ITypeBinding type) {
-    PointerTypeBinding result = pointerTypeMap.get(type);
-    if (result == null) {
-      result = new PointerTypeBinding(type);
-      pointerTypeMap.put(type, result);
-    }
-    return result;
-  }
-
-  public TypeMirror getPointerType(TypeMirror type) {
-    return BindingConverter.getType(getPointerType(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(type)));
   }
 
   public IOSMethodBinding getRetainMethod() {

@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import javax.lang.model.element.TypeElement;
@@ -64,7 +65,7 @@ public class StaticVarRewriter extends UnitTreeVisitor {
     TypeMirror exprType = var.asType();
     if (assignable) {
       code.append("Ref");
-      exprType = typeEnv.getPointerType(exprType);
+      exprType = new PointerType(exprType);
     }
     code.append("(");
     code.append(nameTable.getFullName(declaringClass));
@@ -99,7 +100,7 @@ public class StaticVarRewriter extends UnitTreeVisitor {
     CommaExpression commaExpr = new CommaExpression(expr);
     if (TranslationUtil.isAssigned(node)) {
       commaExpr.addExpression(new PrefixExpression(
-          typeEnv.getPointerType(var.asType()), PrefixExpression.Operator.ADDRESS_OF, varNode));
+          new PointerType(var.asType()), PrefixExpression.Operator.ADDRESS_OF, varNode));
       node.replaceWith(new PrefixExpression(
           var.asType(), PrefixExpression.Operator.DEREFERENCE, commaExpr));
     } else {

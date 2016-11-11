@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.types.PointerType;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -50,6 +51,7 @@ import javax.lang.model.util.Types;
 public final class TypeUtil {
 
   public static final TypeMirror ID_TYPE = new NativeType("id");
+  public static final TypeMirror ID_PTR_TYPE = new PointerType(ID_TYPE);
   public static final TypeElement NS_OBJECT =
       GeneratedTypeElement.newIosClass("NSObject", null, "");
   public static final TypeElement NS_STRING =

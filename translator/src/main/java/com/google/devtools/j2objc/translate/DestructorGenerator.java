@@ -155,7 +155,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
       releaseInvocation.addArgument(
           new ThisExpression(ElementUtil.getDeclaringClass(var).asType()));
     }
-    element.addParameters(isVolatile ? typeEnv.getPointerType(idType) : idType);
+    element.addParameters(isVolatile ? TypeUtil.ID_PTR_TYPE : idType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(

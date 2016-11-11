@@ -266,7 +266,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
         componentType.getKind().isPrimitive() ? componentType : TypeUtil.ID_TYPE;
     if (assignable) {
       funcName += "Ref";
-      returnType = declaredReturnType = typeEnv.getPointerType(componentType);
+      returnType = declaredReturnType = new PointerType(componentType);
     }
     FunctionElement element = new FunctionElement(funcName, declaredReturnType, iosArrayElement)
         .addParameters(iosArrayElement.asType(), typeEnv.resolveJavaTypeMirror("int"));
