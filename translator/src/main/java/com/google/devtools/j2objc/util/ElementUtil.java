@@ -179,6 +179,11 @@ public final class ElementUtil {
     return superClass != null ? (TypeElement) superClass.asElement() : null;
   }
 
+  public static List<TypeElement> getInterfaces(TypeElement element) {
+    return Lists.newArrayList(Iterables.transform(
+        element.getInterfaces(), i -> TypeUtil.asTypeElement(i)));
+  }
+
   public static boolean isPrimitiveConstant(VariableElement element) {
     return isFinal(element) && element.asType().getKind().isPrimitive()
         && element.getConstantValue() != null

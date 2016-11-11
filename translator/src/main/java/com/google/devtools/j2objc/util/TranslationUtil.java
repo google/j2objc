@@ -45,7 +45,6 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
@@ -57,8 +56,6 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * General collection of utility methods.
@@ -75,20 +72,20 @@ public final class TranslationUtil {
     this.nameTable = nameTable;
   }
 
-  public static ITypeBinding getSuperType(AbstractTypeDeclaration node) {
+  public static TypeElement getSuperType(AbstractTypeDeclaration node) {
     // Use the AST as the source of truth where possible.
     if (node instanceof TypeDeclaration) {
       Type superType = ((TypeDeclaration) node).getSuperclassType();
       if (superType != null) {
-        return superType.getTypeBinding();
+        return TypeUtil.asTypeElement(superType.getTypeMirror());
       }
       return null;
     } else {
-      return node.getTypeBinding().getSuperclass();
+      return ElementUtil.getSuperclass(node.getTypeElement());
     }
   }
 
-  public static List<ITypeBinding> getInterfaceTypes(AbstractTypeDeclaration node) {
+  public static List<TypeElement> getInterfaceTypes(AbstractTypeDeclaration node) {
     // Use the AST as the source of truth where possible.
     List<Type> astInterfaces = null;
     if (node instanceof TypeDeclaration) {
@@ -97,11 +94,11 @@ public final class TranslationUtil {
       astInterfaces = ((EnumDeclaration) node).getSuperInterfaceTypes();
     }
     if (astInterfaces == null) {  // AnnotationTypeDeclaration
-      return Arrays.asList(node.getTypeBinding().getInterfaces());
+      return ElementUtil.getInterfaces(node.getTypeElement());
     }
-    List<ITypeBinding> result = new ArrayList<>();
+    List<TypeElement> result = new ArrayList<>();
     for (Type type : astInterfaces) {
-      result.add(type.getTypeBinding());
+      result.add(TypeUtil.asTypeElement(type.getTypeMirror()));
     }
     return result;
   }
@@ -217,8 +214,8 @@ public final class TranslationUtil {
    * would be unsafe to prune the given node from the tree.
    */
   public static boolean hasSideEffect(Expression expr) {
-    IVariableBinding var = TreeUtil.getVariableBinding(expr);
-    if (var != null && BindingUtil.isVolatile(var)) {
+    VariableElement var = TreeUtil.getVariableElement(expr);
+    if (var != null && ElementUtil.isVolatile(var)) {
       return true;
     }
     switch (expr.getKind()) {
@@ -272,17 +269,17 @@ public final class TranslationUtil {
    * for local variables and weak fields.
    */
   public static String getOperatorFunctionModifier(Expression expr) {
-    IVariableBinding var = TreeUtil.getVariableBinding(expr);
+    VariableElement var = TreeUtil.getVariableElement(expr);
     if (var == null) {
       assert TreeUtil.trimParentheses(expr) instanceof ArrayAccess
           : "Expression cannot be resolved to a variable or array access.";
       return "Array";
     }
     String modifier = "";
-    if (BindingUtil.isVolatile(var)) {
+    if (ElementUtil.isVolatile(var)) {
       modifier += "Volatile";
     }
-    if (!BindingUtil.isWeakReference(var) && (var.isField() || Options.useARC())) {
+    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || Options.useARC())) {
       modifier += "Strong";
     }
     return modifier;

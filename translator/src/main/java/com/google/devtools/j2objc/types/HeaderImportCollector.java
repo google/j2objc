@@ -30,10 +30,12 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -98,8 +100,8 @@ public class HeaderImportCollector extends UnitTreeVisitor {
     forwardDecls.addAll(Sets.difference(Import.getImports(type, unit.getEnv()), declaredTypes));
   }
 
-  private void addSuperType(ITypeBinding type) {
-    Import.addImports(type, superTypes, unit.getEnv());
+  private void addSuperType(TypeElement type) {
+    Import.addImports(BindingConverter.unwrapTypeElement(type), superTypes, unit.getEnv());
   }
 
   private void addDeclaredType(ITypeBinding type) {
@@ -150,7 +152,7 @@ public class HeaderImportCollector extends UnitTreeVisitor {
       ITypeBinding binding = node.getTypeBinding();
       addDeclaredType(binding);
       addSuperType(TranslationUtil.getSuperType(node));
-      for (ITypeBinding interfaze : TranslationUtil.getInterfaceTypes(node)) {
+      for (TypeElement interfaze : TranslationUtil.getInterfaceTypes(node)) {
         addSuperType(interfaze);
       }
     }

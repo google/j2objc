@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.PrimitiveType;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -162,7 +163,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private String getSuperTypeName() {
-    ITypeBinding supertype = TranslationUtil.getSuperType(typeNode);
+    TypeElement supertype = TranslationUtil.getSuperType(typeNode);
     if (supertype != null) {
       return nameTable.getFullName(supertype);
     }
@@ -174,7 +175,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return Lists.newArrayList("JavaLangAnnotationAnnotation");
     }
     List<String> names = Lists.newArrayList();
-    for (ITypeBinding intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
+    for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
       names.add(nameTable.getFullName(intrface));
     }
     if (typeBinding.isEnum()) {
