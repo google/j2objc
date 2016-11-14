@@ -78,7 +78,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   public static GeneratedExecutableElement newConstructor(
       TypeElement enclosingElement, TypeUtil typeUtil) {
     return new GeneratedExecutableElement(
-        NameTable.INIT_NAME, null, ElementKind.CONSTRUCTOR, typeUtil.getVoidType(),
+        NameTable.INIT_NAME, null, ElementKind.CONSTRUCTOR, typeUtil.getVoid(),
         enclosingElement, false, true);
   }
 

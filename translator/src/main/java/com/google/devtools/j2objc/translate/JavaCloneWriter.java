@@ -69,7 +69,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
       return;
     }
 
-    TypeMirror voidType = typeUtil.getVoidType();
+    TypeMirror voidType = typeUtil.getVoid();
     ExecutableElement javaCloneElement =
         GeneratedExecutableElement.newMethodWithSelector(JAVA_CLONE_METHOD, voidType, type)
         .addParameter(originalVar);
@@ -113,7 +113,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
 
   private Statement createReleaseStatement(VariableElement var) {
     if (Options.useARC()) {
-      TypeMirror voidType = typeUtil.getVoidType();
+      TypeMirror voidType = typeUtil.getVoid();
       FunctionElement element = new FunctionElement("JreRelease", voidType, null)
           .addParameters(TypeUtil.ID_TYPE);
       FunctionInvocation invocation = new FunctionInvocation(element, voidType);
@@ -127,7 +127,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
 
   private Statement createVolatileCloneStatement(
       VariableElement var, VariableElement originalVar, boolean isWeak) {
-    TypeMirror voidType = typeUtil.getVoidType();
+    TypeMirror voidType = typeUtil.getVoid();
     TypeMirror pointerType = new PointerType(var.asType());
     String funcName = "JreCloneVolatile" + (isWeak ? "" : "Strong");
     FunctionElement element = new FunctionElement(funcName, voidType, null)

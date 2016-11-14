@@ -164,7 +164,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     int baseTypeCount = 0;
     List<Statement> sizeStatements = new ArrayList<>();
     List<Statement> initStatements = new ArrayList<>();
-    TypeMirror voidType = typeUtil.getVoidType();
+    TypeMirror voidType = typeUtil.getVoid();
     VariableElement localEnum = GeneratedVariableElement.newLocalVar("e", TypeUtil.ID_TYPE, null);
 
     int i = 0;

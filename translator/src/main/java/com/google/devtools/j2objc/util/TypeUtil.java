@@ -389,7 +389,7 @@ public final class TypeUtil {
     return getPrimitiveType(TypeKind.SHORT);
   }
 
-  public NoType getVoidType() {
+  public NoType getVoid() {
     return javacTypes.getNoType(TypeKind.VOID);
   }
 

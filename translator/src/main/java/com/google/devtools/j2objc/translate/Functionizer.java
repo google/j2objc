@@ -240,7 +240,7 @@ public class Functionizer extends UnitTreeVisitor {
     CommonTypeDeclaration typeDecl = TreeUtil.getEnclosingType(node);
     TypeElement superType = ElementUtil.getSuperclass(typeDecl.getTypeElement());
     FunctionElement funcElement = newFunctionElement(element);
-    FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoidType());
+    FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoid());
     List<Expression> args = invocation.getArguments();
     args.add(new ThisExpression(ElementUtil.getDeclaringClass(element).asType()));
     if (captureInfo.needsOuterParam(superType)) {
@@ -263,7 +263,7 @@ public class Functionizer extends UnitTreeVisitor {
     ExecutableElement element = node.getExecutableElement();
     TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
     FunctionElement funcElement = newFunctionElement(element);
-    FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoidType());
+    FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoid());
     List<Expression> args = invocation.getArguments();
     args.add(new ThisExpression(declaringClass.asType()));
     for (VariableElement captureParam : captureInfo.getImplicitPrefixParams(declaringClass)) {
@@ -398,7 +398,7 @@ public class Functionizer extends UnitTreeVisitor {
     if (ElementUtil.isStatic(elem)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = UnicodeUtils.format("%s_initialize", nameTable.getFullName(declaringClass));
-      TypeMirror voidType = typeUtil.getVoidType();
+      TypeMirror voidType = typeUtil.getVoid();
       FunctionElement initElement = new FunctionElement(initName, voidType, declaringClass);
       FunctionInvocation initCall = new FunctionInvocation(initElement, voidType);
       function.getBody().addStatement(0, new ExpressionStatement(initCall));

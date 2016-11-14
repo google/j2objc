@@ -84,7 +84,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     }
 
     ExecutableElement deallocElement = GeneratedExecutableElement.newMethodWithSelector(
-        NameTable.DEALLOC_METHOD, typeUtil.getVoidType(), type)
+        NameTable.DEALLOC_METHOD, typeUtil.getVoid(), type)
         .addModifiers(Modifier.PUBLIC);
     MethodDeclaration deallocDecl = new MethodDeclaration(deallocElement);
     deallocDecl.setHasDeclaration(false);
@@ -146,7 +146,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
     if (funcName == null) {
       return null;
     }
-    TypeMirror voidType = typeUtil.getVoidType();
+    TypeMirror voidType = typeUtil.getVoid();
     TypeMirror idType = TypeUtil.ID_TYPE;
     FunctionElement element = new FunctionElement(funcName, voidType, null);
     FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
