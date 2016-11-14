@@ -117,7 +117,8 @@ public class Import implements Comparable<Import> {
 
   public static void addImports(
       ITypeBinding binding, Collection<Import> imports, TranslationEnvironment env) {
-    if (binding == null || binding.isPrimitive() || BindingUtil.isLambda(binding)) {
+    if (binding == null || binding.isPrimitive() || binding.isNullType()
+        || BindingUtil.isLambda(binding)) {
       return;
     }
     if (binding instanceof PointerTypeBinding) {
@@ -125,8 +126,8 @@ public class Import implements Comparable<Import> {
       return;
     }
     for (TypeMirror boundT : env.typeUtil().getUpperBounds(BindingConverter.getType(binding))) {
+      boundT = env.typeUtil().mapType(boundT);
       ITypeBinding bound = BindingConverter.unwrapTypeMirrorIntoTypeBinding(boundT);
-      bound = env.types().mapType(bound);
       if (!FOUNDATION_TYPES.contains(bound.getName())) {
         imports.add(new Import(bound, env.nameTable()));
       }

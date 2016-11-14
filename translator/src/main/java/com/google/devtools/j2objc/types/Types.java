@@ -35,24 +35,14 @@ import org.eclipse.jdt.core.dom.Modifier;
 public class Types {
 
   private final ParserEnvironment env;
-  private final TypeUtil typeUtil;
-  private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
 
   // Commonly used java types.
   private final ITypeBinding javaObjectType;
-  private final ITypeBinding javaClassType;
-  private final ITypeBinding javaCloneableType;
-  private final ITypeBinding javaNumberType;
   private final ITypeBinding javaStringType;
-  private final ITypeBinding javaThrowableType;
 
   // Non-standard naming pattern is used, since in this case it's more readable.
-  private final ITypeBinding NSCopying;
   private final ITypeBinding NSObject;
-  private final ITypeBinding NSNumber;
   private final ITypeBinding NSString;
-  private final ITypeBinding NSException;
-  private final ITypeBinding IOSClass;
 
   // Special IOS types.
   private final ITypeBinding idType;
@@ -66,29 +56,17 @@ public class Types {
   private final IOSMethodBinding allocMethod;
   private final IOSMethodBinding deallocMethod;
 
-  public Types(ParserEnvironment env, TypeUtil typeUtil) {
+  public Types(ParserEnvironment env) {
     this.env = env;
-    this.typeUtil = typeUtil;
 
     // Find core java types.
     javaObjectType = resolveWellKnownType("java.lang.Object");
-    javaClassType = resolveWellKnownType("java.lang.Class");
-    javaCloneableType = resolveWellKnownType("java.lang.Cloneable");
     javaStringType = resolveWellKnownType("java.lang.String");
-    javaThrowableType = resolveWellKnownType("java.lang.Throwable");
-    ITypeBinding binding = resolveWellKnownType("java.lang.Integer");
-    javaNumberType = binding.getSuperclass();
 
     // Create core IOS types.
-    NSCopying = BindingConverter.unwrapTypeElement(TypeUtil.NS_COPYING);
     NSObject = BindingConverter.unwrapTypeElement(TypeUtil.NS_OBJECT);
-    NSNumber = BindingConverter.unwrapTypeElement(TypeUtil.NS_NUMBER);
     NSString = BindingConverter.unwrapTypeElement(TypeUtil.NS_STRING);
-    NSException = BindingConverter.unwrapTypeElement(TypeUtil.NS_EXCEPTION);
-    IOSClass = BindingConverter.unwrapTypeElement(TypeUtil.IOS_CLASS);
     idType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(TypeUtil.ID_TYPE);
-
-    initializeTypeMap();
 
     ITypeBinding voidType = resolveWellKnownType("void");
 
@@ -105,47 +83,8 @@ public class Types {
         NameTable.DEALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
   }
 
-  /**
-   * Initialize type map with classes that are explicitly mapped to an iOS
-   * type.
-   *
-   * NOTE: if this method's list is changed, IOSClass.forName() needs to be
-   * similarly updated.
-   */
-  private void initializeTypeMap() {
-    typeMap.put(javaObjectType, NSObject);
-    typeMap.put(javaClassType, IOSClass);
-    typeMap.put(javaCloneableType, NSCopying);
-    typeMap.put(javaNumberType, NSNumber);
-    typeMap.put(javaStringType, NSString);
-    typeMap.put(javaThrowableType, NSException);
-  }
-
   private ITypeBinding resolveWellKnownType(String name) {
     return BindingConverter.unwrapTypeElement((TypeElement) env.resolve(name));
-  }
-
-  /**
-   * Given a JDT type binding created by the parser, either replace it with an iOS
-   * equivalent, or return the given type.
-   */
-  public ITypeBinding mapType(ITypeBinding binding) {
-    if (binding == null) {  // happens when mapping a primitive type
-      return null;
-    }
-    // getTypeDeclaration will return the canonical binding for the type with
-    // type parameters and type annotations removed. Note that getErasure() does
-    // not strip type annotations.
-    binding = binding.getTypeDeclaration();
-    if (binding.isArray()) {
-      return BindingConverter.unwrapTypeElement(
-          typeUtil.getIosArray(BindingConverter.getType(binding.getComponentType())));
-    }
-    ITypeBinding newBinding = typeMap.get(binding);
-    if (newBinding == null && binding.isAssignmentCompatible(javaClassType)) {
-      newBinding = typeMap.get(javaClassType);
-    }
-    return newBinding != null ? newBinding : binding;
   }
 
   public ITypeBinding resolveJavaType(String name) {

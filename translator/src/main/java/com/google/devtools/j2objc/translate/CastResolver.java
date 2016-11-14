@@ -146,8 +146,7 @@ public class CastResolver extends UnitTreeVisitor {
   }
 
   private void addCast(Expression expr) {
-    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding());
-    CastExpression castExpr = new CastExpression(BindingConverter.getType(exprType), null);
+    CastExpression castExpr = new CastExpression(expr.getTypeMirror(), null);
     expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
     castExpr.setExpression(expr);
   }
@@ -170,8 +169,10 @@ public class CastResolver extends UnitTreeVisitor {
     if (declaredType == null) {
       return false;
     }
-    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding());
-    declaredType = typeEnv.mapType(declaredType);
+    ITypeBinding exprType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
+        typeUtil.mapType(expr.getTypeMirror()));
+    declaredType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
+        typeUtil.mapType(BindingConverter.getType(declaredType)));
     if (
         // In general we do not need to cast primitive types.
         exprType.isPrimitive()

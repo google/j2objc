@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
@@ -92,6 +93,8 @@ public final class TypeUtil {
   private final TypeElement javaClass;
   private final TypeElement javaNumber;
 
+  private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
+
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
@@ -103,6 +106,17 @@ public final class TypeUtil {
     javaString = (TypeElement) env.resolve("java.lang.String");
     javaClass = (TypeElement) env.resolve("java.lang.Class");
     javaNumber = (TypeElement) env.resolve("java.lang.Number");
+    TypeElement javaThrowable = (TypeElement) env.resolve("java.lang.Throwable");
+    TypeElement javaCloneable = (TypeElement) env.resolve("java.lang.Cloneable");
+
+    javaToObjcTypeMap = ImmutableMap.<TypeElement, TypeElement>builder()
+        .put(javaObject, NS_OBJECT)
+        .put(javaString, NS_STRING)
+        .put(javaClass, IOS_CLASS)
+        .put(javaNumber, NS_NUMBER)
+        .put(javaThrowable, NS_EXCEPTION)
+        .put(javaCloneable, NS_COPYING)
+        .build();
   }
 
   public ElementUtil elementUtil() {
@@ -239,6 +253,23 @@ public final class TypeUtil {
 
   public TypeElement getJavaNumber() {
     return javaNumber;
+  }
+
+  /**
+   * Maps the given type to it's Objective-C equivalent. Array types are mapped to their equivalent
+   * IOSArray type and common Java classes like String and Object are mapped to NSString and
+   * NSObject.
+   * TODO(kstanger): This should be changed to return TypeElement.
+   */
+  public TypeMirror mapType(TypeMirror t) {
+    if (isArray(t)) {
+      return getIosArray(((ArrayType) t).getComponentType()).asType();
+    } else if (isDeclaredType(t)) {
+      TypeElement element = (TypeElement) ((DeclaredType) t).asElement();
+      TypeElement mapped = javaToObjcTypeMap.get(element);
+      return mapped != null ? mapped.asType() : element.asType();
+    }
+    return t;
   }
 
   /**

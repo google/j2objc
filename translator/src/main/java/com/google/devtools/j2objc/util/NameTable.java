@@ -845,7 +845,8 @@ public class NameTable {
    */
   public String getFullName(ITypeBinding binding) {
     // Make sure type variables aren't included.
-    binding = typeEnv.mapType(binding.getErasure());
+    binding = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
+        typeUtil.mapType(BindingConverter.getType(binding.getErasure())));
 
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.

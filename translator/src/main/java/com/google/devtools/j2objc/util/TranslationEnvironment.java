@@ -31,7 +31,7 @@ public class TranslationEnvironment {
   public TranslationEnvironment(ParserEnvironment parserEnv) {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
     typeUtil = new TypeUtil(parserEnv, elementUtil);
-    typeEnv = new Types(parserEnv, typeUtil);
+    typeEnv = new Types(parserEnv);
     captureInfo = new CaptureInfo(typeUtil);
     nameTable = new NameTable(typeEnv, typeUtil, captureInfo);
     translationUtil = new TranslationUtil(typeUtil, nameTable);
