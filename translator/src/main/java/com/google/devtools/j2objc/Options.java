@@ -20,6 +20,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
@@ -37,6 +38,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,6 +111,18 @@ public class Options {
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
   private static final String TIMING_INFO_ARG = "--timing-info";
+
+  // TODO(tball): remove obsolete flags once projects stop using them.
+  private static final Set<String> obsoleteFlags = Sets.newHashSet(
+    "--final-methods-as-functions",
+    "--no-final-methods-functions",
+    "--hide-private-members",
+    "--no-hide-private-members",
+    "--segmented-headers",
+    "-q",
+    "--quiet",
+    "-Xforce-incomplete-java8"
+  );
 
   static {
     // Load string resources.
@@ -317,7 +331,7 @@ public class Options {
   }
 
   private String[] loadInternal(String[] args) throws IOException {
-    setLogLevel(Level.INFO);
+    setLogLevel(Level.WARNING);
 
     mappings.addJreMappings();
 
@@ -422,8 +436,8 @@ public class Options {
         warningsAsErrors = true;
       } else if (arg.equals("--generate-deprecated")) {
         deprecatedDeclarations = true;
-      } else if (arg.equals("-q") || arg.equals("--quiet")) {
-        setLogLevel(Level.WARNING);
+      } else if (arg.equals("-l") || arg.equals("--list")) {
+        setLogLevel(Level.INFO);
       } else if (arg.equals("-t") || arg.equals(TIMING_INFO_ARG)) {
         timingLevel = TimingLevel.ALL;
       } else if (arg.startsWith(TIMING_INFO_ARG + ':')) {
@@ -496,15 +510,6 @@ public class Options {
         help(false);
       } else if (arg.equals("-X")) {
         xhelp();
-      }
-      // TODO(tball): remove obsolete flags once projects stop using them.
-      else if (arg.equals("--final-methods-as-functions")
-          || arg.equals("--no-final-methods-functions")
-          || arg.equals("--hide-private-members")
-          || arg.equals("--no-hide-private-members")
-          || arg.equals("--segmented-headers")
-          || arg.equals("-Xforce-incomplete-java8")) {
-        // ignore
       }  else if (arg.equals("-source")) {
         if (++nArg == args.length) {
           usage("-source requires an argument");
@@ -521,6 +526,8 @@ public class Options {
           usage("-target requires an argument");
         }
         // ignore
+      } else if (obsoleteFlags.contains(arg)) {
+        // also ignore
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
