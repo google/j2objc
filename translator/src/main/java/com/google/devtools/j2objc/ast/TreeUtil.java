@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.io.File;
@@ -427,15 +426,15 @@ public class TreeUtil {
     asStatementList(node).add(0, toInsert);
   }
 
-  public static Expression newLiteral(Object value, Types typeEnv) {
+  public static Expression newLiteral(Object value, TypeUtil typeUtil) {
     if (value instanceof Boolean) {
-      return new BooleanLiteral((Boolean) value, typeEnv);
+      return new BooleanLiteral((Boolean) value, typeUtil);
     } else if (value instanceof Character) {
-      return new CharacterLiteral((Character) value, typeEnv);
+      return new CharacterLiteral((Character) value, typeUtil);
     } else if (value instanceof Number) {
-      return new NumberLiteral((Number) value, typeEnv).setToken(value.toString());
+      return new NumberLiteral((Number) value, typeUtil).setToken(value.toString());
     } else if (value instanceof String) {
-      return new StringLiteral((String) value, typeEnv);
+      return new StringLiteral((String) value, typeUtil);
     }
     throw new AssertionError("unknown constant type: " + value.getClass().getName());
   }

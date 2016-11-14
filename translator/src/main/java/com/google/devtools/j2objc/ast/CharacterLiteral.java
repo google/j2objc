@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -31,8 +31,8 @@ public class CharacterLiteral extends Expression {
     typeMirror = other.getTypeMirror();
   }
 
-  public CharacterLiteral(char charValue, Types typeEnv) {
-    this(charValue, typeEnv.resolveJavaTypeMirror("char"));
+  public CharacterLiteral(char charValue, TypeUtil typeUtil) {
+    this(charValue, typeUtil.getChar());
   }
 
   public CharacterLiteral(char charValue, TypeMirror typeMirror) {

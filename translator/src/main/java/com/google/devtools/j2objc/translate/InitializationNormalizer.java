@@ -160,7 +160,7 @@ public class InitializationNormalizer extends UnitTreeVisitor {
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
         return true;
       }
-      frag.setInitializer(TreeUtil.newLiteral(constantValue, typeEnv));
+      frag.setInitializer(TreeUtil.newLiteral(constantValue, typeUtil));
       return false;
     }
     return true;

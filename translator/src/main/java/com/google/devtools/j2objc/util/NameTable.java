@@ -673,8 +673,7 @@ public class NameTable {
       return null;
     }
     TypeElement superclass = currentType.getKind().isInterface()
-        ? typeEnv.getJavaObjectElement()
-        : ElementUtil.getSuperclass(currentType);
+        ? typeUtil.getJavaObject() : ElementUtil.getSuperclass(currentType);
     ExecutableElement original = getOriginalMethod(topMethod, declaringClass, superclass);
     if (original != null) {
       return original;

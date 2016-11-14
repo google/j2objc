@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -38,8 +38,8 @@ public class StringLiteral extends Expression {
     typeMirror = type;
   }
 
-  public StringLiteral(String literalValue, Types typeEnv) {
-    this(literalValue, typeEnv.resolveJavaTypeMirror("java.lang.String"));
+  public StringLiteral(String literalValue, TypeUtil typeUtil) {
+    this(literalValue, typeUtil.getJavaString().asType());
   }
 
   @Override

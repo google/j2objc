@@ -175,24 +175,24 @@ public class AnnotationRewriter extends UnitTreeVisitor {
 
   private MethodDeclaration createAnnotationTypeMethod(TypeElement type) {
     ExecutableElement annotationTypeElement = GeneratedExecutableElement.newMethodWithSelector(
-        "annotationType", typeEnv.resolveJavaTypeMirror("java.lang.Class"), type);
+        "annotationType", typeUtil.getJavaClass().asType(), type);
     MethodDeclaration annotationTypeMethod = new MethodDeclaration(annotationTypeElement);
     annotationTypeMethod.setHasDeclaration(false);
     Block annotationTypeBody = new Block();
     annotationTypeMethod.setBody(annotationTypeBody);
-    annotationTypeBody.addStatement(new ReturnStatement(new TypeLiteral(type.asType(), typeEnv)));
+    annotationTypeBody.addStatement(new ReturnStatement(new TypeLiteral(type.asType(), typeUtil)));
     return annotationTypeMethod;
   }
 
   private MethodDeclaration createDescriptionMethod(TypeElement type) {
     ExecutableElement descriptionElement = GeneratedExecutableElement.newMethodWithSelector(
-        "description", typeEnv.resolveJavaTypeMirror("java.lang.String"), type);
+        "description", typeUtil.getJavaString().asType(), type);
     MethodDeclaration descriptionMethod = new MethodDeclaration(descriptionElement);
     descriptionMethod.setHasDeclaration(false);
     Block descriptionBody = new Block();
     descriptionMethod.setBody(descriptionBody);
     descriptionBody.addStatement(new ReturnStatement(
-        new StringLiteral("@" + elementUtil.getBinaryName(type) + "()", typeEnv)));
+        new StringLiteral("@" + elementUtil.getBinaryName(type) + "()", typeUtil)));
     return descriptionMethod;
   }
 }

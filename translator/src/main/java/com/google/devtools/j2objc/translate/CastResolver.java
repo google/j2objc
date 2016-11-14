@@ -111,7 +111,7 @@ public class CastResolver extends UnitTreeVisitor {
   private Expression rewriteFloatToIntegralCast(
       ITypeBinding castType, Expression expr, String funcName, ITypeBinding funcReturnType) {
     FunctionElement element = new FunctionElement(funcName, funcReturnType, null)
-        .addParameters(typeEnv.resolveJavaTypeMirror("double"));
+        .addParameters(typeUtil.getDouble());
     FunctionInvocation invocation = new FunctionInvocation(element, funcReturnType);
     invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
@@ -131,7 +131,7 @@ public class CastResolver extends UnitTreeVisitor {
           .addParameters(idType, TypeUtil.IOS_CLASS.asType());
       invocation = new FunctionInvocation(element, idType);
       invocation.addArgument(TreeUtil.remove(expr));
-      invocation.addArgument(new TypeLiteral(type, typeEnv));
+      invocation.addArgument(new TypeLiteral(type, typeUtil));
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
       FunctionElement element = new FunctionElement("cast_chk", idType, null)
           .addParameters(idType, idType);

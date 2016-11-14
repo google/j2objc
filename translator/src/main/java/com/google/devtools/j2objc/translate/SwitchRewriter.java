@@ -79,11 +79,11 @@ public class SwitchRewriter extends UnitTreeVisitor {
       String enumValue =
           NameTable.getNativeEnumName(nameTable.getFullName(TypeUtil.asTypeElement(type))) + "_"
           + nameTable.getVariableBaseName(var);
-      node.setExpression(new NativeExpression(enumValue, typeEnv.resolveJavaTypeMirror("int")));
+      node.setExpression(new NativeExpression(enumValue, typeUtil.getInt()));
     } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
       Object value = var.getConstantValue();
       if (value != null) {
-        node.setExpression(TreeUtil.newLiteral(value, typeEnv));
+        node.setExpression(TreeUtil.newLiteral(value, typeUtil));
       }
     }
   }
@@ -134,17 +134,17 @@ public class SwitchRewriter extends UnitTreeVisitor {
         SwitchCase caseStmt = (SwitchCase) stmt;
         if (!caseStmt.isDefault()) {
           arrayInit.addExpression(TreeUtil.remove(caseStmt.getExpression()));
-          caseStmt.setExpression(NumberLiteral.newIntLiteral(idx++, typeEnv));
+          caseStmt.setExpression(NumberLiteral.newIntLiteral(idx++, typeUtil));
         }
       }
     }
-    TypeMirror intType = typeEnv.resolveJavaTypeMirror("int");
+    TypeMirror intType = typeUtil.getInt();
     FunctionElement indexOfFunc = new FunctionElement("JreIndexOfStr", intType, null)
         .addParameters(type, arrayType, intType);
     FunctionInvocation invocation = new FunctionInvocation(indexOfFunc, intType);
     invocation.addArgument(TreeUtil.remove(expr))
         .addArgument(arrayInit)
-        .addArgument(NumberLiteral.newIntLiteral(idx, typeEnv));
+        .addArgument(NumberLiteral.newIntLiteral(idx, typeUtil));
     node.setExpression(invocation);
   }
 

@@ -54,7 +54,7 @@ public class LambdaTypeElementAdder extends UnitTreeVisitor {
   private boolean handleFunctionalExpression(FunctionalExpression node) {
     LambdaTypeElement elem = new LambdaTypeElement(
         getLambdaUniqueName(node), TreeUtil.getEnclosingElement(node),
-        typeEnv.getJavaObjectElement().asType());
+        typeUtil.getJavaObject().asType());
     elem.addInterfaces(node.getTargetTypes());
     node.setTypeElement(elem);
     return true;

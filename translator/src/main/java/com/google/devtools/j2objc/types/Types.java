@@ -148,29 +148,6 @@ public class Types {
     return newBinding != null ? newBinding : binding;
   }
 
-  /**
-   * Given a fully-qualified type name, return its binding.
-   */
-  public ITypeBinding mapTypeName(String typeName) {
-    ITypeBinding binding = resolveWellKnownType(typeName);
-    return mapType(binding);
-  }
-
-  /**
-   * Returns whether a given type has an iOS equivalent.
-   */
-  public boolean hasIOSEquivalent(ITypeBinding binding) {
-    return binding.isArray() || typeMap.containsKey(binding.getTypeDeclaration());
-  }
-
-  public TypeElement resolveJavaTypeElement(String name) {
-    return BindingConverter.getTypeElement(resolveJavaType(name));
-  }
-
-  public TypeMirror resolveJavaTypeMirror(String name) {
-    return BindingConverter.getType(resolveJavaType(name));
-  }
-
   public ITypeBinding resolveJavaType(String name) {
     ITypeBinding result = javaBindingMap.get(name);
     if (result == null) {
@@ -203,10 +180,6 @@ public class Types {
   // Used by SignatureGenerator. Other classes should use getNSObject().
   public ITypeBinding getJavaObject() {
     return javaObjectType;
-  }
-
-  public TypeElement getJavaObjectElement() {
-    return BindingConverter.getTypeElement(javaObjectType);
   }
 
   public ITypeBinding getIdType() {

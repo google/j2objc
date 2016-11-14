@@ -84,8 +84,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     Assignment assignment = (Assignment) node;
     return assignment.getOperator() == Assignment.Operator.PLUS_ASSIGN
         && typeUtil.isAssignable(
-            typeEnv.resolveJavaTypeMirror("java.lang.String"),
-            assignment.getLeftHandSide().getTypeMirror());
+            typeUtil.getJavaString().asType(), assignment.getLeftHandSide().getTypeMirror());
   }
 
   @Override
@@ -401,7 +400,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
       return;
     }
 
-    TypeMirror stringType = typeEnv.resolveJavaTypeMirror("java.lang.String");
+    TypeMirror stringType = typeUtil.getJavaString().asType();
     FunctionElement element = new FunctionElement("JreStrcat", stringType, null)
         .addParameters(TypeUtil.NATIVE_CHAR_PTR)
         .setIsVarargs(true);
@@ -468,9 +467,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
     if (literal.length() == 0) {
       return;  // Skip it.
     } else if (literal.length() == 1) {
-      args.add(new CharacterLiteral(literal.charAt(0), typeEnv));
+      args.add(new CharacterLiteral(literal.charAt(0), typeUtil));
     } else {
-      args.add(new StringLiteral(literal, typeEnv));
+      args.add(new StringLiteral(literal, typeUtil));
     }
   }
 

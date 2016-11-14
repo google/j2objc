@@ -187,15 +187,15 @@ public class Rewriter extends UnitTreeVisitor {
     TypeKind aKind = getPrimitiveKind(aType);
     TypeKind bKind = getPrimitiveKind(bType);
     if (aKind == TypeKind.DOUBLE || bKind == TypeKind.DOUBLE) {
-      return typeUtil.getPrimitiveType(TypeKind.DOUBLE);
+      return typeUtil.getDouble();
     }
     if (aKind == TypeKind.FLOAT || bKind == TypeKind.FLOAT) {
-      return typeUtil.getPrimitiveType(TypeKind.FLOAT);
+      return typeUtil.getFloat();
     }
     if (aKind == TypeKind.LONG || bKind == TypeKind.LONG) {
-      return typeUtil.getPrimitiveType(TypeKind.LONG);
+      return typeUtil.getLong();
     }
-    return typeUtil.getPrimitiveType(TypeKind.INT);
+    return typeUtil.getInt();
   }
 
   @Override

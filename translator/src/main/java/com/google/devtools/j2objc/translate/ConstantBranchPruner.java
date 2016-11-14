@@ -121,7 +121,7 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
         // Whole expression evaluates to 'knownVal'.
         operands.subList(lastSideEffect + 1, operands.size()).clear();
         if (lastSideEffect < i) {
-          operands.add(new BooleanLiteral(knownVal, typeEnv));
+          operands.add(new BooleanLiteral(knownVal, typeUtil));
         }
         break;
       } else if (lastSideEffect < i) {
@@ -134,10 +134,10 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
       if (operator == CONDITIONAL_OR) {
         // All constants must have been false, because a true value would have
         // caused us to return in the loop above.
-        node.replaceWith(new BooleanLiteral(false, typeEnv));
+        node.replaceWith(new BooleanLiteral(false, typeUtil));
       } else {
         // Likewise, all constants must have been true.
-        node.replaceWith(new BooleanLiteral(true, typeEnv));
+        node.replaceWith(new BooleanLiteral(true, typeUtil));
       }
     } else if (operands.size() == 1) {
       node.replaceWith(operands.remove(0));
@@ -151,7 +151,7 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
   public void endVisit(PrefixExpression node) {
     Boolean value = getReplaceableValue(node.getOperand());
     if (node.getOperator() == PrefixExpression.Operator.NOT && value != null) {
-      node.replaceWith(new BooleanLiteral(!value, typeEnv));
+      node.replaceWith(new BooleanLiteral(!value, typeUtil));
     }
   }
 

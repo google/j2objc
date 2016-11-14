@@ -207,7 +207,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
     private void rewriteCreationReference(CreationReference node) {
       TypeMirror creationType = node.getType().getTypeMirror();
       if (TypeUtil.isArray(creationType)) {
-        ArrayCreation creation = new ArrayCreation((ArrayType) creationType, typeEnv);
+        ArrayCreation creation = new ArrayCreation((ArrayType) creationType, typeUtil);
         forwardRemainingArgs(createParameters(), creation.getDimensions());
         setImplementationBody(creation);
       } else {
@@ -265,8 +265,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
       // java.lang.Object.
       String name = node.getName().getIdentifier();
       int numParams = functionalInterface.getParameters().size() - 1;
-      TypeElement javaObject = typeEnv.getJavaObjectElement();
-      for (ExecutableElement method : ElementUtil.getMethods(javaObject)) {
+      for (ExecutableElement method : ElementUtil.getMethods(typeUtil.getJavaObject())) {
         if (ElementUtil.getName(method).equals(name)
             && method.getParameters().size() == numParams) {
           return new ExecutablePair(method);

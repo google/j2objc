@@ -47,7 +47,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -94,7 +93,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
     methodElement.addParameter(GeneratedVariableElement.newParameter(
         "values", new PointerType(componentType), methodElement));
     methodElement.addParameter(GeneratedVariableElement.newParameter(
-        "count", typeUtil.getPrimitiveType(TypeKind.INT), methodElement));
+        "count", typeUtil.getInt(), methodElement));
     if (!componentType.getKind().isPrimitive()) {
       methodElement.addParameter(GeneratedVariableElement.newParameter(
           "type", TypeUtil.IOS_CLASS.asType(), methodElement));
@@ -111,11 +110,11 @@ public class ArrayRewriter extends UnitTreeVisitor {
 
     // Add the array size parameter.
     invocation.addArgument(
-        NumberLiteral.newIntLiteral(arrayInit.getExpressions().size(), typeEnv));
+        NumberLiteral.newIntLiteral(arrayInit.getExpressions().size(), typeUtil));
 
     // Add the type argument for object arrays.
     if (!componentType.getKind().isPrimitive()) {
-      invocation.addArgument(new TypeLiteral(componentType, typeEnv));
+      invocation.addArgument(new TypeLiteral(componentType, typeUtil));
     }
 
     return invocation;
@@ -162,7 +161,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
         selector, iosArrayElement.asType(), iosArrayElement)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
     methodElement.addParameter(GeneratedVariableElement.newParameter(
-        "length", typeUtil.getPrimitiveType(TypeKind.INT), methodElement));
+        "length", typeUtil.getInt(), methodElement));
     if (!isPrimitive) {
       methodElement.addParameter(GeneratedVariableElement.newParameter(
           "type", TypeUtil.IOS_CLASS.asType(), methodElement));
@@ -175,7 +174,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
 
     // Add the type argument for object arrays.
     if (!isPrimitive) {
-      invocation.addArgument(new TypeLiteral(componentType, typeEnv));
+      invocation.addArgument(new TypeLiteral(componentType, typeUtil));
     }
 
     return invocation;
@@ -197,18 +196,17 @@ public class ArrayRewriter extends UnitTreeVisitor {
         new ExecutablePair(methodElement), arrayType, new SimpleName(iosArrayElement));
 
     // Add the dimension count argument.
-    invocation.addArgument(NumberLiteral.newIntLiteral(dimensions.size(), typeEnv));
+    invocation.addArgument(NumberLiteral.newIntLiteral(dimensions.size(), typeUtil));
 
     // Create the dimensions array.
-    ArrayInitializer dimensionsArg = new ArrayInitializer(
-        typeUtil.getArrayType(typeUtil.getPrimitiveType(TypeKind.INT)));
+    ArrayInitializer dimensionsArg = new ArrayInitializer(typeUtil.getArrayType(typeUtil.getInt()));
     for (Expression e : dimensions) {
       dimensionsArg.addExpression(e.copy());
     }
     invocation.addArgument(dimensionsArg);
 
     if (!componentType.getKind().isPrimitive()) {
-      invocation.addArgument(new TypeLiteral(componentType, typeEnv));
+      invocation.addArgument(new TypeLiteral(componentType, typeUtil));
     }
 
     return invocation;
@@ -222,7 +220,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
     GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
         selector, TypeUtil.IOS_OBJECT_ARRAY.asType(), iosArrayType)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
-    TypeMirror intType = typeUtil.getPrimitiveType(TypeKind.INT);
+    TypeMirror intType = typeUtil.getInt();
     element.addParameter(GeneratedVariableElement.newParameter("dimensions", intType, element));
     element.addParameter(GeneratedVariableElement.newParameter(
         "dimensionLengths", new PointerType(intType), element));
@@ -269,7 +267,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
       returnType = declaredReturnType = new PointerType(componentType);
     }
     FunctionElement element = new FunctionElement(funcName, declaredReturnType, iosArrayElement)
-        .addParameters(iosArrayElement.asType(), typeEnv.resolveJavaTypeMirror("int"));
+        .addParameters(iosArrayElement.asType(), typeUtil.getInt());
     FunctionInvocation invocation = new FunctionInvocation(element, returnType);
     invocation.addArgument(arrayAccessNode.getArray().copy());
     invocation.addArgument(arrayAccessNode.getIndex().copy());
@@ -295,7 +293,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
     TypeElement objArrayType = TypeUtil.IOS_OBJECT_ARRAY;
     TypeMirror idType = TypeUtil.ID_TYPE;
     FunctionElement element = new FunctionElement(funcName, idType, objArrayType)
-        .addParameters(objArrayType.asType(), typeEnv.resolveJavaTypeMirror("int"), idType);
+        .addParameters(objArrayType.asType(), typeUtil.getInt(), idType);
     FunctionInvocation invocation = new FunctionInvocation(element, componentType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(arrayAccessNode.getArray()));
@@ -318,7 +316,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
     TypeMirror exprType = expr.getTypeMirror();
     if (name.getIdentifier().equals("length") && TypeUtil.isArray(exprType)) {
       VariableElement sizeField = GeneratedVariableElement.newField(
-          "size", typeUtil.getPrimitiveType(TypeKind.INT),
+          "size", typeUtil.getInt(),
           typeUtil.getIosArray(((ArrayType) exprType).getComponentType()));
       node.replaceWith(new FieldAccess(sizeField, TreeUtil.remove(expr)));
     }
@@ -331,11 +329,11 @@ public class ArrayRewriter extends UnitTreeVisitor {
       return;
     }
     GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
-        "isInstance", typeUtil.getPrimitiveType(TypeKind.BOOLEAN), TypeUtil.IOS_CLASS);
+        "isInstance", typeUtil.getBoolean(), TypeUtil.IOS_CLASS);
     element.addParameter(
         GeneratedVariableElement.newParameter("object", TypeUtil.ID_TYPE, element));
     MethodInvocation invocation =
-        new MethodInvocation(new ExecutablePair(element), new TypeLiteral(type, typeEnv));
+        new MethodInvocation(new ExecutablePair(element), new TypeLiteral(type, typeUtil));
     invocation.addArgument(TreeUtil.remove(node.getLeftOperand()));
     node.replaceWith(invocation);
   }

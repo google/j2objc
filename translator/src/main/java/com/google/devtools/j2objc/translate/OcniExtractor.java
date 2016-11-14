@@ -117,7 +117,7 @@ public class OcniExtractor extends UnitTreeVisitor {
     if (Modifier.isSynchronized(modifiers)) {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(node.getExecutableElement());
       SynchronizedStatement syncStmt = new SynchronizedStatement(
-          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass.asType(), typeEnv)
+          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass.asType(), typeUtil)
           : new ThisExpression(declaringClass.asType()));
       syncStmt.setBody(TreeUtil.remove(node.getBody()));
       Block newBody = new Block();

@@ -241,7 +241,7 @@ public class Autoboxer extends UnitTreeVisitor {
     Expression expr = node.getExpression();
     TypeMirror exprType = expr.getTypeMirror();
     if (castType.getKind().isPrimitive() && !exprType.getKind().isPrimitive()) {
-      if (typeUtil.isAssignable(exprType, typeEnv.resolveJavaTypeMirror("java.lang.Number"))) {
+      if (typeUtil.isAssignable(exprType, typeUtil.getJavaNumber().asType())) {
         // Casting a Number object to a primitive, convert to value method.
         unbox(expr, (PrimitiveType) castType);
       } else {

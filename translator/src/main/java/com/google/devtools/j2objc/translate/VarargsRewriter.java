@@ -76,7 +76,7 @@ public class VarargsRewriter extends UnitTreeVisitor {
     List<Expression> varargsCopy = Lists.newArrayList(varargs);
     varargs.clear();
     if (varargsCopy.isEmpty()) {
-      args.add(new ArrayCreation((ArrayType) typeUtil.erasure(varargType), typeEnv, 0));
+      args.add(new ArrayCreation((ArrayType) typeUtil.erasure(varargType), typeUtil, 0));
     } else {
       ArrayInitializer newInit = new ArrayInitializer((ArrayType) typeUtil.erasure(varargType));
       newInit.getExpressions().addAll(varargsCopy);
@@ -87,7 +87,7 @@ public class VarargsRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(ArrayInitializer node) {
     if (!(node.getParent() instanceof ArrayCreation)) {
-      ArrayCreation newArray = new ArrayCreation(node.getTypeMirror(), typeEnv);
+      ArrayCreation newArray = new ArrayCreation(node.getTypeMirror(), typeUtil);
       node.replaceWith(newArray);
       newArray.setInitializer(node);
     }

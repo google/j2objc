@@ -46,7 +46,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -100,7 +99,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
         "buffer", bufferType, iosArrayType)
         .addModifiers(Modifier.PUBLIC);
     VariableElement sizeField = GeneratedVariableElement.newField(
-        "size", typeUtil.getPrimitiveType(TypeKind.INT), iosArrayType)
+        "size", typeUtil.getInt(), iosArrayType)
         .addModifiers(Modifier.PUBLIC);
 
     VariableDeclarationStatement arrayDecl =
@@ -115,8 +114,8 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
 
     WhileStatement loop = new WhileStatement();
     loop.setExpression(new InfixExpression(
-        typeUtil.getPrimitiveType(TypeKind.BOOLEAN), InfixExpression.Operator.LESS,
-        new SimpleName(bufferVariable), new SimpleName(endVariable)));
+        typeUtil.getBoolean(), InfixExpression.Operator.LESS, new SimpleName(bufferVariable),
+        new SimpleName(endVariable)));
     Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
     loop.setBody(newLoopBody);
     newLoopBody.addStatement(0, new VariableDeclarationStatement(

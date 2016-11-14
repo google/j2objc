@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -31,8 +31,8 @@ public class BooleanLiteral extends Expression {
     typeMirror = other.getTypeMirror();
   }
 
-  public BooleanLiteral(boolean booleanValue, Types typeEnv) {
-    this(booleanValue, typeEnv.resolveJavaTypeMirror("boolean"));
+  public BooleanLiteral(boolean booleanValue, TypeUtil typeUtil) {
+    this(booleanValue, typeUtil.getBoolean());
   }
 
   public BooleanLiteral(boolean booleanValue, TypeMirror typeMirror) {

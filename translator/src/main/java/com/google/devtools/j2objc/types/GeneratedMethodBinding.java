@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.types;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -77,13 +76,6 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
       String name, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new GeneratedMethodBinding(
         null, name, modifiers, returnType, null, declaringClass, false, false);
-  }
-
-  public static GeneratedMethodBinding newConstructor(
-      ITypeBinding clazz, int modifiers, Types typeEnv) {
-    return new GeneratedMethodBinding(
-        null, NameTable.INIT_NAME, modifiers, typeEnv.mapTypeName("void"), null, clazz, true,
-        false);
   }
 
   @Override

@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.Types;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,6 @@ import java.util.Map;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -42,12 +40,11 @@ public class CaptureInfo {
   private final ListMultimap<TypeElement, LocalCapture> localCaptures = ArrayListMultimap.create();
   private final List<VariableElement> implicitEnumParams;
 
-  public CaptureInfo(Types typeEnv, TypeUtil typeUtil) {
+  public CaptureInfo(TypeUtil typeUtil) {
     implicitEnumParams = ImmutableList.of(
         GeneratedVariableElement.newParameter(
-            "__name", typeEnv.resolveJavaTypeMirror("java.lang.String"), null),
-        GeneratedVariableElement.newParameter(
-            "__ordinal", typeUtil.getPrimitiveType(TypeKind.INT), null));
+            "__name", typeUtil.getJavaString().asType(), null),
+        GeneratedVariableElement.newParameter("__ordinal", typeUtil.getInt(), null));
   }
 
   /**

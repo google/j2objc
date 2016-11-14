@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,10 +109,11 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     return newIosType(name, ElementKind.INTERFACE, null, header);
   }
 
-  public static GeneratedTypeElement newPackageInfoClass(PackageElement pkgElem, Types typeEnv) {
+  public static GeneratedTypeElement newPackageInfoClass(
+      PackageElement pkgElem, TypeUtil typeUtil) {
     return (GeneratedTypeElement) new GeneratedTypeElement(
         NameTable.PACKAGE_INFO_CLASS_NAME, ElementKind.CLASS, pkgElem,
-        typeEnv.getJavaObjectElement().asType(), NestingKind.TOP_LEVEL, null, false, false)
+        typeUtil.getJavaObject().asType(), NestingKind.TOP_LEVEL, null, false, false)
         .addModifiers(Modifier.PRIVATE);
   }
 

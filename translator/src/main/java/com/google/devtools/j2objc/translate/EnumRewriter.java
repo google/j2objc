@@ -132,18 +132,18 @@ public class EnumRewriter extends UnitTreeVisitor {
     sb.append("\n};");
     stmts.add(new NativeStatement(sb.toString()));
 
-    TypeMirror intType = typeEnv.resolveJavaTypeMirror("int");
+    TypeMirror intType = typeUtil.getInt();
     GeneratedVariableElement loopCounterElement =
         GeneratedVariableElement.newLocalVar("i", intType, TreeUtil.getEnclosingElement(node));
     VariableDeclarationExpression loopCounter =
         new VariableDeclarationExpression().setType(Type.newType(loopCounterElement.asType()))
             .addFragment(new VariableDeclarationFragment(
-                loopCounterElement, TreeUtil.newLiteral(0, typeEnv)));
+                loopCounterElement, TreeUtil.newLiteral(0, typeUtil)));
     Expression loopTest = new InfixExpression()
         .setOperator(InfixExpression.Operator.LESS)
         .setTypeMirror(intType)
         .addOperand(new SimpleName(loopCounterElement))
-        .addOperand(TreeUtil.newLiteral(constants.size(), typeEnv));
+        .addOperand(TreeUtil.newLiteral(constants.size(), typeUtil));
     Expression loopUpdater =
         new PostfixExpression(loopCounterElement, PostfixExpression.Operator.INCREMENT);
     Block loopBody = new Block();
@@ -197,8 +197,8 @@ public class EnumRewriter extends UnitTreeVisitor {
       FunctionInvocation initFunc = new FunctionInvocation(initElement, voidType);
       initFunc.addArgument(new SimpleName(localEnum));
       TreeUtil.copyList(constant.getArguments(), initFunc.getArguments());
-      initFunc.addArgument(new StringLiteral(varName, typeEnv));
-      initFunc.addArgument(new NumberLiteral(i++, typeEnv));
+      initFunc.addArgument(new StringLiteral(varName, typeUtil));
+      initFunc.addArgument(new NumberLiteral(i++, typeUtil));
       initStatements.add(new ExpressionStatement(initFunc));
     }
 
@@ -225,8 +225,8 @@ public class EnumRewriter extends UnitTreeVisitor {
       VariableElement varElement = constant.getVariableElement();
       ClassInstanceCreation creation = new ClassInstanceCreation(constant.getExecutablePair());
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      creation.addArgument(new StringLiteral(ElementUtil.getName(varElement), typeEnv));
-      creation.addArgument(new NumberLiteral(i++, typeEnv));
+      creation.addArgument(new StringLiteral(ElementUtil.getName(varElement), typeUtil));
+      creation.addArgument(new NumberLiteral(i++, typeUtil));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varElement), creation)));
     }
@@ -352,7 +352,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     outerDecl.addImplementationImportType(
         GeneratedTypeElement.newEmulatedClass(
             "java.lang.IllegalArgumentException",
-            typeEnv.resolveJavaTypeMirror("java.lang.RuntimeException")).asType());
+            typeUtil.resolveJavaType("java.lang.RuntimeException").asType()).asType());
     node.addBodyDeclaration(outerDecl);
   }
 }

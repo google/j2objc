@@ -126,14 +126,13 @@ public class GwtConverter extends UnitTreeVisitor {
         && ElementUtil.getQualifiedName(ElementUtil.getDeclaringClass(method)).equals(GWT_CLASS)
         && args.size() == 1) {
       // Convert GWT.create(Foo.class) to Foo.class.newInstance().
-      ExecutableElement newMethod = ElementUtil.findMethod(
-          typeEnv.resolveJavaTypeElement("java.lang.Class"), "newInstance");
+      ExecutableElement newMethod = ElementUtil.findMethod(typeUtil.getJavaClass(), "newInstance");
       node.setName(new SimpleName(newMethod));
       Expression clazz = args.remove(0);
       node.setExpression(clazz);
       node.setExecutablePair(new ExecutablePair(newMethod));
     } else if (isGwtTest(node)) {
-      node.replaceWith(new BooleanLiteral(false, typeEnv));
+      node.replaceWith(new BooleanLiteral(false, typeUtil));
     }
     return true;
   }

@@ -14,10 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for array creation.
@@ -42,14 +40,10 @@ public class ArrayCreation extends Expression {
     initializer.copyFrom(other.getInitializer());
   }
 
-  public ArrayCreation(ITypeBinding type, Types typeEnv, int... dimensions) {
-    this((javax.lang.model.type.ArrayType) BindingConverter.getType(type), typeEnv, dimensions);
-  }
-
-  public ArrayCreation(javax.lang.model.type.ArrayType type, Types typeEnv, int... dimensions) {
+  public ArrayCreation(javax.lang.model.type.ArrayType type, TypeUtil typeUtil, int... dimensions) {
     arrayType.set(new ArrayType(type));
     for (int i : dimensions) {
-      this.dimensions.add(NumberLiteral.newIntLiteral(i, typeEnv));
+      this.dimensions.add(NumberLiteral.newIntLiteral(i, typeUtil));
     }
   }
 

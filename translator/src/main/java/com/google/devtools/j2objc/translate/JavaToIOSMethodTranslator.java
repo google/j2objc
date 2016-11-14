@@ -143,8 +143,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     Block block = new Block();
     copyDecl.setBody(block);
 
-    ExecutableElement cloneElement =
-        ElementUtil.findMethod(typeEnv.getJavaObjectElement(), "clone");
+    ExecutableElement cloneElement = ElementUtil.findMethod(typeUtil.getJavaObject(), "clone");
     MethodInvocation invocation = new MethodInvocation(new ExecutablePair(cloneElement), null);
     if (Options.useReferenceCounting()) {
       invocation = new MethodInvocation(typeEnv.getRetainMethod(), invocation);

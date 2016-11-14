@@ -123,7 +123,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
       // "inherit" from Object. Therefore we add this manually to make the set complete. This is
       // needed because Java 8 default methods can call methods in Object.
       if (ElementUtil.isInterface(type)) {
-        inheritedScopeBuilder.add(typeEnv.getJavaObjectElement());
+        inheritedScopeBuilder.add(typeUtil.getJavaObject());
       }
 
       this.inheritedScope = inheritedScopeBuilder.build();
@@ -257,7 +257,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     }
     if (var.getConstantValue() != null) {
       // Var has constant value, return a literal.
-      return TreeUtil.newLiteral(var.getConstantValue(), typeEnv);
+      return TreeUtil.newLiteral(var.getConstantValue(), typeUtil);
     }
     Scope lastScope = scope;
     while (!(scope = scope.outer).declaredVars.contains(var)) {

@@ -42,7 +42,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +63,11 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
  */
 public final class TranslationUtil {
 
-  private final Types typeEnv;
+  private final TypeUtil typeUtil;
   private final NameTable nameTable;
 
-  public TranslationUtil(Types typeEnv, NameTable nameTable) {
-    this.typeEnv = typeEnv;
+  public TranslationUtil(TypeUtil typeUtil, NameTable nameTable) {
+    this.typeUtil = typeUtil;
     this.nameTable = nameTable;
   }
 
@@ -287,9 +286,9 @@ public final class TranslationUtil {
 
   public Expression createObjectArray(List<Expression> expressions, ArrayType arrayType) {
     if (expressions.isEmpty()) {
-      return new ArrayCreation(arrayType, typeEnv, 0);
+      return new ArrayCreation(arrayType, typeUtil, 0);
     }
-    ArrayCreation creation = new ArrayCreation(arrayType, typeEnv);
+    ArrayCreation creation = new ArrayCreation(arrayType, typeUtil);
     ArrayInitializer initializer = new ArrayInitializer(arrayType);
     initializer.getExpressions().addAll(expressions);
     creation.setInitializer(initializer);
@@ -332,9 +331,9 @@ public final class TranslationUtil {
       assert value instanceof AnnotationMirror;
       return createAnnotation((AnnotationMirror) value);
     } else if (value instanceof TypeMirror) {
-      return new TypeLiteral((TypeMirror) value, typeEnv);
+      return new TypeLiteral((TypeMirror) value, typeUtil);
     } else {  // Boolean, Character, Number, String
-      return TreeUtil.newLiteral(value, typeEnv);
+      return TreeUtil.newLiteral(value, typeUtil);
     }
   }
 }

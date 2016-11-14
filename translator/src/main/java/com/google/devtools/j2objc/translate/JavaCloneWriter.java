@@ -84,7 +84,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
     List<Statement> statements = body.getStatements();
 
     ExecutableElement javaCloneSuperElement = GeneratedExecutableElement.newMethodWithSelector(
-        JAVA_CLONE_METHOD, voidType, typeEnv.getJavaObjectElement());
+        JAVA_CLONE_METHOD, voidType, typeUtil.getJavaObject());
     SuperMethodInvocation superCall =
         new SuperMethodInvocation(new ExecutablePair(javaCloneSuperElement));
     superCall.addArgument(new SimpleName(originalVar));
@@ -127,7 +127,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
 
   private Statement createVolatileCloneStatement(
       VariableElement var, VariableElement originalVar, boolean isWeak) {
-    TypeMirror voidType = typeEnv.resolveJavaTypeMirror("void");
+    TypeMirror voidType = typeUtil.getVoidType();
     TypeMirror pointerType = new PointerType(var.asType());
     String funcName = "JreCloneVolatile" + (isWeak ? "" : "Strong");
     FunctionElement element = new FunctionElement(funcName, voidType, null)

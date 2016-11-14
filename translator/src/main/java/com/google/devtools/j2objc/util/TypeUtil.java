@@ -86,16 +86,31 @@ public final class TypeUtil {
   private final Types javacTypes;
   private final ElementUtil elementUtil;
 
+  // Commonly accessed types.
+  private final TypeElement javaObject;
+  private final TypeElement javaString;
+  private final TypeElement javaClass;
+  private final TypeElement javaNumber;
+
   private static final Joiner INNER_CLASS_JOINER = Joiner.on('$');
 
   public TypeUtil(ParserEnvironment env, ElementUtil elementUtil) {
     this.env = env;
     this.javacTypes = env.typeUtilities();
     this.elementUtil = elementUtil;
+
+    javaObject = (TypeElement) env.resolve("java.lang.Object");
+    javaString = (TypeElement) env.resolve("java.lang.String");
+    javaClass = (TypeElement) env.resolve("java.lang.Class");
+    javaNumber = (TypeElement) env.resolve("java.lang.Number");
   }
 
   public ElementUtil elementUtil() {
     return elementUtil;
+  }
+
+  public TypeElement resolveJavaType(String qualifiedName) {
+    return (TypeElement) env.resolve(qualifiedName);
   }
 
   public static boolean isDeclaredType(TypeMirror t) {
@@ -208,6 +223,22 @@ public final class TypeUtil {
   public TypeElement getIosArray(TypeMirror componentType) {
     return componentType.getKind().isPrimitive()
         ? PRIMITIVE_IOS_ARRAYS.get(componentType.getKind()) : IOS_OBJECT_ARRAY;
+  }
+
+  public TypeElement getJavaObject() {
+    return javaObject;
+  }
+
+  public TypeElement getJavaString() {
+    return javaString;
+  }
+
+  public TypeElement getJavaClass() {
+    return javaClass;
+  }
+
+  public TypeElement getJavaNumber() {
+    return javaNumber;
   }
 
   /**
@@ -324,6 +355,38 @@ public final class TypeUtil {
 
   public PrimitiveType getPrimitiveType(TypeKind kind) {
     return javacTypes.getPrimitiveType(kind);
+  }
+
+  public PrimitiveType getBoolean() {
+    return getPrimitiveType(TypeKind.BOOLEAN);
+  }
+
+  public PrimitiveType getByte() {
+    return getPrimitiveType(TypeKind.BYTE);
+  }
+
+  public PrimitiveType getChar() {
+    return getPrimitiveType(TypeKind.CHAR);
+  }
+
+  public PrimitiveType getDouble() {
+    return getPrimitiveType(TypeKind.DOUBLE);
+  }
+
+  public PrimitiveType getFloat() {
+    return getPrimitiveType(TypeKind.FLOAT);
+  }
+
+  public PrimitiveType getInt() {
+    return getPrimitiveType(TypeKind.INT);
+  }
+
+  public PrimitiveType getLong() {
+    return getPrimitiveType(TypeKind.LONG);
+  }
+
+  public PrimitiveType getShort() {
+    return getPrimitiveType(TypeKind.SHORT);
   }
 
   public NoType getVoidType() {
