@@ -240,10 +240,10 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     return path;
   }
 
-  private Name getPathForField(VariableElement var) {
+  private Name getPathForField(VariableElement var, TypeMirror type) {
     Name path = getOuterPathInherited((TypeElement) var.getEnclosingElement());
     if (path != null) {
-      path = Name.newName(path, var);
+      path = Name.newName(path, var, type);
     }
     return path;
   }
@@ -420,7 +420,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     if (var != null) {
       Expression path = null;
       if (ElementUtil.isInstanceVar(var)) {
-        path = getPathForField(var);
+        path = getPathForField(var, node.getTypeMirror());
       } else if (!var.getKind().isField()) {
         path = getPathForLocalVar(var);
       }

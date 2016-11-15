@@ -532,7 +532,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertIdent(JCTree.JCIdent node) {
-    return new SimpleName(node.sym);
+    return new SimpleName(node.sym, node.type);
   }
 
   private TreeNode convertFieldAccess(JCTree.JCFieldAccess node) {
@@ -545,7 +545,7 @@ public class TreeConverter {
     if (selected.toString().equals("super")) {
       return new SuperFieldAccess()
           .setVariableElement((VariableElement) node.sym)
-          .setName(new SimpleName(fieldName));
+          .setName(new SimpleName(node.sym, node.type));
     }
     if (node.getIdentifier().toString().equals("class")) {
       com.sun.tools.javac.code.Type type = node.sym.asType();
@@ -554,13 +554,13 @@ public class TreeConverter {
     }
     if (selected.getKind() == Kind.IDENTIFIER || selected.getKind() == Kind.MEMBER_SELECT) {
       return new QualifiedName()
-          .setName(new SimpleName(node.sym))
+          .setName(new SimpleName(node.sym, node.type))
           .setQualifier((Name) convert(selected));
     }
     return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
         .setExpression((Expression) convert(selected))
-        .setName(new SimpleName(fieldName));
+        .setName(new SimpleName(node.sym, node.type));
   }
 
   private TreeNode convertMethodDeclaration(JCTree.JCMethodDecl node) {

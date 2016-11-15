@@ -35,10 +35,15 @@ public class FieldAccess extends Expression {
     name.copyFrom(other.getName());
   }
 
-  public FieldAccess(VariableElement variableElement, Expression expression) {
+  public FieldAccess(
+      VariableElement variableElement, TypeMirror typeMirror, Expression expression) {
     this.variableElement = variableElement;
     this.expression.set(expression);
-    name.set(new SimpleName(variableElement));
+    name.set(new SimpleName(variableElement, typeMirror));
+  }
+
+  public FieldAccess(VariableElement variableElement, Expression expression) {
+    this(variableElement, variableElement.asType(), expression);
   }
 
   @Override
@@ -48,7 +53,8 @@ public class FieldAccess extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    return variableElement.asType();
+    SimpleName nameNode = name.get();
+    return nameNode != null ? nameNode.getTypeMirror() : null;
   }
 
   public VariableElement getVariableElement() {

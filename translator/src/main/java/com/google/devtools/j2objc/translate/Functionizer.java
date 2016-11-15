@@ -501,7 +501,7 @@ public class Functionizer extends UnitTreeVisitor {
       VariableElement var = TreeUtil.getVariableElement(node);
       if (var != null && var.getKind().isField()) {
         // Convert name to self->name.
-        node.replaceWith(new QualifiedName(var, new SimpleName(selfParam)));
+        node.replaceWith(new QualifiedName(var, node.getTypeMirror(), new SimpleName(selfParam)));
       }
     }
 
@@ -509,8 +509,7 @@ public class Functionizer extends UnitTreeVisitor {
     public boolean visit(SuperFieldAccess node) {
       // Change super.field expression to self.field.
       SimpleName qualifier = new SimpleName(selfParam);
-      FieldAccess newAccess = new FieldAccess(node.getVariableElement(), qualifier);
-      node.replaceWith(newAccess);
+      node.replaceWith(new FieldAccess(node.getVariableElement(), node.getTypeMirror(), qualifier));
       return false;
     }
 

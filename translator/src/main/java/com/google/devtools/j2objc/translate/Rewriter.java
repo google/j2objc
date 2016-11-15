@@ -251,7 +251,8 @@ public class Rewriter extends UnitTreeVisitor {
     Expression qualifier = node.getQualifier();
     if (var != null && var.getKind().isField() && TreeUtil.getVariableElement(qualifier) != null) {
       // FieldAccess nodes are more easily mutated than QualifiedName.
-      FieldAccess fieldAccess = new FieldAccess(var, TreeUtil.remove(qualifier));
+      FieldAccess fieldAccess =
+          new FieldAccess(var, node.getTypeMirror(), TreeUtil.remove(qualifier));
       node.replaceWith(fieldAccess);
       fieldAccess.accept(this);
       return false;

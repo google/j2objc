@@ -51,7 +51,8 @@ public class SuperFieldAccess extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    return variableElement != null ? variableElement.asType() : null;
+    SimpleName nameNode = name.get();
+    return nameNode != null ? nameNode.getTypeMirror() : null;
   }
 
   public Name getQualifier() {

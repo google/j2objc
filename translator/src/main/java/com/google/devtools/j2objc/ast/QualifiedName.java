@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node for a qualified name. Defined recursively as a simple name preceded by a name.
@@ -32,15 +33,21 @@ public class QualifiedName extends Name {
     name.copyFrom(other.getName());
   }
 
-  public QualifiedName(Element element, Name qualifier) {
+  public QualifiedName(Element element, TypeMirror type, Name qualifier) {
     super(element);
     this.qualifier.set(qualifier);
-    name.set(new SimpleName(element));
+    name.set(new SimpleName(element, type));
   }
 
   @Override
   public Kind getKind() {
     return Kind.QUALIFIED_NAME;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    SimpleName nameNode = name.get();
+    return nameNode != null ? nameNode.getTypeMirror() : null;
   }
 
   public Name getQualifier() {

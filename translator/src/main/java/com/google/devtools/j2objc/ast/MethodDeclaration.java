@@ -47,14 +47,6 @@ public class MethodDeclaration extends BodyDeclaration {
     body.copyFrom(other.getBody());
   }
 
-  public MethodDeclaration(IMethodBinding methodBinding) {
-    super(methodBinding);
-    executableElement = BindingConverter.getExecutableElement(methodBinding);
-    isConstructor = methodBinding.isConstructor();
-    returnType.set(Type.newType(methodBinding.getReturnType()));
-    name.set(new SimpleName(methodBinding));
-  }
-
   public MethodDeclaration(ExecutableElement method) {
     super(method);
     executableElement = method;

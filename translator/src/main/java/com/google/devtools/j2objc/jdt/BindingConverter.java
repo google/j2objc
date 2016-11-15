@@ -144,7 +144,7 @@ public final class BindingConverter {
       element = typeBinding.isTypeVariable()
           ? new JdtTypeParameterElement(typeBinding) : new JdtTypeElement(typeBinding);
     } else if (binding instanceof IVariableBinding) {
-      element = new JdtVariableElement((IVariableBinding) binding);
+      element = JdtVariableElement.create((IVariableBinding) binding);
     } else {
       throw new AssertionError("unknown element binding: " + binding.getClass().getSimpleName());
     }

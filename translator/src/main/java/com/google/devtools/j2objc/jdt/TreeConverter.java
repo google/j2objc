@@ -961,7 +961,9 @@ public class TreeConverter {
   private static TreeNode convertSimpleName(org.eclipse.jdt.core.dom.SimpleName node) {
     SimpleName newNode = new SimpleName();
     convertName(node, newNode);
-    return newNode.setIdentifier(node.getIdentifier());
+    return newNode
+        .setIdentifier(node.getIdentifier())
+        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()));
   }
 
   private static TreeNode convertSimpleType(org.eclipse.jdt.core.dom.SimpleType node) {

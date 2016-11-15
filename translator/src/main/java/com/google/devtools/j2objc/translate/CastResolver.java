@@ -46,10 +46,10 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -139,7 +139,8 @@ public class CastResolver extends UnitTreeVisitor {
       invocation.addArgument(TreeUtil.remove(expr));
       IOSMethodBinding classBinding = IOSMethodBinding.newMethod(
           "class", Modifier.STATIC, idType, BindingConverter.getType(type));
-      MethodInvocation classInvocation = new MethodInvocation(classBinding, new SimpleName(type));
+      MethodInvocation classInvocation = new MethodInvocation(
+          classBinding, new SimpleName(BindingConverter.getTypeElement(type)));
       invocation.addArgument(classInvocation);
     }
     return invocation;
@@ -186,9 +187,9 @@ public class CastResolver extends UnitTreeVisitor {
   }
 
   private ITypeBinding getDeclaredType(Expression expr) {
-    IVariableBinding var = TreeUtil.getVariableBinding(expr);
+    VariableElement var = TreeUtil.getVariableElement(expr);
     if (var != null) {
-      return var.getVariableDeclaration().getType();
+      return BindingConverter.unwrapTypeMirrorIntoTypeBinding(var.asType());
     }
     switch (expr.getKind()) {
       case CLASS_INSTANCE_CREATION:
@@ -397,7 +398,7 @@ public class CastResolver extends UnitTreeVisitor {
       return;
     }
 
-    IVariableBinding param = node.getParameter(0).getVariableBinding();
+    VariableElement param = node.getParameter(0).getVariableElement();
 
     FunctionInvocation castCheck = createCastCheck(typeArguments[0], new SimpleName(param));
     if (castCheck != null) {

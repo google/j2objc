@@ -28,9 +28,11 @@ class JdtVariableElement extends JdtElement implements VariableElement {
 
   private final IBinding owner;
 
-  JdtVariableElement(IVariableBinding binding) {
-    this(binding, binding.getName(), binding.getModifiers(),
-        binding.getDeclaringMethod(), binding.getDeclaringClass());
+  static JdtVariableElement create(IVariableBinding binding) {
+    binding = binding.getVariableDeclaration();
+    return new JdtVariableElement(
+        binding, binding.getName(), binding.getModifiers(), binding.getDeclaringMethod(),
+        binding.getDeclaringClass());
   }
 
   /**

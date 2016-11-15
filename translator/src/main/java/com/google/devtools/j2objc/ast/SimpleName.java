@@ -15,32 +15,33 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.element.Element;
-import org.eclipse.jdt.core.dom.IBinding;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node for a simple (unqualified) name.
  */
 public class SimpleName extends Name {
 
+  private TypeMirror type;
   private String identifier;
 
   public SimpleName() {}
 
   public SimpleName(SimpleName other) {
     super(other);
+    type = other.getTypeMirror();
     identifier = other.getIdentifier();
   }
 
-  public SimpleName(IBinding binding) {
-    super(BindingConverter.getElement(binding));
-    identifier = binding.getName();
+  public SimpleName(Element element, TypeMirror type) {
+    super(element);
+    this.type = type;
+    identifier = element.getSimpleName().toString();
   }
 
   public SimpleName(Element element) {
-    super(element);
-    identifier = element.getSimpleName().toString();
+    this(element, element.asType());
   }
 
   public SimpleName(String identifier) {
@@ -51,6 +52,16 @@ public class SimpleName extends Name {
   @Override
   public Kind getKind() {
     return Kind.SIMPLE_NAME;
+  }
+
+  @Override
+  public TypeMirror getTypeMirror() {
+    return type;
+  }
+
+  public SimpleName setTypeMirror(TypeMirror newType) {
+    type = newType;
+    return this;
   }
 
   public String getIdentifier() {

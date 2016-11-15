@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -38,16 +37,13 @@ public abstract class Name extends Expression {
     this.element = element;
   }
 
-  public static Name newName(Name qualifier, Element element) {
-    return qualifier == null ? new SimpleName(element) : new QualifiedName(element, qualifier);
+  public static Name newName(Name qualifier, Element element, TypeMirror type) {
+    return qualifier == null ? new SimpleName(element, type)
+        : new QualifiedName(element, type, qualifier);
   }
 
-  public static Name newName(List<? extends Element> path) {
-    Name name = null;
-    for (Element element : path) {
-      name = newName(name, element);
-    }
-    return name;
+  public static Name newName(Name qualifier, Element element) {
+    return newName(qualifier, element, element.asType());
   }
 
   public abstract String getFullyQualifiedName();
@@ -64,11 +60,6 @@ public abstract class Name extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return BindingConverter.unwrapTypeMirrorIntoTypeBinding(element.asType());
-  }
-
-  @Override
-  public TypeMirror getTypeMirror() {
-    return element.asType();
   }
 
   public boolean isQualifiedName() {
