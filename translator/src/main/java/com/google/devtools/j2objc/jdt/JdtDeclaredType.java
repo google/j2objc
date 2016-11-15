@@ -66,4 +66,9 @@ class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceTy
     }
     return typeArgs;
   }
+
+  @Override
+  public String toString() {
+    return ((ITypeBinding) binding).getQualifiedName();
+  }
 }

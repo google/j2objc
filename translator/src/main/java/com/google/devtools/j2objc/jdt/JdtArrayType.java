@@ -41,4 +41,9 @@ class JdtArrayType extends JdtTypeMirror implements ArrayType {
   public TypeMirror getComponentType() {
     return BindingConverter.getType(((ITypeBinding) binding).getComponentType());
   }
+
+  @Override
+  public String toString() {
+    return ((ITypeBinding) binding).getQualifiedName();
+  }
 }

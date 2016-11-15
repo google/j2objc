@@ -50,12 +50,13 @@ public class TreeUtilTest extends GenerationTest {
     TreeUtil.sortMethods(methods);
     assertTrue(methods.get(0).toString().startsWith("A()"));
     assertTrue(methods.get(1).toString().startsWith("A(int i)"));
-    assertTrue(methods.get(2).toString().startsWith("A(int i,Runnable r)"));
-    assertTrue(methods.get(3).toString().startsWith("A(String s)"));
+    assertTrue(methods.get(2).toString().startsWith("A(int i,java.lang.Runnable r)"));
+    assertTrue(methods.get(3).toString().startsWith("A(java.lang.String s)"));
     assertTrue(methods.get(4).toString().startsWith("void gnu()"));
-    assertTrue(methods.get(5).toString().startsWith("void gnu(int i,Runnable r)"));
-    assertTrue(methods.get(6).toString().startsWith("void gnu(String s,int i)"));
-    assertTrue(methods.get(7).toString().startsWith("void gnu(String s,int i,Runnable r)"));
+    assertTrue(methods.get(5).toString().startsWith("void gnu(int i,java.lang.Runnable r)"));
+    assertTrue(methods.get(6).toString().startsWith("void gnu(java.lang.String s,int i)"));
+    assertTrue(methods.get(7).toString().startsWith(
+        "void gnu(java.lang.String s,int i,java.lang.Runnable r)"));
     assertTrue(methods.get(8).toString().startsWith("void yak()"));
     assertTrue(methods.get(9).toString().startsWith("void zebra()"));
   }

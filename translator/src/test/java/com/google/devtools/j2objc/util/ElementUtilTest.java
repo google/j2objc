@@ -50,7 +50,8 @@ public class ElementUtilTest extends GenerationTest {
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
     TypeElement element = decl.getTypeElement();
     AnnotationMirror annotation = ElementUtil.getAnnotation(element, ObjectiveCName.class);
-    assertEquals("ObjectiveCName", annotation.getAnnotationType().toString());
+    assertEquals("com.google.j2objc.annotations.ObjectiveCName",
+        annotation.getAnnotationType().toString());
   }
 
   public void testGetAnnotationValue() throws IOException {

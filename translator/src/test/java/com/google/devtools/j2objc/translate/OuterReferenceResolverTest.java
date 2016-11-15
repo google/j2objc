@@ -98,7 +98,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertTrue(expr instanceof SimpleName);
     VariableElement fooReceiver = TreeUtil.getVariableElement(expr);
     assertNotNull(fooReceiver);
-    assertEquals("B", fooReceiver.asType().toString());
+    assertEquals("Test.B", fooReceiver.asType().toString());
   }
 
   public void testCapturedLocalVariable() {

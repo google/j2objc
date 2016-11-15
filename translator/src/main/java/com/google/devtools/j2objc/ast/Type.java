@@ -42,7 +42,7 @@ public abstract class Type extends TreeNode {
   }
 
   public static Type newType(TypeMirror typeMirror) {
-    if (typeMirror.getKind().isPrimitive()) {
+    if (typeMirror.getKind().isPrimitive() || typeMirror.getKind() == TypeKind.VOID) {
       return new PrimitiveType(typeMirror);
     } else if (typeMirror.getKind().equals(TypeKind.ARRAY)) {
       return new ArrayType((javax.lang.model.type.ArrayType) typeMirror);
