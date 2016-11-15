@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -272,6 +273,17 @@ public final class TypeUtil {
     return t;
   }
 
+  public TypeElement getObjcClass(TypeMirror t) {
+    if (isArray(t)) {
+      return getIosArray(((ArrayType) t).getComponentType());
+    } else if (isDeclaredType(t)) {
+      TypeElement element = (TypeElement) ((DeclaredType) t).asElement();
+      TypeElement mapped = javaToObjcTypeMap.get(element);
+      return mapped != null ? mapped : element;
+    }
+    return null;
+  }
+
   /**
    * Find a supertype matching the given qualified name.
    */
@@ -438,6 +450,56 @@ public final class TypeUtil {
 
   public TypeElement boxedClass(PrimitiveType t) {
     return javacTypes.boxedClass(t);
+  }
+
+  public boolean isDeclaredAsId(TypeMirror t) {
+    return getObjcUpperBounds(t).isEmpty();
+  }
+
+  public boolean isObjcAssignable(TypeMirror t1, TypeMirror t2) {
+    if (t2.getKind().isPrimitive()) {
+      return t1.equals(t2);
+    }
+    outer: for (TypeElement t2Class : getObjcUpperBounds(t2)) {
+      for (TypeElement t1Class : getObjcUpperBounds(t1)) {
+        if (isObjcSubtype(t1Class, t2Class)) {
+          continue outer;
+        }
+      }
+      return false;
+    }
+    return true;
+  }
+
+  private boolean isObjcSubtype(TypeElement type, TypeElement targetSupertype) {
+    if (type == null) {
+      return false;
+    }
+    if (type.equals(targetSupertype)) {
+      return true;
+    }
+    TypeMirror superclass = type.getSuperclass();
+    if (superclass != null && isObjcSubtype(getObjcClass(superclass), targetSupertype)) {
+      return true;
+    }
+    for (TypeMirror intrface : type.getInterfaces()) {
+      if (isObjcSubtype(getObjcClass(intrface), targetSupertype)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public List<TypeElement> getObjcUpperBounds(TypeMirror t) {
+    List<TypeElement> result = new ArrayList<>();
+    for (TypeMirror bound : getUpperBounds(t)) {
+      TypeElement elem = getObjcClass(bound);
+      // NSObject is emmitted as "id".
+      if (elem != null && !elem.equals(NS_OBJECT)) {
+        result.add(elem);
+      }
+    }
+    return result;
   }
 
   public List<? extends TypeMirror> getUpperBounds(TypeMirror t) {

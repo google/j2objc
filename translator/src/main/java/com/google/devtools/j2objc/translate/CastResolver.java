@@ -158,46 +158,31 @@ public class CastResolver extends UnitTreeVisitor {
       maybeAddCast(condExpr.getElseExpression(), expectedType, shouldCastFromId);
       return;
     }
-    if (needsCast(expr, BindingConverter.unwrapTypeMirrorIntoTypeBinding(expectedType),
-        shouldCastFromId)) {
+    if (needsCast(expr, expectedType, shouldCastFromId)) {
       addCast(expr);
     }
   }
 
-  private boolean needsCast(Expression expr, ITypeBinding expectedType, boolean shouldCastFromId) {
-    ITypeBinding declaredType = getDeclaredType(expr);
+  private boolean needsCast(Expression expr, TypeMirror expectedType, boolean shouldCastFromId) {
+    TypeMirror declaredType = BindingConverter.getType(getDeclaredType(expr));
     if (declaredType == null) {
       return false;
     }
-    ITypeBinding exprType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-        typeUtil.mapType(expr.getTypeMirror()));
-    declaredType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-        typeUtil.mapType(BindingConverter.getType(declaredType)));
+    TypeMirror exprType = expr.getTypeMirror();
     if (
         // In general we do not need to cast primitive types.
-        exprType.isPrimitive()
+        exprType.getKind().isPrimitive()
         // In most cases we don't need to cast from an id type. However, if the
         // expression is being dereferenced then the compiler needs the type
         // info.
-        || (declaredAsId(declaredType) && !shouldCastFromId)
+        || (typeUtil.isDeclaredAsId(declaredType) && !shouldCastFromId)
         // If the declared type can be assigned into the actual type, or the
         // expected type, then the compiler already has sufficient type info.
-        || declaredAsId(exprType) || declaredType.isAssignmentCompatible(exprType)
-        || (expectedType != null && (declaredAsId(expectedType)
-            || declaredType.isAssignmentCompatible(expectedType)))) {
+        || typeUtil.isObjcAssignable(declaredType, exprType)
+        || (expectedType != null && typeUtil.isObjcAssignable(declaredType, expectedType))) {
       return false;
     }
     return true;
-  }
-
-  // Determine if the declaration for this type would end up being "id".
-  private boolean declaredAsId(ITypeBinding type) {
-    if (typeEnv.isIdType(type)) {
-      return true;
-    }
-    List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(BindingConverter.getType(type));
-    return bounds.size() == 1 && typeEnv.isIdType(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(bounds.get(0)));
   }
 
   private ITypeBinding getDeclaredType(Expression expr) {
