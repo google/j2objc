@@ -382,6 +382,8 @@ public final class TypeUtil {
 
   public static boolean isReferenceType(TypeMirror t) {
     switch (t.getKind()) {
+      case OTHER:
+        return isId(t);
       case ARRAY:
       case DECLARED:
       case ERROR:
@@ -394,6 +396,10 @@ public final class TypeUtil {
       default:
         return false;
     }
+  }
+
+  public static boolean isId(TypeMirror t) {
+    return t instanceof NativeType && ((NativeType) t).getName().equals("id");
   }
 
   public PrimitiveType getPrimitiveType(TypeKind kind) {
@@ -453,11 +459,15 @@ public final class TypeUtil {
   }
 
   public boolean isDeclaredAsId(TypeMirror t) {
-    return getObjcUpperBounds(t).isEmpty();
+    return isReferenceType(t) && getObjcUpperBounds(t).isEmpty();
   }
 
   public boolean isObjcAssignable(TypeMirror t1, TypeMirror t2) {
-    if (t2.getKind().isPrimitive()) {
+    if (!isReferenceType(t1) || !isReferenceType(t2)) {
+      if (t1 instanceof PointerType && t2 instanceof PointerType) {
+        return isObjcAssignable(((PointerType) t1).getPointeeType(),
+                                ((PointerType) t2).getPointeeType());
+      }
       return t1.equals(t2);
     }
     outer: for (TypeElement t2Class : getObjcUpperBounds(t2)) {

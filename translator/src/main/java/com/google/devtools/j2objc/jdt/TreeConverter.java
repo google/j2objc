@@ -123,6 +123,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -758,7 +759,7 @@ public class TreeConverter {
   }
 
   private static TreeNode convertIntersectionType(org.eclipse.jdt.core.dom.IntersectionType node) {
-    JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
+    TypeMirror type = BindingConverter.getType(node.resolveBinding());
     IntersectionType newNode = new IntersectionType(type);
     for (Object x : node.types()) {
       newNode.addType((Type) convert(x));
@@ -866,7 +867,7 @@ public class TreeConverter {
 
   private static TreeNode convertNameQualifiedType(
       org.eclipse.jdt.core.dom.NameQualifiedType node) {
-    JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
+    TypeMirror type = BindingConverter.getType(node.resolveBinding());
     return ((NameQualifiedType) convertAnnotatableType(node, new NameQualifiedType(type)))
         .setName((SimpleName) convert(node.getName()))
         .setQualifier((Name) convert(node.getQualifier()));
@@ -935,7 +936,7 @@ public class TreeConverter {
   }
 
   private static TreeNode convertPrimitiveType(org.eclipse.jdt.core.dom.PrimitiveType node) {
-    JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
+    TypeMirror type = BindingConverter.getType(node.resolveBinding());
     return convertAnnotatableType(node, new PrimitiveType(type));
   }
 
@@ -948,7 +949,7 @@ public class TreeConverter {
   }
 
   private static TreeNode convertQualifiedType(org.eclipse.jdt.core.dom.QualifiedType node) {
-    JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
+    TypeMirror type = BindingConverter.getType(node.resolveBinding());
     return convertAnnotatableType(node, new QualifiedType(type));
   }
 
@@ -964,7 +965,7 @@ public class TreeConverter {
   }
 
   private static TreeNode convertSimpleType(org.eclipse.jdt.core.dom.SimpleType node) {
-    JdtTypeMirror type = BindingConverter.getType(node.resolveBinding());
+    TypeMirror type = BindingConverter.getType(node.resolveBinding());
     return convertAnnotatableType(node, new SimpleType(type));
   }
 

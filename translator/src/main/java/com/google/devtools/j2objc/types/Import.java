@@ -121,8 +121,8 @@ public class Import implements Comparable<Import> {
         || BindingUtil.isLambda(binding)) {
       return;
     }
-    if (binding instanceof PointerTypeBinding) {
-      addImports(((PointerTypeBinding) binding).getPointeeType(), imports, env);
+    if (binding instanceof PointerType.Binding) {
+      addImports(((PointerType.Binding) binding).getPointeeType(), imports, env);
       return;
     }
     for (TypeMirror boundT : env.typeUtil().getUpperBounds(BindingConverter.getType(binding))) {

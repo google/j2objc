@@ -22,6 +22,8 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * TypeMirror for native C types.
@@ -31,9 +33,14 @@ import javax.lang.model.type.TypeVisitor;
 public class NativeType implements TypeMirror {
 
   private final String name;
+  private final ITypeBinding binding = new Binding();
 
   public NativeType(String name) {
     this.name = name;
+  }
+
+  public String getName() {
+    return name;
   }
 
   @Override
@@ -65,5 +72,59 @@ public class NativeType implements TypeMirror {
   @Override
   public <R, P> R accept(TypeVisitor<R, P> v, P p) {
     return v.visitUnknown(this, p);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof NativeType && ((NativeType) other).getName().equals(name);
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  public ITypeBinding asBinding() {
+    return binding;
+  }
+
+  /**
+   * An associated ITypeBinding implementation.
+   */
+  public class Binding extends AbstractTypeBinding {
+
+    public TypeMirror asTypeMirror() {
+      return NativeType.this;
+    }
+
+    @Override
+    public String getName() {
+      return name;
+    }
+
+    @Override
+    public String getQualifiedName() {
+      return name;
+    }
+
+    @Override
+    public boolean isPrimitive() {
+      return true;
+    }
+
+    @Override
+    public String getKey() {
+      return "NATIVE_" + name.replace(" ", "_");
+    }
+
+    @Override
+    public boolean isAssignmentCompatible(ITypeBinding variableType) {
+      return isEqualTo(variableType);
+    }
+
+    @Override
+    public boolean isEqualTo(IBinding binding) {
+      return binding instanceof Binding && ((Binding) binding).getName().equals(name);
+    }
   }
 }

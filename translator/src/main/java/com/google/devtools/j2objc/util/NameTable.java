@@ -26,8 +26,8 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.NativeTypeBinding;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
+import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
@@ -756,9 +756,9 @@ public class NameTable {
 
   private String getObjCTypeInner(ITypeBinding type, String qualifiers) {
     String objCType;
-    if (type instanceof NativeTypeBinding) {
+    if (type instanceof NativeType.Binding) {
       objCType = type.getName();
-    } else if (type instanceof PointerTypeBinding) {
+    } else if (type instanceof PointerType.Binding) {
       String pointeeQualifiers = null;
       if (qualifiers != null) {
         int idx = qualifiers.indexOf('*');
@@ -767,7 +767,7 @@ public class NameTable {
           qualifiers = qualifiers.substring(idx + 1);
         }
       }
-      objCType = getObjCTypeInner(((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers);
+      objCType = getObjCTypeInner(((PointerType.Binding) type).getPointeeType(), pointeeQualifiers);
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
     } else if (type.isPrimitive()) {
       objCType = getPrimitiveObjCType(type);

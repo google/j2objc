@@ -20,9 +20,7 @@ import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
-import com.google.devtools.j2objc.types.NativeTypeBinding;
 import com.google.devtools.j2objc.types.PointerType;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +64,7 @@ public final class BindingConverter {
     return result;
   }
 
-  public static JdtTypeMirror getType(ITypeBinding binding) {
+  public static TypeMirror getType(ITypeBinding binding) {
     if (binding == null) {
       return null;
     }
@@ -74,14 +72,16 @@ public final class BindingConverter {
     if (type != null) {
       return type;
     }
-    if (binding.isArray()) {
+    if (binding instanceof NativeType.Binding) {
+      return ((NativeType.Binding) binding).asTypeMirror();
+    } else if (binding instanceof PointerType.Binding) {
+      return ((PointerType.Binding) binding).asTypeMirror();
+    } else if (binding.isArray()) {
       type = new JdtArrayType(binding);
     } else if (BindingUtil.isIntersectionType(binding)) {
       type = JdtIntersectionType.fromJdtIntersection(binding);
     } else if (binding.isPrimitive()) {
-      if (binding instanceof NativeTypeBinding) {
-        type = new JdtNativeType(binding);
-      } else if (binding.getBinaryName().charAt(0) == 'V') {
+      if (binding.getBinaryName().charAt(0) == 'V') {
         type = new JdtNoType(binding);
       } else {
         type = new JdtPrimitiveType(binding);
@@ -205,10 +205,9 @@ public final class BindingConverter {
     if (t == null) {
       return null;
     } else if (t instanceof NativeType) {
-      return new NativeTypeBinding(((NativeType) t).toString());
+      return ((NativeType) t).asBinding();
     } else if (t instanceof PointerType) {
-      return new PointerTypeBinding(unwrapTypeMirrorIntoTypeBinding(
-          ((PointerType) t).getPointeeType()));
+      return ((PointerType) t).asBinding();
     } else if (t instanceof GeneratedTypeElement.Mirror) {
       return ((GeneratedTypeElement.Mirror) t).asTypeBinding();
     } else if (t instanceof GeneratedExecutableElement.Mirror) {

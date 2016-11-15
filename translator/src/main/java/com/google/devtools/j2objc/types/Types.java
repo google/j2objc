@@ -113,7 +113,7 @@ public class Types {
 
   public boolean isIdType(ITypeBinding type) {
     return type == idType || type == NSObject || type == javaObjectType
-        || (type instanceof NativeTypeBinding && type.getName().equals("id"));
+        || (type instanceof NativeType.Binding && type.getName().equals("id"));
   }
 
   // Used by SignatureGenerator. Other classes should use getNSObject().
