@@ -72,9 +72,6 @@ public class JavacParser extends Parser {
     options.addAll(maybeBuildPathOption("-sourcepath", Options.getSourcePathEntries()));
     options.addAll(maybeBuildPathOption("-processorpath", Options.getProcessorPathEntries()));
     options.add("-Xbootclasspath:" + makePathString(Options.getBootClasspath()));
-
-    options.add("-d");
-    options.add(Options.getOutputDirectory().getPath());
     if (encoding != null) {
       options.add("-encoding");
       options.add(encoding);
@@ -86,7 +83,10 @@ public class JavacParser extends Parser {
       options.add("-target");
       options.add(javaLevel.flag());
     }
-    // TODO(tball): turn on any specified lint warnings.
+    String lintArgument = Options.lintArgument();
+    if (lintArgument != null) {
+      options.add(lintArgument);
+    }
 
     return options;
   }

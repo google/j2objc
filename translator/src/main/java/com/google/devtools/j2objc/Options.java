@@ -84,6 +84,7 @@ public class Options {
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
+  private String lintArgument = null;
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.JDT;
@@ -497,6 +498,7 @@ public class Options {
       } else if (arg.equals("--nullability")) {
         nullability = true;
       } else if (arg.startsWith("-Xlint")) {
+        lintArgument = arg;
         lintOptions = LintOption.parse(arg);
       } else if (arg.equals("-Xuse-jdt")) {
         javaFrontEnd = FrontEnd.JDT;
@@ -894,6 +896,10 @@ public class Options {
 
   public static EnumSet<LintOption> lintOptions() {
     return instance.lintOptions;
+  }
+
+  public static String lintArgument() {
+    return instance.lintArgument;
   }
 
   public static TimingLevel timingLevel() {
