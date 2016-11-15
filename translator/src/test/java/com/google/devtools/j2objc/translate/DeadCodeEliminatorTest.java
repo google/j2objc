@@ -38,7 +38,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  }\n"
         + "}\n";
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadMethod("A$B", "bar", "()Ljava/lang/String;")
+        .addMethod("A$B", "bar", "()Ljava/lang/String;")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
@@ -55,7 +55,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  };\n"
         + "}\n";
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadMethod("A$1", "foo", "()V")
+        .addMethod("A$1", "foo", "()V")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
@@ -69,7 +69,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  }\n"
         + "}\n";
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadMethod("A$B", "A$B", "(LA;I)V")
+        .addMethod("A$B", "A$B", "(LA;I)V")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
@@ -87,9 +87,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  private int abc = 9;\n"
         + "}\n";
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadField("A", "foo")
-        .addDeadField("A", "baz")
-        .addDeadField("java.lang.System", "in")
+        .addField("A", "foo")
+        .addField("A", "baz")
+        .addField("java.lang.System", "in")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.h");
@@ -106,7 +106,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadInitializer() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("A").build();
+        .addClass("A").build();
     setDeadCodeMap(map);
     String source = "class A {\n"
         + "  static final int baz = 9;\n"
@@ -124,7 +124,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadEnum() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("A$Thing")
+        .addClass("A$Thing")
         .build();
     setDeadCodeMap(map);
     String source = "class A {\n"
@@ -148,8 +148,8 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testConstructorGeneration() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("A")
-        .addDeadMethod("C", "C", "(I)V")
+        .addClass("A")
+        .addMethod("C", "C", "(I)V")
         .build();
     setDeadCodeMap(map);
     addSourceFile("class B {\n"
@@ -169,7 +169,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadClass_FieldRemoval() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
+        .addClass("Foo")
         .build();
     setDeadCodeMap(map);
     String source = "class Foo {\n"
@@ -188,7 +188,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadClass_StaticNestedClass() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
+        .addClass("Foo")
         .build();
     setDeadCodeMap(map);
     String source = "class Foo {\n"
@@ -204,9 +204,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadClass_DeadStaticNestedClass() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
-        .addDeadClass("Foo$Bar")
-        .addDeadMethod("Foo$Baz", "g", "()V")
+        .addClass("Foo")
+        .addClass("Foo$Bar")
+        .addMethod("Foo$Baz", "g", "()V")
         .build();
     setDeadCodeMap(map);
     String source = "class Foo {\n"
@@ -227,10 +227,10 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadClass_DeadInnerClassConstructor() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadField("Foo$A", "z")
-        .addDeadField("Foo$A", "this$0")
-        .addDeadMethod("Foo$A", "Foo$A", "(LFoo;I)V")
-        .addDeadMethod("Foo$A", "f", "()I")
+        .addField("Foo$A", "z")
+        .addField("Foo$A", "this$0")
+        .addMethod("Foo$A", "Foo$A", "(LFoo;I)V")
+        .addMethod("Foo$A", "f", "()I")
         .build();
     setDeadCodeMap(map);
     String source = "public class Foo {\n"
@@ -255,7 +255,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadClass_SupertypeRemoval() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
+        .addClass("Foo")
         .build();
     setDeadCodeMap(map);
     addSourceFile("class SuperClass {}", "SuperClass.java");
@@ -271,7 +271,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   // Verify that annotation bodies aren't stripped when specified in a dead code report.
   public void testDeadAnnotation() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
+        .addClass("Foo")
         .build();
     setDeadCodeMap(map);
     String source = "import java.lang.annotation.Retention;\n"
@@ -286,7 +286,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadDefaultConstructor() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadMethod("Test", "Test", "()V")
+        .addMethod("Test", "Test", "()V")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile("class Test {}", "Test", "Test.h");
@@ -304,7 +304,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "}";
 
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
+        .addClass("Foo")
         .build();
     setDeadCodeMap(map);
 
@@ -323,7 +323,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "class Foo extends Base<String> {}";
 
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
+        .addClass("Foo")
         .build();
     setDeadCodeMap(map);
 
@@ -341,7 +341,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "class Foo extends Base<String> {}";
 
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadMethod("Base", "someDeadMethod", "()Ljava/lang/Object;")
+        .addMethod("Base", "someDeadMethod", "()Ljava/lang/Object;")
         .build();
     setDeadCodeMap(map);
 
@@ -357,8 +357,8 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "class Foo extends Base<String> {}";
 
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addDeadClass("Foo")
-        .addDeadMethod("Base", "someDeadMethod", "()Ljava/lang/Object;")
+        .addClass("Foo")
+        .addMethod("Base", "someDeadMethod", "()Ljava/lang/Object;")
         .build();
     setDeadCodeMap(map);
 

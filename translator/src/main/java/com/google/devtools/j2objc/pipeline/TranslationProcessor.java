@@ -149,10 +149,17 @@ public class TranslationProcessor extends FileProcessor {
       ticker.tick("DeadCodeEliminator");
     }
 
+    //TODO(user): Possible issues:
+    // Might need to merge the DeadCodeEliminator and TreeShaker CodeReferenceMaps
+    // since any overlap could break the code
+    // Solution: Enforce that only one is used
     if (treeShakerMap != null) {
-//    TODO(user): Add algorithm step, report step, and elimination step to treeshaker
       ElementReferenceMapper mapper = new ElementReferenceMapper(unit);
       mapper.run();
+      mapper.shakeTree(treeShakerMap);
+      //TODO(user): Enable the following, connecting elimination step to treeShaker
+      //deadCodeMap = mapper.buildTreeShakerMap();
+      //new DeadCodeEliminator(unit, deadCodeMap).run();
       ticker.tick("TreeShaker");
     }
 

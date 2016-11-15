@@ -27,8 +27,8 @@ public class CodeReferenceMapTest extends TestCase {
 
   public void testIsDeadClass() {
     CodeReferenceMap report = CodeReferenceMap.builder()
-        .addDeadClass("foo.bar.Baz")
-        .addDeadMethod("foo.bah.Bar", "abc", "()")
+        .addClass("foo.bar.Baz")
+        .addMethod("foo.bah.Bar", "abc", "()")
         .build();
     assertTrue(report.containsClass("foo.bar.Baz"));
     assertFalse(report.containsClass("foo.bah.Bar"));
@@ -36,8 +36,8 @@ public class CodeReferenceMapTest extends TestCase {
 
   public void testIsDeadField() {
     CodeReferenceMap report = CodeReferenceMap.builder()
-        .addDeadClass("foo.bar.Baz")
-        .addDeadField("foo.bah.Bar", "abc")
+        .addClass("foo.bar.Baz")
+        .addField("foo.bah.Bar", "abc")
         .build();
     assertTrue(report.containsField("foo.bar.Baz", "foobar"));
     assertTrue(report.containsField("foo.bah.Bar", "abc"));
@@ -46,8 +46,8 @@ public class CodeReferenceMapTest extends TestCase {
 
   public void testIsDeadMethod() {
     CodeReferenceMap report = CodeReferenceMap.builder()
-        .addDeadClass("foo.bar.Baz")
-        .addDeadMethod("foo.bah.Bar", "abc", "()")
+        .addClass("foo.bar.Baz")
+        .addMethod("foo.bah.Bar", "abc", "()")
         .build();
     assertTrue(report.containsMethod("foo.bah.Bar", "abc", "()"));
     assertTrue(report.containsMethod("foo.bar.Baz", "anything", "()"));
@@ -58,9 +58,9 @@ public class CodeReferenceMapTest extends TestCase {
 
   public void testToString() {
     CodeReferenceMap report = CodeReferenceMap.builder()
-        .addDeadClass("foo.bar.Baz")
-        .addDeadMethod("foo.bah.Bar", "abc", "()")
-        .addDeadField("foo.bah.Bar", "xyz")
+        .addClass("foo.bar.Baz")
+        .addMethod("foo.bah.Bar", "abc", "()")
+        .addField("foo.bah.Bar", "xyz")
         .build();
 
     String stringVersion = report.toString();

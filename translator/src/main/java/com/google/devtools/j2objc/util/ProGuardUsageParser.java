@@ -129,7 +129,7 @@ public class ProGuardUsageParser {
           // Class, but not completely dead; save to read its dead methods
           lastClass = line.substring(0, line.length() - 1);
         } else {
-          dead.addDeadClass(line);
+          dead.addClass(line);
         }
       }
 
@@ -145,12 +145,12 @@ public class ProGuardUsageParser {
         String methodName = methodMatcher.group(6);
         String arguments = methodMatcher.group(7);
         String signature = buildMethodSignature(returnType, arguments);
-        dead.addDeadMethod(lastClass, methodName, signature);
+        dead.addMethod(lastClass, methodName, signature);
       }
 
       private void handleField(String line) throws IOException {
         String name = line.substring(line.lastIndexOf(" ") + 1);
-        dead.addDeadField(lastClass, name);
+        dead.addField(lastClass, name);
       }
 
       @Override
