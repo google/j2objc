@@ -32,11 +32,13 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -53,7 +55,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   // Convenient fields for use by subclasses.
   protected final AbstractTypeDeclaration typeNode;
-  protected final ITypeBinding typeBinding;
+  protected final TypeElement typeElement;
   protected final CompilationUnit compilationUnit;
   protected final TranslationEnvironment env;
   protected final Types typeEnv;
@@ -66,12 +68,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected TypeGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder);
     typeNode = node;
-    typeBinding = node.getTypeBinding();
+    typeElement = node.getTypeElement();
     compilationUnit = TreeUtil.getCompilationUnit(node);
     env = compilationUnit.getEnv();
     typeEnv = env.types();
     nameTable = env.nameTable();
-    typeName = nameTable.getFullName(typeBinding);
+    typeName = nameTable.getFullName(typeElement);
     declarations = filterDeclarations(node.getBodyDeclarations());
     parametersNonnullByDefault = Options.nullability()
         && env.elementUtil().areParametersNonnullByDefault(node.getTypeElement());
@@ -175,7 +177,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean isInterfaceType() {
-    return typeBinding.isInterface();
+    return typeElement.getKind().isInterface();
   }
 
   protected Iterable<VariableDeclarationFragment> getInstanceFields() {
@@ -227,14 +229,19 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return false;
   }
 
+  private boolean hasStaticMethods() {
+    return !Iterables.isEmpty(
+        Iterables.filter(ElementUtil.getMethods(typeElement), ElementUtil::isStatic));
+  }
+
   protected boolean needsPublicCompanionClass() {
     if (typeNode.hasPrivateDeclaration()) {
       return false;
     }
     return hasInitializeMethod()
         || hasStaticAccessorMethods()
-        || BindingUtil.isRuntimeAnnotation(typeBinding)
-        || BindingUtil.hasStaticInterfaceMethods(typeBinding);
+        || ElementUtil.isRuntimeAnnotation(typeElement)
+        || hasStaticMethods();
   }
 
   protected boolean needsCompanionClass() {
@@ -247,8 +254,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean needsTypeLiteral() {
-    return !(BindingUtil.isPackageInfo(typeBinding) || typeBinding.isAnonymous()
-             || BindingUtil.isLambda(typeBinding));
+    return !(ElementUtil.isPackageInfo(typeElement) || ElementUtil.isAnonymous(typeElement)
+             || ElementUtil.isLambda(typeElement));
   }
 
   protected String getDeclarationType(IVariableBinding var) {

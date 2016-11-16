@@ -81,7 +81,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     printStaticVars();
     printEnumValuesArray();
 
-    if (!typeBinding.isInterface() || needsCompanionClass()) {
+    if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);

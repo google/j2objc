@@ -96,26 +96,26 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printNativeEnum();
 
     printTypeDocumentation();
-    if (typeBinding.isInterface()) {
+    if (typeElement.getKind().isInterface()) {
       printf("@protocol %s", typeName);
     } else {
       printf("@interface %s : %s", typeName, getSuperTypeName());
     }
     printImplementedProtocols();
-    if (!typeBinding.isInterface()) {
+    if (!typeElement.getKind().isInterface()) {
       printInstanceVariables();
     } else {
       newline();
     }
     printProperties();
-    if (!typeBinding.isInterface()) {
+    if (!typeElement.getKind().isInterface()) {
       printStaticAccessors();
     }
     printInnerDeclarations();
     printDisallowedConstructors();
     println("\n@end");
 
-    if (BindingUtil.isPackageInfo(typeBinding)) {
+    if (ElementUtil.isPackageInfo(typeElement)) {
       printOuterDeclarations();
       return;
     }
@@ -175,14 +175,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private List<String> getInterfaceNames() {
-    if (typeBinding.isAnnotation()) {
+    if (ElementUtil.isAnnotationType(typeElement)) {
       return Lists.newArrayList("JavaLangAnnotationAnnotation");
     }
     List<String> names = Lists.newArrayList();
     for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
       names.add(nameTable.getFullName(intrface));
     }
-    if (typeBinding.isEnum()) {
+    if (ElementUtil.isEnum(typeElement)) {
       names.remove("NSCopying");
       names.add(0, "NSCopying");
     } else if (isInterfaceType()) {
@@ -352,12 +352,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-    if (!typeBinding.isInterface() || !needsCompanionClass()
+    if (!typeElement.getKind().isInterface() || !needsCompanionClass()
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
     printf("\n@interface %s : NSObject", typeName);
-    if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
+    if (ElementUtil.isRuntimeAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
     }
@@ -480,7 +480,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printBoxedOperators() {
-    PrimitiveType primitiveType = env.typeUtil().unboxedType(BindingConverter.getType(typeBinding));
+    PrimitiveType primitiveType = env.typeUtil().unboxedType(typeElement.asType());
     if (primitiveType == null) {
       return;
     }
@@ -524,11 +524,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printUnprefixedAlias() {
-    String pkg = typeBinding.getPackage().getName();
-    if (nameTable.hasPrefix(pkg) && typeBinding.isTopLevel()) {
-      String unprefixedName = NameTable.camelCaseQualifiedName(typeBinding.getQualifiedName());
+    String pkg = ElementUtil.getName(ElementUtil.getPackage(typeElement));
+    if (nameTable.hasPrefix(pkg) && ElementUtil.isTopLevel(typeElement)) {
+      String unprefixedName =
+          NameTable.camelCaseQualifiedName(ElementUtil.getQualifiedName(typeElement));
       if (!unprefixedName.equals(typeName)) {
-        if (typeBinding.isInterface()) {
+        if (typeElement.getKind().isInterface()) {
           // Protocols can't be used in typedefs.
           printf("\n#define %s %s\n", unprefixedName, typeName);
         } else {
@@ -674,11 +675,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (!Options.disallowInheritedConstructors()) {
       return;
     }
-    if (typeBinding.isAnnotation() || typeBinding.isAnonymous() || typeBinding.isArray()
-        || typeBinding.isEnum() || typeBinding.isInterface() || typeBinding.isSynthetic()
-        || BindingUtil.isAbstract(typeBinding)) {
+    if (typeElement.getKind().isInterface() || ElementUtil.isEnum(typeElement)
+        || ElementUtil.isAnonymous(typeElement) || ElementUtil.isSynthetic(typeElement)
+        || ElementUtil.isAbstract(typeElement)) {
       return;
     }
+    ITypeBinding typeBinding = BindingConverter.unwrapTypeElement(typeElement);
     Set<String> constructors = new HashSet<>();
     for (IMethodBinding constructor : BindingUtil.getDeclaredConstructors(typeBinding)) {
       constructors.add(nameTable.getMethodSelector(constructor));

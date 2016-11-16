@@ -125,8 +125,17 @@ public final class ElementUtil {
     return hasModifier(element, Modifier.VOLATILE);
   }
 
+  public static boolean isTopLevel(TypeElement type) {
+    return type.getNestingKind() == NestingKind.TOP_LEVEL;
+  }
+
   public static boolean isAnonymous(TypeElement type) {
     return type.getNestingKind() == NestingKind.ANONYMOUS;
+  }
+
+  public static boolean isLocal(TypeElement type) {
+    NestingKind nestingKind = type.getNestingKind();
+    return nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL;
   }
 
   public static boolean isLambda(TypeElement type) {
@@ -359,11 +368,6 @@ public final class ElementUtil {
 
   public static boolean isRetainedWithField(VariableElement varElement) {
     return hasAnnotation(varElement, RetainedWith.class);
-  }
-
-  public static boolean isLocal(TypeElement type) {
-    NestingKind nestingKind = type.getNestingKind();
-    return nestingKind == NestingKind.ANONYMOUS || nestingKind == NestingKind.LOCAL;
   }
 
   public static <T extends Element> Iterable<T> filterEnclosedElements(

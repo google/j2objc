@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.util.Collection;
 import java.util.Set;
-import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -43,7 +42,7 @@ public class Import implements Comparable<Import> {
   private Import(TypeElement type, NameTable nameTable) {
     this.typeName = nameTable.getFullName(type);
     TypeElement mainType = type;
-    while (mainType.getNestingKind() != NestingKind.TOP_LEVEL) {
+    while (!ElementUtil.isTopLevel(mainType)) {
       mainType = ElementUtil.getDeclaringClass(mainType);
     }
     this.importFileName = Options.getHeaderMap().get(mainType);
