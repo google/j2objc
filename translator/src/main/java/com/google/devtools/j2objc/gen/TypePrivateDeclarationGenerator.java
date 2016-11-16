@@ -103,4 +103,9 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     }
     println(";");
   }
+
+  @Override
+  protected void printDisallowedConstructors() {
+    // Disallowed constructor declarations only needed in public headers.
+  }
 }

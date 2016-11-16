@@ -34,17 +34,21 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -666,7 +670,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * with a NS_UNAVAILABLE macro, so that clang will flag such access from native
    * code as an error.
    */
-  private void printDisallowedConstructors() {
+  protected void printDisallowedConstructors() {
     if (!Options.disallowInheritedConstructors()) {
       return;
     }
@@ -675,15 +679,18 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || BindingUtil.isAbstract(typeBinding)) {
       return;
     }
-    Set<IMethodBinding> constructors = BindingUtil.getDeclaredConstructors(typeBinding);
-    List<IMethodBinding> inheritedConstructors = new ArrayList<>();
+    Set<String> constructors = new HashSet<>();
+    for (IMethodBinding constructor : BindingUtil.getDeclaredConstructors(typeBinding)) {
+      constructors.add(nameTable.getMethodSelector(constructor));
+    }
+    Map<String, IMethodBinding> inheritedConstructors = new HashMap<>();
     ITypeBinding superType = typeBinding.getSuperclass();
     while (superType != null) {
       // Add super constructors that have unique parameters.
       for (IMethodBinding superC : BindingUtil.getDeclaredConstructors(superType)) {
-        if (!hasConstructor(constructors, superC)
-            && !hasConstructor(inheritedConstructors, superC)) {
-          inheritedConstructors.add(superC);
+        String selector = nameTable.getMethodSelector(superC);
+        if (!constructors.contains(selector)) {
+          inheritedConstructors.put(selector, superC);
         }
       }
       superType = superType.getSuperclass();
@@ -691,22 +698,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (!inheritedConstructors.isEmpty()) {
       newline();
       println("// Disallowed inherited constructors, do not use.");
-      for (IMethodBinding constructor : inheritedConstructors) {
-        print(getConstructorSignature(constructor));
+      for (IMethodBinding constructor : inheritedConstructors.values()) {
+        print(getConstructorSignature(BindingConverter.getExecutableElement(constructor)));
         println(" NS_UNAVAILABLE;");
       }
     }
-  }
-
-  // Returns true if a constructor has an overriding constructor in a specified set.
-  private static boolean hasConstructor(Collection<IMethodBinding> constructors,
-      IMethodBinding constructor) {
-    for (IMethodBinding c : constructors) {
-      if (constructor.isSubsignature(c)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -714,27 +710,39 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * This is similar to TypeGenerator.getMethodSignature(MethodDeclaration),
    * but works with constructors not declared by the type being generated.
    */
-  protected String getConstructorSignature(IMethodBinding m) {
+  private String getConstructorSignature(ExecutableElement element) {
     StringBuilder sb = new StringBuilder();
     sb.append("- (instancetype)");
-    ITypeBinding[] params = m.getParameterTypes();
-    String selector = nameTable.getMethodSelector(m);
-    String[] selParts = selector.split(":");
-    if (params.length == 0) {
-      assert selParts.length == 1 && !selector.endsWith(":");
-      sb.append(selParts[0]);
+    String selector = nameTable.getMethodSelector(element);
+    if (!selector.endsWith(":")) {
+      sb.append(selector);
     } else {
-      assert params.length == selParts.length;
+      String[] selParts = selector.split(":");
       int baseLength = sb.length() + selParts[0].length();
-      for (int i = 0; i < params.length; i++) {
-        if (i != 0) {
-          sb.append('\n');
-          sb.append(pad(baseLength - selParts[i].length()));
-        }
-        String typeName = nameTable.getObjCType(params[i]);
-        sb.append(UnicodeUtils.format("%s:(%s)arg%d", selParts[i], typeName, i));
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+      int i = 0;
+      boolean first = true;
+      for (VariableElement param : env.captureInfo().getImplicitPrefixParams(declaringClass)) {
+        first = printParameter(sb, param, selParts, i++, baseLength, first);
+      }
+      for (VariableElement param : element.getParameters()) {
+        first = printParameter(sb, param, selParts, i++, baseLength, first);
+      }
+      for (VariableElement param : env.captureInfo().getImplicitPostfixParams(declaringClass)) {
+        first = printParameter(sb, param, selParts, i++, baseLength, first);
       }
     }
     return sb.toString();
+  }
+
+  private boolean printParameter(StringBuilder sb, VariableElement param, String[] selParts,
+      int iArg, int baseLength, boolean first) {
+    if (!first) {
+      sb.append('\n');
+      sb.append(pad(baseLength - selParts[iArg].length()));
+    }
+    String paramType = nameTable.getObjCType(param.asType());
+    sb.append(UnicodeUtils.format("%s:(%s)arg%d", selParts[iArg], paramType, iArg));
+    return false;
   }
 }

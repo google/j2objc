@@ -166,7 +166,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class B extends A<String> { B(String s) { super(s); } }", "B", "B.h");
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
-    assertNotInTranslation(translation, "initWithId");
+    assertTranslation(translation, "initWithId:(id)arg0 NS_UNAVAILABLE;");
   }
 
   public void testPrivateMethodHiding() throws IOException {

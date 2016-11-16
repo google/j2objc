@@ -78,7 +78,7 @@ public class Options {
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = -1;
   private String processors = null;
-  private boolean disallowInheritedConstructors = false;
+  private boolean disallowInheritedConstructors = true;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
@@ -115,6 +115,7 @@ public class Options {
 
   // TODO(tball): remove obsolete flags once projects stop using them.
   private static final Set<String> obsoleteFlags = Sets.newHashSet(
+    "--disallow-inherited-constructors",
     "--final-methods-as-functions",
     "--no-final-methods-functions",
     "--hide-private-members",
@@ -493,8 +494,8 @@ public class Options {
           usage("-processor requires an argument");
         }
         processors = args[nArg];
-      } else if (arg.equals("--disallow-inherited-constructors")) {
-        disallowInheritedConstructors = true;
+      } else if (arg.equals("--allow-inherited-constructors")) {
+        disallowInheritedConstructors = false;
       } else if (arg.equals("--nullability")) {
         nullability = true;
       } else if (arg.startsWith("-Xlint")) {

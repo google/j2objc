@@ -59,6 +59,9 @@ Print this message.
 
 .SH TRANSLATION OPTIONS
 .TP
+.BI \-\-allow\-inherited\-constructors
+Don't issue compiler warnings when native code accesses inherited constructors.
+.TP
 \fB\-batch-translate-max\fR\=\fIn\fR
 The maximum number of source files that are translated together. Batching
 speeds up translation, but requires more memory.
@@ -68,9 +71,6 @@ Translate dependent classes if out-of-date.
 .TP
 .BI \-\-dead\-code\-report " file "
 Specify a ProGuard usage report for dead code elimination.
-.TP
-.BI \-\-disallow\-inherited\-constructors
-Issue compiler warnings when native code accesses inherited constructors.
 .TP
 .BI \-\-doc\-comments
 Translate Javadoc comments into Xcode-compatible comments.
