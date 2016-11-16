@@ -40,17 +40,24 @@ import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Adds cast checks to existing java cast expressions.
@@ -66,9 +73,9 @@ public class CastResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(CastExpression node) {
-    ITypeBinding type = node.getType().getTypeBinding();
+    TypeMirror type = node.getType().getTypeMirror();
     Expression expr = node.getExpression();
-    ITypeBinding exprType = expr.getTypeBinding();
+    TypeMirror exprType = expr.getTypeMirror();
 
     // TODO(kirbs): Implement correct conversion of Java 8 intersection types to Objective-C.
     if (node.getType().isIntersectionType() && !Options.isJava8Translator()) {
@@ -77,27 +84,27 @@ public class CastResolver extends UnitTreeVisitor {
         assert false : "not implemented yet";
     }
 
-    if (BindingUtil.isFloatingPoint(exprType)) {
-      assert type.isPrimitive();  // Java wouldn't allow a cast from primitive to non-primitive.
-      switch (type.getBinaryName().charAt(0)) {
-        case 'J':
+    if (TypeUtil.isFloatingPoint(exprType)) {
+      // Java wouldn't allow a cast from primitive to non-primitive.
+      assert type.getKind().isPrimitive();
+      switch (type.getKind()) {
+        case LONG:
           node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToLong", type));
           return;
-        case 'C':
+        case CHAR:
           node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToChar", type));
           return;
-        case 'B':
-        case 'S':
-        case 'I':
-          node.replaceWith(rewriteFloatToIntegralCast(
-              type, expr, "JreFpToInt", typeEnv.resolveJavaType("int")));
+        case BYTE:
+        case SHORT:
+        case INT:
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToInt", typeUtil.getInt()));
           return;
+        default:  // Fall through.
       }
-      // else fall-through.
     }
 
     // Lean on Java's type-checking.
-    if (!type.isPrimitive() && exprType.isAssignmentCompatible(type.getErasure())) {
+    if (!type.getKind().isPrimitive() && typeUtil.isAssignable(exprType, typeUtil.erasure(type))) {
       node.replaceWith(TreeUtil.remove(expr));
       return;
     }
@@ -109,41 +116,50 @@ public class CastResolver extends UnitTreeVisitor {
   }
 
   private Expression rewriteFloatToIntegralCast(
-      ITypeBinding castType, Expression expr, String funcName, ITypeBinding funcReturnType) {
+      TypeMirror castType, Expression expr, String funcName, TypeMirror funcReturnType) {
     FunctionElement element = new FunctionElement(funcName, funcReturnType, null)
         .addParameters(typeUtil.getDouble());
     FunctionInvocation invocation = new FunctionInvocation(element, funcReturnType);
     invocation.addArgument(TreeUtil.remove(expr));
     Expression newExpr = invocation;
-    if (!castType.isEqualTo(funcReturnType)) {
-      newExpr = new CastExpression(BindingConverter.getType(castType), newExpr);
+    if (!castType.equals(funcReturnType)) {
+      newExpr = new CastExpression(castType, newExpr);
     }
     return newExpr;
   }
 
-  private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
-    type = type.getErasure();
+  private static boolean isObjectArray(TypeMirror type) {
+    return TypeUtil.isArray(type) && !((ArrayType) type).getComponentType().getKind().isPrimitive();
+  }
+
+  private FunctionInvocation createCastCheck(TypeMirror type, Expression expr) {
+    type = typeUtil.erasure(type);
     TypeMirror idType = TypeUtil.ID_TYPE;
-    FunctionInvocation invocation = null;
-    if ((type.isInterface() && !type.isAnnotation())
-        || (type.isArray() && !type.getComponentType().isPrimitive())) {
+    if (TypeUtil.isInterface(type) || isObjectArray(type)) {
+      // Interfaces and object arrays requre a isInstance call.
       FunctionElement element = new FunctionElement("cast_check", idType, null)
           .addParameters(idType, TypeUtil.IOS_CLASS.asType());
-      invocation = new FunctionInvocation(element, idType);
+      FunctionInvocation invocation = new FunctionInvocation(element, idType);
       invocation.addArgument(TreeUtil.remove(expr));
       invocation.addArgument(new TypeLiteral(type, typeUtil));
-    } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
-      FunctionElement element = new FunctionElement("cast_chk", idType, null)
+      return invocation;
+    } else if (TypeUtil.isArray(type) || TypeUtil.isDeclaredType(type)) {
+      // Primitive array and non-interface type casts are checked using Objective-C's
+      // isKindOfClass:.
+      TypeElement objcClass = typeUtil.getObjcClass(type);
+      FunctionElement checkFunction = new FunctionElement("cast_chk", idType, null)
           .addParameters(idType, idType);
-      invocation = new FunctionInvocation(element, idType);
+      FunctionInvocation invocation = new FunctionInvocation(checkFunction, idType);
       invocation.addArgument(TreeUtil.remove(expr));
-      IOSMethodBinding classBinding = IOSMethodBinding.newMethod(
-          "class", Modifier.STATIC, idType, BindingConverter.getType(type));
-      MethodInvocation classInvocation = new MethodInvocation(
-          classBinding, new SimpleName(BindingConverter.getTypeElement(type)));
+      ExecutableElement classElement =
+          GeneratedExecutableElement.newMethodWithSelector("class", idType, objcClass)
+          .addModifiers(Modifier.STATIC);
+      MethodInvocation classInvocation =
+          new MethodInvocation(new ExecutablePair(classElement), new SimpleName(objcClass));
       invocation.addArgument(classInvocation);
+      return invocation;
     }
-    return invocation;
+    return null;
   }
 
   private void addCast(Expression expr) {
@@ -165,7 +181,7 @@ public class CastResolver extends UnitTreeVisitor {
   }
 
   private boolean needsCast(Expression expr, TypeMirror expectedType, boolean shouldCastFromId) {
-    TypeMirror declaredType = BindingConverter.getType(getDeclaredType(expr));
+    TypeMirror declaredType = getDeclaredType(expr);
     if (declaredType == null) {
       return false;
     }
@@ -186,73 +202,62 @@ public class CastResolver extends UnitTreeVisitor {
     return true;
   }
 
-  private ITypeBinding getDeclaredType(Expression expr) {
+  private TypeMirror getDeclaredType(Expression expr) {
     VariableElement var = TreeUtil.getVariableElement(expr);
     if (var != null) {
-      return BindingConverter.unwrapTypeMirrorIntoTypeBinding(var.asType());
+      return var.asType();
     }
     switch (expr.getKind()) {
       case CLASS_INSTANCE_CREATION:
-        return typeEnv.getIdType();
+        return TypeUtil.ID_TYPE;
       case FUNCTION_INVOCATION:
-        return BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-            ((FunctionInvocation) expr).getFunctionElement().getReturnType());
+        return ((FunctionInvocation) expr).getFunctionElement().getReturnType();
       case LAMBDA_EXPRESSION:
         // Lambda expressions are generated as function calls that return "id".
-        return typeEnv.getIdType();
+        return TypeUtil.ID_TYPE;
       case METHOD_INVOCATION: {
         MethodInvocation invocation = (MethodInvocation) expr;
-        IMethodBinding method = invocation.getMethodBinding();
+        ExecutableElement method = invocation.getExecutableElement();
         // Object receiving the message, or null if it's a method in this class.
         Expression receiver = invocation.getExpression();
-        ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding()
-            : method.getDeclaringClass();
+        TypeMirror receiverType = receiver != null ? receiver.getTypeMirror()
+            : ElementUtil.getDeclaringClass(method).asType();
         return getDeclaredReturnType(method, receiverType);
       }
       case PARENTHESIZED_EXPRESSION:
         return getDeclaredType(((ParenthesizedExpression) expr).getExpression());
       case SUPER_METHOD_INVOCATION: {
         SuperMethodInvocation invocation = (SuperMethodInvocation) expr;
-        IMethodBinding method = invocation.getMethodBinding();
-        if (invocation.getQualifier() != null) {
-          // For a qualified super invocation, the statement generator will look
-          // up the IMP using instanceMethodForSelector.
-          if (!method.getReturnType().isPrimitive()) {
-            return typeEnv.getIdType();
-          } else {
-            return null;
-          }
-        }
         return getDeclaredReturnType(
-            method, TreeUtil.getEnclosingTypeBinding(invocation).getSuperclass());
+            invocation.getExecutableElement(),
+            TreeUtil.getEnclosingTypeElement(invocation).getSuperclass());
       }
       default:
         return null;
     }
   }
 
-  private ITypeBinding getDeclaredReturnType(IMethodBinding method, ITypeBinding receiverType) {
-    final IMethodBinding methodDecl = method.getMethodDeclaration();
-
+  private TypeMirror getDeclaredReturnType(ExecutableElement method, TypeMirror receiverType) {
     // Check if the method is declared on the receiver type.
-    if (receiverType.getTypeDeclaration() == methodDecl.getDeclaringClass()) {
-      return methodDecl.getReturnType();
+    if (ElementUtil.getDeclaringClass(method).equals(TypeUtil.asTypeElement(receiverType))) {
+      return method.getReturnType();
     }
 
     // Search all inherited types for matching method declarations. Choose the
     // most narrow return type, because AbstractMethodRewriter will ensure that
     // a declaration exists with the most narrow return type.
-    String selector = nameTable.getMethodSelector(methodDecl);
-    for (TypeMirror typeBoundT : typeUtil.getUpperBounds(BindingConverter.getType(receiverType))) {
-      ITypeBinding typeBound = BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeBoundT);
-      ITypeBinding returnType = null;
-      for (ITypeBinding inheritedType :
-           BindingUtil.getOrderedInheritedTypesInclusive(typeBound.getTypeDeclaration())) {
-        for (IMethodBinding declaredMethod : inheritedType.getDeclaredMethods()) {
-          if (methodDecl.isSubsignature(declaredMethod)
-              && nameTable.getMethodSelector(declaredMethod).equals(selector)) {
-            ITypeBinding newReturnType = declaredMethod.getReturnType().getErasure();
-            if (returnType == null || newReturnType.isSubTypeCompatible(returnType)) {
+    ExecutableType methodType = (ExecutableType) method.asType();
+    String selector = nameTable.getMethodSelector(method);
+    for (TypeMirror typeBound : typeUtil.getUpperBounds(receiverType)) {
+      TypeMirror returnType = null;
+      for (DeclaredType inheritedType : typeUtil.getObjcOrderedInheritedTypes(typeBound)) {
+        TypeElement inheritedElem = (TypeElement) inheritedType.asElement();
+        for (ExecutableElement currentMethod : ElementUtil.getMethods(inheritedElem)) {
+          ExecutableType currentMethodType = typeUtil.asMemberOf(inheritedType, currentMethod);
+          if (typeUtil.isSubsignature(methodType, currentMethodType)
+              && nameTable.getMethodSelector(currentMethod).equals(selector)) {
+            TypeMirror newReturnType = typeUtil.erasure(currentMethodType.getReturnType());
+            if (returnType == null || typeUtil.isSubtype(newReturnType, returnType)) {
               returnType = newReturnType;
             }
           }
@@ -263,8 +268,8 @@ public class CastResolver extends UnitTreeVisitor {
       }
     }
 
-    // Last resort. Might be a GeneratedMethodBinding.
-    return methodDecl.getReturnType();
+    // Last resort. Might be a GeneratedExecutableElement.
+    return method.getReturnType();
   }
 
   // Some native objective-c methods are declared to return NSUInteger.
@@ -400,7 +405,8 @@ public class CastResolver extends UnitTreeVisitor {
 
     VariableElement param = node.getParameter(0).getVariableElement();
 
-    FunctionInvocation castCheck = createCastCheck(typeArguments[0], new SimpleName(param));
+    FunctionInvocation castCheck = createCastCheck(
+        BindingConverter.getType(typeArguments[0]), new SimpleName(param));
     if (castCheck != null) {
       node.getBody().addStatement(0, new ExpressionStatement(castCheck));
     }

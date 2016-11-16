@@ -88,8 +88,8 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
       node.getAnonymousClassDeclaration().accept(this);
     }
 
-    ExecutablePair method = node.getExecutablePair();
-    String key = Mappings.getMethodKey(method.element(), typeUtil);
+    ExecutableElement method = node.getExecutableElement();
+    String key = Mappings.getMethodKey(method, typeUtil);
     String selector = Mappings.STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS.get(key);
     if (selector != null) {
       assert !node.hasRetainedResult();
@@ -101,11 +101,9 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
           return false;
         }
       }
-      ExecutableElement newElement =
-          GeneratedExecutableElement.newMappedMethod(selector, method.element());
+      ExecutableElement newElement = GeneratedExecutableElement.newMappedMethod(selector, method);
       MethodInvocation newInvocation = new MethodInvocation(
-          new ExecutablePair(newElement, method.type()),
-          new SimpleName(ElementUtil.getDeclaringClass(method.element())));
+          new ExecutablePair(newElement), new SimpleName(ElementUtil.getDeclaringClass(method)));
       TreeUtil.copyList(node.getArguments(), newInvocation.getArguments());
 
       node.replaceWith(newInvocation);
