@@ -118,7 +118,7 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
-    if (typeEnv.isJavaStringType(node.getTypeMirror()) && op == InfixExpression.Operator.PLUS) {
+    if (typeUtil.isString(node.getTypeMirror()) && op == InfixExpression.Operator.PLUS) {
       rewriteStringConcat(node);
     } else if (op == InfixExpression.Operator.CONDITIONAL_AND) {
       // Avoid logical-op-parentheses compiler warnings.
@@ -153,7 +153,7 @@ public class Rewriter extends UnitTreeVisitor {
     TypeMirror nonStringExprType = null;
     for (Expression operand : node.getOperands()) {
       TypeMirror operandType = operand.getTypeMirror();
-      if (typeEnv.isJavaStringType(operandType)) {
+      if (typeUtil.isString(operandType)) {
         break;
       }
       nonStringOperands.add(operand);
@@ -301,7 +301,7 @@ public class Rewriter extends UnitTreeVisitor {
     FieldDeclaration field = (FieldDeclaration) node.getParent();
     TypeMirror fieldType = field.getType().getTypeMirror();
     VariableDeclarationFragment firstVarNode = field.getFragment(0);
-    if (typeEnv.isStringType(fieldType)) {
+    if (typeUtil.isString(fieldType)) {
       node.addAttribute("copy");
     } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {
       if (node.hasAttribute("strong")) {

@@ -334,7 +334,7 @@ public class Autoboxer extends UnitTreeVisitor {
       return;
     }
     // Don't unbox for string concatenation.
-    if (op == InfixExpression.Operator.PLUS && typeEnv.isJavaStringType(node.getTypeMirror())) {
+    if (op == InfixExpression.Operator.PLUS && typeUtil.isString(node.getTypeMirror())) {
       return;
     }
 

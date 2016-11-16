@@ -123,7 +123,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
   private void fixStringValue(SwitchStatement node) {
     Expression expr = node.getExpression();
     TypeMirror type = expr.getTypeMirror();
-    if (!typeEnv.isJavaStringType(type)) {
+    if (!typeUtil.isString(type)) {
       return;
     }
     ArrayType arrayType = typeUtil.getArrayType(type);

@@ -287,7 +287,8 @@ public class CastResolver extends UnitTreeVisitor {
         && methodBinding.getReturnType().isEqualTo(typeEnv.resolveJavaType("int"))) {
       return true;
     }
-    if (typeEnv.isStringType(methodBinding.getDeclaringClass()) && methodName.equals("length")) {
+    if (typeUtil.isString(BindingConverter.getTypeElement(methodBinding.getDeclaringClass()))
+        && methodName.equals("length")) {
       return true;
     }
     return false;

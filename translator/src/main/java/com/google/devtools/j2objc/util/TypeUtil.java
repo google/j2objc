@@ -256,6 +256,14 @@ public final class TypeUtil {
     return javaNumber;
   }
 
+  public boolean isString(TypeElement e) {
+    return javaString.equals(e) || NS_STRING.equals(e);
+  }
+
+  public boolean isString(TypeMirror t) {
+    return isString(asTypeElement(t));
+  }
+
   /**
    * Maps the given type to it's Objective-C equivalent. Array types are mapped to their equivalent
    * IOSArray type and common Java classes like String and Object are mapped to NSString and

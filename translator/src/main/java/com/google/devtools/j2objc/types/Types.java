@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -38,11 +37,9 @@ public class Types {
 
   // Commonly used java types.
   private final ITypeBinding javaObjectType;
-  private final ITypeBinding javaStringType;
 
   // Non-standard naming pattern is used, since in this case it's more readable.
   private final ITypeBinding NSObject;
-  private final ITypeBinding NSString;
 
   // Special IOS types.
   private final ITypeBinding idType;
@@ -61,11 +58,9 @@ public class Types {
 
     // Find core java types.
     javaObjectType = resolveWellKnownType("java.lang.Object");
-    javaStringType = resolveWellKnownType("java.lang.String");
 
     // Create core IOS types.
     NSObject = BindingConverter.unwrapTypeElement(TypeUtil.NS_OBJECT);
-    NSString = BindingConverter.unwrapTypeElement(TypeUtil.NS_STRING);
     idType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(TypeUtil.ID_TYPE);
 
     ITypeBinding voidType = resolveWellKnownType("void");
@@ -93,22 +88,6 @@ public class Types {
       result = resolveWellKnownType(name);
     }
     return result;
-  }
-
-  public boolean isJavaStringType(ITypeBinding type) {
-    return javaStringType.equals(type);
-  }
-
-  public boolean isJavaStringType(TypeMirror type) {
-    return javaStringType.equals(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
-  }
-
-  public boolean isStringType(TypeMirror type) {
-    return isStringType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
-  }
-
-  public boolean isStringType(ITypeBinding type) {
-    return javaStringType.isEqualTo(type) || NSString.isEqualTo(type);
   }
 
   public boolean isIdType(ITypeBinding type) {

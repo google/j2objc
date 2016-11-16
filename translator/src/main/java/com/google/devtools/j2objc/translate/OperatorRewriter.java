@@ -113,8 +113,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
       }
 
       node.replaceWith(leftOperand);
-    } else if (op == InfixExpression.Operator.PLUS && typeEnv.isStringType(nodeType)
-        && !isStringAppend(node.getParent())) {
+    } else if (op == InfixExpression.Operator.PLUS && typeUtil.isString(nodeType)
+               && !isStringAppend(node.getParent())) {
       rewriteStringConcatenation(node);
     }
   }
@@ -395,7 +395,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TreeUtil.moveList(childOperands, operands);
 
     operands = coalesceStringLiterals(operands);
-    if (operands.size() == 1 && typeEnv.isStringType(operands.get(0).getTypeMirror())) {
+    if (operands.size() == 1 && typeUtil.isString(operands.get(0).getTypeMirror())) {
       node.replaceWith(operands.get(0));
       return;
     }
@@ -413,7 +413,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   private List<Expression> getStringAppendOperands(Assignment node) {
     Expression rhs = node.getRightHandSide();
-    if (rhs instanceof InfixExpression && typeEnv.isStringType(rhs.getTypeMirror())) {
+    if (rhs instanceof InfixExpression && typeUtil.isString(rhs.getTypeMirror())) {
       InfixExpression infixExpr = (InfixExpression) rhs;
       if (infixExpr.getOperator() == InfixExpression.Operator.PLUS) {
         List<Expression> operands = infixExpr.getOperands();
@@ -502,7 +502,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     TypeMirror operandType = operand.getTypeMirror();
     if (operandType.getKind().isPrimitive()) {
       return TypeUtil.getBinaryName(operandType).charAt(0);
-    } else if (typeEnv.isStringType(operandType)) {
+    } else if (typeUtil.isString(operandType)) {
       return '$';
     } else {
       return '@';
