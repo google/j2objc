@@ -14,12 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for constructing a new instance. (e.g. "new Foo()")
@@ -68,10 +67,6 @@ public class ClassInstanceCreation extends Expression {
     return Kind.CLASS_INSTANCE_CREATION;
   }
 
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
-  }
-
   public ExecutablePair getExecutablePair() {
     return method;
   }
@@ -83,6 +78,10 @@ public class ClassInstanceCreation extends Expression {
 
   public ExecutableElement getExecutableElement() {
     return method.element();
+  }
+
+  public ExecutableType getExecutableType() {
+    return method.type();
   }
 
   @Override

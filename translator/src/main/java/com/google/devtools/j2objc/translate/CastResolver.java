@@ -39,14 +39,11 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -55,9 +52,8 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Adds cast checks to existing java cast expressions.
@@ -274,27 +270,26 @@ public class CastResolver extends UnitTreeVisitor {
 
   // Some native objective-c methods are declared to return NSUInteger.
   private boolean returnValueNeedsIntCast(Expression arg) {
-    IMethodBinding methodBinding = TreeUtil.getMethodBinding(arg);
-    assert methodBinding != null;
+    ExecutableElement methodElement = TreeUtil.getExecutableElement(arg);
+    assert methodElement != null;
 
     if (arg.getParent() instanceof ExpressionStatement) {
       // Avoid "unused return value" warning.
       return false;
     }
 
-    String methodName = nameTable.getMethodSelector(methodBinding);
-    if (methodName.equals("hash")
-        && methodBinding.getReturnType().isEqualTo(typeEnv.resolveJavaType("int"))) {
+    String methodName = nameTable.getMethodSelector(methodElement);
+    if (methodName.equals("hash") && methodElement.getReturnType().getKind() == TypeKind.INT) {
       return true;
     }
-    if (typeUtil.isString(BindingConverter.getTypeElement(methodBinding.getDeclaringClass()))
+    if (typeUtil.isString(ElementUtil.getDeclaringClass(methodElement))
         && methodName.equals("length")) {
       return true;
     }
     return false;
   }
 
-  private void maybeCastArguments(List<Expression> args, List<TypeMirror> argTypes) {
+  private void maybeCastArguments(List<Expression> args, List<? extends TypeMirror> argTypes) {
     // Possible varargs, don't cast vararg arguments.
     assert args.size() >= argTypes.size();
     for (int i = 0; i < argTypes.size(); i++) {
@@ -302,27 +297,23 @@ public class CastResolver extends UnitTreeVisitor {
     }
   }
 
-  private void maybeCastArguments(List<Expression> args, IMethodBinding method) {
-    List<TypeMirror> paramTypes = new ArrayList<>();
-    for (ITypeBinding param : method.getParameterTypes()) {
-      paramTypes.add(BindingConverter.getType(param));
-    }
-    maybeCastArguments(args, paramTypes);
+  private void maybeCastArguments(List<Expression> args, ExecutableType method) {
+    maybeCastArguments(args, method.getParameterTypes());
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    maybeCastArguments(node.getArguments(), node.getMethodBinding());
+    maybeCastArguments(node.getArguments(), node.getExecutableType());
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getMethodBinding());
+    maybeCastArguments(node.getArguments(), node.getExecutableType());
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    maybeCastArguments(node.getArguments(), node.getMethodBinding());
+    maybeCastArguments(node.getArguments(), node.getExecutableType());
   }
 
   @Override
@@ -337,12 +328,11 @@ public class CastResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
     Expression receiver = node.getExpression();
-    if (receiver != null && !BindingUtil.isStatic(binding)) {
+    if (receiver != null && !ElementUtil.isStatic(node.getExecutableElement())) {
       maybeAddCast(receiver, null, true);
     }
-    maybeCastArguments(node.getArguments(), binding);
+    maybeCastArguments(node.getArguments(), node.getExecutableType());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
@@ -358,12 +348,12 @@ public class CastResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getMethodBinding());
+    maybeCastArguments(node.getArguments(), node.getExecutableType());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getMethodBinding());
+    maybeCastArguments(node.getArguments(), node.getExecutableType());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
@@ -388,26 +378,25 @@ public class CastResolver extends UnitTreeVisitor {
    */
   @Override
   public void endVisit(MethodDeclaration node) {
-    IMethodBinding binding = node.getMethodBinding();
-    if (!binding.getName().equals("compareTo") || node.getBody() == null) {
+    ExecutableElement element = node.getExecutableElement();
+    if (!ElementUtil.getName(element).equals("compareTo") || node.getBody() == null) {
       return;
     }
-    ITypeBinding comparableType =
-        BindingUtil.findInterface(binding.getDeclaringClass(), "java.lang.Comparable");
+    DeclaredType comparableType = typeUtil.findSupertype(
+        ElementUtil.getDeclaringClass(element).asType(), "java.lang.Comparable");
     if (comparableType == null) {
       return;
     }
-    ITypeBinding[] typeArguments = comparableType.getTypeArguments();
-    ITypeBinding[] parameterTypes = binding.getParameterTypes();
-    if (typeArguments.length != 1 || parameterTypes.length != 1
-        || !typeArguments[0].isEqualTo(parameterTypes[0])) {
+    List<? extends TypeMirror> typeArguments = comparableType.getTypeArguments();
+    List<? extends VariableElement> parameters = element.getParameters();
+    if (typeArguments.size() != 1 || parameters.size() != 1
+        || !typeArguments.get(0).equals(parameters.get(0).asType())) {
       return;
     }
 
     VariableElement param = node.getParameter(0).getVariableElement();
 
-    FunctionInvocation castCheck = createCastCheck(
-        BindingConverter.getType(typeArguments[0]), new SimpleName(param));
+    FunctionInvocation castCheck = createCastCheck(typeArguments.get(0), new SimpleName(param));
     if (castCheck != null) {
       node.getBody().addStatement(0, new ExpressionStatement(castCheck));
     }
@@ -442,9 +431,9 @@ public class CastResolver extends UnitTreeVisitor {
   }
 
   private boolean incompatibleTypes(Expression a, Expression b) {
-    ITypeBinding aType = a.getTypeBinding();
-    ITypeBinding bType = b.getTypeBinding();
-    return !(aType.isPrimitive() || bType.isPrimitive()
-        || aType.isAssignmentCompatible(bType) || bType.isAssignmentCompatible(aType));
+    TypeMirror aType = a.getTypeMirror();
+    TypeMirror bType = b.getTypeMirror();
+    return TypeUtil.isReferenceType(aType) && TypeUtil.isReferenceType(bType)
+        && !typeUtil.isObjcAssignable(aType, bType) && !typeUtil.isObjcAssignable(bType, aType);
   }
 }

@@ -14,11 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
+import javax.lang.model.type.ExecutableType;
 
 /**
  * Node for a alternate constructor invocation. (i.e. "this(...);")
@@ -41,16 +40,6 @@ public class ConstructorInvocation extends Statement {
     return Kind.CONSTRUCTOR_INVOCATION;
   }
 
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
-  }
-
-  public void setMethodBinding(IMethodBinding methodBinding) {
-    method = new ExecutablePair(
-        BindingConverter.getExecutableElement(methodBinding),
-        BindingConverter.getType(methodBinding));
-  }
-
   public ExecutablePair getExecutablePair() {
     return method;
   }
@@ -62,6 +51,10 @@ public class ConstructorInvocation extends Statement {
 
   public ExecutableElement getExecutableElement() {
     return method.element();
+  }
+
+  public ExecutableType getExecutableType() {
+    return method.type();
   }
 
   public List<Expression> getArguments() {

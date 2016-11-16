@@ -282,10 +282,6 @@ public class TreeUtil {
     return element != null && ElementUtil.isVariable(element) ? (VariableElement) element : null;
   }
 
-  public static IMethodBinding getMethodBinding(Expression node) {
-    return BindingConverter.unwrapExecutableElement(getExecutableElement(node));
-  }
-
   public static ExecutableElement getExecutableElement(Expression node) {
     switch (node.getKind()) {
       case CLASS_INSTANCE_CREATION:

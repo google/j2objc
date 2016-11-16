@@ -14,11 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
+import javax.lang.model.type.ExecutableType;
 
 /**
  * Node for a super constructor invocation. (i.e. "super(...);")
@@ -47,10 +46,6 @@ public class SuperConstructorInvocation extends Statement {
     return Kind.SUPER_CONSTRUCTOR_INVOCATION;
   }
 
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
-  }
-
   public ExecutablePair getExecutablePair() {
     return method;
   }
@@ -62,6 +57,10 @@ public class SuperConstructorInvocation extends Statement {
 
   public ExecutableElement getExecutableElement() {
     return method.element();
+  }
+
+  public ExecutableType getExecutableType() {
+    return method.type();
   }
 
   public Expression getExpression() {

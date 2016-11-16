@@ -19,7 +19,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
+import javax.lang.model.type.ExecutableType;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -63,11 +63,6 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     return this;
   }
 
-  // TODO(tball): remove when javac migration is complete.
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
-  }
-
   public ExecutablePair getExecutablePair() {
     return method;
   }
@@ -79,6 +74,10 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   public ExecutableElement getExecutableElement() {
     return method.element();
+  }
+
+  public ExecutableType getExecutableType() {
+    return method.type();
   }
 
   public SimpleName getName() {
