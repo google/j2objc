@@ -92,6 +92,8 @@ public final class BindingConverter {
       type = new JdtWildcardType(binding);
     } else if (binding.isCapture()) {
       type = JdtTypeVariable.fromCapture(binding);
+    } else if (binding.isNullType()) {
+      return NULL_TYPE;
     } else {
       type = new JdtDeclaredType(binding);
     }

@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import javax.lang.model.element.PackageElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import javax.lang.model.element.TypeElement;
 
 /**
  * Manages the mapping of types to their header files.
@@ -150,21 +149,21 @@ public class HeaderMap {
     return outputStyle == OutputStyleOption.SOURCE && includeGeneratedSources;
   }
 
-  public String get(ITypeBinding type) {
-    String explicitHeader = ElementUtil.getHeader(BindingConverter.getTypeElement(type));
+  public String get(TypeElement type) {
+    String explicitHeader = ElementUtil.getHeader(type);
     if (explicitHeader != null) {
       return explicitHeader;
     }
 
-    String qualifiedName = type.getErasure().getQualifiedName();
+    String qualifiedName = ElementUtil.getQualifiedName(type);
 
     String mappedHeader = map.get(qualifiedName);
     if (mappedHeader != null) {
       return mappedHeader;
     }
 
-    String name = type.getErasure().getName();
-    PackageElement pkg = BindingConverter.getPackageElement(type.getPackage());
+    String name = ElementUtil.getName(type);
+    PackageElement pkg = ElementUtil.getPackage(type);
     return outputDirFromPackage(pkg) + name + ".h";
   }
 

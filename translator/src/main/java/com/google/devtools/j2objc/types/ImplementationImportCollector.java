@@ -96,12 +96,11 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
   }
 
   private void addImports(TypeMirror type) {
-    Import.addImports(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), imports, unit.getEnv());
+    Import.addImports(type, imports, unit.getEnv());
   }
 
   private void addImports(ITypeBinding type) {
-    Import.addImports(type, imports, unit.getEnv());
+    Import.addImports(BindingConverter.getType(type), imports, unit.getEnv());
   }
 
   private void addImports(Iterable<TypeMirror> types) {

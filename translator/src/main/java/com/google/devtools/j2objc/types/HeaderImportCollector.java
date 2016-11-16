@@ -97,15 +97,18 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   }
 
   private void addForwardDecl(ITypeBinding type) {
-    forwardDecls.addAll(Sets.difference(Import.getImports(type, unit.getEnv()), declaredTypes));
+    forwardDecls.addAll(Sets.difference(
+        Import.getImports(BindingConverter.getType(type), unit.getEnv()), declaredTypes));
   }
 
   private void addSuperType(TypeElement type) {
-    Import.addImports(BindingConverter.unwrapTypeElement(type), superTypes, unit.getEnv());
+    if (type != null) {
+      Import.addImports(type.asType(), superTypes, unit.getEnv());
+    }
   }
 
   private void addDeclaredType(ITypeBinding type) {
-    Import.addImports(type, declaredTypes, unit.getEnv());
+    Import.addImports(BindingConverter.getType(type), declaredTypes, unit.getEnv());
   }
 
   @Override

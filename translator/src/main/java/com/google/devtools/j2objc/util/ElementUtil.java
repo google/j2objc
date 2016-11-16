@@ -425,8 +425,11 @@ public final class ElementUtil {
     return javacElements.overrides(overrider, overridden, type);
   }
 
-  public PackageElement getPackage(Element e) {
-    return javacElements.getPackageOf(e);
+  public static PackageElement getPackage(Element e) {
+    while (e != null && !isPackage(e)) {
+      e = e.getEnclosingElement();
+    }
+    return (PackageElement) e;
   }
 
   public String getBinaryName(TypeElement e) {

@@ -144,7 +144,7 @@ public class MetadataWriter extends UnitTreeVisitor {
           + "%s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
           fullName,
           cStr(ElementUtil.isAnonymous(type) ? "" : ElementUtil.getName(type)),
-          cStr(Strings.emptyToNull(ElementUtil.getName(elementUtil.getPackage(type)))),
+          cStr(Strings.emptyToNull(ElementUtil.getName(ElementUtil.getPackage(type)))),
           methodMetadataCount > 0 ? "methods" : "NULL",
           fieldMetadataCount > 0 ? "fields" : "NULL",
           METADATA_VERSION,

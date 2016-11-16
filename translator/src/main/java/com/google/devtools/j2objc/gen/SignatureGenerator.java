@@ -101,8 +101,7 @@ public class SignatureGenerator {
     return builder.toString();
   }
 
-  public static String createJniFunctionSignature(
-      ExecutableElement method, ElementUtil elementUtil) {
+  public static String createJniFunctionSignature(ExecutableElement method) {
     // Mangle function name as described in JNI specification.
     // http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/design.html#wp615
     StringBuilder sb = new StringBuilder();
@@ -110,7 +109,7 @@ public class SignatureGenerator {
 
     String methodName = ElementUtil.getName(method);
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
-    PackageElement pkg = elementUtil.getPackage(declaringClass);
+    PackageElement pkg = ElementUtil.getPackage(declaringClass);
     if (pkg != null && !pkg.isUnnamed()) {
       String pkgName = pkg.getQualifiedName().toString();
       for (String part : pkgName.split("\\.")) {

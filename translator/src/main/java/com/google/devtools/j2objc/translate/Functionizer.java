@@ -371,7 +371,7 @@ public class Functionizer extends UnitTreeVisitor {
 
     FunctionDeclaration function =
         new FunctionDeclaration(nameTable.getFullFunctionName(elem), elem.getReturnType());
-    function.setJniSignature(SignatureGenerator.createJniFunctionSignature(elem, elementUtil));
+    function.setJniSignature(SignatureGenerator.createJniFunctionSignature(elem));
     function.setLineNumber(method.getName().getLineNumber());
 
     if (!ElementUtil.isStatic(elem)) {
