@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
@@ -41,7 +40,6 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.j2objc.annotations.ReflectionSupport;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,6 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * General collection of utility methods.
@@ -165,16 +162,6 @@ public final class TranslationUtil {
         if (invocation.getFunctionElement().getRetainedResultName() != null) {
           invocation.setHasRetainedResult(true);
           return TreeUtil.remove(node);
-        }
-        return null;
-      }
-      case METHOD_INVOCATION: {
-        MethodInvocation invocation = (MethodInvocation) node;
-        Expression expr = invocation.getExpression();
-        IMethodBinding method = invocation.getMethodBinding();
-        if (expr != null && method instanceof IOSMethodBinding
-            && ((IOSMethodBinding) method).getSelector().equals(NameTable.AUTORELEASE_METHOD)) {
-          return TreeUtil.remove(expr);
         }
         return null;
       }

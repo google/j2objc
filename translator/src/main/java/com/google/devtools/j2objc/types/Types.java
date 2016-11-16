@@ -18,13 +18,11 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Types is a singleton service class for type-related operations.
@@ -46,13 +44,6 @@ public class Types {
 
   private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
 
-  // Commonly used methods.
-  private final IOSMethodBinding retainMethod;
-  private final IOSMethodBinding releaseMethod;
-  private final IOSMethodBinding autoreleaseMethod;
-  private final IOSMethodBinding allocMethod;
-  private final IOSMethodBinding deallocMethod;
-
   public Types(ParserEnvironment env) {
     this.env = env;
 
@@ -62,20 +53,6 @@ public class Types {
     // Create core IOS types.
     NSObject = BindingConverter.unwrapTypeElement(TypeUtil.NS_OBJECT);
     idType = BindingConverter.unwrapTypeMirrorIntoTypeBinding(TypeUtil.ID_TYPE);
-
-    ITypeBinding voidType = resolveWellKnownType("void");
-
-    // Commonly used methods.
-    retainMethod = IOSMethodBinding.newMethod(
-        NameTable.RETAIN_METHOD, Modifier.PUBLIC, idType, NSObject);
-    releaseMethod = IOSMethodBinding.newMethod(
-        NameTable.RELEASE_METHOD, Modifier.PUBLIC, voidType, NSObject);
-    autoreleaseMethod = IOSMethodBinding.newMethod(
-        NameTable.AUTORELEASE_METHOD, Modifier.PUBLIC, idType, NSObject);
-    allocMethod = IOSMethodBinding.newMethod(
-        NameTable.ALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
-    deallocMethod = IOSMethodBinding.newMethod(
-        NameTable.DEALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
   }
 
   private ITypeBinding resolveWellKnownType(String name) {
@@ -102,25 +79,5 @@ public class Types {
 
   public ITypeBinding getIdType() {
     return idType;
-  }
-
-  public IOSMethodBinding getRetainMethod() {
-    return retainMethod;
-  }
-
-  public IOSMethodBinding getReleaseMethod() {
-    return releaseMethod;
-  }
-
-  public IOSMethodBinding getAutoreleaseMethod() {
-    return autoreleaseMethod;
-  }
-
-  public IOSMethodBinding getAllocMethod() {
-    return allocMethod;
-  }
-
-  public IOSMethodBinding getDeallocMethod() {
-    return deallocMethod;
   }
 }

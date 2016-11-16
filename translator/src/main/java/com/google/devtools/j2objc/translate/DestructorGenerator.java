@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.PointerType;
@@ -58,6 +59,11 @@ import javax.lang.model.type.TypeMirror;
  * @author Tom Ball
  */
 public class DestructorGenerator extends UnitTreeVisitor {
+
+  private final ExecutableElement superDeallocElement =
+      GeneratedExecutableElement.newMethodWithSelector(
+          NameTable.DEALLOC_METHOD, typeUtil.getVoid(), TypeUtil.NS_OBJECT)
+      .addModifiers(Modifier.PUBLIC);
 
   public DestructorGenerator(CompilationUnit unit) {
     super(unit);
@@ -97,7 +103,8 @@ public class DestructorGenerator extends UnitTreeVisitor {
     }
     stmts.addAll(releaseStatements);
     if (Options.useReferenceCounting()) {
-      stmts.add(new ExpressionStatement(new SuperMethodInvocation(typeEnv.getDeallocMethod())));
+      stmts.add(new ExpressionStatement(
+          new SuperMethodInvocation(new ExecutablePair(superDeallocElement))));
     }
 
     node.addBodyDeclaration(deallocDecl);

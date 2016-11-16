@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -53,6 +54,11 @@ import javax.lang.model.type.TypeMirror;
 public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
 
   private static final TypeMirror NSZONE_TYPE = new NativeType("NSZone *");
+
+  private static final ExecutableElement RETAIN_METHOD =
+      GeneratedExecutableElement.newMethodWithSelector(
+          NameTable.RETAIN_METHOD, TypeUtil.ID_TYPE, TypeUtil.NS_OBJECT)
+      .addModifiers(Modifier.PUBLIC);
 
   public JavaToIOSMethodTranslator(CompilationUnit unit) {
     super(unit);
@@ -144,7 +150,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     ExecutableElement cloneElement = ElementUtil.findMethod(typeUtil.getJavaObject(), "clone");
     MethodInvocation invocation = new MethodInvocation(new ExecutablePair(cloneElement), null);
     if (Options.useReferenceCounting()) {
-      invocation = new MethodInvocation(typeEnv.getRetainMethod(), invocation);
+      invocation = new MethodInvocation(new ExecutablePair(RETAIN_METHOD), invocation);
     }
     block.addStatement(new ReturnStatement(invocation));
 

@@ -66,10 +66,8 @@ public class NameTable {
   private final Map<IVariableBinding, String> variableNames = new HashMap<>();
 
   public static final String INIT_NAME = "init";
-  public static final String ALLOC_METHOD = "alloc";
   public static final String RETAIN_METHOD = "retain";
   public static final String RELEASE_METHOD = "release";
-  public static final String AUTORELEASE_METHOD = "autorelease";
   public static final String DEALLOC_METHOD = "dealloc";
   public static final String FINALIZE_METHOD = "finalize";
 
