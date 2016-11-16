@@ -26,15 +26,17 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Determines which declarations should be moved out of the public header file.
@@ -43,10 +45,10 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class PrivateDeclarationResolver extends UnitTreeVisitor {
 
-  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap = new HashMap<>();
+  private Map<TypeElement, AbstractTypeDeclaration> typeMap = new HashMap<>();
   // Collects types that must be public because they are exposed by another
   // public declaration. These types and all of their supertypes must be public.
-  private Set<ITypeBinding> publicTypes = new HashSet<>();
+  private Set<TypeElement> publicTypes = new HashSet<>();
   private List<AbstractTypeDeclaration> publicNodesToVisit = new ArrayList<>();
 
   public PrivateDeclarationResolver(CompilationUnit unit) {
@@ -55,16 +57,16 @@ public class PrivateDeclarationResolver extends UnitTreeVisitor {
 
   @Override
   public boolean visit(CompilationUnit node) {
-    // Map the types by their bindings.
+    // Map the types by their elements.
     for (AbstractTypeDeclaration typeNode : node.getTypes()) {
-      typeMap.put(typeNode.getTypeBinding().getTypeDeclaration(), typeNode);
+      typeMap.put(typeNode.getTypeElement(), typeNode);
     }
 
     // Identify types that are public by their declaration.
     for (AbstractTypeDeclaration typeNode : node.getTypes()) {
-      ITypeBinding typeBinding = typeNode.getTypeBinding();
-      if (!BindingUtil.isPrivateInnerType(typeBinding)) {
-        addPublicType(typeBinding);
+      TypeElement typeElement = typeNode.getTypeElement();
+      if (!ElementUtil.isPrivateInnerType(typeElement)) {
+        addPublicType(typeElement);
       }
     }
 
@@ -81,7 +83,7 @@ public class PrivateDeclarationResolver extends UnitTreeVisitor {
     // After all public nodes are identified, mark remaining nodes and their
     // declarations as private.
     for (AbstractTypeDeclaration typeNode : node.getTypes()) {
-      if (!publicTypes.contains(typeNode.getTypeBinding())) {
+      if (!publicTypes.contains(typeNode.getTypeElement())) {
         typeNode.setHasPrivateDeclaration(true);
         for (BodyDeclaration decl : typeNode.getBodyDeclarations()) {
           decl.setHasPrivateDeclaration(true);
@@ -91,29 +93,36 @@ public class PrivateDeclarationResolver extends UnitTreeVisitor {
     return false;
   }
 
-  private void addPublicType(ITypeBinding typeBinding) {
-    if (typeBinding == null) {
+  private void addPublicType(TypeElement typeElement) {
+    if (typeElement == null) {
       return;
     }
-    typeBinding = typeBinding.getTypeDeclaration();
-    AbstractTypeDeclaration typeNode = typeMap.get(typeBinding);
+    AbstractTypeDeclaration typeNode = typeMap.get(typeElement);
     if (typeNode == null) {
       return;
     }
-    if (publicTypes.add(typeBinding)) {
+    if (publicTypes.add(typeElement)) {
       publicNodesToVisit.add(typeNode);
     }
     // Make sure supertypes of public types remain public, even if declared
     // private.
-    addPublicType(typeBinding.getSuperclass());
-    for (ITypeBinding interfaceType : typeBinding.getInterfaces()) {
+    addPublicType(typeElement.getSuperclass());
+    for (TypeMirror interfaceType : typeElement.getInterfaces()) {
       addPublicType(interfaceType);
+    }
+  }
+
+  private void addPublicType(TypeMirror type) {
+    if (type != null) {
+      for (TypeMirror bound : typeUtil.getUpperBounds(type)) {
+        addPublicType(TypeUtil.asTypeElement(bound));
+      }
     }
   }
 
   private void addPublicType(Type typeNode) {
     if (typeNode != null) {
-      addPublicType(typeNode.getTypeBinding());
+      addPublicType(typeNode.getTypeMirror());
     }
   }
 
