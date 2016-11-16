@@ -48,7 +48,6 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -98,8 +97,7 @@ public class LambdaRewriter extends UnitTreeVisitor {
     public void resolveFunctionalInterface() {
       typeUtil.visitTypeHierarchy(typeMirror, baseType -> {
         TypeElement element = (TypeElement) baseType.asElement();
-        for (ExecutableElement method : ElementUtil.filterEnclosedElements(
-            element, ExecutableElement.class, ElementKind.METHOD)) {
+        for (ExecutableElement method : ElementUtil.getMethods(element)) {
           if (!ElementUtil.isDefault(method) && !ElementUtil.isStatic(method)) {
             functionalInterface = method;
             functionalInterfaceType = typeUtil.asMemberOf(baseType, method);

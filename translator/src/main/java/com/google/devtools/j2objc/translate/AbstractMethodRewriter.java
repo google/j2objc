@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashMap;
 import java.util.Map;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -128,8 +127,8 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     Map<String, ExecutablePair> newDeclarations = new HashMap<>();
     Map<String, TypeMirror> resolvedReturnTypes = new HashMap<>();
     for (DeclaredType inheritedType : typeUtil.getObjcOrderedInheritedTypes(type.asType())) {
-      for (ExecutableElement methodElem : ElementUtil.filterEnclosedElements(
-          inheritedType.asElement(), ExecutableElement.class, ElementKind.METHOD)) {
+      TypeElement inheritedElem = (TypeElement) inheritedType.asElement();
+      for (ExecutableElement methodElem : ElementUtil.getMethods(inheritedElem)) {
         TypeMirror declaredReturnType = typeUtil.erasure(methodElem.getReturnType());
         if (!TypeUtil.isReferenceType(declaredReturnType)) {
           continue;  // Short circuit
