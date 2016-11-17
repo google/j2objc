@@ -30,18 +30,19 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -58,7 +59,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final TypeElement typeElement;
   protected final CompilationUnit compilationUnit;
   protected final TranslationEnvironment env;
-  protected final Types typeEnv;
+  protected final TypeUtil typeUtil;
   protected final NameTable nameTable;
   protected final String typeName;
 
@@ -71,7 +72,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeElement = node.getTypeElement();
     compilationUnit = TreeUtil.getCompilationUnit(node);
     env = compilationUnit.getEnv();
-    typeEnv = env.types();
+    typeUtil = env.typeUtil();
     nameTable = env.nameTable();
     typeName = nameTable.getFullName(typeElement);
     declarations = filterDeclarations(node.getBodyDeclarations());
@@ -258,9 +259,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
              || ElementUtil.isLambda(typeElement));
   }
 
-  protected String getDeclarationType(IVariableBinding var) {
-    ITypeBinding type = var.getType();
-    if (BindingUtil.isVolatile(var)) {
+  protected String getDeclarationType(VariableElement var) {
+    TypeMirror type = var.asType();
+    if (ElementUtil.isVolatile(var)) {
       return "volatile_" + NameTable.getPrimitiveObjCType(type);
     } else {
       return nameTable.getObjCType(type);

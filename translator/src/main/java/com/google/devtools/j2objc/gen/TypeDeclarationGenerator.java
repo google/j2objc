@@ -269,7 +269,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           // included by a file compiled with ARC.
           print("__unsafe_unretained ");
         }
-        String objcType = getDeclarationType(varBinding);
+        String objcType = getDeclarationType(BindingConverter.getVariableElement(varBinding));
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.
@@ -438,7 +438,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     boolean isVolatile = BindingUtil.isVolatile(var);
     String objcType = nameTable.getObjCType(var.getType());
     String objcTypePadded = objcType + (objcType.endsWith("*") ? "" : " ");
-    String declType = getDeclarationType(var);
+    String declType = getDeclarationType(BindingConverter.getVariableElement(var));
     declType += (declType.endsWith("*") ? "" : " ");
     String name = nameTable.getVariableShortName(var);
     boolean isFinal = Modifier.isFinal(var.getModifiers());

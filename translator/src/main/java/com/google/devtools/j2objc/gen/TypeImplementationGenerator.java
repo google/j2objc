@@ -29,18 +29,17 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Generates implementation code for an AbstractTypeDeclaration node.
@@ -106,9 +105,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
       new Predicate<VariableDeclarationFragment>() {
     @Override
     public boolean apply(VariableDeclarationFragment fragment) {
-      IVariableBinding varBinding = fragment.getVariableBinding();
-      return BindingUtil.hasAnnotation(varBinding, Property.class)
-          && !BindingUtil.isStatic(varBinding);
+      VariableElement varElement = fragment.getVariableElement();
+      return ElementUtil.hasAnnotation(varElement, Property.class)
+          && !ElementUtil.isStatic(varElement);
     }
   };
 
@@ -120,9 +119,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     newline();
     for (VariableDeclarationFragment fragment : fields) {
-      IVariableBinding varBinding = fragment.getVariableBinding();
-      String propertyName = nameTable.getVariableBaseName(varBinding);
-      String varName = nameTable.getVariableShortName(varBinding);
+      VariableElement varElement = fragment.getVariableElement();
+      String propertyName = nameTable.getVariableBaseName(varElement);
+      String varName = nameTable.getVariableShortName(varElement);
       println("@synthesize " + propertyName + " = " + varName + ";");
     }
   }
@@ -131,7 +130,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       new Predicate<VariableDeclarationFragment>() {
     @Override
     public boolean apply(VariableDeclarationFragment fragment) {
-      return !BindingUtil.isPrimitiveConstant(fragment.getVariableBinding())
+      return !ElementUtil.isPrimitiveConstant(fragment.getVariableElement())
           // Private static vars are defined in the private declaration.
           && !((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration();
     }
@@ -145,14 +144,14 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     newline();
     for (VariableDeclarationFragment fragment : fields) {
-      IVariableBinding varBinding = fragment.getVariableBinding();
+      VariableElement varElement = fragment.getVariableElement();
       Expression initializer = fragment.getInitializer();
-      String name = nameTable.getVariableQualifiedName(varBinding);
-      String objcType = getDeclarationType(varBinding);
+      String name = nameTable.getVariableQualifiedName(varElement);
+      String objcType = getDeclarationType(varElement);
       objcType += objcType.endsWith("*") ? "" : " ";
       if (initializer != null) {
-        String cast = !varBinding.getType().isPrimitive() && BindingUtil.isVolatile(varBinding)
-            ? "(void *)" : "";
+        String cast = !varElement.asType().getKind().isPrimitive()
+            && ElementUtil.isVolatile(varElement) ? "(void *)" : "";
         printf("%s%s = %s%s;\n", objcType, name, cast, generateExpression(initializer));
       } else {
         printf("%s%s;\n", objcType, name);
@@ -169,22 +168,21 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     for (VariableDeclarationFragment fragment : getStaticFields()) {
       if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
-        IVariableBinding varBinding = fragment.getVariableBinding();
-        ITypeBinding type = varBinding.getType();
-        boolean isVolatile = BindingUtil.isVolatile(varBinding);
-        boolean isPrimitive = type.isPrimitive();
-        String accessorName = nameTable.getStaticAccessorName(varBinding);
-        String varName = nameTable.getVariableQualifiedName(varBinding);
+        VariableElement varElement = fragment.getVariableElement();
+        TypeMirror type = varElement.asType();
+        boolean isVolatile = ElementUtil.isVolatile(varElement);
+        boolean isPrimitive = type.getKind().isPrimitive();
+        String accessorName = nameTable.getStaticAccessorName(varElement);
+        String varName = nameTable.getVariableQualifiedName(varElement);
         String objcType = nameTable.getObjCType(type);
-        String typeSuffix = isPrimitive ? NameTable.capitalize(type.getName()) : "Id";
+        String typeSuffix = isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id";
         if (isVolatile) {
           printf("\n+ (%s)%s {\n  return JreLoadVolatile%s(&%s);\n}\n",
                  objcType, accessorName, typeSuffix, varName);
         } else {
           printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
         }
-        int modifiers = varBinding.getModifiers();
-        if (!Modifier.isFinal(modifiers)) {
+        if (!ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
               ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")
               : (isPrimitive | Options.useARC() ? null : "JreStrongAssign");
@@ -200,10 +198,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     if (typeNode instanceof EnumDeclaration) {
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-        IVariableBinding varBinding = constant.getVariableBinding();
+        VariableElement varElement = constant.getVariableElement();
         printf("\n+ (%s *)%s {\n  return %s;\n}\n",
-            typeName, nameTable.getStaticAccessorName(varBinding),
-            nameTable.getVariableQualifiedName(varBinding));
+            typeName, nameTable.getStaticAccessorName(varElement),
+            nameTable.getVariableQualifiedName(varElement));
       }
     }
   }
@@ -224,24 +222,13 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
-  private boolean extendsNumber(ITypeBinding type) {
-    ITypeBinding numberType = typeEnv.resolveJavaType("java.lang.Number");
-    while (type != null) {
-      if (type == numberType) {
-        return true;
-      }
-      type = type.getSuperclass();
-    }
-    return false;
-  }
-
-  private boolean isDesignatedInitializer(IMethodBinding method) {
-    if (!method.isConstructor()) {
+  private boolean isDesignatedInitializer(ExecutableElement method) {
+    if (!ElementUtil.isConstructor(method)) {
       return false;
     }
     String selector = nameTable.getMethodSelector(method);
     return selector.equals("init")
-        || (extendsNumber(method.getDeclaringClass())
+        || (typeUtil.isObjcSubtype(ElementUtil.getDeclaringClass(method), TypeUtil.NS_NUMBER)
             && NSNUMBER_DESIGNATED_INITIALIZERS.contains(selector));
   }
 
@@ -252,7 +239,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
 
     newline();
-    boolean isDesignatedInitializer = isDesignatedInitializer(m.getMethodBinding());
+    boolean isDesignatedInitializer = isDesignatedInitializer(m.getExecutableElement());
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_BEGIN");
     }
@@ -278,7 +265,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private String getJniFunctionSignature(FunctionDeclaration function) {
     StringBuilder sb = new StringBuilder();
-    sb.append(nameTable.getJniType(function.getReturnType().getTypeBinding()));
+    sb.append(nameTable.getJniType(function.getReturnType().getTypeMirror()));
     sb.append(' ');
     sb.append(function.getJniSignature()).append('(');
     sb.append("JNIEnv *_env_");
@@ -290,8 +277,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
          iter.hasNext(); ) {
-      IVariableBinding var = iter.next().getVariableBinding();
-      String paramType = nameTable.getJniType(var.getType());
+      VariableElement var = iter.next().getVariableElement();
+      String paramType = nameTable.getJniType(var.asType());
       sb.append(paramType + ' ' + nameTable.getVariableBaseName(var));
       if (iter.hasNext()) {
         sb.append(", ");
@@ -311,9 +298,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
     print(getFunctionSignature(function));
     println(" {");
     print("  ");
-    ITypeBinding returnType = function.getReturnType().getTypeBinding();
-    if (!BindingUtil.isVoid(returnType)) {
-      if (returnType.isPrimitive()) {
+    TypeMirror returnType = function.getReturnType().getTypeMirror();
+    if (!TypeUtil.isVoid(returnType)) {
+      if (returnType.getKind().isPrimitive()) {
         print("return ");
       } else {
         printf("return (%s) ", nameTable.getObjCType(returnType));
@@ -325,7 +312,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printf(", %s_class_()", typeName);
     }
     for (SingleVariableDeclaration param : function.getParameters()) {
-      printf(", %s", nameTable.getVariableBaseName(param.getVariableBinding()));
+      printf(", %s", nameTable.getVariableBaseName(param.getVariableElement()));
     }
     println(");");
     println("}");

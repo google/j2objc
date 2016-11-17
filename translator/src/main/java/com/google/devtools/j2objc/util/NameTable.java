@@ -314,23 +314,26 @@ public class NameTable {
    * or suffix attached.
    */
   public String getVariableBaseName(IVariableBinding var) {
-    return getVarBaseName(var, BindingUtil.isGlobalVar(var));
+    return getVariableBaseName(BindingConverter.getVariableElement(var));
   }
 
   public String getVariableBaseName(VariableElement var) {
-    return getVarBaseName((IVariableBinding) BindingConverter.unwrapElement(var),
-        ElementUtil.isGlobalVar(var));
+    return getVarBaseName(var, ElementUtil.isGlobalVar(var));
   }
 
   /**
    * Gets the name of the accessor method for a static variable.
    */
   public String getStaticAccessorName(IVariableBinding var) {
+    return getStaticAccessorName(BindingConverter.getVariableElement(var));
+  }
+
+  public String getStaticAccessorName(VariableElement var) {
     return getVarBaseName(var, false);
   }
 
-  private String getVarBaseName(IVariableBinding var, boolean allowReservedName) {
-    var = var.getVariableDeclaration();
+  private String getVarBaseName(VariableElement varE, boolean allowReservedName) {
+    IVariableBinding var = BindingConverter.unwrapVariableElement(varE);
     String name = variableNames.get(var);
     if (name != null) {
       return name;
@@ -736,7 +739,8 @@ public class NameTable {
   /**
    * Convert a Java type into the equivalent JNI type.
    */
-  public String getJniType(ITypeBinding type) {
+  public String getJniType(TypeMirror typeM) {
+    ITypeBinding type = BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeM);
     if (type.isPrimitive()) {
       return getPrimitiveObjCType(type);
     }

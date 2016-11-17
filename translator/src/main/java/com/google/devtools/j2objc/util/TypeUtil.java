@@ -489,7 +489,7 @@ public final class TypeUtil {
     return true;
   }
 
-  private boolean isObjcSubtype(TypeElement type, TypeElement targetSupertype) {
+  public boolean isObjcSubtype(TypeElement type, TypeElement targetSupertype) {
     if (type == null) {
       return false;
     }
