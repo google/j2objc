@@ -38,25 +38,30 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
+import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.Javadoc;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.LineComment;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.MethodReference;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.NullLiteral;
@@ -79,8 +84,10 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperFieldAccess;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -88,7 +95,10 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.ast.TypeMethodReference;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -110,6 +120,7 @@ import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeInfo;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
@@ -265,6 +276,10 @@ public class TreeConverter {
         return convertClassDeclaration((JCTree.JCClassDecl) javacNode);
       case IF:
         return convertIf((JCTree.JCIf) javacNode);
+      case LAMBDA_EXPRESSION:
+        return convertLambda((JCTree.JCLambda) javacNode);
+      case MEMBER_REFERENCE:
+        return convertMemberReference((JCTree.JCMemberReference) javacNode);
       case MEMBER_SELECT:
         return convertFieldAccess((JCTree.JCFieldAccess) javacNode);
       case METHOD:
@@ -307,6 +322,8 @@ public class TreeConverter {
         return convertNumberLiteral((JCTree.JCLiteral) javacNode);
       case STRING_LITERAL:
         return convertStringLiteral((JCTree.JCLiteral) javacNode);
+      case SYNCHRONIZED:
+        return convertSynchronized((JCTree.JCSynchronized) javacNode);
       case NULL_LITERAL:
         return new NullLiteral();
 
@@ -466,7 +483,11 @@ public class TreeConverter {
   private TreeNode convertBlock(JCTree.JCBlock node) {
     Block newNode = new Block();
     for (StatementTree stmt : node.getStatements()) {
-      newNode.addStatement((Statement) convert(stmt));
+      TreeNode tree = convert(stmt);
+      if (tree instanceof AbstractTypeDeclaration) {
+        tree = new TypeDeclarationStatement().setDeclaration((AbstractTypeDeclaration) tree);
+      }
+      newNode.addStatement((Statement) tree);
     }
     return newNode;
   }
@@ -512,7 +533,14 @@ public class TreeConverter {
     // javac defines all type declarations with JCClassDecl, so differentiate here
     // to support our different declaration nodes.
     if (node.sym.isAnonymous()) {
-      throw new AssertionError("Anonymous class declaration tree conversion not implemented");
+      AnonymousClassDeclaration newNode = new AnonymousClassDeclaration();
+      for (JCTree bodyDecl : node.getMembers()) {
+        Object member = convert(bodyDecl);
+        if (member instanceof BodyDeclaration) {  // Not true for enum constants.
+          newNode.addBodyDeclaration((BodyDeclaration) member);
+        }
+      }
+      return newNode.setTypeElement(node.sym);
     }
     if (node.sym.getKind() == ElementKind.ANNOTATION_TYPE) {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
@@ -521,7 +549,10 @@ public class TreeConverter {
     TypeDeclaration newNode =
         (TypeDeclaration) convertAbstractTypeDeclaration(node, new TypeDeclaration());
 
-    newNode.setSuperclassType((Type) convert(node.getExtendsClause()));
+    JCTree.JCExpression extendsClause = node.getExtendsClause();
+    if (extendsClause != null) {
+      newNode.setSuperclassType(Type.newType(nameType((node.getExtendsClause()))));
+    }
     newNode.setInterface(
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
     for (JCTree superInterface : node.getImplementsClause()) {
@@ -635,6 +666,15 @@ public class TreeConverter {
     return newNode;
   }
 
+  private TreeNode convertFunctionalExpression(JCTree.JCFunctionalExpression node,
+      FunctionalExpression newNode) {
+    convertExpression(node, newNode);
+    for (TypeMirror type : node.targets) {
+      newNode.addTargetType(type);
+    }
+    return newNode.setTypeMirror(node.type);
+  }
+
   private TreeNode convertIdent(JCTree.JCIdent node) {
     return new SimpleName(node.sym, node.type);
   }
@@ -657,6 +697,60 @@ public class TreeConverter {
         .setRightOperand(Type.newType(clazz));
   }
 
+  private TreeNode convertLambda(JCTree.JCLambda node) {
+    LambdaExpression newNode = new LambdaExpression();
+    convertFunctionalExpression(node, newNode);
+    for (JCVariableDecl param : node.params) {
+      newNode.addParameter((VariableDeclaration) convert(param));
+    }
+    return newNode.setBody(convert(node.getBody()));
+  }
+
+  private TreeNode convertMethodReference(JCTree.JCMemberReference node, MethodReference newNode) {
+    convertFunctionalExpression(node, newNode);
+    if (node.getTypeArguments() != null) {
+      for (Object typeArg : node.getTypeArguments()) {
+        newNode.addTypeArgument((Type) convert(typeArg));
+      }
+    }
+    return newNode
+        // TODO(tball): Add the appropriate ExecutableType.
+        .setExecutablePair(new ExecutablePair((ExecutableElement) node.sym, null));
+  }
+
+  private TreeNode convertMemberReference(JCTree.JCMemberReference node) {
+    Element element = node.sym;
+    if (ElementUtil.isConstructor(element)) {
+      CreationReference newNode = new CreationReference();
+      convertMethodReference(node, newNode);
+      return newNode
+          .setType(Type.newType(nameType(node.expr)));
+    }
+    if (node.hasKind(JCTree.JCMemberReference.ReferenceKind.SUPER)) {
+      SuperMethodReference newNode = new SuperMethodReference();
+      convertMethodReference(node, newNode);
+      // Qualifier expression is <name>."super", so it's always a JCFieldAccess.
+      JCTree.JCFieldAccess expr = (JCTree.JCFieldAccess) node.getQualifierExpression();
+      return newNode
+          .setName(convertSimpleName(node.sym))
+          .setQualifier(convertSimpleName(nameSymbol(expr.selected)));
+    }
+    if (node.hasKind(JCTree.JCMemberReference.ReferenceKind.UNBOUND)
+        || node.hasKind(JCTree.JCMemberReference.ReferenceKind.STATIC)) {
+      TypeMethodReference newNode = new TypeMethodReference();
+      convertMethodReference(node, newNode);
+      return newNode
+          .setName(convertSimpleName(node.sym))
+          .setType(convertType(node.type, false));
+    }
+
+    ExpressionMethodReference newNode = new ExpressionMethodReference();
+    convertMethodReference(node, newNode);
+    return newNode
+        .setName(convertSimpleName(node.sym))
+        .setExpression((Expression) convert(node.getQualifierExpression()));
+  }
+
   private TreeNode convertMethodDeclaration(JCTree.JCMethodDecl node) {
     MethodDeclaration newNode = new MethodDeclaration();
     List<Annotation> annotations = new ArrayList<>();
@@ -673,7 +767,7 @@ public class TreeConverter {
     } else {
       newNode
           .setName(convertSimpleName(node.sym))
-          .setReturnType(convertType(node.type.asMethodType().getReturnType(), false));
+          .setReturnType(Type.newType(node.type.asMethodType().getReturnType()));
     }
     return newNode
         .setExecutableElement(node.sym)
@@ -778,22 +872,17 @@ public class TreeConverter {
   }
 
   private TreeNode convertNewClass(JCTree.JCNewClass node) {
-    ClassInstanceCreation newNode = new ClassInstanceCreation()
-        // TODO(tball): Add the appropriate ExecutableType.
-        .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor, null))
-        .setExpression((Expression) convert(node.getEnclosingExpression()))
-        .setType(Type.newType(node.type));
+    ClassInstanceCreation newNode = new ClassInstanceCreation();
+    convertExpression(node, newNode);
     for (JCTree.JCExpression arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg));
     }
-    Object classBody = convert(node.getClassBody());
-    if (classBody != null) {
-      EnumDeclaration anonymousEnum = (EnumDeclaration) classBody;
-      AnonymousClassDeclaration anonymousEnumType = new AnonymousClassDeclaration()
-          .setTypeElement(anonymousEnum.getTypeElement());
-      newNode.setAnonymousClassDeclaration(anonymousEnumType);
-    }
-    return newNode;
+    return newNode
+        // TODO(tball): Add the appropriate ExecutableType.
+        .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor, null))
+        .setExpression((Expression) convert(node.getEnclosingExpression()))
+        .setType(Type.newType(node.type))
+        .setAnonymousClassDeclaration((AnonymousClassDeclaration) convert(node.def));
   }
 
   private TreeNode convertNumberLiteral(JCTree.JCLiteral node) {
@@ -849,6 +938,12 @@ public class TreeConverter {
     return newNode;
   }
 
+  private TreeNode convertSynchronized(JCTree.JCSynchronized node) {
+    return new SynchronizedStatement()
+        .setExpression((Expression) convert(node.getExpression()))
+        .setBody((Block) convertBlock(node.getBlock()));
+  }
+
   private TreeNode convertThrow(JCTree.JCThrow node) {
     return new ThrowStatement()
         .setExpression((Expression) convert(node.getExpression()));
@@ -876,9 +971,16 @@ public class TreeConverter {
     if (node.getKind() == Kind.PARAMETERIZED_TYPE) {
       return ((JCTree.JCTypeApply) node).clazz.type;
     }
+    if (node.getKind() == Kind.ARRAY_TYPE) {
+      return ((JCTree.JCArrayTypeTree) node).type;
+    }
+    return nameSymbol(node).asType();
+  }
+
+  private Symbol nameSymbol(JCTree node) {
     return node.getKind() == Kind.MEMBER_SELECT
-        ? ((JCTree.JCFieldAccess) node).sym.asType()
-        : ((JCTree.JCIdent) node).sym.asType();
+        ? ((JCTree.JCFieldAccess) node).sym
+        : ((JCTree.JCIdent) node).sym;
   }
 
   private TreeNode convertTypeApply(JCTree.JCTypeApply node) {

@@ -30,7 +30,7 @@ public class PrefixExpression extends Expression {
     INCREMENT("++"),
     DECREMENT("--"),
     PLUS("+"),
-    MINUS("-"),
+    NEGATIVE("-"),
     COMPLEMENT("~"),
     NOT("!"),
     DEREFERENCE("*"),
@@ -43,6 +43,8 @@ public class PrefixExpression extends Expression {
       for (Operator operator : Operator.values()) {
         stringLookup.put(operator.toString(), operator);
       }
+      // javac uses "---" to differentiate from minus infix operator.
+      stringLookup.put("---", NEGATIVE);
     }
 
     private Operator(String opString) {
