@@ -35,15 +35,6 @@ class JdtVariableElement extends JdtElement implements VariableElement {
         binding.getDeclaringClass());
   }
 
-  /**
-   * Constructor used to create VariableElements for method parameters.
-   * The JDT doesn't have bindings for parameters, so the parameter type
-   * is used as the binding, along with a unique name.
-   */
-  static JdtVariableElement createParameterElement(IBinding type, IMethodBinding owner, int index) {
-    return new JdtVariableElement(type, "param" + index, 0, owner, null);
-  }
-
   private JdtVariableElement(IBinding declaration, String name, int modifiers,
       IMethodBinding declaringMethod, ITypeBinding declaringClass) {
     super(declaration, name, modifiers);

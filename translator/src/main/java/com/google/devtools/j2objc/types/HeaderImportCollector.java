@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
@@ -31,12 +30,10 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -105,13 +102,6 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   private void addSuperType(TypeElement type) {
     if (type != null) {
       Import.addImports(type.asType(), superTypes, unit.getEnv());
-      if (Options.disallowInheritedConstructors()) {
-        for (ExecutableElement constructor : ElementUtil.getConstructors(type)) {
-          for (VariableElement param : constructor.getParameters()) {
-            addForwardDecl(param.asType());
-          }
-        }
-      }
     }
   }
 

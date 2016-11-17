@@ -13,6 +13,7 @@
  */
 package com.google.devtools.j2objc.jdt;
 
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.AnnotationValue;
@@ -69,7 +70,8 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
     List<VariableElement> params = new ArrayList<>();
     ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
-      params.add(JdtVariableElement.createParameterElement(paramTypes[i], methodBinding, i));
+      params.add(GeneratedVariableElement.newParameter(
+          "param" + i, BindingConverter.getType(paramTypes[i]), this));
     }
     return params;
   }

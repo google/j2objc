@@ -44,9 +44,11 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -56,7 +58,10 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -466,6 +471,60 @@ public class Functionizer extends UnitTreeVisitor {
       }
     } else {
       stmts.add(new ReturnStatement(invocation));
+    }
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    if (!node.isInterface() && Options.disallowInheritedConstructors()) {
+      addDisallowedConstructors(node);
+    }
+  }
+
+  /**
+   * Declare any inherited constructors that aren't allowed to be accessed in Java
+   * with a NS_UNAVAILABLE macro, so that clang will flag such access from native
+   * code as an error.
+   */
+  private void addDisallowedConstructors(TypeDeclaration node) {
+    TypeElement typeElement = node.getTypeElement();
+    TypeElement superClass = ElementUtil.getSuperclass(typeElement);
+    if (ElementUtil.isPrivateInnerType(typeElement) || ElementUtil.isAbstract(typeElement)
+        || superClass == null) {
+      return;
+    }
+    Set<String> constructors = new HashSet<>();
+    for (ExecutableElement constructor : ElementUtil.getConstructors(typeElement)) {
+      constructors.add(nameTable.getMethodSelector(constructor));
+    }
+    Map<String, ExecutableElement> inheritedConstructors = new HashMap<>();
+    // Add super constructors that have unique parameter lists.
+    for (ExecutableElement superC : ElementUtil.getConstructors(superClass)) {
+      if (ElementUtil.isPrivate(superC)) {
+        // Skip private super constructors since they're already unavailable.
+        continue;
+      }
+      String selector = nameTable.getMethodSelector(superC);
+      if (!constructors.contains(selector)) {
+        inheritedConstructors.put(selector, superC);
+      }
+    }
+    for (Map.Entry<String, ExecutableElement> entry : inheritedConstructors.entrySet()) {
+      ExecutableElement oldConstructor = entry.getValue();
+      GeneratedExecutableElement newConstructor =
+          GeneratedExecutableElement.newConstructorWithSelector(
+              entry.getKey(), typeElement, typeUtil);
+      MethodDeclaration decl = new MethodDeclaration(newConstructor).setUnavailable(true);
+      decl.addModifiers(Modifier.ABSTRACT);
+      int count = 0;
+      for (VariableElement param : oldConstructor.getParameters()) {
+        VariableElement newParam = GeneratedVariableElement.newParameter(
+            "arg" + count++, param.asType(), newConstructor);
+        newConstructor.addParameter(newParam);
+        decl.addParameter(new SingleVariableDeclaration(newParam));
+      }
+      addImplicitParameters(decl, ElementUtil.getDeclaringClass(oldConstructor));
+      node.addBodyDeclaration(decl);
     }
   }
 

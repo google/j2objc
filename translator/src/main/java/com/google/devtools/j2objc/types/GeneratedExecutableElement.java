@@ -82,6 +82,13 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
         enclosingElement, false, true);
   }
 
+  public static GeneratedExecutableElement newConstructorWithSelector(
+      String selector, Element enclosingElement, TypeUtil typeUtil) {
+    return new GeneratedExecutableElement(
+        selector, selector, ElementKind.CONSTRUCTOR, typeUtil.getVoid(), enclosingElement, false,
+        true);
+  }
+
   public static GeneratedExecutableElement newMappedMethod(
       String selector, ExecutableElement method) {
     TypeMirror returnType = ElementUtil.isConstructor(method)

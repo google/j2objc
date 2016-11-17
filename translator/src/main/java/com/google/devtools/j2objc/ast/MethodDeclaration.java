@@ -28,6 +28,7 @@ public class MethodDeclaration extends BodyDeclaration {
   private ExecutableElement executableElement = null;
   private boolean isConstructor = false;
   private boolean hasDeclaration = true;
+  private boolean isUnavailable = false;
   private ChildLink<Type> returnType = ChildLink.create(Type.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<SingleVariableDeclaration> parameters =
@@ -41,6 +42,7 @@ public class MethodDeclaration extends BodyDeclaration {
     executableElement = other.getExecutableElement();
     isConstructor = other.isConstructor();
     hasDeclaration = other.hasDeclaration();
+    isUnavailable = other.isUnavailable();
     returnType.copyFrom(other.getReturnType());
     name.copyFrom(other.getName());
     parameters.copyFrom(other.getParameters());
@@ -92,6 +94,15 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public MethodDeclaration setHasDeclaration(boolean value) {
     hasDeclaration = value;
+    return this;
+  }
+
+  public boolean isUnavailable() {
+    return isUnavailable;
+  }
+
+  public MethodDeclaration setUnavailable(boolean value) {
+    isUnavailable = value;
     return this;
   }
 

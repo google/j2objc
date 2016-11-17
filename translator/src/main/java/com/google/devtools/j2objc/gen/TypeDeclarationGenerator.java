@@ -15,7 +15,9 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -40,15 +42,10 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -112,7 +109,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printStaticAccessors();
     }
     printInnerDeclarations();
-    printDisallowedConstructors();
     println("\n@end");
 
     if (ElementUtil.isPackageInfo(typeElement)) {
@@ -577,6 +573,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (needsDeprecatedAttribute(m.getAnnotations())) {
       print(" " + DEPRECATED_ATTRIBUTE);
     }
+    if (m.isUnavailable()) {
+      print(" NS_UNAVAILABLE");
+    }
     println(";");
   }
 
@@ -621,6 +620,39 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   /**
+   * Defines the categories for grouping declarations in the header. The categories will be emitted
+   * in the header in the same order that they are declared here.
+   */
+  private enum DeclarationCategory {
+    PUBLIC("#pragma mark Public"),
+    PROTECTED("#pragma mark Protected"),
+    PACKAGE_PRIVATE("#pragma mark Package-Private"),
+    PRIVATE("#pragma mark Private"),
+    UNAVAILABLE("// Disallowed inherited constructors, do not use.");
+
+    private final String header;
+
+    DeclarationCategory(String header) {
+      this.header = header;
+    }
+
+    private static DeclarationCategory categorize(BodyDeclaration decl) {
+      if (decl instanceof MethodDeclaration && ((MethodDeclaration) decl).isUnavailable()) {
+        return UNAVAILABLE;
+      }
+      int mods = decl.getModifiers();
+      if ((mods & Modifier.PUBLIC) > 0) {
+        return PUBLIC;
+      } else if ((mods & Modifier.PROTECTED) > 0) {
+        return PROTECTED;
+      } else if ((mods & Modifier.PRIVATE) > 0) {
+        return PRIVATE;
+      }
+      return PACKAGE_PRIVATE;
+    }
+  }
+
+  /**
    * Print method declarations with #pragma mark lines documenting their scope.
    */
   @Override
@@ -631,120 +663,31 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
 
-    List<BodyDeclaration> innerDeclarations = Lists.newArrayList(getInnerDeclarations());
-    printSortedDeclarations(innerDeclarations, "Public", java.lang.reflect.Modifier.PUBLIC);
-    printSortedDeclarations(innerDeclarations, "Protected", java.lang.reflect.Modifier.PROTECTED);
-    printSortedDeclarations(innerDeclarations, "Package-Private", 0);
-    printSortedDeclarations(innerDeclarations, "Private", java.lang.reflect.Modifier.PRIVATE);
-  }
-
-  private void printSortedDeclarations(
-      List<BodyDeclaration> allDeclarations, String title, int modifier) {
-    List<BodyDeclaration> declarations = Lists.newArrayList();
-    for (BodyDeclaration decl : allDeclarations) {
-      int accessMask = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
-      // The following test works with package-private access, which doesn't have its own flag.
-      if ((decl.getModifiers() & accessMask) == modifier) {
-        declarations.add(decl);
+    ListMultimap<DeclarationCategory, BodyDeclaration> categorizedDecls =
+        ArrayListMultimap.create();
+    for (BodyDeclaration innerDecl : getInnerDeclarations()) {
+      categorizedDecls.put(DeclarationCategory.categorize(innerDecl), innerDecl);
+    }
+    // Emit the categorized declarations using the declaration order of the category values.
+    for (DeclarationCategory category : DeclarationCategory.values()) {
+      List<BodyDeclaration> declarations = categorizedDecls.get(category);
+      if (declarations.isEmpty()) {
+        continue;
       }
-    }
-    if (declarations.isEmpty()) {
-      return;
-    }
-    // Extract MethodDeclaration nodes so that they can be sorted.
-    List<MethodDeclaration> methods = Lists.newArrayList();
-    for (Iterator<BodyDeclaration> iter = declarations.iterator(); iter.hasNext(); ) {
-      BodyDeclaration decl = iter.next();
-      if (decl instanceof MethodDeclaration) {
-        methods.add((MethodDeclaration) decl);
-        iter.remove();
-      }
-    }
-    printf("\n#pragma mark %s\n", title);
-    TreeUtil.sortMethods(methods);
-    printDeclarations(methods);
-    printDeclarations(declarations);
-  }
-
-  /**
-   * Declare any inherited constructors that aren't allowed to be accessed in Java
-   * with a NS_UNAVAILABLE macro, so that clang will flag such access from native
-   * code as an error.
-   */
-  protected void printDisallowedConstructors() {
-    if (!Options.disallowInheritedConstructors()) {
-      return;
-    }
-    if (typeElement.getKind().isInterface() || ElementUtil.isEnum(typeElement)
-        || ElementUtil.isAnonymous(typeElement) || ElementUtil.isSynthetic(typeElement)
-        || ElementUtil.isAbstract(typeElement)) {
-      return;
-    }
-    ITypeBinding typeBinding = BindingConverter.unwrapTypeElement(typeElement);
-    Set<String> constructors = new HashSet<>();
-    for (IMethodBinding constructor : BindingUtil.getDeclaredConstructors(typeBinding)) {
-      constructors.add(nameTable.getMethodSelector(constructor));
-    }
-    Map<String, IMethodBinding> inheritedConstructors = new HashMap<>();
-    ITypeBinding superType = typeBinding.getSuperclass();
-    while (superType != null) {
-      // Add super constructors that have unique parameters.
-      for (IMethodBinding superC : BindingUtil.getDeclaredConstructors(superType)) {
-        String selector = nameTable.getMethodSelector(superC);
-        if (!constructors.contains(selector)) {
-          inheritedConstructors.put(selector, superC);
+      // Extract MethodDeclaration nodes so that they can be sorted.
+      List<MethodDeclaration> methods = Lists.newArrayList();
+      for (Iterator<BodyDeclaration> iter = declarations.iterator(); iter.hasNext(); ) {
+        BodyDeclaration decl = iter.next();
+        if (decl instanceof MethodDeclaration) {
+          methods.add((MethodDeclaration) decl);
+          iter.remove();
         }
       }
-      superType = superType.getSuperclass();
-    }
-    if (!inheritedConstructors.isEmpty()) {
+      TreeUtil.sortMethods(methods);
       newline();
-      println("// Disallowed inherited constructors, do not use.");
-      for (IMethodBinding constructor : inheritedConstructors.values()) {
-        print(getConstructorSignature(BindingConverter.getExecutableElement(constructor)));
-        println(" NS_UNAVAILABLE;");
-      }
+      println(category.header);
+      printDeclarations(methods);
+      printDeclarations(declarations);
     }
-  }
-
-  /**
-   * Create an Objective-C constructor signature from a method binding.
-   * This is similar to TypeGenerator.getMethodSignature(MethodDeclaration),
-   * but works with constructors not declared by the type being generated.
-   */
-  private String getConstructorSignature(ExecutableElement element) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("- (instancetype)");
-    String selector = nameTable.getMethodSelector(element);
-    if (!selector.endsWith(":")) {
-      sb.append(selector);
-    } else {
-      String[] selParts = selector.split(":");
-      int baseLength = sb.length() + selParts[0].length();
-      TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
-      int i = 0;
-      boolean first = true;
-      for (VariableElement param : env.captureInfo().getImplicitPrefixParams(declaringClass)) {
-        first = printParameter(sb, param, selParts, i++, baseLength, first);
-      }
-      for (VariableElement param : element.getParameters()) {
-        first = printParameter(sb, param, selParts, i++, baseLength, first);
-      }
-      for (VariableElement param : env.captureInfo().getImplicitPostfixParams(declaringClass)) {
-        first = printParameter(sb, param, selParts, i++, baseLength, first);
-      }
-    }
-    return sb.toString();
-  }
-
-  private boolean printParameter(StringBuilder sb, VariableElement param, String[] selParts,
-      int iArg, int baseLength, boolean first) {
-    if (!first) {
-      sb.append('\n');
-      sb.append(pad(baseLength - selParts[iArg].length()));
-    }
-    String paramType = nameTable.getObjCType(param.asType());
-    sb.append(UnicodeUtils.format("%s:(%s)arg%d", selParts[iArg], paramType, iArg));
-    return false;
   }
 }
