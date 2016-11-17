@@ -16,11 +16,9 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ParserEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
-import java.util.Map;
 import javax.lang.model.element.TypeElement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -42,8 +40,6 @@ public class Types {
   // Special IOS types.
   private final ITypeBinding idType;
 
-  private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
-
   public Types(ParserEnvironment env) {
     this.env = env;
 
@@ -59,25 +55,8 @@ public class Types {
     return BindingConverter.unwrapTypeElement((TypeElement) env.resolve(name));
   }
 
-  public ITypeBinding resolveJavaType(String name) {
-    ITypeBinding result = javaBindingMap.get(name);
-    if (result == null) {
-      result = resolveWellKnownType(name);
-    }
-    return result;
-  }
-
   public boolean isIdType(ITypeBinding type) {
     return type == idType || type == NSObject || type == javaObjectType
         || (type instanceof NativeType.Binding && type.getName().equals("id"));
-  }
-
-  // Used by SignatureGenerator. Other classes should use getNSObject().
-  public ITypeBinding getJavaObject() {
-    return javaObjectType;
-  }
-
-  public ITypeBinding getIdType() {
-    return idType;
   }
 }

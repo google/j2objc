@@ -143,7 +143,7 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(receiver));
     String selectorExpr = UnicodeUtils.format("@selector(%s)", nameTable.getMethodSelector(method));
-    args.add(new NativeExpression(selectorExpr, typeEnv.getIdType()));
+    args.add(new NativeExpression(selectorExpr, TypeUtil.ID_TYPE));
     TreeUtil.copyList(node.getArguments(), args);
     node.replaceWith(invocation);
   }
