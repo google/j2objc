@@ -154,7 +154,7 @@ JAVA_SOURCES = \
 	ast/TreeNode.java \
 	ast/TreeUtil.java \
 	ast/TreeVisitor.java \
-	ast/TreeVisitorAssertionError.java \
+	ast/TreeVisitorError.java \
 	ast/TryStatement.java \
 	ast/Type.java \
 	ast/TypeDeclaration.java \

@@ -95,11 +95,11 @@ public abstract class TreeNode {
         acceptInner(visitor);
       }
       visitor.postVisit(this);
-    } catch (TreeVisitorAssertionError e) {
+    } catch (TreeVisitorError e) {
       // Avoid re-wrapping.
       throw e;
-    } catch (AssertionError e) {
-      throw new TreeVisitorAssertionError(e, this);
+    } catch (Throwable t) {
+      throw new TreeVisitorError(t, this);
     }
   }
 

@@ -17,9 +17,9 @@ package com.google.devtools.j2objc.ast;
 /**
  * Wraps an assertion error with information about the node where the error occurred.
  */
-public class TreeVisitorAssertionError extends AssertionError {
+public class TreeVisitorError extends AssertionError {
 
-  TreeVisitorAssertionError(AssertionError original, TreeNode node) {
+  TreeVisitorError(Throwable original, TreeNode node) {
     super(constructMessage(original, node), original.getCause());
     setStackTrace(original.getStackTrace());
     for (Throwable t : original.getSuppressed()) {
@@ -27,12 +27,16 @@ public class TreeVisitorAssertionError extends AssertionError {
     }
   }
 
-  private static String constructMessage(AssertionError original, TreeNode node) {
+  private static String constructMessage(Throwable original, TreeNode node) {
     CompilationUnit unit = TreeUtil.getCompilationUnit(node);
+    String msg = original.getMessage();
+    if (msg == null || msg.isEmpty()) {
+      msg = original.getClass().getSimpleName();
+    }
     if (unit == null) {
-      return original.getMessage();
+      return msg;
     }
     return String.format(
-        "%s:%s: %s", unit.getSourceFilePath(), node.getLineNumber(), original.getMessage());
+        "%s:%s: %s", unit.getSourceFilePath(), node.getLineNumber(), msg);
   }
 }
