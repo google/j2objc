@@ -154,6 +154,10 @@ public final class TypeUtil {
     return getDeclaredTypeKind(t) == ElementKind.ANNOTATION_TYPE;
   }
 
+  public static boolean isBoolean(TypeMirror t) {
+    return t.getKind() == TypeKind.BOOLEAN;
+  }
+
   public static boolean isVoid(TypeMirror t) {
     return t.getKind() == TypeKind.VOID;
   }

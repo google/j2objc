@@ -35,12 +35,12 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
 
 /**
  * Detects deep expression trees and extracts them into separate statements.
@@ -163,7 +163,7 @@ public class ComplexExpressionExtractor extends TreeVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    if (node.getTypeMirror().getKind() == TypeKind.BOOLEAN) {
+    if (TypeUtil.isBoolean(node.getTypeMirror())) {
       if (node.getRightHandSide() instanceof InfixExpression) {
         // Avoid clang precedence warning by putting parentheses around expression.
         ParenthesizedExpression.parenthesizeAndReplace(node.getRightHandSide());

@@ -406,30 +406,6 @@ public final class BindingUtil {
     return null;
   }
 
-  /**
-   * Locate method which matches either Java or Objective C getter name patterns.
-   */
-  public static IMethodBinding findGetterMethod(String propertyName, ITypeBinding propertyType,
-      ITypeBinding declaringClass) {
-    // Try Objective-C getter naming convention.
-    IMethodBinding getter = BindingUtil.findDeclaredMethod(declaringClass, propertyName);
-    if (getter == null) {
-      // Try Java getter naming conventions.
-      String prefix = BindingUtil.isBoolean(propertyType) ? "is" : "get";
-      getter = BindingUtil.findDeclaredMethod(declaringClass,
-          prefix + NameTable.capitalize(propertyName));
-    }
-    return getter;
-  }
-
-  /**
-   * Locate method which matches the Java/Objective C setter name pattern.
-   */
-  public static IMethodBinding findSetterMethod(String propertyName, ITypeBinding declaringClass) {
-    return BindingUtil.findDeclaredMethod(declaringClass,
-        "set" + NameTable.capitalize(propertyName));
-  }
-
   public static String getMethodKey(IMethodBinding binding) {
     return binding.getDeclaringClass().getBinaryName() + '.' + binding.getName()
         + getSignature(binding);

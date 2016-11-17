@@ -20,8 +20,7 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-
-import org.eclipse.jdt.core.dom.Modifier;
+import java.lang.reflect.Modifier;
 
 /**
  * Generates private type declarations within the source file.

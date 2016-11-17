@@ -34,23 +34,21 @@ import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.PrimitiveType;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Base class for generating type declarations, either public or private.
@@ -147,7 +145,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       for (EnumConstantDeclaration constant : constants) {
         printIndent();
         printf("%s_%s = %d,\n",
-            nativeName, nameTable.getVariableBaseName(constant.getVariableBinding()), ordinal++);
+            nativeName, nameTable.getVariableBaseName(constant.getVariableElement()), ordinal++);
       }
       unindent();
       print("};\n");
@@ -217,17 +215,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   protected void printStaticAccessors() {
     if (Options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
-        IVariableBinding var = fragment.getVariableBinding();
+        VariableElement var = fragment.getVariableElement();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = nameTable.getObjCType(var.getType());
+        String objcType = nameTable.getObjCType(var.asType());
         printf("\n+ (%s)%s;\n", objcType, accessorName);
-        if (!Modifier.isFinal(var.getModifiers())) {
+        if (!ElementUtil.isFinal(var)) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
       }
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          String accessorName = nameTable.getStaticAccessorName(constant.getVariableBinding());
+          String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
           if (Options.nullability()) {
             printf("\n+ (%s * __nonnull)%s;\n", typeName, accessorName);
           } else {
@@ -255,7 +253,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     FieldDeclaration lastDeclaration = null;
     boolean needsAsterisk = false;
     for (VariableDeclarationFragment fragment : fields) {
-      IVariableBinding varBinding = fragment.getVariableBinding();
+      VariableElement varElement = fragment.getVariableElement();
       FieldDeclaration declaration = (FieldDeclaration) fragment.getParent();
       if (declaration != lastDeclaration) {
         if (lastDeclaration != null) {
@@ -264,12 +262,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (BindingUtil.isWeakReference(varBinding) && !BindingUtil.isVolatile(varBinding)) {
+        if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
           // We must add this even without -use-arc because the header may be
           // included by a file compiled with ARC.
           print("__unsafe_unretained ");
         }
-        String objcType = getDeclarationType(BindingConverter.getVariableElement(varBinding));
+        String objcType = getDeclarationType(varElement);
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.
@@ -284,47 +282,67 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (needsAsterisk) {
         print('*');
       }
-      print(nameTable.getVariableShortName(varBinding));
+      print(nameTable.getVariableShortName(varElement));
     }
     println(";");
     unindent();
     println("}");
   }
 
+  /**
+   * Locate method which matches either Java or Objective C getter name patterns.
+   */
+  public static ExecutableElement findGetterMethod(
+      String propertyName, TypeMirror propertyType, TypeElement declaringClass) {
+    // Try Objective-C getter naming convention.
+    ExecutableElement getter = ElementUtil.findMethod(declaringClass, propertyName);
+    if (getter == null) {
+      // Try Java getter naming conventions.
+      String prefix = TypeUtil.isBoolean(propertyType) ? "is" : "get";
+      getter = ElementUtil.findMethod(declaringClass, prefix + NameTable.capitalize(propertyName));
+    }
+    return getter;
+  }
+
+  /**
+   * Locate method which matches the Java/Objective C setter name pattern.
+   */
+  public static ExecutableElement findSetterMethod(
+      String propertyName, TypeElement declaringClass) {
+    return ElementUtil.findMethod(declaringClass, "set" + NameTable.capitalize(propertyName));
+  }
+
   protected void printProperties() {
     Iterable<VariableDeclarationFragment> fields = getAllInstanceFields();
     for (VariableDeclarationFragment fragment : fields) {
       FieldDeclaration fieldDecl = (FieldDeclaration) fragment.getParent();
-      IVariableBinding varBinding = fragment.getVariableBinding();
-      if (!BindingUtil.isStatic(varBinding)) {
+      VariableElement varElement = fragment.getVariableElement();
+      if (!ElementUtil.isStatic(varElement)) {
         PropertyAnnotation property = (PropertyAnnotation)
             TreeUtil.getAnnotation(Property.class, fieldDecl.getAnnotations());
         if (property != null) {
           print("@property ");
-          ITypeBinding varType = varBinding.getType();
-          String propertyName = nameTable.getVariableBaseName(varBinding);
+          TypeMirror varType = varElement.asType();
+          String propertyName = nameTable.getVariableBaseName(varElement);
 
           // Add default getter/setter here, as each fragment needs its own attributes
           // to support its unique accessors.
           Set<String> attributes = property.getPropertyAttributes();
+          TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
           if (property.getGetter() == null) {
-            IMethodBinding getter = BindingUtil.findGetterMethod(
-                propertyName, varType, varBinding.getDeclaringClass());
+            ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
             if (getter != null) {
-              attributes.add("getter=" + NameTable.getMethodName(
-                  BindingConverter.getExecutableElement(getter)));
-              if (!BindingUtil.isSynchronized(getter)) {
+              attributes.add("getter=" + NameTable.getMethodName(getter));
+              if (!ElementUtil.isSynchronized(getter)) {
                 attributes.add("nonatomic");
               }
             }
           }
           if (property.getSetter() == null) {
-            IMethodBinding setter = BindingUtil.findSetterMethod(
-                propertyName, varBinding.getDeclaringClass());
+            ExecutableElement setter = findSetterMethod(propertyName, declaringClass);
             if (setter != null) {
-              attributes.add("setter=" + NameTable.getMethodName(
-                  BindingConverter.getExecutableElement(setter)));
-              if (!BindingUtil.isSynchronized(setter)) {
+              attributes.add("setter=" + NameTable.getMethodName(setter));
+              if (!ElementUtil.isSynchronized(setter)) {
                 attributes.add("nonatomic");
               }
             }
@@ -377,7 +395,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println("/*! INTERNAL ONLY - Use enum accessors declared below. */");
       printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-        String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
+        String varName = nameTable.getVariableBaseName(constant.getVariableElement());
         newline();
         JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
         printf("inline %s *%s_get_%s();\n", typeName, typeName, varName);
@@ -390,13 +408,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       new Predicate<VariableDeclarationFragment>() {
     @Override
     public boolean apply(VariableDeclarationFragment fragment) {
-      IVariableBinding var = fragment.getVariableBinding();
-      if (BindingUtil.isRetainedWithField(var)) {
-        assert !BindingUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
+      VariableElement var = fragment.getVariableElement();
+      if (ElementUtil.isRetainedWithField(var)) {
+        assert !ElementUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
         return false;
       }
-      return !var.getType().isPrimitive() && !BindingUtil.isSynthetic(var)
-          && !BindingUtil.isWeakReference(var);
+      return !var.asType().getKind().isPrimitive() && !ElementUtil.isSynthetic(var)
+          && !ElementUtil.isWeakReference(var);
     }
   };
 
@@ -408,13 +426,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     newline();
     for (VariableDeclarationFragment fragment : fields) {
-      IVariableBinding var = fragment.getVariableBinding();
-      String typeStr = nameTable.getObjCType(var.getType());
+      VariableElement var = fragment.getVariableElement();
+      String typeStr = nameTable.getObjCType(var.asType());
       if (typeStr.contains(",")) {
         typeStr = "J2OBJC_ARG(" + typeStr + ')';
       }
       String fieldName = nameTable.getVariableShortName(var);
-      String isVolatile = BindingUtil.isVolatile(var) ? "_VOLATILE" : "";
+      String isVolatile = ElementUtil.isVolatile(var) ? "_VOLATILE" : "";
       println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
           isVolatile, typeName, fieldName, typeStr));
     }
@@ -434,16 +452,16 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
-    IVariableBinding var = fragment.getVariableBinding();
-    boolean isVolatile = BindingUtil.isVolatile(var);
-    String objcType = nameTable.getObjCType(var.getType());
+    VariableElement var = fragment.getVariableElement();
+    boolean isVolatile = ElementUtil.isVolatile(var);
+    String objcType = nameTable.getObjCType(var.asType());
     String objcTypePadded = objcType + (objcType.endsWith("*") ? "" : " ");
-    String declType = getDeclarationType(BindingConverter.getVariableElement(var));
+    String declType = getDeclarationType(var);
     declType += (declType.endsWith("*") ? "" : " ");
     String name = nameTable.getVariableShortName(var);
-    boolean isFinal = Modifier.isFinal(var.getModifiers());
-    boolean isPrimitive = var.getType().isPrimitive();
-    boolean isConstant = BindingUtil.isPrimitiveConstant(var);
+    boolean isFinal = ElementUtil.isFinal(var);
+    boolean isPrimitive = var.asType().getKind().isPrimitive();
+    boolean isConstant = ElementUtil.isPrimitiveConstant(var);
     String qualifiers = isConstant ? "_CONSTANT"
         : (isPrimitive ? "_PRIMITIVE" : "_OBJ") + (isVolatile ? "_VOLATILE" : "")
         + (isFinal ? "_FINAL" : "");
@@ -542,14 +560,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * @param isCompanionClass If true, emit only if m is a static interface method.
    */
   private void printMethodDeclaration(MethodDeclaration m, boolean isCompanionClass) {
-    IMethodBinding methodBinding = m.getMethodBinding();
-    ITypeBinding typeBinding = methodBinding.getDeclaringClass();
+    ExecutableElement methodElement = m.getExecutableElement();
+    TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
 
-    if (typeBinding.isInterface()) {
+    if (typeElement.getKind().isInterface()) {
       // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
       // in @protocol) or must both be true (i.e. this prints a static method decl in the
       // companion class' @interface).
-      if (isCompanionClass != BindingUtil.isStatic(methodBinding)) {
+      if (isCompanionClass != ElementUtil.isStatic(methodElement)) {
         return;
       }
     }
@@ -557,7 +575,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
     print(getMethodSignature(m));
-    String methodName = nameTable.getMethodSelector(methodBinding);
+    String methodName = nameTable.getMethodSelector(methodElement);
     if (!m.isConstructor() && NameTable.needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.
       // clang assumes that methods with names starting with new, alloc or copy

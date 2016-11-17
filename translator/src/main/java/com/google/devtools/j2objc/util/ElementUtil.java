@@ -610,7 +610,7 @@ public final class ElementUtil {
   public static boolean hasNonnullAnnotation(Element element) {
     Pattern p = Pattern.compile("No[nt][Nn]ull");
     for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
-      if (p.matcher(annotation.getClass().getSimpleName()).matches()) {
+      if (p.matcher(annotation.getAnnotationType().asElement().getSimpleName()).matches()) {
         return true;
       }
     }
