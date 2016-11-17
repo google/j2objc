@@ -78,7 +78,7 @@ public class Options {
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = -1;
   private String processors = null;
-  private boolean disallowInheritedConstructors = true;
+  private boolean disallowInheritedConstructors = false;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
