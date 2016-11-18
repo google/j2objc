@@ -267,15 +267,12 @@ JAVA_SOURCES = \
 	types/FunctionElement.java \
 	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \
-	types/GeneratedMethodBinding.java \
 	types/GeneratedPackageBinding.java \
 	types/GeneratedPackageElement.java \
 	types/GeneratedTypeBinding.java \
 	types/GeneratedTypeElement.java \
-	types/GeneratedVariableBinding.java \
 	types/GeneratedVariableElement.java \
 	types/HeaderImportCollector.java \
-	types/IOSMethodBinding.java \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
 	types/LambdaTypeElement.java \

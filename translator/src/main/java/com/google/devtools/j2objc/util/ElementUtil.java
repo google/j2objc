@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
@@ -53,7 +52,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -229,10 +227,8 @@ public final class ElementUtil {
   }
 
   public static boolean isNonnull(VariableElement element) {
-    if (element instanceof GeneratedVariableElement) {
-      return ((GeneratedVariableElement) element).isNonnull();
-    }
-    return BindingUtil.isNonnull(BindingConverter.unwrapVariableElement(element));
+    return element instanceof GeneratedVariableElement
+        && ((GeneratedVariableElement) element).isNonnull();
   }
 
   public static boolean isAbstract(Element element) {
@@ -277,11 +273,6 @@ public final class ElementUtil {
   public static String getSelector(ExecutableElement e) {
     if (e instanceof GeneratedExecutableElement) {
       return ((GeneratedExecutableElement) e).getSelector();
-    }
-    // TODO(kstanger): Remove when javac switch is complete.
-    IMethodBinding binding = BindingConverter.unwrapExecutableElement(e);
-    if (binding instanceof IOSMethodBinding) {
-      return ((IOSMethodBinding) binding).getSelector();
     }
     return null;
   }
