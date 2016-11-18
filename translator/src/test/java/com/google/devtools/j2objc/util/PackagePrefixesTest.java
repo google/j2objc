@@ -41,8 +41,8 @@ public class PackagePrefixesTest extends GenerationTest {
     Properties properties = new Properties();
     properties.load(reader);
     PackagePrefixes prefixMap = Options.getPackagePrefixes();
-    assertFalse(prefixMap.hasPrefix("java.lang"));
-    assertFalse(prefixMap.hasPrefix("foo.bar"));
+    assertNull(prefixMap.getPrefix("java.lang"));
+    assertNull(prefixMap.getPrefix("foo.bar"));
     prefixMap.addPrefixProperties(properties);
     assertEquals("JL", prefixMap.getPrefix("java.lang"));
     assertEquals("FB", prefixMap.getPrefix("foo.bar"));

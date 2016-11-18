@@ -908,8 +908,4 @@ public class NameTable {
   public String getPrefix(PackageElement packageElement) {
     return prefixMap.getPrefix(packageElement);
   }
-
-  public boolean hasPrefix(String packageName) {
-    return prefixMap.hasPrefix(packageName);
-  }
 }

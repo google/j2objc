@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.type.DeclaredType;
 
 /**
  * Class that creates and stores the prefixes associated with Java packages.
@@ -101,10 +99,6 @@ public final class PackagePrefixes {
     }
   }
 
-  public boolean hasPrefix(String packageName) {
-    return getPrefix(packageName) != null;
-  }
-
   /**
    * Return the prefix for a specified package. If a prefix was specified
    * for the package, then that prefix is returned. Otherwise, a camel-cased
@@ -115,20 +109,12 @@ public final class PackagePrefixes {
       return "";
     }
     String packageName = packageElement.getQualifiedName().toString();
-    if (hasPrefix(packageName)) {
-      return getPrefix(packageName);
+    String prefix = getPrefix(packageName);
+    if (prefix != null) {
+      return prefix;
     }
 
-    for (AnnotationMirror annotation : packageElement.getAnnotationMirrors()) {
-      DeclaredType annotationType = annotation.getAnnotationType();
-      if (annotationType.asElement().getSimpleName().toString().equals("ObjectiveCName")) {
-        String prefix = (String) ElementUtil.getAnnotationValue(annotation, "value");
-        addPrefix(packageName, prefix);
-        // Don't return, as there may be a prefix annotation that overrides this value.
-      }
-    }
-
-    String prefix = packageLookup.getObjectiveCName(packageName);
+    prefix = packageLookup.getObjectiveCName(packageName);
     if (prefix == null) {
       prefix = NameTable.camelCaseQualifiedName(packageName);
     }

@@ -538,8 +538,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printUnprefixedAlias() {
-    String pkg = ElementUtil.getName(ElementUtil.getPackage(typeElement));
-    if (nameTable.hasPrefix(pkg) && ElementUtil.isTopLevel(typeElement)) {
+    if (ElementUtil.isTopLevel(typeElement)) {
       String unprefixedName =
           NameTable.camelCaseQualifiedName(ElementUtil.getQualifiedName(typeElement));
       if (!unprefixedName.equals(typeName)) {
