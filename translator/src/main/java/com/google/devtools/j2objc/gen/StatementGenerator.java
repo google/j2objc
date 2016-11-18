@@ -98,20 +98,18 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Returns an Objective-C equivalent of a Java AST node.
@@ -304,9 +302,8 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(CastExpression node) {
-    ITypeBinding type = node.getType().getTypeBinding();
     buffer.append("(");
-    buffer.append(nameTable.getObjCType(type));
+    buffer.append(nameTable.getObjCType(node.getType().getTypeMirror()));
     buffer.append(") ");
     node.getExpression().accept(this);
     return false;
@@ -536,11 +533,10 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    ITypeBinding rightBinding = node.getRightOperand().getTypeBinding();
-    if (rightBinding.isInterface()) {
+    TypeElement type = TypeUtil.asTypeElement(node.getRightOperand().getTypeMirror());
+    if (type != null && type.getKind().isInterface()) {
       // Our version of "isInstance" is faster than "conformsToProtocol".
-      buffer.append(
-          UnicodeUtils.format("[%s_class_() isInstance:", nameTable.getFullName(rightBinding)));
+      buffer.append(UnicodeUtils.format("[%s_class_() isInstance:", nameTable.getFullName(type)));
       node.getLeftOperand().accept(this);
       buffer.append(']');
     } else {
@@ -583,20 +579,20 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
-    assert binding != null;
+    ExecutableElement element = node.getExecutableElement();
+    assert element != null;
 
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
     buffer.append('[');
-    if (BindingUtil.isStatic(binding)) {
-      buffer.append(nameTable.getFullName(binding.getDeclaringClass()));
+    if (ElementUtil.isStatic(element)) {
+      buffer.append(nameTable.getFullName(ElementUtil.getDeclaringClass(element)));
     } else if (receiver != null) {
       receiver.accept(this);
     } else {
       buffer.append("self");
     }
-    printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());
+    printMethodInvocationNameAndArgs(nameTable.getMethodSelector(element), node.getArguments());
     buffer.append(']');
     return false;
   }
@@ -693,9 +689,9 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(QualifiedType node) {
-    ITypeBinding binding = node.getTypeBinding();
-    if (binding != null) {
-      buffer.append(nameTable.getFullName(binding));
+    TypeElement type = TypeUtil.asTypeElement(node.getTypeMirror());
+    if (type != null) {
+      buffer.append(nameTable.getFullName(type));
       return false;
     }
     return true;
@@ -730,10 +726,9 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SimpleType node) {
-    ITypeBinding binding = node.getTypeBinding();
-    if (binding != null) {
-      String name = nameTable.getFullName(binding);
-      buffer.append(name);
+    TypeElement type = TypeUtil.asTypeElement(node.getTypeMirror());
+    if (type != null) {
+      buffer.append(nameTable.getFullName(type));
       return false;
     }
     return true;
@@ -746,7 +741,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SingleVariableDeclaration node) {
-    buffer.append(nameTable.getObjCType(node.getVariableBinding()));
+    buffer.append(nameTable.getObjCType(node.getVariableElement()));
     if (node.isVarargs()) {
       buffer.append("...");
     }
@@ -783,12 +778,12 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SuperMethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
+    ExecutableElement element = node.getExecutableElement();
     assert node.getReceiver() == null
         : "Receivers expected to be handled by SuperMethodInvocationRewriter.";
-    assert !BindingUtil.isStatic(binding) : "Static invocations are rewritten by Functionizer.";
+    assert !ElementUtil.isStatic(element) : "Static invocations are rewritten by Functionizer.";
     buffer.append("[super");
-    printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());
+    printMethodInvocationNameAndArgs(nameTable.getMethodSelector(element), node.getArguments());
     buffer.append(']');
     return false;
   }
@@ -939,20 +934,25 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    ITypeBinding type = node.getType().getTypeBinding();
-    if (type.isPrimitive()) {
-      buffer.append(UnicodeUtils.format("[IOSClass %sClass]", type.getName()));
-    } else if (type.isArray()) {
-      ITypeBinding elementType = type.getElementType();
-      if (elementType.isPrimitive()) {
-        buffer.append("IOSClass_").append(elementType.getName()).append("Array(");
+    TypeMirror type = node.getType().getTypeMirror();
+    int arrayDimensions = 0;
+    while (TypeUtil.isArray(type)) {
+      arrayDimensions++;
+      type = ((javax.lang.model.type.ArrayType) type).getComponentType();
+    }
+    if (arrayDimensions > 0) {
+      if (type.getKind().isPrimitive()) {
+        buffer.append("IOSClass_").append(TypeUtil.getName(type)).append("Array(");
       } else {
-        buffer.append("IOSClass_arrayType(").append(nameTable.getFullName(elementType))
+        buffer.append("IOSClass_arrayType(")
+            .append(nameTable.getFullName(TypeUtil.asTypeElement(type)))
             .append("_class_(), ");
       }
-      buffer.append(type.getDimensions()).append(")");
+      buffer.append(arrayDimensions).append(")");
+    } else if (type.getKind().isPrimitive() || TypeUtil.isVoid(type)) {
+      buffer.append(UnicodeUtils.format("[IOSClass %sClass]", TypeUtil.getName(type)));
     } else {
-      buffer.append(nameTable.getFullName(type)).append("_class_()");
+      buffer.append(nameTable.getFullName(TypeUtil.asTypeElement(type))).append("_class_()");
     }
     return false;
   }
@@ -999,11 +999,11 @@ public class StatementGenerator extends UnitTreeVisitor {
   public boolean visit(VariableDeclarationStatement node) {
     List<VariableDeclarationFragment> vars = node.getFragments();
     assert !vars.isEmpty();
-    IVariableBinding binding = vars.get(0).getVariableBinding();
-    if (BindingUtil.suppressesWarning("unused", binding)) {
+    VariableElement element = vars.get(0).getVariableElement();
+    if (ElementUtil.suppressesWarning("unused", element)) {
       buffer.append("__unused ");
     }
-    String objcType = nameTable.getObjCType(binding);
+    String objcType = nameTable.getObjCType(element);
     String objcTypePointers = " ";
     int idx = objcType.indexOf(" *");
     if (idx != -1) {

@@ -24,7 +24,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.types.Types;
@@ -725,12 +724,10 @@ public class NameTable {
     return getObjCTypeInner(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), null);
   }
 
-  public String getObjCType(IVariableBinding var) {
-    String qualifiers = null;
-    if (var instanceof GeneratedVariableElement.Binding) {
-      qualifiers = ((GeneratedVariableElement.Binding) var).asElement().getTypeQualifiers();
-    }
-    return getObjCTypeInner(var.getType(), qualifiers);
+  public String getObjCType(VariableElement var) {
+    return getObjCTypeInner(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(var.asType()),
+        ElementUtil.getTypeQualifiers(var));
   }
 
   /**

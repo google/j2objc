@@ -231,6 +231,11 @@ public final class ElementUtil {
         && ((GeneratedVariableElement) element).isNonnull();
   }
 
+  public static String getTypeQualifiers(VariableElement element) {
+    return element instanceof GeneratedVariableElement
+        ? ((GeneratedVariableElement) element).getTypeQualifiers() : null;
+  }
+
   public static boolean isAbstract(Element element) {
     return hasModifier(element, Modifier.ABSTRACT);
   }
@@ -637,5 +642,27 @@ public final class ElementUtil {
     PackageElement pkg = getPackage(typeElement);
     String pkgName = pkg.getQualifiedName().toString();
     return Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
+  }
+
+  /**
+   * Returns true if there's a SuppressedWarning annotation with the specified warning.
+   * The SuppressWarnings annotation can be inherited from the owning method or class,
+   * but does not have package scope.
+   */
+  @SuppressWarnings("unchecked")
+  public static boolean suppressesWarning(String warning, Element element) {
+    if (element == null || isPackage(element)) {
+      return false;
+    }
+    AnnotationMirror annotation = getAnnotation(element, SuppressWarnings.class);
+    if (annotation != null) {
+      for (AnnotationValue elem
+           : (List<? extends AnnotationValue>) getAnnotationValue(annotation, "value")) {
+        if (warning.equals(elem.getValue())) {
+          return true;
+        }
+      }
+    }
+    return suppressesWarning(warning, element.getEnclosingElement());
   }
 }
