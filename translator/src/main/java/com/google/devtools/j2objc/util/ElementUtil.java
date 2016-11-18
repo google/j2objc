@@ -334,6 +334,10 @@ public final class ElementUtil {
     return element.getKind() == ElementKind.FIELD;
   }
 
+  public static boolean isParameter(Element element) {
+    return element.getKind() == ElementKind.PARAMETER;
+  }
+
   public static boolean isLocalVariable(Element element) {
     return element.getKind() == ElementKind.LOCAL_VARIABLE;
   }

@@ -47,7 +47,6 @@ import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 /**
@@ -61,7 +60,7 @@ public class NameTable {
   private final TypeUtil typeUtil;
   private final ElementUtil elementUtil;
   private final CaptureInfo captureInfo;
-  private final Map<IVariableBinding, String> variableNames = new HashMap<>();
+  private final Map<VariableElement, String> variableNames = new HashMap<>();
 
   public static final String INIT_NAME = "init";
   public static final String RETAIN_METHOD = "retain";
@@ -293,8 +292,7 @@ public class NameTable {
     methodMappings = Options.getMappings().getMethodMappings();
   }
 
-  public void setVariableName(IVariableBinding var, String name) {
-    var = var.getVariableDeclaration();
+  public void setVariableName(VariableElement var, String name) {
     String previousName = variableNames.get(var);
     if (previousName != null && !previousName.equals(name)) {
       logger.fine(String.format("Changing previous rename for variable: %s. Was: %s, now: %s",
@@ -303,18 +301,10 @@ public class NameTable {
     variableNames.put(var, name);
   }
 
-  public void setVariableName(VariableElement var, String name) {
-    setVariableName((IVariableBinding) BindingConverter.unwrapElement(var), name);
-  }
-
   /**
    * Gets the variable name without any qualifying class name or other prefix
    * or suffix attached.
    */
-  public String getVariableBaseName(IVariableBinding var) {
-    return getVariableBaseName(BindingConverter.getVariableElement(var));
-  }
-
   public String getVariableBaseName(VariableElement var) {
     return getVarBaseName(var, ElementUtil.isGlobalVar(var));
   }
@@ -322,21 +312,16 @@ public class NameTable {
   /**
    * Gets the name of the accessor method for a static variable.
    */
-  public String getStaticAccessorName(IVariableBinding var) {
-    return getStaticAccessorName(BindingConverter.getVariableElement(var));
-  }
-
   public String getStaticAccessorName(VariableElement var) {
     return getVarBaseName(var, false);
   }
 
-  private String getVarBaseName(VariableElement varE, boolean allowReservedName) {
-    IVariableBinding var = BindingConverter.unwrapVariableElement(varE);
+  private String getVarBaseName(VariableElement var, boolean allowReservedName) {
     String name = variableNames.get(var);
     if (name != null) {
       return name;
     }
-    name = var.getName();
+    name = ElementUtil.getName(var);
     if (allowReservedName) {
       return name;
     }
@@ -344,10 +329,10 @@ public class NameTable {
     return name.equals(SELF_NAME) ? "self" : name;
   }
 
-  private static String maybeRenameVar(IVariableBinding var, String name) {
+  private static String maybeRenameVar(VariableElement var, String name) {
     if (isReservedName(name)) {
       name += '_';
-    } else if (var.isParameter() && badParameterNames.contains(name)) {
+    } else if (ElementUtil.isParameter(var) && badParameterNames.contains(name)) {
       name += "Arg";
     }
     return name;
@@ -359,21 +344,12 @@ public class NameTable {
    * handle all the reserved and bad parameter renamings correctly.
    */
   public static String getDocCommentVariableName(VariableElement var) {
-    return maybeRenameVar((IVariableBinding) BindingConverter.unwrapElement(var),
-        var.getSimpleName().toString());
+    return maybeRenameVar(var, ElementUtil.getName(var));
   }
 
   /**
    * Gets the non-qualified variable name, with underscore suffix.
    */
-  public String getVariableShortName(IVariableBinding var) {
-    String baseName = getVariableBaseName(var);
-    if (var.isField() && !BindingUtil.isGlobalVar(var)) {
-      return baseName + '_';
-    }
-    return baseName;
-  }
-
   public String getVariableShortName(VariableElement var) {
     String baseName = getVariableBaseName(var);
     if (var.getKind().isField() && !ElementUtil.isGlobalVar(var)) {
@@ -385,11 +361,11 @@ public class NameTable {
   /**
    * Gets the name of the variable as it is declared in ObjC, fully qualified.
    */
-  public String getVariableQualifiedName(IVariableBinding var) {
+  public String getVariableQualifiedName(VariableElement var) {
     String shortName = getVariableShortName(var);
-    if (BindingUtil.isGlobalVar(var)) {
-      String className = getFullName(var.getDeclaringClass());
-      if (var.isEnumConstant()) {
+    if (ElementUtil.isGlobalVar(var)) {
+      String className = getFullName(ElementUtil.getDeclaringClass(var));
+      if (ElementUtil.isEnumConstant(var)) {
         // Enums are declared in an array, so we use a macro to shorten the
         // array access expression.
         return "JreEnum(" + className + ", " + shortName + ")";
@@ -397,10 +373,6 @@ public class NameTable {
       return className + '_' + shortName;
     }
     return shortName;
-  }
-
-  public String getVariableQualifiedName(VariableElement element) {
-    return getVariableQualifiedName((IVariableBinding) BindingConverter.unwrapElement(element));
   }
 
   /**
