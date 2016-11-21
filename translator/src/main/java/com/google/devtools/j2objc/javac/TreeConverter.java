@@ -591,10 +591,13 @@ public class TreeConverter {
   }
 
   private TreeNode convertEnum(JCTree.JCClassDecl node) {
+    if (node.sym.isAnonymous()) {
+      return convertClassDeclaration(node);
+    }
     EnumDeclaration newNode =
         (EnumDeclaration) convertAbstractTypeDeclaration(node, new EnumDeclaration());
-    for (Object superInterface : node.getImplementsClause()) {
-      newNode.addSuperInterfaceType((Type) convert(superInterface));
+    for (JCTree superInterface : node.getImplementsClause()) {
+      newNode.addSuperInterfaceType(Type.newType(nameType(superInterface)));
     }
     for (Object bodyDecl : node.getMembers()) {
       Object member = convert(bodyDecl);
