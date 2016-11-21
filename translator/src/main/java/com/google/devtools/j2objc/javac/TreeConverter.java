@@ -55,6 +55,7 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.Javadoc;
+import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.LineComment;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
@@ -276,6 +277,8 @@ public class TreeConverter {
         return convertClassDeclaration((JCTree.JCClassDecl) javacNode);
       case IF:
         return convertIf((JCTree.JCIf) javacNode);
+      case LABELED_STATEMENT:
+        return convertLabeledStatement((JCTree.JCLabeledStatement) javacNode);
       case LAMBDA_EXPRESSION:
         return convertLambda((JCTree.JCLambda) javacNode);
       case MEMBER_REFERENCE:
@@ -635,10 +638,15 @@ public class TreeConverter {
       return new TypeLiteral(type)
           .setType(Type.newType(type));
     }
-    if (selected.getKind() == Kind.IDENTIFIER || selected.getKind() == Kind.MEMBER_SELECT) {
+    if (selected.getKind() == Kind.IDENTIFIER) {
       return new QualifiedName()
           .setName(new SimpleName(node.sym, node.type))
-          .setQualifier((Name) convert(selected));
+          .setQualifier(new SimpleName(((JCTree.JCIdent) selected).sym));
+    }
+    if (selected.getKind() == Kind.MEMBER_SELECT) {
+      return new QualifiedName()
+          .setName(new SimpleName(node.sym, node.type))
+          .setQualifier(convertName(((JCTree.JCFieldAccess) selected).sym));
     }
     return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
@@ -695,6 +703,11 @@ public class TreeConverter {
     return new InstanceofExpression()
         .setLeftOperand((Expression) convert(node.getExpression()))
         .setRightOperand(Type.newType(clazz));
+  }
+
+  private TreeNode convertLabeledStatement(JCTree.JCLabeledStatement node) {
+    return new LabeledStatement()
+        .setLabel(new SimpleName(node.label.toString()));
   }
 
   private TreeNode convertLambda(JCTree.JCLambda node) {
@@ -952,7 +965,7 @@ public class TreeConverter {
   private TreeNode convertTry(JCTree.JCTry node) {
     TryStatement newNode = new TryStatement();
     for (Object obj : node.getResources()) {
-      newNode.addResource((VariableDeclarationExpression) convert(obj));
+      newNode.addResource(convertVariableExpression((JCTree.JCVariableDecl) obj));
     }
     for (Object obj : node.getCatches()) {
       newNode.addCatchClause((CatchClause) convert(obj));
@@ -1007,9 +1020,7 @@ public class TreeConverter {
           .setName(convertSimpleName(var))
           .setVariableElement(var);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
-      for (Expression arg : init.getArguments()) {
-        newNode.addArgument(arg);
-      }
+      TreeUtil.copyList(init.getArguments(), newNode.getArguments());
       if (init.getAnonymousClassDeclaration() != null) {
         newNode.setAnonymousClassDeclaration(TreeUtil.remove(init.getAnonymousClassDeclaration()));
       }
@@ -1048,7 +1059,7 @@ public class TreeConverter {
     return newType;
   }
 
-  private TreeNode convertVariableExpression(JCTree.JCVariableDecl node) {
+  private VariableDeclarationExpression convertVariableExpression(JCTree.JCVariableDecl node) {
     VarSymbol var = node.sym;
     boolean isVarargs = (node.sym.flags() & Flags.VARARGS) > 0;
     Type newType = convertType(var.asType(), isVarargs);

@@ -14,7 +14,6 @@
 package com.google.devtools.j2objc.file;
 
 import com.google.devtools.j2objc.Options;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,7 +27,8 @@ import java.io.Reader;
  * @author Mike Thvedt
  */
 public class RegularInputFile implements InputFile {
-  private final String path, unitPath;
+  private final String path;
+  private final String unitPath;
 
   public RegularInputFile(String unitPath) {
     this(unitPath, unitPath);
@@ -54,10 +54,12 @@ public class RegularInputFile implements InputFile {
     return new InputStreamReader(getInputStream(),  Options.getCharset());
   }
 
+  @Override
   public String getPath() {
     return path;
   }
 
+  @Override
   public String getContainingPath() {
     return unitPath;
   }
