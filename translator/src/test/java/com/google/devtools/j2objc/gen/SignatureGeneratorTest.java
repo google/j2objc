@@ -45,44 +45,46 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "class E<C extends Comparable<? super C>> {}"
         + "class F extends WeakReference<ForkJoinTask<?>> { "
         + "  F(ForkJoinTask<?> task, Throwable ex, F next) { super(task, null); }}");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(6, decls.size());
 
     // Verify A doesn't return a signature, since it isn't a generic type.
-    assertNull(SignatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
+    assertNull(signatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
 
     assertEquals("<X:Ljava/lang/Object;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(1).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(1).getTypeElement()));
     assertEquals("<X:Ljava/lang/Object;Y:Ljava/lang/Object;Z:Ljava/lang/Object;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(2).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(2).getTypeElement()));
     assertEquals("Ljava/util/AbstractList<Ljava/lang/String;>;",
-        SignatureGenerator.createClassSignature(decls.get(3).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(3).getTypeElement()));
     assertEquals("<C::Ljava/lang/Comparable<-TC;>;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(4).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(4).getTypeElement()));
     assertEquals("Ljava/lang/ref/WeakReference<Ljava/util/concurrent/ForkJoinTask<*>;>;",
-        SignatureGenerator.createClassSignature(decls.get(5).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(5).getTypeElement()));
   }
 
   public void testFieldSignatures() throws IOException {
     CompilationUnit unit = translateType("A", "class A<X,Y,Z> { int a; double[] b; X c; Y[] d; "
         + "Class<?> e; java.util.List<X> f; Comparable<? super X> g; "
         + "A<? extends Number, ?, String> h; }");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<VariableElement> vars =
         ElementUtil.getDeclaredFields(unit.getTypes().get(0).getTypeElement());
     assertEquals(8, vars.size());
 
     // Verify a and b don't return a signature, since they aren't generic types.
-    assertNull(SignatureGenerator.createFieldTypeSignature(vars.get(0)));
-    assertNull(SignatureGenerator.createFieldTypeSignature(vars.get(1)));
+    assertNull(signatureGenerator.createFieldTypeSignature(vars.get(0)));
+    assertNull(signatureGenerator.createFieldTypeSignature(vars.get(1)));
 
-    assertEquals("TX;", SignatureGenerator.createFieldTypeSignature(vars.get(2)));
-    assertEquals("[TY;", SignatureGenerator.createFieldTypeSignature(vars.get(3)));
-    assertEquals("Ljava/lang/Class<*>;", SignatureGenerator.createFieldTypeSignature(vars.get(4)));
-    assertEquals("Ljava/util/List<TX;>;", SignatureGenerator.createFieldTypeSignature(vars.get(5)));
+    assertEquals("TX;", signatureGenerator.createFieldTypeSignature(vars.get(2)));
+    assertEquals("[TY;", signatureGenerator.createFieldTypeSignature(vars.get(3)));
+    assertEquals("Ljava/lang/Class<*>;", signatureGenerator.createFieldTypeSignature(vars.get(4)));
+    assertEquals("Ljava/util/List<TX;>;", signatureGenerator.createFieldTypeSignature(vars.get(5)));
     assertEquals("Ljava/lang/Comparable<-TX;>;",
-        SignatureGenerator.createFieldTypeSignature(vars.get(6)));
+        signatureGenerator.createFieldTypeSignature(vars.get(6)));
     assertEquals("LA<+Ljava/lang/Number;*Ljava/lang/String;>;",
-        SignatureGenerator.createFieldTypeSignature(vars.get(7)));
+        signatureGenerator.createFieldTypeSignature(vars.get(7)));
   }
 
   public void testMethodSignatures() throws IOException {
@@ -95,38 +97,41 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "void f() throws Z {} "
         + "<T extends Throwable> void rethrow(Throwable t) {}"
         + "}");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<ExecutableElement> methods =
         ElementUtil.getExecutables(unit.getTypes().get(0).getTypeElement());
     assertEquals(8, methods.size()); // methods[0] is the default constructor.
 
     // Verify a, b and c don't return a signature, since they aren't generic types.
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(1)));
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(2)));
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(3)));
+    assertNull(signatureGenerator.createMethodTypeSignature(methods.get(1)));
+    assertNull(signatureGenerator.createMethodTypeSignature(methods.get(2)));
+    assertNull(signatureGenerator.createMethodTypeSignature(methods.get(3)));
 
-    assertEquals("()TX;", SignatureGenerator.createMethodTypeSignature(methods.get(4)));
-    assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(methods.get(5)));
-    assertEquals("()V^TZ;", SignatureGenerator.createMethodTypeSignature(methods.get(6)));
+    assertEquals("()TX;", signatureGenerator.createMethodTypeSignature(methods.get(4)));
+    assertEquals("(TX;TY;)V", signatureGenerator.createMethodTypeSignature(methods.get(5)));
+    assertEquals("()V^TZ;", signatureGenerator.createMethodTypeSignature(methods.get(6)));
     assertEquals("<T:Ljava/lang/Throwable;>(Ljava/lang/Throwable;)V",
-        SignatureGenerator.createMethodTypeSignature(methods.get(7)));
+        signatureGenerator.createMethodTypeSignature(methods.get(7)));
   }
 
   public void testMultipleBounds() throws IOException {
     CompilationUnit unit = translateType("A",
         "class A <T extends Number & java.io.Serializable >{}");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(1, decls.size());
     assertEquals("<T:Ljava/lang/Number;:Ljava/io/Serializable;>Ljava/lang/Object;",
-        SignatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
   }
 
   public void testGenericInterface() throws IOException {
     CompilationUnit unit = translateType("A",
         "interface A<E> extends java.util.Collection<E> {}");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(1, decls.size());
     assertEquals("<E:Ljava/lang/Object;>Ljava/lang/Object;Ljava/util/Collection<TE;>;",
-        SignatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
+        signatureGenerator.createClassSignature(decls.get(0).getTypeElement()));
   }
 
   public void testJniSignatures() throws IOException {
@@ -139,6 +144,7 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "native void bar(boolean b, String s);"
         + "native void bar(String[] s); "
         + "static class 测试 { native void mumble(); }}");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<AbstractTypeDeclaration> decls = unit.getTypes();
     assertEquals(2, decls.size());
     List<ExecutableElement> methods = Lists.newArrayList(
@@ -149,31 +155,31 @@ public class SignatureGeneratorTest extends GenerationTest {
 
     // Verify no parameters, since foo isn't overloaded.
     assertEquals("Java_foo_bar_D_foo",
-        SignatureGenerator.createJniFunctionSignature(methods.get(5)));
+        signatureGenerator.createJniFunctionSignature(methods.get(5)));
 
     // Verify underscores and dollar signs in names are mangled.
     assertEquals("Java_foo_bar_D_a_1b_00024c",
-        SignatureGenerator.createJniFunctionSignature(methods.get(0)));
+        signatureGenerator.createJniFunctionSignature(methods.get(0)));
 
     // Verify Unicode characters are mangled.
     assertEquals("Java_foo_bar_D__04f60_0597d_04e16_0754c",
-        SignatureGenerator.createJniFunctionSignature(methods.get(6)));
+        signatureGenerator.createJniFunctionSignature(methods.get(6)));
 
     // Verify overloaded methods have parameter suffixes.
     assertEquals("Java_foo_bar_D_bar__",
-        SignatureGenerator.createJniFunctionSignature(methods.get(1)));
+        signatureGenerator.createJniFunctionSignature(methods.get(1)));
     assertEquals("Java_foo_bar_D_bar__Ljava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods.get(2)));
+        signatureGenerator.createJniFunctionSignature(methods.get(2)));
     assertEquals("Java_foo_bar_D_bar__ZLjava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods.get(3)));
+        signatureGenerator.createJniFunctionSignature(methods.get(3)));
     assertEquals("Java_foo_bar_D_bar___3Ljava_lang_String_2",
-        SignatureGenerator.createJniFunctionSignature(methods.get(4)));
+        signatureGenerator.createJniFunctionSignature(methods.get(4)));
 
     // Check Unicode class name mangling.
     methods = Lists.newArrayList(ElementUtil.getMethods(decls.get(1).getTypeElement()));
     assertEquals(1, methods.size());
     assertEquals("Java_foo_bar_D_00024_06d4b_08bd5_mumble",
-        SignatureGenerator.createJniFunctionSignature(methods.get(0)));
+        signatureGenerator.createJniFunctionSignature(methods.get(0)));
   }
 
   public void testGenericTypeMetadata() throws IOException {
@@ -205,12 +211,13 @@ public class SignatureGeneratorTest extends GenerationTest {
     CompilationUnit unit = translateType("MyList",
         "abstract class MyList extends java.util.AbstractList<String> { "
         + "public boolean add(String s) { return true; }}");
+    SignatureGenerator signatureGenerator = unit.getEnv().signatureGenerator();
     List<ExecutableElement> methods =
         ElementUtil.getExecutables(unit.getTypes().get(0).getTypeElement());
     assertEquals(2, methods.size()); // methods[0] is the default constructor.
 
     // add(String) does not need a generic signature, even though it overrides a generic method.
-    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(1)));
+    assertNull(signatureGenerator.createMethodTypeSignature(methods.get(1)));
   }
 
   public void testGenericClassWithArrayTypeVariable() throws IOException {

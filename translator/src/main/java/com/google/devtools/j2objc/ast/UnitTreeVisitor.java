@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -31,6 +32,7 @@ public class UnitTreeVisitor extends TreeVisitor {
   protected final TypeUtil typeUtil;
   protected final Types typeEnv;
   protected final NameTable nameTable;
+  protected final SignatureGenerator signatureGenerator;
   protected final TranslationUtil translationUtil;
 
   public UnitTreeVisitor(CompilationUnit unit) {
@@ -40,6 +42,7 @@ public class UnitTreeVisitor extends TreeVisitor {
     typeUtil = env.typeUtil();
     typeEnv = env.types();
     nameTable = env.nameTable();
+    signatureGenerator = env.signatureGenerator();
     translationUtil = env.translationUtil();
   }
 

@@ -46,7 +46,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
@@ -376,7 +375,7 @@ public class Functionizer extends UnitTreeVisitor {
 
     FunctionDeclaration function =
         new FunctionDeclaration(nameTable.getFullFunctionName(elem), elem.getReturnType());
-    function.setJniSignature(SignatureGenerator.createJniFunctionSignature(elem));
+    function.setJniSignature(signatureGenerator.createJniFunctionSignature(elem));
     function.setLineNumber(method.getName().getLineNumber());
 
     if (!ElementUtil.isStatic(elem)) {

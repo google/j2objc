@@ -14,15 +14,20 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 
 /**
  * Generates signatures for classes, fields and methods, as defined by the JVM spec, 4.3.4,
@@ -41,30 +46,26 @@ public class SignatureGenerator {
 
   private static final String JAVA_OBJECT_SIGNATURE = "Ljava/lang/Object;";
 
-  private StringBuilder sb = new StringBuilder();
+  private final ElementUtil elementUtil;
+  private final TypeUtil typeUtil;
+
+  public SignatureGenerator(TypeUtil typeUtil) {
+    elementUtil = typeUtil.elementUtil();
+    this.typeUtil = typeUtil;
+  }
 
   /**
    * Create a class signature string for a specified type.
    *
    * @return the signature if class is generic, else null.
    */
-  public static String createClassSignature(TypeElement type) {
-    ITypeBinding typeB = BindingConverter.unwrapTypeElement(type);
-    boolean create = needsSignature(typeB) || needsSignature(typeB.getSuperclass());
-    if (!create) {
-      for (ITypeBinding intf : typeB.getInterfaces()) {
-        if (needsSignature(intf)) {
-          create = true;
-          break;
-        }
-      }
-    }
-    if (!create) {
+  public String createClassSignature(TypeElement type) {
+    if (!hasGenericSignature(type)) {
       return null;
     }
-    SignatureGenerator builder = new SignatureGenerator();
-    builder.genClassSignature(typeB);
-    return builder.toString();
+    StringBuilder sb = new StringBuilder();
+    genClassSignature(type, sb);
+    return sb.toString();
   }
 
   /**
@@ -72,18 +73,13 @@ public class SignatureGenerator {
    *
    * @return the signature if field type is a type variable, else null.
    */
-  public static String createFieldTypeSignature(VariableElement variable) {
-    ITypeBinding type = BindingConverter.unwrapTypeMirrorIntoTypeBinding(variable.asType());
-    if (type.isArray()) {
-      if (!type.getElementType().isTypeVariable() && !type.getElementType().isParameterizedType()) {
-        return null;
-      }
-    } else if (!type.isTypeVariable() && !type.isParameterizedType()) {
+  public String createFieldTypeSignature(VariableElement variable) {
+    if (!hasGenericSignature(variable.asType())) {
       return null;
     }
-    SignatureGenerator builder = new SignatureGenerator();
-    builder.genFieldTypeSignature(type);
-    return builder.toString();
+    StringBuilder sb = new StringBuilder();
+    genTypeSignature(variable.asType(), sb);
+    return sb.toString();
   }
 
   /**
@@ -91,17 +87,16 @@ public class SignatureGenerator {
    *
    * @return the signature if method is generic or use type variables, else null.
    */
-  public static String createMethodTypeSignature(ExecutableElement method) {
-    IMethodBinding methodB = BindingConverter.unwrapExecutableElement(method);
-    if (!hasGenericSignature(methodB)) {
+  public String createMethodTypeSignature(ExecutableElement method) {
+    if (!hasGenericSignature(method)) {
       return null;
     }
-    SignatureGenerator builder = new SignatureGenerator();
-    builder.genMethodTypeSignature(methodB);
-    return builder.toString();
+    StringBuilder sb = new StringBuilder();
+    genMethodTypeSignature(method, sb);
+    return sb.toString();
   }
 
-  public static String createJniFunctionSignature(ExecutableElement method) {
+  public String createJniFunctionSignature(ExecutableElement method) {
     // Mangle function name as described in JNI specification.
     // http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/design.html#wp615
     StringBuilder sb = new StringBuilder();
@@ -117,7 +112,7 @@ public class SignatureGenerator {
         sb.append('_');
       }
     }
-    jniMangleClass(BindingConverter.unwrapTypeElement(declaringClass), sb);
+    jniMangleClass(declaringClass, sb);
     sb.append('_');
     sb.append(jniMangle(methodName));
 
@@ -132,20 +127,20 @@ public class SignatureGenerator {
       // Overloaded native methods, append JNI-mangled parameter types.
       sb.append("__");
       for (VariableElement param : method.getParameters()) {
-        String type = createTypeSignature(
-            BindingConverter.unwrapTypeMirrorIntoTypeBinding(param.asType()));
+        String type = createTypeSignature(param.asType());
         sb.append(jniMangle(type));
       }
     }
     return sb.toString();
   }
 
-  private static void jniMangleClass(ITypeBinding clazz, StringBuilder sb) {
-    if (clazz.getDeclaringClass() != null) {
-      jniMangleClass(clazz.getDeclaringClass(), sb);
-      sb.append("_00024");   // $
+  private static void jniMangleClass(TypeElement clazz, StringBuilder sb) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(clazz);
+    if (declaringClass != null) {
+      jniMangleClass(declaringClass, sb);
+      sb.append("_00024");  // $
     }
-    sb.append(jniMangle(clazz.getName()));
+    sb.append(jniMangle(ElementUtil.getName(clazz)));
   }
 
   private static String jniMangle(String s) {
@@ -161,7 +156,7 @@ public class SignatureGenerator {
         case '$': sb.append("_00024"); break;
         default: {
           Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
-          if (block != Character.UnicodeBlock.BASIC_LATIN) {
+          if (!Character.UnicodeBlock.BASIC_LATIN.equals(block)) {
             sb.append(UnicodeUtils.format("_%05x", (int) c));
           } else {
             sb.append(c);
@@ -173,37 +168,47 @@ public class SignatureGenerator {
     return sb.toString();
   }
 
-  private static String createTypeSignature(ITypeBinding type) {
-    SignatureGenerator builder = new SignatureGenerator();
-    builder.genTypeSignature(type.getErasure());
-    return builder.toString();
+  private String createTypeSignature(TypeMirror type) {
+    StringBuilder sb = new StringBuilder();
+    genTypeSignature(typeUtil.erasure(type), sb);
+    return sb.toString();
   }
 
-  private static boolean hasGenericSignature(IMethodBinding method) {
-    // Is this method generic?
-    if (method.isGenericMethod() || method.getReturnType().isTypeVariable()
-        || method.getReturnType().isParameterizedType()) {
-      return true;
-    }
+  private static boolean hasGenericSignature(TypeElement type) {
+    return !type.getTypeParameters().isEmpty() || hasGenericSignature(type.getSuperclass())
+        || hasGenericSignature(type.getInterfaces());
+  }
 
-    // Are any of its parameters?
-    for (ITypeBinding param : method.getParameterTypes()) {
-      if (param.isTypeVariable() || param.getTypeArguments().length > 0) {
-        return true;
-      }
+  private static boolean hasGenericSignature(TypeMirror type) {
+    if (type == null) {
+      return false;
     }
+    while (TypeUtil.isArray(type)) {
+      type = ((ArrayType) type).getComponentType();
+    }
+    switch (type.getKind()) {
+      case TYPEVAR: return true;
+      case DECLARED: return !((DeclaredType) type).getTypeArguments().isEmpty();
+      default: return false;
+    }
+  }
 
-    for (ITypeBinding exception : method.getExceptionTypes()) {
-      if (exception.isTypeVariable() || exception.getTypeArguments().length > 0) {
+  private static boolean hasGenericSignature(Iterable<? extends TypeMirror> typeList) {
+    for (TypeMirror type : typeList) {
+      if (hasGenericSignature(type)) {
         return true;
       }
     }
     return false;
   }
 
-  @Override
-  public String toString() {
-    return sb.toString();
+  private static boolean hasGenericSignature(ExecutableElement method) {
+    // Is this method generic?
+    return !method.getTypeParameters().isEmpty() || hasGenericSignature(method.getReturnType())
+        // Are any of its parameters?
+        || hasGenericSignature(ElementUtil.asTypes(method.getParameters()))
+        // Are any of its thrown exceptions ?
+        || hasGenericSignature(method.getThrownTypes());
   }
 
   // Method comments are from libcore.reflect.GenericSignatureParser.
@@ -212,16 +217,16 @@ public class SignatureGenerator {
    * ClassSignature ::=
    *   OptFormalTypeParameters SuperclassSignature {SuperinterfaceSignature}.
    */
-  private void genClassSignature(ITypeBinding type) {
-    genOptFormalTypeParameters(type.getTypeParameters());
+  private void genClassSignature(TypeElement type, StringBuilder sb) {
+    genOptFormalTypeParameters(type.getTypeParameters(), sb);
     // JDT returns null for an interface's superclass, but signatures expect Object.
-    if (type.isInterface()) {
+    if (type.getKind().isInterface()) {
       sb.append(JAVA_OBJECT_SIGNATURE);
     } else {
-      genClassTypeSignature(type.getSuperclass());
+      genTypeSignature(type.getSuperclass(), sb);
     }
-    for (ITypeBinding intrface : type.getInterfaces()) {
-      genClassTypeSignature(intrface);
+    for (TypeMirror intrface : type.getInterfaces()) {
+      genTypeSignature(intrface, sb);
     }
   }
 
@@ -232,11 +237,12 @@ public class SignatureGenerator {
    * FormalTypeParameter:
    *   Identifier ClassBound InterfaceBound*
    */
-  private void genOptFormalTypeParameters(ITypeBinding[] typeParameters) {
-    if (typeParameters.length > 0) {
+  private void genOptFormalTypeParameters(
+      List<? extends TypeParameterElement> typeParameters, StringBuilder sb) {
+    if (!typeParameters.isEmpty()) {
       sb.append('<');
-      for (ITypeBinding typeParam : typeParameters) {
-        genFormalTypeParameter(typeParam);
+      for (TypeParameterElement typeParam : typeParameters) {
+        genFormalTypeParameter(typeParam, sb);
       }
       sb.append('>');
     }
@@ -245,91 +251,84 @@ public class SignatureGenerator {
   /**
    * FormalTypeParameter ::= Ident ClassBound {InterfaceBound}.
    */
-  private void genFormalTypeParameter(ITypeBinding typeParam) {
-    sb.append(typeParam.getName());
-    sb.append(':');
-    ITypeBinding bound = typeParam.getBound();
-    if (bound != null) {
-      genFieldTypeSignature(bound);
+  private void genFormalTypeParameter(TypeParameterElement typeParam, StringBuilder sb) {
+    sb.append(ElementUtil.getName(typeParam));
+    List<? extends TypeMirror> bounds = typeParam.getBounds();
+    if (bounds.isEmpty()) {
+      sb.append(':').append(JAVA_OBJECT_SIGNATURE);
     } else {
-      ITypeBinding[] bounds = typeParam.getTypeBounds();
-      if (bounds.length > 0) {
-        for (int i = 0; i < bounds.length; i++) {
-          if (i > 0 || bounds[i].isInterface()) {
-            sb.append(':');
-          }
-          genFieldTypeSignature(bounds[i]);
-        }
-      } else {
-        genFieldTypeSignature(typeParam.getErasure());
+      if (TypeUtil.isInterface(bounds.get(0))) {
+        sb.append(':');
+      }
+      for (TypeMirror bound : bounds) {
+        sb.append(':');
+        genTypeSignature(bound, sb);
       }
     }
   }
 
-  /**
-   * FieldTypeSignature ::= ClassTypeSignature | ArrayTypeSignature
-   *         | TypeVariableSignature.
-   */
-  private void genFieldTypeSignature(ITypeBinding type) {
-    if (type.isArray()) {
-      sb.append('[');
-      genTypeSignature(type.getComponentType());
-    } else if (type.isTypeVariable()) {
-      genTypeVariableSignature(type);
-    } else {
-      genClassTypeSignature(type);
-    }
-  }
-
-  /**
-   * ClassTypeSignature ::= "L" {Ident "/"} Ident
-   *   OptTypeArguments {"." Ident OptTypeArguments} ";".
-   */
-  private void genClassTypeSignature(ITypeBinding type) {
-    if (type != null) {
-      if (type.isArray()) {
+  // TODO(kstanger): Figure out if this can replace TypeUtil.getSignatureName().
+  private void genTypeSignature(TypeMirror type, StringBuilder sb) {
+    switch (type.getKind()) {
+      case BOOLEAN:
+      case BYTE:
+      case CHAR:
+      case DOUBLE:
+      case FLOAT:
+      case INT:
+      case LONG:
+      case SHORT:
+      case VOID:
+        sb.append(TypeUtil.getBinaryName(type));
+        break;
+      case ARRAY:
+        // ArrayTypeSignature ::= "[" TypSignature.
         sb.append('[');
-        genClassTypeSignature(type.getComponentType());
-      } else {
+        genTypeSignature(((ArrayType) type).getComponentType(), sb);
+        break;
+      case DECLARED:
+        // ClassTypeSignature ::= "L" {Ident "/"} Ident
+        //   OptTypeArguments {"." Ident OptTypeArguments} ";".
         sb.append('L');
-        sb.append(type.getBinaryName().replace('.', '/'));
-        genOptTypeArguments(type.getTypeArguments());
+        sb.append(elementUtil.getBinaryName(TypeUtil.asTypeElement(type)).replace('.', '/'));
+        genOptTypeArguments(((DeclaredType) type).getTypeArguments(), sb);
         sb.append(';');
-      }
+        break;
+      case TYPEVAR:
+        // TypeVariableSignature ::= "T" Ident ";".
+        sb.append('T');
+        sb.append(ElementUtil.getName(((TypeVariable) type).asElement()));
+        sb.append(';');
+        break;
+      case WILDCARD:
+        // TypeArgument ::= (["+" | "-"] FieldTypeSignature) | "*".
+        TypeMirror upperBound = ((WildcardType) type).getExtendsBound();
+        TypeMirror lowerBound = ((WildcardType) type).getSuperBound();
+        if (upperBound != null) {
+          sb.append('+');
+          genTypeSignature(upperBound, sb);
+        } else if (lowerBound != null) {
+          sb.append('-');
+          genTypeSignature(lowerBound, sb);
+        } else {
+          sb.append('*');
+        }
+        break;
+      default:
+        throw new AssertionError("Unexpected type kind: " + type.getKind());
     }
   }
 
   /**
    * OptTypeArguments ::= "<" TypeArgument {TypeArgument} ">".
    */
-  private void genOptTypeArguments(ITypeBinding[] typeArguments) {
-    if (typeArguments.length > 0) {
+  private void genOptTypeArguments(List<? extends TypeMirror> typeArguments, StringBuilder sb) {
+    if (!typeArguments.isEmpty()) {
       sb.append('<');
-      for (ITypeBinding typeParam : typeArguments) {
-        genTypeArgument(typeParam);
+      for (TypeMirror typeParam : typeArguments) {
+        genTypeSignature(typeParam, sb);
       }
       sb.append('>');
-    }
-  }
-
-  /**
-   * TypeArgument ::= (["+" | "-"] FieldTypeSignature) | "*".
-   */
-  private void genTypeArgument(ITypeBinding typeArg) {
-    if (typeArg.isWildcardType()) {
-      ITypeBinding bound = typeArg.getBound();
-      if (bound != null) {
-        // JDT bug: bound.isUpperbound() always returns false, but toString() is correct.
-        sb.append(typeArg.toString().contains("extends") ? '+' : '-');
-        genTypeArgument(bound);
-      } else {
-        sb.append('*');
-        return;
-      }
-    } else if (typeArg.isTypeVariable()) {
-      genTypeVariableSignature(typeArg);
-    } else {
-      genClassTypeSignature(typeArg);
     }
   }
 
@@ -337,60 +336,20 @@ public class SignatureGenerator {
    * MethodTypeSignature ::= [FormalTypeParameters]
    *         "(" {TypeSignature} ")" ReturnType {ThrowsSignature}.
    */
-  private void genMethodTypeSignature(IMethodBinding method) {
-    genOptFormalTypeParameters(method.getTypeParameters());
+  private void genMethodTypeSignature(ExecutableElement method, StringBuilder sb) {
+    genOptFormalTypeParameters(method.getTypeParameters(), sb);
     sb.append('(');
-    for (ITypeBinding param : method.getParameterTypes()) {
-      genTypeSignature(param);
+    for (VariableElement param : method.getParameters()) {
+      genTypeSignature(param.asType(), sb);
     }
     sb.append(')');
-    genReturnType(method.getReturnType());
-    ITypeBinding[] exceptionTypes = method.getExceptionTypes();
-    boolean hasGenericException = false;
-    for (ITypeBinding exception : exceptionTypes) {
-      if (exception.isTypeVariable() || exception.getTypeArguments().length > 0) {
-        hasGenericException = true;
-        break;
-      }
-    }
-    if (hasGenericException) {
-      for (ITypeBinding exception : exceptionTypes) {
+    genTypeSignature(method.getReturnType(), sb);
+    List<? extends TypeMirror> thrownTypes = method.getThrownTypes();
+    if (hasGenericSignature(thrownTypes)) {
+      for (TypeMirror thrownType : thrownTypes) {
         sb.append('^');
-        if (exception.isTypeVariable()) {
-          genTypeVariableSignature(exception);
-        } else {
-          genClassTypeSignature(exception);
-        }
+        genTypeSignature(thrownType, sb);
       }
     }
-  }
-
-  private void genReturnType(ITypeBinding returnType) {
-    if (returnType.getBinaryName().equals("V")) {
-      sb.append('V');
-    } else {
-      genTypeSignature(returnType);
-    }
-  }
-
-  private void genTypeSignature(ITypeBinding type) {
-    if (type.isPrimitive()) {
-      sb.append(type.getBinaryName());
-    } else {
-      genFieldTypeSignature(type);
-    }
-  }
-
-  private void genTypeVariableSignature(ITypeBinding type) {
-    sb.append('T');
-    sb.append(type.getName());
-    sb.append(';');
-  }
-
-  private static boolean needsSignature(ITypeBinding type) {
-    if (type == null) {
-      return false;
-    }
-    return type.isGenericType() || type.isParameterizedType();
   }
 }

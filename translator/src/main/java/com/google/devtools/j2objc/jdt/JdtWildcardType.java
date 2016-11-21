@@ -39,13 +39,21 @@ class JdtWildcardType extends JdtTypeMirror implements WildcardType {
 
   @Override
   public TypeMirror getExtendsBound() {
-    ITypeBinding bound = ((ITypeBinding) binding).getBound();
-    return bound.isUpperbound() ? BindingConverter.getType(bound) : null;
+    ITypeBinding wildcard = (ITypeBinding) binding;
+    ITypeBinding bound = wildcard.getBound();
+    if (bound != null && wildcard.isUpperbound()) {
+      return BindingConverter.getType(bound);
+    }
+    return null;
   }
 
   @Override
   public TypeMirror getSuperBound() {
-    ITypeBinding bound = ((ITypeBinding) binding).getBound();
-    return bound.isUpperbound() ? null : BindingConverter.getType(bound);
+    ITypeBinding wildcard = (ITypeBinding) binding;
+    ITypeBinding bound = wildcard.getBound();
+    if (bound != null && !wildcard.isUpperbound()) {
+      return BindingConverter.getType(bound);
+    }
+    return null;
   }
 }

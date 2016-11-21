@@ -39,7 +39,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
@@ -154,7 +153,7 @@ public class MetadataWriter extends UnitTreeVisitor {
           cStrIdx(getTypeName(ElementUtil.getDeclaringClass(type))),
           cStrIdx(getTypeList(ElementUtil.asTypes(ElementUtil.getDeclaredTypes(type)))),
           cStrIdx(getEnclosingMethodSelector()),
-          cStrIdx(SignatureGenerator.createClassSignature(type)),
+          cStrIdx(signatureGenerator.createClassSignature(type)),
           funcPtrIdx(annotationsFunc));
       // Add the pointer table in a second format pass since it's value is dependent on all other
       // values.
@@ -250,7 +249,7 @@ public class MetadataWriter extends UnitTreeVisitor {
           cStr(returnTypeStr), modifiers, cStrIdx(methodName),
           cStrIdx(getTypeList(ElementUtil.asTypes(method.getParameters()))),
           cStrIdx(getTypeList(method.getThrownTypes())),
-          cStrIdx(SignatureGenerator.createMethodTypeSignature(method)),
+          cStrIdx(signatureGenerator.createMethodTypeSignature(method)),
           funcPtrIdx(annotationsFunc), funcPtrIdx(paramAnnotationsFunc));
     }
 
@@ -309,7 +308,7 @@ public class MetadataWriter extends UnitTreeVisitor {
           "    { %s, %s, %s, 0x%x, %s, %s, %s, %s },\n",
           cStr(objcName), cStr(getTypeName(var.asType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
-          cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
+          cStrIdx(signatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
     }
 
     private String getEnclosingMethodSelector() {

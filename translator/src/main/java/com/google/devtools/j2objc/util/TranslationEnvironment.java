@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.Types;
 
 /**
@@ -26,6 +27,7 @@ public class TranslationEnvironment {
   private final Types typeEnv;
   private final CaptureInfo captureInfo;
   private final NameTable nameTable;
+  private final SignatureGenerator signatureGenerator;
   private final TranslationUtil translationUtil;
 
   public TranslationEnvironment(ParserEnvironment parserEnv) {
@@ -34,6 +36,7 @@ public class TranslationEnvironment {
     typeEnv = new Types(parserEnv);
     captureInfo = new CaptureInfo(typeUtil);
     nameTable = new NameTable(typeEnv, typeUtil, captureInfo);
+    signatureGenerator = new SignatureGenerator(typeUtil);
     translationUtil = new TranslationUtil(typeUtil, nameTable);
   }
 
@@ -55,6 +58,10 @@ public class TranslationEnvironment {
 
   public NameTable nameTable() {
     return nameTable;
+  }
+
+  public SignatureGenerator signatureGenerator() {
+    return signatureGenerator;
   }
 
   public TranslationUtil translationUtil() {

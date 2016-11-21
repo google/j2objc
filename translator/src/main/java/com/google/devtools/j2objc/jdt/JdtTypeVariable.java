@@ -75,8 +75,7 @@ class JdtTypeVariable extends JdtTypeMirror implements TypeVariable {
 
   @Override
   public Element asElement() {
-    // TODO(tball): implement.
-    return null;
+    return BindingConverter.getElement(binding);
   }
 
   @Override

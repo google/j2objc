@@ -664,7 +664,7 @@ public final class BindingUtil {
    */
   public static boolean isIntersectionType(ITypeBinding binding) {
     return (binding.isInterface() && binding.getQualifiedName().isEmpty())
-        || (binding.isWildcardType() && binding.getTypeBounds().length == 0);
+        || (binding.isWildcardType() && !binding.toString().startsWith("?"));
   }
 
   /**
@@ -674,6 +674,7 @@ public final class BindingUtil {
   public static void dumpTypeBinding(ITypeBinding binding) {
     System.out.println("dump type: " + binding.getName());
     System.out.println("  getBinaryName: " + binding.getBinaryName());
+    System.out.println("  getBound: " + getKey(binding.getBound()));
     System.out.println("  getClass: " + binding.getClass());
     System.out.println("  getComponentType: " + binding.getComponentType());
     dumpArray("  getDeclaredTypes:", binding.getDeclaredTypes());
@@ -714,6 +715,11 @@ public final class BindingUtil {
     System.out.println("  isTypeVariable: " + binding.isTypeVariable());
     System.out.println("  isUpperbound: " + binding.isUpperbound());
     System.out.println("  isWildcardType: " + binding.isWildcardType());
+    System.out.println("  toString: " + binding.toString());
+  }
+
+  private static String getKey(ITypeBinding type) {
+    return type == null ? "null" : type.getKey();
   }
 
   private static void dumpArray(String description, ITypeBinding[] array) {
