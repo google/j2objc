@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.gen.SignatureGenerator;
-import com.google.devtools.j2objc.types.Types;
 
 /**
  * The environment used during translation of a compilation unit.
@@ -24,7 +23,6 @@ public class TranslationEnvironment {
 
   private final ElementUtil elementUtil;
   private final TypeUtil typeUtil;
-  private final Types typeEnv;
   private final CaptureInfo captureInfo;
   private final NameTable nameTable;
   private final SignatureGenerator signatureGenerator;
@@ -33,9 +31,8 @@ public class TranslationEnvironment {
   public TranslationEnvironment(ParserEnvironment parserEnv) {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
     typeUtil = new TypeUtil(parserEnv, elementUtil);
-    typeEnv = new Types(parserEnv);
     captureInfo = new CaptureInfo(typeUtil);
-    nameTable = new NameTable(typeEnv, typeUtil, captureInfo);
+    nameTable = new NameTable(typeUtil, captureInfo);
     signatureGenerator = new SignatureGenerator(typeUtil);
     translationUtil = new TranslationUtil(typeUtil, nameTable);
   }
@@ -46,10 +43,6 @@ public class TranslationEnvironment {
 
   public TypeUtil typeUtil() {
     return typeUtil;
-  }
-
-  public Types types() {
-    return typeEnv;
   }
 
   public CaptureInfo captureInfo() {

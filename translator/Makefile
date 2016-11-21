@@ -278,7 +278,6 @@ JAVA_SOURCES = \
 	types/LambdaTypeElement.java \
 	types/NativeType.java \
 	types/PointerType.java \
-	types/Types.java \
 	util/BindingUtil.java \
 	util/CaptureInfo.java \
 	util/CodeReferenceMap.java \

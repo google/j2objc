@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
-import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +53,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  */
 public class NameTable {
 
-  private final Types typeEnv;
   private final TypeUtil typeUtil;
   private final ElementUtil elementUtil;
   private final CaptureInfo captureInfo;
@@ -280,8 +278,7 @@ public class NameTable {
   private final ImmutableMap<String, String> classMappings;
   private final ImmutableMap<String, String> methodMappings;
 
-  public NameTable(Types typeEnv, TypeUtil typeUtil, CaptureInfo captureInfo) {
-    this.typeEnv = typeEnv;
+  public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo) {
     this.typeUtil = typeUtil;
     this.elementUtil = typeUtil.elementUtil();
     this.captureInfo = captureInfo;
