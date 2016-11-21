@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * A declaration fragment contains the declaration and optional initialization
@@ -27,11 +26,6 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 
   public VariableDeclarationFragment(VariableDeclarationFragment other) {
     super(other);
-  }
-
-  // TODO(tball): remove when javac migration is complete.
-  public VariableDeclarationFragment(IVariableBinding variableBinding, Expression initializer) {
-    super(variableBinding, initializer);
   }
 
   public VariableDeclarationFragment(VariableElement variableElement, Expression initializer) {

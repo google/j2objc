@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node type for the declaration of a single local variable.
@@ -38,20 +36,11 @@ public abstract class VariableDeclaration extends TreeNode {
     initializer.copyFrom(other.getInitializer());
   }
 
-  // TODO(tball): remove when javac migration is complete.
-  public VariableDeclaration(IVariableBinding variableBinding, Expression initializer) {
-    this((VariableElement) BindingConverter.getElement(variableBinding), initializer);
-  }
-
   public VariableDeclaration(VariableElement variableElement, Expression initializer) {
     super();
     this.variableElement = variableElement;
     name.set(new SimpleName(variableElement));
     this.initializer.set(initializer);
-  }
-
-  public IVariableBinding getVariableBinding() {
-    return (IVariableBinding) BindingConverter.unwrapElement(variableElement);
   }
 
   public VariableElement getVariableElement() {
@@ -61,10 +50,6 @@ public abstract class VariableDeclaration extends TreeNode {
   public VariableDeclaration setVariableElement(VariableElement newElement) {
     variableElement = newElement;
     return this;
-  }
-
-  public void setVariableBinding(IVariableBinding newVariableBinding) {
-    variableElement = (VariableElement) BindingConverter.getElement(newVariableBinding);
   }
 
   public int getExtraDimensions() {

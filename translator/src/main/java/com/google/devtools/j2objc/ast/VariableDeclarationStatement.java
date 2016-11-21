@@ -14,11 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node type for a local variable declaration.
@@ -49,11 +47,6 @@ public class VariableDeclarationStatement extends Statement {
 
   public VariableDeclarationStatement(VariableElement variableElement, Expression initializer) {
     this(new VariableDeclarationFragment(variableElement, initializer));
-  }
-
-  // TODO(tball): remove when javac migration is complete.
-  public VariableDeclarationStatement(IVariableBinding variableBinding, Expression initializer) {
-    this((VariableElement) BindingConverter.getElement(variableBinding), initializer);
   }
 
   @Override
