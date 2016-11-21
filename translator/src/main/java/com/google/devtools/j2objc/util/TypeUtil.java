@@ -162,6 +162,10 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.VOID;
   }
 
+  public static boolean isPrimitiveOrVoid(TypeMirror t) {
+    return isVoid(t) || t.getKind().isPrimitive();
+  }
+
   public static boolean isNone(TypeMirror t) {
     // Check for null because BindingConverter converts null bindings to null types.
     return t == null || t.getKind() == TypeKind.NONE;
@@ -266,6 +270,14 @@ public final class TypeUtil {
 
   public boolean isString(TypeMirror t) {
     return isString(asTypeElement(t));
+  }
+
+  public boolean isClassType(TypeElement e) {
+    return javaClass.equals(e) || IOS_CLASS.equals(e);
+  }
+
+  public boolean isClassType(TypeMirror t) {
+    return isClassType(asTypeElement(t));
   }
 
   /**

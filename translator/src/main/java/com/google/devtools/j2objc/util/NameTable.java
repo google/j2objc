@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
@@ -43,10 +42,8 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -510,21 +507,17 @@ public class NameTable {
     if (ElementUtil.isInstanceMethod(method)) {
       method = getOriginalMethod(method);
     }
-    return selectorForOriginalBinding(method);
+    selector = getRenamedMethodName(method);
+    return selectorForMethodName(method, selector != null ? selector : getMethodName(method));
   }
 
-  public String getMethodSelector(IMethodBinding method) {
-    return getMethodSelector(BindingConverter.getExecutableElement(method));
-  }
-
-  private String getRenamedMethodName(IMethodBinding method) {
-    method = method.getMethodDeclaration();
-    String selector = methodMappings.get(BindingUtil.getMethodKey(method));
+  private String getRenamedMethodName(ExecutableElement method) {
+    String selector = methodMappings.get(Mappings.getMethodKey(method, typeUtil));
     if (selector != null) {
       validateMethodSelector(selector);
       return selector;
     }
-    selector = getMethodNameFromAnnotation(BindingConverter.getExecutableElement(method));
+    selector = getMethodNameFromAnnotation(method);
     if (selector != null) {
       return selector;
     }
@@ -538,20 +531,13 @@ public class NameTable {
     return addParamNames(method, name, ':');
   }
 
-  private String selectorForOriginalBinding(ExecutableElement method) {
-    String selector = getRenamedMethodName(BindingConverter.unwrapExecutableElement(method));
-    return selectorForMethodName(
-        method, selector != null ? selector : getMethodName(method));
-  }
-
   /**
    * Returns a "Type_method" function name for static methods, such as from
    * enum types. A combination of classname plus modified selector is
    * guaranteed to be unique within the app.
    */
   public String getFullFunctionName(ExecutableElement method) {
-    return getFullName(BindingConverter.unwrapTypeElement(ElementUtil.getDeclaringClass(method)))
-        + '_' + getFunctionName(method);
+    return getFullName(ElementUtil.getDeclaringClass(method)) + '_' + getFunctionName(method);
   }
 
   /**
@@ -600,7 +586,7 @@ public class NameTable {
   public String getFunctionName(ExecutableElement method) {
     String name = ElementUtil.getSelector(method);
     if (name == null) {
-      name = getRenamedMethodName(BindingConverter.unwrapExecutableElement(method));
+      name = getRenamedMethodName(method);
     }
     if (name != null) {
       return name.replaceAll(":", "_");
@@ -625,7 +611,7 @@ public class NameTable {
   }
 
   /**
-   * Finds the original method binding to use for generating a selector. The method returned is the
+   * Finds the original method element to use for generating a selector. The method returned is the
    * first method found in the hierarchy while traversing in order of declared inheritance that
    * doesn't override a method from a supertype. (ie. it is the first leaf node found in the tree of
    * overriding methods)
@@ -660,65 +646,46 @@ public class NameTable {
   }
 
   /**
-   * Converts a Java type to an equivalent Objective-C type, returning "id" for
-   * an object type.
-   */
-  public static String getPrimitiveObjCType(ITypeBinding type) {
-    return type.isPrimitive() ? (BindingUtil.isVoid(type) ? "void" : "j" + type.getName()) : "id";
-  }
-
-  /**
-   * Does the same, but for TypeMirrors.
+   * Converts a Java type to an equivalent Objective-C type, returning "id" for an object type.
    */
   public static String getPrimitiveObjCType(TypeMirror type) {
-    TypeKind kind = type.getKind();
-    return kind == TypeKind.VOID ? "void"
-        : kind.isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
+    return TypeUtil.isVoid(type) ? "void"
+        : type.getKind().isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
   }
 
   /**
    * Convert a Java type to an equivalent Objective-C type with type variables
    * resolved to their bounds.
    */
-  public String getObjCType(ITypeBinding type) {
-    return getObjCTypeInner(type, null);
-  }
-
   public String getObjCType(TypeMirror type) {
-    return getObjCTypeInner(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type), null);
+    return getObjcTypeInner(type, null);
   }
 
   public String getObjCType(VariableElement var) {
-    return getObjCTypeInner(
-        BindingConverter.unwrapTypeMirrorIntoTypeBinding(var.asType()),
-        ElementUtil.getTypeQualifiers(var));
+    return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var));
   }
 
   /**
    * Convert a Java type into the equivalent JNI type.
    */
-  public String getJniType(TypeMirror typeM) {
-    ITypeBinding type = BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeM);
-    if (type.isPrimitive()) {
+  public String getJniType(TypeMirror type) {
+    if (TypeUtil.isPrimitiveOrVoid(type)) {
       return getPrimitiveObjCType(type);
-    }
-    if (type.isArray()) {
+    } else if (TypeUtil.isArray(type)) {
       return "jarray";
-    }
-    if (type.getQualifiedName().equals("java.lang.String")) {
+    } else if (typeUtil.isString(type)) {
       return "jstring";
-    }
-    if (type.getQualifiedName().equals("java.lang.Class")) {
+    } else if (typeUtil.isClassType(type)) {
       return "jclass";
     }
     return "jobject";
   }
 
-  private String getObjCTypeInner(ITypeBinding type, String qualifiers) {
-    String objCType;
-    if (type instanceof NativeType.Binding) {
-      objCType = type.getName();
-    } else if (type instanceof PointerType.Binding) {
+  private String getObjcTypeInner(TypeMirror type, String qualifiers) {
+    String objcType;
+    if (type instanceof NativeType) {
+      objcType = ((NativeType) type).getName();
+    } else if (type instanceof PointerType) {
       String pointeeQualifiers = null;
       if (qualifiers != null) {
         int idx = qualifiers.indexOf('*');
@@ -727,36 +694,31 @@ public class NameTable {
           qualifiers = qualifiers.substring(idx + 1);
         }
       }
-      objCType = getObjCTypeInner(((PointerType.Binding) type).getPointeeType(), pointeeQualifiers);
-      objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
-    } else if (type.isPrimitive()) {
-      objCType = getPrimitiveObjCType(type);
+      objcType = getObjcTypeInner(((PointerType) type).getPointeeType(), pointeeQualifiers);
+      objcType = objcType.endsWith("*") ? objcType + "*" : objcType + " *";
+    } else if (TypeUtil.isPrimitiveOrVoid(type)) {
+      objcType = getPrimitiveObjCType(type);
     } else {
-      objCType = constructObjCType(Iterables.transform(
-          typeUtil.getUpperBounds(BindingConverter.getType(type)),
-          BindingConverter::unwrapTypeMirrorIntoTypeBinding));
+      objcType = constructObjcTypeFromBounds(type);
     }
     if (qualifiers != null) {
       qualifiers = qualifiers.trim();
       if (!qualifiers.isEmpty()) {
-        objCType += " " + qualifiers;
+        objcType += " " + qualifiers;
       }
     }
-    return objCType;
+    return objcType;
   }
 
-  private String constructObjCType(Iterable<ITypeBinding> types) {
+  private String constructObjcTypeFromBounds(TypeMirror type) {
     String classType = null;
     List<String> interfaces = new ArrayList<>();
-    for (ITypeBinding type : types) {
-      if (typeEnv.isIdType(type)) {
-        continue;
-      }
-      if (type.isInterface()) {
-        interfaces.add(getFullName(type));
+    for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
+      if (bound.getKind().isInterface()) {
+        interfaces.add(getFullName(bound));
       } else {
-        assert classType == null;  // Can only have one class type.
-        classType = getFullName(type);
+        assert classType == null : "Cannot have multiple class bounds";
+        classType = getFullName(bound);
       }
     }
     String protocols = interfaces.isEmpty() ? "" : "<" + Joiner.on(", ").join(interfaces) + ">";
