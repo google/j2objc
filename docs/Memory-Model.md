@@ -52,7 +52,7 @@ For `volatile` fields, Java provides both atomicity and sequencially consistent 
 
 * Primitive types are mapped to c11 atomic types.
   * eg. `volatile int` -> `_Atomic(jint)`
-* Object fields are protected with spin locks.
+* Object fields are protected with pthread mutex locks. (cannot use spin locks due to priority inversion)
   * Mutual exclusion is necessary to prevent race conditions with the reference counting.
   * The implementation is very similar to Objective-C atomic properties.
 
