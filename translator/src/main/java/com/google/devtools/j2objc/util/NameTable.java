@@ -42,6 +42,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -419,42 +420,33 @@ public class NameTable {
      return FAMILY_METHOD_REGEX.matcher(name).matches();
   }
 
-  // TODO(kstanger): See whether the logic in this method can be simplified.
-  //     Also, what about type variables?
-  private String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
-    if (elementType.isParameterizedType()) {
-      elementType = elementType.getErasure();
+  private String getParameterTypeKeyword(TypeMirror type) {
+    int arrayDimensions = 0;
+    while (TypeUtil.isArray(type)) {
+      type = ((ArrayType) type).getComponentType();
+      arrayDimensions++;
     }
-    if (elementType.isCapture()) {
-      elementType = elementType.getWildcard();
-    }
-    if (elementType.isWildcardType()) {
-      ITypeBinding bound = elementType.getBound();
-      if (bound != null) {
-        elementType = bound;
+    String name;
+    if (type.getKind().isPrimitive()) {
+      name = typeUtil.getName(type);
+    } else {
+      // For type variables, use the first bound for the parameter keyword.
+      List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
+      TypeElement elem = bounds.isEmpty()
+          ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
+      if (arrayDimensions == 0 && elem.equals(TypeUtil.NS_OBJECT)) {
+        // Special case: Non-array object types become "id".
+        return ID_TYPE;
       }
+      name = getFullName(elem);
     }
-    String name = getFullName(elementType) + "Array";
-    if (dimensions > 1) {
-      name += dimensions;
+    if (arrayDimensions > 0) {
+      name += "Array";
+      if (arrayDimensions > 1) {
+        name += arrayDimensions;
+      }
     }
     return name;
-  }
-
-  private String getParameterTypeKeyword(TypeMirror type) {
-    ITypeBinding typeB = BindingConverter.unwrapTypeMirrorIntoTypeBinding(type);
-    if (typeEnv.isIdType(typeB) || typeB.isTypeVariable()) {
-      ITypeBinding[] bounds = typeB.getTypeBounds();
-      if (bounds.length > 0) {
-        return getParameterTypeKeyword(BindingConverter.getType(bounds[0]));
-      }
-      return ID_TYPE;
-    } else if (typeB.isPrimitive()) {
-      return typeB.getName();
-    } else if (typeB.isArray()) {
-      return getArrayTypeParameterKeyword(typeB.getElementType(), typeB.getDimensions());
-    }
-    return getFullName(typeB);
   }
 
   private String parameterKeyword(TypeMirror type) {
