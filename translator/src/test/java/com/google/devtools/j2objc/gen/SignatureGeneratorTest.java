@@ -209,9 +209,8 @@ public class SignatureGeneratorTest extends GenerationTest {
         ElementUtil.getExecutables(unit.getTypes().get(0).getTypeElement());
     assertEquals(2, methods.size()); // methods[0] is the default constructor.
 
-    // Verify a signature is created for add(String), even though it isn't itself generic.
-    assertEquals("(Ljava/lang/String;)Z",
-        SignatureGenerator.createMethodTypeSignature(methods.get(1)));
+    // add(String) does not need a generic signature, even though it overrides a generic method.
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods.get(1)));
   }
 
   public void testGenericClassWithArrayTypeVariable() throws IOException {

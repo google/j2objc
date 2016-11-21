@@ -198,31 +198,6 @@ public class SignatureGenerator {
         return true;
       }
     }
-
-    // Does it override a generic method?
-    ITypeBinding superParent = method.getDeclaringClass().getSuperclass();
-    if (superParent != null) {
-      for (IMethodBinding m : superParent.getTypeDeclaration().getDeclaredMethods()) {
-        if (method.overrides(m)) {
-          if (hasGenericSignature(m)) {
-            return true;
-          }
-          break;
-        }
-      }
-    }
-
-    // Or implement a generic method?
-    for (ITypeBinding intr : method.getDeclaringClass().getInterfaces()) {
-      for (IMethodBinding m : intr.getDeclaredMethods()) {
-        if (method.overrides(m)) {
-          if (hasGenericSignature(m)) {
-            return true;
-          }
-          break;
-        }
-      }
-    }
     return false;
   }
 
