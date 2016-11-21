@@ -17,7 +17,7 @@ layout: docs
  <tr><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple7/v4/cf/b3/8c/cfb38c33-d0e0-348d-df63-40899cc04b5e/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/id853371601">Google&nbsp;My&nbsp;Business</a></b>
  </td><td>
- <img src="http://a2.mzstatic.com/us/r30/Purple3/v4/e4/ef/17/e4ef1745-23bb-3090-2260-50287aefa0f0/mzl.vxjekxvy.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-sheets/id842849113?mt=8">Google&nbsp;Sheets</a></b>
+ <img src="http://is2.mzstatic.com/image/thumb/Purple71/v4/92/96/0e/92960e1c-4a3d-fa79-574b-5a53b6df9626/source/175x175bb.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-sheets/id842849113?mt=8">Google&nbsp;Sheets</a></b>
  </td></tr>
  
  <tr><td>
@@ -33,28 +33,28 @@ layout: docs
  <tr><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple49/v4/6e/d2/1b/6ed21b93-3ee0-e143-e583-97690d61418b/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/ai.type-keyboard-free-+-emoji/id916548141?mt=8">ai.type&nbsp;keyboard&nbsp;Free&nbsp;+&nbsp;Emoji</a></b>
  </td><td>
- <img src="http://a3.mzstatic.com/us/r1000/119/Purple2/v4/27/92/31/27923129-fc90-2cb9-ae52-f588bc2404eb/mzl.vvbluzab.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/balloon-gunner-3d/id650873188?ls=1&mt=8">Balloon&nbsp;Gunner&nbsp;3D</a></b>
- </td></tr>
-
- <tr><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple18/v4/30/01/25/300125cb-b3f4-e73d-2563-dc544a0f4af8/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/codeword-unlimited-free/id643961117?mt=8">Codeword&nbsp;Unlimited&nbsp;Free</a></b>
- </td><td>
+ </td></tr>
+ 
+ <tr><td>
  <img src="http://a2.mzstatic.com/us/r30/Purple71/v4/f6/3e/23/f63e2392-02a1-6522-7a28-82afd4b0594d/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/crossword-solver-free-version/id668459828?ls=1&mt=8">Crossword&nbsp;Solver&nbsp;Free&nbsp;Version</a></b>
+ </td><td>
+ <img src="http://a4.mzstatic.com/us/r30/Purple4/v4/a9/e6/ea/a9e6ea42-da69-67e3-50d6-18292e635b79/mzl.mjvsdtme.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/taxistartup-driver/id789688951">DriverApp - Dispatch Booking Driver</a></b>
  </td></tr>
 
  <tr><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple4/v4/a9/e6/ea/a9e6ea42-da69-67e3-50d6-18292e635b79/mzl.mjvsdtme.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/taxistartup-driver/id789688951">DriverApp - Dispatch Booking Driver</a></b>
- </td><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/55/21/38/55213894-03aa-dda1-677b-4f16afa16cec/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/dulwich-picture-gallery/id1050936561?mt=8">Dulwich&nbsp;Picture&nbsp;Gallery</a></b>  </td></tr>
+ <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/55/21/38/55213894-03aa-dda1-677b-4f16afa16cec/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/dulwich-picture-gallery/id1050936561?mt=8">Dulwich&nbsp;Picture&nbsp;Gallery</a></b>  </td><td>
+ <img src="http://a1.mzstatic.com/us/r30/Purple69/v4/17/c6/fc/17c6fc44-f363-8f27-167c-48d5734ff9d7/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/fine-arts-belgium-brussels/id1036745311?mt=8">Fine&nbsp;Arts&nbsp;Belgium&nbsp;(Brussels)</a></b> 
+ </td></tr>
 
  <tr><td>
- <img src="http://a1.mzstatic.com/us/r30/Purple69/v4/17/c6/fc/17c6fc44-f363-8f27-167c-48d5734ff9d7/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/fine-arts-belgium-brussels/id1036745311?mt=8">Fine&nbsp;Arts&nbsp;Belgium&nbsp;(Brussels)</a></b> 
+ <img src="http://is3.mzstatic.com/image/thumb/Purple4/v4/0f/e3/9c/0fe39c46-676f-8bf8-725a-2cc154af8ca7/source/175x175bb.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/au/app/flingmonster/id934214513?mt=8">FlingMonster</a></b>
  </td><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple/v4/66/ef/5b/66ef5bdc-7d87-ab6d-46ee-7f58df0fb72d/mzl.hffwosrc.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/hordz-3d/id672852382">Hordz&nbsp;3D</a></b>
  </td></tr>
 
  <tr><td>
- <img src="http://a3.mzstatic.com/us/r1000/067/Purple2/v4/28/02/bc/2802bc4e-02ec-2031-cb1f-bcbe353d1f6f/mzl.mkxwwpcj.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/kingdom-builder/id581197776?l=de&ls=1&mt=8">Kingdom&nbsp;Builder</a></b> 
+ <img src="http://is2.mzstatic.com/image/thumb/Purple6/v4/47/f8/b9/47f8b9c5-ba06-4bc3-f4e6-798d1612c8de/source/175x175bb.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/kingdom-builder/id581197776?l=de&ls=1&mt=8">Kingdom&nbsp;Builder</a></b> 
  </td><td>
  <img src="http://a2.mzstatic.com/us/r30/Purple3/v4/95/54/87/95548735-2447-d15c-31db-070101ab90e2/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/gb/id911852463?mt=8">Laundrapp</a></b>
  </td></tr>
@@ -72,24 +72,26 @@ layout: docs
  </td></tr>
 
  <tr><td>
+ <img src="http://is1.mzstatic.com/image/thumb/Purple71/v4/49/db/63/49db633a-7db4-3844-90e7-d0d48809f146/source/175x175bb.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/pop-blackjack/id1157796615">Pop Blackjack</a></b>
+ </td><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple62/v4/15/a8/88/15a88812-9c32-019f-82f5-1190ae5532cf/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/pop-poker/id1120261979">Pop Poker</a></b>
- </td><td>
+ </td></tr>
+
+ <tr><td>
  <img src="http://a4.mzstatic.com/us/r30/Purple4/v4/44/1b/dc/441bdc30-b20e-2fbc-c2dd-e20b826c0d33/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/quadrus/id773251281?mt=8">Quadrus</a></b>
- </td></tr>
-
- <tr><td>
+ </td><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple5/v4/b7/79/4a/b7794ae4-cbd2-59ad-57a0-fd2783ceeec9/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/id921359196">Quando</a></b>
- </td><td>
+ </td></tr>
+
+ <tr><td>
  <img src="http://info.motionext.com/content/data/2014/08/logo_48x48.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/with-wifi/id741277613?ls=1&mt=8">With WIFI</a></b>&nbsp;&nbsp;<a href="http://www.withwifi.com/">www.withwifi.com</a>
- </td></tr>
-
- <tr><td>
- <img src="http://a5.mzstatic.com/us/r30/Purple7/v4/7d/23/86/7d238677-fe2f-2818-cceb-4b7fc51e0c9c/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-fit-puzzle-+/id678426772?mt=8">Word&nbsp;Fit&nbsp;Puzzle&nbsp;+</a></b>
  </td><td>
- <img src="http://a1.mzstatic.com/us/r30/Purple2/v4/22/1f/f2/221ff26d-4630-71f6-9457-b448b30492d7/mzl.aptusiqe.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-search-ultimate/id643964085?mt=8">Word&nbsp;Search&nbsp;Ultimate</a></b>
+ <img src="http://a5.mzstatic.com/us/r30/Purple7/v4/7d/23/86/7d238677-fe2f-2818-cceb-4b7fc51e0c9c/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-fit-puzzle-+/id678426772?mt=8">Word&nbsp;Fit&nbsp;Puzzle&nbsp;+</a></b>
  </td></tr>
 
  <tr><td>
+ <img src="http://a1.mzstatic.com/us/r30/Purple2/v4/22/1f/f2/221ff26d-4630-71f6-9457-b448b30492d7/mzl.aptusiqe.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/word-search-ultimate/id643964085?mt=8">Word&nbsp;Search&nbsp;Ultimate</a></b>
+ </td><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple60/v4/d8/e9/bd/d8e9bd11-ffa9-9e7b-4714-3a8d9cee07f7/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/yahoo-esports/id1100906320">Yahoo&nbsp;Esports&nbsp;+</a></b>
  </td></tr>
 </table>
