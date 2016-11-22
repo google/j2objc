@@ -14,9 +14,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.SourceVersion;
-
 import java.io.IOException;
 
 /**
@@ -25,11 +22,6 @@ import java.io.IOException;
  * @author Seth Kirby
  */
 public class MethodReferenceTest extends GenerationTest {
-  @Override
-  protected void loadOptions() throws IOException {
-    super.loadOptions();
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-  }
 
   // Test the creation of explicit blocks for lambdas with expression bodies.
   public void testCreationReferenceBlockWrapper() throws IOException {

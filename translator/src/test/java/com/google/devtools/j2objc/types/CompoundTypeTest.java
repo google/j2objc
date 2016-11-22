@@ -15,21 +15,16 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.TypeUtil;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.io.IOException;
-
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Unit tests for the Java 8 compound types.
@@ -40,8 +35,6 @@ public class CompoundTypeTest extends GenerationTest {
 
   // Test BindingUtil.isIntersectionType(ITypeBinding).
   public void testIsCompound() throws Exception {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     String source = "interface Test<T> extends java.util.Comparator<T> {"
         + "  default Test<T> thenTesting(Test<? super T> other) { "
         + "    return (Test<T> & java.io.Serializable) (c1, c2) -> { "
@@ -70,8 +63,6 @@ public class CompoundTypeTest extends GenerationTest {
 
   // Test NameTable.getFullName(ITypeBinding).
   public void testCompoundTypeFullName() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     String source = "package foo.bar; interface Test<T> extends java.util.Comparator<T> {"
         + "  default Test<T> thenTesting(Test<? super T> other) { "
         + "    return (Test<T> & java.io.Serializable) (c1, c2) -> { "
@@ -98,8 +89,6 @@ public class CompoundTypeTest extends GenerationTest {
 
   // Verify that an include for ".h" isn't generated with a compound type.
   public void testCompoundTypeImport() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     String source = "interface Test<T> extends java.util.Comparator<T> {"
         + "  default Test<T> thenTesting(Test<? super T> other) { "
         + "    return (Test<T> & java.io.Serializable) (c1, c2) -> { "

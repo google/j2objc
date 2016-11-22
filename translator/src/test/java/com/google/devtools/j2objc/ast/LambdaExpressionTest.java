@@ -14,9 +14,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.SourceVersion;
-
 import java.io.IOException;
 
 /**
@@ -25,11 +22,6 @@ import java.io.IOException;
  * @author Seth Kirby
  */
 public class LambdaExpressionTest extends GenerationTest {
-  @Override
-  protected void loadOptions() throws IOException {
-    super.loadOptions();
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-  }
 
   private String functionHeader = "interface Function<T, R> { R apply(T t); }";
   private String fourToOneHeader = "interface FourToOne<F, G, H, I, R> {"

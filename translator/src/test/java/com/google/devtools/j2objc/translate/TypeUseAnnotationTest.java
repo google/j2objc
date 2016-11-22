@@ -15,9 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.SourceVersion;
-
 import java.io.IOException;
 
 /**
@@ -27,16 +24,8 @@ import java.io.IOException;
  */
 public class TypeUseAnnotationTest extends GenerationTest {
 
-  @Override
-  protected void loadOptions() throws IOException {
-    super.loadOptions();
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-  }
-
   // Regression for Issue #730.
   public void testAnnotatedStringType() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     addSourceFile(
         "import java.lang.annotation.*;\n"
         + "@Target(ElementType.TYPE_USE) @public @interface A {}", "A.java");
@@ -56,8 +45,6 @@ public class TypeUseAnnotationTest extends GenerationTest {
       + "class Test { int member = 7; Object o;";
 
   public void testWeakOuterInterface() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new @WeakOuter Simple() { public int run() { return member; } }; } }",
         "Test", "Test.m");
@@ -70,8 +57,6 @@ public class TypeUseAnnotationTest extends GenerationTest {
   }
 
   public void testWeakOuterClass() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new @WeakOuter SimpleClass() {"
         + "public int run() { return member; } }; } }",
@@ -85,8 +70,6 @@ public class TypeUseAnnotationTest extends GenerationTest {
   }
 
   public void testWeakOuterAbstractClass() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
     String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new @WeakOuter SimpleAbstractClass() {"
         + "public int run() { return member; } }; } }",

@@ -100,8 +100,10 @@ public class SmallTests {
     CastResolverTest.class,
     CodeReferenceMapTest.class,
     ComplexExpressionExtractorTest.class,
+    CompoundTypeTest.class,
     ConstantBranchPrunerTest.class,
     DeadCodeEliminatorTest.class,
+    DefaultMethodsTest.class,
     DestructorGeneratorTest.class,
     ElementUtilTest.class,
     EnhancedForRewriterTest.class,
@@ -119,9 +121,11 @@ public class SmallTests {
     JavaCloneWriterTest.class,
     JavadocGeneratorTest.class,
     JavaToIOSMethodTranslatorTest.class,
+    LambdaExpressionTest.class,
     LineDirectivesTest.class,
     LiteralGeneratorTest.class,
     MetadataWriterTest.class,
+    MethodReferenceTest.class,
     NameTableTest.class,
     NilCheckResolverTest.class,
     ObjectiveCHeaderGeneratorTest.class,
@@ -146,6 +150,7 @@ public class SmallTests {
     TreeConverterTest.class,
     TypeDeclarationGeneratorTest.class,
     TypeImplementationGeneratorTest.class,
+    TypeUseAnnotationTest.class,
     TranslationProcessorTest.class,
     TranslationUtilTest.class,
     UnicodeUtilsTest.class,
@@ -155,19 +160,6 @@ public class SmallTests {
   };
 
   public static Test suite() {
-    TestSuite testSuite = new TestSuite(smallTestClasses);
-    try {
-      Class.forName("java.lang.invoke.LambdaMetafactory");
-
-      // Running with Java 8 JRE, add test classes that depend on it.
-      testSuite.addTestSuite(CompoundTypeTest.class);
-      testSuite.addTestSuite(DefaultMethodsTest.class);
-      testSuite.addTestSuite(LambdaExpressionTest.class);
-      testSuite.addTestSuite(MethodReferenceTest.class);
-      testSuite.addTestSuite(TypeUseAnnotationTest.class);
-    } catch (ClassNotFoundException e) {
-      // Running on pre-Java 8 JRE.
-    }
-    return testSuite;
+    return new TestSuite(smallTestClasses);
   }
 }

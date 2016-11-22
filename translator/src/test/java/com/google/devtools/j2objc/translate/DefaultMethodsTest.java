@@ -16,8 +16,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.SourceVersion;
-
 import java.io.IOException;
 
 /**
@@ -26,11 +24,6 @@ import java.io.IOException;
  * @author Lukhnos Liu
  */
 public class DefaultMethodsTest extends GenerationTest {
-  @Override
-  protected void loadOptions() throws IOException {
-    super.loadOptions();
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-  }
 
   public void testDefaultMethodFunctionalization() throws IOException {
     String source = "interface Foo { void f(); default void g() { f(); } }";

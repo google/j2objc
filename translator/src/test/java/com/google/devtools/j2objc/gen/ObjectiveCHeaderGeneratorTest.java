@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.HeaderMap;
-import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.File;
 import java.io.IOException;
 
@@ -842,9 +841,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testStaticInterfaceMethodDeclaredInCompanionClass() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
-
     String source = "interface Foo { static void f() {} }"
         + "class Bar implements Foo { void g() { Foo.f(); } }";
     String header = translateSourceFile(source, "Test", "Test.h");
