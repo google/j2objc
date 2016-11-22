@@ -157,8 +157,7 @@ public class TreeConverter {
     for (JCTree type : javacUnit.getTypeDecls()) {
       unit.addType((AbstractTypeDeclaration) converter.convert(type));
     }
-
-    // TODO(tball): add unparented comments, once comment scanner is implemented.
+    addOcniComments(unit);
     return unit;
   }
 
@@ -1111,5 +1110,22 @@ public class TreeConverter {
     int endPos = startPos + javacComment.getText().length();
     comment.setSourceRange(startPos, endPos);
     return comment;
+  }
+
+  private static void addOcniComments(CompilationUnit unit) {
+    // Can't use a regex because it will greedily include everything between
+    // the first and last closing pattern, resulting in a single comment node.
+    String source = unit.getSource();
+    int startPos = 0;
+    int endPos = 0;
+    while ((startPos = source.indexOf("/*-[", endPos)) > -1) {
+      endPos = source.indexOf("]-*/", startPos);
+      if (endPos > startPos) {
+        endPos += 4;  // Include closing delimiter.
+        BlockComment ocniComment = new BlockComment();
+        ocniComment.setSourceRange(startPos, endPos);
+        unit.getCommentList().add(ocniComment);
+      }
+    }
   }
 }
