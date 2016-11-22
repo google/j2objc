@@ -20,11 +20,9 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.io.IOException;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Unit tests for the Java 8 compound types.
@@ -33,7 +31,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class CompoundTypeTest extends GenerationTest {
 
-  // Test BindingUtil.isIntersectionType(ITypeBinding).
+  // Test TypeUtil.isIntersection(TypeMirror).
   public void testIsCompound() throws Exception {
     String source = "interface Test<T> extends java.util.Comparator<T> {"
         + "  default Test<T> thenTesting(Test<? super T> other) { "
@@ -48,8 +46,8 @@ public class CompoundTypeTest extends GenerationTest {
         MethodDeclaration method = (MethodDeclaration) body;
         if (method.getName().getIdentifier().equals("thenTesting")) {
           // Verify a normal type isn't marked as compound.
-          ITypeBinding binding = method.getReturnType().getTypeBinding();
-          assertFalse(BindingUtil.isIntersectionType(binding));
+          TypeMirror returnType = method.getReturnType().getTypeMirror();
+          assertFalse(TypeUtil.isIntersection(returnType));
           // The method's return type isn't compound, but the cast expression in
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) method.getBody().getStatements().get(0);
@@ -61,7 +59,7 @@ public class CompoundTypeTest extends GenerationTest {
     assertEquals(1, methodsFound);
   }
 
-  // Test NameTable.getFullName(ITypeBinding).
+  // Test NameTable.getObjCType(TypeMirror).
   public void testCompoundTypeFullName() throws IOException {
     String source = "package foo.bar; interface Test<T> extends java.util.Comparator<T> {"
         + "  default Test<T> thenTesting(Test<? super T> other) { "
