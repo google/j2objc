@@ -456,7 +456,8 @@ public class TreeConverter {
     // This could also be implemented as an element type and dimensions for JLS8, but we mainly deal
     // with ArrayTypes through the ArrayType(ITypeBinding) initializer, in the ArrayRewriter, for
     // which we use ITypeBinding's componentType anyway.
-    Type componentType = (Type) Type.newType(node.resolveBinding().getComponentType());
+    Type componentType = (Type) Type.newType(
+        BindingConverter.getType(node.resolveBinding().getComponentType()));
     return newNode.setComponentType(componentType);
   }
 

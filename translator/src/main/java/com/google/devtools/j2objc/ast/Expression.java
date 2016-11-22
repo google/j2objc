@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -25,12 +23,6 @@ public abstract class Expression extends TreeNode {
 
   private Object constantValue;
 
-  // TODO(tball): remove when all subclasses are converted.
-  protected Expression(org.eclipse.jdt.core.dom.Expression jdtNode) {
-    super(jdtNode);
-    constantValue = jdtNode.resolveConstantExpressionValue();
-  }
-
   protected Expression(Expression other) {
     super(other);
     constantValue = other.getConstantValue();
@@ -39,10 +31,6 @@ public abstract class Expression extends TreeNode {
   protected Expression() {
     super();
     constantValue = null;
-  }
-
-  public ITypeBinding getTypeBinding() {
-    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(getTypeMirror());
   }
 
   public abstract TypeMirror getTypeMirror();

@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for a com.google.j2objc.annotations.Property annotation.
@@ -42,6 +41,7 @@ public class PropertyAnnotation extends Annotation {
       "atomic", "readwrite", "strong");
   private static final Ordering<String> ATTRIBUTE_ORDERING = Ordering.explicit(PROPERTY_ATTRIBUTES);
   private static final Comparator<String> ATTRIBUTES_COMPARATOR = new Comparator<String>() {
+    @Override
     public int compare(String a, String b) {
       if (a.startsWith("getter")) { a = "getter"; }
       if (a.startsWith("setter")) { a = "setter"; }
@@ -63,14 +63,6 @@ public class PropertyAnnotation extends Annotation {
   @Override
   public Kind getKind() {
     return Kind.PROPERTY_ANNOTATION;
-  }
-
-  public void addGetter(IMethodBinding getter) {
-    addAttribute("getter=" + getter.getName());
-  }
-
-  public void addSetter(IMethodBinding setter) {
-    addAttribute("setter=" + setter.getName());
   }
 
   public void addAttribute(String attribute) {

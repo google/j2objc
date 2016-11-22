@@ -15,10 +15,8 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.BindingConverter;
-import javax.lang.model.type.TypeKind;
+import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Base class for all type nodes.
@@ -42,21 +40,13 @@ public abstract class Type extends TreeNode {
   }
 
   public static Type newType(TypeMirror typeMirror) {
-    if (typeMirror.getKind().isPrimitive() || typeMirror.getKind() == TypeKind.VOID) {
+    if (TypeUtil.isPrimitiveOrVoid(typeMirror)) {
       return new PrimitiveType(typeMirror);
-    } else if (typeMirror.getKind().equals(TypeKind.ARRAY)) {
+    } else if (TypeUtil.isArray(typeMirror)) {
       return new ArrayType((javax.lang.model.type.ArrayType) typeMirror);
     } else {
       return new SimpleType(typeMirror);
     }
-  }
-
-  public static Type newType(ITypeBinding binding) {
-    return newType(BindingConverter.getType(binding));
-  }
-
-  public ITypeBinding getTypeBinding() {
-    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(typeMirror);
   }
 
   public TypeMirror getTypeMirror() {

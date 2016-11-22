@@ -19,7 +19,6 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.io.File;
@@ -31,8 +30,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Collection of utility methods for examining tree nodes.
@@ -140,12 +137,6 @@ public class TreeUtil {
   private static final List<Class<?>> EXECUTABLE_DECLARATION_TYPES =
       ImmutableList.of(MethodDeclaration.class, FunctionDeclaration.class);
 
-  /**
-   * With lambdas and methodbindings, the return type of the method binding does not necessarily
-   * match the return type of the functional interface, which enforces the type contracts. To get
-   * the return type of a lambda or method binding, we need the return type of the functional
-   * interface.
-   */
   public static TypeMirror getOwningReturnType(TreeNode node) {
     TreeNode enclosingNode = getNearestAncestorWithTypeOneOf(EXECUTABLE_DECLARATION_TYPES, node);
     if (enclosingNode instanceof MethodDeclaration) {
@@ -246,13 +237,9 @@ public class TreeUtil {
   }
 
   /**
-   * Gets a variable binding for the given expression if the expression
+   * Gets a variable element for the given expression if the expression
    * represents a variable. Returns null otherwise.
    */
-  public static IVariableBinding getVariableBinding(Expression node) {
-    return BindingConverter.unwrapVariableElement(getVariableElement(node));
-  }
-
   public static VariableElement getVariableElement(Expression node) {
     node = trimParentheses(node);
     switch (node.getKind()) {
@@ -266,12 +253,6 @@ public class TreeUtil {
       default:
         return null;
     }
-  }
-
-  public static IVariableBinding getVariableBinding(Name node) {
-    Element element = node.getElement();
-    return element != null && ElementUtil.isVariable(element)
-        ? (IVariableBinding) BindingConverter.unwrapElement(element) : null;
   }
 
   public static VariableElement getVariableElement(Name node) {
@@ -294,10 +275,6 @@ public class TreeUtil {
 
   public static CommonTypeDeclaration getEnclosingType(TreeNode node) {
     return getNearestAncestorWithType(CommonTypeDeclaration.class, node);
-  }
-
-  public static ITypeBinding getEnclosingTypeBinding(TreeNode node) {
-    return BindingConverter.unwrapTypeElement(getEnclosingTypeElement(node));
   }
 
   public static TypeElement getEnclosingTypeElement(TreeNode node) {

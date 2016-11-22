@@ -73,8 +73,8 @@ public class InfixExpression extends Expression {
     }
   }
 
-  // In theory the type binding can be resolved from the operator and operands
-  // but we'll keep it simple for now.
+  // In theory the type can be resolved from the operator and operands but we'll keep it simple for
+  // now.
   private TypeMirror typeMirror = null;
   private Operator operator = null;
   private ChildList<Expression> operands = ChildList.create(Expression.class, this);

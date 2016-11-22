@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.Element;
-import org.eclipse.jdt.core.dom.IBinding;
 
 /**
  * Base class for all declarations that may appear in the body of a type declaration.
@@ -40,11 +39,6 @@ public abstract class BodyDeclaration extends TreeNode {
     hasPrivateDeclaration = other.hasPrivateDeclaration();
     javadoc.copyFrom(other.getJavadoc());
     annotations.copyFrom(other.getAnnotations());
-  }
-
-  // TODO(tball): remove when all subclasses are converted.
-  public BodyDeclaration(IBinding binding) {
-    modifiers = binding.getModifiers();
   }
 
   public BodyDeclaration(Element element) {

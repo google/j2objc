@@ -122,12 +122,12 @@ class TypeCollector {
       }
       @Override
       public boolean visit(ClassInstanceCreation node) {
-        visitType(node.getTypeBinding());
+        visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
         return true;
       }
       @Override
       public boolean visit(MethodInvocation node) {
-        visitType(node.getTypeBinding());
+        visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
         return true;
       }
     });
