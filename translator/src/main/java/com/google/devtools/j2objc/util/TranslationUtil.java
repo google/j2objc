@@ -301,7 +301,7 @@ public final class TranslationUtil {
   public Expression createAnnotationValue(TypeMirror type, AnnotationValue aValue) {
     Object value = aValue.getValue();
     if (value == null) {
-      return new NullLiteral();
+      return new NullLiteral(typeUtil.getNull());
     } else if (value instanceof VariableElement) {
       return new SimpleName((VariableElement) value);
     } else if (TypeUtil.isArray(type)) {

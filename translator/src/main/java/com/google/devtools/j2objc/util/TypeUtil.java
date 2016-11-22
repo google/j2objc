@@ -38,6 +38,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.NoType;
+import javax.lang.model.type.NullType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -464,6 +465,10 @@ public final class TypeUtil {
 
   public NoType getVoid() {
     return javacTypes.getNoType(TypeKind.VOID);
+  }
+
+  public NullType getNull() {
+    return javacTypes.getNullType();
   }
 
   public PrimitiveType unboxedType(TypeMirror t) {

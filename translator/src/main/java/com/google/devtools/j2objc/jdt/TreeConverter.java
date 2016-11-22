@@ -271,7 +271,7 @@ public class TreeConverter {
       case ASTNode.NORMAL_ANNOTATION:
         return convertNormalAnnotation((org.eclipse.jdt.core.dom.NormalAnnotation) jdtNode);
       case ASTNode.NULL_LITERAL:
-        return new NullLiteral();
+        return new NullLiteral(BindingConverter.NULL_TYPE);
       case ASTNode.NUMBER_LITERAL:
         return convertNumberLiteral((org.eclipse.jdt.core.dom.NumberLiteral) jdtNode);
       case ASTNode.PACKAGE_DECLARATION:

@@ -14,19 +14,23 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.type.TypeMirror;
 
 /**
  * Null literal node type.
  */
 public class NullLiteral extends Expression {
+  private final TypeMirror type;
 
   public NullLiteral(NullLiteral other) {
     super(other);
+    this.type = other.type;
   }
 
-  public NullLiteral() {}
+  public NullLiteral(TypeMirror type) {
+    super();
+    this.type = type;
+  }
 
   @Override
   public Kind getKind() {
@@ -35,7 +39,7 @@ public class NullLiteral extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    return BindingConverter.NULL_TYPE;
+    return type;
   }
 
   @Override

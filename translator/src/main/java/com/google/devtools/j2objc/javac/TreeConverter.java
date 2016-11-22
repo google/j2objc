@@ -328,7 +328,7 @@ public class TreeConverter {
       case SYNCHRONIZED:
         return convertSynchronized((JCTree.JCSynchronized) javacNode);
       case NULL_LITERAL:
-        return new NullLiteral();
+        return new NullLiteral(((JCTree.JCLiteral) javacNode).type);
 
       case AND:
       case CONDITIONAL_AND:
