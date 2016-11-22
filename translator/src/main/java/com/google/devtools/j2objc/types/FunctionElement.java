@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
@@ -46,17 +44,6 @@ public class FunctionElement {
     this.declaringClass = declaringClass;
   }
 
-  public FunctionElement(String name, String retainedResultName, ITypeBinding returnType,
-      ITypeBinding declaringClass) {
-    this(name, retainedResultName, BindingConverter.getType(returnType),
-        BindingConverter.getTypeElement(declaringClass));
-  }
-
-  public FunctionElement(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
-    this(name, null, BindingConverter.getType(returnType),
-        BindingConverter.getTypeElement(declaringClass));
-  }
-
   public FunctionElement(String name, TypeMirror returnType, TypeElement declaringClass) {
     this(name, null, returnType, declaringClass);
   }
@@ -79,13 +66,6 @@ public class FunctionElement {
 
   public List<TypeMirror> getParameterTypes() {
     return parameterTypes;
-  }
-
-  public FunctionElement addParameters(ITypeBinding... paramTypes) {
-    for (ITypeBinding paramType : paramTypes) {
-      parameterTypes.add(BindingConverter.getType(paramType));
-    }
-    return this;
   }
 
   public FunctionElement addParameters(TypeMirror... paramTypes) {
