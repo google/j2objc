@@ -16,8 +16,13 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Tests for {@link TypeDeclarationGenerator}.
@@ -357,5 +362,41 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // Test that J2OBJC_ARG is used to wrap the type containing a comma.
     assertTranslation(translation,
         "J2OBJC_FIELD_SETTER(Test, foo_, J2OBJC_ARG(id<JavaLangComparable, JavaLangRunnable>))");
+  }
+
+  public void testSortMethods() throws IOException {
+    String source = "class A {"
+        + "void zebra() {}"
+        + "void gnu(String s, int i, Runnable r) {}"
+        + "A(int i) {}"
+        + "void gnu() {}"
+        + "void gnu(int i, Runnable r) {}"
+        + "void yak() {}"
+        + "A(String s) {}"
+        + "A() {}"
+        + "A(int i, Runnable r) {}"
+        + "void gnu(String s, int i) {}}";
+    CompilationUnit unit = translateType("A", source);
+    final ArrayList<MethodDeclaration> methods = new ArrayList<>();
+    unit.accept(new TreeVisitor() {
+      @Override
+      public void endVisit(MethodDeclaration node) {
+        if (!ElementUtil.isSynthetic(node.getExecutableElement())) {
+          methods.add(node);
+        }
+      }
+    });
+    Collections.sort(methods, TypeDeclarationGenerator.METHOD_DECL_ORDER);
+    assertTrue(methods.get(0).toString().startsWith("A()"));
+    assertTrue(methods.get(1).toString().startsWith("A(int i)"));
+    assertTrue(methods.get(2).toString().startsWith("A(int i,java.lang.Runnable r)"));
+    assertTrue(methods.get(3).toString().startsWith("A(java.lang.String s)"));
+    assertTrue(methods.get(4).toString().startsWith("void gnu()"));
+    assertTrue(methods.get(5).toString().startsWith("void gnu(int i,java.lang.Runnable r)"));
+    assertTrue(methods.get(6).toString().startsWith("void gnu(java.lang.String s,int i)"));
+    assertTrue(methods.get(7).toString().startsWith(
+        "void gnu(java.lang.String s,int i,java.lang.Runnable r)"));
+    assertTrue(methods.get(8).toString().startsWith("void yak()"));
+    assertTrue(methods.get(9).toString().startsWith("void zebra()"));
   }
 }

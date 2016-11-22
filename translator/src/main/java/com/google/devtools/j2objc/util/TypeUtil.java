@@ -558,6 +558,8 @@ public final class TypeUtil {
         return getName(((ArrayType) t).getComponentType()) + "[]";
       case DECLARED:
         return ElementUtil.getName(asTypeElement(t));
+      case TYPEVAR:
+        return ElementUtil.getName(((TypeVariable) t).asElement());
       case BOOLEAN:
         return "boolean";
       case BYTE:

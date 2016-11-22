@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
@@ -41,6 +42,8 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -700,11 +703,47 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           iter.remove();
         }
       }
-      TreeUtil.sortMethods(methods);
+      Collections.sort(methods, METHOD_DECL_ORDER);
       newline();
       println(category.header);
       printDeclarations(methods);
       printDeclarations(declarations);
     }
   }
+
+  /**
+   * Method comparator, suitable for documentation and code-completion lists.
+   *
+   * Sort ordering: constructors first, then alphabetical by name. If they have the
+   * same name, then compare the first parameter's simple type name, then the second, etc.
+   */
+  @VisibleForTesting
+  static final Comparator<MethodDeclaration> METHOD_DECL_ORDER =
+      new Comparator<MethodDeclaration>() {
+    @Override
+    public int compare(MethodDeclaration m1, MethodDeclaration m2) {
+      if (m1.isConstructor() && !m2.isConstructor()) {
+        return -1;
+      }
+      if (!m1.isConstructor() && m2.isConstructor()) {
+        return 1;
+      }
+      String m1Name = m1.getName().getIdentifier();
+      String m2Name = m2.getName().getIdentifier();
+      if (!m1Name.equals(m2Name)) {
+        return m1Name.compareToIgnoreCase(m2Name);
+      }
+      int nParams = m1.getParameters().size();
+      int nOtherParams = m2.getParameters().size();
+      int max = Math.min(nParams, nOtherParams);
+      for (int i = 0; i < max; i++) {
+        String paramType = TypeUtil.getName(m1.getParameter(i).getType().getTypeMirror());
+        String otherParamType = TypeUtil.getName(m2.getParameter(i).getType().getTypeMirror());
+        if (!paramType.equals(otherParamType)) {
+          return paramType.compareToIgnoreCase(otherParamType);
+        }
+      }
+      return nParams - nOtherParams;
+    }
+  };
 }

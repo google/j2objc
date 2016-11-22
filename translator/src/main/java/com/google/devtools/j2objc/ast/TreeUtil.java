@@ -24,8 +24,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.io.File;
 import java.util.AbstractList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.Element;
@@ -433,43 +431,6 @@ public class TreeUtil {
       return new StringLiteral((String) value, typeUtil);
     }
     throw new AssertionError("unknown constant type: " + value.getClass().getName());
-  }
-
-  /**
-   * Method sorter, suitable for documentation and
-   * code-completion lists.
-   *
-   * Sort ordering: constructors first, then alphabetical by name. If they have the
-   * same name, then compare the first parameter's simple type name, then the second, etc.
-   */
-  public static void sortMethods(List<MethodDeclaration> methods) {
-    Collections.sort(methods, new Comparator<MethodDeclaration>() {
-      @Override
-      public int compare(MethodDeclaration m1, MethodDeclaration m2) {
-        if (m1.isConstructor() && !m2.isConstructor()) {
-          return -1;
-        }
-        if (!m1.isConstructor() && m2.isConstructor()) {
-          return 1;
-        }
-        String m1Name = m1.getName().getIdentifier();
-        String m2Name = m2.getName().getIdentifier();
-        if (!m1Name.equals(m2Name)) {
-          return m1Name.compareToIgnoreCase(m2Name);
-        }
-        int nParams = m1.getParameters().size();
-        int nOtherParams = m2.getParameters().size();
-        int max = Math.min(nParams, nOtherParams);
-        for (int i = 0; i < max; i++) {
-          String paramType = m1.getParameter(i).getType().getTypeBinding().getName();
-          String otherParamType = m2.getParameter(i).getType().getTypeBinding().getName();
-          if (!paramType.equals(otherParamType)) {
-            return paramType.compareToIgnoreCase(otherParamType);
-          }
-        }
-        return nParams - nOtherParams;
-      }
-    });
   }
 
   public static List<AnnotationTypeMemberDeclaration> getAnnotationMembers(
