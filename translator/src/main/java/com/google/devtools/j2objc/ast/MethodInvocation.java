@@ -15,14 +15,11 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Method invocation node type.
@@ -47,17 +44,6 @@ public class MethodInvocation extends Expression {
     arguments.copyFrom(other.getArguments());
   }
 
-  public MethodInvocation(IMethodBinding binding, ITypeBinding typeBinding, Expression expression) {
-    this(
-        new ExecutablePair(
-            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)),
-        BindingConverter.getType(typeBinding), expression);
-  }
-
-  public MethodInvocation(IMethodBinding binding, Expression expression) {
-    this(binding, binding.getReturnType(), expression);
-  }
-
   public MethodInvocation(ExecutablePair method, TypeMirror typeMirror, Expression expression) {
     this.method = method;
     this.typeMirror = typeMirror;
@@ -72,16 +58,6 @@ public class MethodInvocation extends Expression {
   @Override
   public Kind getKind() {
     return Kind.METHOD_INVOCATION;
-  }
-
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(method.type());
-  }
-
-  public void setMethodBinding(IMethodBinding newMethodBinding) {
-    method = new ExecutablePair(
-        BindingConverter.getExecutableElement(newMethodBinding),
-        BindingConverter.getType(newMethodBinding));
   }
 
   public ExecutablePair getExecutablePair() {

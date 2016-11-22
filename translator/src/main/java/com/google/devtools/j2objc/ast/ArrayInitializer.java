@@ -14,10 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.type.ArrayType;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Array initializer node type.
@@ -34,10 +32,6 @@ public class ArrayInitializer extends Expression {
     super(other);
     typeMirror = other.getTypeMirror();
     expressions.copyFrom(other.getExpressions());
-  }
-
-  public ArrayInitializer(ITypeBinding typeBinding) {
-    typeMirror = (ArrayType) BindingConverter.getType(typeBinding);
   }
 
   public ArrayInitializer(ArrayType typeMirror) {

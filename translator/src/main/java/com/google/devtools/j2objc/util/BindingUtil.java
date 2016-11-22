@@ -414,21 +414,6 @@ public final class BindingUtil {
   }
 
   /**
-   * Return a signature string for the purpose of discovering default methods.
-   *
-   * To test if a class overrides or redeclares a default method, we just need the method name and
-   * its parameters signature. We don't need to test the return type -- the compiler frontend does
-   * not allow incompatible return types, and so we don't have to deal with malformed code.
-   */
-  public static String getDefaultMethodSignature(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(method.getName());
-    sb.append('(');
-    appendParametersSignature(method, sb);
-    sb.append(')');
-    return sb.toString();
-  }
-
-  /**
    * Get a method's signature for dead code elimination purposes.
    *
    * Since DeadCodeEliminator runs before InnerClassExtractor, inner class constructors do not yet

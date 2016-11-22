@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.Element;
@@ -33,18 +32,6 @@ public abstract class BodyDeclaration extends TreeNode {
 
   BodyDeclaration() {
     super();
-  }
-
-  // TODO(tball): remove when all subclasses are converted.
-  BodyDeclaration(org.eclipse.jdt.core.dom.BodyDeclaration jdtNode) {
-    super(jdtNode);
-    modifiers = jdtNode.getModifiers();
-    javadoc.set((Javadoc) TreeConverter.convert(jdtNode.getJavadoc()));
-    for (Object modifier : jdtNode.modifiers()) {
-      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
-        annotations.add((Annotation) TreeConverter.convert(modifier));
-      }
-    }
   }
 
   public BodyDeclaration(BodyDeclaration other) {

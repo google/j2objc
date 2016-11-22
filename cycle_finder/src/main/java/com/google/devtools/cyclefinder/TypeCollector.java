@@ -22,7 +22,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-
+import com.google.devtools.j2objc.jdt.BindingConverter;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -110,12 +110,12 @@ class TypeCollector {
     unit.accept(new TreeVisitor() {
       @Override
       public boolean visit(TypeDeclaration node) {
-        visitType(node.getTypeBinding());
+        visitType(BindingConverter.unwrapTypeElement(node.getTypeElement()));
         return true;
       }
       @Override
       public boolean visit(AnonymousClassDeclaration node) {
-        ITypeBinding binding = node.getTypeBinding();
+        ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
         visitType(binding);
         renamings.put(binding, "anonymous:" + node.getLineNumber());
         return true;

@@ -14,10 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node type for a declaration of a single variable. Used in parameter lists
@@ -36,11 +34,6 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     isVarargs = other.isVarargs();
     annotations.copyFrom(other.getAnnotations());
     type.copyFrom(other.getType());
-  }
-
-  // TODO(tball): remove when javac migration is complete.
-  public SingleVariableDeclaration(IVariableBinding variableBinding) {
-    this((VariableElement) BindingConverter.getElement(variableBinding));
   }
 
   public SingleVariableDeclaration(VariableElement variableElement) {

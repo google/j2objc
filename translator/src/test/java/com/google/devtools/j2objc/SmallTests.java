@@ -72,7 +72,6 @@ import com.google.devtools.j2objc.translate.VariableRenamerTest;
 import com.google.devtools.j2objc.types.CompoundTypeTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
-import com.google.devtools.j2objc.util.BindingUtilTest;
 import com.google.devtools.j2objc.util.CodeReferenceMapTest;
 import com.google.devtools.j2objc.util.ElementUtilTest;
 import com.google.devtools.j2objc.util.ErrorUtilTest;
@@ -82,7 +81,6 @@ import com.google.devtools.j2objc.util.PackagePrefixesTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
 import com.google.devtools.j2objc.util.TranslationUtilTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -99,7 +97,6 @@ public class SmallTests {
     ArrayCreationTest.class,
     ArrayRewriterTest.class,
     AutoboxerTest.class,
-    BindingUtilTest.class,
     CastResolverTest.class,
     CodeReferenceMapTest.class,
     ComplexExpressionExtractorTest.class,

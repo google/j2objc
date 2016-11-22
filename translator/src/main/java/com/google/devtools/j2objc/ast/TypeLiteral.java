@@ -14,10 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.TypeUtil;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Type literal node type.
@@ -40,10 +38,6 @@ public class TypeLiteral extends Expression {
   public TypeLiteral(TypeMirror literalType, TypeUtil typeUtil) {
     typeMirror = typeUtil.getJavaClass().asType();
     type.set(Type.newType(literalType));
-  }
-
-  public TypeLiteral(ITypeBinding literalType, TypeUtil typeUtil) {
-    this(BindingConverter.getType(literalType), typeUtil);
   }
 
   @Override

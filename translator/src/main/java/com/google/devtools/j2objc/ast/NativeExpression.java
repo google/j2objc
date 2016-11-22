@@ -15,10 +15,8 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Native expression node type.
@@ -34,11 +32,6 @@ public class NativeExpression extends Expression {
     code = other.getCode();
     typeMirror = other.getTypeMirror();
     importTypes.addAll(other.getImportTypes());
-  }
-
-  public NativeExpression(String code, ITypeBinding type) {
-    this.code = code;
-    typeMirror = BindingConverter.getType(type);
   }
 
   public NativeExpression(String code, TypeMirror type) {

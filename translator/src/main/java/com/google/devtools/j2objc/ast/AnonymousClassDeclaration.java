@@ -14,10 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Anonymous class declaration node. Must be the child of a
@@ -44,11 +42,6 @@ public final class AnonymousClassDeclaration extends TreeNode implements CommonT
   @Override
   public Kind getKind() {
     return Kind.ANONYMOUS_CLASS_DECLARATION;
-  }
-
-  // TODO(tball): remove when all translators are converted.
-  public ITypeBinding getTypeBinding() {
-    return (ITypeBinding) BindingConverter.unwrapElement(element);
   }
 
   @Override

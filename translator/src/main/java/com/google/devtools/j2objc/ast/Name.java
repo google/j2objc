@@ -14,10 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Base node class for a name.
@@ -55,11 +53,6 @@ public abstract class Name extends Expression {
   public Name setElement(Element newElement) {
     element = newElement;
     return this;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(element.asType());
   }
 
   public boolean isQualifiedName() {

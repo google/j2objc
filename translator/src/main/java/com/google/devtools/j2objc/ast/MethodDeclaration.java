@@ -14,11 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for a method declaration.
@@ -62,16 +60,8 @@ public class MethodDeclaration extends BodyDeclaration {
     return Kind.METHOD_DECLARATION;
   }
 
-  public IMethodBinding getMethodBinding() {
-    return BindingConverter.unwrapExecutableElement(executableElement);
-  }
-
   public ExecutableElement getExecutableElement() {
     return executableElement;
-  }
-
-  public void setMethodBinding(IMethodBinding newMethodBinding) {
-    executableElement = BindingConverter.getExecutableElement(newMethodBinding);
   }
 
   public MethodDeclaration setExecutableElement(ExecutableElement newElement) {

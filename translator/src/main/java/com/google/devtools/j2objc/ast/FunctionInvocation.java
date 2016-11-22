@@ -14,10 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.FunctionElement;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
@@ -39,11 +36,6 @@ public class FunctionInvocation extends Expression {
     functionElement = other.getFunctionElement();
     typeMirror = other.getTypeMirror();
     arguments.copyFrom(other.getArguments());
-  }
-
-  public FunctionInvocation(FunctionElement functionElement, ITypeBinding typeBinding) {
-    this.functionElement = functionElement;
-    this.typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public FunctionInvocation(FunctionElement functionElement, TypeMirror typeMirror) {

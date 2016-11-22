@@ -15,10 +15,8 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Superclass node for classes, enums and annotation declarations.
@@ -42,27 +40,10 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
   }
 
-  // TODO(tball): remove when all subclasses are converted.
-  public AbstractTypeDeclaration(ITypeBinding typeBinding) {
-    super(typeBinding);
-    this.typeElement = BindingConverter.getTypeElement(typeBinding);
-    name.set(new SimpleName(typeElement));
-  }
-
   public AbstractTypeDeclaration(TypeElement typeElement) {
     super();
     this.typeElement = typeElement;
     name.set(new SimpleName(typeElement));
-  }
-
-  // TODO(tball): remove when all subclasses are converted.
-  public ITypeBinding getTypeBinding() {
-    return BindingConverter.unwrapTypeElement(typeElement);
-  }
-
-  // TODO(tball): remove when all subclasses are converted.
-  public void setTypeBinding(ITypeBinding typeBinding) {
-    this.typeElement = BindingConverter.getTypeElement(typeBinding);
   }
 
   @Override

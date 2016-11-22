@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for a function declaration.
@@ -39,11 +38,6 @@ public class FunctionDeclaration extends BodyDeclaration {
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
     jniSignature = other.jniSignature;
-  }
-
-  public FunctionDeclaration(String name, ITypeBinding returnType) {
-    this.name = name;
-    this.returnType.set(Type.newType(returnType));
   }
 
   public FunctionDeclaration(String name, TypeMirror returnType) {

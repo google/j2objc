@@ -14,13 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Node for an enum constant.
@@ -48,10 +46,6 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   @Override
   public Kind getKind() {
     return Kind.ENUM_CONSTANT_DECLARATION;
-  }
-
-  public IVariableBinding getVariableBinding() {
-    return BindingConverter.unwrapVariableElement(variableElement);
   }
 
   public VariableElement getVariableElement() {

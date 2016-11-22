@@ -14,9 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Node type for "this".
@@ -32,10 +30,6 @@ public class ThisExpression extends Expression {
     super(other);
     typeMirror = other.getTypeMirror();
     qualifier.copyFrom(other.getQualifier());
-  }
-
-  public ThisExpression(ITypeBinding typeBinding) {
-    typeMirror = BindingConverter.getType(typeBinding);
   }
 
   public ThisExpression(TypeMirror typeMirror) {

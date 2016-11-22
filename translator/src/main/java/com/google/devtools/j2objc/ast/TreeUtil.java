@@ -31,7 +31,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -307,11 +306,6 @@ public class TreeUtil {
 
   public static List<BodyDeclaration> getEnclosingTypeBodyDeclarations(TreeNode node) {
     return getEnclosingType(node).getBodyDeclarations();
-  }
-
-  public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {
-    MethodDeclaration enclosingMethod = getNearestAncestorWithType(MethodDeclaration.class, node);
-    return enclosingMethod == null ? null : enclosingMethod.getMethodBinding();
   }
 
   private static final List<Class<?>> NODE_TYPES_WITH_ELEMENTS = ImmutableList.of(

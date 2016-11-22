@@ -14,13 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
  * Node type for a method invocation on the super class. (e.g. "super.foo()")
@@ -45,12 +43,6 @@ public class SuperMethodInvocation extends Expression {
     arguments.copyFrom(other.getArguments());
   }
 
-  public SuperMethodInvocation(IMethodBinding methodBinding) {
-    this(new ExecutablePair(
-        BindingConverter.getExecutableElement(methodBinding),
-        BindingConverter.getType(methodBinding)));
-  }
-
   public SuperMethodInvocation(ExecutablePair method) {
     this.method = method;
     name.set(new SimpleName(method.element()));
@@ -59,10 +51,6 @@ public class SuperMethodInvocation extends Expression {
   @Override
   public Kind getKind() {
     return Kind.SUPER_METHOD_INVOCATION;
-  }
-
-  public IMethodBinding getMethodBinding() {
-    return (IMethodBinding) BindingConverter.unwrapTypeMirrorIntoBinding(getExecutableType());
   }
 
   public ExecutablePair getExecutablePair() {
