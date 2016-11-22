@@ -22,14 +22,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,9 +40,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -722,37 +717,8 @@ public class NameTable {
     return classType == null ? ID_TYPE + protocols : classType + protocols + " *";
   }
 
-  /**
-   * Return a comma-separated list of field names from a fragments list.
-   *
-   * @param fragments a list of VariableDeclarationFragment instances
-   */
-  public static String fieldNames(List<?> fragments) {
-    if (fragments.isEmpty()) {
-      return "";
-    }
-    StringBuffer sb = new StringBuffer();
-    for (Iterator<?> iterator = fragments.iterator(); iterator.hasNext();) {
-      Object o = iterator.next();
-      if (o instanceof VariableDeclarationFragment) {
-        VariableDeclarationFragment fragment = (VariableDeclarationFragment) o;
-        sb.append(fragment.getName().getIdentifier());
-        if (iterator.hasNext()) {
-          sb.append(", ");
-        }
-      } else {
-        throw new AssertionError("unknown fragment type: " + o.getClass());
-      }
-    }
-    return sb.toString();
-  }
-
   public static String getNativeEnumName(String typeName) {
     return typeName + "_Enum";
-  }
-
-  public String getFullName(TypeElement element) {
-    return getFullName(BindingConverter.unwrapTypeElement(element));
   }
 
   /**
@@ -762,61 +728,52 @@ public class NameTable {
    * name plus the inner class name; for example, java.util.ArrayList.ListItr's
    * name is "JavaUtilArrayList_ListItr".
    */
-  public String getFullName(ITypeBinding binding) {
-    // Make sure type variables aren't included.
-    binding = BindingConverter.unwrapTypeMirrorIntoTypeBinding(
-        typeUtil.mapType(BindingConverter.getType(binding.getErasure())));
+  public String getFullName(TypeElement element) {
+    element = typeUtil.getObjcClass(element);
 
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.
-    if (BindingUtil.isPackageInfo(binding)) {
-      return camelCaseQualifiedName(binding.getPackage().getName()) + PACKAGE_INFO_OBJC_NAME;
+    if (ElementUtil.isPackageInfo(element)) {
+      return camelCaseQualifiedName(ElementUtil.getName(ElementUtil.getPackage(element)))
+          + PACKAGE_INFO_OBJC_NAME;
     }
 
     // Use ObjectiveCName annotation, if it exists.
-    IAnnotationBinding annotation = BindingUtil.getAnnotation(binding, ObjectiveCName.class);
+    AnnotationMirror annotation = ElementUtil.getAnnotation(element, ObjectiveCName.class);
     if (annotation != null) {
-      return (String) BindingUtil.getAnnotationValue(annotation, "value");
+      return (String) ElementUtil.getAnnotationValue(annotation, "value");
     }
 
-    ITypeBinding outerBinding = binding.getDeclaringClass();
-    if (outerBinding != null) {
-      return getFullName(outerBinding) + '_' + getTypeSubName(binding);
+    TypeElement outerClass = ElementUtil.getDeclaringClass(element);
+    if (outerClass != null) {
+      return getFullName(outerClass) + '_' + getTypeSubName(element);
     }
-    String name = binding.getQualifiedName();
 
     // Use mapping file entry, if it exists.
-    String mappedName = classMappings.get(name);
+    String mappedName = classMappings.get(ElementUtil.getQualifiedName(element));
     if (mappedName != null) {
       return mappedName;
     }
 
     // Use camel-cased package+class name.
-    if (BindingUtil.isIntersectionType(binding)) {
-      ITypeBinding[] interfaces = binding.getInterfaces();
-      if (interfaces.length > 0) {
-        return getFullName(interfaces[0]);
-      }
-    }
-    PackageElement pkg = (PackageElement) BindingConverter.getElement(binding.getPackage());
-    return getPrefix(pkg) + getTypeSubName(binding);
+    return getPrefix(ElementUtil.getPackage(element)) + getTypeSubName(element);
   }
 
-  private static String getTypeSubName(ITypeBinding binding) {
-    if (binding.isAnonymous()) {
-      String binaryName = binding.getBinaryName();
+  private String getTypeSubName(TypeElement element) {
+    if (ElementUtil.isLambda(element)) {
+      return ElementUtil.getName(element);
+    } else if (ElementUtil.isAnonymous(element)) {
+      String binaryName = elementUtil.getBinaryName(element);
       return binaryName.substring(binaryName.lastIndexOf("$"));
-    } else if (binding.isLocal()) {
-      String binaryName = binding.getBinaryName();
-      int innerClassIndex = binaryName.lastIndexOf(binding.getName());
+    } else if (ElementUtil.isLocal(element)) {
+      String binaryName = elementUtil.getBinaryName(element);
+      int innerClassIndex = binaryName.lastIndexOf(ElementUtil.getName(element));
       while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
         --innerClassIndex;
       }
       return binaryName.substring(innerClassIndex);
-    } else if (BindingUtil.isLambda(binding)) {
-      return binding.getName();
     }
-    return binding.getName().replace('$', '_');
+    return ElementUtil.getName(element).replace('$', '_');
   }
 
   private static boolean isReservedName(String name) {

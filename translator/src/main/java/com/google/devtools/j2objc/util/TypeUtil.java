@@ -285,28 +285,19 @@ public final class TypeUtil {
    * Maps the given type to it's Objective-C equivalent. Array types are mapped to their equivalent
    * IOSArray type and common Java classes like String and Object are mapped to NSString and
    * NSObject.
-   * TODO(kstanger): This should be changed to return TypeElement.
    */
-  public TypeMirror mapType(TypeMirror t) {
-    if (isArray(t)) {
-      return getIosArray(((ArrayType) t).getComponentType()).asType();
-    } else if (isDeclaredType(t)) {
-      TypeElement element = (TypeElement) ((DeclaredType) t).asElement();
-      TypeElement mapped = javaToObjcTypeMap.get(element);
-      return mapped != null ? mapped.asType() : element.asType();
-    }
-    return t;
-  }
-
   public TypeElement getObjcClass(TypeMirror t) {
     if (isArray(t)) {
       return getIosArray(((ArrayType) t).getComponentType());
     } else if (isDeclaredType(t)) {
-      TypeElement element = (TypeElement) ((DeclaredType) t).asElement();
-      TypeElement mapped = javaToObjcTypeMap.get(element);
-      return mapped != null ? mapped : element;
+      return getObjcClass((TypeElement) ((DeclaredType) t).asElement());
     }
     return null;
+  }
+
+  public TypeElement getObjcClass(TypeElement element) {
+    TypeElement mapped = javaToObjcTypeMap.get(element);
+    return mapped != null ? mapped : element;
   }
 
   /**
