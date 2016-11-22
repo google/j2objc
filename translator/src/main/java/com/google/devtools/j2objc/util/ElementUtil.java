@@ -48,7 +48,6 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -182,8 +181,7 @@ public final class ElementUtil {
   }
 
   public static TypeElement getSuperclass(TypeElement element) {
-    DeclaredType superClass = (DeclaredType) element.getSuperclass();
-    return superClass != null ? (TypeElement) superClass.asElement() : null;
+    return TypeUtil.asTypeElement(element.getSuperclass());
   }
 
   public static List<TypeElement> getInterfaces(TypeElement element) {
