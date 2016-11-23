@@ -34,7 +34,6 @@ import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DefaultConstructorAdder;
 import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
-import com.google.devtools.j2objc.translate.ElementReferenceMapper;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
 import com.google.devtools.j2objc.translate.Functionizer;
@@ -83,15 +82,12 @@ public class TranslationProcessor extends FileProcessor {
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
   private final CodeReferenceMap deadCodeMap;
-  private final CodeReferenceMap treeShakerMap;
 
   private int processedCount = 0;
 
-  public TranslationProcessor(Parser parser, CodeReferenceMap deadCodeMap,
-      CodeReferenceMap treeShakerMap) {
+  public TranslationProcessor(Parser parser, CodeReferenceMap deadCodeMap) {
     super(parser);
     this.deadCodeMap = deadCodeMap;
-    this.treeShakerMap = treeShakerMap;
   }
 
   @Override
@@ -105,7 +101,7 @@ public class TranslationProcessor extends FileProcessor {
       // Dump compilation unit to an .ast output file instead of translating.
       DebugASTDump.dumpUnit(unit);
     } else {
-      applyMutations(unit, deadCodeMap, treeShakerMap, ticker);
+      applyMutations(unit, deadCodeMap, ticker);
       ticker.tick("Tree mutations");
       ticker.printResults(System.out);
 
@@ -133,7 +129,7 @@ public class TranslationProcessor extends FileProcessor {
    * classes, etc.
    */
   public static void applyMutations(CompilationUnit unit, CodeReferenceMap deadCodeMap,
-      CodeReferenceMap treeShakerMap, TimeTracker ticker) {
+      TimeTracker ticker) {
     ticker.push();
 
     // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
@@ -147,20 +143,6 @@ public class TranslationProcessor extends FileProcessor {
     if (deadCodeMap != null) {
       new DeadCodeEliminator(unit, deadCodeMap).run();
       ticker.tick("DeadCodeEliminator");
-    }
-
-    //TODO(user): Possible issues:
-    // Might need to merge the DeadCodeEliminator and TreeShaker CodeReferenceMaps
-    // since any overlap could break the code
-    // Solution: Enforce that only one is used
-    if (treeShakerMap != null) {
-      ElementReferenceMapper mapper = new ElementReferenceMapper(unit);
-      mapper.run();
-      mapper.shakeTree(treeShakerMap);
-      //TODO(user): Enable the following, connecting elimination step to treeShaker
-      //deadCodeMap = mapper.buildTreeShakerMap();
-      //new DeadCodeEliminator(unit, deadCodeMap).run();
-      ticker.tick("TreeShaker");
     }
 
     new OuterReferenceResolver(unit).run();

@@ -85,10 +85,6 @@ public class J2ObjC {
   private static CodeReferenceMap loadDeadCodeMap() {
     return parseDeadCodeFile(Options.getProGuardUsageFile());
   }
-  
-  private static CodeReferenceMap loadTreeShakerMap() {
-    return parseDeadCodeFile(Options.getTreeShakerUsageFile());
-  }
 
   private static CodeReferenceMap parseDeadCodeFile(File file) {
     if (file != null) {
@@ -142,7 +138,7 @@ public class J2ObjC {
 
       Options.getHeaderMap().loadMappings();
       TranslationProcessor translationProcessor =
-          new TranslationProcessor(parser, loadDeadCodeMap(), loadTreeShakerMap());
+          new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
       translationProcessor.processBuildClosureDependencies();
       if (ErrorUtil.errorCount() > 0) {

@@ -98,7 +98,6 @@ public class Options {
   private SourceVersion sourceVersion = null;
 
   private static File proGuardUsageFile = null;
-  private static File treeShakerUsageFile = null;
 
   private static String fileHeader;
   private static final String FILE_HEADER_KEY = "file-header";
@@ -163,7 +162,7 @@ public class Options {
     OBJECTIVE_C(".m"),
     OBJECTIVE_CPLUSPLUS(".mm");
 
-    private String suffix;
+    private final String suffix;
 
     OutputLanguageOption(String suffix) {
       this.suffix = suffix;
@@ -225,7 +224,7 @@ public class Options {
     UNUSED_TYPE_ARGS(JavaCore.COMPILER_PB_UNUSED_TYPE_ARGUMENTS_FOR_METHOD_INVOCATION),
     WARNING_TOKEN(JavaCore.COMPILER_PB_UNHANDLED_WARNING_TOKEN);
 
-    private String jdtFlag;
+    private final String jdtFlag;
 
     private LintOption(String jdtFlag) {
       this.jdtFlag = jdtFlag;
@@ -314,7 +313,7 @@ public class Options {
   }
 
   public static boolean isVerbose() {
-    return Logger.getLogger("com.google.devtools.j2objc").getLevel() == Level.FINEST;
+    return Logger.getLogger("com.google.devtools.j2objc").getLevel().equals(Level.FINEST);
   }
 
   @VisibleForTesting
@@ -389,11 +388,6 @@ public class Options {
           usage("--dead-code-report requires an argument");
         }
         proGuardUsageFile = new File(args[nArg]);
-      } else if (arg.equals("--tree-shaker-report")) {
-        if (++nArg == args.length) {
-          usage("--tree-shaker-report requires an argument");
-        }
-        treeShakerUsageFile = new File(args[nArg]);
       } else if (arg.equals("--prefix")) {
         if (++nArg == args.length) {
           usage("--prefix requires an argument");
@@ -737,16 +731,8 @@ public class Options {
     proGuardUsageFile = newProGuardUsageFile;
   }
 
-  public static void setTreeShakerUsageFile(File newTreeShakerUsageFile) {
-    treeShakerUsageFile = newTreeShakerUsageFile;
-  }
-
   public static File getProGuardUsageFile() {
     return proGuardUsageFile;
-  }
-
-  public static File getTreeShakerUsageFile() {
-    return treeShakerUsageFile;
   }
 
   public static List<String> getBootClasspath() {

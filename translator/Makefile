@@ -235,7 +235,6 @@ JAVA_SOURCES = \
 	translate/DefaultConstructorAdder.java \
 	translate/DefaultMethodShimGenerator.java \
 	translate/DestructorGenerator.java \
-	translate/ElementReferenceMapper.java \
 	translate/EnhancedForRewriter.java \
 	translate/EnumRewriter.java \
 	translate/Functionizer.java \
