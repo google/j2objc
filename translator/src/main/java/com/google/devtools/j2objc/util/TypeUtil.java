@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
@@ -209,11 +208,6 @@ public final class TypeUtil {
       t = (((ArrayType) t).getComponentType());
     }
     return dimCount;
-  }
-
-  public static int getModifiers(TypeMirror t) {
-    // the public modifier api doesn't expose synthetic
-    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t).getModifiers();
   }
 
   public ExecutableType asMemberOf(DeclaredType containing, ExecutableElement method) {
