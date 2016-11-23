@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.j2objc.annotations.RetainedWith;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -160,11 +159,6 @@ public final class BindingUtil {
     }
     char binaryName = type.getBinaryName().charAt(0);
     return binaryName == 'F' || binaryName == 'D';
-  }
-
-  public static boolean isLambda(ITypeBinding type) {
-    return type instanceof GeneratedTypeElement.Binding
-        && ElementUtil.isLambda(((GeneratedTypeElement.Binding) type).asElement());
   }
 
   public static boolean isPackageInfo(ITypeBinding type) {

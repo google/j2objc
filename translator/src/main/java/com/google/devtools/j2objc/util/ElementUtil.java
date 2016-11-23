@@ -470,6 +470,9 @@ public final class ElementUtil {
   }
 
   public String getBinaryName(TypeElement e) {
+    if (e instanceof GeneratedTypeElement) {
+      return e.getQualifiedName().toString();
+    }
     return javacElements.getBinaryName(e).toString();
   }
 

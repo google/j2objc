@@ -14,26 +14,17 @@
 
 package com.google.devtools.j2objc.types;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.util.Collections;
-import java.util.List;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * TypeMirror for native C types.
  *
  * @author Nathan Braswell
  */
-public class NativeType implements TypeMirror {
+public class NativeType extends AbstractTypeMirror {
 
   private final String name;
-  private final ITypeBinding binding = new Binding();
 
   public NativeType(String name) {
     this.name = name;
@@ -44,24 +35,8 @@ public class NativeType implements TypeMirror {
   }
 
   @Override
-  public List<? extends AnnotationMirror> getAnnotationMirrors() {
-    return Collections.emptyList();
-  }
-
-  @Override
   public String toString() {
     return name;
-  }
-
-  @Override
-  public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-    return null;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
-    return (A[]) Array.newInstance(annotationType, 0);
   }
 
   @Override
@@ -82,49 +57,5 @@ public class NativeType implements TypeMirror {
   @Override
   public int hashCode() {
     return name.hashCode();
-  }
-
-  public ITypeBinding asBinding() {
-    return binding;
-  }
-
-  /**
-   * An associated ITypeBinding implementation.
-   */
-  public class Binding extends AbstractTypeBinding {
-
-    public TypeMirror asTypeMirror() {
-      return NativeType.this;
-    }
-
-    @Override
-    public String getName() {
-      return name;
-    }
-
-    @Override
-    public String getQualifiedName() {
-      return name;
-    }
-
-    @Override
-    public boolean isPrimitive() {
-      return true;
-    }
-
-    @Override
-    public String getKey() {
-      return "NATIVE_" + name.replace(" ", "_");
-    }
-
-    @Override
-    public boolean isAssignmentCompatible(ITypeBinding variableType) {
-      return isEqualTo(variableType);
-    }
-
-    @Override
-    public boolean isEqualTo(IBinding binding) {
-      return binding instanceof Binding && ((Binding) binding).getName().equals(name);
-    }
   }
 }

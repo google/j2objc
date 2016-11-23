@@ -14,13 +14,12 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedPackageBinding;
 import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.types.NativeType;
-import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.BindingUtil;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,11 +71,7 @@ public final class BindingConverter {
     if (type != null) {
       return type;
     }
-    if (binding instanceof NativeType.Binding) {
-      return ((NativeType.Binding) binding).asTypeMirror();
-    } else if (binding instanceof PointerType.Binding) {
-      return ((PointerType.Binding) binding).asTypeMirror();
-    } else if (binding.isArray()) {
+    if (binding.isArray()) {
       type = new JdtArrayType(binding);
     } else if (BindingUtil.isIntersectionType(binding)) {
       type = JdtIntersectionType.fromJdtIntersection(binding);
@@ -131,9 +126,7 @@ public final class BindingConverter {
     if (element != null) {
       return element;
     }
-    if (binding instanceof GeneratedTypeElement.Binding) {
-      return ((GeneratedTypeElement.Binding) binding).asElement();
-    } else if (binding instanceof GeneratedExecutableElement.Binding) {
+    if (binding instanceof GeneratedExecutableElement.Binding) {
       return ((GeneratedExecutableElement.Binding) binding).asElement();
     } else if (binding instanceof GeneratedVariableElement.Binding) {
       return ((GeneratedVariableElement.Binding) binding).asElement();
@@ -183,7 +176,7 @@ public final class BindingConverter {
       return ((GeneratedExecutableElement) element).asMethodBinding();
     }
     if (element instanceof GeneratedTypeElement) {
-      return ((GeneratedTypeElement) element).asTypeBinding();
+      throw new AssertionError("not supported");
     }
     if (element instanceof GeneratedPackageElement) {
       return new GeneratedPackageBinding(((GeneratedPackageElement) element).getName());
@@ -206,12 +199,8 @@ public final class BindingConverter {
   public static IBinding unwrapTypeMirrorIntoBinding(TypeMirror t) {
     if (t == null) {
       return null;
-    } else if (t instanceof NativeType) {
-      return ((NativeType) t).asBinding();
-    } else if (t instanceof PointerType) {
-      return ((PointerType) t).asBinding();
-    } else if (t instanceof GeneratedTypeElement.Mirror) {
-      return ((GeneratedTypeElement.Mirror) t).asTypeBinding();
+    } else if (t instanceof AbstractTypeMirror) {
+      throw new AssertionError("not supported");
     } else if (t instanceof GeneratedExecutableElement.Mirror) {
       return ((GeneratedExecutableElement.Mirror) t).asMethodBinding();
     }

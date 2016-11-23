@@ -16,7 +16,9 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
@@ -227,6 +229,15 @@ public final class TypeUtil {
   }
 
   public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
+    if (isGeneratedType(t)) {
+      if (t instanceof GeneratedTypeElement.Mirror) {
+        GeneratedTypeElement element = (GeneratedTypeElement)
+            ((GeneratedTypeElement.Mirror) t).asElement();
+        return element.getDirectSupertypes();
+      } else {
+        return Collections.emptyList();
+      }
+    }
     return javacTypes.directSupertypes(t);
   }
 
@@ -235,7 +246,14 @@ public final class TypeUtil {
   }
 
   public ArrayType getArrayType(TypeMirror componentType) {
+    if (isGeneratedType(componentType)) {
+      return new GeneratedArrayType(componentType);
+    }
     return javacTypes.getArrayType(componentType);
+  }
+
+  boolean isGeneratedType(TypeMirror type) {
+    return type instanceof AbstractTypeMirror;
   }
 
   public TypeElement getIosArray(TypeMirror componentType) {
