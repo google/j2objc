@@ -21,6 +21,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 abstract class JdtTypeMirror implements TypeMirror {
 
@@ -33,8 +34,10 @@ abstract class JdtTypeMirror implements TypeMirror {
   @Override
   public List<? extends AnnotationMirror> getAnnotationMirrors() {
     List<AnnotationMirror> mirrors = new ArrayList<>();
-    for (IAnnotationBinding annotation : binding.getAnnotations()) {
-      mirrors.add(new JdtAnnotationMirror(annotation));
+    if (binding instanceof ITypeBinding) {
+      for (IAnnotationBinding annotation : ((ITypeBinding) binding).getTypeAnnotations()) {
+        mirrors.add(new JdtAnnotationMirror(annotation));
+      }
     }
     return mirrors;
   }

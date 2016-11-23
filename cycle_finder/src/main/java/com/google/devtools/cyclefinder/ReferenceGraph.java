@@ -23,7 +23,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.jdt.BindingConverter;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.Collection;
 import java.util.Iterator;
@@ -85,6 +84,7 @@ public class ReferenceGraph {
   private void addFieldEdges() {
     for (ITypeBinding type : allTypes.values()) {
       for (IVariableBinding field : type.getDeclaredFields()) {
+        VariableElement fieldE = BindingConverter.getVariableElement(field);
         ITypeBinding fieldType = getElementType(field.getType());
         if (!whitelist.containsField(field)
             && !whitelist.containsType(fieldType)
@@ -92,8 +92,8 @@ public class ReferenceGraph {
             && !Modifier.isStatic(field.getModifiers())
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !type.isAssignmentCompatible(fieldType)
-            && !BindingUtil.isWeakReference(field)
-            && !BindingUtil.isRetainedWithField(field)) {
+            && !ElementUtil.isWeakReference(fieldE)
+            && !ElementUtil.isRetainedWithField(fieldE)) {
           addEdge(Edge.newFieldEdge(type, field));
         }
       }
@@ -162,8 +162,7 @@ public class ReferenceGraph {
       Element element = BindingConverter.getElement(type.getTypeDeclaration());
       if (ElementUtil.isTypeElement(element)
           && captureFields.hasOuterReference((TypeElement) element)
-          && !BindingUtil.hasNamedAnnotation(type, "WeakOuter")
-          && !BindingUtil.isWeakOuterAnonymousClass(type)) {
+          && !ElementUtil.isWeakOuterType((TypeElement) element)) {
         ITypeBinding declaringType = type.getDeclaringClass();
         if (declaringType != null && !whitelist.containsType(declaringType)
             && !whitelist.hasOuterForType(type)) {
@@ -183,7 +182,7 @@ public class ReferenceGraph {
               capturedVarElement);
           ITypeBinding targetType = getElementType(capturedVarBinding.getType());
           if (!targetType.isPrimitive() && !whitelist.containsType(targetType)
-              && !BindingUtil.isWeakReference(capturedVarBinding)) {
+              && !ElementUtil.isWeakReference(capturedVarElement)) {
             addEdge(Edge.newCaptureEdge(type, capturedVarBinding));
           }
         }

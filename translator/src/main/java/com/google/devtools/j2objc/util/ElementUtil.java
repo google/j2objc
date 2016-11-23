@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
@@ -31,12 +32,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -51,7 +54,6 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Utility methods for working with elements.
@@ -353,16 +355,48 @@ public final class ElementUtil {
     return isMethod(element) && !isStatic(element);
   }
 
-  public static boolean isWeakReference(VariableElement varElement) {
-    IVariableBinding var = (IVariableBinding) BindingConverter.unwrapElement(varElement);
-    if (var.getName().startsWith("this$")
-        && BindingUtil.isWeakOuterAnonymousClass(var.getDeclaringClass())) {
-      return true;
+  public static boolean isWeakReference(VariableElement var) {
+    return hasNamedAnnotation(var, "Weak")
+        || hasWeakPropertyAttribute(var)
+        || (getName(var).startsWith("this$")
+            && isWeakOuterType(ElementUtil.getDeclaringClass(var)));
+  }
+
+  public static boolean isWeakOuterType(TypeElement type) {
+    if (isAnonymous(type)) {
+      // For anonymous classes we must check for a TYPE_USE annotation on the supertype used in the
+      // declaration. For example:
+      // Runnable r = new @WeakOuter Runnable() { ... };
+      TypeMirror superclass = type.getSuperclass();
+      if (superclass != null && hasNamedAnnotation(superclass, "WeakOuter")) {
+        return true;
+      }
+      for (TypeMirror intrface : type.getInterfaces()) {
+        if (hasNamedAnnotation(intrface, "WeakOuter")) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return hasNamedAnnotation(type, "WeakOuter");
     }
-    return BindingUtil.hasNamedAnnotation(var, "Weak")
-        || BindingUtil.hasWeakPropertyAttribute(var)
-        || (var.getName().startsWith("this$")
-        && BindingUtil.hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
+  }
+
+  private static boolean hasWeakPropertyAttribute(VariableElement var) {
+    AnnotationMirror annotation = getAnnotation(var, Property.class);
+    return annotation != null && parsePropertyAttribute(annotation).contains("weak");
+  }
+
+  /**
+   * Returns the attributes of a Property annotation.
+   */
+  public static Set<String> parsePropertyAttribute(AnnotationMirror annotation) {
+    assert getName(annotation.getAnnotationType().asElement()).equals("Property");
+    String attributesStr = (String) getAnnotationValue(annotation, "value");
+    Set<String> attributes = new HashSet<>();
+    attributes.addAll(Arrays.asList(attributesStr.split(",\\s*")));
+    attributes.remove(""); // Clear any empty strings.
+    return attributes;
   }
 
   public static boolean isRetainedWithField(VariableElement varElement) {
@@ -582,8 +616,8 @@ public final class ElementUtil {
   /**
    * Less strict version of the above where we don't care about the annotation's package.
    */
-  public static boolean hasNamedAnnotation(Element element, String annotationName) {
-    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+  public static boolean hasNamedAnnotation(AnnotatedConstruct ac, String annotationName) {
+    for (AnnotationMirror annotation : ac.getAnnotationMirrors()) {
       Name annotationTypeName = annotation.getAnnotationType().asElement().getSimpleName();
       if (annotationTypeName.toString().equals(annotationName)) {
         return true;

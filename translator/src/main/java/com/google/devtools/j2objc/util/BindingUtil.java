@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
-import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -532,48 +531,6 @@ public final class BindingUtil {
       }
     }
     return null;
-  }
-
-  /**
-   * Checks to see if this is an anonymous class annotated with @WeakOuter.
-   * Because this is an anonymous class, we can't annotate its declaration
-   * so we annotate the instantiation instead: (i.e. new @WeakOuter Interface() { ... },
-   * or new @WeakOuter SomeClass() { ... }).
-   * In order to detect if a particular anonymous class is annotated in this way, we
-   * check the type annotations of the interface it implements and its superclass.
-   */
-  public static boolean isWeakOuterAnonymousClass(ITypeBinding type) {
-    ITypeBinding[] interfaces = type.getInterfaces();
-    if (interfaces.length > 0) {
-      if (hasNamedTypeAnnotation(interfaces[0], "WeakOuter")) {
-        return true;
-      }
-    }
-    ITypeBinding superclass = type.getSuperclass();
-    if (superclass != null) {
-      if (hasNamedTypeAnnotation(superclass, "WeakOuter")) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static boolean isWeakReference(IVariableBinding var) {
-    if (var.getName().startsWith("this$") && isWeakOuterAnonymousClass(var.getDeclaringClass())) {
-      return true;
-    }
-    return hasNamedAnnotation(var, "Weak")
-        || hasWeakPropertyAttribute(var)
-        || (var.getName().startsWith("this$")
-        && hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter"));
-  }
-
-  static boolean hasWeakPropertyAttribute(IVariableBinding var) {
-    IAnnotationBinding propertyAnnotation = getAnnotation(var, Property.class);
-    if (propertyAnnotation == null) {
-      return false;
-    }
-    return parseAttributeString(propertyAnnotation).contains("weak");
   }
 
   public static boolean isRetainedWithField(IVariableBinding var) {
