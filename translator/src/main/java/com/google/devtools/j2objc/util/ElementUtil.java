@@ -46,7 +46,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -76,6 +75,8 @@ public final class ElementUtil {
 
   private static final Set<Modifier> VISIBILITY_MODIFIERS = EnumSet.of(
       Modifier.PUBLIC, Modifier.PROTECTED, Modifier.PRIVATE);
+
+  private static final String LAZY_INIT = "com.google.errorprone.annotations.concurrent.LazyInit";
 
   private final Elements javacElements;
 
@@ -121,7 +122,11 @@ public final class ElementUtil {
   }
 
   public static boolean isVolatile(VariableElement element) {
-    return hasModifier(element, Modifier.VOLATILE);
+    return hasModifier(element, Modifier.VOLATILE)
+        // Upgrade reference type fields marked with error prone's LazyInit because this indicates
+        // an intentional racy init.
+        || (!element.asType().getKind().isPrimitive()
+            && hasQualifiedNamedAnnotation(element, LAZY_INIT));
   }
 
   public static boolean isTopLevel(TypeElement type) {
@@ -603,13 +608,7 @@ public final class ElementUtil {
   }
 
   public static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
-    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
-      String className = TypeUtil.getQualifiedName(annotation.getAnnotationType());
-      if (className.equals(annotationClass.getName())) {
-        return annotation;
-      }
-    }
-    return null;
+    return getQualifiedNamedAnnotation(element, annotationClass.getName());
   }
 
   public static boolean hasAnnotation(Element element, Class<?> annotationClass) {
@@ -619,14 +618,26 @@ public final class ElementUtil {
   /**
    * Less strict version of the above where we don't care about the annotation's package.
    */
-  public static boolean hasNamedAnnotation(AnnotatedConstruct ac, String annotationName) {
+  public static boolean hasNamedAnnotation(AnnotatedConstruct ac, String name) {
     for (AnnotationMirror annotation : ac.getAnnotationMirrors()) {
-      Name annotationTypeName = annotation.getAnnotationType().asElement().getSimpleName();
-      if (annotationTypeName.toString().equals(annotationName)) {
+      if (getName(annotation.getAnnotationType().asElement()).equals(name)) {
         return true;
       }
     }
     return false;
+  }
+
+  public static boolean hasQualifiedNamedAnnotation(Element element, String name) {
+    return getQualifiedNamedAnnotation(element, name) != null;
+  }
+
+  public static AnnotationMirror getQualifiedNamedAnnotation(Element element, String name) {
+    for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+      if (getQualifiedName((TypeElement) annotation.getAnnotationType().asElement()).equals(name)) {
+        return annotation;
+      }
+    }
+    return null;
   }
 
   /**

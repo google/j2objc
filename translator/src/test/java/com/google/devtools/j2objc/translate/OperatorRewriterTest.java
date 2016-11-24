@@ -201,4 +201,19 @@ public class OperatorRewriterTest extends GenerationTest {
         "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(thing))->comp_)) "
           + "compareWithId:s1 withId:s2] == 0;");
   }
+
+  public void testLazyInitFields() throws IOException {
+    addSourcesToSourcepaths();
+    addSourceFile("package com.google.errorprone.annotations.concurrent;"
+        + "public @interface LazyInit {}",
+        "com/google/errorprone/annotations/concurrent/LazyInit.java");
+    String translation = translateSourceFile(
+        "import com.google.errorprone.annotations.concurrent.LazyInit;"
+        + "class Test { @LazyInit String lazyStr; @LazyInit static String lazyStaticStr; }",
+        "Test", "Test.h");
+    assertTranslation(translation, "volatile_id lazyStr_;");
+    assertTranslatedLines(translation,
+        "FOUNDATION_EXPORT volatile_id Test_lazyStaticStr;",
+        "J2OBJC_STATIC_FIELD_OBJ_VOLATILE(Test, lazyStaticStr, NSString *)");
+  }
 }
