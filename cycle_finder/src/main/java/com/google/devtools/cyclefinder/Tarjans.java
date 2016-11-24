@@ -14,11 +14,9 @@
 
 package com.google.devtools.cyclefinder;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,28 +27,28 @@ import java.util.Set;
  */
 class Tarjans {
 
-  private final SetMultimap<String, Edge> edges;
-  private final Set<String> seedTypes;
+  private final SetMultimap<TypeNode, Edge> edges;
+  private final Set<TypeNode> seedTypes;
   private int vIndex = 0;
   // In case of performance issues, consider a data structure with faster .contains().
-  private ArrayList<Vertex> stack = Lists.newArrayList();
-  private Map<String, Vertex> vertices = Maps.newHashMap();
-  private List<List<String>> stronglyConnectedComponents = Lists.newArrayList();
+  private ArrayList<Vertex> stack = new ArrayList<>();
+  private Map<TypeNode, Vertex> vertices = new HashMap<>();
+  private List<List<TypeNode>> stronglyConnectedComponents = new ArrayList<>();
 
-  private Tarjans(SetMultimap<String, Edge> edges, Set<String> seedTypes) {
+  private Tarjans(SetMultimap<TypeNode, Edge> edges, Set<TypeNode> seedTypes) {
     this.edges = edges;
     this.seedTypes = seedTypes;
   }
 
-  public static List<List<String>> getStronglyConnectedComponents(
-      SetMultimap<String, Edge> edges, Set<String> seedTypes) {
+  public static List<List<TypeNode>> getStronglyConnectedComponents(
+      SetMultimap<TypeNode, Edge> edges, Set<TypeNode> seedTypes) {
     Tarjans tarjans = new Tarjans(edges, seedTypes);
     tarjans.run();
     return tarjans.stronglyConnectedComponents;
   }
 
   private void run() {
-    for (String type : seedTypes) {
+    for (TypeNode type : seedTypes) {
       Vertex v = getVertex(type);
       if (v.index == -1) {
         visit(v);
@@ -63,7 +61,7 @@ class Tarjans {
     stack.add(v);
 
     for (Edge edge : edges.get(v.type)) {
-      Vertex w = getVertex(edge.getTarget().getKey());
+      Vertex w = getVertex(edge.getTarget());
       if (w.index == -1) {
         visit(w);
         v.lowlink = Math.min(v.lowlink, w.lowlink);
@@ -77,8 +75,7 @@ class Tarjans {
       assert idx >= 0;
       List<Vertex> stronglyConnected = stack.subList(idx, stack.size());
       if (stronglyConnected.size() > 1) {
-        List<String> stronglyConnectedTypes =
-            Lists.newArrayListWithCapacity(stronglyConnected.size());
+        List<TypeNode> stronglyConnectedTypes = new ArrayList<>(stronglyConnected.size());
         for (Vertex ver : stronglyConnected) {
           stronglyConnectedTypes.add(ver.type);
         }
@@ -88,7 +85,7 @@ class Tarjans {
     }
   }
 
-  private Vertex getVertex(String type) {
+  private Vertex getVertex(TypeNode type) {
     Vertex v = vertices.get(type);
     if (v == null) {
       v = new Vertex(type);
@@ -100,14 +97,14 @@ class Tarjans {
   private static class Vertex {
     private int index = -1;
     private int lowlink = -1;
-    private String type;
+    private TypeNode type;
 
-    private Vertex(String type) {
+    private Vertex(TypeNode type) {
       this.type = type;
     }
 
     public String toString() {
-      return type;
+      return type.toString();
     }
   }
 }

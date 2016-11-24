@@ -18,13 +18,15 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +46,11 @@ import org.eclipse.jdt.core.dom.Modifier;
  */
 public class ReferenceGraph {
 
-  private final Map<String, ITypeBinding> allTypes;
+  private final Map<String, TypeNode> allTypes;
   private final CaptureFields captureFields;
   private final NameList whitelist;
   private final NameList blacklist;
-  private SetMultimap<String, Edge> edges = HashMultimap.create();
+  private SetMultimap<TypeNode, Edge> edges = HashMultimap.create();
   private List<List<Edge>> cycles = Lists.newArrayList();
 
   public ReferenceGraph(
@@ -76,17 +78,20 @@ public class ReferenceGraph {
   }
 
   private void addEdge(Edge e) {
-    if (!e.getOrigin().getKey().equals(e.getTarget().getKey())) {
-      edges.put(e.getOrigin().getKey(), e);
+    if (!e.getOrigin().equals(e.getTarget())) {
+      edges.put(e.getOrigin(), e);
     }
   }
 
   private void addFieldEdges() {
-    for (ITypeBinding type : allTypes.values()) {
+    for (TypeNode node : allTypes.values()) {
+      ITypeBinding type = node.getTypeBinding();
       for (IVariableBinding field : type.getDeclaredFields()) {
         VariableElement fieldE = BindingConverter.getVariableElement(field);
         ITypeBinding fieldType = getElementType(field.getType());
-        if (!whitelist.containsField(field)
+        TypeNode targetNode = allTypes.get(fieldType.getKey());
+        if (targetNode != null
+            && !whitelist.containsField(field)
             && !whitelist.containsType(fieldType)
             && !fieldType.isPrimitive()
             && !Modifier.isStatic(field.getModifiers())
@@ -94,7 +99,7 @@ public class ReferenceGraph {
             && !type.isAssignmentCompatible(fieldType)
             && !ElementUtil.isWeakReference(fieldE)
             && !ElementUtil.isRetainedWithField(fieldE)) {
-          addEdge(Edge.newFieldEdge(type, field));
+          addEdge(Edge.newFieldEdge(node, targetNode, field));
         }
       }
     }
@@ -108,49 +113,57 @@ public class ReferenceGraph {
   }
 
   private void addSubtypeEdges() {
-    SetMultimap<String, String> subtypes = HashMultimap.create();
-    for (ITypeBinding type : allTypes.values()) {
-      collectSubtypes(type.getKey(), type, subtypes);
+    SetMultimap<TypeNode, TypeNode> subtypes = HashMultimap.create();
+    for (TypeNode type : allTypes.values()) {
+      collectSubtypes(type, type, subtypes);
     }
-    for (String type : allTypes.keySet()) {
+    for (TypeNode type : allTypes.values()) {
       for (Edge e : ImmutableList.copyOf(edges.get(type))) {
-        Set<String> targetSubtypes = subtypes.get(e.getTarget().getKey());
-        Set<String> whitelistKeys = Sets.newHashSet();
+        Set<TypeNode> targetSubtypes = subtypes.get(e.getTarget());
+        Set<TypeNode> whitelisted = new HashSet<>();
         IVariableBinding field = e.getField();
-        for (String subtype : targetSubtypes) {
-          ITypeBinding subtypeBinding = allTypes.get(subtype);
+        for (TypeNode subtype : targetSubtypes) {
+          ITypeBinding subtypeBinding = subtype.getTypeBinding();
           if ((field != null && field.isField()
                && whitelist.isWhitelistedTypeForField(field, subtypeBinding))
               || whitelist.containsType(subtypeBinding)) {
-            whitelistKeys.add(subtype);
-            whitelistKeys.addAll(subtypes.get(subtype));
+            whitelisted.add(subtype);
+            whitelisted.addAll(subtypes.get(subtype));
           }
         }
-        for (String subtype : Sets.difference(targetSubtypes, whitelistKeys)) {
-          addEdge(Edge.newSubtypeEdge(e, allTypes.get(subtype)));
+        for (TypeNode subtype : Sets.difference(targetSubtypes, whitelisted)) {
+          addEdge(Edge.newSubtypeEdge(e, subtype));
         }
       }
     }
   }
 
   private void collectSubtypes(
-      String originalType, ITypeBinding type, Multimap<String, String> subtypes) {
-    for (ITypeBinding interfaze : type.getInterfaces()) {
-      subtypes.put(interfaze.getKey(), originalType);
-      collectSubtypes(originalType, interfaze, subtypes);
+      TypeNode originalType, TypeNode type, Multimap<TypeNode, TypeNode> subtypes) {
+    ITypeBinding typeBinding = type.getTypeBinding();
+    for (ITypeBinding interfaze : typeBinding.getInterfaces()) {
+      TypeNode interfaceNode = allTypes.get(interfaze.getKey());
+      if (interfaceNode != null) {
+        subtypes.put(interfaceNode, originalType);
+        collectSubtypes(originalType, interfaceNode, subtypes);
+      }
     }
-    if (type.getSuperclass() != null) {
-      subtypes.put(type.getSuperclass().getKey(), originalType);
-      collectSubtypes(originalType, type.getSuperclass(), subtypes);
+    if (typeBinding.getSuperclass() != null) {
+      TypeNode superclassNode = allTypes.get(typeBinding.getSuperclass().getKey());
+      if (superclassNode != null) {
+        subtypes.put(superclassNode, originalType);
+        collectSubtypes(originalType, superclassNode, subtypes);
+      }
     }
   }
 
   private void addSuperclassEdges() {
-    for (ITypeBinding type : allTypes.values()) {
-      ITypeBinding superclass = type.getSuperclass();
+    for (TypeNode type : allTypes.values()) {
+      ITypeBinding superclass = type.getTypeBinding().getSuperclass();
       while (superclass != null) {
-        for (Edge e : edges.get(superclass.getKey())) {
-          addEdge(Edge.newSuperclassEdge(e, type, superclass));
+        TypeNode superclassNode = allTypes.get(superclass.getKey());
+        for (Edge e : edges.get(superclassNode)) {
+          addEdge(Edge.newSuperclassEdge(e, type, superclassNode));
         }
         superclass = superclass.getSuperclass();
       }
@@ -158,32 +171,38 @@ public class ReferenceGraph {
   }
 
   private void addOuterClassEdges() {
-    for (ITypeBinding type : allTypes.values()) {
-      Element element = BindingConverter.getElement(type.getTypeDeclaration());
+    for (TypeNode type : allTypes.values()) {
+      ITypeBinding typeBinding = type.getTypeBinding();
+      Element element = BindingConverter.getElement(typeBinding.getTypeDeclaration());
       if (ElementUtil.isTypeElement(element)
           && captureFields.hasOuterReference((TypeElement) element)
           && !ElementUtil.isWeakOuterType((TypeElement) element)) {
-        ITypeBinding declaringType = type.getDeclaringClass();
+        ITypeBinding declaringType = typeBinding.getDeclaringClass();
         if (declaringType != null && !whitelist.containsType(declaringType)
-            && !whitelist.hasOuterForType(type)) {
-          addEdge(Edge.newOuterClassEdge(type, declaringType));
+            && !whitelist.hasOuterForType(typeBinding)) {
+          addEdge(Edge.newOuterClassEdge(type, allTypes.get(declaringType.getKey())));
         }
       }
     }
   }
 
   private void addAnonymousClassCaptureEdges() {
-    for (ITypeBinding type : allTypes.values()) {
-      if (type.isAnonymous()) {
+    for (TypeNode type : allTypes.values()) {
+      ITypeBinding typeBinding = type.getTypeBinding();
+      if (typeBinding.isAnonymous()) {
         for (VariableElement capturedVarElement :
              captureFields.getCaptureFields(
-                 BindingConverter.getTypeElement(type.getTypeDeclaration()))) {
+                 BindingConverter.getTypeElement(typeBinding.getTypeDeclaration()))) {
           IVariableBinding capturedVarBinding = (IVariableBinding) BindingConverter.unwrapElement(
               capturedVarElement);
           ITypeBinding targetType = getElementType(capturedVarBinding.getType());
           if (!targetType.isPrimitive() && !whitelist.containsType(targetType)
               && !ElementUtil.isWeakReference(capturedVarElement)) {
-            addEdge(Edge.newCaptureEdge(type, capturedVarBinding));
+            TypeNode target = allTypes.get(targetType.getKey());
+            if (target != null) {
+              addEdge(Edge.newCaptureEdge(
+                  type, allTypes.get(targetType.getKey()), capturedVarBinding));
+            }
           }
         }
       }
@@ -191,35 +210,35 @@ public class ReferenceGraph {
   }
 
   private void runTarjans() {
-    Set<String> seedTypes = edges.keySet();
+    Set<TypeNode> seedTypes = edges.keySet();
     if (blacklist != null) {
       seedTypes = Sets.newHashSet(seedTypes);
-      Iterator<String> it = seedTypes.iterator();
+      Iterator<TypeNode> it = seedTypes.iterator();
       while (it.hasNext()) {
-        if (!blacklist.containsType(allTypes.get(it.next()))) {
+        if (!blacklist.containsType(it.next().getTypeBinding())) {
           it.remove();
         }
       }
     }
-    List<List<String>> stronglyConnectedComponents =
+    List<List<TypeNode>> stronglyConnectedComponents =
         Tarjans.getStronglyConnectedComponents(edges, seedTypes);
-    for (List<String> component : stronglyConnectedComponents) {
+    for (List<TypeNode> component : stronglyConnectedComponents) {
       handleStronglyConnectedComponent(makeSubgraph(edges, component));
     }
   }
 
-  private void handleStronglyConnectedComponent(SetMultimap<String, Edge> subgraph) {
+  private void handleStronglyConnectedComponent(SetMultimap<TypeNode, Edge> subgraph) {
     // Make sure to find at least one cycle for each type in the SCC.
-    Set<String> unusedTypes = Sets.newHashSet(subgraph.keySet());
+    Set<TypeNode> unusedTypes = Sets.newHashSet(subgraph.keySet());
     while (!unusedTypes.isEmpty()) {
-      String root = Iterables.getFirst(unusedTypes, null);
+      TypeNode root = Iterables.getFirst(unusedTypes, null);
       assert root != null;
       List<Edge> cycle = runDijkstras(subgraph, root);
       if (shouldAddCycle(cycle)) {
         cycles.add(cycle);
       }
       for (Edge e : cycle) {
-        unusedTypes.remove(e.getOrigin().getKey());
+        unusedTypes.remove(e.getOrigin());
       }
     }
   }
@@ -229,7 +248,7 @@ public class ReferenceGraph {
       return true;
     }
     for (Edge e : cycle) {
-      if (blacklist.containsType(e.getOrigin())) {
+      if (blacklist.containsType(e.getOrigin().getTypeBinding())) {
         return true;
       }
     }
@@ -240,16 +259,16 @@ public class ReferenceGraph {
    * Runs a version of Dijkstra's algorithm to find a tight cycle in the given
    * strongly connected component.
    */
-  private List<Edge> runDijkstras(SetMultimap<String, Edge> graph, String root) {
-    Map<String, Edge> backlinks = Maps.newHashMap();
-    Set<String> visited = Sets.newHashSet();
-    List<String> toVisit = Lists.newArrayList(root);
+  private List<Edge> runDijkstras(SetMultimap<TypeNode, Edge> graph, TypeNode root) {
+    Map<TypeNode, Edge> backlinks = new HashMap<>();
+    Set<TypeNode> visited = new HashSet<>();
+    List<TypeNode> toVisit = Lists.newArrayList(root);
     outer: while (true) {
-      List<String> visitNext = Lists.newArrayList();
-      for (String source : toVisit) {
+      List<TypeNode> visitNext = new ArrayList<>();
+      for (TypeNode source : toVisit) {
         visited.add(source);
         for (Edge e : graph.get(source)) {
-          String target = e.getTarget().getKey();
+          TypeNode target = e.getTarget();
           if (!visited.contains(target)) {
             visitNext.add(target);
             backlinks.put(target, e);
@@ -261,22 +280,22 @@ public class ReferenceGraph {
       }
       toVisit = visitNext;
     }
-    List<Edge> cycle = Lists.newArrayList();
-    String curNode = root;
+    List<Edge> cycle = new ArrayList<>();
+    TypeNode curNode = root;
     while (!curNode.equals(root) || cycle.size() == 0) {
       Edge nextEdge = backlinks.get(curNode);
       cycle.add(nextEdge);
-      curNode = nextEdge.getOrigin().getKey();
+      curNode = nextEdge.getOrigin();
     }
     return Lists.newArrayList(Lists.reverse(cycle));
   }
 
-  private static SetMultimap<String, Edge> makeSubgraph(
-      SetMultimap<String, Edge> graph, Collection<String> vertices) {
-    SetMultimap<String, Edge> subgraph = HashMultimap.create();
-    for (String type : vertices) {
+  private static SetMultimap<TypeNode, Edge> makeSubgraph(
+      SetMultimap<TypeNode, Edge> graph, Collection<TypeNode> vertices) {
+    SetMultimap<TypeNode, Edge> subgraph = HashMultimap.create();
+    for (TypeNode type : vertices) {
       for (Edge e : graph.get(type)) {
-        if (vertices.contains(e.getTarget().getKey())) {
+        if (vertices.contains(e.getTarget())) {
           subgraph.put(type, e);
         }
       }

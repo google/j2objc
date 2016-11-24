@@ -15,7 +15,6 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -23,10 +22,10 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-
-import java.util.Map;
 
 /**
  * Recursively visits links between type bindings, collecting all reachable
@@ -34,15 +33,15 @@ import java.util.Map;
  */
 class TypeCollector {
 
-  private Map<String, ITypeBinding> allTypes = Maps.newHashMap();
+  private Map<String, TypeNode> allTypes = new HashMap<>();
 
-  private static Map<ITypeBinding, String> renamings = Maps.newHashMap();
+  private static Map<ITypeBinding, String> renamings = new HashMap<>();
 
-  public Map<String, ITypeBinding> getTypes() {
+  public Map<String, TypeNode> getTypes() {
     return allTypes;
   }
 
-  public static String getNameForType(ITypeBinding type) {
+  private static String getNameForType(ITypeBinding type) {
     String name = renamings.get(type);
     if (name != null) {
       return name;
@@ -66,7 +65,7 @@ class TypeCollector {
       // Avoid infinite recursion caused by nested wildcard types.
       return;
     }
-    allTypes.put(type.getKey(), type);
+    allTypes.put(type.getKey(), new TypeNode(type, getNameForType(type)));
     visitType(type.getSuperclass());
     visitType(type.getDeclaringClass());
     for (IVariableBinding field : type.getDeclaredFields()) {
@@ -116,8 +115,8 @@ class TypeCollector {
       @Override
       public boolean visit(AnonymousClassDeclaration node) {
         ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-        visitType(binding);
         renamings.put(binding, "anonymous:" + node.getLineNumber());
+        visitType(binding);
         return true;
       }
       @Override

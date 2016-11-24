@@ -15,19 +15,17 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.SourceVersion;
-
-import junit.framework.TestCase;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
+import junit.framework.TestCase;
 
 /**
  * System tests for the CycleFinder tool.
@@ -60,9 +58,9 @@ public class CycleFinderTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = createTempDir();
-    inputFiles = Lists.newArrayList();
-    whitelistEntries = Lists.newArrayList();
-    blacklistEntries = Lists.newArrayList();
+    inputFiles = new ArrayList<>();
+    whitelistEntries = new ArrayList<>();
+    blacklistEntries = new ArrayList<>();
   }
 
   @Override
@@ -411,9 +409,9 @@ public class CycleFinderTest extends TestCase {
   private void assertCycle(String... types) {
     assertNotNull(cycles);
     outer: for (List<Edge> cycle : cycles) {
-      List<String> cycleTypes = Lists.newArrayList();
+      List<String> cycleTypes = new ArrayList<>();
       for (Edge e : cycle) {
-        cycleTypes.add(e.getOrigin().getKey());
+        cycleTypes.add(e.getOrigin().getSignature());
       }
       for (String type : types) {
         if (!cycleTypes.contains(type)) {

@@ -161,7 +161,7 @@ public class CycleFinder {
       }
       out.println("----- Full Types -----");
       for (Edge e : cycle) {
-        out.println(e.getOrigin().getKey());
+        out.println(e.getOrigin().getSignature());
       }
     }
     out.println();

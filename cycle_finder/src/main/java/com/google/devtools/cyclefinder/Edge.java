@@ -16,7 +16,6 @@ package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Objects;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -25,66 +24,57 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 class Edge {
 
   private IVariableBinding field;
-  private ITypeBinding origin;
-  private ITypeBinding target;
+  private TypeNode origin;
+  private TypeNode target;
   private String description;
 
   private Edge(
-      IVariableBinding field, ITypeBinding origin, ITypeBinding target, String description) {
+      IVariableBinding field, TypeNode origin, TypeNode target, String description) {
     this.field = field;
     this.origin = origin;
     this.target = target;
     this.description = description;
   }
 
-  private static Edge newVarEdge(ITypeBinding origin, IVariableBinding field, String varType) {
-    ITypeBinding type = field.getType();
-    ITypeBinding target = type.isArray() ? type.getElementType() : type;
-    assert !target.isPrimitive();
+  public static Edge newFieldEdge(TypeNode origin, TypeNode target, IVariableBinding field) {
     return new Edge(field, origin, target,
-        "(" + varType + " " + field.getName() + " with type " + TypeCollector.getNameForType(type)
-        + ")");
+        "(field " + field.getName() + " with type " + target.getName() + ")");
   }
 
-  public static Edge newFieldEdge(ITypeBinding origin, IVariableBinding field) {
-    return newVarEdge(origin, field, "field");
-  }
-
-  public static Edge newSubtypeEdge(Edge original, ITypeBinding target) {
+  public static Edge newSubtypeEdge(Edge original, TypeNode target) {
     return new Edge(original.field, original.origin, target,
-        "(" + TypeCollector.getNameForType(target) + " subtype of " + original.description + ")");
+        "(" + target.getName() + " subtype of " + original.description + ")");
   }
 
-  public static Edge newSuperclassEdge(
-      Edge original, ITypeBinding origin, ITypeBinding superclass) {
+  public static Edge newSuperclassEdge(Edge original, TypeNode origin, TypeNode superclass) {
     return new Edge(original.field, origin, original.target,
-        "(superclass " + TypeCollector.getNameForType(superclass) + " has " + original.description
-        + ")");
+        "(superclass " + superclass.getName() + " has " + original.description + ")");
   }
 
-  public static Edge newOuterClassEdge(ITypeBinding origin, ITypeBinding target) {
-    return new Edge(null, origin, target,
-        "(outer class " + TypeCollector.getNameForType(target) + ")");
+  public static Edge newOuterClassEdge(TypeNode origin, TypeNode target) {
+    return new Edge(null, origin, target, "(outer class " + target.getName() + ")");
   }
 
-  public static Edge newCaptureEdge(ITypeBinding origin, IVariableBinding capturedVar) {
-    return newVarEdge(origin, capturedVar, "capture");
+  public static Edge newCaptureEdge(
+      TypeNode origin, TypeNode target, IVariableBinding capturedVar) {
+    return new Edge(capturedVar, origin, target,
+        "(capture " + capturedVar.getName() + " with type " + target.getName() + ")");
   }
 
   public IVariableBinding getField() {
     return field;
   }
 
-  public ITypeBinding getOrigin() {
+  public TypeNode getOrigin() {
     return origin;
   }
 
-  public ITypeBinding getTarget() {
+  public TypeNode getTarget() {
     return target;
   }
 
   public String toString() {
-    return TypeCollector.getNameForType(origin) + " -> " + description;
+    return origin.getName() + " -> " + description;
   }
 
   public boolean equals(Object o) {
@@ -92,10 +82,10 @@ class Edge {
       return false;
     }
     Edge e = (Edge) o;
-    return e.origin.getKey().equals(origin.getKey()) && e.target.getKey().equals(target.getKey());
+    return e.origin.equals(origin) && e.target.equals(target);
   }
 
   public int hashCode() {
-    return Objects.hashCode(origin.getKey(), target.getKey());
+    return Objects.hashCode(origin, target);
   }
 }
