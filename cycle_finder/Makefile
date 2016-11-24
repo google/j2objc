@@ -37,6 +37,7 @@ JAVA_SOURCES = \
     com/google/devtools/cyclefinder/CaptureFields.java \
     com/google/devtools/cyclefinder/CycleFinder.java \
     com/google/devtools/cyclefinder/Edge.java \
+    com/google/devtools/cyclefinder/GraphBuilder.java \
     com/google/devtools/cyclefinder/NameList.java \
     com/google/devtools/cyclefinder/Options.java \
     com/google/devtools/cyclefinder/ReferenceGraph.java \

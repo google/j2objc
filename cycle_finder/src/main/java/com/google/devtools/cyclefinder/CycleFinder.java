@@ -15,6 +15,8 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -29,8 +31,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A tool for finding possible reference cycles in a Java program.
@@ -40,6 +45,8 @@ import java.util.List;
 public class CycleFinder {
 
   private final Options options;
+  private final NameList blacklist;
+  private final List<List<Edge>> cycles = new ArrayList<>();
 
   static {
     // Enable assertions in the cycle finder.
@@ -55,6 +62,7 @@ public class CycleFinder {
       "-encoding", options.fileEncoding(),
       "-source",   options.sourceVersion().flag()
     });
+    blacklist = getBlacklist();
   }
 
   private static Parser createParser(Options options) {
@@ -146,10 +154,55 @@ public class CycleFinder {
     }
 
     // Construct the graph and find cycles.
-    ReferenceGraph graph = new ReferenceGraph(
-        typeCollector, captureFields, NameList.createFromFiles(options.getWhitelistFiles()),
-        getBlacklist());
-    return graph.findCycles();
+    ReferenceGraph graph = new GraphBuilder(
+        typeCollector, captureFields, NameList.createFromFiles(options.getWhitelistFiles()))
+        .constructGraph()
+        .getGraph();
+    for (ReferenceGraph component : graph.getStronglyConnectedComponents(getSeedNodes(graph))) {
+      handleStronglyConnectedComponent(component);
+    }
+    return cycles;
+  }
+
+  private Set<TypeNode> getSeedNodes(ReferenceGraph graph) {
+    if (blacklist == null) {
+      return graph.getNodes();
+    }
+    Set<TypeNode> seedNodes = new HashSet<>();
+    for (TypeNode node : graph.getNodes()) {
+      if (blacklist.containsType(node.getTypeBinding())) {
+        seedNodes.add(node);
+      }
+    }
+    return seedNodes;
+  }
+
+  private void handleStronglyConnectedComponent(ReferenceGraph subgraph) {
+    // Make sure to find at least one cycle for each type in the SCC.
+    Set<TypeNode> unusedTypes = Sets.newHashSet(subgraph.getNodes());
+    while (!unusedTypes.isEmpty()) {
+      TypeNode root = Iterables.getFirst(unusedTypes, null);
+      assert root != null;
+      List<Edge> cycle = subgraph.findShortestCycle(root);
+      if (shouldAddCycle(cycle)) {
+        cycles.add(cycle);
+      }
+      for (Edge e : cycle) {
+        unusedTypes.remove(e.getOrigin());
+      }
+    }
+  }
+
+  private boolean shouldAddCycle(List<Edge> cycle) {
+    if (blacklist == null) {
+      return true;
+    }
+    for (Edge e : cycle) {
+      if (blacklist.containsType(e.getOrigin().getTypeBinding())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static void printCycles(Collection<? extends Iterable<Edge>> cycles, PrintStream out) {
