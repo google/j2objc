@@ -129,9 +129,10 @@ public class CycleFinder {
   }
 
   public List<List<Edge>> findCycles() throws IOException {
-    final TypeCollector typeCollector = new TypeCollector();
     Parser parser = createParser(options);
     final CaptureFields captureFields = new CaptureFields();
+    final GraphBuilder graphBuilder =
+        new GraphBuilder(captureFields, NameList.createFromFiles(options.getWhitelistFiles()));
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
@@ -140,7 +141,7 @@ public class CycleFinder {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
         new LambdaTypeElementAdder(unit).run();
-        typeCollector.visitAST(unit);
+        graphBuilder.visitAST(unit);
         new OuterReferenceResolver(unit).run();
         captureFields.collect(unit);
       }
@@ -154,10 +155,7 @@ public class CycleFinder {
     }
 
     // Construct the graph and find cycles.
-    ReferenceGraph graph = new GraphBuilder(
-        typeCollector, captureFields, NameList.createFromFiles(options.getWhitelistFiles()))
-        .constructGraph()
-        .getGraph();
+    ReferenceGraph graph = graphBuilder.constructGraph().getGraph();
     for (ReferenceGraph component : graph.getStronglyConnectedComponents(getSeedNodes(graph))) {
       handleStronglyConnectedComponent(component);
     }

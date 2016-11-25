@@ -41,8 +41,7 @@ JAVA_SOURCES = \
     com/google/devtools/cyclefinder/NameList.java \
     com/google/devtools/cyclefinder/Options.java \
     com/google/devtools/cyclefinder/ReferenceGraph.java \
-    com/google/devtools/cyclefinder/Tarjans.java \
-    com/google/devtools/cyclefinder/TypeCollector.java
+    com/google/devtools/cyclefinder/Tarjans.java
 
 RESOURCES = \
     com/google/devtools/cyclefinder/CycleFinder.properties \
