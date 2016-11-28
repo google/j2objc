@@ -46,6 +46,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
