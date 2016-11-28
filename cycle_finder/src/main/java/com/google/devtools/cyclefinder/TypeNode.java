@@ -14,8 +14,6 @@
 
 package com.google.devtools.cyclefinder;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 /**
  * A representation of a Java TypeMirror, condensed for use as a node in the reference graph.
  */
@@ -23,12 +21,12 @@ class TypeNode {
 
   private final String signature;
   private final String name;
-  private final ITypeBinding typeBinding;
+  private final String qualifiedName;
 
-  TypeNode(ITypeBinding type, String name) {
-    signature = type.getKey();
+  TypeNode(String signature, String name, String qualifiedName) {
+    this.signature = signature;
     this.name = name;
-    typeBinding = type;
+    this.qualifiedName = qualifiedName;
   }
 
   public String getSignature() {
@@ -39,8 +37,8 @@ class TypeNode {
     return name;
   }
 
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
+  public String getQualifiedName() {
+    return qualifiedName;
   }
 
   @Override

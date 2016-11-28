@@ -99,7 +99,7 @@ public class CycleFinder {
     if (blackListFiles.isEmpty()) {
       return null;
     }
-    return NameList.createFromFiles(blackListFiles);
+    return NameList.createFromFiles(blackListFiles, options.fileEncoding());
   }
 
   private File stripIncompatible(
@@ -131,8 +131,9 @@ public class CycleFinder {
   public List<List<Edge>> findCycles() throws IOException {
     Parser parser = createParser(options);
     final CaptureFields captureFields = new CaptureFields();
-    final GraphBuilder graphBuilder =
-        new GraphBuilder(captureFields, NameList.createFromFiles(options.getWhitelistFiles()));
+    NameList whitelist =
+        NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
+    final GraphBuilder graphBuilder = new GraphBuilder(captureFields, whitelist);
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
@@ -141,9 +142,9 @@ public class CycleFinder {
       @Override
       public void handleParsedUnit(String path, CompilationUnit unit) {
         new LambdaTypeElementAdder(unit).run();
-        graphBuilder.visitAST(unit);
         new OuterReferenceResolver(unit).run();
         captureFields.collect(unit);
+        graphBuilder.visitAST(unit);
       }
     };
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
@@ -168,7 +169,7 @@ public class CycleFinder {
     }
     Set<TypeNode> seedNodes = new HashSet<>();
     for (TypeNode node : graph.getNodes()) {
-      if (blacklist.containsType(node.getTypeBinding())) {
+      if (blacklist.containsType(node)) {
         seedNodes.add(node);
       }
     }
@@ -196,7 +197,7 @@ public class CycleFinder {
       return true;
     }
     for (Edge e : cycle) {
-      if (blacklist.containsType(e.getOrigin().getTypeBinding())) {
+      if (blacklist.containsType(e.getOrigin())) {
         return true;
       }
     }

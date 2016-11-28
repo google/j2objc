@@ -21,15 +21,11 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Set;
 
 /**
@@ -45,24 +41,20 @@ public class NameList {
   private Set<String> namespaces = Sets.newHashSet();
   private Set<String> outers = Sets.newHashSet();
 
-  public boolean containsField(IVariableBinding field) {
-    return fields.contains(fieldName(field));
+  public boolean containsField(TypeNode origin, String fieldName) {
+    return fields.contains(origin.getQualifiedName() + '.' + fieldName);
   }
 
-  public boolean hasWhitelistedTypesForField(IVariableBinding field) {
-    return fieldsWithTypes.containsKey(fieldName(field));
+  public boolean isWhitelistedTypeForField(String fieldName, TypeNode type) {
+    return fieldsWithTypes.containsEntry(fieldName, type.getQualifiedName());
   }
 
-  public boolean isWhitelistedTypeForField(IVariableBinding field, ITypeBinding type) {
-    return fieldsWithTypes.containsEntry(fieldName(field), typeName(type));
+  public boolean hasOuterForType(TypeNode type) {
+    return outers.contains(type.getQualifiedName());
   }
 
-  public boolean hasOuterForType(ITypeBinding type) {
-    return outers.contains(typeName(type));
-  }
-
-  public boolean containsType(ITypeBinding type) {
-    String typeName = typeName(type);
+  public boolean containsType(TypeNode type) {
+    String typeName = type.getQualifiedName();
     if (types.contains(typeName)) {
       return true;
     }
@@ -77,23 +69,6 @@ public class NameList {
       typeName = typeName.substring(0, idx);
     }
     return false;
-  }
-
-  private static String fieldName(IVariableBinding field) {
-    return typeName(field.getDeclaringClass()) + "." + field.getName();
-  }
-
-  private static String typeName(ITypeBinding type) {
-    if (type.isLocal()) {
-      String methodName = "";
-      IMethodBinding declaringMethod = type.getDeclaringMethod();
-      if (declaringMethod != null) {
-        methodName = "." + declaringMethod.getName();
-      }
-      return typeName(type.getDeclaringClass()) + methodName + "."
-          + (type.isAnonymous() ? "$" : type.getName());
-    }
-    return type.getErasure().getQualifiedName();
   }
 
   private static final Splitter ENTRY_SPLITTER =
@@ -129,8 +104,9 @@ public class NameList {
     throw new IllegalArgumentException("Invalid whitelist entry: " + entry);
   }
 
-  public void addFile(String file) throws IOException {
-    BufferedReader in = new BufferedReader(new FileReader(new File(file)));
+  public void addFile(String file, String encoding) throws IOException {
+    BufferedReader in = new BufferedReader(
+        new InputStreamReader(new FileInputStream(new File(file)), encoding));
     try {
       for (String line = in.readLine(); line != null; line = in.readLine()) {
         String entry = line.split("#", 2)[0].trim();
@@ -143,10 +119,11 @@ public class NameList {
     }
   }
 
-  public static NameList createFromFiles(Iterable<String> files) throws IOException {
+  public static NameList createFromFiles(Iterable<String> files, String encoding)
+      throws IOException {
     NameList nameList = new NameList();
     for (String file : files) {
-      nameList.addFile(file);
+      nameList.addFile(file, encoding);
     }
     return nameList;
   }

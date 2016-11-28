@@ -16,53 +16,45 @@ package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Objects;
 
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 /**
  * Represents a possible reference from one type to another.
  */
 class Edge {
 
-  private IVariableBinding field;
-  private TypeNode origin;
-  private TypeNode target;
-  private String description;
+  private final TypeNode origin;
+  private final TypeNode target;
+  private final String fieldQualifiedName;
+  private final String description;
 
-  private Edge(
-      IVariableBinding field, TypeNode origin, TypeNode target, String description) {
-    this.field = field;
+  private Edge(TypeNode origin, TypeNode target, String fieldQualifiedName, String description) {
     this.origin = origin;
     this.target = target;
+    this.fieldQualifiedName = fieldQualifiedName;
     this.description = description;
   }
 
-  public static Edge newFieldEdge(TypeNode origin, TypeNode target, IVariableBinding field) {
-    return new Edge(field, origin, target,
-        "(field " + field.getName() + " with type " + target.getName() + ")");
+  public static Edge newFieldEdge(TypeNode origin, TypeNode target, String fieldName) {
+    return new Edge(origin, target, origin.getQualifiedName() + '.' + fieldName,
+        "(field " + fieldName + " with type " + target.getName() + ")");
   }
 
   public static Edge newSubtypeEdge(Edge original, TypeNode target) {
-    return new Edge(original.field, original.origin, target,
+    return new Edge(original.origin, target, original.fieldQualifiedName,
         "(" + target.getName() + " subtype of " + original.description + ")");
   }
 
   public static Edge newSuperclassEdge(Edge original, TypeNode origin, TypeNode superclass) {
-    return new Edge(original.field, origin, original.target,
+    return new Edge(origin, original.target, original.fieldQualifiedName,
         "(superclass " + superclass.getName() + " has " + original.description + ")");
   }
 
   public static Edge newOuterClassEdge(TypeNode origin, TypeNode target) {
-    return new Edge(null, origin, target, "(outer class " + target.getName() + ")");
+    return new Edge(origin, target, null, "(outer class " + target.getName() + ")");
   }
 
-  public static Edge newCaptureEdge(
-      TypeNode origin, TypeNode target, IVariableBinding capturedVar) {
-    return new Edge(capturedVar, origin, target,
-        "(capture " + capturedVar.getName() + " with type " + target.getName() + ")");
-  }
-
-  public IVariableBinding getField() {
-    return field;
+  public static Edge newCaptureEdge(TypeNode origin, TypeNode target, String varName) {
+    return new Edge(origin, target, null,
+        "(capture " + varName + " with type " + target.getName() + ")");
   }
 
   public TypeNode getOrigin() {
@@ -73,10 +65,16 @@ class Edge {
     return target;
   }
 
+  public String getFieldQualifiedName() {
+    return fieldQualifiedName;
+  }
+
+  @Override
   public String toString() {
     return origin.getName() + " -> " + description;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof Edge)) {
       return false;
@@ -85,6 +83,7 @@ class Edge {
     return e.origin.equals(origin) && e.target.equals(target);
   }
 
+  @Override
   public int hashCode() {
     return Objects.hashCode(origin, target);
   }
