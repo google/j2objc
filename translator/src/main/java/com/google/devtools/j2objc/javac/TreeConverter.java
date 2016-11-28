@@ -135,6 +135,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
@@ -628,7 +629,8 @@ public class TreeConverter {
     JCTree.JCExpression selected = node.getExpression();
     if (fieldName.equals("this")) {
       return new ThisExpression()
-          .setQualifier((Name) convert(selected));
+          .setQualifier((Name) convert(selected))
+          .setTypeMirror(node.sym.asType());
     }
     if (selected.toString().equals("super")) {
       return new SuperFieldAccess()
@@ -643,12 +645,14 @@ public class TreeConverter {
     if (selected.getKind() == Kind.IDENTIFIER) {
       return new QualifiedName()
           .setName(new SimpleName(node.sym, node.type))
-          .setQualifier(new SimpleName(((JCTree.JCIdent) selected).sym));
+          .setQualifier(new SimpleName(((JCTree.JCIdent) selected).sym))
+          .setElement(node.sym);
     }
     if (selected.getKind() == Kind.MEMBER_SELECT) {
       return new QualifiedName()
           .setName(new SimpleName(node.sym, node.type))
-          .setQualifier(convertName(((JCTree.JCFieldAccess) selected).sym));
+          .setQualifier(convertName(((JCTree.JCFieldAccess) selected).sym))
+          .setElement(node.sym);
     }
     return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
@@ -798,8 +802,7 @@ public class TreeConverter {
       ExecutableElement element = (ExecutableElement) ((JCTree.JCIdent) method).sym;
       if (method.toString().equals("this")) {
         ConstructorInvocation newNode = new ConstructorInvocation()
-            // TODO(tball): Add the appropriate ExecutableType.
-            .setExecutablePair(new ExecutablePair(element, null));
+            .setExecutablePair(new ExecutablePair(element, (ExecutableType) element.asType()));
         for (JCTree.JCExpression arg : node.getArguments()) {
           newNode.addArgument((Expression) convert(arg));
         }
@@ -807,8 +810,7 @@ public class TreeConverter {
       }
       if (method.toString().equals("super")) {
         SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-            // TODO(tball): Add the appropriate ExecutableType.
-            .setExecutablePair(new ExecutablePair(element, null));
+            .setExecutablePair(new ExecutablePair(element, (ExecutableType) element.asType()));
         for (JCTree.JCExpression arg : node.getArguments()) {
           newNode.addArgument((Expression) convert(arg));
         }
@@ -823,10 +825,9 @@ public class TreeConverter {
     }
     if (method.getKind() == Kind.MEMBER_SELECT
         && ((JCTree.JCFieldAccess) method).name.toString().equals("super")) {
+      ExecutableElement sym = (ExecutableElement) ((JCTree.JCFieldAccess) method).sym;
       SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-          .setExecutablePair(new ExecutablePair(
-              // TODO(tball): Add the appropriate ExecutableType.
-              (ExecutableElement) ((JCTree.JCFieldAccess) method).sym, null))
+          .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()))
           .setExpression((Expression) convert(method));
       for (JCTree.JCExpression arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg));
@@ -835,24 +836,25 @@ public class TreeConverter {
     }
 
     MethodInvocation newNode = new MethodInvocation();
+    ExecutableElement sym;
     if (method.getKind() == Kind.IDENTIFIER) {
+      sym = (ExecutableElement) ((JCTree.JCIdent) method).sym;
       newNode
           .setName((SimpleName) convert(method))
-          // TODO(tball): Add the appropriate ExecutableType.
-          .setExecutablePair(new ExecutablePair(
-              (ExecutableElement) ((JCTree.JCIdent) method).sym, null));
+          .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()));
     } else {
       JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
+      sym = (ExecutableElement) select.sym;
       newNode
           .setName(convertSimpleName(select.sym))
-          .setExpression((Expression) convert(select.selected))
-          // TODO(tball): Add the appropriate ExecutableType.
-          .setExecutablePair(new ExecutablePair((ExecutableElement) select.sym, null));
+          .setExpression((Expression) convert(select.selected));
     }
     for (JCTree.JCExpression arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg));
     }
-    return newNode;
+    return newNode
+        .setTypeMirror(node.type)
+        .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()));
   }
 
   private SimpleName convertSimpleName(Element element) {

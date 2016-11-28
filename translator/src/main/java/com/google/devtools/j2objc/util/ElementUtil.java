@@ -87,7 +87,10 @@ public final class ElementUtil {
   }
 
   public static String getName(Element element) {
-    return element.getSimpleName().toString();
+    // Always return qualified package names.
+    Name name = element.getKind() == ElementKind.PACKAGE
+        ? ((PackageElement) element).getQualifiedName() : element.getSimpleName();
+    return name.toString();
   }
 
   public static String getQualifiedName(TypeElement element) {

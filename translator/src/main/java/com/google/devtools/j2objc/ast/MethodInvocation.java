@@ -134,5 +134,6 @@ public class MethodInvocation extends Expression {
     super.validateInner();
     Preconditions.checkNotNull(method);
     Preconditions.checkNotNull(name.get());
+    Preconditions.checkNotNull(typeMirror);
   }
 }
