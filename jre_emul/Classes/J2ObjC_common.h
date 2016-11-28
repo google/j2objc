@@ -87,7 +87,6 @@ id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 id JreLoadVolatileId(volatile_id *pVar);
 id JreAssignVolatileId(volatile_id *pVar, id value);
 id JreVolatileStrongAssign(volatile_id *pIvar, id value);
-id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id value);
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
 id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);

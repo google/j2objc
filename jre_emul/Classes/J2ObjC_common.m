@@ -117,23 +117,15 @@ id JreAssignVolatileId(volatile_id *pVar, id value) {
   return value;
 }
 
-static inline id JreVolatileStrongAssignInner(
-    volatile_id *pIvar, NS_RELEASES_ARGUMENT id value) {
+id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pIvar);
+  [value retain];
   VOLATILE_LOCK(lock);
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
   [oldValue autorelease];
   return value;
-}
-
-id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
-  return JreVolatileStrongAssignInner(pIvar, [value retain]);
-}
-
-id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  return JreVolatileStrongAssignInner(pIvar, value);
 }
 
 jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue) {

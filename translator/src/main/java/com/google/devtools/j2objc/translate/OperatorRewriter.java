@@ -194,27 +194,25 @@ public class OperatorRewriter extends UnitTreeVisitor {
     if (isRetainedWith) {
       return isVolatile ? "JreVolatileRetainedWithAssign" : "JreRetainedWithAssign";
     }
-    if (isStrong) {
-      String funcName = null;
-      if (isVolatile) {
-        funcName = "JreVolatileStrongAssign";
-      } else if (Options.useReferenceCounting()) {
-        funcName = "JreStrongAssign";
-      }
-      if (funcName != null) {
-        Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
-        if (retainedRhs != null) {
-          funcName += "AndConsume";
-          node.setRightHandSide(retainedRhs);
-        }
+
+    if (isVolatile) {
+      // We can't use the "AndConsume" optimization for volatile objects because that might leave
+      // the newly created object vulnerable to being deallocated by another thread assigning to the
+      // same field.
+      return isStrong ? "JreVolatileStrongAssign" : "JreAssignVolatile"
+          + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
+    }
+
+    if (isStrong && Options.useReferenceCounting()) {
+      String funcName = "JreStrongAssign";
+      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
+      if (retainedRhs != null) {
+        funcName += "AndConsume";
+        node.setRightHandSide(retainedRhs);
       }
       return funcName;
     }
 
-    if (isVolatile) {
-      return "JreAssignVolatile"
-          + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
-    }
     return null;
   }
 
