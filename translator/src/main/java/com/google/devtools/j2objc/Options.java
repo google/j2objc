@@ -87,7 +87,7 @@ public class Options {
   private String lintArgument = null;
 
   // TODO(tball): remove after front-end conversion is complete.
-  private FrontEnd javaFrontEnd = FrontEnd.JDT;
+  private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
 
   private Mappings mappings = new Mappings();
   private PackageInfoLookup packageInfoLookup = new PackageInfoLookup();
@@ -111,6 +111,7 @@ public class Options {
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
   private static final String TIMING_INFO_ARG = "--timing-info";
+  private static final String ENV_FRONT_END_FLAG = "J2OBJC_FRONT_END";
 
   // TODO(tball): remove obsolete flags once projects stop using them.
   private static final Set<String> obsoleteFlags = Sets.newHashSet(
@@ -175,7 +176,19 @@ public class Options {
 
   // TODO(tball): remove after front-end conversion is complete.
   private static enum FrontEnd {
-    JDT, JAVAC
+    JDT, JAVAC;
+
+    static FrontEnd defaultFrontEnd() {
+      String envFlag = System.getenv(ENV_FRONT_END_FLAG);
+      if (envFlag != null) {
+        if (envFlag.equalsIgnoreCase(JAVAC.name())) {
+          return JAVAC;
+        } else if (!envFlag.equalsIgnoreCase(JDT.name())) {
+          ErrorUtil.error("Invalid front end environment flag: " + envFlag);
+        }
+      }
+      return JDT;
+    }
   }
 
   /**
