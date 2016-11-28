@@ -27,9 +27,9 @@
 // has a retain count at least two.
 FOUNDATION_EXPORT void JreRetainedWithInitialize(id parent, id value);
 
-// Checks the previous value of a @RetainedWith assignment. Throws
-// AssertionError if it is unsafe to reassign this value.
-FOUNDATION_EXPORT void JreRetainedWithCheckPreviousValue(id parent, id value);
+// Checks the previous value of a @RetainedWith assignment, possibly returning
+// it to normal behavior.
+FOUNDATION_EXPORT void JreRetainedWithHandlePreviousValue(id parent, id value);
 
 // Called during dealloc of the parent and before releasing the child.
 FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);

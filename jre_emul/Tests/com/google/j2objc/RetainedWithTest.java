@@ -161,6 +161,23 @@ public class RetainedWithTest extends TestCase {
     }
   }
 
+  @AutoreleasePool
+  private void newAPlusReassignChild(List<Integer> objectCodes) {
+    A a = new A();
+    objectCodes.add(System.identityHashCode(a));
+    objectCodes.add(System.identityHashCode(a.b));
+    a.b = new B(a);
+    objectCodes.add(System.identityHashCode(a.b));
+  }
+
+  public void testReassignChild() {
+    List<Integer> objectCodes = new ArrayList<Integer>();
+    newAPlusReassignChild(objectCodes);
+    for (Integer i : objectCodes) {
+      assertTrue(finalizedObjects.contains(i));
+    }
+  }
+
   abstract class MapFactory {
 
     final Object key;

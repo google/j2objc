@@ -47,7 +47,6 @@ import java.lang.annotation.Target;
  *
  * The following criteria must be adhered to otherwise behavior will be
  * undefined:
- * - The @RetainedWithfield, once assigned, must not be reassigned.
  * - The child object must not reassign any references back to the parent
  *   object. Preferably references from child to parent are declared final.
  * - The child object must not contain any {@link Weak} references back to the

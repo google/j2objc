@@ -143,12 +143,27 @@ void JreRetainedWithInitialize(id parent, id value) {
   }
 }
 
-// Throws AssertionError if it is unsafe to reassign from the given value.
-// Normally any reassignment is unsafe, however if the parent has been cloned
-// then it will not form a cycle with it's initial @RetainedWith child.
-void JreRetainedWithCheckPreviousValue(id parent, id value) {
+// Handles the existing child value during reassignment of a @RetainedWith field. If the parent has
+// been cloned then the existing child will point back to a different parent and no change is
+// necessary. Otherwise, we return the existing child to normal behavior by fixing the retain count
+// of the return ref and then setting its return ref to nil. The child maintains its swizzled class.
+void JreRetainedWithHandlePreviousValue(id parent, id value) {
   id returnRef = objc_getAssociatedObject(value, &returnRefKey);
   if (returnRef == parent) {
-    @throw create_JavaLangAssertionError_initWithId_(@"@RetainedWith field cannot be reassigned");
+    @synchronized (value) {
+      // Strengthen all return refs that had been weakened upon assignment of the value.
+      NSUInteger returnRefs = CountReturnRefs(parent, value);
+      // If the retain count is greater than one then one of the return refs is already strong.
+      if ([value retainCount] > 1) {
+        returnRefs--;
+      }
+      while (returnRefs-- > 0) {
+        [parent retain];
+      }
+      // Assigning the return ref to nil will return this value to normal behavior.
+      // JreRetainedWithHandleDealloc will not get called for this value because the parent now
+      // points to a different child.
+      objc_setAssociatedObject(value, &returnRefKey, nil, OBJC_ASSOCIATION_ASSIGN);
+    }
   }
 }
