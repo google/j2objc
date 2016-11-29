@@ -61,8 +61,15 @@ class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceTy
   @Override
   public List<? extends TypeMirror> getTypeArguments() {
     List<TypeMirror> typeArgs = new ArrayList<TypeMirror>();
-    for (ITypeBinding typeArg : ((ITypeBinding) binding).getTypeArguments()) {
-      typeArgs.add(BindingConverter.getType(typeArg));
+    ITypeBinding typeBinding = (ITypeBinding) binding;
+    if (typeBinding.isGenericType()) {
+      for (ITypeBinding typeArg : typeBinding.getTypeParameters()) {
+        typeArgs.add(BindingConverter.getType(typeArg));
+      }
+    } else if (typeBinding.isParameterizedType()) {
+      for (ITypeBinding typeArg : typeBinding.getTypeArguments()) {
+        typeArgs.add(BindingConverter.getType(typeArg));
+      }
     }
     return typeArgs;
   }

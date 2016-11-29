@@ -55,6 +55,17 @@ public class SignatureGenerator {
   }
 
   /**
+   * Create a signature for a specified type.
+   *
+   * @return the signature of the type.
+   */
+  public String createTypeSignature(TypeMirror type) {
+    StringBuilder sb = new StringBuilder();
+    genTypeSignature(type, sb);
+    return sb.toString();
+  }
+
+  /**
    * Create a class signature string for a specified type.
    *
    * @return the signature if class is generic, else null.
@@ -127,7 +138,7 @@ public class SignatureGenerator {
       // Overloaded native methods, append JNI-mangled parameter types.
       sb.append("__");
       for (VariableElement param : method.getParameters()) {
-        String type = createTypeSignature(param.asType());
+        String type = createTypeSignature(typeUtil.erasure(param.asType()));
         sb.append(jniMangle(type));
       }
     }
@@ -165,12 +176,6 @@ public class SignatureGenerator {
         }
       }
     }
-    return sb.toString();
-  }
-
-  private String createTypeSignature(TypeMirror type) {
-    StringBuilder sb = new StringBuilder();
-    genTypeSignature(typeUtil.erasure(type), sb);
     return sb.toString();
   }
 
