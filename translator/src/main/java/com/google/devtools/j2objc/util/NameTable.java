@@ -417,7 +417,7 @@ public class NameTable {
     }
     String name;
     if (type.getKind().isPrimitive()) {
-      name = typeUtil.getName(type);
+      name = TypeUtil.getName(type);
     } else {
       // For type variables, use the first bound for the parameter keyword.
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
