@@ -14,16 +14,15 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtTypeParameterElement extends JdtElement implements TypeParameterElement {
 
@@ -43,7 +42,12 @@ class JdtTypeParameterElement extends JdtElement implements TypeParameterElement
 
   @Override
   public Element getEnclosingElement() {
-    return getGenericElement();
+    ITypeBinding typeBinding = (ITypeBinding) binding;
+    IMethodBinding declaringMethod = typeBinding.getDeclaringMethod();
+    if (declaringMethod != null) {
+      return BindingConverter.getElement(declaringMethod);
+    }
+    return BindingConverter.getElement(typeBinding.getDeclaringClass());
   }
 
   @Override

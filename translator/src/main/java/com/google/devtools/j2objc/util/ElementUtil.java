@@ -180,6 +180,10 @@ public final class ElementUtil {
     return kind == ElementKind.CONSTRUCTOR || kind == ElementKind.METHOD;
   }
 
+  public static boolean isTypeParameterElement(Element e) {
+    return e.getKind() == ElementKind.TYPE_PARAMETER;
+  }
+
   public static boolean isAnnotationMember(ExecutableElement e) {
     return isAnnotationType(getDeclaringClass(e));
   }
