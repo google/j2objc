@@ -59,7 +59,7 @@ ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
 ExtensionGenerator::~ExtensionGenerator() {
 }
 
-void ExtensionGenerator::CollectSourceImports(set<string> &imports) {
+void ExtensionGenerator::CollectSourceImports(std::set<string> &imports) {
   imports.insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
   if (!descriptor_->is_repeated()
       && GetJavaType(descriptor_) == JAVATYPE_ENUM) {
@@ -89,7 +89,7 @@ void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) {
 }
 
 void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
-  map<string, string> vars;
+  std::map<string, string> vars;
   vars["field_name"] = descriptor_->name();
   vars["capitalized_name"] = UnderscoresToCapitalizedCamelCase(descriptor_);
   vars["field_number"] = SimpleItoa(descriptor_->number());

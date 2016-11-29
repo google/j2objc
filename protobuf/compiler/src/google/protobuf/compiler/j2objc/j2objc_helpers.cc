@@ -53,7 +53,7 @@ const char* kDefaultPackage = "";
 const int kPackagePrefixFieldNumber = 102687446;
 
 
-static map<string, string> prefixes;
+static std::map<string, string> prefixes;
 
 static bool generateFileDirMapping = false;
 
@@ -67,15 +67,15 @@ const char* const kKeywordList[] = {
   "FILE"
 };
 
-set<string> MakeKeywordsMap() {
-  set<string> result;
+std::set<string> MakeKeywordsMap() {
+  std::set<string> result;
   for (int i = 0; i < GOOGLE_ARRAYSIZE(kKeywordList); i++) {
     result.insert(kKeywordList[i]);
   }
   return result;
 }
 
-set<string> kKeywords = MakeKeywordsMap();
+std::set<string> kKeywords = MakeKeywordsMap();
 
 const string& FieldName(const FieldDescriptor* field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
@@ -170,7 +170,7 @@ string GetPackagePrefix(const FileDescriptor *file) {
   }
 
   string java_package = FileJavaPackage(file);
-  map<string, string>::iterator it = prefixes.find(java_package);
+  std::map<string, string>::iterator it = prefixes.find(java_package);
   if (it != prefixes.end()) {
     return it->second;
   }
@@ -353,7 +353,7 @@ string GetHeader(const EnumDescriptor *descriptor) {
   }
 }
 
-string JoinFlags(const vector<string> &flags) {
+string JoinFlags(const std::vector<string> &flags) {
   if (flags.size() == 0) {
     return "0";
   }
@@ -368,7 +368,7 @@ string JoinFlags(const vector<string> &flags) {
 }
 
 string GetFieldFlags(const FieldDescriptor *field) {
-  vector<string> flags;
+  std::vector<string> flags;
   if (field->is_required()) {
     flags.push_back("CGPFieldFlagRequired");
   }
@@ -604,7 +604,7 @@ string GetFieldOptionsData(const FieldDescriptor *descriptor) {
 void ParsePrefixLine(string line) {
   string::size_type equals = line.find('=');
   if (equals != string::npos) {
-    prefixes.insert(pair<string, string>(line.substr(0, equals),
+    prefixes.insert(std::pair<string, string>(line.substr(0, equals),
                                          line.substr(equals + 1)));
   }
 }

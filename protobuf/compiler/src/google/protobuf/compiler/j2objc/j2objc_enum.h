@@ -55,13 +55,13 @@ class EnumGenerator {
 
  private:
   const EnumDescriptor* descriptor_;
-  vector<const EnumValueDescriptor*> canonical_values_;
+  std::vector<const EnumValueDescriptor*> canonical_values_;
 
   struct Alias {
     const EnumValueDescriptor* value;
     const EnumValueDescriptor* canonical_value;
   };
-  vector<Alias> aliases_;
+  std::vector<Alias> aliases_;
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(EnumGenerator);
 };

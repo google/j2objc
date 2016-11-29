@@ -89,7 +89,7 @@ string GetHeader(const FileDescriptor *descriptor);
 string GetHeader(const Descriptor *descriptor);
 string GetHeader(const EnumDescriptor *descriptor);
 
-string JoinFlags(const vector<string> &flags);
+string JoinFlags(const std::vector<string> &flags);
 string GetFieldFlags(const FieldDescriptor *field);
 
 enum JavaType {

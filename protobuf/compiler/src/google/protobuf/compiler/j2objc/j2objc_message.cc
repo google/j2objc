@@ -68,7 +68,7 @@ namespace {
   }
 
   string GetMessageFlags(const Descriptor *descriptor) {
-    vector<string> flags;
+    std::vector<string> flags;
     if (descriptor->extension_range_count() > 0) {
       flags.push_back("CGPMessageFlagExtendable");
     }
@@ -87,8 +87,8 @@ MessageGenerator::MessageGenerator(const Descriptor* descriptor)
 MessageGenerator::~MessageGenerator() {
 }
 
-void MessageGenerator::CollectForwardDeclarations(set<string> &declarations)
-    const {
+void MessageGenerator::CollectForwardDeclarations(
+    std::set<string>& declarations) const {
   declarations.insert("@class " + ClassName(descriptor_) + "_Builder");
   declarations.insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
@@ -103,7 +103,7 @@ void MessageGenerator::CollectForwardDeclarations(set<string> &declarations)
   }
 }
 
-void MessageGenerator::CollectMessageOrBuilderImports(set<string> &imports)
+void MessageGenerator::CollectMessageOrBuilderImports(std::set<string> &imports)
     const {
   if (descriptor_->extension_range_count() > 0) {
     imports.insert("com/google/protobuf/GeneratedMessage.h");
@@ -123,7 +123,7 @@ void MessageGenerator::CollectMessageOrBuilderImports(set<string> &imports)
 }
 
 void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
-    set<string> &declarations) const {
+    std::set<string> &declarations) const {
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
         .CollectMessageOrBuilderForwardDeclarations(declarations);
@@ -135,7 +135,7 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
   }
 }
 
-void MessageGenerator::CollectSourceImports(set<string> &imports) {
+void MessageGenerator::CollectSourceImports(std::set<string> &imports) {
   imports.insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
