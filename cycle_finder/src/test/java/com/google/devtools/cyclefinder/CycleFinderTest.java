@@ -328,8 +328,10 @@ public class CycleFinderTest extends TestCase {
   }
 
   public void testOuterReferenceToGenericClass() throws Exception {
-    addSourceFile("A.java", "class A<T> { int i; T t; class C { void test() { i++; } } }");
+    // B.java is added before A.java to test that the outer edge A<B>.C -> A<B> is still added
+    // despite B being visited before A. The outer reference cannot be known until A is visited.
     addSourceFile("B.java", "class B { A<B>.C abc; }");
+    addSourceFile("A.java", "class A<T> { int i; T t; class C { void test() { i++; } } }");
     findCycles();
     assertCycle("LA<LB;>;", "LB;", "LA<LB;>.C;");
   }

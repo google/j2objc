@@ -23,9 +23,10 @@ import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,18 +48,19 @@ import org.eclipse.jdt.core.dom.Modifier;
 public class GraphBuilder {
 
   private final Map<String, TypeNode> allTypes = new HashMap<>();
-  private final CaptureFields captureFields;
   private final NameList whitelist;
   private final ReferenceGraph graph = new ReferenceGraph();
   private final Map<TypeNode, TypeNode> superclasses = new HashMap<>();
   private final SetMultimap<TypeNode, TypeNode> subtypes = HashMultimap.create();
+  private final SetMultimap<TypeNode, Edge> possibleOuterEdges = HashMultimap.create();
+  private final Set<TypeNode> hasOuterRef = new HashSet<>();
 
-  public GraphBuilder(CaptureFields captureFields, NameList whitelist) {
-    this.captureFields = captureFields;
+  public GraphBuilder(NameList whitelist) {
     this.whitelist = whitelist;
   }
 
   public GraphBuilder constructGraph() {
+    addOuterEdges();
     addSubtypeEdges();
     addSuperclassEdges();
     return this;
@@ -74,117 +76,19 @@ public class GraphBuilder {
     }
   }
 
-  private TypeNode createNode(ITypeBinding type, String name) {
-    TypeNode node = new TypeNode(type.getKey(), name, getQualifiedNameForType(type));
-    allTypes.put(type.getKey(), node);
-    followType(type, node);
-    return node;
-  }
-
-  private TypeNode getOrCreateNode(ITypeBinding type) {
-    TypeNode node = allTypes.get(type.getKey());
-    if (node != null) {
-      return node;
-    }
-    if (type.isPrimitive() || type.isRawType()) {
-      return null;
-    }
-    if (hasNestedWildcard(type)) {
-      // Avoid infinite recursion caused by nested wildcard types.
-      return null;
-    }
-    return createNode(type, getNameForType(type));
-  }
-
-  private void visitType(ITypeBinding type) {
-    if (type != null) {
-      getOrCreateNode(getElementType(type));
-    }
-  }
-
-  private void followType(ITypeBinding type, TypeNode node) {
-    ITypeBinding superclass = type.getSuperclass();
-    if (superclass != null) {
-      TypeNode superclassNode = getOrCreateNode(superclass);
-      if (superclassNode != null) {
-        superclasses.put(node, superclassNode);
-        subtypes.put(superclassNode, node);
-      }
-    }
-    for (ITypeBinding interfaze : type.getInterfaces()) {
-      TypeNode interfaceNode = getOrCreateNode(interfaze);
-      if (interfaceNode != null) {
-        subtypes.put(interfaceNode, node);
-      }
-    }
-    followDeclaringClass(type, node);
-    followFields(type, node);
-    followCaptureFields(type, node);
-  }
-
-  private void followFields(ITypeBinding type, TypeNode node) {
-    for (IVariableBinding field : type.getDeclaredFields()) {
-      ITypeBinding fieldType = getElementType(field.getType());
-      for (ITypeBinding typeParam : fieldType.getTypeArguments()) {
-        visitType(typeParam);
-      }
-      TypeNode target = getOrCreateNode(fieldType);
-      VariableElement fieldE = BindingConverter.getVariableElement(field);
-      if (target != null
-          && !whitelist.containsField(node, field.getName())
-          && !whitelist.containsType(target)
-          && !fieldType.isPrimitive()
-          && !Modifier.isStatic(field.getModifiers())
-          // Exclude self-referential fields. (likely linked DS or delegate pattern)
-          && !type.isAssignmentCompatible(fieldType)
-          && !ElementUtil.isWeakReference(fieldE)
-          && !ElementUtil.isRetainedWithField(fieldE)) {
-        addEdge(Edge.newFieldEdge(node, target, field.getName()));
-      }
-    }
-  }
-
-  private void followDeclaringClass(ITypeBinding typeBinding, TypeNode typeNode) {
-    ITypeBinding declaringClass = typeBinding.getDeclaringClass();
-    if (declaringClass == null) {
-      return;
-    }
-    TypeNode declaringClassNode = getOrCreateNode(declaringClass);
-    if (declaringClassNode == null) {
-      return;
-    }
-    Element element = BindingConverter.getElement(typeBinding.getTypeDeclaration());
-    if (ElementUtil.isTypeElement(element)
-        && captureFields.hasOuterReference((TypeElement) element)
-        && !ElementUtil.isWeakOuterType((TypeElement) element)
-        && !whitelist.containsType(declaringClassNode)
-        && !whitelist.hasOuterForType(typeNode)) {
-      addEdge(Edge.newOuterClassEdge(typeNode, declaringClassNode));
-    }
-  }
-
-  private void followCaptureFields(ITypeBinding typeBinding, TypeNode typeNode) {
-    if (!typeBinding.isAnonymous()) {
-      return;
-    }
-    for (VariableElement capturedVarElement : captureFields.getCaptureFields(
-        BindingConverter.getTypeElement(typeBinding.getTypeDeclaration()))) {
-      IVariableBinding capturedVarBinding =
-          BindingConverter.unwrapVariableElement(capturedVarElement);
-      ITypeBinding targetType = getElementType(capturedVarBinding.getType());
-      TypeNode targetNode = getOrCreateNode(targetType);
-      if (targetNode != null && !whitelist.containsType(targetNode)
-          && !ElementUtil.isWeakReference(capturedVarElement)) {
-        addEdge(Edge.newCaptureEdge(typeNode, targetNode, capturedVarBinding.getName()));
-      }
-    }
-  }
-
-  private ITypeBinding getElementType(ITypeBinding type) {
+  private static ITypeBinding getElementType(ITypeBinding type) {
     if (type.isArray()) {
       return type.getElementType();
     }
     return type;
+  }
+
+  private void addOuterEdges() {
+    for (TypeNode type : hasOuterRef) {
+      for (Edge e : possibleOuterEdges.get(type)) {
+        addEdge(e);
+      }
+    }
   }
 
   private void addSubtypeEdges() {
@@ -265,34 +169,159 @@ public class GraphBuilder {
     return false;
   }
 
-  public void visitAST(final CompilationUnit unit) {
-    unit.accept(new TreeVisitor() {
+  public void visitAST(CompilationUnit unit) {
+    new Visitor(unit).run();
+  }
 
-      @Override
-      public boolean visit(TypeDeclaration node) {
-        ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-        createNode(binding, getNameForType(binding));
-        return true;
-      }
+  private class Visitor extends UnitTreeVisitor {
 
-      @Override
-      public boolean visit(AnonymousClassDeclaration node) {
-        ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-        createNode(binding, "anonymous:" + node.getLineNumber());
-        return true;
-      }
+    private final CaptureInfo captureInfo;
 
-      @Override
-      public boolean visit(ClassInstanceCreation node) {
-        visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
-        return true;
-      }
+    private Visitor(CompilationUnit unit) {
+      super(unit);
+      captureInfo = unit.getEnv().captureInfo();
+    }
 
-      @Override
-      public boolean visit(MethodInvocation node) {
-        visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
-        return true;
+    private TypeNode createNode(ITypeBinding type, String name) {
+      TypeNode node = new TypeNode(type.getKey(), name, getQualifiedNameForType(type));
+      allTypes.put(type.getKey(), node);
+      followType(type, node);
+      return node;
+    }
+
+    private TypeNode getOrCreateNode(ITypeBinding type) {
+      TypeNode node = allTypes.get(type.getKey());
+      if (node != null) {
+        return node;
       }
-    });
+      if (type.isPrimitive() || type.isRawType()) {
+        return null;
+      }
+      if (hasNestedWildcard(type)) {
+        // Avoid infinite recursion caused by nested wildcard types.
+        return null;
+      }
+      return createNode(type, getNameForType(type));
+    }
+
+    private void visitType(ITypeBinding type) {
+      if (type != null) {
+        getOrCreateNode(getElementType(type));
+      }
+    }
+
+    private void followType(ITypeBinding type, TypeNode node) {
+      ITypeBinding superclass = type.getSuperclass();
+      if (superclass != null) {
+        TypeNode superclassNode = getOrCreateNode(superclass);
+        if (superclassNode != null) {
+          superclasses.put(node, superclassNode);
+          subtypes.put(superclassNode, node);
+        }
+      }
+      for (ITypeBinding interfaze : type.getInterfaces()) {
+        TypeNode interfaceNode = getOrCreateNode(interfaze);
+        if (interfaceNode != null) {
+          subtypes.put(interfaceNode, node);
+        }
+      }
+      followDeclaringClass(type, node);
+      followFields(type, node);
+    }
+
+    private void followFields(ITypeBinding type, TypeNode node) {
+      for (IVariableBinding field : type.getDeclaredFields()) {
+        ITypeBinding fieldType = getElementType(field.getType());
+        for (ITypeBinding typeParam : fieldType.getTypeArguments()) {
+          visitType(typeParam);
+        }
+        TypeNode target = getOrCreateNode(fieldType);
+        VariableElement fieldE = BindingConverter.getVariableElement(field);
+        if (target != null
+            && !whitelist.containsField(node, field.getName())
+            && !whitelist.containsType(target)
+            && !fieldType.isPrimitive()
+            && !Modifier.isStatic(field.getModifiers())
+            // Exclude self-referential fields. (likely linked DS or delegate pattern)
+            && !type.isAssignmentCompatible(fieldType)
+            && !ElementUtil.isWeakReference(fieldE)
+            && !ElementUtil.isRetainedWithField(fieldE)) {
+          addEdge(Edge.newFieldEdge(node, target, field.getName()));
+        }
+      }
+    }
+
+    private void followDeclaringClass(ITypeBinding typeBinding, TypeNode typeNode) {
+      ITypeBinding declaringClass = typeBinding.getDeclaringClass();
+      if (declaringClass == null) {
+        return;
+      }
+      TypeNode declaringClassNode = getOrCreateNode(declaringClass);
+      if (declaringClassNode == null) {
+        return;
+      }
+      Element element = BindingConverter.getElement(typeBinding.getTypeDeclaration());
+      TypeNode declarationType = getOrCreateNode(typeBinding.getTypeDeclaration());
+      if (declarationType != null
+          && ElementUtil.isTypeElement(element)
+          && ElementUtil.hasOuterContext((TypeElement) element)
+          && !ElementUtil.isWeakOuterType((TypeElement) element)
+          && !whitelist.containsType(declaringClassNode)
+          && !whitelist.hasOuterForType(typeNode)) {
+        possibleOuterEdges.put(
+            declarationType, Edge.newOuterClassEdge(typeNode, declaringClassNode));
+      }
+    }
+
+    private void followCaptureFields(ITypeBinding typeBinding, TypeNode typeNode) {
+      assert typeBinding.isAnonymous();
+      for (VariableElement capturedVarElement : captureInfo.getCaptureFields(
+          BindingConverter.getTypeElement(typeBinding.getTypeDeclaration()))) {
+        IVariableBinding capturedVarBinding =
+            BindingConverter.unwrapVariableElement(capturedVarElement);
+        ITypeBinding targetType = getElementType(capturedVarBinding.getType());
+        TypeNode targetNode = getOrCreateNode(targetType);
+        if (targetNode != null && !whitelist.containsType(targetNode)
+            && !ElementUtil.isWeakReference(capturedVarElement)) {
+          addEdge(Edge.newCaptureEdge(typeNode, targetNode, capturedVarBinding.getName()));
+        }
+      }
+    }
+
+    private void maybeAddOuterReference(ITypeBinding typeBinding, TypeNode typeNode) {
+      TypeElement element = BindingConverter.getTypeElement(typeBinding);
+      if (captureInfo.needsOuterReference(element)) {
+        hasOuterRef.add(typeNode);
+      }
+    }
+
+    @Override
+    public boolean visit(TypeDeclaration node) {
+      ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
+      TypeNode typeNode = createNode(binding, getNameForType(binding));
+      maybeAddOuterReference(binding, typeNode);
+      return true;
+    }
+
+    @Override
+    public boolean visit(AnonymousClassDeclaration node) {
+      ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
+      TypeNode typeNode = createNode(binding, "anonymous:" + node.getLineNumber());
+      maybeAddOuterReference(binding, typeNode);
+      followCaptureFields(binding, typeNode);
+      return true;
+    }
+
+    @Override
+    public boolean visit(ClassInstanceCreation node) {
+      visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
+      return true;
+    }
+
+    @Override
+    public boolean visit(MethodInvocation node) {
+      visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
+      return true;
+    }
   }
 }

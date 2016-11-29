@@ -130,10 +130,9 @@ public class CycleFinder {
 
   public List<List<Edge>> findCycles() throws IOException {
     Parser parser = createParser(options);
-    final CaptureFields captureFields = new CaptureFields();
     NameList whitelist =
         NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
-    final GraphBuilder graphBuilder = new GraphBuilder(captureFields, whitelist);
+    final GraphBuilder graphBuilder = new GraphBuilder(whitelist);
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
@@ -143,7 +142,6 @@ public class CycleFinder {
       public void handleParsedUnit(String path, CompilationUnit unit) {
         new LambdaTypeElementAdder(unit).run();
         new OuterReferenceResolver(unit).run();
-        captureFields.collect(unit);
         graphBuilder.visitAST(unit);
       }
     };
