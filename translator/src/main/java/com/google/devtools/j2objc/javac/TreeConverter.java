@@ -620,8 +620,7 @@ public class TreeConverter {
     if (expr instanceof Statement) {
       return expr;
     }
-    return new ExpressionStatement()
-        .setExpression((Expression) convert(node.getExpression()));
+    return new ExpressionStatement().setExpression((Expression) expr);
   }
 
   private TreeNode convertFieldAccess(JCTree.JCFieldAccess node) {
