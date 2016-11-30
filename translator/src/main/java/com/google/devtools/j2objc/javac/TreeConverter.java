@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.javac;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
@@ -402,7 +403,32 @@ public class TreeConverter {
   }
 
   private TreeNode convertAnnotationTypeDeclaration(JCTree.JCClassDecl node) {
-    return convertAbstractTypeDeclaration(node, new AnnotationTypeDeclaration());
+    AnnotationTypeDeclaration newNode = new AnnotationTypeDeclaration();
+    convertBodyDeclaration(node, newNode);
+    for (JCTree bodyDecl : node.getMembers()) {
+      if (bodyDecl.getKind() == Kind.METHOD) {
+        JCTree.JCMethodDecl methodDecl = (JCTree.JCMethodDecl) bodyDecl;
+        AnnotationTypeMemberDeclaration newMember = new AnnotationTypeMemberDeclaration()
+            .setName(convertSimpleName(methodDecl.sym))
+            .setDefault((Expression) convert(methodDecl.defaultValue))
+            .setExecutableElement(methodDecl.sym)
+            .setType(Type.newType(methodDecl.sym.getReturnType()));
+        List<Annotation> annotations = new ArrayList<>();
+        for (AnnotationTree annotation : methodDecl.mods.annotations) {
+          annotations.add((Annotation) convert(annotation));
+        }
+        newMember
+            .setModifiers((int) methodDecl.getModifiers().flags)
+            .setAnnotations(annotations)
+            .setJavadoc((Javadoc) getAssociatedJavaDoc(methodDecl));
+        newNode.addBodyDeclaration(newMember);
+      } else {
+        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
+      }
+    }
+    return newNode
+        .setName(convertSimpleName(node.sym))
+        .setTypeElement(node.sym);
   }
 
   private TreeNode convertArrayAccess(JCTree.JCArrayAccess node) {
