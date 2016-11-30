@@ -136,7 +136,7 @@ public final class BindingConverter {
       element = new JdtPackageElement((IPackageBinding) binding);
     } else if (binding instanceof ITypeBinding) {
       ITypeBinding typeBinding = (ITypeBinding) binding;
-      element = typeBinding.isTypeVariable()
+      element = typeBinding.isTypeVariable() || typeBinding.isCapture()
           ? new JdtTypeParameterElement(typeBinding) : new JdtTypeElement(typeBinding);
     } else if (binding instanceof IVariableBinding) {
       element = JdtVariableElement.create((IVariableBinding) binding);

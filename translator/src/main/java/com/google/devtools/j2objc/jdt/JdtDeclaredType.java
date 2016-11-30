@@ -22,7 +22,6 @@ import javax.lang.model.type.ReferenceType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceType {
@@ -48,10 +47,6 @@ class JdtDeclaredType extends JdtTypeMirror implements DeclaredType, ReferenceTy
 
   @Override
   public TypeMirror getEnclosingType() {
-    IMethodBinding enclosingMethod = ((ITypeBinding) binding).getDeclaringMethod();
-    if (enclosingMethod != null) {
-      return BindingConverter.getType(enclosingMethod);
-    }
     ITypeBinding enclosingType = ((ITypeBinding) binding).getDeclaringClass();
     return enclosingType != null
         ? BindingConverter.getType(enclosingType)

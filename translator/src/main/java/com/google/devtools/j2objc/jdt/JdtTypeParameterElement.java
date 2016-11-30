@@ -14,11 +14,18 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ElementVisitor;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -26,8 +33,11 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtTypeParameterElement extends JdtElement implements TypeParameterElement {
 
+  private final Element enclosingElement;
+
   JdtTypeParameterElement(ITypeBinding binding) {
-    super(binding, binding.getName(), 0);
+    super(binding, binding.isCapture() ? "<captured wildcard>" : binding.getName(), 0);
+    enclosingElement = resolveEnclosingElement(binding);
   }
 
   @Override
@@ -42,12 +52,18 @@ class JdtTypeParameterElement extends JdtElement implements TypeParameterElement
 
   @Override
   public Element getEnclosingElement() {
-    ITypeBinding typeBinding = (ITypeBinding) binding;
-    IMethodBinding declaringMethod = typeBinding.getDeclaringMethod();
+    return enclosingElement;
+  }
+
+  private Element resolveEnclosingElement(ITypeBinding binding) {
+    if (binding.isCapture()) {
+      return new DummyCaptureEncloser();
+    }
+    IMethodBinding declaringMethod = binding.getDeclaringMethod();
     if (declaringMethod != null) {
       return BindingConverter.getElement(declaringMethod);
     }
-    return BindingConverter.getElement(typeBinding.getDeclaringClass());
+    return BindingConverter.getElement(binding.getDeclaringClass());
   }
 
   @Override
@@ -67,5 +83,59 @@ class JdtTypeParameterElement extends JdtElement implements TypeParameterElement
   @Override
   public <R, P> R accept(ElementVisitor<R, P> v, P p) {
     return v.visitTypeParameter(this, p);
+  }
+
+  private class DummyCaptureEncloser implements Element {
+
+    @Override
+    public ElementKind getKind() {
+      return ElementKind.OTHER;
+    }
+
+    @Override
+    public Name getSimpleName() {
+      return BindingConverter.getName("");
+    }
+
+    @Override
+    public Set<Modifier> getModifiers() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public TypeMirror asType() {
+      throw new AssertionError("not implemented");
+    }
+
+    @Override
+    public Element getEnclosingElement() {
+      return null;
+    }
+
+    @Override
+    public List<? extends Element> getEnclosedElements() {
+      return Collections.singletonList(JdtTypeParameterElement.this);
+    }
+
+    @Override
+    public <R, P> R accept(ElementVisitor<R, P> v, P p) {
+      return v.visitUnknown(this, p);
+    }
+
+    @Override
+    public List<? extends AnnotationMirror> getAnnotationMirrors() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+      return null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationType) {
+      return (A[]) Array.newInstance(annotationType, 0);
+    }
   }
 }

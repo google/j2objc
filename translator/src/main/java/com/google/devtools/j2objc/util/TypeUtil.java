@@ -33,6 +33,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -186,8 +187,16 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.INTERSECTION;
   }
 
+  public static boolean isTypeVariable(TypeMirror t) {
+    return t.getKind() == TypeKind.TYPEVAR;
+  }
+
   public static TypeElement asTypeElement(TypeMirror t) {
     return isDeclaredType(t) ? (TypeElement) ((DeclaredType) t).asElement() : null;
+  }
+
+  public static TypeParameterElement asTypeParameterElement(TypeMirror t) {
+    return isTypeVariable(t) ? (TypeParameterElement) ((TypeVariable) t).asElement() : null;
   }
 
   public DeclaredType getSuperclass(TypeMirror t) {
