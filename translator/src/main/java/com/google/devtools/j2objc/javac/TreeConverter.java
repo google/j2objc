@@ -104,11 +104,9 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.file.JarredInputFile;
-import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
@@ -125,9 +123,6 @@ import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeInfo;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.Element;
@@ -148,49 +143,22 @@ public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
       TranslationEnvironment env, JCTree.JCCompilationUnit javacUnit) {
-    TreeConverter converter = new TreeConverter(javacUnit);
-    String sourceFilePath = javacUnit.getSourceFile().toUri().getPath();
-    InputFile sourceFile = convertFileObject(javacUnit.getSourceFile());
-    String source = getSource(sourceFile);
-    String mainTypeName = FileUtil.getMainTypeName(sourceFile);
-    CompilationUnit unit = new CompilationUnit(env, sourceFilePath, mainTypeName, source);
-    unit.setPackage(converter.convertPackage(javacUnit.packge));
-    for (JCTree type : javacUnit.getTypeDecls()) {
-      unit.addType((AbstractTypeDeclaration) converter.convert(type));
-    }
-    addOcniComments(unit);
-    return unit;
-  }
-
-  private static InputFile convertFileObject(JavaFileObject fileObject) {
-    assert fileObject.getKind() == JavaFileObject.Kind.SOURCE;
-    URI uri = fileObject.toUri();
-    String scheme = uri.getScheme();
-    if (scheme.equals("file")) {
-      return new RegularInputFile(uri.getPath());
-    } else if (scheme.equals("jar")) {
-      String path = uri.getPath();
-      if (path.startsWith("file:")) {
-        path = path.substring(5);
+    String sourceFilePath = getPath(javacUnit.getSourceFile());
+    try {
+      TreeConverter converter = new TreeConverter(javacUnit);
+      JavaFileObject sourceFile = javacUnit.getSourceFile();
+      String source = sourceFile.getCharContent(false).toString();
+      String mainTypeName = FileUtil.getMainTypeName(sourceFile);
+      CompilationUnit unit = new CompilationUnit(env, sourceFilePath, mainTypeName, source);
+      unit.setPackage(converter.convertPackage(javacUnit.packge));
+      for (JCTree type : javacUnit.getTypeDecls()) {
+        unit.addType((AbstractTypeDeclaration) converter.convert(type));
       }
-      int bang = path.indexOf('!');
-      String jarPath = path.substring(0, bang);
-      String internalPath = path.substring(bang + 1);
-      return new JarredInputFile(jarPath, internalPath);
-    }
-    return null;
-  }
-
-  private static String getSource(InputFile file) {
-    try (Reader reader = file.openReader(); StringWriter writer = new StringWriter()) {
-      char[] buf = new char[4096];
-      int n;
-      while ((n = reader.read(buf)) > 0) {
-        writer.write(buf, 0, n);
-      }
-      return writer.toString();
+      addOcniComments(unit);
+      return unit;
     } catch (IOException e) {
-      throw new AssertionError("failed re-reading source file: " + file.getPath(), e);
+      ErrorUtil.fatalError(e, sourceFilePath);
+      return null;
     }
   }
 
@@ -894,8 +862,8 @@ public class TreeConverter {
       newNode.addArgument((Expression) convert(arg));
     }
     return newNode
-        // TODO(tball): Add the appropriate ExecutableType.
-        .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor, null))
+        .setExecutablePair(new ExecutablePair(
+            (ExecutableElement) node.constructor, node.constructorType.asMethodType()))
         .setExpression((Expression) convert(node.getEnclosingExpression()))
         .setType(Type.newType(node.type))
         .setAnonymousClassDeclaration((AnonymousClassDeclaration) convert(node.def));
@@ -1128,5 +1096,15 @@ public class TreeConverter {
         unit.getCommentList().add(ocniComment);
       }
     }
+  }
+
+  private static String getPath(JavaFileObject file) {
+    String uri = file.toUri().toString();
+    if (uri.startsWith("mem:/")) {
+      // MemoryFileObject needs a custom file system for URI to return the
+      // correct path, so the URI string is split instead.
+      return uri.substring(5);
+    }
+    return file.toUri().getPath();
   }
 }

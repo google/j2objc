@@ -189,6 +189,7 @@ JAVA_SOURCES = \
 	gen/TypePrivateDeclarationGenerator.java \
 	javac/JavacEnvironment.java \
 	javac/JavacParser.java \
+	javac/MemoryFileObject.java \
 	javac/TreeConverter.java \
 	jdt/BindingConverter.java \
 	jdt/JdtAnnotationMirror.java \

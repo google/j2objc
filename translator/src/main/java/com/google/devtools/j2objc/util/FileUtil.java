@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Nullable;
+import javax.tools.JavaFileObject;
 
 /**
  * Utilities for reading {@link com.google.devtools.j2objc.file.InputFile}s.
@@ -42,14 +43,21 @@ public class FileUtil {
 
   public static String getMainTypeName(InputFile file) {
     String basename = file.getBasename();
+    return removeFileSuffix(basename);
+  }
+
+  public static String getMainTypeName(JavaFileObject file) {
+    String path = file.getName();
+    String basename = path.substring(path.lastIndexOf('/') + 1);
+    return removeFileSuffix(basename);
+  }
+
+  private static String removeFileSuffix(String basename) {
     int end = basename.lastIndexOf(".java");
     if (end == -1) {
       end = basename.lastIndexOf(".class");
     }
-    if (end != -1) {
-      basename = basename.substring(0, end);
-    }
-    return basename;
+    return end != -1 ? basename.substring(0, end) : basename;
   }
 
   // TODO(tball): remove when Parser extraction is complete.
