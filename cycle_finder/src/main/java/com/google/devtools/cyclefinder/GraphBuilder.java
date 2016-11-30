@@ -14,7 +14,6 @@
 
 package com.google.devtools.cyclefinder;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.SetMultimap;
@@ -28,6 +27,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,7 +35,8 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
+import javax.lang.model.type.IntersectionType;
+import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -126,24 +127,6 @@ public class GraphBuilder {
     }
   }
 
-  private static String getNameForType(ITypeBinding type) {
-    String name = type.getName();
-    return Strings.isNullOrEmpty(name) ? type.getKey() : name;
-  }
-
-  private static String getQualifiedNameForType(ITypeBinding type) {
-    if (type.isLocal()) {
-      String methodName = "";
-      IMethodBinding declaringMethod = type.getDeclaringMethod();
-      if (declaringMethod != null) {
-        methodName = "." + declaringMethod.getName();
-      }
-      return getQualifiedNameForType(type.getDeclaringClass()) + methodName + "."
-          + (type.isAnonymous() ? "$" : type.getName());
-    }
-    return type.getErasure().getQualifiedName();
-  }
-
   private static boolean hasWildcard(ITypeBinding type) {
     if (type.isWildcardType()) {
       return true;
@@ -176,21 +159,24 @@ public class GraphBuilder {
   private class Visitor extends UnitTreeVisitor {
 
     private final CaptureInfo captureInfo;
+    private final NameUtil nameUtil;
 
     private Visitor(CompilationUnit unit) {
       super(unit);
       captureInfo = unit.getEnv().captureInfo();
+      nameUtil = new NameUtil(typeUtil);
     }
 
-    private TypeNode createNode(ITypeBinding type, String name) {
-      TypeNode node = new TypeNode(type.getKey(), name, getQualifiedNameForType(type));
-      allTypes.put(type.getKey(), node);
+    private TypeNode createNode(ITypeBinding type, String signature, String name) {
+      TypeNode node = new TypeNode(signature, name, NameUtil.getQualifiedName(type));
+      allTypes.put(signature, node);
       followType(type, node);
       return node;
     }
 
     private TypeNode getOrCreateNode(ITypeBinding type) {
-      TypeNode node = allTypes.get(type.getKey());
+      String signature = nameUtil.getSignature(type);
+      TypeNode node = allTypes.get(signature);
       if (node != null) {
         return node;
       }
@@ -201,11 +187,18 @@ public class GraphBuilder {
         // Avoid infinite recursion caused by nested wildcard types.
         return null;
       }
-      return createNode(type, getNameForType(type));
+      return createNode(type, signature, NameUtil.getName(type));
     }
 
     private void visitType(ITypeBinding type) {
-      if (type != null) {
+      TypeMirror typeM = BindingConverter.getType(type);
+      if (type == null) {
+        return;
+      } else if (TypeUtil.isIntersection(typeM)) {
+        for (TypeMirror bound : ((IntersectionType) typeM).getBounds()) {
+          getOrCreateNode(getElementType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(bound)));
+        }
+      } else {
         getOrCreateNode(getElementType(type));
       }
     }
@@ -298,7 +291,8 @@ public class GraphBuilder {
     @Override
     public boolean visit(TypeDeclaration node) {
       ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-      TypeNode typeNode = createNode(binding, getNameForType(binding));
+      TypeNode typeNode = createNode(
+          binding, nameUtil.getSignature(binding), NameUtil.getName(binding));
       maybeAddOuterReference(binding, typeNode);
       return true;
     }
@@ -306,7 +300,8 @@ public class GraphBuilder {
     @Override
     public boolean visit(AnonymousClassDeclaration node) {
       ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-      TypeNode typeNode = createNode(binding, "anonymous:" + node.getLineNumber());
+      TypeNode typeNode = createNode(
+          binding, nameUtil.getSignature(binding), "anonymous:" + node.getLineNumber());
       maybeAddOuterReference(binding, typeNode);
       followCaptureFields(binding, typeNode);
       return true;

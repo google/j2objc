@@ -89,10 +89,10 @@ public class CycleFinderTest extends TestCase {
         + "void f() { o = new Simple() { public int run() { return member; } }; } }");
     findCycles(true);
 
-    // Assert that we have one cycle that contains LSimple~Test and a LSimple~Test anonymous class.
+    // Assert that we have one cycle that contains LTest and a LTest anonymous class.
     assertEquals(1, cycles.size());
-    assertCycle("LSimple~Test;");
-    assertContains("LSimple~Test$", printCyclesToString());
+    assertCycle("LTest;");
+    assertContains("LTest.1", printCyclesToString());
   }
 
   public void testAnonymousClassWithWeakOuter() throws Exception {
@@ -119,7 +119,7 @@ public class CycleFinderTest extends TestCase {
         + "public class A { class B {int test(){return o.hashCode();}} B o;}";
     addSourceFile("A.java", source);
     findCycles(true);
-    assertCycle("LA;", "LA$B;");
+    assertCycle("LA;", "LA.B;");
   }
 
   public void testWeakField() throws Exception {
@@ -149,7 +149,7 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("B.java", "class B<T> { T t; }");
     addSourceFile("C.java", "class C { A a; }");
     findCycles();
-    assertCycle("LA;", "LB<LB;{0}+LC;>;", "LB;{0}+LC;");
+    assertCycle("LA;", "LB<+LC;>;", "+LC;");
   }
 
   public void testWhitelistedField() throws Exception {

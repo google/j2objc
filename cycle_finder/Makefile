@@ -38,6 +38,7 @@ JAVA_SOURCES = \
     com/google/devtools/cyclefinder/Edge.java \
     com/google/devtools/cyclefinder/GraphBuilder.java \
     com/google/devtools/cyclefinder/NameList.java \
+    com/google/devtools/cyclefinder/NameUtil.java \
     com/google/devtools/cyclefinder/Options.java \
     com/google/devtools/cyclefinder/ReferenceGraph.java \
     com/google/devtools/cyclefinder/Tarjans.java
