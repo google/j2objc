@@ -122,6 +122,10 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
   return [IOSByteArray arrayWithBytes:buffer_ count:size_];
 }
 
+- (NSString *)toStringWithJavaNioCharsetCharset:(JavaNioCharsetCharset *)charset {
+  return [NSString java_stringWithBytes:[self toByteArray] charset:charset];
+}
+
 - (NSString *)toStringWithNSString:(NSString *)charsetName {
   return [NSString java_stringWithBytes:[self toByteArray] charsetName:charsetName];
 }

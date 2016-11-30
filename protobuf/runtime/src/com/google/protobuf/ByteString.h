@@ -39,6 +39,7 @@
 #pragma clang diagnostic ignored "-Wzero-length-array"
 
 @class IOSByteArray;
+@class JavaNioCharsetCharset;
 @class JavaIoInputStream;
 @class JavaIoOutputStream;
 
@@ -57,6 +58,7 @@
 - (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex;
 - (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex withInt:(jint)endIndex;
 - (IOSByteArray *)toByteArray;
+- (NSString *)toStringWithJavaNioCharsetCharset:(JavaNioCharsetCharset *)charset;
 - (NSString *)toStringWithNSString:(NSString *)charsetName;
 - (NSString *)toStringUtf8;
 
