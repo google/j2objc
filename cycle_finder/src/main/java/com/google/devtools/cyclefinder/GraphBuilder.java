@@ -34,12 +34,12 @@ import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Builds the graph of possible references between types.
@@ -82,6 +82,13 @@ public class GraphBuilder {
       return type.getElementType();
     }
     return type;
+  }
+
+  private static TypeMirror getElementType(TypeMirror t) {
+    while (TypeUtil.isArray(t)) {
+      t = ((ArrayType) t).getComponentType();
+    }
+    return t;
   }
 
   private void addOuterEdges() {
@@ -194,6 +201,10 @@ public class GraphBuilder {
       return createNode(type, signature, NameUtil.getName(type));
     }
 
+    private void visitType(TypeMirror type) {
+      visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
+    }
+
     private void visitType(ITypeBinding type) {
       TypeMirror typeM = BindingConverter.getType(type);
       if (type == null) {
@@ -220,29 +231,33 @@ public class GraphBuilder {
         }
       }
       if (TypeUtil.isDeclaredType(type)) {
-        followEnclosingType((DeclaredType) type, node);
+        followDeclaredType((DeclaredType) type, node);
       }
-      followFields(typeB, node);
     }
 
-    private void followFields(ITypeBinding type, TypeNode node) {
-      for (IVariableBinding field : type.getDeclaredFields()) {
-        ITypeBinding fieldType = getElementType(field.getType());
-        for (ITypeBinding typeParam : fieldType.getTypeArguments()) {
-          visitType(typeParam);
-        }
+    private void followDeclaredType(DeclaredType type, TypeNode node) {
+      followEnclosingType((DeclaredType) type, node);
+      followFields((DeclaredType) type, node);
+      for (TypeMirror typeArg : type.getTypeArguments()) {
+        visitType(typeArg);
+      }
+    }
+
+    private void followFields(DeclaredType type, TypeNode node) {
+      TypeElement element = (TypeElement) type.asElement();
+      for (VariableElement field : ElementUtil.getDeclaredFields(element)) {
+        TypeMirror fieldType = getElementType(typeUtil.asMemberOf(type, field));
         TypeNode target = getOrCreateNode(fieldType);
-        VariableElement fieldE = BindingConverter.getVariableElement(field);
+        String fieldName = ElementUtil.getName(field);
         if (target != null
-            && !whitelist.containsField(node, field.getName())
+            && !whitelist.containsField(node, fieldName)
             && !whitelist.containsType(target)
-            && !fieldType.isPrimitive()
-            && !Modifier.isStatic(field.getModifiers())
+            && !ElementUtil.isStatic(field)
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
-            && !type.isAssignmentCompatible(fieldType)
-            && !ElementUtil.isWeakReference(fieldE)
-            && !ElementUtil.isRetainedWithField(fieldE)) {
-          addEdge(Edge.newFieldEdge(node, target, field.getName()));
+            && !typeUtil.isAssignable(type, fieldType)
+            && !ElementUtil.isWeakReference(field)
+            && !ElementUtil.isRetainedWithField(field)) {
+          addEdge(Edge.newFieldEdge(node, target, fieldName));
         }
       }
     }
