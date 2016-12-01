@@ -39,8 +39,12 @@ PROTOC_EXE_DIST = $(DIST_DIR)/j2objc_protoc
 PROTOC_PLUGIN = $(BUILD_DIR)/j2objc_protoc_plugin
 PROTOC_PLUGIN_DIST = $(DIST_DIR)/j2objc_protoc_plugin
 
+PROTO_LIB_PATH = /usr/local/lib/
+PROTOBUF_LIB = $(PROTO_LIB_PATH)/libprotobuf.a
+PROTOC_LIB = $(PROTO_LIB_PATH)/libprotoc.a
+
 CXXFLAGS = -x c++ -stdlib=libc++ -Isrc -I../google/src
-LDFLAGS = -l protobuf -l protoc /usr/lib/libc++.dylib
+LDFLAGS = $(PROTOBUF_LIB) $(PROTOC_LIB) /usr/lib/libc++.dylib
 
 dist: $(PROTOC_EXE_DIST) $(PROTOC_PLUGIN_DIST)
 	@:
