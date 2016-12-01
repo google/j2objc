@@ -121,6 +121,7 @@ import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
+import com.sun.tools.javac.tree.JCTree.Tag;
 import com.sun.tools.javac.tree.TreeInfo;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
@@ -344,6 +345,16 @@ public class TreeConverter {
       case UNSIGNED_RIGHT_SHIFT_ASSIGNMENT:
       case XOR_ASSIGNMENT:
         return convertAssignOp((JCTree.JCAssignOp) javacNode);
+
+      case OTHER: {
+        if (javacNode.hasTag(Tag.NULLCHK)) {
+          // Skip javac's nullchk operators, since j2objc provides its own.
+          // TODO(tball): convert to nil_chk() functions in this class, to
+          // always check references that javac flagged?
+          return convert(((JCTree.JCUnary) javacNode).arg);
+        }
+        throw new AssertionError("Unknown OTHER node, tag: " + javacNode.getTag());
+      }
     }
   }
 
