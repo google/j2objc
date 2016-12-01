@@ -649,12 +649,11 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
 
     // views
     // J2ObjC -- Added @RetainedWith annotations to resolve cycles between these views and the
-    // containing map. The accessors must be synchronized because with @RetainedWith we can no
-    // longer allow the race condition where the view field is assigned twice if the same accessor
-    // is called concurrently by multiple threads.
-    @RetainedWith private transient KeySetView<K,V> keySet;
-    @RetainedWith private transient ValuesView<K,V> values;
-    @RetainedWith private transient EntrySetView<K,V> entrySet;
+    // containing map. Added volatile keyword because the racy initialization that's used is unsafe
+    // when translated to Objective-C.
+    @RetainedWith private transient volatile KeySetView<K,V> keySet;
+    @RetainedWith private transient volatile ValuesView<K,V> values;
+    @RetainedWith private transient volatile EntrySetView<K,V> entrySet;
 
 
     /* ---------------- Public operations -------------- */
@@ -1069,7 +1068,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
      * @return the set view
      */
     // android-note : changed KeySetView<K,V> to Set<K> to maintain API compatibility.
-    public synchronized Set<K> keySet() {
+    public Set<K> keySet() {
         KeySetView<K,V> ks;
         return (ks = keySet) != null ? ks : (keySet = new KeySetView<K,V>(this, null));
     }
@@ -1092,7 +1091,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
      *
      * @return the collection view
      */
-    public synchronized Collection<V> values() {
+    public Collection<V> values() {
         ValuesView<K,V> vs;
         return (vs = values) != null ? vs : (values = new ValuesView<K,V>(this));
     }
@@ -1114,7 +1113,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
      *
      * @return the set view
      */
-    public synchronized Set<Map.Entry<K,V>> entrySet() {
+    public Set<Map.Entry<K,V>> entrySet() {
         EntrySetView<K,V> es;
         return (es = entrySet) != null ? es : (entrySet = new EntrySetView<K,V>(this));
     }
