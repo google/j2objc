@@ -32,9 +32,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -174,6 +174,10 @@ public class GraphBuilder {
       return node;
     }
 
+    private TypeNode getOrCreateNode(TypeMirror type) {
+      return getOrCreateNode(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
+    }
+
     private TypeNode getOrCreateNode(ITypeBinding type) {
       String signature = nameUtil.getSignature(type);
       TypeNode node = allTypes.get(signature);
@@ -203,23 +207,22 @@ public class GraphBuilder {
       }
     }
 
-    private void followType(ITypeBinding type, TypeNode node) {
-      ITypeBinding superclass = type.getSuperclass();
-      if (superclass != null) {
-        TypeNode superclassNode = getOrCreateNode(superclass);
-        if (superclassNode != null) {
-          superclasses.put(node, superclassNode);
-          subtypes.put(superclassNode, node);
+    private void followType(ITypeBinding typeB, TypeNode node) {
+      TypeMirror type = BindingConverter.getType(typeB);
+      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
+        TypeNode supertypeNode = getOrCreateNode(supertype);
+        if (supertypeNode != null) {
+          subtypes.put(supertypeNode, node);
+          if (TypeUtil.isDeclaredType(supertype)
+              && TypeUtil.getDeclaredTypeKind(supertype).isClass()) {
+            superclasses.put(node, supertypeNode);
+          }
         }
       }
-      for (ITypeBinding interfaze : type.getInterfaces()) {
-        TypeNode interfaceNode = getOrCreateNode(interfaze);
-        if (interfaceNode != null) {
-          subtypes.put(interfaceNode, node);
-        }
+      if (TypeUtil.isDeclaredType(type)) {
+        followEnclosingType((DeclaredType) type, node);
       }
-      followDeclaringClass(type, node);
-      followFields(type, node);
+      followFields(typeB, node);
     }
 
     private void followFields(ITypeBinding type, TypeNode node) {
@@ -244,25 +247,21 @@ public class GraphBuilder {
       }
     }
 
-    private void followDeclaringClass(ITypeBinding typeBinding, TypeNode typeNode) {
-      ITypeBinding declaringClass = typeBinding.getDeclaringClass();
-      if (declaringClass == null) {
+    private void followEnclosingType(DeclaredType type, TypeNode typeNode) {
+      TypeMirror enclosingType = type.getEnclosingType();
+      if (TypeUtil.isNone(enclosingType)) {
         return;
       }
-      TypeNode declaringClassNode = getOrCreateNode(declaringClass);
-      if (declaringClassNode == null) {
-        return;
-      }
-      Element element = BindingConverter.getElement(typeBinding.getTypeDeclaration());
-      TypeNode declarationType = getOrCreateNode(typeBinding.getTypeDeclaration());
-      if (declarationType != null
-          && ElementUtil.isTypeElement(element)
-          && ElementUtil.hasOuterContext((TypeElement) element)
-          && !ElementUtil.isWeakOuterType((TypeElement) element)
-          && !whitelist.containsType(declaringClassNode)
+      TypeNode enclosingTypeNode = getOrCreateNode(enclosingType);
+      TypeElement element = (TypeElement) type.asElement();
+      TypeNode declarationType = getOrCreateNode(element.asType());
+      if (declarationType != null && enclosingTypeNode != null
+          && ElementUtil.hasOuterContext(element)
+          && !ElementUtil.isWeakOuterType(element)
+          && !whitelist.containsType(enclosingTypeNode)
           && !whitelist.hasOuterForType(typeNode)) {
         possibleOuterEdges.put(
-            declarationType, Edge.newOuterClassEdge(typeNode, declaringClassNode));
+            declarationType, Edge.newOuterClassEdge(typeNode, enclosingTypeNode));
       }
     }
 
