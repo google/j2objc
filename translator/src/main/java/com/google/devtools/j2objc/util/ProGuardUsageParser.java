@@ -114,6 +114,17 @@ public class ProGuardUsageParser {
     return signature.toString();
   }
 
+  public static CodeReferenceMap parseDeadCodeFile(File file) {
+    if (file != null) {
+      try {
+        return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
+      } catch (IOException e) {
+        throw new AssertionError(e);
+      }
+    }
+    return null;
+  }
+
   public static CodeReferenceMap parse(CharSource listing) throws IOException {
     LineProcessor<CodeReferenceMap> processor = new LineProcessor<CodeReferenceMap>() {
       CodeReferenceMap.Builder dead = CodeReferenceMap.builder();

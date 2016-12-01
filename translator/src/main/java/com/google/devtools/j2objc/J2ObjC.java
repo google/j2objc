@@ -18,7 +18,6 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options.TimingLevel;
 import com.google.devtools.j2objc.pipeline.AnnotationPreProcessor;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
@@ -33,7 +32,6 @@ import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,18 +81,7 @@ public class J2ObjC {
   }
 
   private static CodeReferenceMap loadDeadCodeMap() {
-    return parseDeadCodeFile(Options.getProGuardUsageFile());
-  }
-
-  private static CodeReferenceMap parseDeadCodeFile(File file) {
-    if (file != null) {
-      try {
-        return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
-      } catch (IOException e) {
-        throw new AssertionError(e);
-      }
-    }
-    return null;
+    return ProGuardUsageParser.parseDeadCodeFile(Options.getProGuardUsageFile());
   }
 
   /**
