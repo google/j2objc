@@ -225,6 +225,10 @@ public final class TypeUtil {
     return (ExecutableType) javacTypes.asMemberOf(containing, method);
   }
 
+  public TypeMirror asMemberOf(DeclaredType containing, VariableElement var) {
+    return javacTypes.asMemberOf(containing, var);
+  }
+
   public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
     return javacTypes.isAssignable(t1, t2);
   }

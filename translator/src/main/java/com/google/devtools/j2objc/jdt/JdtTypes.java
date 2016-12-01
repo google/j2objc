@@ -15,13 +15,16 @@
 package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -35,6 +38,7 @@ import javax.lang.model.util.Types;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Utility methods for types. Methods not referenced by the
@@ -80,16 +84,23 @@ class JdtTypes implements Types {
   @Override
   public TypeMirror asMemberOf(DeclaredType containing, Element element) {
     ITypeBinding c = BindingConverter.unwrapTypeMirrorIntoTypeBinding(containing);
-    if (!(element instanceof JdtExecutableElement)) {
-      throw new AssertionError("not implemented for anything but methods");
-    }
-    IMethodBinding e = (IMethodBinding) BindingConverter.unwrapElement(element);
-    for (IMethodBinding m : c.getDeclaredMethods()) {
-      if (m.isSubsignature(e)) {
-        return BindingConverter.getType(m);
+    if (ElementUtil.isExecutableElement(element)) {
+      IMethodBinding e = BindingConverter.unwrapExecutableElement((ExecutableElement) element);
+      for (IMethodBinding m : c.getDeclaredMethods()) {
+        if (m.isSubsignature(e)) {
+          return BindingConverter.getType(m);
+        }
+      }
+    } else if (ElementUtil.isVariable(element)) {
+      IVariableBinding declaredVar =
+          BindingConverter.unwrapVariableElement((VariableElement) element);
+      for (IVariableBinding var : c.getDeclaredFields()) {
+        if (var.getVariableDeclaration().isEqualTo(declaredVar)) {
+          return BindingConverter.getType(var.getType());
+        }
       }
     }
-    return null;
+    throw new IllegalArgumentException("Element: " + element + " is not a member of " + containing);
   }
 
   @Override
