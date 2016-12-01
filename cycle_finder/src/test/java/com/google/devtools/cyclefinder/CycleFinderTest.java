@@ -17,7 +17,6 @@ package com.google.devtools.cyclefinder;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -87,7 +86,7 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("Simple.java", weakOuterAndInterface
         + "class Test { int member = 7; Simple o;"
         + "void f() { o = new Simple() { public int run() { return member; } }; } }");
-    findCycles(true);
+    findCycles();
 
     // Assert that we have one cycle that contains LTest and a LTest anonymous class.
     assertEquals(1, cycles.size());
@@ -102,7 +101,7 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("Simple.java", weakOuterAndInterface
         + "class Test { int member = 7; Simple o;"
         + "void f() { new @WeakOuter Simple() { public int run() { return member; } }; } }");
-    findCycles(true);
+    findCycles();
     assertNoCycles();
   }
 
@@ -110,7 +109,7 @@ public class CycleFinderTest extends TestCase {
     String source = "import com.google.j2objc.annotations.WeakOuter; "
         + "public class A { @WeakOuter class B { int test() { return o.hashCode(); }} B o; }";
     addSourceFile("A.java", source);
-    findCycles(true);
+    findCycles();
     assertNoCycles();
   }
 
@@ -118,7 +117,7 @@ public class CycleFinderTest extends TestCase {
     String source = "import com.google.j2objc.annotations.WeakOuter; "
         + "public class A { class B {int test(){return o.hashCode();}} B o;}";
     addSourceFile("A.java", source);
-    findCycles(true);
+    findCycles();
     assertCycle("LA;", "LA.B;");
   }
 
@@ -393,7 +392,7 @@ public class CycleFinderTest extends TestCase {
     }
     addSourceFile("I.java", "interface I { int foo(); }");
     addSourceFile("A.java", "class A { int j = 1; I i = () -> j; }");
-    findCycles(true);
+    findCycles();
     // TODO(kstanger): Right now this makes sure that cycle_finder doesn't crash on lambdas, but it
     // should be finding a cycle here.
     assertNoCycles();
@@ -433,14 +432,7 @@ public class CycleFinderTest extends TestCase {
   }
 
   private void findCycles() throws IOException {
-      findCycles(false);
-  }
-
-  private void findCycles(boolean useJava8) throws IOException {
     Options options = new Options();
-    if (useJava8) {
-      options.setSourceVersion(SourceVersion.JAVA_8);
-    }
     if (!whitelistEntries.isEmpty()) {
       File whitelistFile = new File(tempDir, "whitelist");
       Files.write(Joiner.on("\n").join(whitelistEntries), whitelistFile, Charset.defaultCharset());
