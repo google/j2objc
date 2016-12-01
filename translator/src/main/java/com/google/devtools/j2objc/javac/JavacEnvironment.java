@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -67,6 +68,10 @@ class JavacEnvironment implements ParserEnvironment {
       }
     }
     return symbol;
+  }
+
+  public PackageElement defaultPackage() {
+    return symbolTable.unnamedPackage;
   }
 
   private ClassSymbol enterClassJavac(Name className) {

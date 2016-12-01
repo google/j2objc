@@ -130,6 +130,7 @@ import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -144,15 +145,17 @@ public class TreeConverter {
   private JCTree.JCCompilationUnit unit;
 
   public static CompilationUnit convertCompilationUnit(
-      TranslationEnvironment env, JCTree.JCCompilationUnit javacUnit) {
+      JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
     String sourceFilePath = getPath(javacUnit.getSourceFile());
     try {
       TreeConverter converter = new TreeConverter(javacUnit);
       JavaFileObject sourceFile = javacUnit.getSourceFile();
       String source = sourceFile.getCharContent(false).toString();
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
-      CompilationUnit unit = new CompilationUnit(env, sourceFilePath, mainTypeName, source);
-      unit.setPackage(converter.convertPackage(javacUnit.packge));
+      CompilationUnit unit = new CompilationUnit(new TranslationEnvironment(env), sourceFilePath,
+          mainTypeName, source);
+      PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
+      unit.setPackage(converter.convertPackage(pkg));
       for (JCTree type : javacUnit.getTypeDecls()) {
         unit.addType((AbstractTypeDeclaration) converter.convert(type));
       }
@@ -403,8 +406,12 @@ public class TreeConverter {
       }
     } else {
       NormalAnnotation normalAnn = new NormalAnnotation();
-      for (Object obj : args) {
-        normalAnn.addValue((MemberValuePair) convert(obj));
+      for (JCTree.JCExpression obj : node.getArguments()) {
+        JCTree.JCAssign assign = (JCTree.JCAssign) obj;
+        MemberValuePair memberPair = new MemberValuePair()
+            .setName(convertSimpleName(((JCTree.JCIdent) assign.lhs).sym))
+            .setValue((Expression) convert(assign.rhs));
+        normalAnn.addValue(memberPair);
       }
       newNode = normalAnn;
     }
@@ -911,10 +918,10 @@ public class TreeConverter {
         .setToken(node.toString());
   }
 
-  private PackageDeclaration convertPackage(PackageSymbol pkg) {
+  private PackageDeclaration convertPackage(PackageElement pkg) {
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
-    return newNode.setName(convertName(pkg));
+    return newNode.setName(convertName((PackageSymbol) pkg));
   }
 
   private TreeNode convertPrefixExpr(JCTree.JCUnary node) {

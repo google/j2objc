@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.SourceVersion;
-import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.file.JavacFileManager;
@@ -86,7 +85,7 @@ public class JavacParser extends Parser {
         task.analyze();
       }
       processDiagnostics(diagnostics);
-      return TreeConverter.convertCompilationUnit(new TranslationEnvironment(parserEnv), unit);
+      return TreeConverter.convertCompilationUnit(parserEnv, unit);
     } catch (IOException e) {
       ErrorUtil.fatalError(e, path);
     }
@@ -100,8 +99,6 @@ public class JavacParser extends Parser {
         compiler.getStandardFileManager(diagnostics, null, charset);
     addPaths(StandardLocation.CLASS_PATH, Options.getClassPathEntries(), fileManager);
     addPaths(StandardLocation.SOURCE_PATH, Options.getSourcePathEntries(), fileManager);
-    addPaths(StandardLocation.ANNOTATION_PROCESSOR_PATH, Options.getProcessorPathEntries(),
-        fileManager);
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
         Lists.newArrayList(Options.getOutputDirectory()));
     fileManager.setLocation(StandardLocation.SOURCE_OUTPUT,
@@ -138,6 +135,13 @@ public class JavacParser extends Parser {
       options.add(lintArgument);
     }
 
+    // TODO(tball): this should be in the FileManager, but adding it there
+    // causes annotations to be processed twice, causing a "duplicate unit"
+    // error. Defining the path as a javac flag works correctly, however.
+    if (Options.getProcessorPathEntries().size() > 0) {
+      options.add("-processorpath");
+      options.add(makePathString(Options.getProcessorPathEntries()));
+    }
     return options;
   }
 
@@ -161,8 +165,7 @@ public class JavacParser extends Parser {
           .getJavaFileObjectsFromFiles(files);
       JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(null, fileManager, diagnostics,
           javacOptions, null, fileObjects);
-      JavacEnvironment parserEnv = new JavacEnvironment(task.getContext());
-      TranslationEnvironment env = new TranslationEnvironment(parserEnv);
+      JavacEnvironment env = new JavacEnvironment(task.getContext());
 
       List<CompilationUnitTree> units = new ArrayList<>();
       try {
@@ -175,11 +178,12 @@ public class JavacParser extends Parser {
       }
 
       processDiagnostics(diagnostics);
-
-      for (CompilationUnitTree ast : units) {
-        com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
-            .convertCompilationUnit(env, (JCTree.JCCompilationUnit) ast);
-        handler.handleParsedUnit(unit.getSourceFilePath(), unit);
+      if (ErrorUtil.errorCount() == 0) {
+        for (CompilationUnitTree ast : units) {
+          com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
+              .convertCompilationUnit(env, (JCTree.JCCompilationUnit) ast);
+          handler.handleParsedUnit(unit.getSourceFilePath(), unit);
+        }
       }
     } catch (IOException e) {
       ErrorUtil.fatalError(e, "javac file manager error");
