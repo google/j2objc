@@ -760,7 +760,8 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(NumberLiteral node) {
-    sb.print(node.getToken());
+    String text = node.getToken();
+    sb.print(text != null ? text : node.getValue().toString());
     return false;
   }
 

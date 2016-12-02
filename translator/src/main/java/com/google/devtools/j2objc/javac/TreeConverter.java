@@ -604,18 +604,40 @@ public class TreeConverter {
 
   private TreeNode convertEnum(JCTree.JCClassDecl node) {
     if (node.sym.isAnonymous()) {
-      return convertClassDeclaration(node);
+      return (AnonymousClassDeclaration) convertClassDeclaration(node);
     }
-    EnumDeclaration newNode =
-        (EnumDeclaration) convertAbstractTypeDeclaration(node, new EnumDeclaration());
+    EnumDeclaration newNode = (EnumDeclaration) new EnumDeclaration()
+        .setName(convertSimpleName(node.sym))
+        .setTypeElement(node.sym);
     for (JCTree superInterface : node.getImplementsClause()) {
       newNode.addSuperInterfaceType(Type.newType(nameType(superInterface)));
     }
-    for (Object bodyDecl : node.getMembers()) {
-      Object member = convert(bodyDecl);
-      if (member instanceof EnumConstantDeclaration) {
-        // Other members were converted by convertAbstractTypeDeclaration().
-        newNode.addEnumConstant((EnumConstantDeclaration) member);
+    for (JCTree bodyDecl : node.getMembers()) {
+      if (bodyDecl.getKind() == Kind.VARIABLE) {
+        TreeNode var = convertVariableDeclaration((JCTree.JCVariableDecl) bodyDecl);
+        if (var.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
+          newNode.addEnumConstant((EnumConstantDeclaration) var);
+        } else {
+          newNode.addBodyDeclaration((BodyDeclaration) var);
+        }
+      } else if (bodyDecl.getKind() == Kind.METHOD) {
+        MethodDeclaration method = (MethodDeclaration)
+            convertMethodDeclaration((JCTree.JCMethodDecl) bodyDecl);
+        if (ElementUtil.isConstructor(method.getExecutableElement())
+            && !method.getBody().getStatements().isEmpty()){
+          // Remove bogus "super()" call from constructors, so InitializationNormalizer
+          // adds the correct super call that includes the ordinal and name arguments.
+          Statement stmt = method.getBody().getStatements().get(0);
+          if (stmt.getKind() == TreeNode.Kind.SUPER_CONSTRUCTOR_INVOCATION) {
+            SuperConstructorInvocation call = (SuperConstructorInvocation) stmt;
+            if (call.getArguments().isEmpty()) {
+              method.getBody().getStatements().remove(0);
+            }
+          }
+        }
+        newNode.addBodyDeclaration(method);
+      } else {
+        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
       }
     }
     return newNode;
