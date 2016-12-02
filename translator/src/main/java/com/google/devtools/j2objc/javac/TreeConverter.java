@@ -671,9 +671,11 @@ public class TreeConverter {
           .setName(new SimpleName(node.sym, node.type));
     }
     if (node.getIdentifier().toString().equals("class")) {
+      // For Foo.class the type is Class<Foo>, so use the type argument as the
+      // TypeLiteral type.
       com.sun.tools.javac.code.Type type = node.sym.asType();
       return new TypeLiteral(type)
-          .setType(Type.newType(type));
+          .setType(Type.newType(type.getTypeArguments().get(0)));
     }
     if (selected.getKind() == Kind.IDENTIFIER) {
       return new QualifiedName()
@@ -937,7 +939,7 @@ public class TreeConverter {
 
   private TreeNode convertNumberLiteral(JCTree.JCLiteral node) {
     return new NumberLiteral((Number) node.getValue(), node.type)
-        .setToken(node.toString());
+        .setToken(getTreeSource(node));
   }
 
   private PackageDeclaration convertPackage(PackageElement pkg) {
@@ -1172,5 +1174,15 @@ public class TreeConverter {
       return uri.substring(5);
     }
     return file.toUri().getPath();
+  }
+
+  private String getTreeSource(JCTree node) {
+    try {
+      CharSequence source = unit.getSourceFile().getCharContent(true);
+      return source.subSequence(node.getStartPosition(), node.getEndPosition(unit.endPositions))
+          .toString();
+    } catch (IOException e) {
+      return node.toString();
+    }
   }
 }
