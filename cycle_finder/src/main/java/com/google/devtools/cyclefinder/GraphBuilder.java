@@ -20,6 +20,7 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -39,7 +40,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
  * Builds the graph of possible references between types.
@@ -75,13 +75,6 @@ public class GraphBuilder {
     if (!e.getOrigin().equals(e.getTarget())) {
       graph.addEdge(e);
     }
-  }
-
-  private static ITypeBinding getElementType(ITypeBinding type) {
-    if (type.isArray()) {
-      return type.getElementType();
-    }
-    return type;
   }
 
   private static TypeMirror getElementType(TypeMirror t) {
@@ -174,7 +167,7 @@ public class GraphBuilder {
       nameUtil = new NameUtil(typeUtil);
     }
 
-    private TypeNode createNode(ITypeBinding type, String signature, String name) {
+    private TypeNode createNode(TypeMirror type, String signature, String name) {
       TypeNode node = new TypeNode(signature, name, NameUtil.getQualifiedName(type));
       allTypes.put(signature, node);
       followType(type, node);
@@ -182,19 +175,17 @@ public class GraphBuilder {
     }
 
     private TypeNode getOrCreateNode(TypeMirror type) {
-      return getOrCreateNode(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
-    }
-
-    private TypeNode getOrCreateNode(ITypeBinding type) {
+      type = getElementType(type);
+      ITypeBinding typeB = BindingConverter.unwrapTypeMirrorIntoTypeBinding(type);
       String signature = nameUtil.getSignature(type);
       TypeNode node = allTypes.get(signature);
       if (node != null) {
         return node;
       }
-      if (type.isPrimitive() || type.isRawType()) {
+      if (typeB.isPrimitive() || typeB.isRawType()) {
         return null;
       }
-      if (hasNestedWildcard(type)) {
+      if (hasNestedWildcard(typeB)) {
         // Avoid infinite recursion caused by nested wildcard types.
         return null;
       }
@@ -202,24 +193,18 @@ public class GraphBuilder {
     }
 
     private void visitType(TypeMirror type) {
-      visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type));
-    }
-
-    private void visitType(ITypeBinding type) {
-      TypeMirror typeM = BindingConverter.getType(type);
       if (type == null) {
         return;
-      } else if (TypeUtil.isIntersection(typeM)) {
-        for (TypeMirror bound : ((IntersectionType) typeM).getBounds()) {
-          getOrCreateNode(getElementType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(bound)));
+      } else if (TypeUtil.isIntersection(type)) {
+        for (TypeMirror bound : ((IntersectionType) type).getBounds()) {
+          getOrCreateNode(bound);
         }
       } else {
-        getOrCreateNode(getElementType(type));
+        getOrCreateNode(type);
       }
     }
 
-    private void followType(ITypeBinding typeB, TypeNode node) {
-      TypeMirror type = BindingConverter.getType(typeB);
+    private void followType(TypeMirror type, TypeNode node) {
       for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
         TypeNode supertypeNode = getOrCreateNode(supertype);
         if (supertypeNode != null) {
@@ -280,56 +265,53 @@ public class GraphBuilder {
       }
     }
 
-    private void followCaptureFields(ITypeBinding typeBinding, TypeNode typeNode) {
-      assert typeBinding.isAnonymous();
-      for (VariableElement capturedVarElement : captureInfo.getCaptureFields(
-          BindingConverter.getTypeElement(typeBinding.getTypeDeclaration()))) {
-        IVariableBinding capturedVarBinding =
-            BindingConverter.unwrapVariableElement(capturedVarElement);
-        ITypeBinding targetType = getElementType(capturedVarBinding.getType());
-        TypeNode targetNode = getOrCreateNode(targetType);
+    private void followCaptureFields(TypeElement type, TypeNode typeNode) {
+      assert ElementUtil.isAnonymous(type);
+      for (VariableElement capturedVarElement : captureInfo.getCaptureFields(type)) {
+        TypeNode targetNode = getOrCreateNode(capturedVarElement.asType());
         if (targetNode != null && !whitelist.containsType(targetNode)
             && !ElementUtil.isWeakReference(capturedVarElement)) {
-          addEdge(Edge.newCaptureEdge(typeNode, targetNode, capturedVarBinding.getName()));
+          addEdge(Edge.newCaptureEdge(
+              typeNode, targetNode, ElementUtil.getName(capturedVarElement)));
         }
       }
     }
 
-    private void maybeAddOuterReference(ITypeBinding typeBinding, TypeNode typeNode) {
-      TypeElement element = BindingConverter.getTypeElement(typeBinding);
-      if (captureInfo.needsOuterReference(element)) {
+    public void handleTypeDeclaration(CommonTypeDeclaration node, boolean isAnonymous) {
+      TypeElement typeElem = node.getTypeElement();
+      TypeMirror type = typeElem.asType();
+      String name = isAnonymous
+          ? "anonymous:" + node.asNode().getLineNumber() : NameUtil.getName(type);
+      TypeNode typeNode = createNode(type, nameUtil.getSignature(type), name);
+      if (captureInfo.needsOuterReference(typeElem)) {
         hasOuterRef.add(typeNode);
+      }
+      if (isAnonymous) {
+        followCaptureFields(typeElem, typeNode);
       }
     }
 
     @Override
     public boolean visit(TypeDeclaration node) {
-      ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-      TypeNode typeNode = createNode(
-          binding, nameUtil.getSignature(binding), NameUtil.getName(binding));
-      maybeAddOuterReference(binding, typeNode);
+      handleTypeDeclaration(node, false);
       return true;
     }
 
     @Override
     public boolean visit(AnonymousClassDeclaration node) {
-      ITypeBinding binding = BindingConverter.unwrapTypeElement(node.getTypeElement());
-      TypeNode typeNode = createNode(
-          binding, nameUtil.getSignature(binding), "anonymous:" + node.getLineNumber());
-      maybeAddOuterReference(binding, typeNode);
-      followCaptureFields(binding, typeNode);
+      handleTypeDeclaration(node, true);
       return true;
     }
 
     @Override
     public boolean visit(ClassInstanceCreation node) {
-      visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
+      visitType(node.getTypeMirror());
       return true;
     }
 
     @Override
     public boolean visit(MethodInvocation node) {
-      visitType(BindingConverter.unwrapTypeMirrorIntoTypeBinding(node.getTypeMirror()));
+      visitType(node.getTypeMirror());
       return true;
     }
   }
