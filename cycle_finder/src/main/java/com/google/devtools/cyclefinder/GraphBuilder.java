@@ -152,6 +152,12 @@ public class GraphBuilder {
     return false;
   }
 
+  private static boolean isRawType(TypeMirror type) {
+    return TypeUtil.isDeclaredType(type)
+        && !TypeUtil.asTypeElement(type).getTypeParameters().isEmpty()
+        && ((DeclaredType) type).getTypeArguments().isEmpty();
+  }
+
   public void visitAST(CompilationUnit unit) {
     new Visitor(unit).run();
   }
@@ -176,16 +182,15 @@ public class GraphBuilder {
 
     private TypeNode getOrCreateNode(TypeMirror type) {
       type = getElementType(type);
-      ITypeBinding typeB = BindingConverter.unwrapTypeMirrorIntoTypeBinding(type);
       String signature = nameUtil.getSignature(type);
       TypeNode node = allTypes.get(signature);
       if (node != null) {
         return node;
       }
-      if (typeB.isPrimitive() || typeB.isRawType()) {
+      if (!TypeUtil.isReferenceType(type) || isRawType(type)) {
         return null;
       }
-      if (hasNestedWildcard(typeB)) {
+      if (hasNestedWildcard(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type))) {
         // Avoid infinite recursion caused by nested wildcard types.
         return null;
       }

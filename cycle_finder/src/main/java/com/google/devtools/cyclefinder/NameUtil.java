@@ -14,7 +14,6 @@
 
 package com.google.devtools.cyclefinder;
 
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Generates various kinds of names for types:
@@ -52,10 +50,6 @@ public class NameUtil {
   public NameUtil(TypeUtil typeUtil) {
     this.elementUtil = typeUtil.elementUtil();
     this.typeUtil = typeUtil;
-  }
-
-  public String getSignature(ITypeBinding type) {
-    return getSignature(BindingConverter.getType(type));
   }
 
   /**
@@ -187,10 +181,6 @@ public class NameUtil {
     sb.append(')');
   }
 
-  public static String getName(ITypeBinding type) {
-    return getName(BindingConverter.getType(type));
-  }
-
   /**
    * Generates a readable name for this type.
    */
@@ -264,10 +254,6 @@ public class NameUtil {
       default:
         throw new AssertionError("Unexpected type: " + type + " with kind: " + type.getKind());
     }
-  }
-
-  public static String getQualifiedName(ITypeBinding type) {
-    return getQualifiedName(BindingConverter.getType(type));
   }
 
   /**
