@@ -25,12 +25,12 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
@@ -39,7 +39,10 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeMirror;
-import org.eclipse.jdt.core.dom.ITypeBinding;
+import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.TypeVisitor;
+import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.SimpleTypeVisitor8;
 
 /**
  * Builds the graph of possible references between types.
@@ -127,30 +130,42 @@ public class GraphBuilder {
     }
   }
 
-  private static boolean hasWildcard(ITypeBinding type) {
-    if (type.isWildcardType()) {
-      return true;
-    }
-    for (ITypeBinding typeParam : type.getTypeArguments()) {
-      if (hasWildcard(typeParam)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  private static final TypeVisitor<Integer, Void> TYPE_DEPTH_COUNTER =
+      new SimpleTypeVisitor8<Integer, Void>(0) {
 
-  private static boolean hasNestedWildcard(ITypeBinding type) {
-    ITypeBinding bound = type.getBound();
-    if (bound != null && hasWildcard(bound)) {
-      return true;
+    private int tryVisit(TypeMirror t) {
+      return t == null ? 0 : visit(t);
     }
-    for (ITypeBinding typeParam : type.getTypeArguments()) {
-      if (hasNestedWildcard(typeParam)) {
-        return true;
+
+    private int visitList(List<? extends TypeMirror> types) {
+      int max = 0;
+      for (TypeMirror t : types) {
+        max = Math.max(max, visit(t));
       }
+      return max;
     }
-    return false;
-  }
+
+    @Override
+    public Integer visitArray(ArrayType t, Void p) {
+      return visit(t.getComponentType()) + 1;
+    }
+
+    @Override
+    public Integer visitDeclared(DeclaredType t, Void p) {
+      // Visit enclosing types but don't penalize them by adding +1.
+      return Math.max(visit(t.getEnclosingType()), visitList(t.getTypeArguments()) + 1);
+    }
+
+    @Override
+    public Integer visitTypeVariable(TypeVariable t, Void p) {
+      return 1;
+    }
+
+    @Override
+    public Integer visitWildcard(WildcardType t, Void p) {
+      return Math.max(tryVisit(t.getExtendsBound()), tryVisit(t.getSuperBound())) + 1;
+    }
+  };
 
   private static boolean isRawType(TypeMirror type) {
     return TypeUtil.isDeclaredType(type)
@@ -190,8 +205,8 @@ public class GraphBuilder {
       if (!TypeUtil.isReferenceType(type) || isRawType(type)) {
         return null;
       }
-      if (hasNestedWildcard(BindingConverter.unwrapTypeMirrorIntoTypeBinding(type))) {
-        // Avoid infinite recursion caused by nested wildcard types.
+      if (TYPE_DEPTH_COUNTER.visit(type) > 5) {
+        // Avoid infinite recursion caused by type argument cycles.
         return null;
       }
       return createNode(type, signature, NameUtil.getName(type));

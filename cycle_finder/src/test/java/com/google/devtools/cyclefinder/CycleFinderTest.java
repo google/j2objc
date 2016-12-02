@@ -136,9 +136,10 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
-  public void testRecursiveWildcard() throws Exception {
+  public void testRecursiveTypeVariable() throws Exception {
     addSourceFile("A.java", "class A<T> { A<? extends T> a; }");
     addSourceFile("B.java", "class B<T> { B<? extends B<T>> b; }");
+    addSourceFile("C.java", "class C<T> { C<java.util.List<T>> c; }");
     findCycles();
     // This test passes if it doesn't hang or crash due to infinite recursion.
   }
