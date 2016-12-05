@@ -207,8 +207,8 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
     @Override
     public TypeMirror getEnclosingType() {
-      Element enclosingElement = getEnclosingElement();
-      return enclosingElement == null ? null : enclosingElement.asType();
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(GeneratedTypeElement.this);
+      return declaringClass == null ? null : declaringClass.asType();
     }
 
     @Override
