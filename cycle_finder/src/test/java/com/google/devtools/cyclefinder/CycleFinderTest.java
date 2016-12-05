@@ -44,16 +44,6 @@ public class CycleFinderTest extends TestCase {
     ErrorUtil.setTestMode();
   }
 
-  private boolean isRunningJava8() {
-    try {
-      Class.forName("java.lang.invoke.LambdaMetafactory");
-      return true;
-    } catch (ClassNotFoundException e) {
-      // Running on pre-Java 8 JRE.
-      return false;
-    }
-  }
-
   @Override
   protected void setUp() throws IOException {
     tempDir = createTempDir();
@@ -80,9 +70,6 @@ public class CycleFinderTest extends TestCase {
         + "interface Simple { public int run(); }";
 
   public void testAnonymousClassOuterRefCycle() throws Exception {
-    if (!isRunningJava8()) {
-      return;
-    }
     addSourceFile("Simple.java", weakOuterAndInterface
         + "class Test { int member = 7; Simple o;"
         + "void f() { o = new Simple() { public int run() { return member; } }; } }");
@@ -95,9 +82,6 @@ public class CycleFinderTest extends TestCase {
   }
 
   public void testAnonymousClassWithWeakOuter() throws Exception {
-    if (!isRunningJava8()) {
-      return;
-    }
     addSourceFile("Simple.java", weakOuterAndInterface
         + "class Test { int member = 7; Simple o;"
         + "void f() { new @WeakOuter Simple() { public int run() { return member; } }; } }");
@@ -388,9 +372,6 @@ public class CycleFinderTest extends TestCase {
   }
 
   public void testSimpleLambdaWithCycle() throws Exception {
-    if (!isRunningJava8()) {
-      return;
-    }
     addSourceFile("I.java", "interface I { int foo(); }");
     addSourceFile("A.java", "class A { int j = 1; I i = () -> j; }");
     findCycles();
