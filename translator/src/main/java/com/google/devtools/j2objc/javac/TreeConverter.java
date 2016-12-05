@@ -911,16 +911,16 @@ public class TreeConverter {
       dimensions.add((Expression) convert(dimension));
     }
     javax.lang.model.type.ArrayType type = (javax.lang.model.type.ArrayType) node.type;
-    ArrayInitializer initializers = new ArrayInitializer(type);
     if (node.getInitializers() != null) {
+      ArrayInitializer initializers = new ArrayInitializer(type);
       for (JCTree.JCExpression initializer : node.getInitializers()) {
         initializers.addExpression((Expression) convert(initializer));
       }
+      newNode.setInitializer(initializers);
     }
     return newNode
         .setType(new ArrayType(type))
-        .setDimensions(dimensions)
-        .setInitializer(initializers);
+        .setDimensions(dimensions);
   }
 
   private TreeNode convertNewClass(JCTree.JCNewClass node) {
