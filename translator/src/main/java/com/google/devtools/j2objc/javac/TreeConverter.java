@@ -86,6 +86,7 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperFieldAccess;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
@@ -591,7 +592,7 @@ public class TreeConverter {
 
   private TreeNode convertDoStatement(JCTree.JCDoWhileLoop node) {
     return new DoStatement()
-        .setExpression((Expression) convert(node.getCondition()))
+        .setExpression(convertWithoutParens(node.getCondition()))
         .setBody((Statement) convert(node.getStatement()));
   }
 
@@ -671,11 +672,8 @@ public class TreeConverter {
           .setName(new SimpleName(node.sym, node.type));
     }
     if (node.getIdentifier().toString().equals("class")) {
-      // For Foo.class the type is Class<Foo>, so use the type argument as the
-      // TypeLiteral type.
-      com.sun.tools.javac.code.Type type = node.sym.asType();
-      return new TypeLiteral(type)
-          .setType(Type.newType(type.getTypeArguments().get(0)));
+      return new TypeLiteral(node.type)
+          .setType((Type) convertType(selected.type, false));
     }
     if (selected.getKind() == Kind.IDENTIFIER) {
       return new QualifiedName()
@@ -729,12 +727,8 @@ public class TreeConverter {
   }
 
   private TreeNode convertIf(JCTree.JCIf node) {
-    Expression condition = (Expression) convert(node.getCondition());
-    if (condition.getKind() == TreeNode.Kind.PARENTHESIZED_EXPRESSION) {
-      condition = TreeUtil.remove(((ParenthesizedExpression) condition).getExpression());
-    }
     return new IfStatement()
-        .setExpression(condition)
+        .setExpression(convertWithoutParens(node.getCondition()))
         .setThenStatement((Statement) convert(node.getThenStatement()))
         .setElseStatement((Statement) convert(node.getElseStatement()));
   }
@@ -859,11 +853,19 @@ public class TreeConverter {
 
     }
     if (method.getKind() == Kind.MEMBER_SELECT
-        && ((JCTree.JCFieldAccess) method).name.toString().equals("super")) {
-      ExecutableElement sym = (ExecutableElement) ((JCTree.JCFieldAccess) method).sym;
-      SuperConstructorInvocation newNode = new SuperConstructorInvocation()
+        && ((JCTree.JCFieldAccess) method).selected.toString().equals("super")) {
+      JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
+      Symbol.MethodSymbol sym = (Symbol.MethodSymbol) ((JCTree.JCFieldAccess) method).sym;
+      SuperMethodInvocation newNode = new SuperMethodInvocation()
           .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()))
-          .setExpression((Expression) convert(method));
+          .setName(new SimpleName(sym.getSimpleName().toString()));
+      if (select.selected.getKind() == Kind.MEMBER_SELECT) {
+        // foo.bar.MyClass.super.print(...):
+        //   select: foo.bar.MyClass.super.print
+        //   select.selected: foo.bar.MyClass.super
+        //   select.selected.selected: foo.bar.MyClass
+        newNode.setQualifier((Name) convert(((JCTree.JCFieldAccess) select.selected).selected));
+       }
       for (JCTree.JCExpression arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg));
       }
@@ -980,7 +982,7 @@ public class TreeConverter {
 
   private TreeNode convertSwitch(JCTree.JCSwitch node) {
     SwitchStatement newNode = new SwitchStatement()
-        .setExpression((Expression) convert(node.getExpression()));
+        .setExpression(convertWithoutParens(node.getExpression()));
     for (JCTree.JCCase switchCase : node.getCases()) {
       newNode.addStatement((SwitchCase) convert(switchCase));
       for (JCTree.JCStatement s : switchCase.getStatements()) {
@@ -1114,7 +1116,7 @@ public class TreeConverter {
 
   private TreeNode convertWhileLoop(JCTree.JCWhileLoop node) {
     return new WhileStatement()
-        .setExpression((Expression) convert(node.getCondition()))
+        .setExpression(convertWithoutParens(node.getCondition()))
         .setBody((Statement) convert(node.getStatement()));
   }
 
@@ -1184,5 +1186,14 @@ public class TreeConverter {
     } catch (IOException e) {
       return node.toString();
     }
+  }
+
+  // javac uses a JCParens for the if, do, and while statements, while JDT doesn't.
+  private Expression convertWithoutParens(JCTree.JCExpression condition) {
+    Expression result = (Expression) convert(condition);
+    if (result.getKind() == TreeNode.Kind.PARENTHESIZED_EXPRESSION) {
+      result = TreeUtil.remove(((ParenthesizedExpression) result).getExpression());
+    }
+    return result;
   }
 }
