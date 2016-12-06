@@ -14,9 +14,9 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AssertStatement;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -130,7 +130,8 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
     if (!hasModification) {
       return Collections.emptyList();
     }
-    ListMultimap<VariableElement, VariableAccess> accessesByVar = ArrayListMultimap.create();
+    ListMultimap<VariableElement, VariableAccess> accessesByVar =
+        MultimapBuilder.hashKeys().arrayListValues().build();
     for (VariableAccess access : orderedAccesses) {
       accessesByVar.put(access.variable, access);
     }

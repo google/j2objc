@@ -16,12 +16,12 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +38,8 @@ public class CodeReferenceMap {
   public static class Builder {
     private final Set<String> deadClasses = new HashSet<String>();
     private final Table<String, String, Set<String>> deadMethods = HashBasedTable.create();
-    private final ListMultimap<String, String> deadFields = ArrayListMultimap.create();
+    private final ListMultimap<String, String> deadFields =
+        MultimapBuilder.hashKeys().arrayListValues().build();
 
     public CodeReferenceMap build() {
       ImmutableTable.Builder<String, String, ImmutableSet<String>> deadMethodsBuilder =

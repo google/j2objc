@@ -14,8 +14,8 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -68,7 +68,8 @@ public class OcniExtractor extends UnitTreeVisitor {
    * This is trickier than you might expect because of inner types.
    */
   private static ListMultimap<TreeNode, Comment> findBlockComments(CompilationUnit unit) {
-    ListMultimap<TreeNode, Comment> blockComments = ArrayListMultimap.create();
+    ListMultimap<TreeNode, Comment> blockComments =
+        MultimapBuilder.hashKeys().arrayListValues().build();
     for (Comment comment : unit.getCommentList()) {
       if (!comment.isBlockComment()) {
         continue;

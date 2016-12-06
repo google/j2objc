@@ -14,10 +14,10 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +37,8 @@ public class CaptureInfo {
   private final Map<TypeElement, VariableElement> outerParams = new HashMap<>();
   private final Map<TypeElement, VariableElement> outerFields = new HashMap<>();
   private final Map<TypeElement, VariableElement> superOuterParams = new HashMap<>();
-  private final ListMultimap<TypeElement, LocalCapture> localCaptures = ArrayListMultimap.create();
+  private final ListMultimap<TypeElement, LocalCapture> localCaptures =
+      MultimapBuilder.hashKeys().arrayListValues().build();
   private final List<VariableElement> implicitEnumParams;
 
   public CaptureInfo(TypeUtil typeUtil) {
