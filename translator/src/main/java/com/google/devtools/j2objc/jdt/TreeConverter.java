@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.ast.AnnotatableType;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -116,13 +115,16 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -174,9 +176,6 @@ public class TreeConverter {
       case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
         return convertAnnotationTypeMemberDeclaration(
             (org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration) jdtNode);
-      case ASTNode.ANONYMOUS_CLASS_DECLARATION:
-        return convertAnonymousClassDeclaration(
-            (org.eclipse.jdt.core.dom.AnonymousClassDeclaration) jdtNode);
       case ASTNode.ARRAY_ACCESS:
         return convertArrayAccess((org.eclipse.jdt.core.dom.ArrayAccess) jdtNode);
       case ASTNode.ARRAY_CREATION:
@@ -407,15 +406,58 @@ public class TreeConverter {
         .setDefault((Expression) convert(node.getDefault()));
   }
 
-  private static TreeNode convertAnonymousClassDeclaration(
-      org.eclipse.jdt.core.dom.AnonymousClassDeclaration node) {
-    List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
+  private static TypeDeclaration convertAnonymousClassDeclaration(
+      org.eclipse.jdt.core.dom.AnonymousClassDeclaration node,
+      JdtExecutableElement constructorElem, IMethodBinding constructorBinding) {
+    TypeDeclaration typeDecl = (TypeDeclaration) new TypeDeclaration(
+        (TypeElement) BindingConverter.getElement(node.resolveBinding()))
+        .addBodyDeclaration(createAnonymousConstructor(constructorElem, constructorBinding))
+        .setPosition(getPosition(node));
     for (Object bodyDecl : node.bodyDeclarations()) {
-      bodyDeclarations.add((BodyDeclaration) convert(bodyDecl));
+      typeDecl.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
     }
-    return new AnonymousClassDeclaration()
-        .setTypeElement((TypeElement) BindingConverter.getElement(node.resolveBinding()))
-        .setBodyDeclarations(bodyDeclarations);
+    return typeDecl;
+  }
+
+  private static MethodDeclaration createAnonymousConstructor(
+      JdtExecutableElement constructorElem, IMethodBinding constructorBinding) {
+    MethodDeclaration constructor = new MethodDeclaration(constructorElem);
+    Block body = new Block();
+    constructor.setBody(body);
+
+    IMethodBinding superConstructorBinding = findSuperConstructor(constructorBinding);
+    ExecutablePair superConstructor = new ExecutablePair(
+        BindingConverter.getExecutableElement(superConstructorBinding),
+        BindingConverter.getType(superConstructorBinding));
+    SuperConstructorInvocation superCall = new SuperConstructorInvocation(superConstructor);
+    body.addStatement(superCall);
+
+    Iterator<? extends VariableElement> params = constructorElem.getParameters().iterator();
+
+    if (constructorElem.hasSuperOuter()) {
+      VariableElement param = params.next();
+      constructor.addParameter(new SingleVariableDeclaration(param));
+      superCall.setExpression(new SimpleName(param));
+    }
+
+    while (params.hasNext()) {
+      VariableElement param = params.next();
+      constructor.addParameter(new SingleVariableDeclaration(param));
+      superCall.addArgument(new SimpleName(param));
+    }
+
+    assert constructor.getParameters().size() == constructorElem.getParameters().size();
+    return constructor;
+  }
+
+  private static IMethodBinding findSuperConstructor(IMethodBinding constructor) {
+    ITypeBinding superClass = constructor.getDeclaringClass().getSuperclass();
+    for (IMethodBinding m : superClass.getDeclaredMethods()) {
+      if (m.isConstructor() && constructor.isSubsignature(m)) {
+        return m;
+      }
+    }
+    throw new AssertionError("could not find constructor");
   }
 
   private static TreeNode convertArrayAccess(org.eclipse.jdt.core.dom.ArrayAccess node) {
@@ -535,13 +577,29 @@ public class TreeConverter {
       newNode.addArgument((Expression) TreeConverter.convert(argument));
     }
     IMethodBinding binding = node.resolveConstructorBinding();
-    return newNode
-        .setExecutablePair(new ExecutablePair(
-            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)))
-        .setType((Type) TreeConverter.convert(node.getType()))
-        .setExpression((Expression) TreeConverter.convert(node.getExpression()))
-        .setAnonymousClassDeclaration(
-            (AnonymousClassDeclaration) TreeConverter.convert(node.getAnonymousClassDeclaration()));
+    JdtExecutableElement element =
+        (JdtExecutableElement) BindingConverter.getExecutableElement(binding);
+    JdtExecutableType type = BindingConverter.getType(binding);
+    newNode
+        .setExecutablePair(new ExecutablePair(element, type))
+        .setType((Type) TreeConverter.convert(node.getType()));
+    Expression expression = (Expression) TreeConverter.convert(node.getExpression());
+    org.eclipse.jdt.core.dom.AnonymousClassDeclaration anonymousClassDecl =
+        node.getAnonymousClassDeclaration();
+    if (anonymousClassDecl != null && expression != null) {
+      VariableElement superOuterParam = GeneratedVariableElement.newParameter(
+          "superOuter$", expression.getTypeMirror(), element);
+      element.setSuperOuterParam(superOuterParam);
+      type.setSuperOuterParamType(superOuterParam.asType());
+      newNode.addArgument(0, expression);
+    } else {
+      newNode.setExpression(expression);
+    }
+    if (anonymousClassDecl != null) {
+      newNode.setAnonymousClassDeclaration(convertAnonymousClassDeclaration(
+          anonymousClassDecl, element, binding));
+    }
+    return newNode;
   }
 
   private static TreeNode convertConditionalExpression(
@@ -606,16 +664,20 @@ public class TreeConverter {
     EnumConstantDeclaration newNode = new EnumConstantDeclaration();
     convertBodyDeclaration(node, newNode);
     IMethodBinding methodBinding = node.resolveConstructorBinding();
+    JdtExecutableElement element =
+        (JdtExecutableElement) BindingConverter.getExecutableElement(methodBinding);
     newNode
         .setVariableElement(BindingConverter.getVariableElement(node.resolveVariable()))
-        .setExecutablePair(new ExecutablePair(
-            BindingConverter.getExecutableElement(methodBinding),
-            BindingConverter.getType(methodBinding)))
-        .setName((SimpleName) convert(node.getName()))
-        .setAnonymousClassDeclaration(
-            (AnonymousClassDeclaration) convert(node.getAnonymousClassDeclaration()));
+        .setExecutablePair(new ExecutablePair(element, BindingConverter.getType(methodBinding)))
+        .setName((SimpleName) convert(node.getName()));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
+    }
+    org.eclipse.jdt.core.dom.AnonymousClassDeclaration anonymousClassDecl =
+        node.getAnonymousClassDeclaration();
+    if (anonymousClassDecl != null) {
+      newNode.setAnonymousClassDeclaration(convertAnonymousClassDeclaration(
+          anonymousClassDecl, element, methodBinding));
     }
     return newNode;
   }

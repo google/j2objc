@@ -32,6 +32,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 class JdtExecutableElement extends JdtElement implements ExecutableElement {
 
+  private VariableElement superOuterParam = null;
+
   public JdtExecutableElement(IMethodBinding binding) {
     super(binding.getMethodDeclaration(), binding.getMethodDeclaration().getName(),
         binding.getMethodDeclaration().getModifiers());
@@ -64,10 +66,21 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
     return BindingConverter.getType((IMethodBinding) binding);
   }
 
+  void setSuperOuterParam(VariableElement superOuterParam) {
+    this.superOuterParam = superOuterParam;
+  }
+
+  boolean hasSuperOuter() {
+    return superOuterParam != null;
+  }
+
   @Override
   public List<? extends VariableElement> getParameters() {
     IMethodBinding methodBinding = (IMethodBinding) binding;
     List<VariableElement> params = new ArrayList<>();
+    if (superOuterParam != null) {
+      params.add(superOuterParam);
+    }
     ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
       params.add(GeneratedVariableElement.newParameter(

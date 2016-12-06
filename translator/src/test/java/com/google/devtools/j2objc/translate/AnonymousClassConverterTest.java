@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -357,14 +358,17 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "create_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, nil_chk(b), b, 1)");
+        "create_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
+    String param0 = Options.isJDT() ? "param0" : "i";
+    String superOuter = Options.isJDT() ? "superOuter$" : "x0";
     assertTranslatedLines(translation,
         "void Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_("
-          + "Test_A_$1 *self, Test_A *outer$, Test_B *superOuter$, Test_B *capture$0, "
-          + "jint arg$0) {",
+          + "Test_A_$1 *self, Test_A *outer$, Test_B *capture$0, Test_B *" + superOuter + ", "
+          + "jint " + param0 + ") {",
         "  JreStrongAssign(&self->this$1_, outer$);",
         "  JreStrongAssign(&self->val$b_, capture$0);",
-        "  Test_B_Inner_initWithTest_B_withInt_(self, superOuter$, arg$0);",
+        "  Test_B_Inner_initWithTest_B_withInt_(self, nil_chk(" + superOuter + "), " + param0
+          + ");",
         "}");
   }
 
@@ -405,11 +409,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "}");
 
+    String param0 = Options.isJDT() ? "param0" : "n";
     // Verify Color_$1 constructor.
     assertTranslatedLines(impl,
         "void Color_$1_initWithInt_withNSString_withInt_("
-          + "Color_$1 *self, jint arg$0, NSString *__name, jint __ordinal) {",
-        "  Color_initWithInt_withNSString_withInt_(self, arg$0, __name, __ordinal);",
+          + "Color_$1 *self, jint " + param0 + ", NSString *__name, jint __ordinal) {",
+        "  Color_initWithInt_withNSString_withInt_(self, " + param0 + ", __name, __ordinal);",
         "}");
 
     // Verify constant initialization.
@@ -472,11 +477,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
         "Test", "Test.m");
+    String param0 = Options.isJDT() ? "param0" : "t";
     assertTranslation(translation, "create_Test_$1_initWithNSString_(@\"foo\")");
-    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)arg$0 {");
+    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)" + param0 + " {");
     assertTranslatedLines(translation,
-        "void Test_$1_initWithNSString_(Test_$1 *self, NSString *arg$0) {",
-        "  Test_initWithId_(self, arg$0);",
+        "void Test_$1_initWithNSString_(Test_$1 *self, NSString *" + param0 + ") {",
+        "  Test_initWithId_(self, " + param0 + ");",
         "}");
   }
 
@@ -494,16 +500,18 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "create_Test_$2_initWithNSString_withNSObjectArray_(@\"foo\", "
         + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
+    String param0 = Options.isJDT() ? "param0" : "fmt";
+    String param1 = Options.isJDT() ? "param1" : "args";
     // check the generated constructors.
     assertTranslatedLines(translation,
         "void Test_$1_initWithNSString_withNSObjectArray_("
-          + "Test_$1 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
-        "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
+          + "Test_$1 *self, NSString *" + param0 + ", IOSObjectArray *" + param1 + ") {",
+        "  Test_initWithNSString_withNSObjectArray_(self, " + param0 + ", " + param1 + ");",
         "}");
     assertTranslatedLines(translation,
         "void Test_$2_initWithNSString_withNSObjectArray_("
-          + "Test_$2 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
-        "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
+          + "Test_$2 *self, NSString *" + param0 + ", IOSObjectArray *" + param1 + ") {",
+        "  Test_initWithNSString_withNSObjectArray_(self, " + param0 + ", " + param1 + ");",
         "}");
   }
 
@@ -514,11 +522,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "return () -> t.new A() { public String toString() { return s + i; } }; } } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "static Test_B_$1 *create_Test_B_$1_initWithTest_B_withTest_withInt_("
-        + "Test_B *outer$, Test *superOuter$, jint capture$0);");
+        "static Test_B_$1 *create_Test_B_$1_initWithTest_B_withInt_withTest_("
+        + "Test_B *outer$, jint capture$0, Test *superOuter$);");
     assertTranslation(translation,
-        "return create_Test_B_$1_initWithTest_B_withTest_withInt_("
-        + "this$0_, nil_chk(val$t_), val$i_);");
+        "return create_Test_B_$1_initWithTest_B_withInt_withTest_(this$0_, val$i_, val$t_);");
+    // The super outer must be nil_chk'ed in the anonymous constructor.
+    assertTranslation(translation, "Test_A_initWithTest_(self, nil_chk(superOuter$));");
   }
 
   public void testSuperclassHasCapturedVariables() throws IOException {

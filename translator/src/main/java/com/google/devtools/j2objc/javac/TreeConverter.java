@@ -19,7 +19,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -584,14 +583,16 @@ public class TreeConverter {
     // javac defines all type declarations with JCClassDecl, so differentiate here
     // to support our different declaration nodes.
     if (node.sym.isAnonymous()) {
-      AnonymousClassDeclaration newNode = new AnonymousClassDeclaration();
+      // TODO(kstanger): See if anonymous classes can follow the same code branch as regular class
+      // declarations.
+      TypeDeclaration newNode = new TypeDeclaration(node.sym);
       for (JCTree bodyDecl : node.getMembers()) {
         Object member = convert(bodyDecl);
         if (member instanceof BodyDeclaration) {  // Not true for enum constants.
           newNode.addBodyDeclaration((BodyDeclaration) member);
         }
       }
-      return newNode.setTypeElement(node.sym);
+      return newNode;
     }
     if (node.sym.getKind() == ElementKind.ANNOTATION_TYPE) {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
@@ -644,7 +645,7 @@ public class TreeConverter {
 
   private TreeNode convertEnum(JCTree.JCClassDecl node) {
     if (node.sym.isAnonymous()) {
-      return (AnonymousClassDeclaration) convertClassDeclaration(node);
+      return (TypeDeclaration) convertClassDeclaration(node);
     }
     EnumDeclaration newNode = (EnumDeclaration) new EnumDeclaration()
         .setName(convertSimpleName(node.sym))
@@ -991,7 +992,7 @@ public class TreeConverter {
             (ExecutableElement) node.constructor, node.constructorType.asMethodType()))
         .setExpression((Expression) convert(node.getEnclosingExpression()))
         .setType(Type.newType(node.type))
-        .setAnonymousClassDeclaration((AnonymousClassDeclaration) convert(node.def));
+        .setAnonymousClassDeclaration((TypeDeclaration) convert(node.def));
   }
 
   private TreeNode convertNumberLiteral(JCTree.JCLiteral node) {

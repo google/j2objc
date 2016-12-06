@@ -917,4 +917,9 @@ public class Options {
     }
     return new com.google.devtools.j2objc.javac.JavacParser();
   }
+
+  // TODO(kstanger): remove after front-end conversion is complete.
+  public static boolean isJDT() {
+    return instance.javaFrontEnd == FrontEnd.JDT;
+  }
 }

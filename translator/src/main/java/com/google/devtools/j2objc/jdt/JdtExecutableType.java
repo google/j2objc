@@ -26,6 +26,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
 
+  private TypeMirror superOuterParamType = null;
+
   JdtExecutableType(IMethodBinding binding) {
     super(binding);
   }
@@ -54,9 +56,16 @@ class JdtExecutableType extends JdtTypeMirror implements ExecutableType {
     return BindingConverter.getType(((IMethodBinding) binding).getReturnType());
   }
 
+  void setSuperOuterParamType(TypeMirror superOuterParamType) {
+    this.superOuterParamType = superOuterParamType;
+  }
+
   @Override
   public List<? extends TypeMirror> getParameterTypes() {
     List<TypeMirror> params = new ArrayList<TypeMirror>();
+    if (superOuterParamType != null) {
+      params.add(superOuterParamType);
+    }
     for (ITypeBinding param : ((IMethodBinding) binding).getParameterTypes()) {
       params.add(BindingConverter.getType(param));
     }

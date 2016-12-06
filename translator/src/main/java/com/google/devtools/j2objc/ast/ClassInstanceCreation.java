@@ -36,8 +36,8 @@ public class ClassInstanceCreation extends Expression {
   private ChildList<Expression> captureArgs = ChildList.create(Expression.class, this);
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
-  private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
-      ChildLink.create(AnonymousClassDeclaration.class, this);
+  private ChildLink<TypeDeclaration> anonymousClassDeclaration =
+      ChildLink.create(TypeDeclaration.class, this);
 
   public ClassInstanceCreation() {}
 
@@ -148,12 +148,12 @@ public class ClassInstanceCreation extends Expression {
     return arguments;
   }
 
-  public AnonymousClassDeclaration getAnonymousClassDeclaration() {
+  public TypeDeclaration getAnonymousClassDeclaration() {
     return anonymousClassDeclaration.get();
   }
 
   public ClassInstanceCreation setAnonymousClassDeclaration(
-      AnonymousClassDeclaration newAnonymousClassDeclaration) {
+      TypeDeclaration newAnonymousClassDeclaration) {
     anonymousClassDeclaration.set(newAnonymousClassDeclaration);
     return this;
   }

@@ -18,7 +18,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
@@ -106,8 +105,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
         "class Test { void test(final int i) { Runnable r = new Runnable() { "
         + "public void run() { int i2 = i + 1; } }; } }");
 
-    AnonymousClassDeclaration runnableNode =
-        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    TypeDeclaration runnableNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
+    assertTrue(ElementUtil.isAnonymous(runnableNode.getTypeElement()));
     assertFalse(captureInfo.needsOuterReference(runnableNode.getTypeElement()));
     List<VariableElement> innerFields = Lists.newArrayList(
         captureInfo.getCaptureFields(runnableNode.getTypeElement()));
@@ -137,8 +136,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
         + "class Test { void test(@Weak final int i) { Runnable r = new Runnable() { "
         + "public void run() { int i2 = i + 1; } }; } }");
 
-    AnonymousClassDeclaration runnableNode =
-        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    TypeDeclaration runnableNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
+    assertTrue(ElementUtil.isAnonymous(runnableNode.getTypeElement()));
     List<VariableElement> innerFields = Lists.newArrayList(
         captureInfo.getCaptureFields(runnableNode.getTypeElement()));
     assertEquals(1, innerFields.size());
@@ -149,8 +148,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
     resolveSource("Test",
         "class Test { static void test() { class LocalClass {}; new LocalClass() {}; } }");
 
-    AnonymousClassDeclaration decl =
-        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    TypeDeclaration decl = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(2);
+    assertTrue(ElementUtil.isAnonymous(decl.getTypeElement()));
     assertFalse(captureInfo.needsOuterParam(decl.getTypeElement()));
   }
 
@@ -160,8 +159,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
         + "class Local { public void foo() { o.toString(); } } "
         + "return new Runnable() { public void run() { new Local(); } }; } }");
 
-    AnonymousClassDeclaration runnableNode =
-        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    TypeDeclaration runnableNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(2);
+    assertTrue(ElementUtil.isAnonymous(runnableNode.getTypeElement()));
     List<VariableElement> innerFields = Lists.newArrayList(
         captureInfo.getCaptureFields(runnableNode.getTypeElement()));
     assertEquals(1, innerFields.size());

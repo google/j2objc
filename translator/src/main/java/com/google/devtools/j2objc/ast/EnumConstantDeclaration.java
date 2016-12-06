@@ -29,8 +29,8 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   private ExecutablePair method = ExecutablePair.NULL;
   private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
-  private final ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
-      ChildLink.create(AnonymousClassDeclaration.class, this);
+  private final ChildLink<TypeDeclaration> anonymousClassDeclaration =
+      ChildLink.create(TypeDeclaration.class, this);
 
   public EnumConstantDeclaration() {}
 
@@ -91,12 +91,12 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     arguments.add(arg);
   }
 
-  public AnonymousClassDeclaration getAnonymousClassDeclaration() {
+  public TypeDeclaration getAnonymousClassDeclaration() {
     return anonymousClassDeclaration.get();
   }
 
   public EnumConstantDeclaration setAnonymousClassDeclaration(
-      AnonymousClassDeclaration newAnonymousClassDeclaration) {
+      TypeDeclaration newAnonymousClassDeclaration) {
     anonymousClassDeclaration.set(newAnonymousClassDeclaration);
     return this;
   }

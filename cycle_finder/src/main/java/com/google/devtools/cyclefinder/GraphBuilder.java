@@ -18,9 +18,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -297,29 +295,23 @@ public class GraphBuilder {
       }
     }
 
-    public void handleTypeDeclaration(CommonTypeDeclaration node, boolean isAnonymous) {
+    private void handleTypeDeclaration(TypeDeclaration node) {
       TypeElement typeElem = node.getTypeElement();
       TypeMirror type = typeElem.asType();
-      String name = isAnonymous
-          ? "anonymous:" + node.asNode().getLineNumber() : NameUtil.getName(type);
+      String name = ElementUtil.isAnonymous(typeElem)
+          ? "anonymous:" + node.getLineNumber() : NameUtil.getName(type);
       TypeNode typeNode = createNode(type, nameUtil.getSignature(type), name);
       if (captureInfo.needsOuterReference(typeElem)) {
         hasOuterRef.add(typeNode);
       }
-      if (isAnonymous) {
+      if (ElementUtil.isAnonymous(typeElem)) {
         followCaptureFields(typeElem, typeNode);
       }
     }
 
     @Override
     public boolean visit(TypeDeclaration node) {
-      handleTypeDeclaration(node, false);
-      return true;
-    }
-
-    @Override
-    public boolean visit(AnonymousClassDeclaration node) {
-      handleTypeDeclaration(node, true);
+      handleTypeDeclaration(node);
       return true;
     }
 
