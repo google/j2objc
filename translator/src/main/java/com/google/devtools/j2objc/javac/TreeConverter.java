@@ -133,6 +133,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -145,6 +146,7 @@ import javax.tools.JavaFileObject;
  */
 public class TreeConverter {
   private JCTree.JCCompilationUnit unit;
+  private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
       JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
@@ -154,15 +156,16 @@ public class TreeConverter {
       JavaFileObject sourceFile = javacUnit.getSourceFile();
       String source = sourceFile.getCharContent(false).toString();
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
-      CompilationUnit unit = new CompilationUnit(new TranslationEnvironment(env), sourceFilePath,
+      converter.newUnit = new CompilationUnit(new TranslationEnvironment(env), sourceFilePath,
           mainTypeName, source);
       PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
-      unit.setPackage(converter.convertPackage(pkg));
+      SourcePosition pkgPos = converter.getPosition(javacUnit.pid);
+      converter.newUnit.setPackage(converter.convertPackage(pkg, pkgPos));
       for (JCTree type : javacUnit.getTypeDecls()) {
-        unit.addType((AbstractTypeDeclaration) converter.convert(type));
+        converter.newUnit.addType((AbstractTypeDeclaration) converter.convert(type));
       }
-      addOcniComments(unit);
-      return unit;
+      addOcniComments(converter.newUnit);
+      return converter.newUnit;
     } catch (IOException e) {
       ErrorUtil.fatalError(e, sourceFilePath);
       return null;
@@ -189,12 +192,7 @@ public class TreeConverter {
     int endPosition = TreeInfo.getEndPos(node, unit.endPositions);
     int length = startPosition == Position.NOPOS || endPosition == Position.NOPOS
         ? 0 : endPosition - startPosition;
-    if (unit.getLineMap() != null) {
-      int line = unit.getLineMap().getLineNumber(startPosition);
-      return new SourcePosition(startPosition, length, line);
-    } else {
-      return new SourcePosition(startPosition, length);
-    }
+    return getSourcePosition(startPosition, length);
   }
 
   @SuppressWarnings("fallthrough")
@@ -384,7 +382,7 @@ public class TreeConverter {
       }
     }
     return newNode
-        .setName(convertSimpleName(node.sym))
+        .setName(convertSimpleName(node.sym, getNamePosition(node)))
         .setTypeElement(node.sym)
         .setBodyDeclarations(bodyDeclarations);
   }
@@ -411,7 +409,7 @@ public class TreeConverter {
       for (JCTree.JCExpression obj : node.getArguments()) {
         JCTree.JCAssign assign = (JCTree.JCAssign) obj;
         MemberValuePair memberPair = new MemberValuePair()
-            .setName(convertSimpleName(((JCTree.JCIdent) assign.lhs).sym))
+            .setName(convertSimpleName(((JCTree.JCIdent) assign.lhs).sym, getPosition(assign.lhs)))
             .setValue((Expression) convert(assign.rhs));
         normalAnn.addValue(memberPair);
       }
@@ -429,7 +427,7 @@ public class TreeConverter {
       if (bodyDecl.getKind() == Kind.METHOD) {
         JCTree.JCMethodDecl methodDecl = (JCTree.JCMethodDecl) bodyDecl;
         AnnotationTypeMemberDeclaration newMember = new AnnotationTypeMemberDeclaration()
-            .setName(convertSimpleName(methodDecl.sym))
+            .setName(convertSimpleName(methodDecl.sym, getNamePosition(methodDecl)))
             .setDefault((Expression) convert(methodDecl.defaultValue))
             .setExecutableElement(methodDecl.sym)
             .setType(Type.newType(methodDecl.sym.getReturnType()));
@@ -447,7 +445,7 @@ public class TreeConverter {
       }
     }
     return newNode
-        .setName(convertSimpleName(node.sym))
+        .setName(convertSimpleName(node.sym, getNamePosition(node)))
         .setTypeElement(node.sym);
   }
 
@@ -553,7 +551,8 @@ public class TreeConverter {
     BreakStatement newNode = new BreakStatement();
     Object label = node.getLabel();
     if (label != null) {
-      newNode.setLabel(new SimpleName(label.toString()));
+      newNode.setLabel((SimpleName)
+          new SimpleName(label.toString()).setPosition(getPosition(node)));
     }
     return newNode;
   }
@@ -625,7 +624,8 @@ public class TreeConverter {
     ContinueStatement newNode = new ContinueStatement();
     Object label = node.getLabel();
     if (label != null) {
-        newNode.setLabel(new SimpleName(label.toString()));
+        newNode.setLabel((SimpleName)
+            new SimpleName(label.toString()).setPosition(getPosition(node)));
     }
     return newNode;
   }
@@ -648,7 +648,7 @@ public class TreeConverter {
       return (TypeDeclaration) convertClassDeclaration(node);
     }
     EnumDeclaration newNode = (EnumDeclaration) new EnumDeclaration()
-        .setName(convertSimpleName(node.sym))
+        .setName(convertSimpleName(node.sym, getNamePosition(node)))
         .setTypeElement(node.sym);
     for (JCTree superInterface : node.getImplementsClause()) {
       newNode.addSuperInterfaceType(Type.newType(nameType(superInterface)));
@@ -705,6 +705,7 @@ public class TreeConverter {
 
   private TreeNode convertFieldAccess(JCTree.JCFieldAccess node) {
     String fieldName = node.name.toString();
+    SourcePosition pos = getPosition(node);
     JCTree.JCExpression selected = node.getExpression();
     if (fieldName.equals("this")) {
       return new ThisExpression()
@@ -714,23 +715,23 @@ public class TreeConverter {
     if (selected.toString().equals("super")) {
       return new SuperFieldAccess()
           .setVariableElement((VariableElement) node.sym)
-          .setName(new SimpleName(node.sym, node.type));
+          .setName(convertSimpleName(node.sym, pos));
     }
     if (node.getIdentifier().toString().equals("class")) {
       return new TypeLiteral(node.type)
-          .setType((Type) convertType(selected.type, false));
+          .setType((Type) convertType(selected.type, pos, false));
     }
     if (selected.getKind() == Kind.IDENTIFIER) {
       return new QualifiedName()
-          .setName(new SimpleName(node.sym, node.type))
-          .setQualifier(new SimpleName(((JCTree.JCIdent) selected).sym))
+          .setName(convertSimpleName(node.sym, pos))
+          .setQualifier(convertSimpleName(((JCTree.JCIdent) selected).sym, pos))
           .setElement(node.sym);
     }
     if (selected.getKind() == Kind.MEMBER_SELECT) {
-      TreeNode newSelected = convertFieldAccess((JCTree.JCFieldAccess) selected);
+      TreeNode newSelected = convertFieldAccess((JCTree.JCFieldAccess) selected).setPosition(pos);
       if (newSelected.getKind() == TreeNode.Kind.QUALIFIED_NAME) {
         return new QualifiedName()
-            .setName(new SimpleName(node.sym, node.type))
+            .setName(convertSimpleName(node.sym, pos))
             .setQualifier((QualifiedName) newSelected)
             .setElement(node.sym);
       }
@@ -738,7 +739,7 @@ public class TreeConverter {
     return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
         .setExpression((Expression) convert(selected))
-        .setName(new SimpleName(node.sym, node.type));
+        .setName(convertSimpleName(node.sym, pos));
   }
 
   private TreeNode convertForLoop(JCTree.JCForLoop node) {
@@ -797,7 +798,7 @@ public class TreeConverter {
 
   private TreeNode convertLabeledStatement(JCTree.JCLabeledStatement node) {
     return new LabeledStatement()
-        .setLabel(new SimpleName(node.label.toString()))
+        .setLabel((SimpleName) new SimpleName(node.label.toString()).setPosition(getPosition(node)))
         .setBody((Statement) convert(node.body));
   }
 
@@ -824,6 +825,7 @@ public class TreeConverter {
 
   private TreeNode convertMemberReference(JCTree.JCMemberReference node) {
     Element element = node.sym;
+    SourcePosition pos = getPosition(node);
     if (ElementUtil.isConstructor(element)) {
       CreationReference newNode = new CreationReference();
       convertMethodReference(node, newNode);
@@ -836,22 +838,22 @@ public class TreeConverter {
       // Qualifier expression is <name>."super", so it's always a JCFieldAccess.
       JCTree.JCFieldAccess expr = (JCTree.JCFieldAccess) node.getQualifierExpression();
       return newNode
-          .setName(convertSimpleName(node.sym))
-          .setQualifier(convertSimpleName(nameSymbol(expr.selected)));
+          .setName(convertSimpleName(node.sym, getPosition(expr)))
+          .setQualifier(convertSimpleName(nameSymbol(expr.selected), getPosition(expr.selected)));
     }
     if (node.hasKind(JCTree.JCMemberReference.ReferenceKind.UNBOUND)
         || node.hasKind(JCTree.JCMemberReference.ReferenceKind.STATIC)) {
       TypeMethodReference newNode = new TypeMethodReference();
       convertMethodReference(node, newNode);
       return newNode
-          .setName(convertSimpleName(node.sym))
-          .setType(convertType(node.type, false));
+          .setName(convertSimpleName(node.sym, pos))
+          .setType(convertType(node.type, pos, false));
     }
 
     ExpressionMethodReference newNode = new ExpressionMethodReference();
     convertMethodReference(node, newNode);
     return newNode
-        .setName(convertSimpleName(node.sym))
+        .setName(convertSimpleName(node.sym, pos))
         .setExpression((Expression) convert(node.getQualifierExpression()));
   }
 
@@ -865,12 +867,16 @@ public class TreeConverter {
       newNode.addParameter((SingleVariableDeclaration) convert(param));
     }
     if (ElementUtil.isConstructor(node.sym)) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(node.sym);
+      int classNameLength = declaringClass.getSimpleName().toString().length();
+      SourcePosition pos = getSourcePosition(node.pos, classNameLength);
+      SimpleName constructorName = convertSimpleName(declaringClass, pos);
       newNode
-          .setName(convertSimpleName(ElementUtil.getDeclaringClass(node.sym)))
+          .setName(constructorName)
           .setIsConstructor(true);
     } else {
       newNode
-          .setName(convertSimpleName(node.sym))
+          .setName(convertSimpleName(node.sym, getNamePosition(node)))
           .setReturnType(Type.newType(node.type.asMethodType().getReturnType()));
     }
     return newNode
@@ -914,7 +920,7 @@ public class TreeConverter {
       Symbol.MethodSymbol sym = (Symbol.MethodSymbol) ((JCTree.JCFieldAccess) method).sym;
       SuperMethodInvocation newNode = new SuperMethodInvocation()
           .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()))
-          .setName(new SimpleName(sym.getSimpleName().toString()));
+          .setName(convertSimpleName(sym, getPosition(node)));
       if (select.selected.getKind() == Kind.MEMBER_SELECT) {
         // foo.bar.MyClass.super.print(...):
         //   select: foo.bar.MyClass.super.print
@@ -939,7 +945,7 @@ public class TreeConverter {
       JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
       sym = (ExecutableElement) select.sym;
       newNode
-          .setName(convertSimpleName(select.sym))
+          .setName(convertSimpleName(select.sym, getPosition(select)))
           .setExpression((Expression) convert(select.selected));
     }
     for (JCTree.JCExpression arg : node.getArguments()) {
@@ -950,15 +956,15 @@ public class TreeConverter {
         .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()));
   }
 
-  private SimpleName convertSimpleName(Element element) {
-    return new SimpleName(element);
+  private SimpleName convertSimpleName(Element element, SourcePosition pos) {
+    return (SimpleName) new SimpleName(element).setPosition(pos);
   }
 
-  private Name convertName(Symbol symbol) {
+  private Name convertName(Symbol symbol, SourcePosition pos) {
     if (symbol.owner == null || symbol.owner.name.isEmpty()) {
       return new SimpleName(symbol);
     }
-    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner));
+    return new QualifiedName(symbol, symbol.asType(), convertName(symbol.owner, pos));
   }
 
   private TreeNode convertNewArray(JCTree.JCNewArray node) {
@@ -977,7 +983,7 @@ public class TreeConverter {
       newNode.setInitializer(initializers);
     }
     return newNode
-        .setType(new ArrayType(type))
+        .setType((ArrayType) new ArrayType(type).setPosition(getPosition(node)))
         .setDimensions(dimensions);
   }
 
@@ -1000,10 +1006,12 @@ public class TreeConverter {
         .setToken(getTreeSource(node));
   }
 
-  private PackageDeclaration convertPackage(PackageElement pkg) {
+  private PackageDeclaration convertPackage(PackageElement pkg, SourcePosition namePos) {
+    // javac doesn't include the "package" token in its AST, just the package name.
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
-    return newNode.setName(convertName((PackageSymbol) pkg));
+    return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, namePos))
+        .setPosition(SourcePosition.NO_POSITION);
   }
 
   private TreeNode convertPrefixExpr(JCTree.JCUnary node) {
@@ -1105,16 +1113,17 @@ public class TreeConverter {
 
   private TreeNode convertVariableDeclaration(JCTree.JCVariableDecl node) {
     VarSymbol var = node.sym;
+    SourcePosition pos = getPosition(node);
     if (var.getKind() == ElementKind.FIELD) {
       return new FieldDeclaration(var, (Expression) convert(node.getInitializer()));
     }
     if (var.getKind() == ElementKind.LOCAL_VARIABLE) {
       return new VariableDeclarationStatement(var, (Expression) convert(node.getInitializer()))
-          .setType(convertType(var.asType(), false));
+          .setType(convertType(var.asType(), pos, false));
     }
     if (var.getKind() == ElementKind.ENUM_CONSTANT) {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration()
-          .setName(convertSimpleName(var))
+          .setName(convertSimpleName(var, getNamePosition(node)))
           .setVariableElement(var);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
       TreeUtil.copyList(init.getArguments(), newNode.getArguments());
@@ -1129,17 +1138,18 @@ public class TreeConverter {
 
   private TreeNode convertSingleVariable(JCTree.JCVariableDecl node) {
     VarSymbol var = node.sym;
+    SourcePosition pos = getPosition(node);
     boolean isVarargs = (node.sym.flags() & Flags.VARARGS) > 0;
-    Type newType = convertType(var.asType(), isVarargs);
+    Type newType = convertType(var.asType(), pos, isVarargs);
     return new SingleVariableDeclaration()
         .setType(newType)
         .setIsVarargs(isVarargs)
-        .setName(convertSimpleName(var))
+        .setName(convertSimpleName(var, getNamePosition(node)))
         .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
   }
 
-  private Type convertType(TypeMirror varType, boolean isVarargs) {
+  private Type convertType(TypeMirror varType, SourcePosition pos, boolean isVarargs) {
     Type newType;
     if (isVarargs) {
       newType = Type.newType(((javax.lang.model.type.ArrayType) varType).getComponentType());
@@ -1147,22 +1157,22 @@ public class TreeConverter {
       if (varType.getKind() == TypeKind.DECLARED
           && !((DeclaredType) varType).getTypeArguments().isEmpty()) {
         newType = new ParameterizedType()
-            .setType(new SimpleType(varType))
+            .setType((SimpleType) new SimpleType(varType).setPosition(pos))
             .setTypeMirror(varType);
       } else {
         newType = Type.newType(varType);
       }
     }
-    return newType;
+    return (Type) newType.setPosition(pos);
   }
 
   private VariableDeclarationExpression convertVariableExpression(JCTree.JCVariableDecl node) {
     VarSymbol var = node.sym;
     boolean isVarargs = (node.sym.flags() & Flags.VARARGS) > 0;
-    Type newType = convertType(var.asType(), isVarargs);
+    Type newType = convertType(var.asType(), getPosition(node), isVarargs);
     VariableDeclarationFragment fragment = new VariableDeclarationFragment();
     fragment
-        .setName(convertSimpleName(var))
+        .setName(convertSimpleName(var, getNamePosition(node)))
         .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
     return new VariableDeclarationExpression()
@@ -1251,6 +1261,41 @@ public class TreeConverter {
       result = TreeUtil.remove(((ParenthesizedExpression) result).getExpression());
     }
     return result;
+  }
+
+  private SourcePosition getSourcePosition(int start, int end) {
+    if (unit.getLineMap() != null) {
+      int line = unit.getLineMap().getLineNumber(start);
+      return new SourcePosition(start, end, line);
+    } else {
+      return new SourcePosition(start, end);
+    }
+  }
+
+  // Return best guess for the position of a declaration node's name.
+  private SourcePosition getNamePosition(JCTree node) {
+    if (node.pos == -1) {
+      return SourcePosition.NO_POSITION;
+    }
+    String src = newUnit.getSource();
+    int start = node.pos;
+    Kind kind = node.getKind();
+    if (kind == Kind.ANNOTATION_TYPE || kind == Kind.CLASS
+        || kind == Kind.ENUM || kind == Kind.INTERFACE) {
+      // Skip the class/enum/interface token.
+      while (src.charAt(start++) != ' ') {
+      }
+    } else if (kind != Kind.METHOD && kind != Kind.VARIABLE) {
+      return getPosition(node);
+    }
+    if (!Character.isJavaIdentifierStart(src.charAt(start))) {
+      return getPosition(node);
+    }
+    int endPos = start + 1;
+    while (Character.isJavaIdentifierPart(src.charAt(endPos))) {
+      endPos++;
+    }
+    return getSourcePosition(start, endPos);
   }
 
   // Helper class for convertBinary().
