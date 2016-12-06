@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -76,11 +75,6 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
     if (!ElementUtil.isRuntimeAnnotation(type)) {
       eliminateDeadCode(type, node.getBodyDeclarations());
     }
-  }
-
-  @Override
-  public void endVisit(AnonymousClassDeclaration node) {
-    eliminateDeadCode(node.getTypeElement(), node.getBodyDeclarations());
   }
 
   /**

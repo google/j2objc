@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriter;
 import com.google.devtools.j2objc.translate.AnnotationRewriter;
-import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.CastResolver;
@@ -154,7 +153,7 @@ public class TranslationProcessor extends FileProcessor {
 
     // Before: Rewriter - Pruning unreachable statements must happen before
     //   rewriting labeled break statements.
-    // Before: AnonymousClassConverter - Removes unreachable local classes.
+    // Before: InnerClassExtractor - Removes unreachable local classes.
     new ConstantBranchPruner(unit).run();
     ticker.tick("ConstantBranchPruner");
 
@@ -180,10 +179,6 @@ public class TranslationProcessor extends FileProcessor {
     // Add auto-boxing conversions.
     new Autoboxer(unit).run();
     ticker.tick("Autoboxer");
-
-    // Extract inner and anonymous classes
-    new AnonymousClassConverter(unit).run();
-    ticker.tick("AnonymousClassConverter");
 
     new InnerClassExtractor(unit).run();
     ticker.tick("InnerClassExtractor");

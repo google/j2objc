@@ -21,8 +21,7 @@ import javax.lang.model.element.TypeElement;
 /**
  * Superclass node for classes, enums and annotation declarations.
  */
-public abstract class AbstractTypeDeclaration extends BodyDeclaration
-    implements CommonTypeDeclaration {
+public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   private TypeElement typeElement = null;
   protected final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
@@ -46,7 +45,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration
     name.set(new SimpleName(typeElement));
   }
 
-  @Override
   public TypeElement getTypeElement() {
     return typeElement;
   }
@@ -65,7 +63,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration
     return this;
   }
 
-  @Override
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
   }

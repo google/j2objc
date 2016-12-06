@@ -16,11 +16,11 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.Expression;
@@ -241,17 +241,20 @@ public class Functionizer extends UnitTreeVisitor {
   @Override
   public void endVisit(SuperConstructorInvocation node) {
     ExecutableElement element = node.getExecutableElement();
-    CommonTypeDeclaration typeDecl = TreeUtil.getEnclosingType(node);
+    AbstractTypeDeclaration typeDecl = TreeUtil.getEnclosingType(node);
     TypeElement superType = ElementUtil.getSuperclass(typeDecl.getTypeElement());
     FunctionElement funcElement = newFunctionElement(element);
     FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoid());
     List<Expression> args = invocation.getArguments();
     args.add(new ThisExpression(ElementUtil.getDeclaringClass(element).asType()));
-    if (captureInfo.needsOuterParam(superType)) {
-      Expression outerArg = TreeUtil.remove(node.getExpression());
-      args.add(outerArg != null ? outerArg : typeDecl.getSuperOuter().copy());
+    if (typeDecl instanceof TypeDeclaration) {
+      TypeDeclaration typeDeclaration = (TypeDeclaration) typeDecl;
+      if (captureInfo.needsOuterParam(superType)) {
+        Expression outerArg = TreeUtil.remove(node.getExpression());
+        args.add(outerArg != null ? outerArg : typeDeclaration.getSuperOuter().copy());
+      }
+      TreeUtil.moveList(typeDeclaration.getSuperCaptureArgs(), args);
     }
-    TreeUtil.moveList(typeDecl.getSuperCaptureArgs(), args);
     TreeUtil.moveList(node.getArguments(), args);
     if (ElementUtil.isEnum(superType)) {
       for (VariableElement param : captureInfo.getImplicitEnumParams()) {

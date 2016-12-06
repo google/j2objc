@@ -85,18 +85,6 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
-  public boolean visit(AnonymousClassDeclaration node) {
-    sb.print(" {");
-    sb.indent();
-    for (BodyDeclaration decl : node.getBodyDeclarations()) {
-      decl.accept(this);
-    }
-    sb.unindent();
-    sb.println("}");
-    return false;
-  }
-
-  @Override
   public boolean visit(ArrayAccess node) {
     node.getArray().accept(this);
     sb.print('[');

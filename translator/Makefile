@@ -58,7 +58,6 @@ JAVA_SOURCES = \
 	ast/Annotation.java \
 	ast/AnnotationTypeDeclaration.java \
 	ast/AnnotationTypeMemberDeclaration.java \
-	ast/AnonymousClassDeclaration.java \
 	ast/ArrayAccess.java \
 	ast/ArrayCreation.java \
 	ast/ArrayInitializer.java \
@@ -79,7 +78,6 @@ JAVA_SOURCES = \
 	ast/ClassInstanceCreation.java \
 	ast/CommaExpression.java \
 	ast/Comment.java \
-	ast/CommonTypeDeclaration.java \
 	ast/CompilationUnit.java \
 	ast/ConditionalExpression.java \
 	ast/ConstructorInvocation.java \
@@ -226,7 +224,6 @@ JAVA_SOURCES = \
 	pipeline/TranslationProcessor.java \
 	translate/AbstractMethodRewriter.java \
 	translate/AnnotationRewriter.java \
-	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
 	translate/CastResolver.java \

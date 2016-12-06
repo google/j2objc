@@ -85,18 +85,15 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     return this;
   }
 
-  @Override
   public Expression getSuperOuter() {
     return superOuter.get();
   }
 
-  @Override
   public TypeDeclaration setSuperOuter(Expression newSuperOuter) {
     superOuter.set(newSuperOuter);
     return this;
   }
 
-  @Override
   public List<Expression> getSuperCaptureArgs() {
     return superCaptureArgs;
   }

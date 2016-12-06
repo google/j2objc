@@ -16,9 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.CommonTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.CreationReference;
@@ -38,7 +36,6 @@ import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.ThisExpression;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -284,7 +281,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
 
   // Resolve the path for the outer scope to a SuperConstructorInvocation. This path goes on the
   // type node because there may be implicit super invocations.
-  private void addSuperOuterPath(CommonTypeDeclaration node) {
+  private void addSuperOuterPath(TypeDeclaration node) {
     TypeElement superclass = ElementUtil.getSuperclass(node.getTypeElement());
     if (superclass != null && captureInfo.needsOuterParam(superclass)) {
       node.setSuperOuter(getOuterPathInherited(ElementUtil.getDeclaringClass(superclass)));
@@ -318,31 +315,6 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
       addSuperOuterPath(node);
     }
     addCaptureArgs(ElementUtil.getSuperclass(node.getTypeElement()), node.getSuperCaptureArgs());
-    popType();
-  }
-
-  @Override
-  public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node.getTypeElement());
-    return true;
-  }
-
-  @Override
-  public void endVisit(AnonymousClassDeclaration node) {
-    TypeElement type = node.getTypeElement();
-    TreeNode parent = node.getParent();
-    Expression superOuter = parent instanceof ClassInstanceCreation
-        ? TreeUtil.remove(((ClassInstanceCreation) parent).getExpression()) : null;
-    if (superOuter != null) {
-      // The parent creation node has an explicit outer reference that needs to be passed through to
-      // the superclass constructor.
-      ((ClassInstanceCreation) parent).setSuperOuterArg(superOuter);
-      node.setSuperOuter(new SimpleName(
-          captureInfo.createSuperOuterParam(type, superOuter.getTypeMirror())));
-    } else {
-      addSuperOuterPath(node);
-    }
-    addCaptureArgs(ElementUtil.getSuperclass(type), node.getSuperCaptureArgs());
     popType();
   }
 

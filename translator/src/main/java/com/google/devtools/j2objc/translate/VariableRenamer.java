@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.LambdaExpression;
@@ -150,17 +149,6 @@ public class VariableRenamer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    popType();
-  }
-
-  @Override
-  public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node.getTypeElement());
-    return true;
-  }
-
-  @Override
-  public void endVisit(AnonymousClassDeclaration node) {
     popType();
   }
 

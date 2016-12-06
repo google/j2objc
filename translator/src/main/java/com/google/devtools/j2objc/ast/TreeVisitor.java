@@ -37,12 +37,6 @@ public class TreeVisitor {
 
   public void endVisit(AnnotationTypeMemberDeclaration node) {}
 
-  public boolean visit(AnonymousClassDeclaration node) {
-    return true;
-  }
-
-  public void endVisit(AnonymousClassDeclaration node) {}
-
   public boolean visit(ArrayAccess node) {
     return true;
   }

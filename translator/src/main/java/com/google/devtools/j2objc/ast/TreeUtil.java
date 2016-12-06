@@ -197,7 +197,7 @@ public class TreeUtil {
     };
   }
 
-  public static Iterable<MethodDeclaration> getMethodDeclarations(CommonTypeDeclaration node) {
+  public static Iterable<MethodDeclaration> getMethodDeclarations(AbstractTypeDeclaration node) {
     return getMethodDeclarations(node.getBodyDeclarations());
   }
 
@@ -205,7 +205,7 @@ public class TreeUtil {
     return Iterables.filter(nodes, MethodDeclaration.class);
   }
 
-  public static List<MethodDeclaration> getMethodDeclarationsList(CommonTypeDeclaration node) {
+  public static List<MethodDeclaration> getMethodDeclarationsList(AbstractTypeDeclaration node) {
     return Lists.newArrayList(getMethodDeclarations(node));
   }
 
@@ -216,7 +216,7 @@ public class TreeUtil {
 
   public static List<BodyDeclaration> asDeclarationSublist(BodyDeclaration node) {
     List<BodyDeclaration> declarations =
-        ((CommonTypeDeclaration) node.getParent()).getBodyDeclarations();
+        ((AbstractTypeDeclaration) node.getParent()).getBodyDeclarations();
     int index = declarations.indexOf(node);
     assert index != -1;
     return declarations.subList(index, index + 1);
@@ -226,8 +226,8 @@ public class TreeUtil {
    * Gets the element that is declared by this node.
    */
   public static Element getDeclaredElement(TreeNode node) {
-    if (node instanceof CommonTypeDeclaration) {
-      return ((CommonTypeDeclaration) node).getTypeElement();
+    if (node instanceof AbstractTypeDeclaration) {
+      return ((AbstractTypeDeclaration) node).getTypeElement();
     } else if (node instanceof MethodDeclaration) {
       return ((MethodDeclaration) node).getExecutableElement();
     } else if (node instanceof VariableDeclaration) {
@@ -273,8 +273,8 @@ public class TreeUtil {
     }
   }
 
-  public static CommonTypeDeclaration getEnclosingType(TreeNode node) {
-    return getNearestAncestorWithType(CommonTypeDeclaration.class, node);
+  public static AbstractTypeDeclaration getEnclosingType(TreeNode node) {
+    return getNearestAncestorWithType(AbstractTypeDeclaration.class, node);
   }
 
   public static TypeElement getEnclosingTypeElement(TreeNode node) {
@@ -286,7 +286,7 @@ public class TreeUtil {
   }
 
   private static final List<Class<?>> NODE_TYPES_WITH_ELEMENTS = ImmutableList.of(
-      CommonTypeDeclaration.class, MethodDeclaration.class, VariableDeclaration.class);
+      AbstractTypeDeclaration.class, MethodDeclaration.class, VariableDeclaration.class);
 
   public static Element getEnclosingElement(TreeNode node) {
     return getDeclaredElement(getNearestAncestorWithTypeOneOf(NODE_TYPES_WITH_ELEMENTS, node));

@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -173,18 +172,6 @@ public class StatementGenerator extends UnitTreeVisitor {
     if (!(node instanceof Block)) {
       buffer.syncLineNumbers(node);
     }
-    return true;
-  }
-
-  @Override
-  public boolean visit(AnonymousClassDeclaration node) {
-    // Multi-method anonymous classes should have been converted by the
-    // InnerClassExtractor.
-    assert node.getBodyDeclarations().size() == 1;
-
-    // Generate an iOS block.
-    assert false : "not implemented yet";
-
     return true;
   }
 
