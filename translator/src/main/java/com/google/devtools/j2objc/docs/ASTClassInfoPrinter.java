@@ -15,15 +15,14 @@
 package com.google.devtools.j2objc.docs;
 
 import com.google.common.collect.Sets;
+import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.devtools.j2objc.util.ErrorUtil;
-
-import junit.framework.TestCase;
-
 import java.io.IOException;
 import java.util.Set;
+import junit.framework.TestCase;
 
 /**
  * Prints a markdown compliant list of our AST nodes by ancestry, with Objects not in the Eclipse
@@ -33,7 +32,7 @@ import java.util.Set;
  */
 public class ASTClassInfoPrinter {
   private static Set<String> astLookup;
-  private static TreeMultimap<String, String> tree;
+  private static SortedSetMultimap<String, String> tree;
 
   private static void walkSuperclassHierarchy(Class<?> node) {
     if (node.getSuperclass() == null || tree.containsKey(node.getSimpleName())) {

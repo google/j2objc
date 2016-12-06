@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -213,7 +214,7 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(VariableDeclarationStatement node) {
-    LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
+    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
         rewriteExtraDimensions(node.getType(), node.getFragments());
     if (newDeclarations != null) {
       List<Statement> statements = ((Block) node.getParent()).getStatements();
@@ -232,7 +233,7 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(FieldDeclaration node) {
-    LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
+    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
         rewriteExtraDimensions(node.getType(), node.getFragments());
     if (newDeclarations != null) {
       List<BodyDeclaration> bodyDecls = TreeUtil.asDeclarationSublist(node);
@@ -260,12 +261,12 @@ public class Rewriter extends UnitTreeVisitor {
     return true;
   }
 
-  private LinkedListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
+  private ListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
       Type typeNode, List<VariableDeclarationFragment> fragments) {
     // Removes extra dimensions on variable declaration fragments and creates extra field
     // declaration nodes if necessary.
     // eg. "int i1, i2[], i3[][];" becomes "int i1; int[] i2; int[][] i3".
-    LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations = null;
+    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations = null;
     int masterDimensions = -1;
     Iterator<VariableDeclarationFragment> iter = fragments.iterator();
     while (iter.hasNext()) {
