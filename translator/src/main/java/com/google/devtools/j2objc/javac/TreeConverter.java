@@ -552,7 +552,10 @@ public class TreeConverter {
 
   private TreeNode convertBreakStatement(JCTree.JCBreak node) {
     BreakStatement newNode = new BreakStatement();
-    newNode.setLabel((SimpleName) convert(node.getLabel()));
+    Object label = node.getLabel();
+    if (label != null) {
+      newNode.setLabel(new SimpleName(label.toString()));
+    }
     return newNode;
   }
 
@@ -618,8 +621,12 @@ public class TreeConverter {
   }
 
   private TreeNode convertContinueStatement(JCTree.JCContinue node) {
-    return new ContinueStatement()
-        .setLabel((SimpleName) convert(node.getLabel()));
+    ContinueStatement newNode = new ContinueStatement();
+    Object label = node.getLabel();
+    if (label != null) {
+        newNode.setLabel(new SimpleName(label.toString()));
+    }
+    return newNode;
   }
 
   private TreeNode convertDoStatement(JCTree.JCDoWhileLoop node) {
