@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.javac;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -111,6 +112,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.StatementTree;
@@ -489,12 +491,37 @@ public class TreeConverter {
   }
 
   private TreeNode convertBinary(JCTree.JCBinary node) {
-    return new InfixExpression()
+    InfixExpression newNode = new InfixExpression();
+    convertExpression(node, newNode);
+    newNode
         .setTypeMirror(node.type)
-        .setOperator(InfixExpression.Operator.parse(node.operator.name.toString()))
-        .addOperand((Expression) convert(node.getLeftOperand()))
-        .addOperand((Expression) convert(node.getRightOperand()));
+        .setOperator(InfixExpression.Operator.parse(node.operator.name.toString()));
+
+    // Flatten this tree to avoid stack overflow with very deep trees. This
+    // code traverses the subtree non-recursively and merges all children
+    // that have the same operator into this node.
+    List<StackState> stack = Lists.newArrayList();
+    stack.add(new StackState(node));
+    while (!stack.isEmpty()) {
+      StackState currentState = stack.get(stack.size() - 1);
+      JCTree.JCExpression child = currentState.nextChild();
+      if (child == null) {
+        stack.remove(stack.size() - 1);
+        continue;
+      }
+      if (child instanceof JCTree.JCBinary) {
+        JCTree.JCBinary infixChild = (JCTree.JCBinary) child;
+        if (infixChild.getKind() == node.getKind()) {
+          stack.add(new StackState(infixChild));
+          continue;
+        }
+      }
+      newNode.addOperand((Expression) convert(child));
+    }
+    return newNode;
   }
+
+
 
   private TreeNode convertBlock(JCTree.JCBlock node) {
     Block newNode = new Block();
@@ -651,8 +678,13 @@ public class TreeConverter {
 
   private TreeNode convertExpression(
       JCTree.JCExpression node, Expression newNode) {
+    Object value = node.type.constValue();
+    // Convert boolean values of 1/0 as true/false.
+    if (TypeUtil.isBoolean(node.type.baseType()) && value instanceof Integer) {
+      value = ((Integer) value).intValue() == 1;
+    }
     return newNode
-        .setConstantValue(node.type.constValue());
+        .setConstantValue(value);
   }
 
   private TreeNode convertExpressionStatement(JCTree.JCExpressionStatement node) {
@@ -728,7 +760,9 @@ public class TreeConverter {
   }
 
   private TreeNode convertIdent(JCTree.JCIdent node) {
-    return new SimpleName(node.sym, node.type);
+    SimpleName newNode = new SimpleName(node.sym, node.type);
+    convertExpression(node, newNode);
+    return newNode;
   }
 
   private TreeNode convertIf(JCTree.JCIf node) {
@@ -1202,5 +1236,26 @@ public class TreeConverter {
       result = TreeUtil.remove(((ParenthesizedExpression) result).getExpression());
     }
     return result;
+  }
+
+  // Helper class for convertBinary().
+  private static class StackState {
+    private final JCTree.JCBinary expression;
+    private int nextChild = -2;
+
+    private StackState(JCTree.JCBinary expr) {
+      expression = expr;
+    }
+
+    private JCTree.JCExpression nextChild() {
+      int childIdx = nextChild++;
+      if (childIdx == -2) {
+        return expression.getLeftOperand();
+      } else if (childIdx == -1) {
+        return expression.getRightOperand();
+      } else {
+        return null;
+      }
+    }
   }
 }
