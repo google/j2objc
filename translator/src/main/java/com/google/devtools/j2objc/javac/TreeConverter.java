@@ -726,10 +726,13 @@ public class TreeConverter {
           .setElement(node.sym);
     }
     if (selected.getKind() == Kind.MEMBER_SELECT) {
-      return new QualifiedName()
-          .setName(new SimpleName(node.sym, node.type))
-          .setQualifier(convertName(((JCTree.JCFieldAccess) selected).sym))
-          .setElement(node.sym);
+      TreeNode newSelected = convertFieldAccess((JCTree.JCFieldAccess) selected);
+      if (newSelected.getKind() == TreeNode.Kind.QUALIFIED_NAME) {
+        return new QualifiedName()
+            .setName(new SimpleName(node.sym, node.type))
+            .setQualifier((QualifiedName) newSelected)
+            .setElement(node.sym);
+      }
     }
     return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
@@ -767,6 +770,10 @@ public class TreeConverter {
   }
 
   private TreeNode convertIdent(JCTree.JCIdent node) {
+    String text = node.sym.toString();
+    if (text.equals("this")) {
+      return new ThisExpression().setTypeMirror(node.type);
+    }
     SimpleName newNode = new SimpleName(node.sym, node.type);
     convertExpression(node, newNode);
     return newNode;
