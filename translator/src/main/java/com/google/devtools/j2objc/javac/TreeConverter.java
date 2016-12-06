@@ -531,8 +531,13 @@ public class TreeConverter {
 
   private TreeNode convertCase(JCTree.JCCase node) {
     // Case statements are converted in convertSwitch().
-    return new SwitchCase()
-        .setExpression((Expression) convert(node.getExpression()));
+    SwitchCase newNode = new SwitchCase();
+    if (node.pat != null) {
+      newNode.setExpression((Expression) convert(node.getExpression()));
+    } else {
+      newNode.setIsDefault(true);
+    }
+    return newNode;
   }
 
   private TreeNode convertCatch(JCTree.JCCatch node) {
@@ -737,12 +742,14 @@ public class TreeConverter {
     TypeMirror clazz = nameType(node.getType());
     return new InstanceofExpression()
         .setLeftOperand((Expression) convert(node.getExpression()))
-        .setRightOperand(Type.newType(clazz));
+        .setRightOperand(Type.newType(clazz))
+        .setTypeMirror(node.getType().type);
   }
 
   private TreeNode convertLabeledStatement(JCTree.JCLabeledStatement node) {
     return new LabeledStatement()
-        .setLabel(new SimpleName(node.label.toString()));
+        .setLabel(new SimpleName(node.label.toString()))
+        .setBody((Statement) convert(node.body));
   }
 
   private TreeNode convertLambda(JCTree.JCLambda node) {
@@ -762,8 +769,8 @@ public class TreeConverter {
       }
     }
     return newNode
-        // TODO(tball): Add the appropriate ExecutableType.
-        .setExecutablePair(new ExecutablePair((ExecutableElement) node.sym, null));
+        .setExecutablePair(new ExecutablePair(
+            (ExecutableElement) node.sym, (ExecutableType) node.sym.asType()));
   }
 
   private TreeNode convertMemberReference(JCTree.JCMemberReference node) {

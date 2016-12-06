@@ -205,7 +205,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
    * The associated ExecutableType.
    * TODO(kstanger): Make private when BindingConverter is removed.
    */
-  public class Mirror implements ExecutableType {
+  public class Mirror extends AbstractTypeMirror implements ExecutableType {
 
     private final List<? extends TypeMirror> parameterTypes =
         Lists.transform(parameters, param -> param.asType());

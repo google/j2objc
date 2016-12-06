@@ -238,6 +238,9 @@ public final class TypeUtil {
   }
 
   public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
+    if (isGeneratedType(m1) || isGeneratedType(m2)) {
+      return m1.equals(m2);
+    }
     return javacTypes.isSubsignature(m1, m2);
   }
 
@@ -250,6 +253,12 @@ public final class TypeUtil {
       } else {
         return Collections.emptyList();
       }
+    }
+    if (isArray(t)) {
+      // javac's directSupertypes() for String[] is Object[], whereas
+      // JDT's returns an empty list. Currently typed arrays aren't necessary,
+      // so prefer the JDT behavior here.
+      return Collections.emptyList();
     }
     return javacTypes.directSupertypes(t);
   }
@@ -488,6 +497,9 @@ public final class TypeUtil {
   }
 
   public PrimitiveType unboxedType(TypeMirror t) {
+    if (isGeneratedType(t)) {
+      return null;
+    }
     try {
       return javacTypes.unboxedType(t);
     } catch (IllegalArgumentException e) {

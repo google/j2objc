@@ -99,7 +99,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     }
 
     private void collectInheritedMethods(TypeMirror type) {
-      if (type == null) {
+      if (TypeUtil.isNone(type)) {
         return;
       }
       collectMethods((DeclaredType) type);
