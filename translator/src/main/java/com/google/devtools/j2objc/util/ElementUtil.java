@@ -18,7 +18,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
@@ -53,7 +52,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
-import org.eclipse.jdt.core.dom.IBinding;
 
 /**
  * Utility methods for working with elements.
@@ -272,11 +270,6 @@ public final class ElementUtil {
     }
     if (e instanceof Symbol) {
       return (((Symbol) e).flags() & Flags.SYNTHETIC) > 0;
-    }
-    // TODO(tball): remove when javac switch is complete.
-    IBinding binding = BindingConverter.unwrapElement(e);
-    if (binding != null) {
-      return binding.isSynthetic();
     }
     return false;
   }
