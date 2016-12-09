@@ -145,7 +145,7 @@ import javax.tools.JavaFileObject;
  * Converts a Java AST from the JDT data structure to our J2ObjC data structure.
  */
 public class TreeConverter {
-  private JCTree.JCCompilationUnit unit;
+  private final JCTree.JCCompilationUnit unit;
   private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
@@ -819,8 +819,7 @@ public class TreeConverter {
       }
     }
     return newNode
-        .setExecutablePair(new ExecutablePair(
-            (ExecutableElement) node.sym, (ExecutableType) node.sym.asType()));
+        .setExecutablePair(new ExecutablePair((ExecutableElement) node.sym));
   }
 
   private TreeNode convertMemberReference(JCTree.JCMemberReference node) {
@@ -893,7 +892,7 @@ public class TreeConverter {
       ExecutableElement element = (ExecutableElement) ((JCTree.JCIdent) method).sym;
       if (method.toString().equals("this")) {
         ConstructorInvocation newNode = new ConstructorInvocation()
-            .setExecutablePair(new ExecutablePair(element, (ExecutableType) element.asType()));
+            .setExecutablePair(new ExecutablePair(element));
         for (JCTree.JCExpression arg : node.getArguments()) {
           newNode.addArgument((Expression) convert(arg));
         }
@@ -901,7 +900,7 @@ public class TreeConverter {
       }
       if (method.toString().equals("super")) {
         SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-            .setExecutablePair(new ExecutablePair(element, (ExecutableType) element.asType()));
+            .setExecutablePair(new ExecutablePair(element));
         for (JCTree.JCExpression arg : node.getArguments()) {
           newNode.addArgument((Expression) convert(arg));
         }
@@ -919,7 +918,7 @@ public class TreeConverter {
       JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
       Symbol.MethodSymbol sym = (Symbol.MethodSymbol) ((JCTree.JCFieldAccess) method).sym;
       SuperMethodInvocation newNode = new SuperMethodInvocation()
-          .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()))
+          .setExecutablePair(new ExecutablePair(sym, (ExecutableType) select.type))
           .setName(convertSimpleName(sym, getPosition(node)));
       if (select.selected.getKind() == Kind.MEMBER_SELECT) {
         // foo.bar.MyClass.super.print(...):
@@ -936,14 +935,15 @@ public class TreeConverter {
 
     MethodInvocation newNode = new MethodInvocation();
     ExecutableElement sym;
+    ExecutableType type;
     if (method.getKind() == Kind.IDENTIFIER) {
       sym = (ExecutableElement) ((JCTree.JCIdent) method).sym;
-      newNode
-          .setName((SimpleName) convert(method))
-          .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()));
+      type = (ExecutableType) method.type;
+      newNode.setName((SimpleName) convert(method));
     } else {
       JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
       sym = (ExecutableElement) select.sym;
+      type = (ExecutableType) select.type;
       newNode
           .setName(convertSimpleName(select.sym, getPosition(select)))
           .setExpression((Expression) convert(select.selected));
@@ -953,7 +953,7 @@ public class TreeConverter {
     }
     return newNode
         .setTypeMirror(node.type)
-        .setExecutablePair(new ExecutablePair(sym, (ExecutableType) sym.asType()));
+        .setExecutablePair(new ExecutablePair(sym, type));
   }
 
   private SimpleName convertSimpleName(Element element, SourcePosition pos) {
@@ -994,8 +994,7 @@ public class TreeConverter {
       newNode.addArgument((Expression) convert(arg));
     }
     return newNode
-        .setExecutablePair(new ExecutablePair(
-            (ExecutableElement) node.constructor, node.constructorType.asMethodType()))
+        .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor))
         .setExpression((Expression) convert(node.getEnclosingExpression()))
         .setType(Type.newType(node.type))
         .setAnonymousClassDeclaration((TypeDeclaration) convert(node.def));
