@@ -186,6 +186,8 @@ public final class ElementUtil {
     return isAnnotationType(getDeclaringClass(e));
   }
 
+  //TODO(user): For elements inside static blocks, this method returns a "TypeElement" of a
+  //  static block, which does not work with getBinaryName(TypeElement) (one proven example)
   public static TypeElement getDeclaringClass(Element element) {
     do {
       element = element.getEnclosingElement();
