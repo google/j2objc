@@ -36,7 +36,6 @@ public class CaptureInfo {
 
   private final Map<TypeElement, VariableElement> outerParams = new HashMap<>();
   private final Map<TypeElement, VariableElement> outerFields = new HashMap<>();
-  private final Map<TypeElement, VariableElement> superOuterParams = new HashMap<>();
   private final ListMultimap<TypeElement, LocalCapture> localCaptures =
       MultimapBuilder.hashKeys().arrayListValues().build();
   private final List<VariableElement> implicitEnumParams;
@@ -87,10 +86,6 @@ public class CaptureInfo {
     return automaticOuterParam(type) ? getOrCreateOuterParam(type) : outerParams.get(type);
   }
 
-  public VariableElement getSuperOuterParam(TypeElement type) {
-    return superOuterParams.get(type);
-  }
-
   public TypeMirror getOuterType(TypeElement type) {
     VariableElement outerField = outerFields.get(type);
     if (outerField != null) {
@@ -129,10 +124,6 @@ public class CaptureInfo {
    */
   public Iterable<VariableElement> getImplicitPrefixParams(TypeElement type) {
     Iterable<VariableElement> result = getCaptureParams(type);
-    VariableElement superOuter = getSuperOuterParam(type);
-    if (superOuter != null) {
-      result = Iterables.concat(Collections.singletonList(superOuter), result);
-    }
     VariableElement outer = getOuterParam(type);
     if (outer != null) {
       result = Iterables.concat(Collections.singletonList(outer), result);
@@ -236,15 +227,6 @@ public class CaptureInfo {
           .addAnnotationMirrors(var.getAnnotationMirrors());
     }
     return capture.field;
-  }
-
-  public VariableElement createSuperOuterParam(TypeElement type, TypeMirror superOuterType) {
-    assert !superOuterParams.containsKey(type);
-    VariableElement param = GeneratedVariableElement.newParameter(
-        "superOuter$", superOuterType, type)
-        .setNonnull(true);
-    superOuterParams.put(type, param);
-    return param;
   }
 
   public void addMethodReferenceReceiver(TypeElement type, TypeMirror receiverType) {
