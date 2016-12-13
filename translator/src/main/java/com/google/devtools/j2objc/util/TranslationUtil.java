@@ -289,7 +289,7 @@ public final class TranslationUtil {
         new FunctionElement("create_" + nameTable.getFullName(typeElem), type, typeElem);
     FunctionInvocation invocation = new FunctionInvocation(element, type);
     Map<? extends ExecutableElement, ? extends AnnotationValue> values =
-        annotationMirror.getElementValues();
+        typeUtil.elementUtil().getElementValuesWithDefaults(annotationMirror);
     for (ExecutableElement member : ElementUtil.getSortedAnnotationMembers(typeElem)) {
       TypeMirror valueType = member.getReturnType();
       element.addParameters(valueType);

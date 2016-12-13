@@ -489,6 +489,11 @@ public final class ElementUtil {
     return javacElements.getBinaryName(e).toString();
   }
 
+  Map<? extends ExecutableElement, ? extends AnnotationValue>
+      getElementValuesWithDefaults(AnnotationMirror a) {
+    return javacElements.getElementValuesWithDefaults(a);
+  }
+
   public static Set<Modifier> getVisibilityModifiers(Element e) {
     return Sets.intersection(e.getModifiers(), VISIBILITY_MODIFIERS);
   }

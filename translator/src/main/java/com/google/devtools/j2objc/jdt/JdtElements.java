@@ -48,7 +48,8 @@ class JdtElements implements Elements {
   @Override
   public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
       AnnotationMirror a) {
-    throw new AssertionError("not implemented");
+    // JDT's IAnnotationBinding includes defaults with its value list.
+    return a.getElementValues();
   }
 
   @Override
