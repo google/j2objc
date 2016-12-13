@@ -1024,8 +1024,10 @@ public class TreeConverter {
   private static TreeNode convertSimpleName(org.eclipse.jdt.core.dom.SimpleName node) {
     SimpleName newNode = new SimpleName();
     convertName(node, newNode);
+    boolean isConstructor = node.resolveBinding() instanceof IMethodBinding
+        && ((IMethodBinding) node.resolveBinding()).isConstructor();
     return newNode
-        .setIdentifier(node.getIdentifier())
+        .setIdentifier(isConstructor ? "<init>" : node.getIdentifier())
         .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()));
   }
 

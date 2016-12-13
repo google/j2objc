@@ -149,7 +149,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
   public void testConstructorGeneration() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
         .addClass("A")
-        .addMethod("C", "C", "(I)V")
+        .addMethod("C", "<init>", "(I)V")
         .build();
     setDeadCodeMap(map);
     addSourceFile("class B {\n"
@@ -286,7 +286,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadDefaultConstructor() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
-        .addMethod("Test", "Test", "()V")
+        .addMethod("Test", "<init>", "()V")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile("class Test {}", "Test", "Test.h");

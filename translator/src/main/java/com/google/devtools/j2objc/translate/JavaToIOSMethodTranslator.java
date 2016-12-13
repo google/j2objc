@@ -99,7 +99,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     String selector = Mappings.STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS.get(key);
     if (selector != null) {
       assert !node.hasRetainedResult();
-      if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {
+      if (key.equals("java.lang.String.<init>(Ljava/lang/String;)V")) {
         // Special case: replace new String(constant) to constant (avoid clang warning).
         Expression arg = node.getArgument(0);
         if (arg instanceof StringLiteral) {

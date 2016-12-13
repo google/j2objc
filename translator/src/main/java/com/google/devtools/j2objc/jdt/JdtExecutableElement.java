@@ -35,8 +35,12 @@ class JdtExecutableElement extends JdtElement implements ExecutableElement {
   private VariableElement superOuterParam = null;
 
   public JdtExecutableElement(IMethodBinding binding) {
-    super(binding.getMethodDeclaration(), binding.getMethodDeclaration().getName(),
+    super(binding.getMethodDeclaration(), getMethodName(binding),
         binding.getMethodDeclaration().getModifiers());
+  }
+
+  private static String getMethodName(IMethodBinding binding) {
+    return binding.isConstructor() ? "<init>" : binding.getMethodDeclaration().getName();
   }
 
   @Override
