@@ -16,10 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.jdt.TreeConverter;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import java.util.List;
-import org.eclipse.jdt.core.dom.ASTNode;
 
 /**
  * Tree node for a Java compilation unit.
@@ -41,38 +39,6 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(NativeDeclaration.class, this);
   private final ChildList<AbstractTypeDeclaration> types =
       ChildList.create(AbstractTypeDeclaration.class, this);
-
-  public CompilationUnit(
-      TranslationEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtNode,
-      String sourceFilePath, String mainTypeName, String source) {
-    super(jdtNode);
-    this.env = env;
-    this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
-    this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
-    this.source = Preconditions.checkNotNull(source);
-    newlines = findNewlines(source);
-    if (jdtNode.getPackage() == null) {
-      packageDeclaration.set(new PackageDeclaration());
-    } else {
-      packageDeclaration.set((PackageDeclaration) TreeConverter.convert(jdtNode.getPackage()));
-    }
-    for (Object comment : jdtNode.getCommentList()) {
-      // Comments are not normally parented in the JDT AST. Javadoc nodes are
-      // normally parented by the BodyDeclaration they apply to, so here we only
-      // keep the unparented comments to avoid duplicate comment nodes.
-      ASTNode commentParent = ((ASTNode) comment).getParent();
-      if (commentParent == null || commentParent == jdtNode) {
-        Comment newComment = (Comment) TreeConverter.convert(comment);
-        // Since the comment is unparented, it's constructor is unable to get
-        // the root CompilationUnit to determine the line number.
-        newComment.setLineNumber(jdtNode.getLineNumber(newComment.getStartPosition()));
-        comments.add(newComment);
-      }
-    }
-    for (Object type : jdtNode.types()) {
-      types.add((AbstractTypeDeclaration) TreeConverter.convert(type));
-    }
-  }
 
   public CompilationUnit(
       TranslationEnvironment env, String sourceFilePath, String mainTypeName, String source) {
@@ -222,6 +188,11 @@ public class CompilationUnit extends TreeNode {
     Preconditions.checkNotNull(mainTypeName);
     Preconditions.checkNotNull(source);
     Preconditions.checkNotNull(packageDeclaration);
+  }
+
+  public CompilationUnit addComment(Comment comment) {
+    comments.add(comment);
+    return this;
   }
 
   public CompilationUnit addNativeBlock(NativeDeclaration decl) {

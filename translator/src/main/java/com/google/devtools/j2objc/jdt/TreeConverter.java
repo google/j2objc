@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.Comment;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
@@ -138,7 +139,29 @@ public class TreeConverter {
   public static CompilationUnit convertCompilationUnit(
       TranslationEnvironment env, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit,
       String sourceFilePath, String mainTypeName, String source) {
-    return new CompilationUnit(env, jdtUnit, sourceFilePath, mainTypeName, source);
+    CompilationUnit unit = new CompilationUnit(env, sourceFilePath, mainTypeName, source);
+    if (jdtUnit.getPackage() == null) {
+      unit.setPackage(new PackageDeclaration());
+    } else {
+      unit.setPackage((PackageDeclaration) TreeConverter.convert(jdtUnit.getPackage()));
+    }
+    for (Object comment : jdtUnit.getCommentList()) {
+      // Comments are not normally parented in the JDT AST. Javadoc nodes are
+      // normally parented by the BodyDeclaration they apply to, so here we only
+      // keep the unparented comments to avoid duplicate comment nodes.
+      ASTNode commentParent = ((ASTNode) comment).getParent();
+      if (commentParent == null || commentParent.equals(jdtUnit)) {
+        Comment newComment = (Comment) TreeConverter.convert(comment);
+        // Since the comment is unparented, it's constructor is unable to get
+        // the root CompilationUnit to determine the line number.
+        newComment.setLineNumber(jdtUnit.getLineNumber(newComment.getStartPosition()));
+        unit.addComment(newComment);
+      }
+    }
+    for (Object type : jdtUnit.types()) {
+      unit.addType((AbstractTypeDeclaration) TreeConverter.convert(type));
+    }
+    return unit;
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {
