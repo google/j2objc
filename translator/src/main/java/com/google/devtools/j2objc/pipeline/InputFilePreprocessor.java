@@ -84,23 +84,22 @@ public class InputFilePreprocessor {
       // No need to parse.
       return;
     }
-    org.eclipse.jdt.core.dom.CompilationUnit compilationUnit =
-        parser.parseWithoutBindings(file.getUnitName(), source);
-    if (compilationUnit == null) {
+    Parser.ParseResult parseResult = parser.parseWithoutBindings(file, source);
+    if (parseResult == null) {
       // The parser found and reported one or more errors.
       return;
     }
-    String qualifiedName = FileUtil.getQualifiedMainTypeName(file, compilationUnit);
+    String qualifiedName = parseResult.mainTypeName();
     if (shouldMapHeaders) {
       Options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
     }
     if (doIncompatibleStripping) {
-      String newSource = J2ObjCIncompatibleStripper.strip(source, compilationUnit);
+      parseResult.stripIncompatibleSource();
       File strippedDir = getCreatedStrippedSourcesDir();
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(newSource, strippedFile, Options.getCharset());
+      Files.write(parseResult.getSource(), strippedFile, Options.getCharset());
       input.setFile(new RegularInputFile(strippedFile.getPath(), relativePath));
     }
   }

@@ -15,11 +15,10 @@
 package com.google.devtools.j2objc.pipeline;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
- * Tests for {@link J2ObjCIncompatibleStripper}.
+ * Tests for the Parser.ParseResult.stripIncompatibleSource() function.
  *
  * @author Keith Stanger
  */

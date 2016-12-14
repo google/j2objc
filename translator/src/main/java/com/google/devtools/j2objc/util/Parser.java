@@ -128,7 +128,45 @@ public abstract class Parser {
   public abstract void parseFiles(
       Collection<String> paths, Parser.Handler handler, SourceVersion sourceVersion);
 
-  // Convert to return j2objc AST trees instead of JDT.
-  public abstract org.eclipse.jdt.core.dom.CompilationUnit parseWithoutBindings(
-      String unitName, String source);
+  /**
+   * Parses source without performing any type or element attribution.
+   * A front-end specific compilation unit is returned via a ParseResult
+   * to avoid the cost of tree conversion, since conversion requires types
+   * and element attribution.
+   *
+   * @return a parse result, or null if there were parse errors.
+   */
+  public abstract ParseResult parseWithoutBindings(InputFile file, String source);
+
+  /**
+   * The ParseResult provides parser actions that can be performed without
+   * client code needing to know the front-end compiler's private API.
+   */
+  public interface ParseResult {
+
+    /**
+     * Strip Java source of any elements marked with a J2ObjCIncompatible annotation.
+     * If the source code has no J2ObjCIncompatible annotations, it is unchanged.
+     */
+    void stripIncompatibleSource();
+
+    /**
+     * The original source code, or stripped of any J2ObjCIncompatible code if
+     * stripIncompatibleSource() was first called.
+     */
+    String getSource();
+
+    /**
+     * Returns the fully qualified name of the main type in this source.
+     */
+    String mainTypeName();
+
+    /**
+     * Returns a source-like representation of the internal compilation unit.
+     * This result is similar to the actual source returned by getSource(),
+     * but is normally only used when debugging.
+     */
+    @Override
+    String toString();
+  }
 }

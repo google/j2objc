@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.pipeline;
+package com.google.devtools.j2objc.jdt;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -43,19 +43,20 @@ import java.util.TreeSet;
 /**
  * Removes elements annotated as "J2ObjCIncompatible".
  */
-public class J2ObjCIncompatibleStripper extends ASTVisitor {
+class JdtJ2ObjCIncompatibleStripper extends ASTVisitor {
 
   private final TreeSet<ASTNode> nodesToStrip = Sets.newTreeSet(START_POS_COMPARATOR);
   private final Map<String, ImportDeclaration> unusedImports = Maps.newHashMap();
   private final Map<String, ImportDeclaration> unusedStaticImports = Maps.newHashMap();
 
   private static final Comparator<ASTNode> START_POS_COMPARATOR = new Comparator<ASTNode>() {
+    @Override
     public int compare(ASTNode a, ASTNode b) {
       return a.getStartPosition() - b.getStartPosition();
     }
   };
 
-  private J2ObjCIncompatibleStripper(CompilationUnit unit) {
+  private JdtJ2ObjCIncompatibleStripper(CompilationUnit unit) {
     @SuppressWarnings("unchecked")
     List<ImportDeclaration> imports = unit.imports();
     for (ImportDeclaration importNode : imports) {
@@ -69,7 +70,7 @@ public class J2ObjCIncompatibleStripper extends ASTVisitor {
   }
 
   public static String strip(String source, CompilationUnit unit) {
-    J2ObjCIncompatibleStripper stripper = new J2ObjCIncompatibleStripper(unit);
+    JdtJ2ObjCIncompatibleStripper stripper = new JdtJ2ObjCIncompatibleStripper(unit);
     unit.accept(stripper);
     return stripper.stripSource(source);
   }

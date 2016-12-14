@@ -186,6 +186,7 @@ JAVA_SOURCES = \
 	gen/TypeImplementationGenerator.java \
 	gen/TypePrivateDeclarationGenerator.java \
 	javac/JavacEnvironment.java \
+	javac/JavacJ2ObjCIncompatibleStripper.java \
 	javac/JavacParser.java \
 	javac/MemoryFileObject.java \
 	javac/TreeConverter.java \
@@ -199,6 +200,7 @@ JAVA_SOURCES = \
 	jdt/JdtExecutableElement.java \
 	jdt/JdtExecutableType.java \
 	jdt/JdtIntersectionType.java \
+	jdt/JdtJ2ObjCIncompatibleStripper.java \
 	jdt/JdtNoType.java \
 	jdt/JdtNativeType.java \
 	jdt/JdtNullType.java \
@@ -219,7 +221,6 @@ JAVA_SOURCES = \
 	pipeline/FileProcessor.java \
 	pipeline/GenerationBatch.java \
 	pipeline/InputFilePreprocessor.java \
-	pipeline/J2ObjCIncompatibleStripper.java \
 	pipeline/ProcessingContext.java \
 	pipeline/TranslationProcessor.java \
 	translate/AbstractMethodRewriter.java \

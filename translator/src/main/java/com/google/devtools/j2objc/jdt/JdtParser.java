@@ -107,8 +107,9 @@ public class JdtParser extends Parser {
   }
 
   @Override
-  public CompilationUnit parseWithoutBindings(String unitName, String source) {
-    return parse(unitName, source, false);
+  public Parser.ParseResult parseWithoutBindings(InputFile file, String source) {
+    CompilationUnit unit = parse(file.getUnitName(), source, false);
+    return new JdtParseResult(file, source, unit);
   }
 
   @Override
@@ -270,6 +271,45 @@ public class JdtParser extends Parser {
     @Override
     public void reset() {
       BindingConverter.reset();
+    }
+  }
+
+  private static class JdtParseResult implements Parser.ParseResult {
+    private final InputFile file;
+    private String source;
+    private final CompilationUnit unit;
+
+    private JdtParseResult(InputFile file, String source, CompilationUnit unit) {
+      super();
+      this.file = file;
+      this.source = source;
+      this.unit = unit;
+    }
+
+    @Override
+    public void stripIncompatibleSource() {
+      source = JdtJ2ObjCIncompatibleStripper.strip(source, unit);
+    }
+
+    @Override
+    public String getSource() {
+      return source;
+    }
+
+    @Override
+    public String mainTypeName() {
+      String qualifiedName = FileUtil.getMainTypeName(file);
+      org.eclipse.jdt.core.dom.PackageDeclaration packageDecl = unit.getPackage();
+      if (packageDecl != null) {
+        String packageName = packageDecl.getName().getFullyQualifiedName();
+        qualifiedName = packageName + "." + qualifiedName;
+      }
+      return qualifiedName;
+    }
+
+    @Override
+    public String toString() {
+      return unit.toString();
     }
   }
 }

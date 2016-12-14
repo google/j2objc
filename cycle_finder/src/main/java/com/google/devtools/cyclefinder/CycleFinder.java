@@ -21,7 +21,6 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.jdt.JdtParser;
-import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripper;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -116,13 +115,13 @@ public class CycleFinder {
         strippedDir = Files.createTempDir();
         parser.prependSourcepathEntry(strippedDir.getPath());
       }
-      org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parseWithoutBindings(fileName, source);
-      String qualifiedName = FileUtil.getQualifiedMainTypeName(file, unit);
-      String newSource = J2ObjCIncompatibleStripper.strip(source, unit);
+      Parser.ParseResult parseResult = parser.parseWithoutBindings(file, source);
+      String qualifiedName = parseResult.mainTypeName();
+      parseResult.stripIncompatibleSource();
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(newSource, strippedFile, Charset.forName(options.fileEncoding()));
+      Files.write(parseResult.getSource(), strippedFile, Charset.forName(options.fileEncoding()));
       sourceFileNames.set(i, strippedFile.getPath());
     }
     return strippedDir;
