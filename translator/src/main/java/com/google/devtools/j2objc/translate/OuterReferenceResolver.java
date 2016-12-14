@@ -119,6 +119,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
       // If type is an interface, type.getSuperClass() returns null even though all interfaces
       // "inherit" from Object. Therefore we add this manually to make the set complete. This is
       // needed because Java 8 default methods can call methods in Object.
+      // TODO(tball): remove when javac update is complete.
       if (ElementUtil.isInterface(type)) {
         inheritedScopeBuilder.add(typeUtil.getJavaObject());
       }

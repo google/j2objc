@@ -97,6 +97,9 @@ public class LambdaRewriter extends UnitTreeVisitor {
     public void resolveFunctionalInterface() {
       typeUtil.visitTypeHierarchy(typeMirror, baseType -> {
         TypeElement element = (TypeElement) baseType.asElement();
+        if (element.getKind().isClass()) {
+          return true;
+        }
         for (ExecutableElement method : ElementUtil.getMethods(element)) {
           if (!ElementUtil.isDefault(method) && !ElementUtil.isStatic(method)) {
             functionalInterface = method;

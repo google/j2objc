@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -49,9 +50,11 @@ class JdtTypes implements Types {
   private final Map<TypeKind, TypeElement> boxedClasses = new EnumMap<>(TypeKind.class);
   private final Map<TypeElement, PrimitiveType> unboxedTypes = new HashMap<>();
   private final NoType voidType;
+  private final TypeMirror objectType;
 
   JdtTypes(AST ast) {
     populatePrimitiveMaps(ast);
+    objectType = BindingConverter.getType(ast.resolveWellKnownType("java.lang.Object"));
     voidType = (NoType) BindingConverter.getType(ast.resolveWellKnownType("void"));
   }
 
@@ -123,6 +126,8 @@ class JdtTypes implements Types {
     List<TypeMirror> mirrors = new ArrayList<>();
     if (binding.getSuperclass() != null) {
       mirrors.add(BindingConverter.getType(binding.getSuperclass()));
+    } else if (TypeUtil.isInterface(t)) {
+      mirrors.add(objectType);
     }
     for (ITypeBinding b : binding.getInterfaces()) {
       mirrors.add(BindingConverter.getType(b));
