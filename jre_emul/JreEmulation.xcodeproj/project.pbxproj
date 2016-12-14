@@ -659,6 +659,7 @@
 		06ED87C919759EFF00633227 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06ED87C819759EFF00633227 /* Images.xcassets */; };
 		06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06ED87F119772B3600633227 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
+		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1319,8 +1320,6 @@
 		062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSArray_PackagePrivate.h; sourceTree = "<group>"; };
 		062DEEBC1C5002080048FB10 /* NSException+JavaThrowable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+JavaThrowable.h"; sourceTree = "<group>"; };
 		062DEEBD1C5002080048FB10 /* NSException+JavaThrowable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+JavaThrowable.m"; sourceTree = "<group>"; };
-		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
-		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		064914311AC47ED000E98733 /* FastPointerLookup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastPointerLookup.h; sourceTree = "<group>"; };
 		064914321AC47ED000E98733 /* FastPointerLookup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FastPointerLookup.m; sourceTree = "<group>"; };
 		064914331AC47ED000E98733 /* J2ObjC_source.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_source.h; sourceTree = "<group>"; };
@@ -3621,6 +3620,10 @@
 		2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataOutputStream.m; sourceTree = "<group>"; };
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
+		6A7BD4FC1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncPipedNSInputStreamAdapter.h; path = build_result/Classes/com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.h; sourceTree = "<group>"; };
+		6A7BD4FD1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapter.m; path = build_result/Classes/com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.m; sourceTree = "<group>"; };
+		6A7BD4FE1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncPipedNSInputStreamAdapterTest.h; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.h; sourceTree = "<group>"; };
+		6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapterTest.m; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.m; sourceTree = "<group>"; };
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3794,8 +3797,6 @@
 				069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */,
 				069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
-				06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */,
-				06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */,
 				062272AA1816DB0B009BB2A2 /* jni.h */,
 				0692DF5E1AE8560300C14F19 /* jni.m */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
@@ -3989,6 +3990,8 @@
 				06C73E5419180CC8001D3CC8 /* AsynchronousCloseException.m */,
 				06C73EDA19180D6D001D3CC8 /* AsynchronousCloseMonitor.h */,
 				06C73EDB19180D6D001D3CC8 /* AsynchronousCloseMonitor.m */,
+				6A7BD4FC1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.h */,
+				6A7BD4FD1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.m */,
 				06F2912018972E1600676F1D /* AtomicBoolean.h */,
 				06F2912118972E1600676F1D /* AtomicBoolean.m */,
 				06721ADD1559CB9200645E1B /* AtomicInteger.h */,
@@ -6036,6 +6039,8 @@
 				0620251A1D512B37001EE455 /* ArrayTest.m */,
 				062027AC1D512DED001EE455 /* AssertionErrorTest.m */,
 				0620251B1D512B37001EE455 /* AssertTest.m */,
+				6A7BD4FE1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.h */,
+				6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */,
 				062027011D512D47001EE455 /* AsyncTimeoutTest.m */,
 				062024FE1D512ACA001EE455 /* AtomicBooleanTest.m */,
 				062024FF1D512ACA001EE455 /* AtomicIntegerArrayTest.m */,
@@ -7038,6 +7043,7 @@
 				062027E91D512DED001EE455 /* IllegalArgumentExceptionTest.m in Sources */,
 				062028061D512DED001EE455 /* ThreadTest.m in Sources */,
 				062025AD1D512C8E001EE455 /* MaxFloatingPointTest.m in Sources */,
+				6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */,
 				0620287A1D512E3E001EE455 /* ProviderExceptionTest.m in Sources */,
 				062028421D512E03001EE455 /* StringTokenizerTest.m in Sources */,
 				062027581D512D82001EE455 /* FakeFox041.m in Sources */,

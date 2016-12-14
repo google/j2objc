@@ -54,7 +54,6 @@ IOS_PRIVATE_OBJS = \
 	IOSReference.o \
 	IOSReflection.o \
 	J2ObjC_icu.o \
-	JavaToIOSInputStreamAdapter.o \
 	java_lang_Character.o \
 	java_lang_IntegralToString.o \
 	java_lang_Math.o \
