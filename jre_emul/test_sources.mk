@@ -212,6 +212,7 @@ TEST_SOURCES := \
     com/google/j2objc/RetainedWithTest.java \
     com/google/j2objc/StringTest.java \
     com/google/j2objc/ThrowableTest.java \
+    com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/FileChannelTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \

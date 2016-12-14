@@ -590,6 +590,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/util/logging/PlatformLogger.java
 
 JAVA_PUBLIC_SOURCES_IO = \
+  com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.java \
   java/io/CharArrayReader.java \
   java/io/CharArrayWriter.java \
   java/io/CharConversionException.java \
