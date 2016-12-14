@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayList;
 import java.util.EnumMap;

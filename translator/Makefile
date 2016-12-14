@@ -191,6 +191,9 @@ JAVA_SOURCES = \
 	javac/MemoryFileObject.java \
 	javac/TreeConverter.java \
 	jdt/BindingConverter.java \
+	jdt/GeneratedMethodBinding.java \
+	jdt/GeneratedTypeBinding.java \
+	jdt/GeneratedVariableBinding.java \
 	jdt/JdtAnnotationMirror.java \
 	jdt/JdtAnnotationValue.java \
 	jdt/JdtArrayType.java \
@@ -269,7 +272,6 @@ JAVA_SOURCES = \
 	types/GeneratedExecutableElement.java \
 	types/GeneratedPackageBinding.java \
 	types/GeneratedPackageElement.java \
-	types/GeneratedTypeBinding.java \
 	types/GeneratedTypeElement.java \
 	types/GeneratedVariableElement.java \
 	types/HeaderImportCollector.java \

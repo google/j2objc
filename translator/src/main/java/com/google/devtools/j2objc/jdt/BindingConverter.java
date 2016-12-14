@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
+import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedPackageBinding;
 import com.google.devtools.j2objc.types.GeneratedPackageElement;
@@ -45,6 +46,7 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 public final class BindingConverter {
 
   private static Map<IBinding, JdtElement> elementCache = new HashMap<>();
+  private static Map<GeneratedElement, IBinding> generatedBindingCache = new HashMap<>();
   private static Map<String, Name> nameCache = new HashMap<>();
   private static Map<IBinding, JdtTypeMirror> typeCache = new HashMap<>();
 
@@ -126,10 +128,10 @@ public final class BindingConverter {
     if (element != null) {
       return element;
     }
-    if (binding instanceof GeneratedExecutableElement.Binding) {
-      return ((GeneratedExecutableElement.Binding) binding).asElement();
-    } else if (binding instanceof GeneratedVariableElement.Binding) {
-      return ((GeneratedVariableElement.Binding) binding).asElement();
+    if (binding instanceof GeneratedMethodBinding) {
+      return ((GeneratedMethodBinding) binding).asElement();
+    } else if (binding instanceof GeneratedVariableBinding) {
+      return ((GeneratedVariableBinding) binding).asElement();
     } else if (binding instanceof IMethodBinding) {
       element = new JdtExecutableElement((IMethodBinding) binding);
     } else if (binding instanceof IPackageBinding) {
@@ -169,19 +171,36 @@ public final class BindingConverter {
   }
 
   public static IBinding unwrapElement(Element element) {
+    if (element instanceof GeneratedElement) {
+      return unwrapGeneratedElement((GeneratedElement) element);
+    }
+    return element != null ? ((JdtElement) element).binding : null;
+  }
+
+  private static IBinding unwrapGeneratedElement(GeneratedElement element) {
+    IBinding binding = generatedBindingCache.get(element);
+    if (binding != null) {
+      return binding;
+    }
     if (element instanceof GeneratedVariableElement) {
-      return ((GeneratedVariableElement) element).asVariableBinding();
+      binding = new GeneratedVariableBinding((GeneratedVariableElement) element);
+      generatedBindingCache.put(element, binding);
+      return binding;
     }
     if (element instanceof GeneratedExecutableElement) {
-      return ((GeneratedExecutableElement) element).asMethodBinding();
+      binding = new GeneratedMethodBinding((GeneratedExecutableElement) element);
+      generatedBindingCache.put(element, binding);
+      return binding;
     }
     if (element instanceof GeneratedTypeElement) {
       throw new AssertionError("not supported");
     }
     if (element instanceof GeneratedPackageElement) {
-      return new GeneratedPackageBinding(((GeneratedPackageElement) element).getName());
+      binding = new GeneratedPackageBinding(((GeneratedPackageElement) element).getName());
+      generatedBindingCache.put(element,  binding);
+      return binding;
     }
-    return element != null ? ((JdtElement) element).binding : null;
+    throw new AssertionError("unknown generated element kind");
   }
 
   public static ITypeBinding unwrapTypeElement(TypeElement t) {
@@ -202,7 +221,8 @@ public final class BindingConverter {
     } else if (t instanceof AbstractTypeMirror) {
       throw new AssertionError("not supported");
     } else if (t instanceof GeneratedExecutableElement.Mirror) {
-      return ((GeneratedExecutableElement.Mirror) t).asMethodBinding();
+      return new GeneratedMethodBinding(
+          ((GeneratedExecutableElement.Mirror) t).asExecutableElement());
     }
     return ((JdtTypeMirror) t).binding;
   }
@@ -217,6 +237,7 @@ public final class BindingConverter {
   }
 
   public static void reset() {
+    generatedBindingCache.clear();
     elementCache.clear();
     nameCache.clear();
     typeCache.clear();

@@ -191,7 +191,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
   /**
    * The associated TypeMirror.
-   * TODO(kstanger): Make private when BindingConverter is removed.
+   * TODO(kstanger): Make private when javac conversion is complete.
    */
   public class Mirror extends AbstractTypeMirror implements DeclaredType {
 

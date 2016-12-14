@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.types;
+package com.google.devtools.j2objc.jdt;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.jdt.BindingConverter;
+import com.google.devtools.j2objc.types.AbstractTypeBinding;
+import com.google.devtools.j2objc.types.GeneratedPackageBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import java.util.Set;
 import javax.lang.model.element.PackageElement;
@@ -33,7 +34,7 @@ import org.eclipse.jdt.core.dom.Modifier;
  *
  * @author Keith Stanger
  */
-public class GeneratedTypeBinding extends AbstractTypeBinding {
+class GeneratedTypeBinding extends AbstractTypeBinding {
 
   protected final String name;
   private int modifiers;
