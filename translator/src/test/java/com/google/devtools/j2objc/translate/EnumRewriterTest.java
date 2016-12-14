@@ -83,15 +83,15 @@ public class EnumRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "size_t objSize = class_getInstanceSize(self);",
         "size_t allocSize = 2 * objSize;",
-        "size_t objSize_B = class_getInstanceSize([Test_$1 class]);",
+        "size_t objSize_B = class_getInstanceSize([Test_1 class]);",
         "allocSize += objSize_B;",
         "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
         "id e;",
         "(JreEnum(Test, A) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, @\"A\", 0);",
-        "(JreEnum(Test, B) = e = objc_constructInstance([Test_$1 class],"
+        "(JreEnum(Test, B) = e = objc_constructInstance([Test_1 class],"
           + " (void *)ptr), ptr += objSize_B);",
-        "Test_$1_initWithNSString_withInt_(e, @\"B\", 1);",
+        "Test_1_initWithNSString_withInt_(e, @\"B\", 1);",
         "(JreEnum(Test, C) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, @\"C\", 2);");
   }

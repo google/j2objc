@@ -763,12 +763,10 @@ public class NameTable {
   private String getTypeSubName(TypeElement element) {
     if (ElementUtil.isLambda(element)) {
       return ElementUtil.getName(element);
-    } else if (ElementUtil.isAnonymous(element)) {
-      String binaryName = elementUtil.getBinaryName(element);
-      return binaryName.substring(binaryName.lastIndexOf("$"));
     } else if (ElementUtil.isLocal(element)) {
       String binaryName = elementUtil.getBinaryName(element);
-      int innerClassIndex = binaryName.lastIndexOf(ElementUtil.getName(element));
+      int innerClassIndex = ElementUtil.isAnonymous(element)
+          ? binaryName.length() : binaryName.lastIndexOf(ElementUtil.getName(element));
       while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
         --innerClassIndex;
       }

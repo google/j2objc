@@ -390,7 +390,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(header.contains("isPackableWithTest_TypeEnum"));
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
-        "Test_Field_$1_initWithTest_Type_withNSString_withInt_("
+        "Test_Field_1_initWithTest_Type_withNSString_withInt_("
         + "e, JreLoadEnum(Test_Type, STRING), @\"STRING\", 2);");
   }
 

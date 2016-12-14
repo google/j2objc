@@ -426,11 +426,11 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  public T nextElement() { return it.next(); }}; }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "return create_Test_$1_initWithJavaUtilCollection_(collection);");
+        "return create_Test_1_initWithJavaUtilCollection_(collection);");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
     assertTranslation(translation,
-        "__attribute__((unused)) static Test_$1 *new_Test_$1_initWithJavaUtilCollection_("
+        "__attribute__((unused)) static Test_1 *new_Test_1_initWithJavaUtilCollection_("
         + "id<JavaUtilCollection> capture$0) NS_RETURNS_RETAINED;");
   }
 
