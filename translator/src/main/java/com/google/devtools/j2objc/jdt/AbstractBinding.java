@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.types;
+package com.google.devtools.j2objc.jdt;
 
 import com.google.common.collect.Lists;
 import java.util.Arrays;

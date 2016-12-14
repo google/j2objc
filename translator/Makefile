@@ -190,8 +190,11 @@ JAVA_SOURCES = \
 	javac/JavacParser.java \
 	javac/MemoryFileObject.java \
 	javac/TreeConverter.java \
+	jdt/AbstractBinding.java \
+	jdt/AbstractTypeBinding.java \
 	jdt/BindingConverter.java \
 	jdt/GeneratedMethodBinding.java \
+	jdt/GeneratedPackageBinding.java \
 	jdt/GeneratedTypeBinding.java \
 	jdt/GeneratedVariableBinding.java \
 	jdt/JdtAnnotationMirror.java \
@@ -262,15 +265,12 @@ JAVA_SOURCES = \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \
-	types/AbstractBinding.java \
-	types/AbstractTypeBinding.java \
 	types/AbstractTypeMirror.java \
 	types/ExecutablePair.java \
 	types/FunctionElement.java \
 	types/GeneratedArrayType.java \
 	types/GeneratedElement.java \
 	types/GeneratedExecutableElement.java \
-	types/GeneratedPackageBinding.java \
 	types/GeneratedPackageElement.java \
 	types/GeneratedTypeElement.java \
 	types/GeneratedVariableElement.java \

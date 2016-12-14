@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.jdt;
 
-import com.google.devtools.j2objc.types.AbstractTypeBinding;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;

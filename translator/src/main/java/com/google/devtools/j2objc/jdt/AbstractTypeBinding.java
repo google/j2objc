@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.types;
+package com.google.devtools.j2objc.jdt;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;

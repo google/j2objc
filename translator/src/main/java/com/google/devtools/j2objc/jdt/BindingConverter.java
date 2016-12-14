@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.jdt;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
-import com.google.devtools.j2objc.types.GeneratedPackageBinding;
 import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;

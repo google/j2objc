@@ -17,8 +17,6 @@
 package com.google.devtools.j2objc.jdt;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.types.AbstractTypeBinding;
-import com.google.devtools.j2objc.types.GeneratedPackageBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import java.util.Set;
 import javax.lang.model.element.PackageElement;
