@@ -20,7 +20,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.jdt.JdtParser;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -65,7 +64,7 @@ public class CycleFinder {
   }
 
   private static Parser createParser(Options options) {
-    Parser parser = new JdtParser();
+    Parser parser = Parser.newParser();
     parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));

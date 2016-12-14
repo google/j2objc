@@ -106,7 +106,7 @@ public class GenerationTest extends TestCase {
   }
 
   protected static Parser initializeParser(File tempDir) {
-    Parser parser = Options.newParser();
+    Parser parser = Parser.newParser();
     parser.addClasspathEntries(getComGoogleDevtoolsJ2objcPath());
     parser.addSourcepathEntry(tempDir.getAbsolutePath());
     return parser;

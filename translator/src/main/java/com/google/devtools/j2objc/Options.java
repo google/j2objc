@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.PackageInfoLookup;
 import com.google.devtools.j2objc.util.PackagePrefixes;
-import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.File;
@@ -908,14 +907,6 @@ public class Options {
 
   public static boolean dumpAST() {
     return instance.dumpAST;
-  }
-
-  // TODO(tball): remove after front-end conversion is complete.
-  public static Parser newParser() {
-    if (instance.javaFrontEnd == FrontEnd.JDT) {
-        return new com.google.devtools.j2objc.jdt.JdtParser();
-    }
-    return new com.google.devtools.j2objc.javac.JavacParser();
   }
 
   // TODO(kstanger): remove after front-end conversion is complete.

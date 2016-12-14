@@ -70,7 +70,7 @@ public class J2ObjC {
 
   @VisibleForTesting
   public static Parser createParser() {
-    Parser parser = Options.newParser();
+    Parser parser = Parser.newParser();
     parser.addClasspathEntries(Options.getClassPathEntries());
     parser.addClasspathEntries(Options.getBootClasspath());
     parser.addSourcepathEntries(Options.getSourcePathEntries());

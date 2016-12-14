@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import java.util.Collection;
@@ -32,6 +33,17 @@ public abstract class Parser {
   protected boolean includeRunningVMBootclasspath = true;
 
   protected static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
+
+  /**
+   * Returns a new Parser instance.
+   */
+  public static Parser newParser() {
+    // TODO(tball): remove after front-end conversion is complete.
+    if (Options.isJDT()) {
+      return new com.google.devtools.j2objc.jdt.JdtParser();
+    }
+    return new com.google.devtools.j2objc.javac.JavacParser();
+  }
 
   /**
    * Handler to be provided when parsing multiple files. The provided
