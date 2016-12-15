@@ -616,7 +616,7 @@ void ParsePrefixLine(string line) {
 }
 
 void ParsePrefixFile(string prefix_file) {
-  ifstream in(prefix_file.c_str());
+  std::ifstream in(prefix_file.c_str());
   if (in.is_open()) {
     string line;
     while (in.good()) {
