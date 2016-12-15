@@ -345,8 +345,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     // Resolve outer and capture arguments.
     TypeElement typeElement = node.getTypeElement();
     if (captureInfo.needsOuterParam(typeElement)) {
-      node.setLambdaOuterArg(
-          getOuterPathInherited(TypeUtil.asTypeElement(captureInfo.getOuterType(typeElement))));
+      node.setLambdaOuterArg(getOuterPathInherited(ElementUtil.getDeclaringClass(typeElement)));
     }
     addCaptureArgs(typeElement, node.getLambdaCaptureArgs());
   }
@@ -474,8 +473,7 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
     TypeElement typeElement = (TypeElement) node.getExecutableElement().getEnclosingElement();
     if (node.getExpression() == null) {
       whenNeedsOuterParam(typeElement, () -> {
-        node.setExpression(
-            getOuterPathInherited(TypeUtil.asTypeElement(captureInfo.getOuterType(typeElement))));
+        node.setExpression(getOuterPathInherited(ElementUtil.getDeclaringClass(typeElement)));
       });
     }
     if (ElementUtil.isLocal(typeElement)) {

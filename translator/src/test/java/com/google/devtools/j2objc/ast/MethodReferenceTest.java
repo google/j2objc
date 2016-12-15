@@ -316,5 +316,7 @@ public class MethodReferenceTest extends GenerationTest {
         "  Holder *h = create_Holder_initWithInt_(1);",
         "  id<Supplier> s = create_Test_$Lambda$1_initWithHolder_(h);",
         "}");
+    // Make sure the receiver field is initialized.
+    assertTranslation(translation, "JreStrongAssign(&self->target$_, outer$);");
   }
 }

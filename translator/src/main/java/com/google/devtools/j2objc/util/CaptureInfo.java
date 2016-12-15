@@ -19,6 +19,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +35,18 @@ import javax.lang.model.type.TypeMirror;
  */
 public class CaptureInfo {
 
-  private final Map<TypeElement, VariableElement> outerParams = new HashMap<>();
-  private final Map<TypeElement, VariableElement> outerFields = new HashMap<>();
+  // The implicit outer reference from a non-static inner class to its outer class.
+  private final Map<TypeElement, Capture> outerCaptures = new HashMap<>();
+
+  // The captured result of the receiver expression of a method reference. For example:
+  // Supplier<String> s = foo::toString;
+  // In this code, the expression "foo" must be captured by the generated lambda type.
+  private final Map<TypeElement, Capture> receiverCaptures = new HashMap<>();
+
+  // Captures for local variables that are referenced from within the local class or lambda.
   private final ListMultimap<TypeElement, LocalCapture> localCaptures =
       MultimapBuilder.hashKeys().arrayListValues().build();
+
   private final List<VariableElement> implicitEnumParams;
 
   public CaptureInfo(TypeUtil typeUtil) {
@@ -48,16 +57,14 @@ public class CaptureInfo {
   }
 
   /**
-   * Information about a captured local variable.
+   * Contains the construction parameter and field associated with a captured value.
    */
-  public static class LocalCapture {
+  public static class Capture {
 
-    private final VariableElement var;
-    private final VariableElement param;
-    private VariableElement field;
+    protected final VariableElement param;
+    protected VariableElement field;
 
-    private LocalCapture(VariableElement var, VariableElement param) {
-      this.var = var;
+    private Capture(VariableElement param) {
       this.param = param;
     }
 
@@ -74,45 +81,64 @@ public class CaptureInfo {
     }
   }
 
+  private static class LocalCapture extends Capture {
+
+    private final VariableElement var;
+
+    private LocalCapture(VariableElement var, VariableElement param) {
+      super(param);
+      this.var = var;
+    }
+  }
+
   public boolean needsOuterReference(TypeElement type) {
-    return outerFields.containsKey(type);
+    return getOuterField(type) != null;
   }
 
   public boolean needsOuterParam(TypeElement type) {
-    return outerParams.containsKey(type) || automaticOuterParam(type);
+    return outerCaptures.containsKey(type) || automaticOuterParam(type);
+  }
+
+  private Capture getOuterCapture(TypeElement type) {
+    return automaticOuterParam(type) ? getOrCreateOuterCapture(type) : outerCaptures.get(type);
   }
 
   public VariableElement getOuterParam(TypeElement type) {
-    return automaticOuterParam(type) ? getOrCreateOuterParam(type) : outerParams.get(type);
-  }
-
-  public TypeMirror getOuterType(TypeElement type) {
-    VariableElement outerField = outerFields.get(type);
-    if (outerField != null) {
-      return outerField.asType();
-    }
-    return getDeclaringType(type);
+    Capture outerCapture = getOuterCapture(type);
+    return outerCapture != null ? outerCapture.param : null;
   }
 
   public VariableElement getOuterField(TypeElement type) {
-    return outerFields.get(type);
+    Capture outerCapture = outerCaptures.get(type);
+    return outerCapture != null ? outerCapture.field : null;
   }
 
-  public List<LocalCapture> getLocalCaptures(TypeElement type) {
-    return Collections.unmodifiableList(localCaptures.get(type));
+  public VariableElement getReceiverField(TypeElement type) {
+    Capture capture = receiverCaptures.get(type);
+    return capture != null ? capture.field : null;
+  }
+
+  private <T> void maybeAdd(List<T> list, T elem) {
+    if (elem != null) {
+      list.add(elem);
+    }
+  }
+
+  public List<Capture> getCaptures(TypeElement type) {
+    List<Capture> captures = new ArrayList<>();
+    maybeAdd(captures, getOuterCapture(type));
+    maybeAdd(captures, receiverCaptures.get(type));
+    captures.addAll(localCaptures.get(type));
+    return captures;
+  }
+
+  public Iterable<VariableElement> getCaptureFields(TypeElement type) {
+    return Iterables.transform(
+        Iterables.filter(getCaptures(type), Capture::hasField), capture -> capture.field);
   }
 
   public Iterable<VariableElement> getCapturedVars(TypeElement type) {
     return Iterables.transform(localCaptures.get(type), capture -> capture.var);
-  }
-
-  public Iterable<VariableElement> getCaptureParams(TypeElement type) {
-    return Iterables.transform(localCaptures.get(type), capture -> capture.param);
-  }
-
-  public Iterable<VariableElement> getCaptureFields(TypeElement type) {
-    return Iterables.transform(Iterables.filter(
-        localCaptures.get(type), LocalCapture::hasField), capture -> capture.field);
   }
 
   public List<VariableElement> getImplicitEnumParams() {
@@ -123,12 +149,7 @@ public class CaptureInfo {
    * Returns all the implicit params that come before explicit params in a constructor.
    */
   public Iterable<VariableElement> getImplicitPrefixParams(TypeElement type) {
-    Iterable<VariableElement> result = getCaptureParams(type);
-    VariableElement outer = getOuterParam(type);
-    if (outer != null) {
-      result = Iterables.concat(Collections.singletonList(outer), result);
-    }
-    return result;
+    return Iterables.transform(getCaptures(type), capture -> capture.param);
   }
 
   /**
@@ -142,8 +163,7 @@ public class CaptureInfo {
   }
 
   public boolean isCapturing(TypeElement type) {
-    return outerFields.containsKey(type)
-        || !Iterables.isEmpty(Iterables.filter(localCaptures.get(type), LocalCapture::hasField));
+    return !Iterables.isEmpty(Iterables.filter(getCaptures(type), Capture::hasField));
   }
 
   private static boolean automaticOuterParam(TypeElement type) {
@@ -177,28 +197,31 @@ public class CaptureInfo {
     return "val" + (suffix > 0 ? suffix : "") + "$" + var.getSimpleName().toString();
   }
 
-  public VariableElement getOrCreateOuterParam(TypeElement type) {
-    VariableElement outerParam = outerParams.get(type);
-    if (outerParam == null) {
-      outerParam = GeneratedVariableElement.newParameter("outer$", getDeclaringType(type), type)
-          .setNonnull(true);
-      outerParams.put(type, outerParam);
+  private Capture getOrCreateOuterCapture(TypeElement type) {
+    Capture capture = outerCaptures.get(type);
+    if (capture == null) {
+      capture = new Capture(
+          GeneratedVariableElement.newParameter("outer$", getDeclaringType(type), type)
+          .setNonnull(true));
+      outerCaptures.put(type, capture);
     }
-    return outerParam;
+    return capture;
+  }
+
+  public VariableElement getOrCreateOuterParam(TypeElement type) {
+    return getOrCreateOuterCapture(type).param;
   }
 
   public VariableElement getOrCreateOuterField(TypeElement type) {
     // Create the outer param since it is required to initialize the field.
-    getOrCreateOuterParam(type);
-    VariableElement outerField = outerFields.get(type);
-    if (outerField == null) {
-      outerField = GeneratedVariableElement.newField(
+    Capture capture = getOrCreateOuterCapture(type);
+    if (capture.field == null) {
+      capture.field = GeneratedVariableElement.newField(
           getOuterFieldName(type), getDeclaringType(type), type)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .setNonnull(true);
-      outerFields.put(type, outerField);
     }
-    return outerField;
+    return capture.field;
   }
 
   private LocalCapture getOrCreateLocalCapture(VariableElement var, TypeElement declaringType) {
@@ -230,12 +253,12 @@ public class CaptureInfo {
   }
 
   public void addMethodReferenceReceiver(TypeElement type, TypeMirror receiverType) {
-    assert !outerParams.containsKey(type) && !outerFields.containsKey(type);
-    // Add the target field as an outer field even though it's not really pointing to outer scope.
-    outerParams.put(type, GeneratedVariableElement.newParameter("outer$", receiverType, type)
-        .setNonnull(true));
-    outerFields.put(type, GeneratedVariableElement.newField("target$", receiverType, type)
+    assert !outerCaptures.containsKey(type);
+    Capture capture = new Capture(
+        GeneratedVariableElement.newParameter("outer$", receiverType, type).setNonnull(true));
+    capture.field = GeneratedVariableElement.newField("target$", receiverType, type)
         .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-        .setNonnull(true));
+        .setNonnull(true);
+    receiverCaptures.put(type, capture);
   }
 }

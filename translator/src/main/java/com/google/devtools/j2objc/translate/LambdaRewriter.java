@@ -227,9 +227,9 @@ public class LambdaRewriter extends UnitTreeVisitor {
       Expression invocationTarget = null;
 
       if (!ElementUtil.isStatic(method.element())) {
-        VariableElement targetField = captureInfo.getOuterField(lambdaType);
-        if (targetField != null) {
-          invocationTarget = new SimpleName(targetField);
+        VariableElement receiverField = captureInfo.getReceiverField(lambdaType);
+        if (receiverField != null) {
+          invocationTarget = new SimpleName(receiverField);
           creation.setExpression(TreeUtil.remove(node.getExpression()));
         } else {
           // The expression is actually a type name and doesn't evaluate to an invocable object.

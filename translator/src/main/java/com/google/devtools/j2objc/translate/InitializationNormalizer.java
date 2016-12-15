@@ -191,14 +191,7 @@ public class InitializationNormalizer extends UnitTreeVisitor {
 
   private void addCaptureAssignments(MethodDeclaration constructor, TypeElement type) {
     List<Statement> statements = constructor.getBody().getStatements().subList(0, 0);
-    VariableElement outerField = captureInfo.getOuterField(type);
-    if (outerField != null) {
-      VariableElement outerParam = captureInfo.getOuterParam(type);
-      assert outerParam != null;
-      statements.add(new ExpressionStatement(
-          new Assignment(new SimpleName(outerField), new SimpleName(outerParam))));
-    }
-    for (CaptureInfo.LocalCapture capture : captureInfo.getLocalCaptures(type)) {
+    for (CaptureInfo.Capture capture : captureInfo.getCaptures(type)) {
       if (capture.hasField()) {
         statements.add(new ExpressionStatement(new Assignment(
             new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));

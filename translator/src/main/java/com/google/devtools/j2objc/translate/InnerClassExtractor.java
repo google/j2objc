@@ -104,7 +104,7 @@ public class InnerClassExtractor extends UnitTreeVisitor {
 
       TypeElement type = node.getTypeElement();
       if (type.getKind().isClass() && !ElementUtil.isStatic(type)) {
-        addOuterFields(node);
+        addCaptureFields(node);
       }
 
       // Make this node non-private, if necessary, and add it to the unit's type
@@ -119,17 +119,10 @@ public class InnerClassExtractor extends UnitTreeVisitor {
     }
   }
 
-  private void addOuterFields(AbstractTypeDeclaration node) {
-    List<BodyDeclaration> members = node.getBodyDeclarations();
-    TypeElement clazz = node.getTypeElement();
-
-    VariableElement outerFieldElement = captureInfo.getOuterField(clazz);
-    if (outerFieldElement != null) {
-      members.add(0, new FieldDeclaration(outerFieldElement, null));
-    }
-
-    for (VariableElement field : captureInfo.getCaptureFields(clazz)) {
-      node.addBodyDeclaration(new FieldDeclaration(field, null));
+  private void addCaptureFields(AbstractTypeDeclaration node) {
+    List<BodyDeclaration> members = node.getBodyDeclarations().subList(0, 0);
+    for (VariableElement field : captureInfo.getCaptureFields(node.getTypeElement())) {
+      members.add(new FieldDeclaration(field, null));
     }
   }
 }
