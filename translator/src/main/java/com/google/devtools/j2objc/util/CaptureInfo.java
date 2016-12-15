@@ -134,11 +134,17 @@ public class CaptureInfo {
 
   public Iterable<VariableElement> getCaptureFields(TypeElement type) {
     return Iterables.transform(
-        Iterables.filter(getCaptures(type), Capture::hasField), capture -> capture.field);
+        Iterables.filter(getCaptures(type), Capture::hasField), Capture::getField);
   }
 
   public Iterable<VariableElement> getCapturedVars(TypeElement type) {
     return Iterables.transform(localCaptures.get(type), capture -> capture.var);
+  }
+
+  public Iterable<VariableElement> getLocalCaptureFields(TypeElement type) {
+    List<LocalCapture> captures = localCaptures.get(type);
+    return captures == null ? Collections.emptyList()
+        : Iterables.transform(Iterables.filter(captures, Capture::hasField), Capture::getField);
   }
 
   public List<VariableElement> getImplicitEnumParams() {
@@ -149,7 +155,7 @@ public class CaptureInfo {
    * Returns all the implicit params that come before explicit params in a constructor.
    */
   public Iterable<VariableElement> getImplicitPrefixParams(TypeElement type) {
-    return Iterables.transform(getCaptures(type), capture -> capture.param);
+    return Iterables.transform(getCaptures(type), Capture::getParam);
   }
 
   /**

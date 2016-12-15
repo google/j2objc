@@ -285,7 +285,7 @@ public class GraphBuilder {
 
     private void followCaptureFields(TypeElement type, TypeNode typeNode) {
       assert ElementUtil.isAnonymous(type);
-      for (VariableElement capturedVarElement : captureInfo.getCaptureFields(type)) {
+      for (VariableElement capturedVarElement : captureInfo.getLocalCaptureFields(type)) {
         TypeNode targetNode = getOrCreateNode(capturedVarElement.asType());
         if (targetNode != null && !whitelist.containsType(targetNode)
             && !ElementUtil.isWeakReference(capturedVarElement)) {
