@@ -184,7 +184,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
   public void testFullWriteAndRead() {
     DataProvider provider = new DataProvider();
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer();
-    Object stream = AsyncPipedNSInputStreamAdapter.open(provider, STREAM_BUFFER_SIZE);
+    Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
 
     assertTrue("The entire source is read", Arrays.equals(randomData, consumer.getBytes()));
@@ -194,7 +194,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
   public void testNothingWritten() {
     DataProvider provider = new DataProvider(0);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer();
-    Object stream = AsyncPipedNSInputStreamAdapter.open(provider, STREAM_BUFFER_SIZE);
+    Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
     assertEquals(0, provider.getTotalWritten());
     assertEquals(0, consumer.getBytes().length);
@@ -204,7 +204,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
   public void testNothingRead() {
     DataProvider provider = new DataProvider();
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer(0);
-    Object stream = AsyncPipedNSInputStreamAdapter.open(provider, STREAM_BUFFER_SIZE);
+    Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
     assertTrue("May provide more than actually read", provider.getTotalWritten() >= 0);
     assertEquals(0, consumer.getBytes().length);
@@ -214,7 +214,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
   public void testPartialRead() {
     DataProvider provider = new DataProvider();
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer(PARTIAL_SIZE);
-    Object stream = AsyncPipedNSInputStreamAdapter.open(provider, STREAM_BUFFER_SIZE);
+    Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
     assertTrue("May provide more than actually read", provider.getTotalWritten() >= PARTIAL_SIZE);
     assertEquals(PARTIAL_SIZE, consumer.getBytes().length);
@@ -225,7 +225,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
   public void testPartialWrite() {
     DataProvider provider = new DataProvider(PARTIAL_SIZE);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer();
-    Object stream = AsyncPipedNSInputStreamAdapter.open(provider, STREAM_BUFFER_SIZE);
+    Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
     assertEquals(PARTIAL_SIZE, provider.getTotalWritten());
     assertEquals(PARTIAL_SIZE, consumer.getBytes().length);

@@ -14,6 +14,7 @@
 
 package com.google.j2objc.io;
 
+import com.google.j2objc.annotations.Weak;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -26,28 +27,28 @@ import java.util.logging.Logger;
 ]-*/
 
 /**
- * An NSInputStream adapter piped to an NSOutputStream that in turn requests data via a
- * {@link java.io.OutputStream} asynchronously.
+ * An NSInputStream adapter piped to an NSOutputStream that in turn requests data via a {@link
+ * java.io.OutputStream} asynchronously.
  *
  * <p>The main use case is to enable J2ObjC apps to obtain an NSInputStream that they can offer data
  * to and then pass the stream to another object that takes one. NSMutableURLRequest's
  * HTTPBodyStream is one such example.
  *
- * <p>The fundamental problem here is that streams in Java and streams in Objective-C (Foundation
- * to be more precise) have different designs. If you pipe an NSOutputStream to an NSInputStream,
- * that output stream requests data from you in an asynchronous manner using a callback, whereas
- * Java's OutputStream is synchronous. In addition, OutputStream.write(byte[], int, int) assumes
- * that all the bytes will be written to in one go, whereas -[NSOutputStream read:maxLength:]
- * returns the actual bytes written.
+ * <p>The fundamental problem here is that streams in Java and streams in Objective-C (Foundation to
+ * be more precise) have different designs. If you pipe an NSOutputStream to an NSInputStream, that
+ * output stream requests data from you in an asynchronous manner using a callback, whereas Java's
+ * OutputStream is synchronous. In addition, OutputStream.write(byte[], int, int) assumes that all
+ * the bytes will be written to in one go, whereas -[NSOutputStream read:maxLength:] returns the
+ * actual bytes written.
  *
- * <p>To use this adapter, call the {@link #open(Delegate, int)} method. It returns a native
+ * <p>To use this adapter, call the {@link #create(Delegate, int)} method. It returns a native
  * NSInputStream that you can pass to the target data consumer. To write data to this piped stream,
  * implement the sole delegate method, and use the suppiled Java OutputStream to offer data.
  *
- * <p>If you need to offer your data synchronously, you will need to consider using a pair of
- * {@link java.io.PipedInputStream} and {@link java.io.PipedOutputStream}, and offer the data
- * using the PipedOutputStream, and in your {@link Delegate#offerData(OutputStream)}, read data
- * from the PipedInputStream.
+ * <p>If you need to offer your data synchronously, you will need to consider using a pair of {@link
+ * java.io.PipedInputStream} and {@link java.io.PipedOutputStream}, and offer the data using the
+ * PipedOutputStream, and in your {@link Delegate#offerData(OutputStream)}, read data from the
+ * PipedInputStream.
  *
  * <p>It is safe to close the provided OutputStream multiple times. It is also safe to send -close
  * to the underlying NSInputStream and NSOutputStream more than once. If the NSInputStream is closed
@@ -78,7 +79,7 @@ public final class AsyncPipedNSInputStreamAdapter {
     private Delegate delegate;
     private Object nativeOutputStream; // NSOutputStream
     private Object leftoverData; // NSData
-    private Object threadForClosing; // NSThread
+    @Weak private Object threadForClosing; // NSThread
 
     /** If true, once the remaining leftover data is written, close() will be called. */
     private boolean closeAfterLeftoverCleared;
@@ -195,13 +196,18 @@ public final class AsyncPipedNSInputStreamAdapter {
     ]-*/;
 
     /*-[
-    // Closes the stream *and* removes the stream from the run loop.
+    // Closes the stream *and* removes the stream from the runloop.
     - (void)doClose {
       [(NSOutputStream *)nativeOutputStream_ close];
       [(NSOutputStream *)nativeOutputStream_ removeFromRunLoop:[NSRunLoop currentRunLoop]
                                                        forMode:NSRunLoopCommonModes];
+      [(NSOutputStream *)nativeOutputStream_ setDelegate:nil];
       [delegate_ release];
       delegate_ = nil;
+      threadForClosing_ = nil;
+
+      // Stop the runloop. After the runloop exits, -run will exit, and the thread will terminate.
+      CFRunLoopStop(CFRunLoopGetCurrent());
     }
 
     // Schedules the output stream in the dedicated thread's runloop.
@@ -266,7 +272,20 @@ public final class AsyncPipedNSInputStreamAdapter {
 
   private AsyncPipedNSInputStreamAdapter() {}
 
-  public static Object open(Delegate delegate, int bufferSize) {
+  /**
+   * Creates a native NSInputStream that is piped to a NSOutpuStream, which in turn requests data
+   * from the supplied delegate asynchronously.
+   *
+   * <p>Please note that the returned NSInputStream is not yet open. This is to allow the stream to
+   * be used by other Foundation API (such as NSMutableURLRequest) and is consistent with other
+   * NSInputStream initializers.
+   *
+   * @param delegate the delegate.
+   * @param bufferSize the size of the internal buffer used to pipe the NSOutputStream to the
+   *     NSInputStream.
+   * @return a native NSInputStream.
+   */
+  public static Object create(Delegate delegate, int bufferSize) {
     if (bufferSize < 1) {
       throw new IllegalArgumentException("Invalid buffer size: " + bufferSize);
     }
@@ -275,10 +294,10 @@ public final class AsyncPipedNSInputStreamAdapter {
       throw new IllegalArgumentException("Delegate must not be null");
     }
 
-    return nativeOpen(delegate, bufferSize);
+    return nativeCreate(delegate, bufferSize);
   }
 
-  static native Object nativeOpen(Delegate delegate, int bufferSize) /*-[
+  static native Object nativeCreate(Delegate delegate, int bufferSize) /*-[
     CFReadStreamRef readStreamRef;
     CFWriteStreamRef writeStreamRef;
 
