@@ -467,7 +467,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
-  java/lang/FloatingDecimal.java \
   java/lang/HexStringParser.java \
   java/lang/JavaLangAccess.java \
   java/lang/RealToString.java \
@@ -576,8 +575,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/SneakyThrow.java \
   sun/misc/CompoundEnumeration.java \
   sun/misc/DoubleConsts.java \
-  sun/misc/FDBigInt.java \
+  sun/misc/FDBigInteger.java \
   sun/misc/FloatConsts.java \
+  sun/misc/FloatingDecimal.java \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
   sun/reflect/CallerSensitive.java \

@@ -26,7 +26,7 @@
 
 package java.lang;
 
-import sun.misc.FpUtils;
+import sun.misc.FloatingDecimal;
 import sun.misc.FloatConsts;
 import sun.misc.DoubleConsts;
 
@@ -134,6 +134,7 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @since JDK1.1
      */
+    @SuppressWarnings("unchecked")
     public static final Class<Float> TYPE = (Class<Float>) float[].class.getComponentType();
 
     /**
@@ -145,7 +146,7 @@ public final class Float extends Number implements Comparable<Float> {
      * <li>Otherwise, the result is a string that represents the sign and
      *     magnitude (absolute value) of the argument. If the sign is
      *     negative, the first character of the result is
-     *     '{@code -}' (<code>'&#92;u002D'</code>); if the sign is
+     *     '{@code -}' ({@code '\u005Cu002D'}); if the sign is
      *     positive, no sign character appears in the result. As for
      *     the magnitude <i>m</i>:
      * <ul>
@@ -161,7 +162,7 @@ public final class Float extends Number implements Comparable<Float> {
      *      less than 10<sup>7</sup>, then it is represented as the
      *      integer part of <i>m</i>, in decimal form with no leading
      *      zeroes, followed by '{@code .}'
-     *      (<code>'&#92;u002E'</code>), followed by one or more
+     *      ({@code '\u005Cu002E'}), followed by one or more
      *      decimal digits representing the fractional part of
      *      <i>m</i>.
      * <li> If <i>m</i> is less than 10<sup>-3</sup> or greater than or
@@ -173,10 +174,10 @@ public final class Float extends Number implements Comparable<Float> {
      *      10<sup><i>n</i></sup> so that 1 &le; <i>a</i> {@literal <} 10.
      *      The magnitude is then represented as the integer part of
      *      <i>a</i>, as a single decimal digit, followed by
-     *      '{@code .}' (<code>'&#92;u002E'</code>), followed by
+     *      '{@code .}' ({@code '\u005Cu002E'}), followed by
      *      decimal digits representing the fractional part of
      *      <i>a</i>, followed by the letter '{@code E}'
-     *      (<code>'&#92;u0045'</code>), followed by a representation
+     *      ({@code '\u005Cu0045'}), followed by a representation
      *      of <i>n</i> as a decimal integer, as produced by the
      *      method {@link java.lang.Integer#toString(int)}.
      *
@@ -203,7 +204,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @return a string representation of the argument.
      */
     public static String toString(float f) {
-        return FloatingDecimal.getThreadLocalInstance().loadFloat(f).toJavaFormatString();
+        return FloatingDecimal.toJavaFormatString(f);
     }
 
     /**
@@ -217,7 +218,7 @@ public final class Float extends Number implements Comparable<Float> {
      * <li>Otherwise, the result is a string that represents the sign and
      * magnitude (absolute value) of the argument. If the sign is negative,
      * the first character of the result is '{@code -}'
-     * (<code>'&#92;u002D'</code>); if the sign is positive, no sign character
+     * ({@code '\u005Cu002D'}); if the sign is positive, no sign character
      * appears in the result. As for the magnitude <i>m</i>:
      *
      * <ul>
@@ -258,7 +259,7 @@ public final class Float extends Number implements Comparable<Float> {
      * </ul>
      *
      * <table border>
-     * <caption><h3>Examples</h3></caption>
+     * <caption>Examples</caption>
      * <tr><th>Floating-point Value</th><th>Hexadecimal String</th>
      * <tr><td>{@code 1.0}</td> <td>{@code 0x1.0p0}</td>
      * <tr><td>{@code -1.0}</td>        <td>{@code -0x1.0p0}</td>
@@ -286,10 +287,10 @@ public final class Float extends Number implements Comparable<Float> {
             // Adjust exponent to create subnormal double, then
             // replace subnormal double exponent with subnormal float
             // exponent
-            String s = Double.toHexString(FpUtils.scalb((double)f,
-                                                        /* -1022+126 */
-                                                        DoubleConsts.MIN_EXPONENT-
-                                                        FloatConsts.MIN_EXPONENT));
+            String s = Double.toHexString(Math.scalb((double)f,
+                                                     /* -1022+126 */
+                                                     DoubleConsts.MIN_EXPONENT-
+                                                     FloatConsts.MIN_EXPONENT));
             return s.replaceFirst("p-1022$", "p-126");
         }
         else // double string will be the same as float string
@@ -321,14 +322,10 @@ public final class Float extends Number implements Comparable<Float> {
      * <dd><i>SignedInteger</i>
      * </dl>
      *
-     * <p>
-     *
      * <dl>
      * <dt><i>HexFloatingPointLiteral</i>:
      * <dd> <i>HexSignificand BinaryExponent FloatTypeSuffix<sub>opt</sub></i>
      * </dl>
-     *
-     * <p>
      *
      * <dl>
      * <dt><i>HexSignificand:</i>
@@ -340,14 +337,10 @@ public final class Float extends Number implements Comparable<Float> {
      *     </i>{@code .} <i>HexDigits</i>
      * </dl>
      *
-     * <p>
-     *
      * <dl>
      * <dt><i>BinaryExponent:</i>
      * <dd><i>BinaryExponentIndicator SignedInteger</i>
      * </dl>
-     *
-     * <p>
      *
      * <dl>
      * <dt><i>BinaryExponentIndicator:</i>
@@ -421,7 +414,7 @@ public final class Float extends Number implements Comparable<Float> {
      *          parsable number.
      */
     public static Float valueOf(String s) throws NumberFormatException {
-        return new Float(FloatingDecimal.getThreadLocalInstance().readJavaFormatString(s).floatValue());
+        return new Float(parseFloat(s));
     }
 
     /**
@@ -456,7 +449,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.2
      */
     public static float parseFloat(String s) throws NumberFormatException {
-        return FloatingDecimal.getThreadLocalInstance().readJavaFormatString(s).floatValue();
+        return FloatingDecimal.parseFloat(s);
     }
 
     /**
@@ -467,7 +460,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @return  {@code true} if the argument is NaN;
      *          {@code false} otherwise.
      */
-    static public boolean isNaN(float v) {
+    public static boolean isNaN(float v) {
         return (v != v);
     }
 
@@ -479,9 +472,10 @@ public final class Float extends Number implements Comparable<Float> {
      * @return  {@code true} if the argument is positive infinity or
      *          negative infinity; {@code false} otherwise.
      */
-    static public boolean isInfinite(float v) {
+    public static boolean isInfinite(float v) {
         return (v == POSITIVE_INFINITY) || (v == NEGATIVE_INFINITY);
     }
+
 
     /**
      * Returns {@code true} if the argument is a finite floating-point
@@ -536,8 +530,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @see        java.lang.Float#valueOf(java.lang.String)
      */
     public Float(String s) throws NumberFormatException {
-        // REMIND: this is inefficient
-        this(valueOf(s).floatValue());
+        value = parseFloat(s);
     }
 
     /**
@@ -577,22 +570,24 @@ public final class Float extends Number implements Comparable<Float> {
     }
 
     /**
-     * Returns the value of this {@code Float} as a {@code byte} (by
-     * casting to a {@code byte}).
+     * Returns the value of this {@code Float} as a {@code byte} after
+     * a narrowing primitive conversion.
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code byte}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      */
     public byte byteValue() {
         return (byte)value;
     }
 
     /**
-     * Returns the value of this {@code Float} as a {@code short} (by
-     * casting to a {@code short}).
+     * Returns the value of this {@code Float} as a {@code short}
+     * after a narrowing primitive conversion.
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code short}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      * @since JDK1.1
      */
     public short shortValue() {
@@ -600,22 +595,24 @@ public final class Float extends Number implements Comparable<Float> {
     }
 
     /**
-     * Returns the value of this {@code Float} as an {@code int} (by
-     * casting to type {@code int}).
+     * Returns the value of this {@code Float} as an {@code int} after
+     * a narrowing primitive conversion.
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code int}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      */
     public int intValue() {
         return (int)value;
     }
 
     /**
-     * Returns value of this {@code Float} as a {@code long} (by
-     * casting to type {@code long}).
+     * Returns value of this {@code Float} as a {@code long} after a
+     * narrowing primitive conversion.
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code long}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      */
     public long longValue() {
         return (long)value;
@@ -631,11 +628,12 @@ public final class Float extends Number implements Comparable<Float> {
     }
 
     /**
-     * Returns the {@code double} value of this {@code Float} object.
+     * Returns the value of this {@code Float} as a {@code double}
+     * after a widening primitive conversion.
      *
      * @return the {@code float} value represented by this
-     *         object is converted to type {@code double} and the
-     *         result of the conversion is returned.
+     *         object converted to type {@code double}
+     * @jls 5.1.2 Widening Primitive Conversions
      */
     public double doubleValue() {
         return (double)value;
@@ -650,8 +648,9 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return a hash code value for this object.
      */
+    @Override
     public int hashCode() {
-        return floatToIntBits(value);
+        return Float.hashCode(value);
     }
 
     /**
@@ -817,13 +816,13 @@ public final class Float extends Number implements Comparable<Float> {
      * <p>In all other cases, let <i>s</i>, <i>e</i>, and <i>m</i> be three
      * values that can be computed from the argument:
      *
-     * <blockquote><pre>
-     * int s = ((bits &gt;&gt; 31) == 0) ? 1 : -1;
-     * int e = ((bits &gt;&gt; 23) & 0xff);
+     * <blockquote><pre>{@code
+     * int s = ((bits >> 31) == 0) ? 1 : -1;
+     * int e = ((bits >> 23) & 0xff);
      * int m = (e == 0) ?
-     *                 (bits & 0x7fffff) &lt;&lt; 1 :
+     *                 (bits & 0x7fffff) << 1 :
      *                 (bits & 0x7fffff) | 0x800000;
-     * </pre></blockquote>
+     * }</pre></blockquote>
      *
      * Then the floating-point result equals the value of the mathematical
      * expression <i>s</i>&middot;<i>m</i>&middot;2<sup><i>e</i>-150</sup>.

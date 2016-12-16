@@ -26,6 +26,7 @@
 
 package java.lang;
 
+import sun.misc.FloatingDecimal;
 import sun.misc.FpUtils;
 import sun.misc.DoubleConsts;
 
@@ -135,6 +136,7 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @since JDK1.1
      */
+    @SuppressWarnings("unchecked")
     public static final Class<Double>   TYPE = (Class<Double>) double[].class.getComponentType();
 
     /**
@@ -146,7 +148,7 @@ public final class Double extends Number implements Comparable<Double> {
      * <li>Otherwise, the result is a string that represents the sign and
      * magnitude (absolute value) of the argument. If the sign is negative,
      * the first character of the result is '{@code -}'
-     * (<code>'&#92;u002D'</code>); if the sign is positive, no sign character
+     * ({@code '\u005Cu002D'}); if the sign is positive, no sign character
      * appears in the result. As for the magnitude <i>m</i>:
      * <ul>
      * <li>If <i>m</i> is infinity, it is represented by the characters
@@ -162,7 +164,7 @@ public final class Double extends Number implements Comparable<Double> {
      * <li>If <i>m</i> is greater than or equal to 10<sup>-3</sup> but less
      * than 10<sup>7</sup>, then it is represented as the integer part of
      * <i>m</i>, in decimal form with no leading zeroes, followed by
-     * '{@code .}' (<code>'&#92;u002E'</code>), followed by one or
+     * '{@code .}' ({@code '\u005Cu002E'}), followed by one or
      * more decimal digits representing the fractional part of <i>m</i>.
      *
      * <li>If <i>m</i> is less than 10<sup>-3</sup> or greater than or
@@ -174,9 +176,9 @@ public final class Double extends Number implements Comparable<Double> {
      * 10<sup><i>n</i></sup> so that 1 &le; <i>a</i> {@literal <} 10. The
      * magnitude is then represented as the integer part of <i>a</i>,
      * as a single decimal digit, followed by '{@code .}'
-     * (<code>'&#92;u002E'</code>), followed by decimal digits
+     * ({@code '\u005Cu002E'}), followed by decimal digits
      * representing the fractional part of <i>a</i>, followed by the
-     * letter '{@code E}' (<code>'&#92;u0045'</code>), followed
+     * letter '{@code E}' ({@code '\u005Cu0045'}), followed
      * by a representation of <i>n</i> as a decimal integer, as
      * produced by the method {@link Integer#toString(int)}.
      * </ul>
@@ -200,7 +202,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @return a string representation of the argument.
      */
     public static String toString(double d) {
-        return FloatingDecimal.getThreadLocalInstance().loadDouble(d).toJavaFormatString();
+        return FloatingDecimal.toJavaFormatString(d);
     }
 
     /**
@@ -214,7 +216,7 @@ public final class Double extends Number implements Comparable<Double> {
      * <li>Otherwise, the result is a string that represents the sign
      * and magnitude of the argument. If the sign is negative, the
      * first character of the result is '{@code -}'
-     * (<code>'&#92;u002D'</code>); if the sign is positive, no sign
+     * ({@code '\u005Cu002D'}); if the sign is positive, no sign
      * character appears in the result. As for the magnitude <i>m</i>:
      *
      * <ul>
@@ -255,7 +257,7 @@ public final class Double extends Number implements Comparable<Double> {
      * </ul>
      *
      * <table border>
-     * <caption><h3>Examples</h3></caption>
+     * <caption>Examples</caption>
      * <tr><th>Floating-point Value</th><th>Hexadecimal String</th>
      * <tr><td>{@code 1.0}</td> <td>{@code 0x1.0p0}</td>
      * <tr><td>{@code -1.0}</td>        <td>{@code -0x1.0p0}</td>
@@ -283,14 +285,14 @@ public final class Double extends Number implements Comparable<Double> {
          * 7.19.6.1; however, the output of this method is more
          * tightly specified.
          */
-        if (!FpUtils.isFinite(d) )
+        if (!isFinite(d) )
             // For infinity and NaN, use the decimal output.
             return Double.toString(d);
         else {
             // Initialized to maximum size of output.
-            StringBuffer answer = new StringBuffer(24);
+            StringBuilder answer = new StringBuilder(24);
 
-            if (FpUtils.rawCopySign(1.0, d) == -1.0) // value is negative,
+            if (Math.copySign(1.0, d) == -1.0)    // value is negative,
                 answer.append("-");                  // so append sign info
 
             answer.append("0x");
@@ -299,8 +301,7 @@ public final class Double extends Number implements Comparable<Double> {
 
             if(d == 0.0) {
                 answer.append("0.0p0");
-            }
-            else {
+            } else {
                 boolean subnormal = (d < DoubleConsts.MIN_NORMAL);
 
                 // Isolate significand bits and OR in a high-order bit
@@ -323,13 +324,14 @@ public final class Double extends Number implements Comparable<Double> {
                               "0":
                               signif.replaceFirst("0{1,12}$", ""));
 
+                answer.append('p');
                 // If the value is subnormal, use the E_min exponent
                 // value for double; otherwise, extract and report d's
                 // exponent (the representation of a subnormal uses
                 // E_min -1).
-                answer.append("p" + (subnormal ?
-                               DoubleConsts.MIN_EXPONENT:
-                               FpUtils.getExponent(d) ));
+                answer.append(subnormal ?
+                              DoubleConsts.MIN_EXPONENT:
+                              Math.getExponent(d));
             }
             return answer.toString();
         }
@@ -360,14 +362,10 @@ public final class Double extends Number implements Comparable<Double> {
      * <dd><i>SignedInteger</i>
      * </dl>
      *
-     * <p>
-     *
      * <dl>
      * <dt><i>HexFloatingPointLiteral</i>:
      * <dd> <i>HexSignificand BinaryExponent FloatTypeSuffix<sub>opt</sub></i>
      * </dl>
-     *
-     * <p>
      *
      * <dl>
      * <dt><i>HexSignificand:</i>
@@ -379,14 +377,10 @@ public final class Double extends Number implements Comparable<Double> {
      *     </i>{@code .} <i>HexDigits</i>
      * </dl>
      *
-     * <p>
-     *
      * <dl>
      * <dt><i>BinaryExponent:</i>
      * <dd><i>BinaryExponentIndicator SignedInteger</i>
      * </dl>
-     *
-     * <p>
      *
      * <dl>
      * <dt><i>BinaryExponentIndicator:</i>
@@ -452,8 +446,7 @@ public final class Double extends Number implements Comparable<Double> {
      * a {@code NumberFormatException} be thrown, the regular
      * expression below can be used to screen the input string:
      *
-     * <code>
-     * <pre>
+     * <pre>{@code
      *  final String Digits     = "(\\p{Digit}+)";
      *  final String HexDigits  = "(\\p{XDigit}+)";
      *  // an exponent is 'e' or 'E' followed by an optionally
@@ -473,7 +466,7 @@ public final class Double extends Number implements Comparable<Double> {
      *       // in addition to strings of floating-point literals, the
      *       // two sub-patterns below are simplifications of the grammar
      *       // productions from section 3.10.2 of
-     *       // <cite>The Java&trade; Language Specification</cite>.
+     *       // The Java Language Specification.
      *
      *       // Digits ._opt Digits_opt ExponentPart_opt FloatTypeSuffix_opt
      *       "((("+Digits+"(\\.)?("+Digits+"?)("+Exp+")?)|"+
@@ -498,8 +491,7 @@ public final class Double extends Number implements Comparable<Double> {
      *  else {
      *      // Perform suitable alternative action
      *  }
-     * </pre>
-     * </code>
+     * }</pre>
      *
      * @param      s   the string to be parsed.
      * @return     a {@code Double} object holding the value
@@ -508,7 +500,7 @@ public final class Double extends Number implements Comparable<Double> {
      *             parsable number.
      */
     public static Double valueOf(String s) throws NumberFormatException {
-        return new Double(FloatingDecimal.getThreadLocalInstance().readJavaFormatString(s).doubleValue());
+        return new Double(parseDouble(s));
     }
 
     /**
@@ -544,7 +536,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @since 1.2
      */
     public static double parseDouble(String s) throws NumberFormatException {
-        return FloatingDecimal.getThreadLocalInstance().readJavaFormatString(s).doubleValue();
+        return FloatingDecimal.parseDouble(s);
     }
 
     /**
@@ -555,7 +547,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @return  {@code true} if the value of the argument is NaN;
      *          {@code false} otherwise.
      */
-    static public boolean isNaN(double v) {
+    public static boolean isNaN(double v) {
         return (v != v);
     }
 
@@ -567,7 +559,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @return  {@code true} if the value of the argument is positive
      *          infinity or negative infinity; {@code false} otherwise.
      */
-    static public boolean isInfinite(double v) {
+    public static boolean isInfinite(double v) {
         return (v == POSITIVE_INFINITY) || (v == NEGATIVE_INFINITY);
     }
 
@@ -614,8 +606,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @see       java.lang.Double#valueOf(java.lang.String)
      */
     public Double(String s) throws NumberFormatException {
-        // REMIND: this is inefficient
-        this(valueOf(s).doubleValue());
+        value = parseDouble(s);
     }
 
     /**
@@ -655,11 +646,12 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * Returns the value of this {@code Double} as a {@code byte} (by
-     * casting to a {@code byte}).
+     * Returns the value of this {@code Double} as a {@code byte}
+     * after a narrowing primitive conversion.
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code byte}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      * @since JDK1.1
      */
     public byte byteValue() {
@@ -667,11 +659,12 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * Returns the value of this {@code Double} as a
-     * {@code short} (by casting to a {@code short}).
+     * Returns the value of this {@code Double} as a {@code short}
+     * after a narrowing primitive conversion.
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code short}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      * @since JDK1.1
      */
     public short shortValue() {
@@ -679,8 +672,9 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * Returns the value of this {@code Double} as an
-     * {@code int} (by casting to type {@code int}).
+     * Returns the value of this {@code Double} as an {@code int}
+     * after a narrowing primitive conversion.
+     * @jls 5.1.3 Narrowing Primitive Conversions
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code int}
@@ -690,22 +684,24 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * Returns the value of this {@code Double} as a
-     * {@code long} (by casting to type {@code long}).
+     * Returns the value of this {@code Double} as a {@code long}
+     * after a narrowing primitive conversion.
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code long}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      */
     public long longValue() {
         return (long)value;
     }
 
     /**
-     * Returns the {@code float} value of this
-     * {@code Double} object.
+     * Returns the value of this {@code Double} as a {@code float}
+     * after a narrowing primitive conversion.
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code float}
+     * @jls 5.1.3 Narrowing Primitive Conversions
      * @since JDK1.0
      */
     public float floatValue() {
@@ -713,13 +709,12 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * Returns the {@code double} value of this
-     * {@code Double} object.
+     * Returns the {@code double} value of this {@code Double} object.
      *
      * @return the {@code double} value represented by this object
      */
     public double doubleValue() {
-        return (double)value;
+        return value;
     }
 
     /**
@@ -743,6 +738,7 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @return  a {@code hash code} value for this object.
      */
+    @Override
     public int hashCode() {
         return Double.hashCode(value);
     }
@@ -914,13 +910,13 @@ public final class Double extends Number implements Comparable<Double> {
      * <p>In all other cases, let <i>s</i>, <i>e</i>, and <i>m</i> be three
      * values that can be computed from the argument:
      *
-     * <blockquote><pre>
-     * int s = ((bits &gt;&gt; 63) == 0) ? 1 : -1;
-     * int e = (int)((bits &gt;&gt; 52) & 0x7ffL);
+     * <blockquote><pre>{@code
+     * int s = ((bits >> 63) == 0) ? 1 : -1;
+     * int e = (int)((bits >> 52) & 0x7ffL);
      * long m = (e == 0) ?
-     *                 (bits & 0xfffffffffffffL) &lt;&lt; 1 :
+     *                 (bits & 0xfffffffffffffL) << 1 :
      *                 (bits & 0xfffffffffffffL) | 0x10000000000000L;
-     * </pre></blockquote>
+     * }</pre></blockquote>
      *
      * Then the floating-point result equals the value of the mathematical
      * expression <i>s</i>&middot;<i>m</i>&middot;2<sup><i>e</i>-1075</sup>.
