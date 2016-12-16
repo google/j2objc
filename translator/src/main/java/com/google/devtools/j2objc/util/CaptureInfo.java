@@ -225,7 +225,8 @@ public class CaptureInfo {
       capture.field = GeneratedVariableElement.newField(
           getOuterFieldName(type), getDeclaringType(type), type)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .setNonnull(true);
+          .setNonnull(true)
+          .setIsWeak(ElementUtil.isWeakOuterType(type));
     }
     return capture.field;
   }

@@ -34,6 +34,7 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
 
   private final TypeMirror type;
   private boolean nonnull = false;
+  private boolean isWeak = false;
   private String typeQualifiers;
 
   private GeneratedVariableElement(
@@ -92,6 +93,15 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
 
   public GeneratedVariableElement setNonnull(boolean value) {
     nonnull = value;
+    return this;
+  }
+
+  public boolean isWeak() {
+    return isWeak;
+  }
+
+  public GeneratedVariableElement setIsWeak(boolean value) {
+    isWeak = value;
     return this;
   }
 
