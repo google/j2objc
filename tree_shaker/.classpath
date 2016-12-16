@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC translator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.jobs_3.6.1.v20141204-0235.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.resources_3.9.1.v20140825-1431.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.compiler.apt_1.1.0.v20140909-0014.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.core_3.10.2.v20141211-0121.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.osgi_3.10.2.v20141103-1919.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.text_3.5.300.v20130515-1451.jar"/>
+	<classpathentry kind="output" path="build_result/eclipse"/>
+</classpath>

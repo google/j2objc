@@ -1,0 +1,3 @@
+rule com.google.common.** j2objc.@0
+rule org.eclipse.** j2objc.@0
+rule org.osgi.** j2objc.@0
