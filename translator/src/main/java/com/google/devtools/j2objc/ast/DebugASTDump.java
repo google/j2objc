@@ -127,6 +127,11 @@ public class DebugASTDump extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(Javadoc node) {
+    return true;
+  }
+
+  @Override
   public boolean visit(MemberValuePair node) {
     printName(node.getName());
     return true;
@@ -213,6 +218,21 @@ public class DebugASTDump extends TreeVisitor {
   @Override
   public boolean visit(SuperMethodReference node) {
     printName(node.getName());
+    return true;
+  }
+
+  @Override
+  public boolean visit(TagElement node) {
+    String tagName = node.getTagName();
+    sb.print(' ');
+    sb.print(tagName != null ? tagName : "null");
+    return true;
+  }
+
+  @Override
+  public boolean visit(TextElement node) {
+    sb.print(' ');
+    sb.print(node.getText());
     return true;
   }
 

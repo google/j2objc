@@ -84,6 +84,7 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "   * @param <T> the type to be returned.\n"
         + "   */ T test() { return null; }}", "Test", "Test.h");
     assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertTranslation(translation, "@brief Method javadoc.");
     assertNotInTranslation(translation, "@param");
     assertNotInTranslation(translation, "<T>");
   }
@@ -227,11 +228,12 @@ public class JavadocGeneratorTest extends GenerationTest {
   public void testSeeTag() throws IOException {
     String translation = translateSourceFile(
         "/** Class javadoc for Test.\n"
-        + " * @see {@link http://developers.facebook.com/docs/reference/javascript/FB.init/}\n"
+        + " * @see <a href=\"http://developers.facebook.com/docs/reference/javascript/FB.init/\">"
+        + "FB.init</a>\n"
         + " */ class Test {}", "Test", "Test.h");
     assertTranslation(translation, "@brief Class javadoc for Test.");
     assertTranslation(translation,
         "- seealso: "
-        + "<code>http://developers.facebook.com/docs/reference/javascript/FB.init/</code>");
+        + "<a href=\"http://developers.facebook.com/docs/reference/javascript/FB.init/\">");
   }
 }

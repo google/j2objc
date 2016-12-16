@@ -148,13 +148,14 @@ import javax.tools.JavaFileObject;
  */
 public class TreeConverter {
   private final JCTree.JCCompilationUnit unit;
+  private final JavacEnvironment env;
   private CompilationUnit newUnit;
 
   public static CompilationUnit convertCompilationUnit(
       Options options, JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
     String sourceFilePath = getPath(javacUnit.getSourceFile());
     try {
-      TreeConverter converter = new TreeConverter(javacUnit);
+      TreeConverter converter = new TreeConverter(javacUnit, env);
       JavaFileObject sourceFile = javacUnit.getSourceFile();
       String source = sourceFile.getCharContent(false).toString();
       String mainTypeName = FileUtil.getMainTypeName(sourceFile);
@@ -174,8 +175,9 @@ public class TreeConverter {
     }
   }
 
-  private TreeConverter(JCTree.JCCompilationUnit javacUnit) {
+  private TreeConverter(JCTree.JCCompilationUnit javacUnit, JavacEnvironment javacEnv) {
     unit = javacUnit;
+    env = javacEnv;
   }
 
   private TreeNode convert(Object obj) {
@@ -365,7 +367,7 @@ public class TreeConverter {
 
   private TreeNode convertAbstractTypeDeclaration(
       JCTree.JCClassDecl node, AbstractTypeDeclaration newNode) {
-    convertBodyDeclaration(node, newNode);
+    convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
     for (JCTree bodyDecl : node.getMembers()) {
       // Skip synthetic methods. Synthetic default constructors are not marked
@@ -425,7 +427,7 @@ public class TreeConverter {
 
   private TreeNode convertAnnotationTypeDeclaration(JCTree.JCClassDecl node) {
     AnnotationTypeDeclaration newNode = new AnnotationTypeDeclaration();
-    convertBodyDeclaration(node, newNode);
+    convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     for (JCTree bodyDecl : node.getMembers()) {
       if (bodyDecl.getKind() == Kind.METHOD) {
         JCTree.JCMethodDecl methodDecl = (JCTree.JCMethodDecl) bodyDecl;
@@ -442,7 +444,7 @@ public class TreeConverter {
         newMember
             .setModifiers((int) methodDecl.getModifiers().flags)
             .setAnnotations(annotations)
-            .setJavadoc((Javadoc) getAssociatedJavaDoc(methodDecl));
+            .setJavadoc((Javadoc) getAssociatedJavaDoc(methodDecl, methodDecl.sym));
         newNode.addBodyDeclaration(newMember);
       } else {
         newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
@@ -536,15 +538,16 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertBodyDeclaration(JCTree.JCClassDecl node, BodyDeclaration newNode) {
+  private TreeNode convertBodyDeclaration(JCTree node, JCTree.JCModifiers modifiers,
+      BodyDeclaration newNode, Element element) {
     List<Annotation> annotations = new ArrayList<>();
-    for (AnnotationTree annotation : node.getModifiers().getAnnotations()) {
+    for (AnnotationTree annotation : modifiers.getAnnotations()) {
       annotations.add((Annotation) convert(annotation));
     }
     return newNode
-        .setModifiers((int) node.getModifiers().flags)
+        .setModifiers((int) modifiers.flags)
         .setAnnotations(annotations)
-        .setJavadoc((Javadoc) getAssociatedJavaDoc(node));
+        .setJavadoc((Javadoc) getAssociatedJavaDoc(node, element));
   }
 
   private TreeNode convertBooleanLiteral(JCTree.JCLiteral node) {
@@ -864,10 +867,7 @@ public class TreeConverter {
 
   private TreeNode convertMethodDeclaration(JCTree.JCMethodDecl node) {
     MethodDeclaration newNode = new MethodDeclaration();
-    List<Annotation> annotations = new ArrayList<>();
-    for (AnnotationTree annotation : node.getModifiers().getAnnotations()) {
-      annotations.add((Annotation) convert(annotation));
-    }
+    convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     for (JCTree.JCVariableDecl param : node.getParameters()) {
       newNode.addParameter((SingleVariableDeclaration) convert(param));
     }
@@ -886,10 +886,7 @@ public class TreeConverter {
     }
     return newNode
         .setExecutableElement(node.sym)
-        .setBody((Block) convert(node.getBody()))
-        .setModifiers((int) node.getModifiers().flags)
-        .setAnnotations(annotations)
-        .setJavadoc((Javadoc) getAssociatedJavaDoc(node));
+        .setBody((Block) convert(node.getBody()));
   }
 
   private TreeNode convertMethodInvocation(JCTree.JCMethodInvocation node) {
@@ -1120,7 +1117,10 @@ public class TreeConverter {
     VarSymbol var = node.sym;
     SourcePosition pos = getPosition(node);
     if (var.getKind() == ElementKind.FIELD) {
-      return new FieldDeclaration(var, (Expression) convert(node.getInitializer()));
+      FieldDeclaration newNode = new FieldDeclaration(var,
+          (Expression) convert(node.getInitializer()));
+      convertBodyDeclaration(node, node.getModifiers(), newNode, var);
+      return newNode;
     }
     if (var.getKind() == ElementKind.LOCAL_VARIABLE) {
       return new VariableDeclarationStatement(var, (Expression) convert(node.getInitializer()))
@@ -1130,6 +1130,7 @@ public class TreeConverter {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration()
           .setName(convertSimpleName(var, node.type, getNamePosition(node)))
           .setVariableElement(var);
+      convertBodyDeclaration(node, node.getModifiers(), newNode, var);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
       TreeUtil.copyList(init.getArguments(), newNode.getArguments());
       if (init.getAnonymousClassDeclaration() != null) {
@@ -1191,12 +1192,12 @@ public class TreeConverter {
         .setBody((Statement) convert(node.getStatement()));
   }
 
-  private TreeNode getAssociatedJavaDoc(JCTree node) {
-    Comment comment = convertAssociatedComment(node);
+  private TreeNode getAssociatedJavaDoc(JCTree node, Element element) {
+    Comment comment = convertAssociatedComment(node, element);
     return comment != null && comment.isDocComment() ? comment : null;
   }
 
-  private Comment convertAssociatedComment(JCTree node) {
+  private Comment convertAssociatedComment(JCTree node, Element element) {
     DocCommentTable docComments = unit.docComments;
     if (docComments == null || !docComments.hasComment(node)) {
       return null;
@@ -1208,7 +1209,7 @@ public class TreeConverter {
         comment = new BlockComment();
         break;
       case JAVADOC:
-        comment = new Javadoc();
+        comment = convertJavadocComment(element);
         break;
       case LINE:
         comment = new LineComment();
@@ -1219,7 +1220,13 @@ public class TreeConverter {
     int startPos = javacComment.getSourcePos(0);
     int endPos = startPos + javacComment.getText().length();
     comment.setSourceRange(startPos, endPos);
+    comment.setLineNumber(unit.getLineMap().getLineNumber(startPos));
     return comment;
+  }
+
+  private Javadoc convertJavadocComment(Element element) {
+    // TODO(tball): replace with a call to the future JavadocConverter.
+    return new Javadoc();
   }
 
   private static void addOcniComments(CompilationUnit unit) {
