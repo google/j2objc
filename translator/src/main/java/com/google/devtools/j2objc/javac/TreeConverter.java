@@ -1225,8 +1225,7 @@ public class TreeConverter {
   }
 
   private Javadoc convertJavadocComment(Element element) {
-    // TODO(tball): replace with a call to the future JavadocConverter.
-    return new Javadoc();
+    return JavadocConverter.convertJavadoc(element, env);
   }
 
   private static void addOcniComments(CompilationUnit unit) {

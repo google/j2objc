@@ -97,7 +97,7 @@ public class JavadocGeneratorTest extends GenerationTest {
         + " * <pre>{\"query\":\"Pizza\",\"locations\":[94043,90210]}</pre>\n"
         + " * or maybe <pre>{\"query\":\"Fuel\",\"locations\":[96011]}</pre>\n"
         + " */ class Test {}", "Test", "Test.h");
-    assertTranslatedLines(translation,
+    assertTranslatedSegments(translation,
         "@brief Comment fragment from JSONObject.java.",
         "Encodes this object as a compact JSON string, such as:",
         "@code",
