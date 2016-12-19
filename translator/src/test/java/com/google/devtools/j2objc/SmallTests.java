@@ -54,6 +54,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaCloneWriterTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
+import com.google.devtools.j2objc.translate.LambdaTypeElementAdderTest;
 import com.google.devtools.j2objc.translate.MetadataWriterTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
@@ -122,6 +123,7 @@ public class SmallTests {
     JavadocGeneratorTest.class,
     JavaToIOSMethodTranslatorTest.class,
     LambdaExpressionTest.class,
+    LambdaTypeElementAdderTest.class,
     LineDirectivesTest.class,
     LiteralGeneratorTest.class,
     MetadataWriterTest.class,

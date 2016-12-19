@@ -28,10 +28,17 @@ import javax.lang.model.type.TypeMirror;
  */
 public class LambdaTypeElement extends GeneratedTypeElement {
 
+  private final boolean isWeakOuter;
+
   public LambdaTypeElement(
-      String name, Element enclosingElement, TypeMirror superclass) {
+      String name, Element enclosingElement, TypeMirror superclass, boolean isWeakOuter) {
     super(name, ElementKind.CLASS, enclosingElement, superclass, NestingKind.ANONYMOUS, null,
           false, false);
+    this.isWeakOuter = isWeakOuter;
     addModifiers(Modifier.PRIVATE);
+  }
+
+  public boolean isWeakOuter() {
+    return isWeakOuter;
   }
 }

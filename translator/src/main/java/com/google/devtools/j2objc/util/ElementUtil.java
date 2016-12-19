@@ -370,7 +370,9 @@ public final class ElementUtil {
   }
 
   public static boolean isWeakOuterType(TypeElement type) {
-    if (isAnonymous(type)) {
+    if (type instanceof LambdaTypeElement) {
+      return ((LambdaTypeElement) type).isWeakOuter();
+    } else if (isAnonymous(type)) {
       // For anonymous classes we must check for a TYPE_USE annotation on the supertype used in the
       // declaration. For example:
       // Runnable r = new @WeakOuter Runnable() { ... };

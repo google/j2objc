@@ -14,19 +14,24 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.HashMap;
 import java.util.Map;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Adds LambdaTypeElement instances to LambdaExpression and MethodReference nodes.
@@ -54,10 +59,25 @@ public class LambdaTypeElementAdder extends UnitTreeVisitor {
   private boolean handleFunctionalExpression(FunctionalExpression node) {
     LambdaTypeElement elem = new LambdaTypeElement(
         getLambdaUniqueName(node), TreeUtil.getEnclosingElement(node),
-        typeUtil.getJavaObject().asType());
+        typeUtil.getJavaObject().asType(), isWeakOuter(node));
     elem.addInterfaces(node.getTargetTypes());
     node.setTypeElement(elem);
     return true;
+  }
+
+  private boolean isWeakOuter(FunctionalExpression node) {
+    VariableElement var = getAssignedVariable(node);
+    return var != null && ElementUtil.hasNamedAnnotation(var, "WeakOuter");
+  }
+
+  private VariableElement getAssignedVariable(FunctionalExpression node) {
+    TreeNode parent = node.getParent();
+    if (parent instanceof Assignment) {
+      return TreeUtil.getVariableElement(((Assignment) parent).getLeftHandSide());
+    } else if (parent instanceof VariableDeclaration) {
+      return ((VariableDeclaration) parent).getVariableElement();
+    }
+    return null;
   }
 
   @Override
