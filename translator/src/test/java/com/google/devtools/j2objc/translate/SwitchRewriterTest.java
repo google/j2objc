@@ -62,7 +62,8 @@ public class SwitchRewriterTest extends GenerationTest {
         + "case 3: log(i); int k = i, l = 42; break; }}"
         + "private void log(int i) {}}");
     TypeDeclaration testType = (TypeDeclaration) unit.getTypes().get(0);
-    MethodDeclaration method = TreeUtil.getMethodDeclarationsList(testType).get(0);
+    // First MethodDeclaration is the implicit default constructor.
+    MethodDeclaration method = TreeUtil.getMethodDeclarationsList(testType).get(1);
     List<Statement> stmts = method.getBody().getStatements();
     assertEquals(1, stmts.size());
     Block block = (Block) stmts.get(0);

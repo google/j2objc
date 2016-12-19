@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.translate.CastResolver;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
-import com.google.devtools.j2objc.translate.DefaultConstructorAdder;
 import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
@@ -134,10 +133,6 @@ public class TranslationProcessor extends FileProcessor {
     // Before: OuterReferenceResolver - OuterReferenceResolver needs the bindings fixed.
     new LambdaTypeElementAdder(unit).run();
     ticker.tick("LambdaTypeElementAdder");
-
-    // Adds implicit default constructors, like javac does.
-    unit.accept(new DefaultConstructorAdder());
-    ticker.tick("DefaultConstructorAdder");
 
     if (deadCodeMap != null) {
       new DeadCodeEliminator(unit, deadCodeMap).run();

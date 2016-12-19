@@ -70,18 +70,20 @@ public class MetadataWriterTest extends GenerationTest {
     assertTranslation(translation, "{ NULL, \"LNSObject;\", 0x400, -1, -1, -1, 3, -1, -1 },");
     assertTranslation(translation, "{ NULL, \"V\", 0x400, 4, 5, -1, 6, -1, -1 },");
     assertTranslation(translation, "{ NULL, \"V\", 0x400, 7, 8, -1, 9, -1, -1 },");
-    assertTranslation(translation, "methods[0].selector = @selector(test1)");
-    assertTranslation(translation, "methods[1].selector = @selector(test2)");
-    assertTranslation(translation, "methods[2].selector = @selector(test3)");
-    assertTranslation(translation, "methods[3].selector = @selector(test4)");
-    assertTranslation(translation, "methods[4].selector = @selector(test5)");
+    // Implicit default constructor
+    assertTranslation(translation, "methods[0].selector = @selector(init)");
+    assertTranslation(translation, "methods[1].selector = @selector(test1)");
+    assertTranslation(translation, "methods[2].selector = @selector(test2)");
+    assertTranslation(translation, "methods[3].selector = @selector(test3)");
+    assertTranslation(translation, "methods[4].selector = @selector(test4)");
+    assertTranslation(translation, "methods[5].selector = @selector(test5)");
     assertTranslation(translation,
-        "methods[5].selector = @selector(test6WithNSString:withNSObjectArray:)");
-    assertTranslation(translation, "methods[6].selector = @selector(test7)");
-    assertTranslation(translation, "methods[7].selector = @selector(test8)");
-    assertTranslation(translation, "methods[8].selector = @selector(test9)");
-    assertTranslation(translation, "methods[9].selector = @selector(test10WithInt:withId:)");
-    assertTranslation(translation, "methods[10].selector = @selector(test11WithId:withId:withId:)");
+        "methods[6].selector = @selector(test6WithNSString:withNSObjectArray:)");
+    assertTranslation(translation, "methods[7].selector = @selector(test7)");
+    assertTranslation(translation, "methods[8].selector = @selector(test8)");
+    assertTranslation(translation, "methods[9].selector = @selector(test9)");
+    assertTranslation(translation, "methods[10].selector = @selector(test10WithInt:withId:)");
+    assertTranslation(translation, "methods[11].selector = @selector(test11WithId:withId:withId:)");
 
     assertTranslation(translation,
         "static const void *ptrTable[] = { \"test6\", \"LNSString;[LNSObject;\", "

@@ -371,16 +371,6 @@ public class TreeConverter {
     convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
     for (JCTree bodyDecl : node.getMembers()) {
-      // Skip synthetic methods. Synthetic default constructors are not marked
-      // synthetic for backwards-compatibility reasons, so they are detected
-      // by a source position that's the same as their declaring class.
-      // TODO(tball): keep synthetic default constructors after front-end switch,
-      // and get rid of DefaultConstructorAdder translator.
-      if (bodyDecl.getKind() == Kind.METHOD
-          && (ElementUtil.isSynthetic(((JCTree.JCMethodDecl) bodyDecl).sym)
-              || bodyDecl.pos == node.pos)) {
-        continue;
-      }
       Object member = convert(bodyDecl);
       if (member instanceof BodyDeclaration) {  // Not true for enum constants.
         bodyDeclarations.add((BodyDeclaration) member);

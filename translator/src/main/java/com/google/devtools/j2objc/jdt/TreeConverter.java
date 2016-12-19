@@ -121,8 +121,10 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -393,14 +395,27 @@ public class TreeConverter {
   private static TreeNode convertAbstractTypeDeclaration(
       org.eclipse.jdt.core.dom.AbstractTypeDeclaration node, AbstractTypeDeclaration newNode) {
     convertBodyDeclaration(node, newNode);
-    List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
+    ITypeBinding typeBinding = node.resolveBinding();
+    Set<IMethodBinding> declaredInAst = new HashSet<>();
     for (Object bodyDecl : node.bodyDeclarations()) {
-      bodyDeclarations.add((BodyDeclaration) convert(bodyDecl));
+      if (bodyDecl instanceof org.eclipse.jdt.core.dom.MethodDeclaration) {
+        declaredInAst.add(((org.eclipse.jdt.core.dom.MethodDeclaration) bodyDecl).resolveBinding());
+      }
+      newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
+    }
+    for (IMethodBinding method : typeBinding.getDeclaredMethods()) {
+      if (method.isConstructor() && method.getParameterTypes().length == 0
+          && !declaredInAst.contains(method)) {
+        MethodDeclaration defaultConstructor =
+            new MethodDeclaration(BindingConverter.getExecutableElement(method))
+            .setBody(new Block());
+        newNode.addBodyDeclaration(0, defaultConstructor);
+        break;
+      }
     }
     return newNode
         .setName((SimpleName) convert(node.getName()))
-        .setTypeElement(BindingConverter.getTypeElement(node.resolveBinding()))
-        .setBodyDeclarations(bodyDeclarations);
+        .setTypeElement(BindingConverter.getTypeElement(typeBinding));
   }
 
   private static TreeNode convertAnnotatableType(
