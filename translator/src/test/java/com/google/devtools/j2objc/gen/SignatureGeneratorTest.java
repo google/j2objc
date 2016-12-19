@@ -22,7 +22,9 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 
@@ -150,30 +152,28 @@ public class SignatureGeneratorTest extends GenerationTest {
     List<ExecutableElement> methods = Lists.newArrayList(
         ElementUtil.getMethods(decls.get(0).getTypeElement()));
     assertEquals(7, methods.size());
+    
+    Set<String> signatures = new HashSet<>(methods.size());
+    for (ExecutableElement method : methods) {
+      signatures.add(signatureGenerator.createJniFunctionSignature(method));
+    }
 
     // Expected JNI signatures were copied from javah output.
 
     // Verify no parameters, since foo isn't overloaded.
-    assertEquals("Java_foo_bar_D_foo",
-        signatureGenerator.createJniFunctionSignature(methods.get(5)));
+    assertTrue(signatures.contains("Java_foo_bar_D_foo"));
 
     // Verify underscores and dollar signs in names are mangled.
-    assertEquals("Java_foo_bar_D_a_1b_00024c",
-        signatureGenerator.createJniFunctionSignature(methods.get(0)));
+    assertTrue(signatures.contains("Java_foo_bar_D_a_1b_00024c"));
 
     // Verify Unicode characters are mangled.
-    assertEquals("Java_foo_bar_D__04f60_0597d_04e16_0754c",
-        signatureGenerator.createJniFunctionSignature(methods.get(6)));
+    assertTrue(signatures.contains("Java_foo_bar_D__04f60_0597d_04e16_0754c"));
 
     // Verify overloaded methods have parameter suffixes.
-    assertEquals("Java_foo_bar_D_bar__",
-        signatureGenerator.createJniFunctionSignature(methods.get(1)));
-    assertEquals("Java_foo_bar_D_bar__Ljava_lang_String_2",
-        signatureGenerator.createJniFunctionSignature(methods.get(2)));
-    assertEquals("Java_foo_bar_D_bar__ZLjava_lang_String_2",
-        signatureGenerator.createJniFunctionSignature(methods.get(3)));
-    assertEquals("Java_foo_bar_D_bar___3Ljava_lang_String_2",
-        signatureGenerator.createJniFunctionSignature(methods.get(4)));
+    assertTrue(signatures.contains("Java_foo_bar_D_bar__"));
+    assertTrue(signatures.contains("Java_foo_bar_D_bar__Ljava_lang_String_2"));
+    assertTrue(signatures.contains("Java_foo_bar_D_bar__ZLjava_lang_String_2"));
+    assertTrue(signatures.contains("Java_foo_bar_D_bar___3Ljava_lang_String_2"));
 
     // Check Unicode class name mangling.
     methods = Lists.newArrayList(ElementUtil.getMethods(decls.get(1).getTypeElement()));
