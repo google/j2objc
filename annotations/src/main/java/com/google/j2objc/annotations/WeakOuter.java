@@ -16,6 +16,7 @@
 
 package com.google.j2objc.annotations;
 
+import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -28,7 +29,7 @@ import java.lang.annotation.Target;
  *
  * @author Tom Ball
  */
-@Target(TYPE)
+@Target({TYPE, LOCAL_VARIABLE})
 @Retention(SOURCE)
 public @interface WeakOuter {
 }
