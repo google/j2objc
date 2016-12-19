@@ -88,7 +88,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   public void testEnhancedForMethodInvocation() throws IOException {
     addSourceFile("import java.util.*; class A { "
-        + "final Map<String,String> map; }", "A.java");
+        + "final Map<String,String> map = new HashMap<>(); }", "A.java");
     String translation = translateSourceFile(
         "import java.util.*; class B extends A { "
         + "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");

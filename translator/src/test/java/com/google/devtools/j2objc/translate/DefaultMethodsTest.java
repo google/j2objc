@@ -393,7 +393,7 @@ public class DefaultMethodsTest extends GenerationTest {
 
   public void testExtraSelectorsFromMultipleOverrides() throws IOException {
     addSourceFile("interface I { int foo(String t); }", "I.java");
-    addSourceFile("class A<T> { int foo(T t) {} }", "A.java");
+    addSourceFile("class A<T> { int foo(T t) { return 0; } }", "A.java");
     String translation = translateSourceFile(
         "class B extends A<String> implements I { public int foo(String t) { return 7; } }",
         "B", "B.h");

@@ -403,8 +403,10 @@ public final class ElementUtil {
     assert getName(annotation.getAnnotationType().asElement()).equals("Property");
     String attributesStr = (String) getAnnotationValue(annotation, "value");
     Set<String> attributes = new HashSet<>();
-    attributes.addAll(Arrays.asList(attributesStr.split(",\\s*")));
-    attributes.remove(""); // Clear any empty strings.
+    if (attributesStr != null) {
+      attributes.addAll(Arrays.asList(attributesStr.split(",\\s*")));
+      attributes.remove(""); // Clear any empty strings.
+    }
     return attributes;
   }
 

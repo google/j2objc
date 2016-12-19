@@ -102,6 +102,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
+import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -393,21 +394,25 @@ public class TreeConverter {
 
   private TreeNode convertAnnotation(JCTree.JCAnnotation node) {
     List<JCTree.JCExpression> args = node.getArguments();
+    String annotationName = node.getAnnotationType().toString();
+    boolean isPropertyAnnotation = annotationName.equals(Property.class.getSimpleName())
+        || annotationName.equals(Property.class.getName());
     Annotation newNode;
-    if (args.isEmpty()) {
+    if (isPropertyAnnotation) {
+      newNode = new PropertyAnnotation()
+          .setAnnotationMirror(node.attribute);
+      if (!args.isEmpty()) {
+        for (String attr : ElementUtil.parsePropertyAttribute(node.attribute)) {
+          ((PropertyAnnotation) newNode).addAttribute(attr);
+        }
+      }
+    } else if (args.isEmpty()) {
       newNode = new MarkerAnnotation()
           .setAnnotationMirror(node.attribute);
     } else if (args.size() == 1) {
-      String annotationName = node.getAnnotationType().toString();
-      if (annotationName.equals(Property.class.getSimpleName())
-          || annotationName.equals(Property.class.getName())) {
-        newNode = new PropertyAnnotation();
-        //TODO(tball): parse property attribute string.
-        throw new AssertionError("not implemented");
-      } else {
-        newNode = new SingleMemberAnnotation()
-            .setValue((Expression) convert(args.get(0)));
-      }
+      JCTree.JCAssign assign = (JCTree.JCAssign) args.get(0);
+      newNode = new SingleMemberAnnotation()
+          .setValue((Expression) convert(assign.rhs));
     } else {
       NormalAnnotation normalAnn = new NormalAnnotation();
       for (JCTree.JCExpression obj : node.getArguments()) {
@@ -1060,7 +1065,7 @@ public class TreeConverter {
 
   private TreeNode convertSynchronized(JCTree.JCSynchronized node) {
     return new SynchronizedStatement()
-        .setExpression((Expression) convert(node.getExpression()))
+        .setExpression((Expression) convertWithoutParens(node.getExpression()))
         .setBody((Block) convertBlock(node.getBlock()));
   }
 
@@ -1165,6 +1170,13 @@ public class TreeConverter {
         newType = new ParameterizedType()
             .setType((SimpleType) new SimpleType(varType).setPosition(pos))
             .setTypeMirror(varType);
+      } else if (varType.getKind() == TypeKind.UNION) {
+        newType = new UnionType();
+        for (TypeMirror t : ((javax.lang.model.type.UnionType) varType).getAlternatives()) {
+          Type alternative = convertType(t, pos, false);
+          alternative.setPosition(pos);
+          ((UnionType) newType).addType(alternative);
+        }
       } else {
         newType = Type.newType(varType);
       }
