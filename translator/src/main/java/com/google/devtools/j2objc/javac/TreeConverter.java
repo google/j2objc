@@ -884,47 +884,61 @@ public class TreeConverter {
         .setBody((Block) convert(node.getBody()));
   }
 
+  private static String getMemberName(JCTree.JCExpression node) {
+    switch (node.getKind()) {
+      case IDENTIFIER: return node.toString();
+      case MEMBER_SELECT: return ((JCTree.JCFieldAccess) node).name.toString();
+      default: return null;
+    }
+  }
+
+  private static Symbol getMemberSymbol(JCTree.JCExpression node) {
+    switch (node.getKind()) {
+      case IDENTIFIER: return ((JCTree.JCIdent) node).sym;
+      case MEMBER_SELECT: return ((JCTree.JCFieldAccess) node).sym;
+      default: throw new AssertionError("Unexpected tree kind: " + node.getKind());
+    }
+  }
+
   private TreeNode convertMethodInvocation(JCTree.JCMethodInvocation node) {
     JCTree.JCExpression method = node.getMethodSelect();
-    if (method.getKind() == Kind.IDENTIFIER) {
-      ExecutableElement element = (ExecutableElement) ((JCTree.JCIdent) method).sym;
-      if (method.toString().equals("this")) {
-        ConstructorInvocation newNode = new ConstructorInvocation()
-            .setExecutablePair(new ExecutablePair(element));
-        for (JCTree.JCExpression arg : node.getArguments()) {
-          newNode.addArgument((Expression) convert(arg));
-        }
-        return newNode;
-      }
-      if (method.toString().equals("super")) {
-        SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-            .setExecutablePair(new ExecutablePair(element));
-        for (JCTree.JCExpression arg : node.getArguments()) {
-          newNode.addArgument((Expression) convert(arg));
-        }
-        // If there's no expression node, javac sets it to be "<init>" which we don't want.
-        Expression expr = ((Expression) convert(method));
-        if (!expr.toString().equals("<init>")) {
-          newNode.setExpression(expr);
-        }
-        return newNode;
-      }
+    String methodName = getMemberName(method);
+    ExecutableType type = (ExecutableType) method.type;
+    Symbol.MethodSymbol sym = (Symbol.MethodSymbol) getMemberSymbol(method);
+    JCTree.JCExpression target = method.getKind() == Kind.MEMBER_SELECT
+        ? ((JCTree.JCFieldAccess) method).selected : null;
 
+    if ("this".equals(methodName)) {
+      ConstructorInvocation newNode = new ConstructorInvocation()
+          .setExecutablePair(new ExecutablePair(sym));
+      for (JCTree.JCExpression arg : node.getArguments()) {
+        newNode.addArgument((Expression) convert(arg));
+      }
+      return newNode;
     }
-    if (method.getKind() == Kind.MEMBER_SELECT
-        && ((JCTree.JCFieldAccess) method).selected.toString().equals("super")) {
-      JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
-      Symbol.MethodSymbol sym = (Symbol.MethodSymbol) ((JCTree.JCFieldAccess) method).sym;
+
+    if ("super".equals(methodName)) {
+      SuperConstructorInvocation newNode = new SuperConstructorInvocation()
+          .setExecutablePair(new ExecutablePair(sym));
+      if (target != null) {
+        newNode.setExpression((Expression) convert(target));
+      }
+      for (JCTree.JCExpression arg : node.getArguments()) {
+        newNode.addArgument((Expression) convert(arg));
+      }
+      return newNode;
+    }
+
+    if (target != null && "super".equals(getMemberName(target))) {
       SuperMethodInvocation newNode = new SuperMethodInvocation()
-          .setExecutablePair(new ExecutablePair(sym, (ExecutableType) select.type))
-          .setName(convertSimpleName(sym, method.type, getPosition(node)));
-      if (select.selected.getKind() == Kind.MEMBER_SELECT) {
+          .setExecutablePair(new ExecutablePair(sym, type))
+          .setName(convertSimpleName(sym, type, getPosition(node)));
+      if (target.getKind() == Kind.MEMBER_SELECT) {
         // foo.bar.MyClass.super.print(...):
-        //   select: foo.bar.MyClass.super.print
-        //   select.selected: foo.bar.MyClass.super
-        //   select.selected.selected: foo.bar.MyClass
-        newNode.setQualifier((Name) convert(((JCTree.JCFieldAccess) select.selected).selected));
-       }
+        //   target: foo.bar.MyClass.super
+        //   target.selected: foo.bar.MyClass
+        newNode.setQualifier((Name) convert(((JCTree.JCFieldAccess) target).selected));
+      }
       for (JCTree.JCExpression arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg));
       }
@@ -932,19 +946,9 @@ public class TreeConverter {
     }
 
     MethodInvocation newNode = new MethodInvocation();
-    ExecutableElement sym;
-    ExecutableType type;
-    if (method.getKind() == Kind.IDENTIFIER) {
-      sym = (ExecutableElement) ((JCTree.JCIdent) method).sym;
-      type = (ExecutableType) method.type;
-      newNode.setName((SimpleName) convert(method));
-    } else {
-      JCTree.JCFieldAccess select = (JCTree.JCFieldAccess) method;
-      sym = (ExecutableElement) select.sym;
-      type = (ExecutableType) select.type;
-      newNode
-          .setName(convertSimpleName(select.sym, select.type, getPosition(select)))
-          .setExpression((Expression) convert(select.selected));
+    newNode.setName(convertSimpleName(sym, type, getPosition(method)));
+    if (target != null) {
+      newNode.setExpression((Expression) convert(target));
     }
     for (JCTree.JCExpression arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg));

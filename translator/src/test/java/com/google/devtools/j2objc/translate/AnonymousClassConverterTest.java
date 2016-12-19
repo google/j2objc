@@ -521,13 +521,14 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "static class B { String s;  I test(Test t, int i) { "
         + "return () -> t.new A() { public String toString() { return s + i; } }; } } }",
         "Test", "Test.m");
+    String superOuter = Options.isJDT() ? "superOuter$" : "x0";
     assertTranslation(translation,
         "static Test_B_1 *create_Test_B_1_initWithTest_B_withInt_withTest_("
-        + "Test_B *outer$, jint capture$0, Test *superOuter$);");
+        + "Test_B *outer$, jint capture$0, Test *" + superOuter + ");");
     assertTranslation(translation,
         "return create_Test_B_1_initWithTest_B_withInt_withTest_(this$0_, val$i_, val$t_);");
     // The super outer must be nil_chk'ed in the anonymous constructor.
-    assertTranslation(translation, "Test_A_initWithTest_(self, nil_chk(superOuter$));");
+    assertTranslation(translation, "Test_A_initWithTest_(self, nil_chk(" + superOuter + "));");
   }
 
   public void testSuperclassHasCapturedVariables() throws IOException {
