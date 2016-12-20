@@ -55,6 +55,11 @@ public class AnnotationPreProcessor {
 
   private File tmpDirectory;
   private final List<ProcessingContext> generatedInputs = Lists.newArrayList();
+  private final Options options;
+
+  public AnnotationPreProcessor(Options options){
+    this.options = options;
+  }
 
   public File getTemporaryDirectory() {
     return tmpDirectory;
@@ -82,32 +87,32 @@ public class AnnotationPreProcessor {
     String tmpDirPath = tmpDirectory.getAbsolutePath();
     List<String> compileArgs = Lists.newArrayList();
     Joiner pathJoiner = Joiner.on(":");
-    List<String> sourcePath = Options.getSourcePathEntries();
+    List<String> sourcePath = options.getSourcePathEntries();
     sourcePath.add(tmpDirPath);
     compileArgs.add("-sourcepath");
     compileArgs.add(pathJoiner.join(sourcePath));
     compileArgs.add("-classpath");
-    List<String> classPath = Options.getClassPathEntries();
+    List<String> classPath = options.getClassPathEntries();
     compileArgs.add(pathJoiner.join(classPath));
     compileArgs.add("-encoding");
-    compileArgs.add(Options.getCharset().name());
+    compileArgs.add(options.getCharset().name());
     compileArgs.add("-source");
-    compileArgs.add(Options.getSourceVersion().flag());
+    compileArgs.add(options.getSourceVersion().flag());
     compileArgs.add("-s");
     compileArgs.add(tmpDirPath);
     compileArgs.add("-d");
     compileArgs.add(tmpDirPath);
-    List<String> processorPath = Options.getProcessorPathEntries();
+    List<String> processorPath = options.getProcessorPathEntries();
     if (!processorPath.isEmpty()) {
       compileArgs.add("-processorpath");
       compileArgs.add(pathJoiner.join(processorPath));
     }
-    String processorClasses = Options.getProcessors();
+    String processorClasses = options.getProcessors();
     if (processorClasses != null) {
       compileArgs.add("-processor");
       compileArgs.add(processorClasses);
     }
-    if (Options.isVerbose()) {
+    if (options.isVerbose()) {
       compileArgs.add("-XprintProcessorInfo");
       compileArgs.add("-XprintRounds");
     }
@@ -118,12 +123,12 @@ public class AnnotationPreProcessor {
     batchOptions.put(CompilerOptions.OPTION_Process_Annotations, CompilerOptions.ENABLED);
     batchOptions.put(CompilerOptions.OPTION_GenerateClassFiles, CompilerOptions.DISABLED);
     AnnotationCompiler batchCompiler = new AnnotationCompiler(compileArgs, batchOptions,
-        new PrintWriter(System.out), new PrintWriter(System.err), inputs);
+        new PrintWriter(System.out), new PrintWriter(System.err), inputs, options);
     if (!batchCompiler.compile(compileArgs.toArray(new String[0]))) {
       // Any compilation errors will already by displayed.
       ErrorUtil.error("failed batch processing sources");
     }
-    if (!Options.getHeaderMap().includeGeneratedSources() && tmpDirectory != null) {
+    if (!options.getHeaderMap().includeGeneratedSources() && tmpDirectory != null) {
       collectGeneratedInputs(tmpDirectory, "", inputs);
     }
     return generatedInputs;
@@ -138,7 +143,8 @@ public class AnnotationPreProcessor {
         collectGeneratedInputs(f, relativeName, inputs);
       } else {
         if (f.getName().endsWith(".java")) {
-          inputs.add(ProcessingContext.fromFile(new RegularInputFile(f.getPath(), relativeName)));
+          inputs.add(ProcessingContext.fromFile(
+              new RegularInputFile(f.getPath(), relativeName), options));
         }
       }
     }
@@ -150,8 +156,8 @@ public class AnnotationPreProcessor {
    * in case any might have annotations that should be processed.
    */
   private boolean hasAnnotationProcessors() {
-    PathClassLoader loader = new PathClassLoader(Options.getClassPathEntries());
-    loader.addPaths(Options.getProcessorPathEntries());
+    PathClassLoader loader = new PathClassLoader(options.getClassPathEntries());
+    loader.addPaths(options.getProcessorPathEntries());
     ServiceLoader<Processor> serviceLoader = ServiceLoader.load(Processor.class, loader);
     Iterator<Processor> iterator = serviceLoader.iterator();
     return iterator.hasNext();
@@ -161,17 +167,19 @@ public class AnnotationPreProcessor {
   // created by annotation processors.
   private static class AnnotationProcessorFiler extends BatchFilerImpl {
     private final List<ProcessingContext> inputs;
+    private final Options options;
 
     AnnotationProcessorFiler(BaseAnnotationProcessorManager dispatchManager,
-        BatchProcessingEnvImpl env, List<ProcessingContext> inputs) {
+        BatchProcessingEnvImpl env, List<ProcessingContext> inputs, Options options) {
       super(dispatchManager, env);
       this.inputs = inputs;
+      this.options = options;
     }
 
     @Override
     public JavaFileObject createSourceFile(CharSequence name, Element... originatingElements)
         throws IOException {
-      if (!Options.getHeaderMap().includeGeneratedSources()) {
+      if (!options.getHeaderMap().includeGeneratedSources()) {
         return super.createSourceFile(name, originatingElements);
       }
       String referenceFile = null;
@@ -205,7 +213,7 @@ public class AnnotationPreProcessor {
       if (generatedSource == null) {
         String relativePath = name.toString().replace('.', '/') + ".java";
         generatedSource = ProcessingContext.fromFile(
-            new RegularInputFile(newSourceFile.toUri().getPath(), relativePath));
+            new RegularInputFile(newSourceFile.toUri().getPath(), relativePath), options);
       }
       inputs.add(generatedSource);
       return newSourceFile;
@@ -219,14 +227,16 @@ public class AnnotationPreProcessor {
     private final PrintWriter out;
     private final PrintWriter err;
     private final List<ProcessingContext> inputs;
+    private final Options options;
 
     AnnotationCompiler(List<String> compileArgs, Map<String, String> batchOptions,
-        PrintWriter stdOut, PrintWriter stdErr, List<ProcessingContext> inputs) {
+        PrintWriter stdOut, PrintWriter stdErr, List<ProcessingContext> inputs, Options options) {
       super(stdOut, stdErr, false, batchOptions, null);
       commandLine = compileArgs.toArray(new String[0]);
       out = stdOut;
       err = stdErr;
       this.inputs = inputs;
+      this.options = options;
     }
 
     @Override
@@ -235,8 +245,8 @@ public class AnnotationPreProcessor {
         @Override
         public void configure(Object batchCompiler, String[] commandLineArguments) {
           super.configure(batchCompiler, commandLineArguments);
-          BatchProcessingEnvImpl processingEnv =
-              new AnnotationProcessingEnv(this, (Main) batchCompiler, commandLineArguments, inputs);
+          BatchProcessingEnvImpl processingEnv = new AnnotationProcessingEnv(this,
+              (Main) batchCompiler, commandLineArguments, inputs, options);
           _processingEnv = processingEnv;
         }
       };
@@ -249,9 +259,10 @@ public class AnnotationPreProcessor {
 
   private static class AnnotationProcessingEnv extends BatchProcessingEnvImpl {
     private AnnotationProcessingEnv(BaseAnnotationProcessorManager dispatchManager,
-        Main batchCompiler, String[] commandLineArguments, List<ProcessingContext> inputs) {
+        Main batchCompiler, String[] commandLineArguments, List<ProcessingContext> inputs, 
+        Options options) {
       super(dispatchManager, batchCompiler, commandLineArguments);
-      _filer = new AnnotationProcessorFiler(_dispatchManager, this, inputs);
+      _filer = new AnnotationProcessorFiler(_dispatchManager, this, inputs, options);
     }
   }
 }

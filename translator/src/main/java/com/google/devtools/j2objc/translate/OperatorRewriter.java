@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
@@ -157,7 +156,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
 
   private void handleRetainedLocal(VariableElement var, Expression rhs) {
     if (ElementUtil.isLocalVariable(var) && ElementUtil.hasAnnotation(var, RetainedLocalRef.class)
-        && Options.useReferenceCounting()) {
+        && options.useReferenceCounting()) {
       FunctionElement element =
           new FunctionElement("JreRetainedLocalValue", TypeUtil.ID_TYPE, null);
       FunctionInvocation invocation = new FunctionInvocation(element, rhs.getTypeMirror());
@@ -203,7 +202,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
     }
 
-    if (isStrong && Options.useReferenceCounting()) {
+    if (isStrong && options.useReferenceCounting()) {
       String funcName = "JreStrongAssign";
       Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
       if (retainedRhs != null) {
@@ -427,7 +426,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     List<Expression> operands = getStringAppendOperands(node);
     Expression lhs = node.getLeftHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
-    String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
+    String funcName = "JreStrAppend" + translationUtil.getOperatorFunctionModifier(lhs);
     FunctionElement element = new FunctionElement(funcName, TypeUtil.ID_TYPE, null)
         .addParameters(TypeUtil.ID_PTR_TYPE, TypeUtil.NATIVE_CHAR_PTR)
         .setIsVarargs(true);

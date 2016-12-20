@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class JavaCloneWriterTest extends GenerationTest {
   }
 
   public void testJavaCloneMethodWithARC() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
         "import com.google.j2objc.annotations.Weak;"
         + " class Test { @Weak Object foo; }", "Test", "Test.m");

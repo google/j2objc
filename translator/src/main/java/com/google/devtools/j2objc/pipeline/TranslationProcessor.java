@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
@@ -94,8 +93,8 @@ public class TranslationProcessor extends FileProcessor {
     if (logger.isLoggable(Level.INFO)) {
       System.out.println("translating " + unitName);
     }
-    TimeTracker ticker = TimeTracker.getTicker(unitName);
-    if (Options.dumpAST()) {
+    TimeTracker ticker = TimeTracker.getTicker(unitName, options.timingLevel());
+    if (options.dumpAST()) {
       // Dump compilation unit to an .ast output file instead of translating.
       DebugASTDump.dumpUnit(unit);
     } else {
@@ -195,7 +194,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("NilCheckResolver");
 
     // Rewrites expressions that would cause unsequenced compile errors.
-    if (Options.extractUnsequencedModifications()) {
+    if (unit.getEnv().options().extractUnsequencedModifications()) {
       new UnsequencedExpressionRewriter(unit).run();
       ticker.tick("UnsequencedExpressionRewriter");
     }
@@ -298,13 +297,14 @@ public class TranslationProcessor extends FileProcessor {
   public static void generateObjectiveCSource(GenerationUnit unit) {
     assert unit.getOutputPath() != null;
     assert unit.isFullyParsed();
-    TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName());
+    TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName(), unit.options().timingLevel());
     logger.fine("Generating " + unit.getOutputPath());
-    logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
+    logger.finest("writing output file(s) to "
+        + unit.options().getOutputDirectory().getAbsolutePath());
     ticker.push();
 
     // write header
-    if (Options.generateSegmentedHeaders()) {
+    if (unit.options().generateSegmentedHeaders()) {
       ObjectiveCSegmentedHeaderGenerator.generate(unit);
     } else {
       ObjectiveCHeaderGenerator.generate(unit);

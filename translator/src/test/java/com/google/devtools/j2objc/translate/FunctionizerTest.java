@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
@@ -516,7 +515,7 @@ public class FunctionizerTest extends GenerationTest {
   }
 
   public void testFunctionizedConstructorsARC() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     innerTestFunctionizedConstructors();
   }
 

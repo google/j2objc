@@ -44,7 +44,6 @@ import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.ArrayList;
@@ -95,7 +94,7 @@ public class MetadataWriter extends UnitTreeVisitor {
 
   private void visitType(AbstractTypeDeclaration node) {
     TypeElement type = node.getTypeElement();
-    if (!TranslationUtil.needsReflection(type)) {
+    if (!translationUtil.needsReflection(type)) {
       return;
     }
 

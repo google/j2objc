@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -67,7 +66,7 @@ public class GwtConverterTest extends GenerationTest {
 
   // Verify GwtIncompatible method is not stripped by default.
   public void testGwtIncompatibleStrip() throws IOException {
-    Options.setStripGwtIncompatibleMethods(true);
+    options.setStripGwtIncompatibleMethods(true);
     String translation = translateSourceFile(
         "import com.google.common.annotations.GwtIncompatible;"
         + "class Test { "
@@ -89,7 +88,7 @@ public class GwtConverterTest extends GenerationTest {
   // Verify GwtIncompatible method is not stripped with flag, if
   // value is in GwtConverter.compatibleAPIs list.
   public void testGwtIncompatibleNoStripKnownValue() throws IOException {
-    Options.setStripGwtIncompatibleMethods(true);
+    options.setStripGwtIncompatibleMethods(true);
     String translation = translateSourceFile(
         "import com.google.common.annotations.GwtIncompatible;"
         + "class Test { "

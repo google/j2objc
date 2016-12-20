@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -50,7 +49,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testFunctionLineNumbers() throws IOException {
-    Options.setEmitLineDirectives(true);
+    options.setEmitLineDirectives(true);
     String translation = translateSourceFile("class A {\n\n"
         + "  static void test() {\n"
         + "    System.out.println(A.class);\n"
@@ -88,7 +87,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
 
   // Verify that accessor methods for static vars and constants are generated on request.
   public void testStaticFieldAccessorMethods() throws IOException {
-    Options.setStaticAccessorMethods(true);
+    options.setStaticAccessorMethods(true);
     String source = "class Test { "
         + "static String ID; "
         + "private static int i; "
@@ -122,7 +121,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
 
   // Verify that accessor methods for enum constants are generated on request.
   public void testEnumConstantAccessorMethods() throws IOException {
-    Options.setStaticAccessorMethods(true);
+    options.setStaticAccessorMethods(true);
     String source = "enum Test { ONE, TWO, EOF }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(translation, "+ (Test *)ONE {", "return JreEnum(Test, ONE);");

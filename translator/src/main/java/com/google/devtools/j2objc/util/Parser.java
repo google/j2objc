@@ -40,13 +40,6 @@ public abstract class Parser {
   }
 
   /**
-   * Returns a new Parser instance.
-   */
-  public static Parser newParser() {
-    return newParser(new Options());
-  }
-
-  /**
    * Return a new Parser instance with the provided Options.
    */
   public static Parser newParser(Options options) {
@@ -129,6 +122,10 @@ public abstract class Parser {
 
   public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {
     includeRunningVMBootclasspath = includeVMBootclasspath;
+  }
+
+  public Options options() {
+    return options;
   }
 
   /**

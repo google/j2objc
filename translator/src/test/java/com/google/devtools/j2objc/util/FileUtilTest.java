@@ -34,7 +34,7 @@ public class FileUtilTest extends GenerationTest {
     File file = new File(getResourceAsFile("example.jar"));
     JarredInputFile jarEntry = new JarredInputFile(
         file.getPath(), "com/google/test/package-info.java");
-    String source = FileUtil.readFile(jarEntry);
+    String source = FileUtil.readFile(jarEntry, options.getCharset());
     assertTrue(source.contains("package com.google.test;"));
   }
 

@@ -63,7 +63,7 @@ public class TreeShaker {
   }
 
   private static Parser createParser(Options options) {
-    Parser parser = Parser.newParser();
+    Parser parser = Parser.newParser(options);
     parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));

@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 
 import java.util.Set;
@@ -41,8 +40,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private ObjectiveCImplementationGenerator(GenerationUnit unit) {
-    super(unit, Options.emitLineDirectives());
-    suffix = Options.getLanguage().suffix();
+    super(unit, unit.options().emitLineDirectives());
+    suffix = unit.options().getLanguage().suffix();
   }
 
   @Override

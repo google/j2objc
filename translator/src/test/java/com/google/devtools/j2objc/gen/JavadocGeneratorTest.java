@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -32,7 +31,7 @@ public class JavadocGeneratorTest extends GenerationTest {
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    Options.setDocCommentsEnabled(true);
+    options.setDocCommentsEnabled(true);
   }
 
   public void testBasicDocComments() throws IOException {

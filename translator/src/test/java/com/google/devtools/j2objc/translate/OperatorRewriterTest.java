@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
 
@@ -135,7 +134,7 @@ public class OperatorRewriterTest extends GenerationTest {
   }
 
   public void testStringAppendLocalVariableARC() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
         "class Test { void test() { String str = \"foo\"; str += \"bar\"; } }", "Test", "Test.m");
     // Local variables in ARC have strong semantics.

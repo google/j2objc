@@ -62,10 +62,12 @@ public final class TranslationUtil {
 
   private final TypeUtil typeUtil;
   private final NameTable nameTable;
+  private final Options options;
 
-  public TranslationUtil(TypeUtil typeUtil, NameTable nameTable) {
+  public TranslationUtil(TypeUtil typeUtil, NameTable nameTable, Options options) {
     this.typeUtil = typeUtil;
     this.nameTable = nameTable;
+    this.options = options;
   }
 
   public static TypeElement getSuperType(AbstractTypeDeclaration node) {
@@ -99,16 +101,16 @@ public final class TranslationUtil {
     return result;
   }
 
-  public static boolean needsReflection(AbstractTypeDeclaration node) {
+  public boolean needsReflection(AbstractTypeDeclaration node) {
     return needsReflection(node.getTypeElement());
   }
 
-  public static boolean needsReflection(PackageDeclaration node) {
+  public boolean needsReflection(PackageDeclaration node) {
     return needsReflection(getReflectionSupportLevel(
         ElementUtil.getAnnotation(node.getPackageElement(), ReflectionSupport.class)));
   }
 
-  public static boolean needsReflection(TypeElement type) {
+  public boolean needsReflection(TypeElement type) {
     if (ElementUtil.isLambda(type)) {
       return false;
     }
@@ -120,14 +122,14 @@ public final class TranslationUtil {
       }
       type = ElementUtil.getDeclaringClass(type);
     }
-    return !Options.stripReflection();
+    return !options.stripReflection();
   }
 
-  private static boolean needsReflection(ReflectionSupport.Level level) {
+  private boolean needsReflection(ReflectionSupport.Level level) {
     if (level != null) {
       return level == ReflectionSupport.Level.FULL;
     } else {
-      return !Options.stripReflection();
+      return !options.stripReflection();
     }
   }
 
@@ -254,7 +256,7 @@ public final class TranslationUtil {
    * "Strong" if the lhs is a field with a strong reference, and an empty string
    * for local variables and weak fields.
    */
-  public static String getOperatorFunctionModifier(Expression expr) {
+  public String getOperatorFunctionModifier(Expression expr) {
     VariableElement var = TreeUtil.getVariableElement(expr);
     if (var == null) {
       assert TreeUtil.trimParentheses(expr) instanceof ArrayAccess
@@ -265,7 +267,7 @@ public final class TranslationUtil {
     if (ElementUtil.isVolatile(var)) {
       modifier += "Volatile";
     }
-    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || Options.useARC())) {
+    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || options.useARC())) {
       modifier += "Strong";
     }
     return modifier;

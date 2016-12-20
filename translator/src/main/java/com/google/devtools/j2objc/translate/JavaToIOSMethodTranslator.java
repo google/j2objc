@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -149,7 +148,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
 
     ExecutableElement cloneElement = ElementUtil.findMethod(typeUtil.getJavaObject(), "clone");
     MethodInvocation invocation = new MethodInvocation(new ExecutablePair(cloneElement), null);
-    if (Options.useReferenceCounting()) {
+    if (options.useReferenceCounting()) {
       invocation = new MethodInvocation(new ExecutablePair(RETAIN_METHOD), invocation);
     }
     block.addStatement(new ReturnStatement(invocation));

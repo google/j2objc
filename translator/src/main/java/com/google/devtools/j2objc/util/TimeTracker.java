@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.TimingLevel;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -29,8 +28,8 @@ import java.util.List;
  */
 public class TimeTracker {
 
-  public static TimeTracker getTicker(String name) {
-    if (Options.timingLevel() == TimingLevel.ALL) {
+  public static TimeTracker getTicker(String name, TimingLevel timingLevel) {
+    if (timingLevel == TimingLevel.ALL) {
       return TimeTracker.start(name);
     } else {
       return TimeTracker.noop();

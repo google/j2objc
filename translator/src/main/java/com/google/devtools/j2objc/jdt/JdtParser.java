@@ -54,9 +54,11 @@ public class JdtParser extends Parser {
 
   private static final Logger logger = Logger.getLogger(JdtParser.class.getName());
 
-  private Map<String, String> compilerOptions = initCompilerOptions(Options.getSourceVersion());
+  private Map<String, String> compilerOptions =
+      initCompilerOptions(options.getSourceVersion(), options.lintOptions());
 
-  private static Map<String, String> initCompilerOptions(SourceVersion sourceVersion) {
+  private static Map<String, String> initCompilerOptions(
+      SourceVersion sourceVersion, EnumSet<LintOption> lintOptions) {
     Map<String, String> compilerOptions = new HashMap<>();
     String version = sourceVersion.flag();
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, version);
@@ -64,7 +66,6 @@ public class JdtParser extends Parser {
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, version);
 
     // Turn on any specified lint warnings.
-    EnumSet<LintOption> lintOptions = Options.lintOptions();
     for (Options.LintOption lintOption : lintOptions) {
       compilerOptions.put(lintOption.jdtFlag(), "warning");
     }
@@ -120,7 +121,7 @@ public class JdtParser extends Parser {
   public com.google.devtools.j2objc.ast.CompilationUnit parse(InputFile file) {
     String source = null;
     try {
-      source = FileUtil.readFile(file);
+      source = FileUtil.readFile(file, options.getCharset());
       return parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
@@ -146,7 +147,7 @@ public class JdtParser extends Parser {
   }
 
   private CompilationUnit parse(String unitName, String source, boolean resolveBindings) {
-    ASTParser parser = newASTParser(resolveBindings, Options.getSourceVersion());
+    ASTParser parser = newASTParser(resolveBindings, options.getSourceVersion());
     parser.setUnitName(unitName);
     parser.setSource(source.toCharArray());
     CompilationUnit unit = (CompilationUnit) parser.createAST(null);
@@ -168,7 +169,7 @@ public class JdtParser extends Parser {
         if (checkCompilationErrors(sourceFilePath, ast)) {
           RegularInputFile file = new RegularInputFile(sourceFilePath);
           try {
-            String source = FileUtil.readFile(file);
+            String source = FileUtil.readFile(file, options.getCharset());
             ParserEnvironment parserEnv = new JdtParserEnvironment(ast.getAST());
             TranslationEnvironment env = new TranslationEnvironment(options, parserEnv);
             com.google.devtools.j2objc.ast.CompilationUnit unit =

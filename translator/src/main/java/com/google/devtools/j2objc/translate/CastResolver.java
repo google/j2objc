@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -72,13 +71,6 @@ public class CastResolver extends UnitTreeVisitor {
     TypeMirror type = node.getType().getTypeMirror();
     Expression expr = node.getExpression();
     TypeMirror exprType = expr.getTypeMirror();
-
-    // TODO(kirbs): Implement correct conversion of Java 8 intersection types to Objective-C.
-    if (node.getType().isIntersectionType() && !Options.isJava8Translator()) {
-      // Technically we can't currently get here, but as we add support and change flags in the
-      // future this should alert us to implement intersection types.
-        assert false : "not implemented yet";
-    }
 
     if (TypeUtil.isFloatingPoint(exprType)) {
       // Java wouldn't allow a cast from primitive to non-primitive.

@@ -42,19 +42,23 @@ abstract class FileProcessor {
 
   private final Parser parser;
   protected final BuildClosureQueue closureQueue;
+  protected final Options options;
 
-  private final int batchSize = Options.batchTranslateMaximum();
-  private final Set<ProcessingContext> batchInputs =
-      Sets.newLinkedHashSetWithExpectedSize(batchSize);
+  private final int batchSize;
+  private final Set<ProcessingContext> batchInputs;
 
-  private final boolean doBatching = batchSize > 0;
+  private final boolean doBatching;
 
   public FileProcessor(Parser parser) {
     this.parser = Preconditions.checkNotNull(parser);
-    if (Options.buildClosure()) {
+    this.options = parser.options();
+    batchSize = options.batchTranslateMaximum();
+    batchInputs = Sets.newLinkedHashSetWithExpectedSize(batchSize);
+    doBatching = batchSize > 0;
+    if (options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
-      assert !Options.getHeaderMap().useSourceDirectories();
-      closureQueue = new BuildClosureQueue();
+      assert !options.getHeaderMap().useSourceDirectories();
+      closureQueue = new BuildClosureQueue(options);
     } else {
       closureQueue = null;
     }
@@ -78,7 +82,7 @@ abstract class FileProcessor {
         if (file == null) {
           break;
         }
-        processInput(ProcessingContext.fromFile(file));
+        processInput(ProcessingContext.fromFile(file, options));
       }
     }
   }
@@ -131,7 +135,7 @@ abstract class FileProcessor {
       }
     };
     logger.finest("Processing batch of size " + batchInputs.size());
-    parser.parseFiles(paths, handler, Options.getSourceVersion());
+    parser.parseFiles(paths, handler, options.getSourceVersion());
 
     // Any remaining files in batchFiles has some kind of error.
     for (ProcessingContext input : batchInputs) {

@@ -15,9 +15,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-
 import java.io.IOException;
 
 /**
@@ -26,17 +24,19 @@ import java.io.IOException;
 public class TranslationUtilTest extends GenerationTest {
 
   public void testPackageNeedsReflection() throws IOException {
-    Options.setStripReflection(true);
+    options.setStripReflection(true);
     CompilationUnit unit = compileType("foo.package-info",
         "@ReflectionSupport(value = ReflectionSupport.Level.FULL) package foo; "
         + "import com.google.j2objc.annotations.ReflectionSupport;");
-    assertTrue(TranslationUtil.needsReflection(unit.getPackage()));
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getPackage()));
     unit = compileType("bar.package-info",
         "@ReflectionSupport(value = ReflectionSupport.Level.NATIVE_ONLY) package foo; "
         + "import com.google.j2objc.annotations.ReflectionSupport;");
-    assertFalse(TranslationUtil.needsReflection(unit.getPackage()));
+    assertFalse(translationUtil.needsReflection(unit.getPackage()));
     unit = compileType("mumble.package-info",
         "package mumble; "
         + "import com.google.j2objc.annotations.ReflectionSupport;");
-    assertFalse(TranslationUtil.needsReflection(unit.getPackage()));  }
+    assertFalse(translationUtil.needsReflection(unit.getPackage()));
+  }
 }

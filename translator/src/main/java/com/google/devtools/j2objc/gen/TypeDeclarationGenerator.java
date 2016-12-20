@@ -20,7 +20,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MultimapBuilder;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -216,7 +215,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Prints the list of static variable and/or enum constant accessor methods.
    */
   protected void printStaticAccessors() {
-    if (Options.staticAccessorMethods()) {
+    if (options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         VariableElement var = fragment.getVariableElement();
         String accessorName = nameTable.getStaticAccessorName(var);
@@ -229,7 +228,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
           String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
-          if (Options.nullability()) {
+          if (options.nullability()) {
             printf("\n+ (%s * __nonnull)%s;\n", typeName, accessorName);
           } else {
             printf("\n+ (%s *)%s;\n", typeName, accessorName);
@@ -605,7 +604,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private boolean needsDeprecatedAttribute(List<Annotation> annotations) {
-    return Options.generateDeprecatedDeclarations() && hasDeprecated(annotations);
+    return options.generateDeprecatedDeclarations() && hasDeprecated(annotations);
   }
 
   private boolean hasDeprecated(List<Annotation> annotations) {

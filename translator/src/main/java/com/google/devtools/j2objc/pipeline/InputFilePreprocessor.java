@@ -40,9 +40,11 @@ public class InputFilePreprocessor {
 
   private final Parser parser;
   private File strippedSourcesDir;
+  private final Options options;
 
   public InputFilePreprocessor(Parser parser) {
     this.parser = parser;
+    this.options = parser.options();
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
@@ -77,8 +79,8 @@ public class InputFilePreprocessor {
 
   private void processRegularSource(ProcessingContext input) throws IOException {
     InputFile file = input.getFile();
-    String source = FileUtil.readFile(file);
-    boolean shouldMapHeaders = Options.getHeaderMap().useSourceDirectories();
+    String source = FileUtil.readFile(file, options.getCharset());
+    boolean shouldMapHeaders = options.getHeaderMap().useSourceDirectories();
     boolean doIncompatibleStripping = source.contains("J2ObjCIncompatible");
     if (!(shouldMapHeaders || doIncompatibleStripping)) {
       // No need to parse.
@@ -91,7 +93,7 @@ public class InputFilePreprocessor {
     }
     String qualifiedName = parseResult.mainTypeName();
     if (shouldMapHeaders) {
-      Options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
+      options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
     }
     if (doIncompatibleStripping) {
       parseResult.stripIncompatibleSource();
@@ -99,14 +101,14 @@ public class InputFilePreprocessor {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, Options.getCharset());
+      Files.write(parseResult.getSource(), strippedFile, options.getCharset());
       input.setFile(new RegularInputFile(strippedFile.getPath(), relativePath));
     }
   }
 
   private void processPackageInfoSource(ProcessingContext input) throws IOException {
     InputFile file = input.getFile();
-    String source = FileUtil.readFile(file);
+    String source = FileUtil.readFile(file, options.getCharset());
     CompilationUnit compilationUnit =
         parser.parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
     if (compilationUnit != null) {
@@ -127,7 +129,7 @@ public class InputFilePreprocessor {
             ObjectiveCName.class.getCanonicalName())) {
           String key = unit.getPackage().getName().getFullyQualifiedName();
           String val = (String) ((SingleMemberAnnotation) annotation).getValue().getConstantValue();
-          Options.getPackagePrefixes().addPrefix(key, val);
+          options.getPackagePrefixes().addPrefix(key, val);
         }
       }
     }

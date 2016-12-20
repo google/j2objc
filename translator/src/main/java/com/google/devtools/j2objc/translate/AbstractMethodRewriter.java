@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     // There's no need to stub out an abstract method for an interface's companion class.
     // Similarly, if this is an abstract method in a class and there's no need for reflection,
     // we skip the stubbing out.
-    if (!TranslationUtil.needsReflection(declaringClass)) {
+    if (!translationUtil.needsReflection(declaringClass)) {
       unit.setHasIncompleteProtocol();
       unit.setHasIncompleteImplementation();
       return;

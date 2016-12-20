@@ -51,7 +51,6 @@ import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
@@ -170,7 +169,7 @@ public class Autoboxer extends UnitTreeVisitor {
     }
     TypeMirror pointerType = new PointerType(type);
     String funcName = "JreBoxed" + getAssignFunctionName(node.getOperator())
-        + TranslationUtil.getOperatorFunctionModifier(lhs)
+        + translationUtil.getOperatorFunctionModifier(lhs)
         + NameTable.capitalize(primitiveType.toString());
     FunctionElement element = new FunctionElement(funcName, type, TypeUtil.asTypeElement(type))
         .addParameters(pointerType, primitiveType);
@@ -380,7 +379,7 @@ public class Autoboxer extends UnitTreeVisitor {
       return;
     }
     TypeMirror pointerType = new PointerType(type);
-    funcName = "JreBoxed" + funcName + TranslationUtil.getOperatorFunctionModifier(operand)
+    funcName = "JreBoxed" + funcName + translationUtil.getOperatorFunctionModifier(operand)
         + NameTable.capitalize(primitiveType.toString());
     FunctionElement element = new FunctionElement(funcName, type, TypeUtil.asTypeElement(type))
         .addParameters(pointerType);

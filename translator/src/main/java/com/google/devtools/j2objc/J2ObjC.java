@@ -58,9 +58,9 @@ public class J2ObjC {
     return UnicodeUtils.format(Options.getFileHeader(), sourceFileName);
   }
 
-  private static void checkErrors() {
+  private static void checkErrors(boolean treatWarningsAsErrors) {
     int errors = ErrorUtil.errorCount();
-    if (Options.treatWarningsAsErrors()) {
+    if (treatWarningsAsErrors) {
       errors += ErrorUtil.warningCount();
     }
     if (errors > 0) {
@@ -69,14 +69,14 @@ public class J2ObjC {
   }
 
   @VisibleForTesting
-  public static Parser createParser() {
-    Parser parser = Parser.newParser();
-    parser.addClasspathEntries(Options.getClassPathEntries());
+  public static Parser createParser(Options options) {
+    Parser parser = Parser.newParser(options);
+    parser.addClasspathEntries(options.getClassPathEntries());
     parser.addClasspathEntries(Options.getBootClasspath());
-    parser.addSourcepathEntries(Options.getSourcePathEntries());
+    parser.addSourcepathEntries(options.getSourcePathEntries());
     parser.setIncludeRunningVMBootclasspath(false);
-    parser.setEncoding(Options.fileEncoding());
-    parser.setEnableDocComments(Options.docCommentsEnabled());
+    parser.setEncoding(options.fileEncoding());
+    parser.setEnableDocComments(options.docCommentsEnabled());
     return parser;
   }
 
@@ -88,21 +88,21 @@ public class J2ObjC {
    * Runs the entire J2ObjC pipeline.
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
-  public static void run(List<String> fileArgs) {
+  public static void run(List<String> fileArgs, Options options) {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
     try {
-      Parser parser = createParser();
+      Parser parser = createParser(options);
 
       List<ProcessingContext> inputs = Lists.newArrayList();
-      GenerationBatch batch = new GenerationBatch();
+      GenerationBatch batch = new GenerationBatch(options);
       batch.processFileArgs(fileArgs);
       inputs.addAll(batch.getInputs());
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
-      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor();
+      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor(options);
       List<ProcessingContext> generatedInputs = preProcessor.process(fileArgs, inputs);
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.
       preProcessorTempDir = preProcessor.getTemporaryDirectory();
@@ -123,7 +123,7 @@ public class J2ObjC {
         parser.prependSourcepathEntry(strippedSourcesDir.getPath());
       }
 
-      Options.getHeaderMap().loadMappings();
+      options.getHeaderMap().loadMappings();
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
@@ -133,7 +133,7 @@ public class J2ObjC {
       }
       translationProcessor.postProcess();
 
-      Options.getHeaderMap().printMappings();
+      options.getHeaderMap().printMappings();
     } finally {
       FileUtil.deleteTempDir(preProcessorTempDir);
       FileUtil.deleteTempDir(strippedSourcesDir);
@@ -153,8 +153,10 @@ public class J2ObjC {
     long startTime = System.currentTimeMillis();
 
     String[] files = null;
+    Options options = new Options();
+
     try {
-      files = Options.load(args);
+      files = options.load(args);
       if (files.length == 0) {
         Options.usage("no source files");
       }
@@ -163,14 +165,14 @@ public class J2ObjC {
       System.exit(1);
     }
 
-    run(Arrays.asList(files));
+    run(Arrays.asList(files), options);
 
-    TimingLevel timingLevel = Options.timingLevel();
+    TimingLevel timingLevel = options.timingLevel();
     if (timingLevel == TimingLevel.TOTAL || timingLevel == TimingLevel.ALL) {
       System.out.printf("j2objc execution time: %d ms\n", System.currentTimeMillis() - startTime);
     }
 
     // Run last, since it calls System.exit() with the number of errors.
-    checkErrors();
+    checkErrors(options.treatWarningsAsErrors());
   }
 }

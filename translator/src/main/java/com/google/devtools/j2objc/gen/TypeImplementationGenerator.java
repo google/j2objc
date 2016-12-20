@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -163,7 +162,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
    * Prints the list of static variable and/or enum constant accessor methods.
    */
   protected void printStaticAccessors() {
-    if (!Options.staticAccessorMethods()) {
+    if (!options.staticAccessorMethods()) {
       return;
     }
     for (VariableDeclarationFragment fragment : getStaticFields()) {
@@ -185,7 +184,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         if (!ElementUtil.isFinal(varElement)) {
           String setterFunc = isVolatile
               ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")
-              : (isPrimitive | Options.useARC() ? null : "JreStrongAssign");
+              : (isPrimitive | options.useARC() ? null : "JreStrongAssign");
           if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                 NameTable.capitalize(accessorName), objcType, varName);

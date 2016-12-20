@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
@@ -370,7 +369,8 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(PackageDeclaration node) {
     String pkgName = node.getName().toString();
-    if (Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName)) {
+    if (options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName,
+          options.getCharset(), options.getSourcePathEntries(), options.getClassPathEntries())) {
       unit.setHasNullabilityAnnotations();
     }
   }

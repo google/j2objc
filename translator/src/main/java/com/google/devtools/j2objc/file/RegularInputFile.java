@@ -13,13 +13,13 @@
  */
 package com.google.devtools.j2objc.file;
 
-import com.google.devtools.j2objc.Options;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 /**
  * A single file in the filesystem.
@@ -50,8 +50,8 @@ public class RegularInputFile implements InputFile {
   }
 
   @Override
-  public Reader openReader() throws IOException {
-    return new InputStreamReader(getInputStream(),  Options.getCharset());
+  public Reader openReader(Charset charset) throws IOException {
+    return new InputStreamReader(getInputStream(),  charset);
   }
 
   @Override

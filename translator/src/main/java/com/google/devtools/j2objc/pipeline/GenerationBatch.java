@@ -46,8 +46,13 @@ import java.util.zip.ZipFile;
 public class GenerationBatch {
 
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
+  private final Options options;
 
   private final List<ProcessingContext> inputs = Lists.newArrayList();
+
+  public GenerationBatch(Options options){
+    this.options = options;
+  }
 
   public List<ProcessingContext> getInputs() {
     return inputs;
@@ -78,7 +83,7 @@ public class GenerationBatch {
       return;
     }
     try {
-      String fileList = Files.toString(f, Options.getCharset());
+      String fileList = Files.toString(f, options.getCharset());
       if (fileList.isEmpty()) {
         return;
       }
@@ -110,7 +115,7 @@ public class GenerationBatch {
         // Convert to a qualified name and search on the sourcepath.
         String qualifiedName =
             filename.substring(0, filename.length() - 5).replace(File.separatorChar, '.');
-        inputFile = FileUtil.findOnSourcePath(qualifiedName);
+        inputFile = FileUtil.findOnSourcePath(qualifiedName, options.getSourcePathEntries());
 
         if (inputFile == null) {
           ErrorUtil.error("No such file: " + filename);
@@ -132,7 +137,7 @@ public class GenerationBatch {
     }
     // Checking the sourcepath is helpful for our unit tests where the source
     // jars aren't relative to the current working directory.
-    for (String path : Options.getSourcePathEntries()) {
+    for (String path : options.getSourcePathEntries()) {
       File dir = new File(path);
       if (dir.isDirectory()) {
         f = new File(dir, filename);
@@ -165,7 +170,7 @@ public class GenerationBatch {
       } finally {
         zfile.close();  // Also closes input stream.
       }
-      if (Options.getHeaderMap().combineSourceJars()) {
+      if (options.getHeaderMap().combineSourceJars()) {
         addCombinedJar(filename, inputFiles);
       } else {
         for (InputFile file : inputFiles) {
@@ -182,7 +187,7 @@ public class GenerationBatch {
 
   @VisibleForTesting
   public void addCombinedJar(String filename, Collection<? extends InputFile> inputFiles) {
-    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(filename, inputFiles.size());
+    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(filename, inputFiles.size(), options);
     for (InputFile file : inputFiles) {
       inputs.add(new ProcessingContext(file, unit));
     }
@@ -193,6 +198,6 @@ public class GenerationBatch {
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
   public void addSource(InputFile file) {
-    inputs.add(ProcessingContext.fromFile(file));
+    inputs.add(ProcessingContext.fromFile(file, options));
   }
 }

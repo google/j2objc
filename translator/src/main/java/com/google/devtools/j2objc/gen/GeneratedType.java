@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -76,6 +75,7 @@ public class GeneratedType {
     TypeElement typeElement = typeNode.getTypeElement();
     CompilationUnit unit = TreeUtil.getCompilationUnit(typeNode);
     NameTable nameTable = unit.getEnv().nameTable();
+    boolean emitLineDirectives = unit.getEnv().options().emitLineDirectives();
 
     ImmutableList.Builder<String> superTypes = ImmutableList.builder();
     TypeElement superclass = ElementUtil.getSuperclass(typeElement);
@@ -97,15 +97,15 @@ public class GeneratedType {
     ImplementationImportCollector importCollector = new ImplementationImportCollector(unit);
     typeNode.accept(importCollector);
 
-    SourceBuilder builder = new SourceBuilder(Options.emitLineDirectives());
+    SourceBuilder builder = new SourceBuilder(emitLineDirectives);
     TypeDeclarationGenerator.generate(builder, typeNode);
     String publicDeclarationCode = builder.toString();
 
-    builder = new SourceBuilder(Options.emitLineDirectives());
+    builder = new SourceBuilder(emitLineDirectives);
     TypePrivateDeclarationGenerator.generate(builder, typeNode);
     String privateDeclarationCode = builder.toString();
 
-    builder = new SourceBuilder(Options.emitLineDirectives());
+    builder = new SourceBuilder(emitLineDirectives);
     TypeImplementationGenerator.generate(builder, typeNode);
     String implementationCode = builder.toString();
 

@@ -55,6 +55,7 @@ public class GenerationUnit {
   private boolean hasIncompleteProtocol = false;
   private boolean hasIncompleteImplementation = false;
   private boolean hasNullabilityAnnotations = false;
+  private final Options options;
 
   private enum State {
     ACTIVE,   // Initial state, still collecting CompilationUnits.
@@ -63,14 +64,15 @@ public class GenerationUnit {
   }
 
   @VisibleForTesting
-  public GenerationUnit(String sourceName, int numUnits) {
+  public GenerationUnit(String sourceName, int numUnits, Options options) {
     this.sourceName = sourceName;
     this.numUnits = numUnits;
+    this.options = options;
   }
 
-  public static GenerationUnit newSingleFileUnit(InputFile file) {
-    GenerationUnit unit = new GenerationUnit(file.getPath(), 1);
-    if (Options.getHeaderMap().useSourceDirectories()) {
+  public static GenerationUnit newSingleFileUnit(InputFile file, Options options) {
+    GenerationUnit unit = new GenerationUnit(file.getPath(), 1, options);
+    if (options.getHeaderMap().useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
       unit.outputPath = outputPath;
@@ -78,12 +80,12 @@ public class GenerationUnit {
     return unit;
   }
 
-  public static GenerationUnit newCombinedJarUnit(String filename, int numInputs) {
+  public static GenerationUnit newCombinedJarUnit(String filename, int numInputs, Options options) {
     String outputPath = filename;
     if (outputPath.lastIndexOf(File.separatorChar) < outputPath.lastIndexOf(".")) {
       outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
     }
-    GenerationUnit unit = new GenerationUnit(filename, numInputs);
+    GenerationUnit unit = new GenerationUnit(filename, numInputs, options);
     unit.outputPath = outputPath;
     return unit;
   }
@@ -153,7 +155,7 @@ public class GenerationUnit {
       // be compiled and translated as a single task. When we support
       // parallelization, each parallel task needs to be constrained this way.
       assert receivedUnits == 1;
-      outputPath = Options.getHeaderMap().getOutputPath(unit);
+      outputPath = options.getHeaderMap().getOutputPath(unit);
     }
 
     hasIncompleteProtocol = hasIncompleteProtocol || unit.hasIncompleteProtocol();
@@ -234,5 +236,9 @@ public class GenerationUnit {
     }
     sb.append(generatedTypes);
     return sb.toString();
+  }
+
+  public Options options() {
+    return options;
   }
 }

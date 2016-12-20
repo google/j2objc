@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testUnicodeHeaderGuardTranslation() throws IOException {
-    Options.setSegmentedHeaders(false);
+    options.setSegmentedHeaders(false);
     // Non-letters should be replaced
     String translation = translateSourceFile(
         "public class ¢ents {}", "¢ents", "¢ents.h");
@@ -68,7 +67,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testDeprecatedTypeNameTranslation() throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(
         "public @Deprecated class Example {}", "Example", "Example.h");
     assertTranslation(translation, "__attribute__((deprecated))\n@interface Example ");
@@ -81,7 +80,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testFullyQualifiedDeprecatedTypeNameTranslation() throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(
         "public @java.lang.Deprecated class Example {}", "Example", "Example.h");
     assertTranslation(translation, "__attribute__((deprecated))\n@interface Example ");
@@ -124,7 +123,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testHeaderFileMapping() throws IOException {
-    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
+    options.getHeaderMap().setMappingFiles("testMappings.j2objc");
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     loadHeaderMappings();
@@ -147,7 +146,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testNoHeaderMapping() throws IOException {
     // Should be able to turn off header mappings by passing empty list.
-    Options.getHeaderMap().setMappingFiles("");
+    options.getHeaderMap().setMappingFiles("");
     addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
     loadHeaderMappings();
     String translation = translateSourceFile(
@@ -158,8 +157,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testOutputHeaderFileMapping() throws IOException {
-    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
-    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+    options.getHeaderMap().setMappingFiles("testMappings.j2objc");
+    options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     addSourceFile("package unit.test; public class Dummy {}", "unit/test/Dummy.java");
     addSourceFile(
         "package unit.test;"
@@ -174,7 +173,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "AnotherDummy", "AnotherDummy.h");
     assertTranslation(translation, "#include \"unit/test/Dummy.h\"");
 
-    HeaderMap headerMap = Options.getHeaderMap();
+    HeaderMap headerMap = options.getHeaderMap();
     assertEquals("unit/test/Dummy.h", headerMap.getMapped("unit.test.Dummy"));
     assertEquals("unit/test/AnotherDummy.h", headerMap.getMapped("unit.test.AnotherDummy"));
     assertEquals("my/mapping/custom/Test.h", headerMap.getMapped("unit.mapping.custom.Test"));
@@ -183,8 +182,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testOutputHeaderFileMappingWithMultipleClassesInOneHeader() throws IOException {
-    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
-    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+    options.getHeaderMap().setMappingFiles("testMappings.j2objc");
+    options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     addSourceFile("package unit.mapping.custom; public class AnotherTest { }",
@@ -212,7 +211,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translationForDummy, "#include \"my/mapping/custom/Test.h\"");
     assertTranslation(translationForAnotherDummy, "#include \"my/mapping/custom/Test.h\"");
 
-    HeaderMap headerMap = Options.getHeaderMap();
+    HeaderMap headerMap = options.getHeaderMap();
     assertEquals("unit/test/Dummy.h", headerMap.getMapped("unit.test.Dummy"));
     assertEquals("unit/test/AnotherDummy.h", headerMap.getMapped("unit.test.AnotherDummy"));
     assertEquals("my/mapping/custom/Test.h", headerMap.getMapped("unit.mapping.custom.Test"));
@@ -221,7 +220,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testCombinedGeneration() throws IOException {
-    Options.setSegmentedHeaders(false);
+    options.setSegmentedHeaders(false);
     addSourceFile("package unit; public class Test {"
             + "    public void Dummy() {}"
             + "}",
@@ -276,8 +275,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testCombinedJarHeaderMapping() throws IOException {
     File outputHeaderMappingFile = new File(tempDir, "mappings.j2objc");
-    Options.getHeaderMap().setOutputMappingFile(outputHeaderMappingFile);
-    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+    options.getHeaderMap().setOutputMappingFile(outputHeaderMappingFile);
+    options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
     addSourceFile("package unit; public class Test { }",
         "unit/Test.java");
     addSourceFile("package unit; public class AnotherTest extends Test { }",
@@ -295,7 +294,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String header2 = translateCombinedFiles(
         "unit2/Foo", ".h", "unit2/AnotherTest.java", "unit2/YetAnotherTest.java");
 
-    HeaderMap headerMap = Options.getHeaderMap();
+    HeaderMap headerMap = options.getHeaderMap();
     assertEquals("unit/Foo.h", headerMap.getMapped("unit.Test"));
     assertEquals("unit/Foo.h", headerMap.getMapped("unit.AnotherTest"));
     assertTranslation(header2, "#include \"unit/Foo.h\"");
@@ -325,7 +324,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testDeprecatedInterfaceTranslation() throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(
       "package unit.test; public @Deprecated interface Example {}",
       "Example", "unit/test/Example.h");
@@ -340,7 +339,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testInterfaceWithDeprecatedMethodTranslation() throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(
         "package unit.test; public interface Example { @Deprecated Example getExample(); }",
         "Example", "unit/test/Example.h");
@@ -416,7 +415,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { String one, two, three; }",
       "Example", "Example.h");
-    if (Options.isJDT()) {
+    if (options.isJDT()) {
       assertTranslation(translation, "NSString *one_, *two_, *three_;");
     } else {
       assertTranslatedLines(translation,
@@ -428,7 +427,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { int one, two, three; }",
       "Example", "Example.h");
-    if (Options.isJDT()) {
+    if (options.isJDT()) {
       assertTranslation(translation, "int one_, two_, three_;");
     } else {
       assertTranslatedLines(translation,
@@ -440,7 +439,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { Comparable one, two, three; }",
       "Example", "Example.h");
-    if (Options.isJDT()) {
+    if (options.isJDT()) {
       assertTranslation(translation, "id<JavaLangComparable> one_, two_, three_;");
     } else {
       assertTranslatedLines(translation, "id<JavaLangComparable> one_;",
@@ -452,7 +451,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { Class<?> one, two, three; }",
       "Example", "Example.h");
-    if (Options.isJDT()) {
+    if (options.isJDT()) {
       assertTranslation(translation, "IOSClass *one_, *two_, *three_;");
     } else {
       assertTranslatedLines(translation,
@@ -693,7 +692,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
       throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
 
     String sourceContent = "class Test {}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
@@ -749,7 +748,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testDeprecatedEnumType() throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(
         "@Deprecated public enum Test { A, B }", "Test", "Test.h");
     assertTranslation(translation, "__attribute__((deprecated))\n@interface Test");
@@ -822,7 +821,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testNoForwardDeclarationWhenIncluded() throws IOException {
-    Options.setSegmentedHeaders(false);
+    options.setSegmentedHeaders(false);
     addSourceFile("class Foo { static class Bar { } }", "Foo.java");
     String translation = translateSourceFile(
         "class Test extends Foo { Foo.Bar bar; }", "Test", "Test.h");
@@ -834,7 +833,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   // Verify that the default constructor is disallowed if the class has a non-default
   // constructor.
   public void testDefaultConstructorDisallowed() throws IOException {
-    Options.setDisallowInheritedConstructors(true);
+    options.setDisallowInheritedConstructors(true);
     String translation = translateSourceFile("class Test { Test(int i) {} }", "Test", "Test.h");
     assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
     assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
@@ -843,7 +842,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   // Verify that inherited constructors are disallowed. Exception has four constructors,
   // so a subclass that only implements one should have the other three disallowed.
   public void testConstructorsDisallowed() throws IOException {
-    Options.setDisallowInheritedConstructors(true);
+    options.setDisallowInheritedConstructors(true);
     String translation = translateSourceFile(
         "class Test extends Exception { Test(String s) { super(s); } }", "Test", "Test.h");
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");

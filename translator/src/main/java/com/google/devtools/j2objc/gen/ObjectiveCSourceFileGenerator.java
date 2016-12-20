@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -92,7 +91,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 
   protected void save(String path) {
     try {
-      File outputDirectory = Options.getOutputDirectory();
+      File outputDirectory = unit.options().getOutputDirectory();
       File outputFile = new File(outputDirectory, path);
       File dir = outputFile.getParentFile();
       if (dir != null && !dir.exists()) {
@@ -107,7 +106,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
         source += '\n';
       }
 
-      Files.write(source, outputFile, Options.getCharset());
+      Files.write(source, outputFile, unit.options().getCharset());
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     } finally {
@@ -119,7 +118,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
    *  not transpiled code. This method should be paired with popIgnoreDeprecatedDeclarationsPragma.
    */
   protected void pushIgnoreDeprecatedDeclarationsPragma() {
-    if (Options.generateDeprecatedDeclarations()) {
+    if (unit.options().generateDeprecatedDeclarations()) {
       newline();
       println("#pragma clang diagnostic push");
       println("#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
@@ -128,7 +127,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 
   /** Restores deprecation warnings after a call to pushIgnoreDeprecatedDeclarationsPragma. */
   protected void popIgnoreDeprecatedDeclarationsPragma() {
-    if (Options.generateDeprecatedDeclarations()) {
+    if (unit.options().generateDeprecatedDeclarations()) {
       println("\n#pragma clang diagnostic pop");
     }
   }

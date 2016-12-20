@@ -157,7 +157,8 @@ public abstract class AbstractRegressionTest extends GenerationTest {
     StackTraceElement[] st = Thread.currentThread().getStackTrace();
     methodName = st[2].getMethodName();
     List<String> fileArgs = writeFiles(ls);
-    J2ObjC.run(fileArgs);
+
+    J2ObjC.run(fileArgs, options);
     List<String> mFileArgs = getImplementationFileList(fileArgs);
     String command = J2OBJCC_LOCATION + " -g -I. -ObjC -o " + tempDir + "/regressiontesting "
         + Joiner.on(' ').join(mFileArgs);

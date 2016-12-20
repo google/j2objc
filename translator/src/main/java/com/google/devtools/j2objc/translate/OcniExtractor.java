@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -290,7 +289,7 @@ public class OcniExtractor extends UnitTreeVisitor {
         return null;
       }
     }
-    if (Options.jsniWarnings() && hasJsni(text)) {
+    if (options.jsniWarnings() && hasJsni(text)) {
       ErrorUtil.warning(node, "JSNI comment found");
     }
     return null;

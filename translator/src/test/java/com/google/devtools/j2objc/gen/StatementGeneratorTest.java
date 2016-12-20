@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
 
@@ -205,7 +204,7 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testMultipleVariableDeclarations() throws IOException {
     String source = "String one, two;";
     List<Statement> stmts = translateStatements(source);
-    if (Options.isJDT()) {
+    if (options.isJDT()) {
       // TODO(tball): remove test and this JDT block when javac conversion is complete.
       String result = generateStatement(stmts.get(0));
       assertEquals("NSString *one, *two;", result);
@@ -1125,7 +1124,7 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testARCAutoreleasePoolForStatement() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
         "import com.google.j2objc.annotations.AutoreleasePool;"
         + "public class Test {"
@@ -1142,7 +1141,7 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testARCAutoreleasePoolEnhancedForStatement() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
         "import com.google.j2objc.annotations.AutoreleasePool;"
         + "public class Test {"
@@ -1384,7 +1383,7 @@ public class StatementGeneratorTest extends GenerationTest {
   // Verify that when a method invocation returns an object that is ignored,
   // it is cast to (void) to avoid a clang warning when compiling with ARC.
   public void testVoidedUnusedInvocationReturn() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
         "class Test { void test() {"
         + "  StringBuilder sb = new StringBuilder();"

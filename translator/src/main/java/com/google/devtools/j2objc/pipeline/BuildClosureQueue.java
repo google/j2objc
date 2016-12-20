@@ -32,10 +32,15 @@ import java.util.logging.Logger;
 public class BuildClosureQueue {
 
   private static final Logger logger = Logger.getLogger(BuildClosureQueue.class.getName());
+  private final Options options;
 
   private final Set<String> processedNames = Sets.newHashSet();
 
   private final Set<String> queuedNames = Sets.newLinkedHashSet();
+
+  public BuildClosureQueue(Options options) {
+    this.options = options;
+  }
 
   /**
    * Returns the next Java source file to be processed. Returns null if the
@@ -73,7 +78,7 @@ public class BuildClosureQueue {
     queuedNames.remove(name);
   }
 
-  private static InputFile getFileForName(String name) {
+  private InputFile getFileForName(String name) {
     // Check if class exists on classpath.
     if (findClassFile(name)) {
       logger.finest("no source for " + name + ", class found");
@@ -82,7 +87,7 @@ public class BuildClosureQueue {
 
     InputFile inputFile = null;
     try {
-      inputFile = FileUtil.findOnSourcePath(name);
+      inputFile = FileUtil.findOnSourcePath(name, options.getSourcePathEntries());
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
@@ -93,7 +98,7 @@ public class BuildClosureQueue {
 
     // Check if the source file is older than the generated header file.
     File headerSource =
-        new File(Options.getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
+        new File(options.getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
     if (headerSource.exists() && inputFile.lastModified() < headerSource.lastModified()) {
       return null;
     }
@@ -101,10 +106,10 @@ public class BuildClosureQueue {
     return inputFile;
   }
 
-  private static boolean findClassFile(String name) {
+  private boolean findClassFile(String name) {
     InputFile f = null;
     try {
-      f = FileUtil.findOnClassPath(name);
+      f = FileUtil.findOnClassPath(name, options.getClassPathEntries());
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }

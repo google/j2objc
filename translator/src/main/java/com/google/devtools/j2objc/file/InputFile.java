@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.file;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 /**
  * Adapter class for a file in J2ObjC.
@@ -32,7 +33,7 @@ public interface InputFile {
    * Opens a new reader for this SourceFile.
    * The caller is responsible for closing the reader.
    */
-  Reader openReader() throws IOException;
+  Reader openReader(Charset charset) throws IOException;
 
   /**
    * Gets a full path of a sourcefile. The "path" might not be an actual file system path

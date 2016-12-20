@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -67,7 +66,7 @@ public class ArrayRewriter extends UnitTreeVisitor {
 
   private MethodInvocation createInvocation(ArrayCreation node) {
     ArrayType arrayType = node.getTypeMirror();
-    boolean retainedResult = node.hasRetainedResult() || Options.useARC();
+    boolean retainedResult = node.hasRetainedResult() || options.useARC();
     ArrayInitializer initializer = node.getInitializer();
     if (initializer != null) {
       return newInitializedArrayInvocation(arrayType, initializer.getExpressions(), retainedResult);

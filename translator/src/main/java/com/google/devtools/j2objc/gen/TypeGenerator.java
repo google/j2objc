@@ -60,6 +60,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final TypeUtil typeUtil;
   protected final NameTable nameTable;
   protected final String typeName;
+  protected final Options options;
 
   private final List<BodyDeclaration> declarations;
   private final boolean parametersNonnullByDefault;
@@ -74,8 +75,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     nameTable = env.nameTable();
     typeName = nameTable.getFullName(typeElement);
     declarations = filterDeclarations(node.getBodyDeclarations());
-    parametersNonnullByDefault = Options.nullability()
-        && env.elementUtil().areParametersNonnullByDefault(node.getTypeElement());
+    options = env.options();
+    parametersNonnullByDefault = options.nullability()
+        && env.elementUtil().areParametersNonnullByDefault(node.getTypeElement(), options);
   }
 
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
@@ -216,7 +218,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   private boolean hasStaticAccessorMethods() {
-    if (!Options.staticAccessorMethods()) {
+    if (!options.staticAccessorMethods()) {
       return false;
     }
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(typeNode)) {
@@ -312,7 +314,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
    * JSR305 annotation, or an empty string.
    */
   private String nullability(Element element, boolean isParameter) {
-    if (Options.nullability()) {
+    if (options.nullability()) {
       if (ElementUtil.hasNullableAnnotation(element)) {
         return " __nullable";
       }

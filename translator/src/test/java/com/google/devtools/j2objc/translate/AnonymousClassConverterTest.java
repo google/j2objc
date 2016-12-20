@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -359,8 +358,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "create_Test_A_1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
-    String param0 = Options.isJDT() ? "param0" : "i";
-    String superOuter = Options.isJDT() ? "superOuter$" : "x0";
+    String param0 = options.isJDT() ? "param0" : "i";
+    String superOuter = options.isJDT() ? "superOuter$" : "x0";
     assertTranslatedLines(translation,
         "void Test_A_1_initWithTest_A_withTest_B_withTest_B_withInt_("
           + "Test_A_1 *self, Test_A *outer$, Test_B *capture$0, Test_B *" + superOuter + ", "
@@ -409,7 +408,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "}");
 
-    String param0 = Options.isJDT() ? "param0" : "n";
+    String param0 = options.isJDT() ? "param0" : "n";
     // Verify Color_1 constructor.
     assertTranslatedLines(impl,
         "void Color_1_initWithInt_withNSString_withInt_("
@@ -477,7 +476,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
         "Test", "Test.m");
-    String param0 = Options.isJDT() ? "param0" : "t";
+    String param0 = options.isJDT() ? "param0" : "t";
     assertTranslation(translation, "create_Test_1_initWithNSString_(@\"foo\")");
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)" + param0 + " {");
     assertTranslatedLines(translation,
@@ -500,8 +499,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "create_Test_2_initWithNSString_withNSObjectArray_(@\"foo\", "
         + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
-    String param0 = Options.isJDT() ? "param0" : "fmt";
-    String param1 = Options.isJDT() ? "param1" : "args";
+    String param0 = options.isJDT() ? "param0" : "fmt";
+    String param1 = options.isJDT() ? "param1" : "args";
     // check the generated constructors.
     assertTranslatedLines(translation,
         "void Test_1_initWithNSString_withNSObjectArray_("
@@ -521,7 +520,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "static class B { String s;  I test(Test t, int i) { "
         + "return () -> t.new A() { public String toString() { return s + i; } }; } } }",
         "Test", "Test.m");
-    String superOuter = Options.isJDT() ? "superOuter$" : "x0";
+    String superOuter = options.isJDT() ? "superOuter$" : "x0";
     assertTranslation(translation,
         "static Test_B_1 *create_Test_B_1_initWithTest_B_withInt_withTest_("
         + "Test_B *outer$, jint capture$0, Test *" + superOuter + ");");

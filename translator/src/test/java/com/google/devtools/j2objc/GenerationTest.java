@@ -69,6 +69,7 @@ public class GenerationTest extends TestCase {
 
   protected File tempDir;
   protected Parser parser;
+  protected Options options;
   private CodeReferenceMap deadCodeMap = null;
 
   static {
@@ -87,13 +88,15 @@ public class GenerationTest extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    Options.reset();
+    options = null;
     FileUtil.deleteTempDir(tempDir);
     ErrorUtil.reset();
   }
 
   protected void loadOptions() throws IOException {
-    Options.load(new String[]{
+    options = new Options();
+
+    options.load(new String[]{
         "-d", tempDir.getAbsolutePath(),
         "-sourcepath", tempDir.getAbsolutePath(),
         "-q", // Suppress console output.
@@ -102,11 +105,11 @@ public class GenerationTest extends TestCase {
   }
 
   protected void createParser() {
-    parser = initializeParser(tempDir);
+    parser = initializeParser(tempDir, options);
   }
 
-  protected static Parser initializeParser(File tempDir) {
-    Parser parser = Parser.newParser();
+  protected static Parser initializeParser(File tempDir, Options options) {
+    Parser parser = Parser.newParser(options);
     parser.addClasspathEntries(getComGoogleDevtoolsJ2objcPath());
     parser.addSourcepathEntry(tempDir.getAbsolutePath());
     return parser;
@@ -117,7 +120,7 @@ public class GenerationTest extends TestCase {
   }
 
   protected void addSourcesToSourcepaths() throws IOException {
-    Options.getSourcePathEntries().add(tempDir.getCanonicalPath());
+    options.getSourcePathEntries().add(tempDir.getCanonicalPath());
   }
 
   /**
@@ -167,7 +170,7 @@ public class GenerationTest extends TestCase {
     String mainTypeName = name.substring(name.lastIndexOf('.') + 1);
     String path = name.replace('.', '/') + ".java";
     int errors = ErrorUtil.errorCount();
-    parser.setEnableDocComments(Options.docCommentsEnabled());
+    parser.setEnableDocComments(options.docCommentsEnabled());
     CompilationUnit unit = parser.parse(mainTypeName, path, source);
     if (ErrorUtil.errorCount() > errors) {
       int newErrorCount = ErrorUtil.errorCount() - errors;
@@ -357,7 +360,7 @@ public class GenerationTest extends TestCase {
   }
 
   protected String generateFromUnit(CompilationUnit unit, String filename) throws IOException {
-    GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), 1);
+    GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), 1, options);
     genUnit.addCompilationUnit(unit);
     TranslationProcessor.generateObjectiveCSource(genUnit);
     return getTranslatedFile(filename);
@@ -369,27 +372,27 @@ public class GenerationTest extends TestCase {
     for (String sourceFile : sources) {
       inputFiles.add(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile));
     }
-    GenerationBatch batch = new GenerationBatch();
+    GenerationBatch batch = new GenerationBatch(options);
     batch.addCombinedJar(outputPath + ".testfile", inputFiles);
     List<ProcessingContext> inputs = batch.getInputs();
-    parser.setEnableDocComments(Options.docCommentsEnabled());
+    parser.setEnableDocComments(options.docCommentsEnabled());
     new InputFilePreprocessor(parser).processInputs(inputs);
     new TranslationProcessor(parser, CodeReferenceMap.builder().build()).processInputs(inputs);
     return getTranslatedFile(outputPath + extension);
   }
 
   protected void runPipeline(String... files) {
-    J2ObjC.run(Arrays.asList(files));
+    J2ObjC.run(Arrays.asList(files), options);
     assertErrorCount(0);
     assertWarningCount(0);
   }
 
   protected void loadHeaderMappings() {
-    Options.getHeaderMap().loadMappings();
+    options.getHeaderMap().loadMappings();
   }
 
   protected void preprocessFiles(String... fileNames) {
-    GenerationBatch batch = new GenerationBatch();
+    GenerationBatch batch = new GenerationBatch(options);
     for (String fileName : fileNames) {
       batch.addSource(new RegularInputFile(
           tempDir.getPath() + File.separatorChar + fileName, fileName));
@@ -400,7 +403,7 @@ public class GenerationTest extends TestCase {
   protected String addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
-    Files.write(source, file, Options.getCharset());
+    Files.write(source, file, options.getCharset());
     return file.getPath();
   }
 
@@ -411,7 +414,7 @@ public class GenerationTest extends TestCase {
   protected String getTranslatedFile(String fileName) throws IOException {
     File f = new File(tempDir, fileName);
     assertTrue(fileName + " not generated", f.exists());
-    return Files.toString(f, Options.getCharset());
+    return Files.toString(f, options.getCharset());
   }
 
   /**
@@ -482,7 +485,7 @@ public class GenerationTest extends TestCase {
   protected void addJarFile(String jarFileName, String... sources) throws IOException {
     File jarFile = getTempFile(jarFileName);
     jarFile.getParentFile().mkdirs();
-    Options.appendSourcePath(jarFile.getPath());
+    options.appendSourcePath(jarFile.getPath());
     JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarFile));
     try {
       for (int i = 0; i < sources.length; i += 2) {

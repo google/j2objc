@@ -42,6 +42,7 @@ public class PackageInfoRewriter {
 
   private final CompilationUnit unit;
   private final TypeUtil typeUtil;
+  private final TranslationUtil translationUtil;
 
   public static void run(CompilationUnit unit) {
     if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_CLASS_NAME)) {
@@ -52,6 +53,7 @@ public class PackageInfoRewriter {
   private PackageInfoRewriter(CompilationUnit unit) {
     this.unit = unit;
     typeUtil = unit.getEnv().typeUtil();
+    translationUtil = unit.getEnv().translationUtil();
   }
 
   private void run() {
@@ -59,7 +61,7 @@ public class PackageInfoRewriter {
 
     String prefix = getPackagePrefix(pkg);
     if ((TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).isEmpty() && prefix == null)
-        || !TranslationUtil.needsReflection(pkg)) {
+        || !translationUtil.needsReflection(pkg)) {
       return;
     }
 

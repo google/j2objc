@@ -63,7 +63,7 @@ public class JavacParser extends Parser {
   public CompilationUnit parse(InputFile file) {
     String source = null;
     try {
-      source = FileUtil.readFile(file);
+      source = FileUtil.readFile(file, options.getCharset());
       return parse(null, file.getUnitName(), source);
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
@@ -99,13 +99,13 @@ public class JavacParser extends Parser {
 
   private JavacFileManager getFileManager(JavaCompiler compiler,
       DiagnosticCollector<JavaFileObject> diagnostics) throws IOException {
-    Charset charset = encoding != null ? Charset.forName(encoding) : Options.getCharset();
+    Charset charset = encoding != null ? Charset.forName(encoding) : options.getCharset();
     JavacFileManager fileManager = (JavacFileManager)
         compiler.getStandardFileManager(diagnostics, null, charset);
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
-        Lists.newArrayList(Options.getOutputDirectory()));
+        Lists.newArrayList(options.getOutputDirectory()));
     fileManager.setLocation(StandardLocation.SOURCE_OUTPUT,
         Lists.newArrayList(FileUtil.createTempDir("annotations")));
     return fileManager;
@@ -121,33 +121,33 @@ public class JavacParser extends Parser {
   }
 
   private List<String> getJavacOptions() {
-    List<String> options = new ArrayList<>();
+    List<String> javacOptions = new ArrayList<>();
 
-    options.add("-Xbootclasspath:" + makePathString(Options.getBootClasspath()));
+    javacOptions.add("-Xbootclasspath:" + makePathString(Options.getBootClasspath()));
     if (encoding != null) {
-      options.add("-encoding");
-      options.add(encoding);
+      javacOptions.add("-encoding");
+      javacOptions.add(encoding);
     }
-    SourceVersion javaLevel = Options.getSourceVersion();
+    SourceVersion javaLevel = options.getSourceVersion();
     if (javaLevel != null) {
-      options.add("-source");
-      options.add(javaLevel.flag());
-      options.add("-target");
-      options.add(javaLevel.flag());
+      javacOptions.add("-source");
+      javacOptions.add(javaLevel.flag());
+      javacOptions.add("-target");
+      javacOptions.add(javaLevel.flag());
     }
-    String lintArgument = Options.lintArgument();
+    String lintArgument = options.lintArgument();
     if (lintArgument != null) {
-      options.add(lintArgument);
+      javacOptions.add(lintArgument);
     }
 
     // TODO(tball): this should be in the FileManager, but adding it there
     // causes annotations to be processed twice, causing a "duplicate unit"
     // error. Defining the path as a javac flag works correctly, however.
-    if (Options.getProcessorPathEntries().size() > 0) {
-      options.add("-processorpath");
-      options.add(makePathString(Options.getProcessorPathEntries()));
+    if (options.getProcessorPathEntries().size() > 0) {
+      javacOptions.add("-processorpath");
+      javacOptions.add(makePathString(options.getProcessorPathEntries()));
     }
-    return options;
+    return javacOptions;
   }
 
   private String makePathString(List<String> paths) {

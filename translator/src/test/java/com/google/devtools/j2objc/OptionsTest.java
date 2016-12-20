@@ -29,51 +29,51 @@ public class OptionsTest extends GenerationTest {
      // Check that version default is correctly pulled from system properties.
      String javaVersion = System.getProperty("java.version");
 
-     Options.reset();
-     Options.load(new String[] {});
-     assertEquals(javaVersion.substring(0, 3), Options.getSourceVersion().toString());
+     options = new Options();
+     options.load(new String[] {});
+     assertEquals(javaVersion.substring(0, 3), options.getSourceVersion().toString());
 
      System.setProperty("java.version", "1.8.0_91");
-     Options.reset();
-     Options.load(new String[] {});
-     assertEquals(SourceVersion.JAVA_8, Options.getSourceVersion());
+     options = new Options();
+     options.load(new String[] {});
+     assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
 
      System.setProperty("java.version", "1.6.0");
-     Options.reset();
-     Options.load(new String[] {});
-     assertEquals(SourceVersion.JAVA_6, Options.getSourceVersion());
+     options = new Options();
+     options.load(new String[] {});
+     assertEquals(SourceVersion.JAVA_6, options.getSourceVersion());
 
      System.setProperty("java.version", "1.7");
-     Options.reset();
-     Options.load(new String[] {});
-     assertEquals(SourceVersion.JAVA_7, Options.getSourceVersion());
+     options = new Options();
+     options.load(new String[] {});
+     assertEquals(SourceVersion.JAVA_7, options.getSourceVersion());
 
      // Reset the java.version property to prevent any unexpected jvm behavior after testing.
      System.setProperty("java.version", javaVersion);
 
     String[] argsJavaSource = "-source 1.6".split(" ");
-    Options.load(argsJavaSource);
-    assertEquals(SourceVersion.JAVA_6, Options.getSourceVersion());
+    options.load(argsJavaSource);
+    assertEquals(SourceVersion.JAVA_6, options.getSourceVersion());
 
     argsJavaSource = "-source 1.7".split(" ");
-    Options.load(argsJavaSource);
-    assertEquals(SourceVersion.JAVA_7, Options.getSourceVersion());
+    options.load(argsJavaSource);
+    assertEquals(SourceVersion.JAVA_7, options.getSourceVersion());
 
     argsJavaSource = "-source 1.8".split(" ");
-    Options.load(argsJavaSource);
-    assertEquals(SourceVersion.JAVA_8, Options.getSourceVersion());
+    options.load(argsJavaSource);
+    assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
   }
 
   public void testSourceVersionFlagAliases() throws IOException {
     // Check that version aliases work correctly.
     String[] argsJavaSource = "-source 8".split(" ");
-    Options.load(argsJavaSource);
-    assertEquals(SourceVersion.JAVA_8, Options.getSourceVersion());
+    options.load(argsJavaSource);
+    assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
   }
 
   public void testTargetVersionFlags() throws IOException {
     String [] argsJavaTarget = "-target 1.6".split(" ");
     // Passed target should be ignored.
-    Options.load(argsJavaTarget);
+    options.load(argsJavaTarget);
   }
 }

@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import java.io.IOException;
 
 /**
@@ -37,7 +36,7 @@ public class DefaultMethodsTest extends GenerationTest {
   }
 
   public void testDefaultMethodFunctionalizationWithReflectionsStripped() throws IOException {
-    Options.setStripReflection(true);
+    options.setStripReflection(true);
 
     String source = "interface Foo { void f(); default void g() { f(); } }";
     String header = translateSourceFile(source, "Test", "Test.h");

@@ -39,13 +39,13 @@ public class Import implements Comparable<Import> {
   private final String javaQualifiedName;
   private final boolean isInterface;
 
-  private Import(TypeElement type, NameTable nameTable) {
+  private Import(TypeElement type, NameTable nameTable, Options options) {
     this.typeName = nameTable.getFullName(type);
     TypeElement mainType = type;
     while (!ElementUtil.isTopLevel(mainType)) {
       mainType = ElementUtil.getDeclaringClass(mainType);
     }
-    this.importFileName = Options.getHeaderMap().get(mainType);
+    this.importFileName = options.getHeaderMap().get(mainType);
     this.javaQualifiedName =
         ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
     this.isInterface = type.getKind().isInterface();
@@ -115,7 +115,7 @@ public class Import implements Comparable<Import> {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
     for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
-      Import newImport = new Import(objcClass, env.nameTable());
+      Import newImport = new Import(objcClass, env.nameTable(), env.options());
       // An empty header indicates a Foundation type that doesn't require an import or forward
       // declaration.
       if (!newImport.getImportFileName().isEmpty()) {

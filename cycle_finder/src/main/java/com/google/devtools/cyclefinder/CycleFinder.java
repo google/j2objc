@@ -43,6 +43,7 @@ import java.util.Set;
 public class CycleFinder {
 
   private final Options options;
+  private final com.google.devtools.j2objc.Options j2objcOptions;
   private final NameList blacklist;
   private final List<List<Edge>> cycles = new ArrayList<>();
 
@@ -56,15 +57,17 @@ public class CycleFinder {
 
   public CycleFinder(Options options) throws IOException {
     this.options = options;
-    com.google.devtools.j2objc.Options.load(new String[] {
+    j2objcOptions = new com.google.devtools.j2objc.Options();
+
+    j2objcOptions.load(new String[] {
       "-encoding", options.fileEncoding(),
       "-source",   options.sourceVersion().flag()
     });
     blacklist = getBlacklist();
   }
 
-  private static Parser createParser(Options options) {
-    Parser parser = Parser.newParser();
+  private Parser createParser() {
+    Parser parser = Parser.newParser(j2objcOptions);
     parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
@@ -106,7 +109,7 @@ public class CycleFinder {
     for (int i = 0; i < sourceFileNames.size(); i++) {
       String fileName = sourceFileNames.get(i);
       RegularInputFile file = new RegularInputFile(fileName);
-      String source = FileUtil.readFile(file);
+      String source = FileUtil.readFile(file, j2objcOptions.getCharset());
       if (!source.contains("J2ObjCIncompatible")) {
         continue;
       }
@@ -127,7 +130,7 @@ public class CycleFinder {
   }
 
   public List<List<Edge>> findCycles() throws IOException {
-    Parser parser = createParser(options);
+    Parser parser = createParser();
     NameList whitelist =
         NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
     final GraphBuilder graphBuilder = new GraphBuilder(whitelist);

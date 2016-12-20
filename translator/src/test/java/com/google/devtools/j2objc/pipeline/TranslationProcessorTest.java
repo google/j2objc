@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -52,26 +51,26 @@ public class TranslationProcessorTest extends GenerationTest {
       jar.close();
     }
 
-    Options.appendSourcePath(jarFile.getPath());
-    Options.setBatchTranslateMaximum(2);
+    options.appendSourcePath(jarFile.getPath());
+    options.setBatchTranslateMaximum(2);
 
-    GenerationBatch batch = new GenerationBatch();
+    GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
 
     assertEquals(0, ErrorUtil.errorCount());
   }
 
   public void testSingleSourceFileBuildClosure() throws IOException {
-    Options.setBuildClosure(true);
+    options.setBuildClosure(true);
 
     addSourceFile("class Test { }", "Test.java");
 
-    GenerationBatch batch = new GenerationBatch();
+    GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
     processor.processBuildClosureDependencies();
 
@@ -82,20 +81,20 @@ public class TranslationProcessorTest extends GenerationTest {
   }
 
   public void testDuplicateSourceFileOnSourcepath() throws IOException {
-    Options.setBuildClosure(true);
+    options.setBuildClosure(true);
 
     // Have src/main/java precede tmp dir in source path.
-    Options.insertSourcePath(0, getTempDir() + "/src/main/java");
-    Options.appendSourcePath(getTempDir());
+    options.insertSourcePath(0, getTempDir() + "/src/main/java");
+    options.appendSourcePath(getTempDir());
 
     addSourceFile("class Test { Foo f; }", "Test.java");
     addSourceFile("class Foo { void foo1() {} }", "Foo.java");
     addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
 
-    GenerationBatch batch = new GenerationBatch();
+    GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
     processor.processBuildClosureDependencies();
 

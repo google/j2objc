@@ -41,7 +41,7 @@ public class J2ObjCTest extends GenerationTest {
   public void setUp() throws IOException {
     super.setUp();
 
-    List<String> classpathEntries = Options.getClassPathEntries();
+    List<String> classpathEntries = options.getClassPathEntries();
     for (String entry : getComGoogleDevtoolsJ2objcPath()) {
       classpathEntries.add(entry);
     }
@@ -59,8 +59,8 @@ public class J2ObjCTest extends GenerationTest {
 
   @Override
   public void tearDown() throws Exception {
-    Options.getClassPathEntries().clear();
-    Options.setBatchTranslateMaximum(0);
+    options.getClassPathEntries().clear();
+    options.setBatchTranslateMaximum(0);
     super.tearDown();
   }
 
@@ -116,13 +116,13 @@ public class J2ObjCTest extends GenerationTest {
   }
 
   public void testCompilingFromJar() throws Exception {
-    J2ObjC.run(Collections.singletonList(jarPath));
+    J2ObjC.run(Collections.singletonList(jarPath), options);
     makeAssertionsForJar();
   }
 
   public void testBatchCompilingFromJar() throws Exception {
-    Options.setBatchTranslateMaximum(2);
-    J2ObjC.run(Collections.singletonList(jarPath));
+    options.setBatchTranslateMaximum(2);
+    J2ObjC.run(Collections.singletonList(jarPath), options);
     makeAssertionsForJar();
   }
 
@@ -157,13 +157,13 @@ public class J2ObjCTest extends GenerationTest {
   }
 
   public void testCompilingFromFiles() throws Exception {
-    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath));
+    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
     makeAssertionsForJavaFiles();
   }
 
   public void testBatchCompilingFromFiles() throws Exception {
-    Options.setBatchTranslateMaximum(2);
-    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath));
+    options.setBatchTranslateMaximum(2);
+    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
     makeAssertionsForJavaFiles();
   }
 
@@ -174,14 +174,14 @@ public class J2ObjCTest extends GenerationTest {
   }
 
   public void testCombinedJar() throws Exception {
-    Options.getHeaderMap().setCombineJars();
-    J2ObjC.run(Collections.singletonList(jarPath));
+    options.getHeaderMap().setCombineJars();
+    J2ObjC.run(Collections.singletonList(jarPath), options);
     makeAssertionsForCombinedJar();
   }
 
   public void testSourceDirsOption() throws Exception {
-    Options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
-    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath));
+    options.getHeaderMap().setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
+    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath), options);
     String exampleH = getTranslatedFile(exampleJavaPath.replace(".java", ".h"));
     String exampleM = getTranslatedFile(exampleJavaPath.replace(".java", ".m"));
     String packageInfoH = getTranslatedFile(packageInfoPath.replace(".java", ".h"));
@@ -192,10 +192,10 @@ public class J2ObjCTest extends GenerationTest {
   // Test a simple annotation processor on the classpath.
   public void testAnnotationProcessing() throws Exception {
     String processorPath = getResourceAsFile("annotations/Processor.jar");
-    Options.getClassPathEntries().add(processorPath);
+    options.getClassPathEntries().add(processorPath);
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
-    J2ObjC.run(Collections.singletonList(examplePath));
+    J2ObjC.run(Collections.singletonList(examplePath), options);
     assertErrorCount(0);
 
     String translatedAnnotationHeader = getTranslatedFile("ProcessingResult.h");
@@ -212,21 +212,21 @@ public class J2ObjCTest extends GenerationTest {
   // Test a simple annotation processor on the processor path.
   public void testAnnotationProcessingWithProcessorPath() throws Exception {
     String processorPath = getResourceAsFile("annotations/Processor.jar");
-    Options.getProcessorPathEntries().add(processorPath);
+    options.getProcessorPathEntries().add(processorPath);
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
-    J2ObjC.run(Collections.singletonList(examplePath));
+    J2ObjC.run(Collections.singletonList(examplePath), options);
     assertErrorCount(0);
   }
 
   // Test a specified annotation processor.
   public void testSpecifiedAnnotationProcessing() throws Exception {
     String processorPath = getResourceAsFile("annotations/Processor.jar");
-    Options.getClassPathEntries().add(processorPath);
-    Options.setProcessors("com.google.devtools.j2objc.annotations.J2ObjCTestProcessor");
+    options.getClassPathEntries().add(processorPath);
+    options.setProcessors("com.google.devtools.j2objc.annotations.J2ObjCTestProcessor");
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
-    J2ObjC.run(Collections.singletonList(examplePath));
+    J2ObjC.run(Collections.singletonList(examplePath), options);
     assertErrorCount(0);
   }
 }

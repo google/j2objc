@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -58,7 +57,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         + "}";
 
     // First test with defaults, to see if warnings are reported.
-    assertTrue(Options.jsniWarnings());
+    assertTrue(options.jsniWarnings());
     String translation = translateSourceFile(source, "Example", "Example.h");
     assertWarningCount(2);
 
@@ -81,7 +80,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "jsni-comment;");
 
     // Now rebuild with warnings disabled.
-    Options.setJsniWarnings(false);
+    options.setJsniWarnings(false);
     ErrorUtil.reset();
     translation = translateSourceFile(source, "Example", "Example.h");
     assertWarningCount(0);
@@ -162,7 +161,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   }
 
   public void testOverriddenGenericConstructor() throws IOException {
-    Options.setDisallowInheritedConstructors(true);
+    options.setDisallowInheritedConstructors(true);
     addSourceFile("class A<T> { A(T t) {} }", "A.java");
     String translation = translateSourceFile(
         "class B extends A<String> { B(String s) { super(s); } }", "B", "B.h");

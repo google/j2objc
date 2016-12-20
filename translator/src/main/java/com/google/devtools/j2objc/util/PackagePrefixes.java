@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -104,7 +105,8 @@ public final class PackagePrefixes {
    * for the package, then that prefix is returned. Otherwise, a camel-cased
    * prefix is created from the package name.
    */
-  public String getPrefix(PackageElement packageElement) {
+  public String getPrefix(PackageElement packageElement,
+      Charset charset, List<String> sourcePathEntries, List<String> classPathEntries) {
     if (packageElement == null) {
       return "";
     }
@@ -114,7 +116,8 @@ public final class PackagePrefixes {
       return prefix;
     }
 
-    prefix = packageLookup.getObjectiveCName(packageName);
+    prefix = packageLookup.getObjectiveCName(
+        packageName, charset, sourcePathEntries, classPathEntries);
     if (prefix == null) {
       prefix = NameTable.camelCaseQualifiedName(packageName);
     }

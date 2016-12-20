@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testHeaderFileMapping() throws IOException {
-    Options.getHeaderMap().setMappingFiles("testMappings.j2objc");
+    options.getHeaderMap().setMappingFiles("testMappings.j2objc");
     loadHeaderMappings();
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
@@ -268,7 +267,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testEmptyInterfaceGenerationNoMetadata() throws IOException {
-    Options.setStripReflection(true);
+    options.setStripReflection(true);
     String translation = translateSourceFile(
         "package foo; public interface Compatible {}",
         "Compatible", "foo/Compatible.m");
@@ -409,7 +408,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testARCAutoreleasePoolMethod() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
         "import com.google.j2objc.annotations.AutoreleasePool;"
         + "public class Test {"
@@ -528,7 +527,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
       throws IOException {
-    Options.enableDeprecatedDeclarations();
+    options.enableDeprecatedDeclarations();
 
     String translation = translateSourceFile(
             "class Test { public static String foo; }", "Test", "Test.m");
@@ -630,7 +629,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   public void testPackageInfoAnnotationAndDoc() throws IOException {
     addSourcesToSourcepaths();
-    Options.setDocCommentsEnabled(true);
+    options.setDocCommentsEnabled(true);
     addSourceFile("package foo.annotations;\n"
         + "import java.lang.annotation.*;\n"
         + "@Retention(RetentionPolicy.RUNTIME)\n"
@@ -672,7 +671,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   public void testPackageInfoDocNoAnnotation() throws IOException {
     addSourcesToSourcepaths();
-    Options.setDocCommentsEnabled(true);
+    options.setDocCommentsEnabled(true);
     String translation = translateSourceFile(
         "/** A package doc-comment. */\n"
         + "package foo.bar.mumble;",
@@ -728,7 +727,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     compileArgs.add("-classpath");
     compileArgs.add(System.getProperty("java.class.path"));
     compileArgs.add("-encoding");
-    compileArgs.add(Options.getCharset().name());
+    compileArgs.add(options.getCharset().name());
     compileArgs.add("-source");
     compileArgs.add("1.7");
     compileArgs.add(tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
@@ -737,8 +736,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             new PrintWriter(System.out), new PrintWriter(System.err),
             false, Collections.emptyMap(), null);
     batchCompiler.compile(compileArgs.toArray(new String[0]));
-    List<String> oldClassPathEntries = new ArrayList<String>(Options.getClassPathEntries());
-    Options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
+    List<String> oldClassPathEntries = new ArrayList<String>(options.getClassPathEntries());
+    options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
     try {
       String translation = translateSourceFile("package foo.bar.mumble;\n"
           + "public class Test {}",
@@ -749,8 +748,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       assertTranslation(translation, "@implementation FBMTest");
       assertNotInTranslation(translation, "FooBarMumbleTest");
     } finally {
-      Options.getClassPathEntries().clear();
-      Options.getClassPathEntries().addAll(oldClassPathEntries);
+      options.getClassPathEntries().clear();
+      options.getClassPathEntries().addAll(oldClassPathEntries);
     }
   }
 

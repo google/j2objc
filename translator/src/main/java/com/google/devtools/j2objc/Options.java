@@ -52,10 +52,6 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class Options {
 
-  // Using instance fields instead of static fields makes it easier to reset
-  // state for unit testing.
-  private static Options instance = new Options();
-
   private List<String> sourcePathEntries = Lists.newArrayList(".");
   private List<String> classPathEntries = Lists.newArrayList(".");
   private List<String> processorPathEntries = Lists.newArrayList();
@@ -320,17 +316,12 @@ public class Options {
   /**
    * Set all log handlers in this package with a common level.
    */
-  private static void setLogLevel(Level level) {
+  private void setLogLevel(Level level) {
     Logger.getLogger("com.google.devtools.j2objc").setLevel(level);
   }
 
-  public static boolean isVerbose() {
+  public boolean isVerbose() {
     return Logger.getLogger("com.google.devtools.j2objc").getLevel().equals(Level.FINEST);
-  }
-
-  @VisibleForTesting
-  public static void reset() {
-    instance = new Options();
   }
 
   /**
@@ -339,11 +330,7 @@ public class Options {
    * detected, the appropriate status method is invoked and the app terminates.
    * @throws IOException
    */
-  public static String[] load(String[] args) throws IOException {
-    return instance.loadInternal(args);
-  }
-
-  private String[] loadInternal(String[] args) throws IOException {
+  public String[] load(String[] args) throws IOException {
     setLogLevel(Level.WARNING);
 
     mappings.addJreMappings();
@@ -643,88 +630,88 @@ public class Options {
     return entries;
   }
 
-  public static boolean docCommentsEnabled() {
-    return instance.docCommentsEnabled;
+  public boolean docCommentsEnabled() {
+    return docCommentsEnabled;
   }
 
   @VisibleForTesting
-  public static void setDocCommentsEnabled(boolean value) {
-    instance.docCommentsEnabled = value;
+  public void setDocCommentsEnabled(boolean value) {
+    docCommentsEnabled = value;
   }
 
-  public static List<String> getSourcePathEntries() {
-    return instance.sourcePathEntries;
+  public List<String> getSourcePathEntries() {
+    return sourcePathEntries;
   }
 
-  public static void appendSourcePath(String entry) {
-    instance.sourcePathEntries.add(entry);
+  public void appendSourcePath(String entry) {
+    sourcePathEntries.add(entry);
   }
 
-  public static void insertSourcePath(int index, String entry) {
-    instance.sourcePathEntries.add(index, entry);
+  public void insertSourcePath(int index, String entry) {
+    sourcePathEntries.add(index, entry);
   }
 
-  public static List<String> getClassPathEntries() {
-    return instance.classPathEntries;
+  public List<String> getClassPathEntries() {
+    return classPathEntries;
   }
 
-  public static List<String> getProcessorPathEntries() {
-    return instance.processorPathEntries;
+  public List<String> getProcessorPathEntries() {
+    return processorPathEntries;
   }
 
-  public static File getOutputDirectory() {
-    return instance.outputDirectory;
+  public File getOutputDirectory() {
+    return outputDirectory;
   }
 
-  public static OutputLanguageOption getLanguage() {
-    return instance.language;
-  }
-
-  @VisibleForTesting
-  public static void setOutputLanguage(OutputLanguageOption language) {
-    instance.language = language;
-  }
-
-  public static boolean useReferenceCounting() {
-    return instance.memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
-  }
-
-  public static boolean useARC() {
-    return instance.memoryManagementOption == MemoryManagementOption.ARC;
-  }
-
-  public static MemoryManagementOption getMemoryManagementOption() {
-    return instance.memoryManagementOption;
+  public OutputLanguageOption getLanguage() {
+    return language;
   }
 
   @VisibleForTesting
-  public static void setMemoryManagementOption(MemoryManagementOption option) {
-    instance.memoryManagementOption = option;
+  public void setOutputLanguage(OutputLanguageOption language) {
+    this.language = language;
   }
 
-  public static boolean emitLineDirectives() {
-    return instance.emitLineDirectives;
+  public boolean useReferenceCounting() {
+    return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
 
-  public static void setEmitLineDirectives(boolean b) {
-    instance.emitLineDirectives = b;
+  public boolean useARC() {
+    return memoryManagementOption == MemoryManagementOption.ARC;
   }
 
-  public static boolean treatWarningsAsErrors() {
-    return instance.warningsAsErrors;
+  public MemoryManagementOption getMemoryManagementOption() {
+    return memoryManagementOption;
   }
 
   @VisibleForTesting
-  public static void enableDeprecatedDeclarations() {
-    instance.deprecatedDeclarations = true;
+  public void setMemoryManagementOption(MemoryManagementOption option) {
+    memoryManagementOption = option;
   }
 
-  public static boolean generateDeprecatedDeclarations() {
-    return instance.deprecatedDeclarations;
+  public boolean emitLineDirectives() {
+    return emitLineDirectives;
   }
 
-  public static HeaderMap getHeaderMap() {
-    return instance.headerMap;
+  public void setEmitLineDirectives(boolean b) {
+    emitLineDirectives = b;
+  }
+
+  public boolean treatWarningsAsErrors() {
+    return warningsAsErrors;
+  }
+
+  @VisibleForTesting
+  public void enableDeprecatedDeclarations() {
+    deprecatedDeclarations = true;
+  }
+
+  public boolean generateDeprecatedDeclarations() {
+    return deprecatedDeclarations;
+  }
+
+  public HeaderMap getHeaderMap() {
+    return headerMap;
   }
 
   public static String getUsageMessage() {
@@ -751,166 +738,162 @@ public class Options {
     return getPathArgument(bootclasspath);
   }
 
-  public static Mappings getMappings() {
-    return instance.mappings;
+  public Mappings getMappings() {
+    return mappings;
   }
 
-  public static PackageInfoLookup getPackageInfoLookup() {
-    return instance.packageInfoLookup;
+  public PackageInfoLookup getPackageInfoLookup() {
+    return packageInfoLookup;
   }
 
-  public static PackagePrefixes getPackagePrefixes() {
-    return instance.packagePrefixes;
+  public PackagePrefixes getPackagePrefixes() {
+    return packagePrefixes;
   }
 
-  public static String fileEncoding() {
-    return instance.fileEncoding;
+  public String fileEncoding() {
+    return fileEncoding;
   }
 
-  public static Charset getCharset() {
-    return Charset.forName(instance.fileEncoding);
+  public Charset getCharset() {
+    return Charset.forName(fileEncoding);
   }
 
-  public static boolean stripGwtIncompatibleMethods() {
-    return instance.stripGwtIncompatible;
-  }
-
-  @VisibleForTesting
-  public static void setStripGwtIncompatibleMethods(boolean b) {
-    instance.stripGwtIncompatible = b;
-  }
-
-  public static boolean generateSegmentedHeaders() {
-    return instance.segmentedHeaders;
+  public boolean stripGwtIncompatibleMethods() {
+    return stripGwtIncompatible;
   }
 
   @VisibleForTesting
-  public static void setSegmentedHeaders(boolean b) {
-    instance.segmentedHeaders = b;
+  public void setStripGwtIncompatibleMethods(boolean b) {
+    stripGwtIncompatible = b;
   }
 
-  public static boolean jsniWarnings() {
-    return instance.jsniWarnings;
-  }
-
-  public static void setJsniWarnings(boolean b) {
-    instance.jsniWarnings = b;
-  }
-
-  public static boolean buildClosure() {
-    return instance.buildClosure;
+  public boolean generateSegmentedHeaders() {
+    return segmentedHeaders;
   }
 
   @VisibleForTesting
-  public static void setBuildClosure(boolean b) {
-    instance.buildClosure = b;
+  public void setSegmentedHeaders(boolean b) {
+    segmentedHeaders = b;
   }
 
-  public static boolean stripReflection() {
-    return instance.stripReflection;
+  public boolean jsniWarnings() {
+    return jsniWarnings;
   }
 
-  @VisibleForTesting
-  public static void setStripReflection(boolean b) {
-    instance.stripReflection = b;
+  public void setJsniWarnings(boolean b) {
+    jsniWarnings = b;
   }
 
-  public static boolean extractUnsequencedModifications() {
-    return instance.extractUnsequencedModifications;
-  }
-
-  @VisibleForTesting
-  public static void enableExtractUnsequencedModifications() {
-    instance.extractUnsequencedModifications = true;
-  }
-
-  public static int batchTranslateMaximum() {
-    return instance.batchTranslateMaximum;
+  public boolean buildClosure() {
+    return buildClosure;
   }
 
   @VisibleForTesting
-  public static void setBatchTranslateMaximum(int max) {
-    instance.batchTranslateMaximum = max;
+  public void setBuildClosure(boolean b) {
+    buildClosure = b;
   }
 
-  public static SourceVersion getSourceVersion(){
-    return instance.sourceVersion;
-  }
-
-  @VisibleForTesting
-  public static void setSourceVersion(SourceVersion version) {
-    instance.sourceVersion = version;
-  }
-
-  public static boolean isJava8Translator() {
-    return SourceVersion.java8Minimum(instance.sourceVersion);
-  }
-
-  public static boolean staticAccessorMethods() {
-    return instance.staticAccessorMethods;
+  public boolean stripReflection() {
+    return stripReflection;
   }
 
   @VisibleForTesting
-  public static void setStaticAccessorMethods(boolean b) {
-    instance.staticAccessorMethods = b;
+  public void setStripReflection(boolean b) {
+    stripReflection = b;
   }
 
-  public static String getProcessors() {
-    return instance.processors;
-  }
-
-  @VisibleForTesting
-  public static void setProcessors(String processors) {
-    instance.processors = processors;
-  }
-
-  public static boolean disallowInheritedConstructors() {
-    return instance.disallowInheritedConstructors;
+  public boolean extractUnsequencedModifications() {
+    return extractUnsequencedModifications;
   }
 
   @VisibleForTesting
-  public static void setDisallowInheritedConstructors(boolean b) {
-    instance.disallowInheritedConstructors = b;
+  public void enableExtractUnsequencedModifications() {
+    extractUnsequencedModifications = true;
   }
 
-  public static boolean swiftFriendly() {
-    return instance.swiftFriendly;
-  }
-
-  @VisibleForTesting
-  public static void setSwiftFriendly(boolean b) {
-    instance.swiftFriendly = b;
-    instance.staticAccessorMethods = b;
-    instance.nullability = b;
-  }
-
-  public static boolean nullability() {
-    return instance.nullability;
+  public int batchTranslateMaximum() {
+    return batchTranslateMaximum;
   }
 
   @VisibleForTesting
-  public static void setNullability(boolean b) {
-    instance.nullability = b;
+  public void setBatchTranslateMaximum(int max) {
+    batchTranslateMaximum = max;
   }
 
-  public static EnumSet<LintOption> lintOptions() {
-    return instance.lintOptions;
+  public SourceVersion getSourceVersion(){
+    return sourceVersion;
   }
 
-  public static String lintArgument() {
-    return instance.lintArgument;
+  @VisibleForTesting
+  public void setSourceVersion(SourceVersion version) {
+    sourceVersion = version;
   }
 
-  public static TimingLevel timingLevel() {
-    return instance.timingLevel;
+  public boolean staticAccessorMethods() {
+    return staticAccessorMethods;
   }
 
-  public static boolean dumpAST() {
-    return instance.dumpAST;
+  @VisibleForTesting
+  public void setStaticAccessorMethods(boolean b) {
+    staticAccessorMethods = b;
+  }
+
+  public String getProcessors() {
+    return processors;
+  }
+
+  @VisibleForTesting
+  public void setProcessors(String processors) {
+    this.processors = processors;
+  }
+
+  public boolean disallowInheritedConstructors() {
+    return disallowInheritedConstructors;
+  }
+
+  @VisibleForTesting
+  public void setDisallowInheritedConstructors(boolean b) {
+    disallowInheritedConstructors = b;
+  }
+
+  public boolean swiftFriendly() {
+    return swiftFriendly;
+  }
+
+  @VisibleForTesting
+  public void setSwiftFriendly(boolean b) {
+    swiftFriendly = b;
+    staticAccessorMethods = b;
+    nullability = b;
+  }
+
+  public boolean nullability() {
+    return nullability;
+  }
+
+  @VisibleForTesting
+  public void setNullability(boolean b) {
+    nullability = b;
+  }
+
+  public EnumSet<LintOption> lintOptions() {
+    return lintOptions;
+  }
+
+  public String lintArgument() {
+    return lintArgument;
+  }
+
+  public TimingLevel timingLevel() {
+    return timingLevel;
+  }
+
+  public boolean dumpAST() {
+    return dumpAST;
   }
 
   // TODO(kstanger): remove after front-end conversion is complete.
-  public static boolean isJDT() {
-    return instance.javaFrontEnd == FrontEnd.JDT;
+  public boolean isJDT() {
+    return javaFrontEnd == FrontEnd.JDT;
   }
 }

@@ -702,13 +702,14 @@ public final class ElementUtil {
     return members;
   }
 
-  public boolean areParametersNonnullByDefault(TypeElement typeElement) {
+  public boolean areParametersNonnullByDefault(TypeElement typeElement, Options options) {
     if (ElementUtil.hasAnnotation(typeElement, ParametersAreNonnullByDefault.class)) {
       return true;
     }
     PackageElement pkg = getPackage(typeElement);
     String pkgName = pkg.getQualifiedName().toString();
-    return Options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
+    return options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName,
+        options.getCharset(), options.getSourcePathEntries(), options.getClassPathEntries());
   }
 
   /**

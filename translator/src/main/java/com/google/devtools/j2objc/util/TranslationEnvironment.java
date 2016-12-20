@@ -35,9 +35,9 @@ public class TranslationEnvironment {
     elementUtil = new ElementUtil(parserEnv.elementUtilities());
     typeUtil = new TypeUtil(parserEnv, elementUtil);
     captureInfo = new CaptureInfo(typeUtil);
-    nameTable = new NameTable(typeUtil, captureInfo);
+    nameTable = new NameTable(typeUtil, captureInfo, options);
     signatureGenerator = new SignatureGenerator(typeUtil);
-    translationUtil = new TranslationUtil(typeUtil, nameTable);
+    translationUtil = new TranslationUtil(typeUtil, nameTable, options);
     this.options = options;
     resetMethod = () -> parserEnv.reset();
   }

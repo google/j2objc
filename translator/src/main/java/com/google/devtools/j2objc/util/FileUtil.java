@@ -15,22 +15,19 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
-
 import javax.annotation.Nullable;
 import javax.tools.JavaFileObject;
 
@@ -88,8 +85,9 @@ public class FileUtil {
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public static InputFile findOnSourcePath(String qualifiedName) throws IOException {
-    return findOnPaths(qualifiedName, Options.getSourcePathEntries(), ".java");
+  public static InputFile findOnSourcePath(String qualifiedName, List<String> sourcePathEntries)
+      throws IOException {
+    return findOnPaths(qualifiedName, sourcePathEntries, ".java");
   }
 
   /**
@@ -98,8 +96,9 @@ public class FileUtil {
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public static InputFile findOnClassPath(String qualifiedName) throws IOException {
-    return findOnPaths(qualifiedName, Options.getClassPathEntries(), ".class");
+  public static InputFile findOnClassPath(String qualifiedName, List<String> classPathEntries)
+      throws IOException {
+    return findOnPaths(qualifiedName, classPathEntries, ".class");
   }
 
   private static InputFile findOnPaths(
@@ -126,8 +125,8 @@ public class FileUtil {
     return null;
   }
 
-  public static String readFile(InputFile file) throws IOException {
-    return CharStreams.toString(file.openReader());
+  public static String readFile(InputFile file, Charset charset) throws IOException {
+    return CharStreams.toString(file.openReader(charset));
   }
 
   private static InputStream streamForFile(String filename) throws IOException {

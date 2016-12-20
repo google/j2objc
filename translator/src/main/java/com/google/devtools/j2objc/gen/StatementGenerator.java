@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -130,7 +129,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   private StatementGenerator(TreeNode node, int currentLine) {
     super(TreeUtil.getCompilationUnit(node));
-    buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
+    buffer = new SourceBuilder(options.emitLineDirectives(), currentLine);
   }
 
   private String getResult() {
@@ -158,10 +157,6 @@ public class StatementGenerator extends UnitTreeVisitor {
    * A temporary stub to show pseudocode in place of Java 8 features.
    */
   private boolean assertIncompleteJava8Support(TreeNode node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
-    if (!Options.isJava8Translator()) {
-      assert false : "not implemented yet";
-    }
     buffer.append(node.toString());
     return false;
   }
@@ -411,7 +406,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     Expression expression = node.getExpression();
     TypeMirror type = expression.getTypeMirror();
     if (!type.getKind().isPrimitive() && !type.getKind().equals(TypeKind.VOID)
-        && Options.useARC() && (expression instanceof MethodInvocation
+        && options.useARC() && (expression instanceof MethodInvocation
             || expression instanceof SuperMethodInvocation
             || expression instanceof FunctionInvocation)) {
       // Avoid clang warning that the return value is unused.
@@ -553,8 +548,6 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    assert Options.isJava8Translator()
-        : "Lambda expression in translator with -source less than 8.";
     throw new AssertionError(
         "Lambda expressions should have been rewritten by LambdaRewriter");
   }

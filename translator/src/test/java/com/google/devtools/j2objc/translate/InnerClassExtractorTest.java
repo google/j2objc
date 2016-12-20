@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -36,7 +35,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   protected void setUp() throws IOException {
     super.setUp();
     // Reference counting by default, change for ARC-specific tests.
-    Options.setMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
+    options.setMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
   }
 
   protected List<AbstractTypeDeclaration> translateClassBody(String testSource) {
@@ -64,7 +63,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testWeakArcSimpleInnerClass() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String source = "import com.google.j2objc.annotations.WeakOuter; "
         + "public class A { Object o;"
         + "  @WeakOuter class B { int test() { return o.hashCode(); } Object o2; }}";

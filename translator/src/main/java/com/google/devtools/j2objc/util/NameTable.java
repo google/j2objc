@@ -52,6 +52,7 @@ public class NameTable {
   private final ElementUtil elementUtil;
   private final CaptureInfo captureInfo;
   private final Map<VariableElement, String> variableNames = new HashMap<>();
+  private final Options options;
 
   public static final String INIT_NAME = "init";
   public static final String RETAIN_METHOD = "retain";
@@ -273,13 +274,14 @@ public class NameTable {
   private final ImmutableMap<String, String> classMappings;
   private final ImmutableMap<String, String> methodMappings;
 
-  public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo) {
+  public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo, Options options) {
     this.typeUtil = typeUtil;
     this.elementUtil = typeUtil.elementUtil();
     this.captureInfo = captureInfo;
-    prefixMap = Options.getPackagePrefixes();
-    classMappings = Options.getMappings().getClassMappings();
-    methodMappings = Options.getMappings().getMethodMappings();
+    this.options = options;
+    prefixMap = options.getPackagePrefixes();
+    classMappings = options.getMappings().getClassMappings();
+    methodMappings = options.getMappings().getMethodMappings();
   }
 
   public void setVariableName(VariableElement var, String name) {
@@ -785,6 +787,7 @@ public class NameTable {
   }
 
   public String getPrefix(PackageElement packageElement) {
-    return prefixMap.getPrefix(packageElement);
+    return prefixMap.getPrefix(packageElement, options.getCharset(),
+        options.getSourcePathEntries(), options.getClassPathEntries());
   }
 }

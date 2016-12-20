@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
@@ -110,7 +109,7 @@ public class GwtConverter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (Options.stripGwtIncompatibleMethods() && isIncompatible(node.getAnnotations())) {
+    if (options.stripGwtIncompatibleMethods() && isIncompatible(node.getAnnotations())) {
       // Remove method from its declaring class.
       node.remove();
       return false;

@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
@@ -102,7 +101,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
       stmts.add(new NativeStatement("JreCheckFinalize(self, [" + clsName + " class]);"));
     }
     stmts.addAll(releaseStatements);
-    if (Options.useReferenceCounting()) {
+    if (options.useReferenceCounting()) {
       stmts.add(new ExpressionStatement(
           new SuperMethodInvocation(new ExecutablePair(superDeallocElement))));
     }
@@ -147,7 +146,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
       funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
     } else if (isVolatile) {
       funcName = "JreReleaseVolatile";
-    } else if (Options.useReferenceCounting()) {
+    } else if (options.useReferenceCounting()) {
       funcName = "RELEASE_";
     }
     if (funcName == null) {

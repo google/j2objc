@@ -74,7 +74,7 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are released in a dealloc for reference counted code.
    */
   public void testFieldReleaseReferenceCounting() throws IOException {
-    Options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
     String translation = translateSourceFile("class Test { Object o; Runnable r; }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
@@ -89,7 +89,7 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are not released for ARC code, and a dealloc method is not created.
    */
   public void testFieldReleaseARC() throws IOException {
-    Options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
     String translation = translateSourceFile("class Test { Object o; Runnable r; }",
         "Test", "Test.m");
     assertNotInTranslation(translation, "dealloc");
@@ -99,7 +99,7 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are released for reference counted code when a finalize() method is defined.
    */
   public void testFieldReleaseFinalizeReferenceCounting() throws IOException {
-    Options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
     String translation = translateSourceFile("class Test { Object o; Runnable r; "
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
@@ -121,7 +121,7 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are not released for ARC code when a finalize() method is defined.
    */
   public void testFieldReleaseFinalizeARC() throws IOException {
-    Options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
     String translation = translateSourceFile("class Test { Object o; Runnable r;"
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");

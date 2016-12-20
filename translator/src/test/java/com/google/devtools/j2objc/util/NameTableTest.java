@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -144,7 +143,7 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testRenameMapping() throws IOException {
-    Options.getMappings().addClass("foo.bar.A",  "Test2Name");
+    options.getMappings().addClass("foo.bar.A",  "Test2Name");
     addSourceFile("package foo.bar; public class A { static void test() {}}", "foo/bar/A.java");
     addSourceFile("package foo.bar; public class B { void test() { A.test(); }}", "foo/bar/B.java");
     String translation = translateSourceFile("foo.bar.A", "foo/bar/A.h");

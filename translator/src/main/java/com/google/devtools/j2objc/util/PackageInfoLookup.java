@@ -16,7 +16,9 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.file.InputFile;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
@@ -65,33 +67,38 @@ public class PackageInfoLookup {
     }
   }
 
-  public String getObjectiveCName(String packageName) {
-    return getPackageData(packageName).objectiveCName;
+  public String getObjectiveCName(String packageName, Charset charset,
+      List<String> sourcePathEntries, List<String> classPathEntries) {
+    return getPackageData(packageName, charset, sourcePathEntries, classPathEntries).objectiveCName;
   }
 
-  public boolean hasParametersAreNonnullByDefault(String packageName) {
-    return getPackageData(packageName).parametersAreNonnullByDefault;
+  public boolean hasParametersAreNonnullByDefault(String packageName,
+      Charset charset, List<String> sourcePathEntries, List<String> classPathEntries) {
+    return getPackageData(packageName, charset, sourcePathEntries,
+        classPathEntries).parametersAreNonnullByDefault;
   }
 
-  private PackageData getPackageData(String packageName) {
+  private PackageData getPackageData(String packageName, Charset charset,
+      List<String> sourcePathEntries, List<String> classPathEntries) {
     PackageData result = map.get(packageName);
     if (result == null) {
-      result = findPackageData(packageName);
+      result = findPackageData(packageName, charset, sourcePathEntries, classPathEntries);
       map.put(packageName, result);
     }
     return result;
   }
 
-  private PackageData findPackageData(String packageName) {
+  private PackageData findPackageData(String packageName, Charset charset,
+      List<String> sourcePathEntries, List<String> classPathEntries) {
     try {
       String fileName = packageName + ".package-info";
       // First look on the sourcepath.
-      InputFile sourceFile = FileUtil.findOnSourcePath(fileName);
+      InputFile sourceFile = FileUtil.findOnSourcePath(fileName, sourcePathEntries);
       if (sourceFile != null) {
-        return parseDataFromSourceFile(sourceFile);
+        return parseDataFromSourceFile(sourceFile, charset);
       }
       // Then look on the classpath.
-      InputFile classFile = FileUtil.findOnClassPath(fileName);
+      InputFile classFile = FileUtil.findOnClassPath(fileName, classPathEntries);
       if (classFile != null) {
         return parseDataFromClassFile(classFile);
       }
@@ -101,9 +108,9 @@ public class PackageInfoLookup {
     return EMPTY_DATA;
   }
 
-  private PackageData parseDataFromSourceFile(InputFile file) throws IOException {
+  private PackageData parseDataFromSourceFile(InputFile file, Charset charset) throws IOException {
     PackageDataBuilder builder = new PackageDataBuilder();
-    String pkgInfo = FileUtil.readFile(file);
+    String pkgInfo = FileUtil.readFile(file, charset);
 
     // @ObjectiveCName
     int i = pkgInfo.indexOf("@ObjectiveCName");

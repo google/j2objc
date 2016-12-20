@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -82,7 +81,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     if (node.getEnumConstants().isEmpty()) {
       return;
     }
-    if (Options.useARC()) {
+    if (options.useARC()) {
       addArcInitialization(node);
     } else {
       if (isSimpleEnum(node)) {
@@ -293,7 +292,7 @@ public class EnumRewriter extends UnitTreeVisitor {
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeElement());
     int numConstants = node.getEnumConstants().size();
-    boolean swiftFriendly = Options.swiftFriendly();
+    boolean swiftFriendly = options.swiftFriendly();
 
     StringBuilder header = new StringBuilder();
     StringBuilder implementation = new StringBuilder();

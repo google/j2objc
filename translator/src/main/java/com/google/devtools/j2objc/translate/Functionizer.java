@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
@@ -53,7 +52,6 @@ import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
@@ -290,7 +288,7 @@ public class Functionizer extends UnitTreeVisitor {
     TypeElement type = ElementUtil.getDeclaringClass(element);
     FunctionElement funcElement = newAllocatingConstructorElement(element);
     FunctionInvocation invocation = new FunctionInvocation(funcElement, node.getTypeMirror());
-    invocation.setHasRetainedResult(node.hasRetainedResult() || Options.useARC());
+    invocation.setHasRetainedResult(node.hasRetainedResult() || options.useARC());
     List<Expression> args = invocation.getArguments();
     Expression outerExpr = node.getExpression();
     if (outerExpr != null) {
@@ -332,7 +330,7 @@ public class Functionizer extends UnitTreeVisitor {
       if (isConstructor && !ElementUtil.isAbstract(declaringClass) && !isEnumConstructor) {
         declarationList.add(makeAllocatingConstructor(node, false));
         declarationList.add(makeAllocatingConstructor(node, true));
-      } else if (isEnumConstructor && Options.useARC()) {
+      } else if (isEnumConstructor && options.useARC()) {
         // Enums with ARC need the retaining constructor.
         declarationList.add(makeAllocatingConstructor(node, false));
       }
@@ -341,7 +339,8 @@ public class Functionizer extends UnitTreeVisitor {
           // Public methods must be kept for the public API.
           || !(ElementUtil.isPrivateInnerType(declaringClass) || ElementUtil.isPrivate(element))
           // Methods must be kept for reflection if enabled.
-          || (TranslationUtil.needsReflection(declaringClass) && !isEnumConstructor);
+          || (translationUtil.needsReflection(declaringClass)
+              && !isEnumConstructor);
       if (keepMethod) {
         if (isDefaultMethod) {
           // For default methods keep only the declaration. Implementing classes will add a shim.
@@ -478,7 +477,7 @@ public class Functionizer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    if (!node.isInterface() && Options.disallowInheritedConstructors()) {
+    if (!node.isInterface() && options.disallowInheritedConstructors()) {
       addDisallowedConstructors(node);
     }
   }

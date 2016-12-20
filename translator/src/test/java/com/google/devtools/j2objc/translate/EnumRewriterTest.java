@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -43,7 +42,7 @@ public class EnumRewriterTest extends GenerationTest {
   }
 
   public void testToNsEnumConversion() throws Exception {
-    Options.setSwiftFriendly(true);
+    options.setSwiftFriendly(true);
     String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (Test_Enum)toNSEnum {",
@@ -53,7 +52,7 @@ public class EnumRewriterTest extends GenerationTest {
 
   public void testEmptyEnum() throws Exception {
     // Add --swift-friendly to test that toNSEnum is not generated.
-    Options.setSwiftFriendly(true);
+    options.setSwiftFriendly(true);
     String header = translateSourceFile("enum Test {}", "Test", "Test.h");
     assertNotInTranslation(header, "Test_Enum");
     String source = getTranslatedFile("Test.m");

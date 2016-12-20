@@ -13,13 +13,12 @@
  */
 package com.google.devtools.j2objc.file;
 
-import com.google.devtools.j2objc.Options;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -83,8 +82,8 @@ public class JarredInputFile implements InputFile {
   }
 
   @Override
-  public Reader openReader() throws IOException {
-    return new InputStreamReader(getInputStream(), Options.getCharset());
+  public Reader openReader(Charset charset) throws IOException {
+    return new InputStreamReader(getInputStream(), charset);
   }
 
   @Override
@@ -92,6 +91,7 @@ public class JarredInputFile implements InputFile {
     return "jar:file:" + jarPath + "!" + internalPath;
   }
 
+  @Override
   public String getContainingPath() {
     return jarPath;
   }

@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -33,7 +32,7 @@ public class LineDirectivesTest extends GenerationTest {
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    Options.setEmitLineDirectives(true);
+    options.setEmitLineDirectives(true);
   }
 
   public void testNoHeaderNumbering() throws IOException {
