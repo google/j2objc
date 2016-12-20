@@ -590,7 +590,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/util/logging/PlatformLogger.java
 
 JAVA_PUBLIC_SOURCES_IO = \
-  com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.java \
   java/io/CharArrayReader.java \
   java/io/CharArrayWriter.java \
   java/io/CharConversionException.java \
@@ -613,6 +612,7 @@ JAVA_PUBLIC_SOURCES_IO = \
 JAVA_PRIVATE_SOURCES_IO =
 
 JAVA_PUBLIC_SOURCES_NET = \
+  com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.java \
   com/google/j2objc/net/NSErrorException.java \
   java/net/Authenticator.java \
   java/net/BindException.java \
