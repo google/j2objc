@@ -478,7 +478,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   public void testInnerSubClassOfOtherInnerWithOuterRefsWithGenerics() throws IOException {
     String source = "public class Test { "
         + "class B extends A<B.BInner> { "
-        + "  public class BInner extends A.Inner { BInner() { super(null); } } } "
+        + "  public class BInner extends A<B.BInner>.Inner { BInner() { super(null); } } } "
         + "class A<T extends A<T>.Inner> { "
         + "  private void foo() { } "
         + "  public class Inner { Inner(T t) { foo(); } } } "
