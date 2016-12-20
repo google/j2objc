@@ -198,7 +198,6 @@ public class J2ObjCTest extends GenerationTest {
     J2ObjC.run(Collections.singletonList(examplePath));
     assertErrorCount(0);
 
-
     String translatedAnnotationHeader = getTranslatedFile("ProcessingResult.h");
     String translatedAnnotationImpl = getTranslatedFile("ProcessingResult.m");
 
