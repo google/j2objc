@@ -171,11 +171,12 @@ public class InitializationNormalizerTest extends GenerationTest {
   }
 
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
-    String source = "class Test { static final String foo = \"hello\" + \"\\udfff\"; }";
+    // Include a 1 between the strings so javac's parser doesn't combine them.
+    String source = "class Test { static final String foo = \"hello\" + 1 + \"\\udfff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello\", "
+        "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello1\", "
         + "[NSString stringWithCharacters:(jchar[]) { (int) 0xdfff } length:1]));");
   }
 

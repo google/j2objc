@@ -416,28 +416,48 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { String one, two, three; }",
       "Example", "Example.h");
-    assertTranslation(translation, "NSString *one_, *two_, *three_;");
+    if (Options.isJDT()) {
+      assertTranslation(translation, "NSString *one_, *two_, *three_;");
+    } else {
+      assertTranslatedLines(translation,
+          "NSString *one_;", "NSString *two_;", "NSString *three_;");
+    }
   }
 
   public void testMultiplePrimitiveDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { int one, two, three; }",
       "Example", "Example.h");
-    assertTranslation(translation, "int one_, two_, three_;");
+    if (Options.isJDT()) {
+      assertTranslation(translation, "int one_, two_, three_;");
+    } else {
+      assertTranslatedLines(translation,
+          "jint one_;", "jint two_;", "jint three_;");
+    }
   }
 
   public void testMultipleInterfaceDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { Comparable one, two, three; }",
       "Example", "Example.h");
-    assertTranslation(translation, "id<JavaLangComparable> one_, two_, three_;");
+    if (Options.isJDT()) {
+      assertTranslation(translation, "id<JavaLangComparable> one_, two_, three_;");
+    } else {
+      assertTranslatedLines(translation, "id<JavaLangComparable> one_;",
+          "id<JavaLangComparable> two_;", "id<JavaLangComparable> three_;");
+    }
   }
 
   public void testMultipleClassDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { Class<?> one, two, three; }",
       "Example", "Example.h");
-    assertTranslation(translation, "IOSClass *one_, *two_, *three_;");
+    if (Options.isJDT()) {
+      assertTranslation(translation, "IOSClass *one_, *two_, *three_;");
+    } else {
+      assertTranslatedLines(translation,
+          "IOSClass *one_", "IOSClass *two_", "IOSClass *three_");
+    }
   }
 
   public void testInnerClassDeclaration() throws IOException {
