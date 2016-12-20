@@ -1025,6 +1025,9 @@ public class TreeConverter {
     // javac doesn't include the "package" token in its AST, just the package name.
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
+    for (JCTree.JCAnnotation pkgAnnotation : unit.getPackageAnnotations()) {
+      newNode.addAnnotation((Annotation) convertAnnotation(pkgAnnotation));
+    }
     return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, namePos))
         .setPosition(SourcePosition.NO_POSITION);
   }
