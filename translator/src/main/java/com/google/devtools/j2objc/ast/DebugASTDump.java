@@ -69,6 +69,8 @@ public class DebugASTDump extends TreeVisitor {
     }
     sb.printIndent();
     sb.print(node.getClass().getSimpleName());
+    sb.print(" (line:" + node.getLineNumber() + " pos:" + node.getStartPosition()
+        + " len:" + node.getLength() + ")");
     sb.indent();
     return true;
   }
