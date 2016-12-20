@@ -139,6 +139,7 @@ public class JavacParser extends Parser {
     if (lintArgument != null) {
       javacOptions.add(lintArgument);
     }
+    javacOptions.add("-proc:none");
 
     // TODO(tball): this should be in the FileManager, but adding it there
     // causes annotations to be processed twice, causing a "duplicate unit"
