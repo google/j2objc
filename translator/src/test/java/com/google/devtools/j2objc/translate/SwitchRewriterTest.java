@@ -43,11 +43,23 @@ public class SwitchRewriterTest extends GenerationTest {
       + "private void log(int i) {}}",
       "A", "A.m");
     assertTranslation(translation, "jint j;");
-    assertTranslation(translation, "jint k, l;");
+    if (options.isJDT()) {
+      assertTranslation(translation, "jint k, l;");
+    } else {
+      assertTranslation(translation, "jint k;");
+      assertTranslation(translation, "jint l;");
+    }
     assertTranslation(translation, "case 1:");
     assertTrue(translation.indexOf("jint j;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("jint k, l;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("jint j;") < translation.indexOf("jint k, l;"));
+    if (options.isJDT()) {
+      assertTrue(translation.indexOf("jint k, l;") < translation.indexOf("case 1:"));
+      assertTrue(translation.indexOf("jint j;") < translation.indexOf("jint k, l;"));
+    } else {
+      assertTrue(translation.indexOf("jint k;") < translation.indexOf("case 1:"));
+      assertTrue(translation.indexOf("jint l;") < translation.indexOf("case 1:"));
+      assertTrue(translation.indexOf("jint j;") < translation.indexOf("jint k;"));
+      assertTrue(translation.indexOf("jint k;") < translation.indexOf("jint l;"));
+    }
     assertTranslation(translation, "j = i * 2;");
     assertTranslation(translation, "k = i;");
     assertTranslation(translation, "l = 42;");
@@ -68,10 +80,18 @@ public class SwitchRewriterTest extends GenerationTest {
     assertEquals(1, stmts.size());
     Block block = (Block) stmts.get(0);
     stmts = block.getStatements();
-    assertEquals(3, stmts.size());
-    assertTrue(stmts.get(0) instanceof VariableDeclarationStatement);
-    assertTrue(stmts.get(1) instanceof VariableDeclarationStatement);
-    assertTrue(stmts.get(2) instanceof SwitchStatement);
+    if (options.isJDT()) {
+      assertEquals(3, stmts.size());
+      assertTrue(stmts.get(0) instanceof VariableDeclarationStatement);
+      assertTrue(stmts.get(1) instanceof VariableDeclarationStatement);
+      assertTrue(stmts.get(2) instanceof SwitchStatement);
+    } else {
+      assertEquals(4, stmts.size());
+      assertTrue(stmts.get(0) instanceof VariableDeclarationStatement);
+      assertTrue(stmts.get(1) instanceof VariableDeclarationStatement);
+      assertTrue(stmts.get(2) instanceof VariableDeclarationStatement);
+      assertTrue(stmts.get(3) instanceof SwitchStatement);
+    }
   }
 
   public void testMultipleSwitchVariables() throws IOException {

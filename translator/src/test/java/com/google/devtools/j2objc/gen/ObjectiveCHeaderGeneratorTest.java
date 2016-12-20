@@ -455,7 +455,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       assertTranslation(translation, "IOSClass *one_, *two_, *three_;");
     } else {
       assertTranslatedLines(translation,
-          "IOSClass *one_", "IOSClass *two_", "IOSClass *three_");
+          "IOSClass *one_;", "IOSClass *two_;", "IOSClass *three_;");
     }
   }
 
