@@ -242,8 +242,22 @@ public class OcniExtractor extends UnitTreeVisitor {
     return null;
   }
 
-  private enum OcniType {
-    HEADER, SOURCE;
+  /**
+   * Kinds of OCNI comments. Currently there are normal source and header types.
+   */
+  // TODO(kstanger): move to BlockComment, or a new OCNIComment subclass.
+  public enum OcniType {
+    HEADER("/*-HEADER["), SOURCE("/*-[");
+
+    private final String delimiter;
+
+    private OcniType(String delim) {
+      delimiter = delim;
+    }
+
+    public String delimiter() {
+      return delimiter;
+    }
 
     static OcniType fromString(String type) {
       if (type.isEmpty()) {

@@ -109,6 +109,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -164,12 +165,11 @@ public class TreeConverter {
       converter.newUnit = new CompilationUnit(new TranslationEnvironment(options, env),
           sourceFilePath, mainTypeName, source);
       PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
-      SourcePosition pkgPos = converter.getPosition(javacUnit.pid);
-      converter.newUnit.setPackage(converter.convertPackage(pkg, pkgPos));
+      converter.newUnit.setPackage(converter.convertPackage(javacUnit.pid, pkg));
       for (JCTree type : javacUnit.getTypeDecls()) {
         converter.newUnit.addType((AbstractTypeDeclaration) converter.convert(type));
       }
-      addOcniComments(converter.newUnit);
+      addOcniComments(converter.newUnit, options.jsniWarnings());
       return converter.newUnit;
     } catch (IOException e) {
       ErrorUtil.fatalError(e, sourceFilePath);
@@ -655,7 +655,9 @@ public class TreeConverter {
     if (node.sym.isAnonymous()) {
       return (TypeDeclaration) convertClassDeclaration(node);
     }
-    EnumDeclaration newNode = (EnumDeclaration) new EnumDeclaration()
+    EnumDeclaration newNode = (EnumDeclaration) new EnumDeclaration();
+    convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
+    newNode
         .setName(convertSimpleName(node.sym, node.type, getNamePosition(node)))
         .setTypeElement(node.sym);
     for (JCTree superInterface : node.getImplementsClause()) {
@@ -670,8 +672,7 @@ public class TreeConverter {
           newNode.addBodyDeclaration((BodyDeclaration) var);
         }
       } else if (bodyDecl.getKind() == Kind.METHOD) {
-        MethodDeclaration method = (MethodDeclaration)
-            convertMethodDeclaration((JCTree.JCMethodDecl) bodyDecl);
+        MethodDeclaration method = (MethodDeclaration) convert((JCTree.JCMethodDecl) bodyDecl);
         if (ElementUtil.isConstructor(method.getExecutableElement())
             && !method.getBody().getStatements().isEmpty()){
           // Remove bogus "super()" call from constructors, so InitializationNormalizer
@@ -745,10 +746,12 @@ public class TreeConverter {
             .setElement(node.sym);
       }
     }
-    return new FieldAccess()
+    FieldAccess newNode = new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
         .setExpression((Expression) convert(selected))
         .setName(convertSimpleName(node.sym, node.type, pos).setTypeMirror(node.type));
+    convertExpression(node, newNode);
+    return newNode;
   }
 
   private TreeNode convertForLoop(JCTree.JCForLoop node) {
@@ -1021,14 +1024,15 @@ public class TreeConverter {
     return convertExpression(node, newNode);
   }
 
-  private PackageDeclaration convertPackage(PackageElement pkg, SourcePosition namePos) {
+  private PackageDeclaration convertPackage(JCTree.JCExpression node, PackageElement pkg) {
     // javac doesn't include the "package" token in its AST, just the package name.
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
     for (JCTree.JCAnnotation pkgAnnotation : unit.getPackageAnnotations()) {
       newNode.addAnnotation((Annotation) convertAnnotation(pkgAnnotation));
     }
-    return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, namePos))
+    return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, getPosition(node)))
+        .setJavadoc((Javadoc) getAssociatedJavaDoc(unit, pkg))
         .setPosition(SourcePosition.NO_POSITION);
   }
 
@@ -1252,18 +1256,27 @@ public class TreeConverter {
     return JavadocConverter.convertJavadoc(element, env);
   }
 
-  private static void addOcniComments(CompilationUnit unit) {
+  private static void addOcniComments(CompilationUnit unit, boolean jsniWarnings) {
+    for (OcniExtractor.OcniType kind : OcniExtractor.OcniType.values()) {
+      addNativeComments(unit, kind.delimiter(), "]-*/");
+    }
+    if (jsniWarnings) {
+      addNativeComments(unit, "/*-{", "}-*/");
+    }
+  }
+
+  private static void addNativeComments(CompilationUnit unit, String delim, String endDelim) {
     // Can't use a regex because it will greedily include everything between
     // the first and last closing pattern, resulting in a single comment node.
     String source = unit.getSource();
     int startPos = 0;
     int endPos = 0;
-    while ((startPos = source.indexOf("/*-[", endPos)) > -1) {
-      endPos = source.indexOf("]-*/", startPos);
+    while ((startPos = source.indexOf(delim, endPos)) > -1) {
+      endPos = source.indexOf(endDelim, startPos);
       if (endPos > startPos) {
         endPos += 4;  // Include closing delimiter.
         BlockComment ocniComment = new BlockComment();
-        ocniComment.setSourceRange(startPos, endPos);
+        ocniComment.setSourceRange(startPos, endPos - startPos);
         unit.getCommentList().add(ocniComment);
       }
     }
