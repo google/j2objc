@@ -138,7 +138,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -885,22 +884,12 @@ public class TreeConverter {
     for (JCTree.JCVariableDecl param : node.getParameters()) {
       newNode.addParameter((SingleVariableDeclaration) convert(param));
     }
-    if (ElementUtil.isConstructor(node.sym)) {
-      TypeElement declaringClass = ElementUtil.getDeclaringClass(node.sym);
-      int classNameLength = declaringClass.getSimpleName().toString().length();
-      SourcePosition pos = getSourcePosition(node.pos, classNameLength);
-      SimpleName constructorName = convertSimpleName(declaringClass, declaringClass.asType(), pos);
-      newNode
-          .setName(constructorName)
-          .setIsConstructor(true);
-    } else {
-      newNode
-          .setName(convertSimpleName(node.sym, node.type, getNamePosition(node)))
-          .setReturnType(Type.newType(node.type.asMethodType().getReturnType()));
-    }
     return newNode
+        .setName(convertSimpleName(node.sym, node.type, getNamePosition(node)))
+        .setIsConstructor(ElementUtil.isConstructor(node.sym))
         .setExecutableElement(node.sym)
-        .setBody((Block) convert(node.getBody()));
+        .setBody((Block) convert(node.getBody()))
+        .setReturnType(Type.newType(node.type.asMethodType().getReturnType()));
   }
 
   private static String getMemberName(JCTree.JCExpression node) {
