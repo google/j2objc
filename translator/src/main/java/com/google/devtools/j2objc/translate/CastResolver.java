@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -281,31 +282,33 @@ public class CastResolver extends UnitTreeVisitor {
     return false;
   }
 
-  private void maybeCastArguments(List<Expression> args, List<? extends TypeMirror> argTypes) {
-    // Possible varargs, don't cast vararg arguments.
-    assert args.size() >= argTypes.size();
-    for (int i = 0; i < argTypes.size(); i++) {
-      maybeAddCast(args.get(i), argTypes.get(i), false);
+  private void maybeCastArguments(
+      List<Expression> args, Iterable<? extends TypeMirror> paramTypes) {
+    Iterator<Expression> argIter = args.iterator();
+    Iterator<? extends TypeMirror> paramTypeIter = paramTypes.iterator();
+    // Implicit assert that size(paramTypes) >= size(args). Don't cast vararg arguments.
+    while (paramTypeIter.hasNext()) {
+      maybeAddCast(argIter.next(), paramTypeIter.next(), false);
     }
   }
 
-  private void maybeCastArguments(List<Expression> args, ExecutableType method) {
-    maybeCastArguments(args, method.getParameterTypes());
+  private void maybeCastArguments(List<Expression> args, ExecutableElement method) {
+    maybeCastArguments(args, ElementUtil.asTypes(method.getParameters()));
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    maybeCastArguments(node.getArguments(), node.getExecutableType());
+    maybeCastArguments(node.getArguments(), node.getExecutableElement());
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getExecutableType());
+    maybeCastArguments(node.getArguments(), node.getExecutableElement());
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    maybeCastArguments(node.getArguments(), node.getExecutableType());
+    maybeCastArguments(node.getArguments(), node.getExecutableElement());
   }
 
   @Override
@@ -324,7 +327,7 @@ public class CastResolver extends UnitTreeVisitor {
     if (receiver != null && !ElementUtil.isStatic(node.getExecutableElement())) {
       maybeAddCast(receiver, null, true);
     }
-    maybeCastArguments(node.getArguments(), node.getExecutableType());
+    maybeCastArguments(node.getArguments(), node.getExecutableElement());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
@@ -340,12 +343,12 @@ public class CastResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getExecutableType());
+    maybeCastArguments(node.getArguments(), node.getExecutableElement());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    maybeCastArguments(node.getArguments(), node.getExecutableType());
+    maybeCastArguments(node.getArguments(), node.getExecutableElement());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
