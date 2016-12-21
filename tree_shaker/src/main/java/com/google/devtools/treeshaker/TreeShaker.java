@@ -44,6 +44,7 @@ import java.util.Set;
 public class TreeShaker {
 
   private final Options options;
+  private final com.google.devtools.j2objc.Options j2objcOptions;
   private TranslationEnvironment env = null;
 
   static {
@@ -56,14 +57,15 @@ public class TreeShaker {
 
   public TreeShaker(Options options) throws IOException {
     this.options = options;
-    com.google.devtools.j2objc.Options.load(new String[] {
-      "-encoding", options.fileEncoding(),
-      "-source",   options.sourceVersion().flag()
-    });
+    j2objcOptions = new com.google.devtools.j2objc.Options();
+    j2objcOptions.load(new String[] {
+        "-encoding", options.fileEncoding(),
+        "-source",   options.sourceVersion().flag()
+      });
   }
 
-  private static Parser createParser(Options options) {
-    Parser parser = Parser.newParser(options);
+  private Parser createParser(Options options) throws IOException {
+    Parser parser = Parser.newParser(j2objcOptions);
     parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
@@ -113,7 +115,7 @@ public class TreeShaker {
     for (int i = 0; i < sourceFileNames.size(); i++) {
       String fileName = sourceFileNames.get(i);
       RegularInputFile file = new RegularInputFile(fileName);
-      String source = FileUtil.readFile(file);
+      String source = FileUtil.readFile(file, j2objcOptions.getCharset());
       if (!source.contains("J2ObjCIncompatible")) {
         continue;
       }
