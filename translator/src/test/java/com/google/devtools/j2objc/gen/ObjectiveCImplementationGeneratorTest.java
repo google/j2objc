@@ -19,10 +19,8 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -727,7 +725,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     compileArgs.add("-classpath");
     compileArgs.add(System.getProperty("java.class.path"));
     compileArgs.add("-encoding");
-    compileArgs.add(options.getCharset().name());
+    compileArgs.add(options.fileUtil().getCharset().name());
     compileArgs.add("-source");
     compileArgs.add("1.7");
     compileArgs.add(tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
@@ -736,21 +734,15 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             new PrintWriter(System.out), new PrintWriter(System.err),
             false, Collections.emptyMap(), null);
     batchCompiler.compile(compileArgs.toArray(new String[0]));
-    List<String> oldClassPathEntries = new ArrayList<String>(options.getClassPathEntries());
-    options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
-    try {
-      String translation = translateSourceFile("package foo.bar.mumble;\n"
-          + "public class Test {}",
-          "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
-      assertTranslation(translation, "@interface FBMTest");
-      assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
-      translation = getTranslatedFile("foo/bar/mumble/Test.m");
-      assertTranslation(translation, "@implementation FBMTest");
-      assertNotInTranslation(translation, "FooBarMumbleTest");
-    } finally {
-      options.getClassPathEntries().clear();
-      options.getClassPathEntries().addAll(oldClassPathEntries);
-    }
+    options.fileUtil().getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
+    String translation = translateSourceFile("package foo.bar.mumble;\n"
+        + "public class Test {}",
+        "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
+    assertTranslation(translation, "@interface FBMTest");
+    assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
+    translation = getTranslatedFile("foo/bar/mumble/Test.m");
+    assertTranslation(translation, "@implementation FBMTest");
+    assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
   public void testPackageInfoPrefixMethod() throws IOException {

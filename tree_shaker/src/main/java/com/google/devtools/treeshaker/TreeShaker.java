@@ -59,17 +59,19 @@ public class TreeShaker {
     this.options = options;
     j2objcOptions = new com.google.devtools.j2objc.Options();
     j2objcOptions.load(new String[] {
-        "-encoding", options.fileEncoding(),
-        "-source",   options.sourceVersion().flag()
-      });
+      "-sourcepath", Strings.nullToEmpty(options.getSourcepath()),
+      "-classpath", Strings.nullToEmpty(options.getClasspath()),
+      "-encoding", options.fileEncoding(),
+      "-source",   options.sourceVersion().flag()
+    });
   }
 
   private Parser createParser(Options options) throws IOException {
     Parser parser = Parser.newParser(j2objcOptions);
-    parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
+    parser.addSourcepathEntries(j2objcOptions.fileUtil().getSourcePathEntries());
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
-    parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
-    parser.setEncoding(options.fileEncoding());
+    parser.addClasspathEntries(j2objcOptions.fileUtil().getClassPathEntries());
+    parser.setEncoding(j2objcOptions.fileUtil().getFileEncoding());
     return parser;
   }
 
@@ -115,7 +117,7 @@ public class TreeShaker {
     for (int i = 0; i < sourceFileNames.size(); i++) {
       String fileName = sourceFileNames.get(i);
       RegularInputFile file = new RegularInputFile(fileName);
-      String source = FileUtil.readFile(file, j2objcOptions.getCharset());
+      String source = j2objcOptions.fileUtil().readFile(file);
       if (!source.contains("J2ObjCIncompatible")) {
         continue;
       }
@@ -129,7 +131,8 @@ public class TreeShaker {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, Charset.forName(options.fileEncoding()));
+      Files.write(parseResult.getSource(), strippedFile, Charset.forName(
+          j2objcOptions.fileUtil().getFileEncoding()));
       sourceFileNames.set(i, strippedFile.getPath());
     }
     return strippedDir;

@@ -41,7 +41,7 @@ public class J2ObjCTest extends GenerationTest {
   public void setUp() throws IOException {
     super.setUp();
 
-    List<String> classpathEntries = options.getClassPathEntries();
+    List<String> classpathEntries = options.fileUtil().getClassPathEntries();
     for (String entry : getComGoogleDevtoolsJ2objcPath()) {
       classpathEntries.add(entry);
     }
@@ -55,13 +55,6 @@ public class J2ObjCTest extends GenerationTest {
         "@ObjectiveCName(\"CBT\")\n"
         + "package com.google.devtools.j2objc.util;\n"
         + "import com.google.j2objc.annotations.ObjectiveCName;", packageInfoPath);
-  }
-
-  @Override
-  public void tearDown() throws Exception {
-    options.getClassPathEntries().clear();
-    options.setBatchTranslateMaximum(0);
-    super.tearDown();
   }
 
   // No assertions for packageInfoH--nothing interesting in it that other tests don't assert.
@@ -192,7 +185,7 @@ public class J2ObjCTest extends GenerationTest {
   // Test a simple annotation processor on the classpath.
   public void testAnnotationProcessing() throws Exception {
     String processorPath = getResourceAsFile("annotations/Processor.jar");
-    options.getClassPathEntries().add(processorPath);
+    options.fileUtil().getClassPathEntries().add(processorPath);
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath), options);
@@ -222,7 +215,7 @@ public class J2ObjCTest extends GenerationTest {
   // Test a specified annotation processor.
   public void testSpecifiedAnnotationProcessing() throws Exception {
     String processorPath = getResourceAsFile("annotations/Processor.jar");
-    options.getClassPathEntries().add(processorPath);
+    options.fileUtil().getClassPathEntries().add(processorPath);
     options.setProcessors("com.google.devtools.j2objc.annotations.J2ObjCTestProcessor");
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");

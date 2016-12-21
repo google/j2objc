@@ -60,6 +60,8 @@ public class CycleFinder {
     j2objcOptions = new com.google.devtools.j2objc.Options();
 
     j2objcOptions.load(new String[] {
+      "-sourcepath", Strings.nullToEmpty(options.getSourcepath()),
+      "-classpath", Strings.nullToEmpty(options.getClasspath()),
       "-encoding", options.fileEncoding(),
       "-source",   options.sourceVersion().flag()
     });
@@ -109,7 +111,7 @@ public class CycleFinder {
     for (int i = 0; i < sourceFileNames.size(); i++) {
       String fileName = sourceFileNames.get(i);
       RegularInputFile file = new RegularInputFile(fileName);
-      String source = FileUtil.readFile(file, j2objcOptions.getCharset());
+      String source = j2objcOptions.fileUtil().readFile(file);
       if (!source.contains("J2ObjCIncompatible")) {
         continue;
       }

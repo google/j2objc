@@ -40,7 +40,8 @@ public class DebugASTDump extends TreeVisitor {
    */
   public static void dumpUnit(CompilationUnit unit) {
     String relativeOutputPath = unit.getMainTypeName().replace('.', '/') + ".ast";
-    File outputFile = new File(unit.getEnv().options().getOutputDirectory(), relativeOutputPath);
+    File outputFile = new File(
+        unit.getEnv().options().fileUtil().getOutputDirectory(), relativeOutputPath);
     outputFile.getParentFile().mkdirs();
 
     try (FileOutputStream fout = new FileOutputStream(outputFile);

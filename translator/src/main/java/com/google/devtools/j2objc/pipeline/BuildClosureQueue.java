@@ -18,8 +18,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -87,7 +85,7 @@ public class BuildClosureQueue {
 
     InputFile inputFile = null;
     try {
-      inputFile = FileUtil.findOnSourcePath(name, options.getSourcePathEntries());
+      inputFile = options.fileUtil().findOnSourcePath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
@@ -97,8 +95,8 @@ public class BuildClosureQueue {
     }
 
     // Check if the source file is older than the generated header file.
-    File headerSource =
-        new File(options.getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
+    File headerSource = new File(
+        options.fileUtil().getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
     if (headerSource.exists() && inputFile.lastModified() < headerSource.lastModified()) {
       return null;
     }
@@ -109,7 +107,7 @@ public class BuildClosureQueue {
   private boolean findClassFile(String name) {
     InputFile f = null;
     try {
-      f = FileUtil.findOnClassPath(name, options.getClassPathEntries());
+      f = options.fileUtil().findOnClassPath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }

@@ -91,7 +91,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 
   protected void save(String path) {
     try {
-      File outputDirectory = unit.options().getOutputDirectory();
+      File outputDirectory = unit.options().fileUtil().getOutputDirectory();
       File outputFile = new File(outputDirectory, path);
       File dir = outputFile.getParentFile();
       if (dir != null && !dir.exists()) {
@@ -106,7 +106,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
         source += '\n';
       }
 
-      Files.write(source, outputFile, unit.options().getCharset());
+      Files.write(source, outputFile, unit.options().fileUtil().getCharset());
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     } finally {

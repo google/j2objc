@@ -71,11 +71,11 @@ public class J2ObjC {
   @VisibleForTesting
   public static Parser createParser(Options options) {
     Parser parser = Parser.newParser(options);
-    parser.addClasspathEntries(options.getClassPathEntries());
+    parser.addClasspathEntries(options.fileUtil().getClassPathEntries());
     parser.addClasspathEntries(Options.getBootClasspath());
-    parser.addSourcepathEntries(options.getSourcePathEntries());
+    parser.addSourcepathEntries(options.fileUtil().getSourcePathEntries());
     parser.setIncludeRunningVMBootclasspath(false);
-    parser.setEncoding(options.fileEncoding());
+    parser.setEncoding(options.fileUtil().getFileEncoding());
     parser.setEnableDocComments(options.docCommentsEnabled());
     return parser;
   }

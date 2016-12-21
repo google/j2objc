@@ -120,7 +120,7 @@ public class GenerationTest extends TestCase {
   }
 
   protected void addSourcesToSourcepaths() throws IOException {
-    options.getSourcePathEntries().add(tempDir.getCanonicalPath());
+    options.fileUtil().getSourcePathEntries().add(tempDir.getCanonicalPath());
   }
 
   /**
@@ -403,7 +403,7 @@ public class GenerationTest extends TestCase {
   protected String addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
-    Files.write(source, file, options.getCharset());
+    Files.write(source, file, options.fileUtil().getCharset());
     return file.getPath();
   }
 
@@ -414,7 +414,7 @@ public class GenerationTest extends TestCase {
   protected String getTranslatedFile(String fileName) throws IOException {
     File f = new File(tempDir, fileName);
     assertTrue(fileName + " not generated", f.exists());
-    return Files.toString(f, options.getCharset());
+    return Files.toString(f, options.fileUtil().getCharset());
   }
 
   /**
@@ -485,7 +485,7 @@ public class GenerationTest extends TestCase {
   protected void addJarFile(String jarFileName, String... sources) throws IOException {
     File jarFile = getTempFile(jarFileName);
     jarFile.getParentFile().mkdirs();
-    options.appendSourcePath(jarFile.getPath());
+    options.fileUtil().appendSourcePath(jarFile.getPath());
     JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarFile));
     try {
       for (int i = 0; i < sources.length; i += 2) {

@@ -369,8 +369,7 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(PackageDeclaration node) {
     String pkgName = node.getName().toString();
-    if (options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName,
-          options.getCharset(), options.getSourcePathEntries(), options.getClassPathEntries())) {
+    if (options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName)) {
       unit.setHasNullabilityAnnotations();
     }
   }

@@ -63,7 +63,7 @@ public class JavacParser extends Parser {
   public CompilationUnit parse(InputFile file) {
     String source = null;
     try {
-      source = FileUtil.readFile(file, options.getCharset());
+      source = options.fileUtil().readFile(file);
       return parse(null, file.getUnitName(), source);
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
@@ -99,13 +99,14 @@ public class JavacParser extends Parser {
 
   private JavacFileManager getFileManager(JavaCompiler compiler,
       DiagnosticCollector<JavaFileObject> diagnostics) throws IOException {
-    Charset charset = encoding != null ? Charset.forName(encoding) : options.getCharset();
+    Charset charset =
+        encoding != null ? Charset.forName(encoding) : options.fileUtil().getCharset();
     JavacFileManager fileManager = (JavacFileManager)
         compiler.getStandardFileManager(diagnostics, null, charset);
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
-        Lists.newArrayList(options.getOutputDirectory()));
+        Lists.newArrayList(options.fileUtil().getOutputDirectory()));
     fileManager.setLocation(StandardLocation.SOURCE_OUTPUT,
         Lists.newArrayList(FileUtil.createTempDir("annotations")));
     return fileManager;

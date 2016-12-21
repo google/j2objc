@@ -85,15 +85,15 @@ public class AnnotationPreProcessor {
     String tmpDirPath = tmpDirectory.getAbsolutePath();
     List<String> compileArgs = Lists.newArrayList();
     Joiner pathJoiner = Joiner.on(":");
-    List<String> sourcePath = options.getSourcePathEntries();
+    List<String> sourcePath = options.fileUtil().getSourcePathEntries();
     sourcePath.add(tmpDirPath);
     compileArgs.add("-sourcepath");
     compileArgs.add(pathJoiner.join(sourcePath));
     compileArgs.add("-classpath");
-    List<String> classPath = options.getClassPathEntries();
+    List<String> classPath = options.fileUtil().getClassPathEntries();
     compileArgs.add(pathJoiner.join(classPath));
     compileArgs.add("-encoding");
-    compileArgs.add(options.getCharset().name());
+    compileArgs.add(options.fileUtil().getCharset().name());
     compileArgs.add("-source");
     compileArgs.add(options.getSourceVersion().flag());
     compileArgs.add("-s");
@@ -154,7 +154,7 @@ public class AnnotationPreProcessor {
    * in case any might have annotations that should be processed.
    */
   private boolean hasAnnotationProcessors() {
-    PathClassLoader loader = new PathClassLoader(options.getClassPathEntries());
+    PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
     loader.addPaths(options.getProcessorPathEntries());
     ServiceLoader<Processor> serviceLoader = ServiceLoader.load(Processor.class, loader);
     Iterator<Processor> iterator = serviceLoader.iterator();

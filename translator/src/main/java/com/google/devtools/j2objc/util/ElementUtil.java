@@ -713,8 +713,7 @@ public final class ElementUtil {
     }
     PackageElement pkg = getPackage(typeElement);
     String pkgName = pkg.getQualifiedName().toString();
-    return options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName,
-        options.getCharset(), options.getSourcePathEntries(), options.getClassPathEntries());
+    return options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
   }
 
   /**

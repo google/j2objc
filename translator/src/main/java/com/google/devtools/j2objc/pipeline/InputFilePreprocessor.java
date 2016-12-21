@@ -79,7 +79,7 @@ public class InputFilePreprocessor {
 
   private void processRegularSource(ProcessingContext input) throws IOException {
     InputFile file = input.getFile();
-    String source = FileUtil.readFile(file, options.getCharset());
+    String source = options.fileUtil().readFile(file);
     boolean shouldMapHeaders = options.getHeaderMap().useSourceDirectories();
     boolean doIncompatibleStripping = source.contains("J2ObjCIncompatible");
     if (!(shouldMapHeaders || doIncompatibleStripping)) {
@@ -101,14 +101,14 @@ public class InputFilePreprocessor {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, options.getCharset());
+      Files.write(parseResult.getSource(), strippedFile, options.fileUtil().getCharset());
       input.setFile(new RegularInputFile(strippedFile.getPath(), relativePath));
     }
   }
 
   private void processPackageInfoSource(ProcessingContext input) throws IOException {
     InputFile file = input.getFile();
-    String source = FileUtil.readFile(file, options.getCharset());
+    String source = options.fileUtil().readFile(file);
     CompilationUnit compilationUnit =
         parser.parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
     if (compilationUnit != null) {

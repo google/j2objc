@@ -13,6 +13,7 @@
  */
 package com.google.devtools.j2objc.util;
 
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -34,9 +35,56 @@ import javax.tools.JavaFileObject;
 /**
  * Utilities for reading {@link com.google.devtools.j2objc.file.InputFile}s.
  *
- * @author Tom Ball, Keith Stanger, Mike Thvedt
+ * @author Tom Ball, Keith Stanger, Mike Thvedt, Tim Gao
  */
 public class FileUtil {
+
+  private List<String> sourcePathEntries = Lists.newArrayList(".");
+  private List<String> classPathEntries = Lists.newArrayList(".");
+  private File outputDirectory = new File(".");
+  private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
+  private Charset charset = Charset.forName(fileEncoding);
+
+  public void setSourcePathEntries(List<String> sourcePathEntries) {
+    this.sourcePathEntries = sourcePathEntries;
+  }
+
+  public List<String> getSourcePathEntries() {
+    return sourcePathEntries;
+  }
+
+  public void appendSourcePath(String entry) {
+    sourcePathEntries.add(entry);
+  }
+
+  public void insertSourcePath(int index, String entry) {
+    sourcePathEntries.add(index, entry);
+  }
+
+  public List<String> getClassPathEntries() {
+    return classPathEntries;
+  }
+
+  public void setOutputDirectory(File outputDirectory) {
+    this.outputDirectory = outputDirectory;
+  }
+
+  public File getOutputDirectory() {
+    return outputDirectory;
+  }
+
+  public void setFileEncoding(String fileEncoding) {
+    this.fileEncoding = fileEncoding;
+    charset = Charset.forName(fileEncoding);
+  }
+
+  public String getFileEncoding() {
+    return fileEncoding;
+  }
+
+  public Charset getCharset() {
+    return charset;
+  }
 
   public static String getMainTypeName(InputFile file) {
     String basename = file.getBasename();
@@ -85,8 +133,7 @@ public class FileUtil {
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public static InputFile findOnSourcePath(String qualifiedName, List<String> sourcePathEntries)
-      throws IOException {
+  public InputFile findOnSourcePath(String qualifiedName) throws IOException {
     return findOnPaths(qualifiedName, sourcePathEntries, ".java");
   }
 
@@ -96,8 +143,7 @@ public class FileUtil {
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public static InputFile findOnClassPath(String qualifiedName, List<String> classPathEntries)
-      throws IOException {
+  public InputFile findOnClassPath(String qualifiedName) throws IOException {
     return findOnPaths(qualifiedName, classPathEntries, ".class");
   }
 
@@ -125,7 +171,7 @@ public class FileUtil {
     return null;
   }
 
-  public static String readFile(InputFile file, Charset charset) throws IOException {
+  public String readFile(InputFile file) throws IOException {
     return CharStreams.toString(file.openReader(charset));
   }
 
@@ -185,6 +231,4 @@ public class FileUtil {
       dir.delete();
     }
   }
-
-  private FileUtil() {}
 }

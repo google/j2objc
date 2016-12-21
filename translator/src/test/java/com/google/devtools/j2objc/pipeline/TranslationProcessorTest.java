@@ -51,7 +51,7 @@ public class TranslationProcessorTest extends GenerationTest {
       jar.close();
     }
 
-    options.appendSourcePath(jarFile.getPath());
+    options.fileUtil().appendSourcePath(jarFile.getPath());
     options.setBatchTranslateMaximum(2);
 
     GenerationBatch batch = new GenerationBatch(options);
@@ -84,8 +84,8 @@ public class TranslationProcessorTest extends GenerationTest {
     options.setBuildClosure(true);
 
     // Have src/main/java precede tmp dir in source path.
-    options.insertSourcePath(0, getTempDir() + "/src/main/java");
-    options.appendSourcePath(getTempDir());
+    options.fileUtil().insertSourcePath(0, getTempDir() + "/src/main/java");
+    options.fileUtil().appendSourcePath(getTempDir());
 
     addSourceFile("class Test { Foo f; }", "Test.java");
     addSourceFile("class Foo { void foo1() {} }", "Foo.java");

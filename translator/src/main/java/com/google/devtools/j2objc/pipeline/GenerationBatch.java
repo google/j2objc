@@ -23,8 +23,6 @@ import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -83,7 +81,7 @@ public class GenerationBatch {
       return;
     }
     try {
-      String fileList = Files.toString(f, options.getCharset());
+      String fileList = Files.toString(f, options.fileUtil().getCharset());
       if (fileList.isEmpty()) {
         return;
       }
@@ -115,7 +113,7 @@ public class GenerationBatch {
         // Convert to a qualified name and search on the sourcepath.
         String qualifiedName =
             filename.substring(0, filename.length() - 5).replace(File.separatorChar, '.');
-        inputFile = FileUtil.findOnSourcePath(qualifiedName, options.getSourcePathEntries());
+        inputFile = options.fileUtil().findOnSourcePath(qualifiedName);
 
         if (inputFile == null) {
           ErrorUtil.error("No such file: " + filename);
@@ -137,7 +135,7 @@ public class GenerationBatch {
     }
     // Checking the sourcepath is helpful for our unit tests where the source
     // jars aren't relative to the current working directory.
-    for (String path : options.getSourcePathEntries()) {
+    for (String path : options.fileUtil().getSourcePathEntries()) {
       File dir = new File(path);
       if (dir.isDirectory()) {
         f = new File(dir, filename);

@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.Mappings;
 import com.google.devtools.j2objc.util.PackageInfoLookup;
@@ -32,7 +33,6 @@ import com.google.devtools.j2objc.util.Version;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.EnumSet;
 import java.util.List;
@@ -52,10 +52,7 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class Options {
 
-  private List<String> sourcePathEntries = Lists.newArrayList(".");
-  private List<String> classPathEntries = Lists.newArrayList(".");
   private List<String> processorPathEntries = Lists.newArrayList();
-  private File outputDirectory = new File(".");
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
@@ -64,7 +61,6 @@ public class Options {
   private HeaderMap headerMap = new HeaderMap();
   private boolean stripGwtIncompatible = false;
   private boolean segmentedHeaders = true;
-  private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
   private boolean stripReflection = false;
@@ -85,7 +81,8 @@ public class Options {
   private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
 
   private Mappings mappings = new Mappings();
-  private PackageInfoLookup packageInfoLookup = new PackageInfoLookup();
+  private FileUtil fileUtil = new FileUtil();
+  private PackageInfoLookup packageInfoLookup = new PackageInfoLookup(fileUtil);
   private PackagePrefixes packagePrefixes = new PackagePrefixes(packageInfoLookup);
 
   // The default source version number if not passed with -source is determined from the system
@@ -337,7 +334,7 @@ public class Options {
 
     // Create a temporary directory as the sourcepath's first entry, so that
     // modified sources will take precedence over regular files.
-    sourcePathEntries = Lists.newArrayList();
+    fileUtil.setSourcePathEntries(Lists.newArrayList());
 
     int nArg = 0;
     String[] noFiles = new String[0];
@@ -351,12 +348,12 @@ public class Options {
         if (++nArg == args.length) {
           return noFiles;
         }
-        classPathEntries = getPathArgument(args[nArg]);
+        fileUtil.getClassPathEntries().addAll(getPathArgument(args[nArg]));
       } else if (arg.equals("-sourcepath")) {
         if (++nArg == args.length) {
           usage("-sourcepath requires an argument");
         }
-        sourcePathEntries.addAll(getPathArgument(args[nArg]));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(args[nArg]));
       } else if (arg.equals("-processorpath")) {
         if (++nArg == args.length) {
           usage("-processorpath requires an argument");
@@ -366,7 +363,7 @@ public class Options {
         if (++nArg == args.length) {
           usage("-d requires an argument");
         }
-        outputDirectory = new File(args[nArg]);
+        fileUtil.setOutputDirectory(new File(args[nArg]));
       } else if (arg.equals("--mapping")) {
         if (++nArg == args.length) {
           usage("--mapping requires an argument");
@@ -454,10 +451,8 @@ public class Options {
         if (++nArg == args.length) {
           usage("-encoding requires an argument");
         }
-        fileEncoding = args[nArg];
         try {
-          // Verify encoding has a supported charset.
-          Charset.forName(fileEncoding);
+          fileUtil.setFileEncoding(args[nArg]);
         } catch (UnsupportedCharsetException e) {
           ErrorUtil.warning(e.getMessage());
         }
@@ -562,7 +557,7 @@ public class Options {
     for (int i = 0; i < nFiles; i++) {
       String path = args[i + nArg];
       if (path.endsWith(".jar")) {
-        appendSourcePath(path);
+        fileUtil.appendSourcePath(path);
       }
       files[i] = path;
     }
@@ -630,6 +625,10 @@ public class Options {
     return entries;
   }
 
+  public FileUtil fileUtil() {
+    return fileUtil;
+  }
+
   public boolean docCommentsEnabled() {
     return docCommentsEnabled;
   }
@@ -639,28 +638,8 @@ public class Options {
     docCommentsEnabled = value;
   }
 
-  public List<String> getSourcePathEntries() {
-    return sourcePathEntries;
-  }
-
-  public void appendSourcePath(String entry) {
-    sourcePathEntries.add(entry);
-  }
-
-  public void insertSourcePath(int index, String entry) {
-    sourcePathEntries.add(index, entry);
-  }
-
-  public List<String> getClassPathEntries() {
-    return classPathEntries;
-  }
-
   public List<String> getProcessorPathEntries() {
     return processorPathEntries;
-  }
-
-  public File getOutputDirectory() {
-    return outputDirectory;
   }
 
   public OutputLanguageOption getLanguage() {
@@ -748,14 +727,6 @@ public class Options {
 
   public PackagePrefixes getPackagePrefixes() {
     return packagePrefixes;
-  }
-
-  public String fileEncoding() {
-    return fileEncoding;
-  }
-
-  public Charset getCharset() {
-    return Charset.forName(fileEncoding);
   }
 
   public boolean stripGwtIncompatibleMethods() {

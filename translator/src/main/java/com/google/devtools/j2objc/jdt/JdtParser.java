@@ -121,7 +121,7 @@ public class JdtParser extends Parser {
   public com.google.devtools.j2objc.ast.CompilationUnit parse(InputFile file) {
     String source = null;
     try {
-      source = FileUtil.readFile(file, options.getCharset());
+      source = options.fileUtil().readFile(file);
       return parse(FileUtil.getMainTypeName(file), file.getUnitName(), source);
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
@@ -169,7 +169,7 @@ public class JdtParser extends Parser {
         if (checkCompilationErrors(sourceFilePath, ast)) {
           RegularInputFile file = new RegularInputFile(sourceFilePath);
           try {
-            String source = FileUtil.readFile(file, options.getCharset());
+            String source = options.fileUtil().readFile(file);
             ParserEnvironment parserEnv = new JdtParserEnvironment(ast.getAST());
             TranslationEnvironment env = new TranslationEnvironment(options, parserEnv);
             com.google.devtools.j2objc.ast.CompilationUnit unit =
