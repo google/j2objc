@@ -49,11 +49,14 @@ public class CaptureInfo {
 
   private final List<VariableElement> implicitEnumParams;
 
+  private final TypeUtil typeUtil;
+
   public CaptureInfo(TypeUtil typeUtil) {
     implicitEnumParams = ImmutableList.of(
         GeneratedVariableElement.newParameter(
             "__name", typeUtil.getJavaString().asType(), null),
         GeneratedVariableElement.newParameter("__ordinal", typeUtil.getInt(), null));
+    this.typeUtil = typeUtil;
   }
 
   /**
@@ -226,7 +229,7 @@ public class CaptureInfo {
           getOuterFieldName(type), getDeclaringType(type), type)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .setNonnull(true)
-          .setIsWeak(ElementUtil.isWeakOuterType(type));
+          .setIsWeak(typeUtil.elementUtil().isWeakOuterType(type));
     }
     return capture.field;
   }

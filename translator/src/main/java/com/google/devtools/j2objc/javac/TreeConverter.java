@@ -208,6 +208,7 @@ public class TreeConverter {
         throw new AssertionError("Unknown node type: " + javacNode.getKind());
 
       case ANNOTATION:
+      case TYPE_ANNOTATION:
         return convertAnnotation((JCTree.JCAnnotation) javacNode);
       case ANNOTATION_TYPE:
         return convertAnnotationTypeDeclaration((JCTree.JCClassDecl) javacNode);
@@ -593,6 +594,7 @@ public class TreeConverter {
       // TODO(kstanger): See if anonymous classes can follow the same code branch as regular class
       // declarations.
       TypeDeclaration newNode = new TypeDeclaration(node.sym);
+      newUnit.getEnv().elementUtil().mapElementType(node.sym, node.type);
       for (JCTree bodyDecl : node.getMembers()) {
         Object member = convert(bodyDecl);
         if (member instanceof BodyDeclaration) {  // Not true for enum constants.

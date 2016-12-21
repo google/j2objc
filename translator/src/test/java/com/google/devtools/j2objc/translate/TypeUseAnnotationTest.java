@@ -28,7 +28,7 @@ public class TypeUseAnnotationTest extends GenerationTest {
   public void testAnnotatedStringType() throws IOException {
     addSourceFile(
         "import java.lang.annotation.*;\n"
-        + "@Target(ElementType.TYPE_USE) @public @interface A {}", "A.java");
+        + "@Target(ElementType.TYPE_USE) public @interface A {}", "A.java");
     String translation = translateSourceFile(
         "class Test { @A String str; @A String foo() { return null; } }",
         "Test", "Test.m");

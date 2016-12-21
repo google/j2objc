@@ -78,6 +78,7 @@ public final class ElementUtil {
   private static final String LAZY_INIT = "com.google.errorprone.annotations.concurrent.LazyInit";
 
   private final Elements javacElements;
+  private final Map<Element, TypeMirror> elementTypeMap = new HashMap<>();
 
   private static final Map<Integer, Set<Modifier>> modifierSets = new HashMap<>();
 
@@ -369,10 +370,11 @@ public final class ElementUtil {
         || (var instanceof GeneratedVariableElement && ((GeneratedVariableElement) var).isWeak());
   }
 
-  public static boolean isWeakOuterType(TypeElement type) {
+  public boolean isWeakOuterType(TypeElement type) {
     if (type instanceof LambdaTypeElement) {
       return ((LambdaTypeElement) type).isWeakOuter();
     } else if (isAnonymous(type)) {
+      // TODO(kstanger): remove this block when javac conversion is complete.
       // For anonymous classes we must check for a TYPE_USE annotation on the supertype used in the
       // declaration. For example:
       // Runnable r = new @WeakOuter Runnable() { ... };
@@ -385,7 +387,10 @@ public final class ElementUtil {
           return true;
         }
       }
-      return false;
+      if (elementTypeMap.containsKey(type)) {
+        return hasNamedAnnotation(elementTypeMap.get(type), "WeakOuter");
+      }
+      return hasNamedAnnotation(type.asType(), "WeakOuter");
     } else {
       return hasNamedAnnotation(type, "WeakOuter");
     }
@@ -732,5 +737,22 @@ public final class ElementUtil {
       }
     }
     return suppressesWarning(warning, element.getEnclosingElement());
+  }
+
+  /**
+   * Maps an Element to a TypeMirror. element.asType() is the preferred mapping,
+   * but sometimes type information is lost. For example, an anonymous class with
+   * a type use annotation has the annotation in the node's type, but not in the
+   * node's element.asType().
+   */
+  public void mapElementType(Element element, TypeMirror type) {
+    elementTypeMap.put(element, type);
+  }
+
+  /**
+   * Returns the associated type mirror for an element.
+   */
+  public TypeMirror getType(Element element) {
+    return elementTypeMap.containsKey(element) ? elementTypeMap.get(element) : element.asType();
   }
 }
