@@ -275,7 +275,7 @@ public class GraphBuilder {
       TypeNode declarationType = getOrCreateNode(element.asType());
       if (declarationType != null && enclosingTypeNode != null
           && ElementUtil.hasOuterContext(element)
-          && !ElementUtil.isWeakOuterType(element)
+          && !elementUtil.isWeakOuterType(element)
           && !whitelist.containsType(enclosingTypeNode)
           && !whitelist.hasOuterForType(typeNode)) {
         possibleOuterEdges.put(
