@@ -38,6 +38,42 @@ public class VarargsRewriterTest extends GenerationTest {
         "[self fooWithCharArray:[IOSCharArray arrayWithChars:(unichar[]){ nil } count:1]];");
   }
 
+  public void testVarargsOfVariousNodeTypes() throws IOException {
+    String translation = translateSourceFile(
+        "interface Foo { void foo(int i); }"
+        + "enum E { VALUE1(1); E(int... i) {} }"
+        + "class A { A(int... i) {} A() { this(2); } void foo(int... i) {} }"
+        + "class Test extends A { Test() { super(3); } void foo(int... i) {}"
+        + "void test() { A a = new A(4); foo(5); super.foo(6); Foo f = this::foo; } }",
+        "Test", "Test.m");
+    // EnumConstantDeclaration
+    assertTranslation(translation,
+        "E_initWithIntArray_withNSString_withInt_(e, [IOSIntArray arrayWithInts:"
+        + "(jint[]){ 1 } count:1], @\"VALUE1\", 0);");
+    // ConstructorInvocation
+    assertTranslatedLines(translation,
+        "void A_init(A *self) {",
+        "  A_initWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){ 2 } count:1]);",
+        "}");
+    // SuperConstructorInvocation
+    assertTranslatedLines(translation,
+        "void Test_init(Test *self) {",
+        "  A_initWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){ 3 } count:1]);",
+        "}");
+    assertTranslatedLines(translation,
+        // ClassInstanceCreation
+        "A *a = create_A_initWithIntArray_([IOSIntArray arrayWithInts:(jint[]){ 4 } count:1]);",
+        // MethodInvocation
+        "[self fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ 5 } count:1]];",
+        // SuperMethodInvocation
+        "[super fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ 6 } count:1]];");
+    // MethodReference
+    assertTranslatedLines(translation,
+        "- (void)fooWithInt:(jint)a {",
+        "  [target$_ fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ a } count:1]];",
+        "}");
+  }
+
   // Verify that a single object array argument to an object varargs method is passed unchanged.
   // Covers all kinds of invocation.
   public void testObjectArrayVarargs() throws IOException {
