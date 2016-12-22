@@ -134,6 +134,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -426,8 +427,10 @@ public class TreeConverter {
 
   private static TreeNode convertAnnotatableType(
       org.eclipse.jdt.core.dom.AnnotatableType node, AnnotatableType newNode) {
-    for (Object x : node.annotations()) {
-      newNode.addAnnotation((Annotation) convert(x));
+    if (node.getAST().apiLevel() == AST.JLS8) {
+      for (Object x : node.annotations()) {
+        newNode.addAnnotation((Annotation) convert(x));
+      }
     }
     return newNode;
   }

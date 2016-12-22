@@ -88,25 +88,29 @@ abstract class FileProcessor {
   }
 
   private void processInput(ProcessingContext input) {
-    InputFile file = input.getFile();
+    try {
+      InputFile file = input.getFile();
 
-    if (isBatchable(file)) {
-      batchInputs.add(input);
-      if (batchInputs.size() == batchSize) {
-        processBatch();
+      if (isBatchable(file)) {
+        batchInputs.add(input);
+        if (batchInputs.size() == batchSize) {
+          processBatch();
+        }
+        return;
       }
-      return;
+
+      logger.finest("parsing " + file);
+
+      CompilationUnit compilationUnit = parser.parse(file);
+      if (compilationUnit == null) {
+        handleError(input);
+        return;
+      }
+
+      processCompiledSource(input, compilationUnit);
+    } catch (RuntimeException | Error e) {
+      ErrorUtil.fatalError(e, input.getOriginalSourcePath());
     }
-
-    logger.finest("parsing " + file);
-
-    CompilationUnit compilationUnit = parser.parse(file);
-    if (compilationUnit == null) {
-      handleError(input);
-      return;
-    }
-
-    processCompiledSource(input, compilationUnit);
   }
 
   protected boolean isBatchable(InputFile file) {
