@@ -252,9 +252,9 @@ public final class AsyncPipedNSInputStreamAdapter {
           [self scheduleClose];
           break;
         case NSStreamEventHasSpaceAvailable:
-          // If close is scheduled, do nothing. Otherwise, only ask our delegate to offer more data
-          // if there is no more leftover data.
-          if (!closeScheduled_ && ![self writeLeftoverData]) {
+          // First attempt to finish off the leftover data. If there's no more leftover, ask our
+          // delegate to offer more data.
+          if (![self writeLeftoverData]) {
             @try {
               [delegate_ offerDataWithJavaIoOutputStream:self];
             }
