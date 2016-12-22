@@ -89,4 +89,19 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     assertTranslation(cHeader, "- (NSString *)foo;");
     assertNotInTranslation(cSource, "foo");
   }
+
+  public void testGenericPrivateMethodNotAdded() throws IOException {
+    String superSource = "abstract class Super<T> { "
+        + "  private T returnT() { return null; } "
+        + "}";
+    String subSource = "class Sub extends Super<Void> {}";
+    addSourceFile(superSource, "Super.java");
+    addSourceFile(subSource, "Sub.java");
+    String superTranslation = translateSourceFile("Super", "Super.m");
+    String subTranslation = translateSourceFile("Sub", "Sub.m");
+    // Super translation should contain the generic private method declaration.
+    assertTranslation(superTranslation, "- (id)returnT;");
+    // But Sub translation should not even though the return type is now resolved.
+    assertNotInTranslation(subTranslation, "returnT");
+  }
 }
