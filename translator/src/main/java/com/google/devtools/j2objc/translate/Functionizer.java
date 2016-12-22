@@ -240,21 +240,21 @@ public class Functionizer extends UnitTreeVisitor {
   public void endVisit(SuperConstructorInvocation node) {
     ExecutableElement element = node.getExecutableElement();
     AbstractTypeDeclaration typeDecl = TreeUtil.getEnclosingType(node);
-    TypeElement superType = ElementUtil.getSuperclass(typeDecl.getTypeElement());
+    TypeElement type = typeDecl.getTypeElement();
     FunctionElement funcElement = newFunctionElement(element);
     FunctionInvocation invocation = new FunctionInvocation(funcElement, typeUtil.getVoid());
     List<Expression> args = invocation.getArguments();
     args.add(new ThisExpression(ElementUtil.getDeclaringClass(element).asType()));
     if (typeDecl instanceof TypeDeclaration) {
       TypeDeclaration typeDeclaration = (TypeDeclaration) typeDecl;
-      if (captureInfo.needsOuterParam(superType)) {
+      if (captureInfo.needsOuterParam(ElementUtil.getSuperclass(type))) {
         Expression outerArg = TreeUtil.remove(node.getExpression());
         args.add(outerArg != null ? outerArg : typeDeclaration.getSuperOuter().copy());
       }
       TreeUtil.moveList(typeDeclaration.getSuperCaptureArgs(), args);
     }
     TreeUtil.moveList(node.getArguments(), args);
-    if (ElementUtil.isEnum(superType)) {
+    if (ElementUtil.isEnum(type)) {
       for (VariableElement param : captureInfo.getImplicitEnumParams()) {
         args.add(new SimpleName(param));
       }

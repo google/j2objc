@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.jdt;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotatableType;
@@ -117,16 +118,21 @@ import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -408,6 +414,7 @@ public class TreeConverter {
         MethodDeclaration defaultConstructor =
             new MethodDeclaration(BindingConverter.getExecutableElement(method))
             .setBody(new Block());
+        addImplicitSuperCall(defaultConstructor);
         newNode.addBodyDeclaration(0, defaultConstructor);
         break;
       }
@@ -922,12 +929,14 @@ public class TreeConverter {
     for (Object param : node.parameters()) {
       newNode.addParameter((SingleVariableDeclaration) TreeConverter.convert(param));
     }
-    return newNode
+    newNode
         .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setIsConstructor(node.isConstructor())
         .setReturnType((Type) TreeConverter.convert(node.getReturnType2()))
         .setExecutableElement(BindingConverter.getExecutableElement(node.resolveBinding()))
         .setBody((Block) TreeConverter.convert(node.getBody()));
+    maybeAddImplicitSuperCall(newNode);
+    return newNode;
   }
 
   private static TreeNode convertMethodInvocation(org.eclipse.jdt.core.dom.MethodInvocation node) {
@@ -1305,6 +1314,70 @@ public class TreeConverter {
     return new WhileStatement()
         .setExpression((Expression) convert(node.getExpression()))
         .setBody((Statement) convert(node.getBody()));
+  }
+
+  private static void maybeAddImplicitSuperCall(MethodDeclaration node) {
+    if (needsImplicitSuperCall(node)) {
+      addImplicitSuperCall(node);
+    }
+  }
+
+  private static boolean needsImplicitSuperCall(MethodDeclaration node) {
+    ExecutableElement method = node.getExecutableElement();
+    if (!ElementUtil.isConstructor(method)) {
+      return false;
+    }
+    TypeMirror superType = ElementUtil.getDeclaringClass(method).getSuperclass();
+    if (TypeUtil.isNone(superType)) {  // java.lang.Object supertype is null.
+      return false;
+    }
+    List<Statement> stmts = node.getBody().getStatements();
+    if (stmts.isEmpty()) {
+      return true;
+    }
+    Statement firstStmt = stmts.get(0);
+    return !(firstStmt instanceof SuperConstructorInvocation
+             || firstStmt instanceof ConstructorInvocation);
+  }
+
+  private static void addImplicitSuperCall(MethodDeclaration node) {
+    ExecutableElement method = node.getExecutableElement();
+    DeclaredType superType = (DeclaredType) ElementUtil.getDeclaringClass(method).getSuperclass();
+    TypeElement superClass = TypeUtil.asTypeElement(superType);
+    ExecutableElement superConstructor = findDefaultConstructorElement(superClass);
+    node.getBody().addStatement(0, new SuperConstructorInvocation(new ExecutablePair(
+        superConstructor,
+        (ExecutableType) JdtTypes.asMemberOfInternal(superType, superConstructor))));
+  }
+
+  private static ExecutableElement findDefaultConstructorElement(TypeElement type) {
+    if (ElementUtil.getQualifiedName(type).equals("java.lang.Enum")) {
+      // Enums are a special case where instead of a default no-param constructor it has a single
+      // two param constructor that accepts the implicit name and ordinal values.
+      ExecutableElement enumConstructor =
+          Iterables.getFirst(ElementUtil.getConstructors(type), null);
+      assert enumConstructor != null && enumConstructor.getParameters().size() == 2;
+      return enumConstructor;
+    }
+    ExecutableElement result = null;
+    for (ExecutableElement c : ElementUtil.getConstructors(type)) {
+      // Search for a non-varargs match.
+      if (c.getParameters().isEmpty()) {
+        return c;
+      // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
+      } else if (c.isVarArgs() && c.getParameters().size() == 1
+          && (result == null || isAssignable(
+              c.getParameters().get(0).asType(), result.getParameters().get(0).asType()))) {
+        result = c;
+      }
+    }
+    assert result != null : "Couldn't find default constructor for " + type;
+    return result;
+  }
+
+  private static boolean isAssignable(TypeMirror t1, TypeMirror t2) {
+    return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t1).isAssignmentCompatible(
+        BindingConverter.unwrapTypeMirrorIntoTypeBinding(t2));
   }
 
   // Helper class for convertInfixExpression().

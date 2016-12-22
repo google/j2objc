@@ -85,6 +85,11 @@ class JdtTypes implements Types {
 
   @Override
   public TypeMirror asMemberOf(DeclaredType containing, Element element) {
+    return asMemberOfInternal(containing, element);
+  }
+
+  // Static version of the above for internal use.
+  static TypeMirror asMemberOfInternal(DeclaredType containing, Element element) {
     ITypeBinding c = BindingConverter.unwrapTypeMirrorIntoTypeBinding(containing);
     if (ElementUtil.isExecutableElement(element)) {
       IMethodBinding e = BindingConverter.unwrapExecutableElement((ExecutableElement) element);

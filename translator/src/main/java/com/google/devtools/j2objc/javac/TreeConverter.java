@@ -524,8 +524,6 @@ public class TreeConverter {
     return newNode;
   }
 
-
-
   private TreeNode convertBlock(JCTree.JCBlock node) {
     Block newNode = new Block();
     for (StatementTree stmt : node.getStatements()) {
@@ -673,21 +671,6 @@ public class TreeConverter {
         } else {
           newNode.addBodyDeclaration((BodyDeclaration) var);
         }
-      } else if (bodyDecl.getKind() == Kind.METHOD) {
-        MethodDeclaration method = (MethodDeclaration) convert((JCTree.JCMethodDecl) bodyDecl);
-        if (ElementUtil.isConstructor(method.getExecutableElement())
-            && !method.getBody().getStatements().isEmpty()){
-          // Remove bogus "super()" call from constructors, so InitializationNormalizer
-          // adds the correct super call that includes the ordinal and name arguments.
-          Statement stmt = method.getBody().getStatements().get(0);
-          if (stmt.getKind() == TreeNode.Kind.SUPER_CONSTRUCTOR_INVOCATION) {
-            SuperConstructorInvocation call = (SuperConstructorInvocation) stmt;
-            if (call.getArguments().isEmpty()) {
-              method.getBody().getStatements().remove(0);
-            }
-          }
-        }
-        newNode.addBodyDeclaration(method);
       } else {
         newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
       }

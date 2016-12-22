@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -133,6 +134,8 @@ public class LambdaRewriter extends UnitTreeVisitor {
       // Add the implicit constructor to call.
       MethodDeclaration constructorDecl = new MethodDeclaration(constructorElement);
       constructorDecl.setBody(new Block());
+      constructorDecl.getBody().addStatement(new SuperConstructorInvocation(
+          new ExecutablePair(getObjectConstructor())));
       typeDecl.addBodyDeclaration(constructorDecl);
 
       creation = new ClassInstanceCreation(
@@ -312,5 +315,14 @@ public class LambdaRewriter extends UnitTreeVisitor {
       i--;
     }
     return sb.reverse().toString();
+  }
+
+  private ExecutableElement getObjectConstructor() {
+    for (ExecutableElement constructor : ElementUtil.getConstructors(typeUtil.getJavaObject())) {
+      if (constructor.getParameters().isEmpty()) {
+        return constructor;
+      }
+    }
+    throw new AssertionError("Can't find constructor for java.lang.Object.");
   }
 }

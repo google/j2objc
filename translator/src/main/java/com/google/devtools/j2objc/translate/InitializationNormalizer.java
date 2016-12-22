@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -37,18 +36,13 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import org.eclipse.jdt.core.dom.Modifier;
 
 /**
@@ -179,14 +173,11 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     if (!stmts.isEmpty() && stmts.get(0) instanceof SuperConstructorInvocation) {
       return stmts.subList(0, 1);
     }
-    TypeMirror superType =
-        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass();
-    if (TypeUtil.isNone(superType)) {  // java.lang.Object supertype is null.
-      return stmts.subList(0, 0);
-    }
-    // If there isn't a super invocation, add one (like all Java compilers do).
-    stmts.add(0, createDefaultSuperCall((DeclaredType) superType));
-    return stmts.subList(0, 1);
+    // java.lang.Object supertype is null. All other types should have a super() call.
+    assert TypeUtil.isNone(
+        ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass())
+        : "Constructor didn't have a super() call.";
+    return stmts.subList(0, 0);
   }
 
   private void addCaptureAssignments(MethodDeclaration constructor, TypeElement type) {
@@ -197,43 +188,6 @@ public class InitializationNormalizer extends UnitTreeVisitor {
             new SimpleName(capture.getField()), new SimpleName(capture.getParam()))));
       }
     }
-  }
-
-  private SuperConstructorInvocation createDefaultSuperCall(DeclaredType type) {
-    TypeElement typeElem = TypeUtil.asTypeElement(type);
-    if (ElementUtil.getQualifiedName(typeElem).equals("java.lang.Enum")) {
-      // Enums are a special case where instead of a default no-param constructor it has a single
-      // two param constructor that accepts the implicit name and ordinal values.
-      ExecutableElement enumConstructor =
-          Iterables.getFirst(ElementUtil.getConstructors(typeElem), null);
-      assert enumConstructor != null && enumConstructor.getParameters().size() == 2;
-      SuperConstructorInvocation superCall = new SuperConstructorInvocation(
-          new ExecutablePair(enumConstructor, typeUtil.asMemberOf(type, enumConstructor)));
-      for (VariableElement param : captureInfo.getImplicitEnumParams()) {
-        superCall.addArgument(new SimpleName(param));
-      }
-      return superCall;
-    }
-    ExecutableElement defaultConstructor = findDefaultConstructorElement(typeElem);
-    return new SuperConstructorInvocation(new ExecutablePair(
-        defaultConstructor, typeUtil.asMemberOf(type, defaultConstructor)));
-  }
-
-  private ExecutableElement findDefaultConstructorElement(TypeElement type) {
-    ExecutableElement result = null;
-    for (ExecutableElement c : ElementUtil.getConstructors(type)) {
-      // Search for a non-varargs match.
-      if (c.getParameters().isEmpty()) {
-        return c;
-      // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
-      } else if (c.isVarArgs() && c.getParameters().size() == 1
-          && (result == null || typeUtil.isAssignable(
-              c.getParameters().get(0).asType(), result.getParameters().get(0).asType()))) {
-        result = c;
-      }
-    }
-    assert result != null : "Couldn't find default constructor for " + type;
-    return result;
   }
 
   /**
