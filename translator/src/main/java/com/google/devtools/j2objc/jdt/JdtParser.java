@@ -218,6 +218,7 @@ public class JdtParser extends Parser {
   }
 
   private String[] getEncodings(int length) {
+    String encoding = options.fileUtil().getFileEncoding();
     if (encoding == null) {
       return null;
     }

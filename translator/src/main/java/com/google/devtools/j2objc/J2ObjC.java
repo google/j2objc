@@ -75,7 +75,6 @@ public class J2ObjC {
     parser.addClasspathEntries(Options.getBootClasspath());
     parser.addSourcepathEntries(options.fileUtil().getSourcePathEntries());
     parser.setIncludeRunningVMBootclasspath(false);
-    parser.setEncoding(options.fileUtil().getFileEncoding());
     parser.setEnableDocComments(options.docCommentsEnabled());
     return parser;
   }

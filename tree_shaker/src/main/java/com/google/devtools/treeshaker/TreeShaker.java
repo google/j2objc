@@ -71,7 +71,6 @@ public class TreeShaker {
     parser.addSourcepathEntries(j2objcOptions.fileUtil().getSourcePathEntries());
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(j2objcOptions.fileUtil().getClassPathEntries());
-    parser.setEncoding(j2objcOptions.fileUtil().getFileEncoding());
     return parser;
   }
 
@@ -131,8 +130,8 @@ public class TreeShaker {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.write(parseResult.getSource(), strippedFile, Charset.forName(
-          j2objcOptions.fileUtil().getFileEncoding()));
+      Files.write(
+          parseResult.getSource(), strippedFile, j2objcOptions.fileUtil().getCharset());
       sourceFileNames.set(i, strippedFile.getPath());
     }
     return strippedDir;

@@ -29,7 +29,6 @@ public abstract class Parser {
 
   protected final List<String> classpathEntries = Lists.newArrayList();
   protected final List<String> sourcepathEntries = Lists.newArrayList();
-  protected String encoding = null;
   protected final Options options;
   protected boolean includeRunningVMBootclasspath = true;
 
@@ -111,13 +110,6 @@ public abstract class Parser {
    */
   public void prependSourcepathEntry(String entry) {
     sourcepathEntries.add(0, entry);
-  }
-
-  /**
-   * Sets the source file encoding, equivalent to javac's -encoding flag.
-   */
-  public void setEncoding(String encoding) {
-    this.encoding = encoding;
   }
 
   public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {

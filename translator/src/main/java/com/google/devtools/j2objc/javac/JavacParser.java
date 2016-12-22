@@ -30,7 +30,6 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -99,10 +98,8 @@ public class JavacParser extends Parser {
 
   private JavacFileManager getFileManager(JavaCompiler compiler,
       DiagnosticCollector<JavaFileObject> diagnostics) throws IOException {
-    Charset charset =
-        encoding != null ? Charset.forName(encoding) : options.fileUtil().getCharset();
     JavacFileManager fileManager = (JavacFileManager)
-        compiler.getStandardFileManager(diagnostics, null, charset);
+        compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset());
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
@@ -123,6 +120,7 @@ public class JavacParser extends Parser {
 
   private List<String> getJavacOptions() {
     List<String> javacOptions = new ArrayList<>();
+    String encoding = options.fileUtil().getFileEncoding();
 
     javacOptions.add("-Xbootclasspath:" + makePathString(Options.getBootClasspath()));
     if (encoding != null) {

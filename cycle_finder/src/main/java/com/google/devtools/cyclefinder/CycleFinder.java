@@ -73,7 +73,6 @@ public class CycleFinder {
     parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
     parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
-    parser.setEncoding(options.fileEncoding());
     return parser;
   }
 
