@@ -19,7 +19,6 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options.TimingLevel;
-import com.google.devtools.j2objc.pipeline.AnnotationPreProcessor;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
 import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
@@ -101,10 +100,10 @@ public class J2ObjC {
         return;
       }
 
-      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor(options);
-      List<ProcessingContext> generatedInputs = preProcessor.process(fileArgs, inputs);
+      Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);
+      List<ProcessingContext> generatedInputs = processingResult.getGeneratedSources();
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.
-      preProcessorTempDir = preProcessor.getTemporaryDirectory();
+      preProcessorTempDir = processingResult.getSourceOutputDirectory();
       if (ErrorUtil.errorCount() > 0) {
         return;
       }

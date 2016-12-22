@@ -192,6 +192,7 @@ JAVA_SOURCES = \
 	javac/TreeConverter.java \
 	jdt/AbstractBinding.java \
 	jdt/AbstractTypeBinding.java \
+	jdt/AnnotationPreProcessor.java \
 	jdt/BindingConverter.java \
 	jdt/GeneratedMethodBinding.java \
 	jdt/GeneratedPackageBinding.java \
@@ -222,7 +223,6 @@ JAVA_SOURCES = \
 	jdt/JdtWildcardType.java \
 	jdt/StringName.java \
 	jdt/TreeConverter.java \
-	pipeline/AnnotationPreProcessor.java \
 	pipeline/BuildClosureQueue.java \
 	pipeline/FileProcessor.java \
 	pipeline/GenerationBatch.java \

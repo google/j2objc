@@ -19,9 +19,12 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
+import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.tools.javac.api.JavacTaskImpl;
@@ -32,7 +35,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
+import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
@@ -72,8 +79,7 @@ public class JavacParser extends Parser {
 
   @Override
   public CompilationUnit parse(String mainType, String path, String source) {
-    try {
-      JavacEnvironment parserEnv = createEnvironment(path, source);
+    try (JavacEnvironment parserEnv = createEnvironment(path, source)) {
       JavacTaskImpl task = parserEnv.task();
       JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
       task.analyze();
@@ -83,17 +89,6 @@ public class JavacParser extends Parser {
       ErrorUtil.fatalError(e, path);
     }
     return null;
-  }
-
-  private JavacEnvironment createEnvironment(String path, String source) throws IOException {
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-    JavacFileManager fileManager = getFileManager(compiler, diagnostics);
-    List<JavaFileObject> inputFiles = new ArrayList<>();
-    inputFiles.add(MemoryFileObject.createJavaFile(path, source));
-    JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(
-        null, fileManager, diagnostics, getJavacOptions(), null, inputFiles);
-    return new JavacEnvironment(task, fileManager, diagnostics);
   }
 
   private JavacFileManager getFileManager(JavaCompiler compiler,
@@ -118,7 +113,7 @@ public class JavacParser extends Parser {
     fileManager.setLocation(location, filePaths);
   }
 
-  private List<String> getJavacOptions() {
+  private List<String> getJavacOptions(boolean processAnnotations) {
     List<String> javacOptions = new ArrayList<>();
     String encoding = options.fileUtil().getFileEncoding();
 
@@ -138,7 +133,11 @@ public class JavacParser extends Parser {
     if (lintArgument != null) {
       javacOptions.add(lintArgument);
     }
-    javacOptions.add("-proc:none");
+    if (processAnnotations) {
+      javacOptions.add("-proc:only");
+    } else {
+      javacOptions.add("-proc:none");
+    }
 
     // TODO(tball): this should be in the FileManager, but adding it there
     // causes annotations to be processed twice, causing a "duplicate unit"
@@ -160,29 +159,18 @@ public class JavacParser extends Parser {
     for (String path : paths) {
       files.add(new File(path));
     }
-
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-    try (JavacFileManager fileManager = getFileManager(compiler, diagnostics)) {
-      List<String> javacOptions = getJavacOptions();
-
-      Iterable<? extends JavaFileObject> fileObjects = fileManager
-          .getJavaFileObjectsFromFiles(files);
-      JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(null, fileManager, diagnostics,
-          javacOptions, null, fileObjects);
-      JavacEnvironment env = new JavacEnvironment(task, fileManager, diagnostics);
-
+    try (JavacEnvironment env = createEnvironment(files, null, false)) {
       List<CompilationUnitTree> units = new ArrayList<>();
       try {
-        for (CompilationUnitTree unit : task.parse()) {
+        for (CompilationUnitTree unit : env.task().parse()) {
           units.add(unit);
         }
-        task.analyze();
+        env.task().analyze();
       } catch (IOException e) {
         // Error listener will report errors.
       }
 
-      processDiagnostics(diagnostics);
+      processDiagnostics(env.diagnostics());
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
@@ -193,6 +181,31 @@ public class JavacParser extends Parser {
     } catch (IOException e) {
       ErrorUtil.fatalError(e, "javac file manager error");
     }
+  }
+
+  // Creates a javac environment from a memory source.
+  private JavacEnvironment createEnvironment(String path, String source) throws IOException {
+    List<JavaFileObject> inputFiles = new ArrayList<>();
+    inputFiles.add(MemoryFileObject.createJavaFile(path, source));
+    return createEnvironment(Collections.emptyList(), inputFiles, false);
+  }
+
+  // Creates a javac environment from a collection of files and/or file objects.
+  private JavacEnvironment createEnvironment(List<File> files, List<JavaFileObject> fileObjects,
+      boolean processAnnotations) throws IOException {
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+    JavacFileManager fileManager = getFileManager(compiler, diagnostics);
+    List<String> javacOptions = getJavacOptions(processAnnotations);
+    if (fileObjects == null) {
+      fileObjects = new ArrayList<>();
+    }
+    for (JavaFileObject jfo : fileManager.getJavaFileObjectsFromFiles(files)) {
+      fileObjects.add(jfo);
+    }
+    JavacTaskImpl task = (JavacTaskImpl) compiler.getTask(null, fileManager, diagnostics,
+        javacOptions, null, fileObjects);
+    return new JavacEnvironment(task, fileManager, diagnostics);
   }
 
   private void processDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
@@ -223,6 +236,60 @@ public class JavacParser extends Parser {
     return null;
   }
 
+
+  @Override
+  public ProcessingResult processAnnotations(Iterable<String> fileArgs,
+      List<ProcessingContext> inputs) {
+    final List<ProcessingContext> generatedInputs = Lists.newArrayList();
+    PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
+    loader.addPaths(options.getProcessorPathEntries());
+    Iterator<Processor> serviceIterator = ServiceLoader.load(Processor.class, loader).iterator();
+    if (serviceIterator.hasNext()) {
+      List<File> inputFiles = new ArrayList<>();
+      for (ProcessingContext input : inputs) {
+        inputFiles.add(new File(input.getFile().getPath()));
+      }
+      try (JavacEnvironment env = createEnvironment(inputFiles, null, true)) {
+        List<CompilationUnitTree> units = new ArrayList<>();
+        try {
+          for (CompilationUnitTree unit : env.task().parse()) {
+            units.add(unit);
+          }
+          // JavacTaskImpl.enter() parses and runs annotation processing, but
+          // not type checking and attribution (that's done by analyze()).
+          env.task().enter();
+        } catch (IOException e) {
+          // Error listener will report errors.
+        }
+        processDiagnostics(env.diagnostics());
+        // The source output directory is created and set in createEnvironment().
+        File sourceOutputDirectory =
+            env.fileManager().getLocation(StandardLocation.SOURCE_OUTPUT).iterator().next();
+        collectGeneratedInputs(sourceOutputDirectory, "", generatedInputs);
+        return new JavacProcessingResult(generatedInputs, sourceOutputDirectory);
+      } catch (IOException e) {
+        ErrorUtil.fatalError(e, "javac file manager error");
+      }
+    }
+    // No annotation processors on classpath, or processing errors reported.
+    return new JavacProcessingResult(generatedInputs, null);
+  }
+
+  private void collectGeneratedInputs(
+      File dir, String currentRelativePath, List<ProcessingContext> inputs) {
+    assert dir.exists() && dir.isDirectory();
+    for (File f : dir.listFiles()) {
+      String relativeName = currentRelativePath + File.separatorChar + f.getName();
+      if (f.isDirectory()) {
+        collectGeneratedInputs(f, relativeName, inputs);
+      } else {
+        if (f.getName().endsWith(".java")) {
+          inputs.add(ProcessingContext.fromFile(
+              new RegularInputFile(f.getPath(), relativeName), options));
+        }
+      }
+    }
+  }
 
   private static class JavacParseResult implements Parser.ParseResult {
     private final InputFile file;
@@ -259,5 +326,27 @@ public class JavacParser extends Parser {
     public String toString() {
       return unit.toString();
     }
+  }
+
+  private static class JavacProcessingResult implements Parser.ProcessingResult {
+    private final List<ProcessingContext> generatedSources;
+    private final File sourceOutputDirectory;
+
+    public JavacProcessingResult(List<ProcessingContext> generatedSources,
+        File sourceOutputDirectory) {
+      this.generatedSources = generatedSources;
+      this.sourceOutputDirectory = sourceOutputDirectory;
+    }
+
+    @Override
+    public List<ProcessingContext> getGeneratedSources() {
+      return generatedSources;
+    }
+
+    @Override
+    public File getSourceOutputDirectory() {
+      return sourceOutputDirectory;
+    }
+
   }
 }

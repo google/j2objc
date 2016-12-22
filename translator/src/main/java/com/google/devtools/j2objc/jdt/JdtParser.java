@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.LintOption;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.Parser;
@@ -188,6 +189,24 @@ public class JdtParser extends Parser {
     // null), so the paths array is reused.
     String[] pathsArray = paths.toArray(new String[paths.size()]);
     parser.createASTs(pathsArray, getEncodings(pathsArray.length), pathsArray, astRequestor, null);
+  }
+
+  @Override
+  public ProcessingResult processAnnotations(Iterable<String> fileArgs,
+      List<ProcessingContext> inputs) {
+    AnnotationPreProcessor preProcessor = new AnnotationPreProcessor(options);
+    final List<ProcessingContext> generatedInputs = preProcessor.process(fileArgs, inputs);
+    return new Parser.ProcessingResult() {
+      @Override
+      public File getSourceOutputDirectory() {
+        return preProcessor.getTemporaryDirectory();
+      }
+
+      @Override
+      public List<ProcessingContext> getGeneratedSources() {
+        return generatedInputs;
+      }
+    };
   }
 
   @SuppressWarnings("deprecation")
