@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCName;
+import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -58,10 +59,15 @@ public class PackageInfoRewriter {
 
   private void run() {
     PackageDeclaration pkg = unit.getPackage();
-
+    List<Annotation> annotations = pkg.getAnnotations();
+    List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(annotations);
     String prefix = getPackagePrefix(pkg);
-    if ((TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).isEmpty() && prefix == null)
-        || !translationUtil.needsReflection(pkg)) {
+    boolean needsReflection = translationUtil.needsReflection(pkg);
+
+    // Remove compile time annotations.
+    annotations.retainAll(runtimeAnnotations);
+
+    if ((annotations.isEmpty() && prefix == null) || !needsReflection) {
       return;
     }
 

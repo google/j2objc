@@ -61,6 +61,7 @@ import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
 import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
+import com.google.devtools.j2objc.translate.PackageInfoRewriterTest;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
@@ -139,6 +140,7 @@ public class SmallTests {
     OptionsTest.class,
     OuterReferenceFixerTest.class,
     OuterReferenceResolverTest.class,
+    PackageInfoRewriterTest.class,
     PackagePrefixesTest.class,
     PrimitiveArrayTest.class,
     PrivateDeclarationResolverTest.class,
