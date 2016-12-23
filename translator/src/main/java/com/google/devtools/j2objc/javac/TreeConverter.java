@@ -1213,7 +1213,8 @@ public class TreeConverter {
         comment = new BlockComment();
         break;
       case JAVADOC:
-        comment = convertJavadocComment(element);
+        comment = newUnit.getEnv().options().docCommentsEnabled()
+            ? convertJavadocComment(element) : new Javadoc();
         break;
       case LINE:
         comment = new LineComment();
