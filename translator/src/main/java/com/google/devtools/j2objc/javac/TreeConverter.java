@@ -1006,8 +1006,10 @@ public class TreeConverter {
     for (JCTree.JCAnnotation pkgAnnotation : unit.getPackageAnnotations()) {
       newNode.addAnnotation((Annotation) convert(pkgAnnotation));
     }
+    if (unit.sourcefile.toUri().getPath().endsWith("package-info.java")) {
+      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(unit, pkg));
+    }
     return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, getPosition(node)))
-        .setJavadoc((Javadoc) getAssociatedJavaDoc(unit, pkg))
         .setPosition(SourcePosition.NO_POSITION);
   }
 
