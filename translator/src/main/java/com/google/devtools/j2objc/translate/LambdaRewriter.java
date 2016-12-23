@@ -253,29 +253,12 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     private void rewriteTypeMethodReference(TypeMethodReference node) {
-      ExecutablePair method = getExecutablePair(node);
+      ExecutablePair method = node.getExecutablePair();
       Iterator<VariableElement> params = createParameters();
       MethodInvocation invocation = new MethodInvocation(
           method, ElementUtil.isStatic(method.element()) ? null : new SimpleName(params.next()));
       forwardRemainingArgs(params, invocation.getArguments());
       setImplementationBody(invocation);
-    }
-
-    private ExecutablePair getExecutablePair(TypeMethodReference node) {
-      if (!TypeUtil.isArray(node.getType().getTypeMirror())) {
-        return node.getExecutablePair();
-      }
-      // JDT does not provide the correct method on array types, so we find it from
-      // java.lang.Object.
-      String name = node.getName().getIdentifier();
-      int numParams = functionalInterface.getParameters().size() - 1;
-      for (ExecutableElement method : ElementUtil.getMethods(typeUtil.getJavaObject())) {
-        if (ElementUtil.getName(method).equals(name)
-            && method.getParameters().size() == numParams) {
-          return new ExecutablePair(method);
-        }
-      }
-      throw new AssertionError("Can't find method element for method: " + name);
     }
   }
 

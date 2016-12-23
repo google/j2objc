@@ -1259,9 +1259,29 @@ public class TreeConverter {
       org.eclipse.jdt.core.dom.TypeMethodReference node) {
     TypeMethodReference newNode = new TypeMethodReference();
     convertMethodReference(node, newNode);
+    if (node.getType().resolveBinding().isArray()) {
+      // JDT does not provide the correct method on array types, so we find it from
+      // java.lang.Object.
+      IMethodBinding functionalInterface = getFunctionalInterface(node.resolveTypeBinding());
+      ExecutableElement method = getObjectMethod(
+          node.getAST(), node.getName().getIdentifier(),
+          functionalInterface.getParameterTypes().length - 1);
+      newNode.setExecutablePair(new ExecutablePair(method));
+    }
     return newNode
         .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setType((Type) TreeConverter.convert(node.getType()));
+  }
+
+  private static ExecutableElement getObjectMethod(AST ast, String name, int numParams) {
+    TypeElement objectType = BindingConverter.getTypeElement(
+        ast.resolveWellKnownType("java.lang.Object"));
+    for (ExecutableElement method : ElementUtil.getMethods(objectType)) {
+      if (ElementUtil.getName(method).equals(name) && method.getParameters().size() == numParams) {
+        return method;
+      }
+    }
+    throw new AssertionError("Can't find method element for method: " + name);
   }
 
   private static TreeNode convertUnionType(org.eclipse.jdt.core.dom.UnionType node) {
@@ -1381,6 +1401,18 @@ public class TreeConverter {
   private static boolean isAssignable(TypeMirror t1, TypeMirror t2) {
     return BindingConverter.unwrapTypeMirrorIntoTypeBinding(t1).isAssignmentCompatible(
         BindingConverter.unwrapTypeMirrorIntoTypeBinding(t2));
+  }
+
+  private static IMethodBinding getFunctionalInterface(ITypeBinding type) {
+    if (BindingUtil.isIntersectionType(type)) {
+      for (ITypeBinding i : type.getInterfaces()) {
+        IMethodBinding functionalInterface = i.getFunctionalInterfaceMethod();
+        if (functionalInterface != null) {
+          return functionalInterface;
+        }
+      }
+    }
+    return type.getFunctionalInterfaceMethod();
   }
 
   // Helper class for convertInfixExpression().
