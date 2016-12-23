@@ -98,6 +98,10 @@ public class JavacParser extends Parser {
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
     addPaths(StandardLocation.PLATFORM_CLASS_PATH, Options.getBootClasspath(), fileManager);
+    List<String> processorPathEntries = options.getProcessorPathEntries();
+    if (!processorPathEntries.isEmpty()) {
+      addPaths(StandardLocation.ANNOTATION_PROCESSOR_PATH, processorPathEntries, fileManager);
+    }
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
         Lists.newArrayList(options.fileUtil().getOutputDirectory()));
     fileManager.setLocation(StandardLocation.SOURCE_OUTPUT,
@@ -136,14 +140,6 @@ public class JavacParser extends Parser {
       javacOptions.add("-proc:only");
     } else {
       javacOptions.add("-proc:none");
-    }
-
-    // TODO(tball): this should be in the FileManager, but adding it there
-    // causes annotations to be processed twice, causing a "duplicate unit"
-    // error. Defining the path as a javac flag works correctly, however.
-    if (options.getProcessorPathEntries().size() > 0) {
-      javacOptions.add("-processorpath");
-      javacOptions.add(makePathString(options.getProcessorPathEntries()));
     }
     return javacOptions;
   }
