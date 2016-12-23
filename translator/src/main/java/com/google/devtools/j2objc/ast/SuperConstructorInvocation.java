@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node for a super constructor invocation. (i.e. "super(...);")
@@ -25,6 +26,7 @@ import javax.lang.model.type.ExecutableType;
 public class SuperConstructorInvocation extends Statement {
 
   private ExecutablePair method = ExecutablePair.NULL;
+  private TypeMirror varargsType = null;
   private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
@@ -33,6 +35,7 @@ public class SuperConstructorInvocation extends Statement {
   public SuperConstructorInvocation(SuperConstructorInvocation other) {
     super(other);
     method = other.getExecutablePair();
+    varargsType = other.getVarargsType();
     expression.copyFrom(other.getExpression());
     arguments.copyFrom(other.getArguments());
   }
@@ -61,6 +64,15 @@ public class SuperConstructorInvocation extends Statement {
 
   public ExecutableType getExecutableType() {
     return method.type();
+  }
+
+  public TypeMirror getVarargsType() {
+    return varargsType;
+  }
+
+  public SuperConstructorInvocation setVarargsType(TypeMirror type) {
+    varargsType = type;
+    return this;
   }
 
   public Expression getExpression() {

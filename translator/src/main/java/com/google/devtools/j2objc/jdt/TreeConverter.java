@@ -123,6 +123,7 @@ import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -627,6 +628,7 @@ public class TreeConverter {
     JdtExecutableType type = BindingConverter.getType(binding);
     newNode
         .setExecutablePair(new ExecutablePair(element, type))
+        .setVarargsType(getVarargsType(binding, node.arguments()))
         .setType((Type) TreeConverter.convert(node.getType()));
     Expression expression = (Expression) TreeConverter.convert(node.getExpression());
     org.eclipse.jdt.core.dom.AnonymousClassDeclaration anonymousClassDecl =
@@ -661,7 +663,8 @@ public class TreeConverter {
     IMethodBinding binding = node.resolveConstructorBinding();
     ConstructorInvocation newNode = new ConstructorInvocation()
         .setExecutablePair(new ExecutablePair(
-            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)));
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)))
+        .setVarargsType(getVarargsType(binding, node.arguments()));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
     }
@@ -677,7 +680,7 @@ public class TreeConverter {
   private static TreeNode convertCreationReference(
       org.eclipse.jdt.core.dom.CreationReference node) {
     CreationReference newNode = new CreationReference();
-    convertMethodReference(node, newNode);
+    convertMethodReference(node, newNode, node.resolveMethodBinding(), false);
     return newNode.
         setType((Type) TreeConverter.convert(node.getType()));
   }
@@ -714,6 +717,7 @@ public class TreeConverter {
     newNode
         .setVariableElement(BindingConverter.getVariableElement(node.resolveVariable()))
         .setExecutablePair(new ExecutablePair(element, BindingConverter.getType(methodBinding)))
+        .setVarargsType(getVarargsType(methodBinding, node.arguments()))
         .setName((SimpleName) convert(node.getName()));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
@@ -746,11 +750,16 @@ public class TreeConverter {
 
   private static TreeNode convertExpressionMethodReference(
       org.eclipse.jdt.core.dom.ExpressionMethodReference node) {
+    IMethodBinding methodBinding = node.resolveMethodBinding();
     ExpressionMethodReference newNode = new ExpressionMethodReference();
-    convertMethodReference(node, newNode);
+    Expression expression = (Expression) convert(node.getExpression());
+    boolean consumesFirstParam = !BindingUtil.isStatic(methodBinding)
+        && expression instanceof Name
+        && !ElementUtil.isVariable(((Name) expression).getElement());
+    convertMethodReference(node, newNode, methodBinding, consumesFirstParam);
     return newNode
         .setName((SimpleName) TreeConverter.convert(node.getName()))
-        .setExpression((Expression) TreeConverter.convert(node.getExpression()));
+        .setExpression(expression);
   }
 
   private static TreeNode convertExpressionStatement(
@@ -955,19 +964,21 @@ public class TreeConverter {
             BindingConverter.getType(methodBinding)))
         .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
         .setName((SimpleName) TreeConverter.convert(node.getName()))
-        .setExpression((Expression) TreeConverter.convert(node.getExpression()));
+        .setExpression((Expression) TreeConverter.convert(node.getExpression()))
+        .setVarargsType(getVarargsType(methodBinding, node.arguments()));
   }
 
   private static TreeNode convertMethodReference(
-      org.eclipse.jdt.core.dom.MethodReference node, MethodReference newNode) {
+      org.eclipse.jdt.core.dom.MethodReference node, MethodReference newNode,
+      IMethodBinding binding, boolean consumeFirstParam) {
     convertFunctionalExpression(node, newNode);
     for (Object x : node.typeArguments()) {
       newNode.addTypeArgument((Type) TreeConverter.convert(x));
     }
-    IMethodBinding binding = node.resolveMethodBinding();
+    IMethodBinding functionalInterface = getFunctionalInterface(node.resolveTypeBinding());
     return newNode
-        .setExecutablePair(new ExecutablePair(
-            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)));
+        .setExecutableElement(BindingConverter.getExecutableElement(binding))
+        .setVarargsType(getVarargsType(binding, functionalInterface, consumeFirstParam));
   }
 
   private static TreeNode convertName(org.eclipse.jdt.core.dom.Name node, Name newNode) {
@@ -1125,7 +1136,8 @@ public class TreeConverter {
     IMethodBinding binding = node.resolveConstructorBinding();
     SuperConstructorInvocation newNode = new SuperConstructorInvocation()
         .setExecutablePair(new ExecutablePair(
-            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)));
+            BindingConverter.getExecutableElement(binding), BindingConverter.getType(binding)))
+        .setVarargsType(getVarargsType(binding, node.arguments()));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
     }
@@ -1143,7 +1155,7 @@ public class TreeConverter {
   private static TreeNode convertSuperMethodReference(
       org.eclipse.jdt.core.dom.SuperMethodReference node) {
     SuperMethodReference newNode = new SuperMethodReference();
-    convertMethodReference(node, newNode);
+    convertMethodReference(node, newNode, node.resolveMethodBinding(), false);
     return newNode
         .setQualifier((Name) TreeConverter.convert(node.getQualifier()))
         .setName((SimpleName) TreeConverter.convert(node.getName()));
@@ -1183,6 +1195,7 @@ public class TreeConverter {
         .setExecutablePair(new ExecutablePair(
             BindingConverter.getExecutableElement(methodBinding),
             BindingConverter.getType(methodBinding)))
+        .setVarargsType(getVarargsType(methodBinding, node.arguments()))
         .setQualifier((Name) TreeConverter.convert(node.getQualifier()))
         .setName((SimpleName) TreeConverter.convert(node.getName()));
   }
@@ -1258,26 +1271,25 @@ public class TreeConverter {
   private static TreeNode convertTypeMethodReference(
       org.eclipse.jdt.core.dom.TypeMethodReference node) {
     TypeMethodReference newNode = new TypeMethodReference();
-    convertMethodReference(node, newNode);
+    IMethodBinding methodBinding = node.resolveMethodBinding();
     if (node.getType().resolveBinding().isArray()) {
       // JDT does not provide the correct method on array types, so we find it from
       // java.lang.Object.
       IMethodBinding functionalInterface = getFunctionalInterface(node.resolveTypeBinding());
-      ExecutableElement method = getObjectMethod(
+      methodBinding = getObjectMethod(
           node.getAST(), node.getName().getIdentifier(),
           functionalInterface.getParameterTypes().length - 1);
-      newNode.setExecutablePair(new ExecutablePair(method));
     }
+    convertMethodReference(node, newNode, methodBinding, !BindingUtil.isStatic(methodBinding));
     return newNode
         .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setType((Type) TreeConverter.convert(node.getType()));
   }
 
-  private static ExecutableElement getObjectMethod(AST ast, String name, int numParams) {
-    TypeElement objectType = BindingConverter.getTypeElement(
-        ast.resolveWellKnownType("java.lang.Object"));
-    for (ExecutableElement method : ElementUtil.getMethods(objectType)) {
-      if (ElementUtil.getName(method).equals(name) && method.getParameters().size() == numParams) {
+  private static IMethodBinding getObjectMethod(AST ast, String name, int numParams) {
+    ITypeBinding objectType = ast.resolveWellKnownType("java.lang.Object");
+    for (IMethodBinding method : objectType.getDeclaredMethods()) {
+      if (method.getName().equals(name) && method.getParameterTypes().length == numParams) {
         return method;
       }
     }
@@ -1368,9 +1380,12 @@ public class TreeConverter {
     DeclaredType superType = (DeclaredType) ElementUtil.getDeclaringClass(method).getSuperclass();
     TypeElement superClass = TypeUtil.asTypeElement(superType);
     ExecutableElement superConstructor = findDefaultConstructorElement(superClass);
-    node.getBody().addStatement(0, new SuperConstructorInvocation(new ExecutablePair(
+    SuperConstructorInvocation invocation = new SuperConstructorInvocation(new ExecutablePair(
         superConstructor,
-        (ExecutableType) JdtTypes.asMemberOfInternal(superType, superConstructor))));
+        (ExecutableType) JdtTypes.asMemberOfInternal(superType, superConstructor)))
+        .setVarargsType(getVarargsType(
+            BindingConverter.unwrapExecutableElement(superConstructor), Collections.emptyList()));
+    node.getBody().addStatement(0, invocation);
   }
 
   private static ExecutableElement findDefaultConstructorElement(TypeElement type) {
@@ -1413,6 +1428,59 @@ public class TreeConverter {
       }
     }
     return type.getFunctionalInterfaceMethod();
+  }
+
+  // Gets the varargs type for a MethodReference node.
+  private static TypeMirror getVarargsType(
+      IMethodBinding method, IMethodBinding functionalInterface, boolean consumeFirstParam) {
+    if (method == null) {  // Only possible for an array creation reference.
+      return null;
+    }
+    ITypeBinding[] argTypes = functionalInterface.getParameterTypes();
+    int numArgs = argTypes.length - (consumeFirstParam ? 1 : 0);
+    ITypeBinding lastArgType = argTypes.length > 0 ? argTypes[argTypes.length - 1] : null;
+    return getVarargsType(method, numArgs, lastArgType);
+  }
+
+  // Gets the varargs type for an invocation node.
+  @SuppressWarnings("unchecked")
+  private static TypeMirror getVarargsType(IMethodBinding method, List args) {
+    ITypeBinding lastArgType = null;
+    if (!args.isEmpty()) {
+      org.eclipse.jdt.core.dom.Expression lastArg =
+          (org.eclipse.jdt.core.dom.Expression) args.get(args.size() - 1);
+      lastArgType = lastArg.resolveTypeBinding();
+
+      // Special case: check for a clone method invocation, since clone()'s return
+      // type is declared as Object but it always returns the caller's type.
+      if (lastArg instanceof org.eclipse.jdt.core.dom.MethodInvocation) {
+        org.eclipse.jdt.core.dom.MethodInvocation invocation =
+            (org.eclipse.jdt.core.dom.MethodInvocation) lastArg;
+        if (invocation.resolveMethodBinding().getName().equals("clone")
+            && invocation.arguments().isEmpty()) {
+          lastArgType = invocation.getExpression().resolveTypeBinding();
+        }
+      }
+    }
+    return getVarargsType(method, args.size(), lastArgType);
+  }
+
+  private static TypeMirror getVarargsType(
+      IMethodBinding method, int numArgs, ITypeBinding lastArgType) {
+    if (!method.isVarargs()) {
+      return null;
+    }
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    ITypeBinding varargType = paramTypes[paramTypes.length - 1];
+    assert varargType.isArray();
+    int varargsSize = numArgs - paramTypes.length + 1;
+    if (varargsSize == 1) {
+      if (lastArgType.isAssignmentCompatible(varargType)) {
+        // Last argument is already an array.
+        return null;
+      }
+    }
+    return BindingConverter.getType(varargType.getComponentType());
   }
 
   // Helper class for convertInfixExpression().

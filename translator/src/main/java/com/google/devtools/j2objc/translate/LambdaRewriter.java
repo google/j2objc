@@ -216,7 +216,8 @@ public class LambdaRewriter extends UnitTreeVisitor {
         setImplementationBody(creation);
       } else {
         ClassInstanceCreation creation =
-            new ClassInstanceCreation(node.getExecutablePair(), creationType);
+            new ClassInstanceCreation(new ExecutablePair(node.getExecutableElement()), creationType)
+            .setVarargsType(node.getVarargsType());
         forwardRemainingArgs(createParameters(), creation.getArguments());
         creation.setExpression(TreeUtil.remove(node.getCreationOuterArg()));
         TreeUtil.moveList(node.getCreationCaptureArgs(), creation.getCaptureArgs());
@@ -225,11 +226,11 @@ public class LambdaRewriter extends UnitTreeVisitor {
     }
 
     private void rewriteExpressionMethodReference(ExpressionMethodReference node) {
-      ExecutablePair method = node.getExecutablePair();
+      ExecutableElement method = node.getExecutableElement();
       Iterator<VariableElement> params = createParameters();
       Expression invocationTarget = null;
 
-      if (!ElementUtil.isStatic(method.element())) {
+      if (!ElementUtil.isStatic(method)) {
         VariableElement receiverField = captureInfo.getReceiverField(lambdaType);
         if (receiverField != null) {
           invocationTarget = new SimpleName(receiverField);
@@ -240,23 +241,29 @@ public class LambdaRewriter extends UnitTreeVisitor {
         }
       }
 
-      MethodInvocation invocation = new MethodInvocation(method, invocationTarget);
+      MethodInvocation invocation =
+          new MethodInvocation(new ExecutablePair(method), invocationTarget)
+          .setVarargsType(node.getVarargsType());
       forwardRemainingArgs(params, invocation.getArguments());
       setImplementationBody(invocation);
     }
 
     private void rewriteSuperMethodReference(SuperMethodReference node) {
-      SuperMethodInvocation invocation = new SuperMethodInvocation(node.getExecutablePair());
+      SuperMethodInvocation invocation =
+          new SuperMethodInvocation(new ExecutablePair(node.getExecutableElement()))
+          .setVarargsType(node.getVarargsType());
       invocation.setReceiver(TreeUtil.remove(node.getReceiver()));
       forwardRemainingArgs(createParameters(), invocation.getArguments());
       setImplementationBody(invocation);
     }
 
     private void rewriteTypeMethodReference(TypeMethodReference node) {
-      ExecutablePair method = node.getExecutablePair();
+      ExecutableElement method = node.getExecutableElement();
       Iterator<VariableElement> params = createParameters();
       MethodInvocation invocation = new MethodInvocation(
-          method, ElementUtil.isStatic(method.element()) ? null : new SimpleName(params.next()));
+          new ExecutablePair(method),
+          ElementUtil.isStatic(method) ? null : new SimpleName(params.next()))
+          .setVarargsType(node.getVarargsType());
       forwardRemainingArgs(params, invocation.getArguments());
       setImplementationBody(invocation);
     }

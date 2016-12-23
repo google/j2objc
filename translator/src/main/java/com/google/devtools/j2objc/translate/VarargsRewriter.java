@@ -26,11 +26,8 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.types.ExecutablePair;
-import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
-import javax.lang.model.type.ArrayType;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -45,40 +42,20 @@ public class VarargsRewriter extends UnitTreeVisitor {
     super(unit);
   }
 
-  private void rewriteVarargs(ExecutablePair method, List<Expression> args) {
-    if (!method.element().isVarArgs()) {
+  private void rewriteVarargs(
+      ExecutableElement method, TypeMirror varargsType, List<Expression> args) {
+    if (varargsType == null) {
       return;
     }
-    List<? extends TypeMirror> paramTypes = method.type().getParameterTypes();
-    TypeMirror varargType = paramTypes.get(paramTypes.size() - 1);
-    assert TypeUtil.isArray(varargType);
-    int varargsSize = args.size() - paramTypes.size() + 1;
-    if (varargsSize == 1) {
-      Expression lastArg = args.get(args.size() - 1);
-      TypeMirror lastArgType = lastArg.getTypeMirror();
-      if (typeUtil.isAssignable(lastArgType, varargType)) {
-        // Last argument is already an array.
-        return;
-      }
-      // Special case: check for a clone method invocation, since clone()'s return
-      // type is declared as Object but it always returns the caller's type.
-      if (lastArg instanceof MethodInvocation) {
-        MethodInvocation invocation = (MethodInvocation) lastArg;
-        if (ElementUtil.getName(invocation.getExecutableElement()).equals("clone")
-            && invocation.getArguments().isEmpty()
-            && typeUtil.isAssignable(invocation.getExpression().getTypeMirror(), varargType)) {
-          return;
-        }
-      }
-    }
-
-    List<Expression> varargs = args.subList(paramTypes.size() - 1, args.size());
+    varargsType = typeUtil.erasure(varargsType);
+    int numRegularParams = method.getParameters().size() - 1;
+    List<Expression> varargs = args.subList(numRegularParams, args.size());
     List<Expression> varargsCopy = Lists.newArrayList(varargs);
     varargs.clear();
     if (varargsCopy.isEmpty()) {
-      args.add(new ArrayCreation((ArrayType) typeUtil.erasure(varargType), typeUtil, 0));
+      args.add(new ArrayCreation(typeUtil.getArrayType(varargsType), typeUtil, 0));
     } else {
-      ArrayInitializer newInit = new ArrayInitializer((ArrayType) typeUtil.erasure(varargType));
+      ArrayInitializer newInit = new ArrayInitializer(typeUtil.getArrayType(varargsType));
       newInit.getExpressions().addAll(varargsCopy);
       args.add(new ArrayCreation(newInit));
     }
@@ -95,31 +72,31 @@ public class VarargsRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    rewriteVarargs(node.getExecutablePair(), node.getArguments());
+    rewriteVarargs(node.getExecutableElement(), node.getVarargsType(), node.getArguments());
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    rewriteVarargs(node.getExecutablePair(), node.getArguments());
+    rewriteVarargs(node.getExecutableElement(), node.getVarargsType(), node.getArguments());
   }
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    rewriteVarargs(node.getExecutablePair(), node.getArguments());
+    rewriteVarargs(node.getExecutableElement(), node.getVarargsType(), node.getArguments());
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
-    rewriteVarargs(node.getExecutablePair(), node.getArguments());
+    rewriteVarargs(node.getExecutableElement(), node.getVarargsType(), node.getArguments());
   }
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    rewriteVarargs(node.getExecutablePair(), node.getArguments());
+    rewriteVarargs(node.getExecutableElement(), node.getVarargsType(), node.getArguments());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    rewriteVarargs(node.getExecutablePair(), node.getArguments());
+    rewriteVarargs(node.getExecutableElement(), node.getVarargsType(), node.getArguments());
   }
 }

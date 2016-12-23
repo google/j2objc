@@ -29,9 +29,10 @@ public class MethodInvocation extends Expression {
   private ExecutablePair method = ExecutablePair.NULL;
   // The context-specific known type of this expression.
   private TypeMirror typeMirror = null;
-  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
-  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private TypeMirror varargsType = null;
+  private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public MethodInvocation() {}
 
@@ -39,6 +40,7 @@ public class MethodInvocation extends Expression {
     super(other);
     method = other.getExecutablePair();
     typeMirror = other.getTypeMirror();
+    varargsType = other.getVarargsType();
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
@@ -84,6 +86,15 @@ public class MethodInvocation extends Expression {
 
   public MethodInvocation setTypeMirror(TypeMirror newMirror) {
     typeMirror = newMirror;
+    return this;
+  }
+
+  public TypeMirror getVarargsType() {
+    return varargsType;
+  }
+
+  public MethodInvocation setVarargsType(TypeMirror type) {
+    varargsType = type;
     return this;
   }
 

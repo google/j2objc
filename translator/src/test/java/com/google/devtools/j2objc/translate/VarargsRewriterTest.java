@@ -162,4 +162,13 @@ public class VarargsRewriterTest extends GenerationTest {
     // Must pass the objs parameter as a direct argument, not wrap in a varargs array.
     assertTranslation(translation, "[super testWithNSObjectArray:objs];");
   }
+
+  public void testGenericVarargsInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<T extends Runnable> { void foo(T... t) {} void test(T t) { foo(t); } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[self fooWithJavaLangRunnableArray:[IOSObjectArray arrayWithObjects:(id[]){ t } "
+        + "count:1 type:JavaLangRunnable_class_()]];");
+  }
 }

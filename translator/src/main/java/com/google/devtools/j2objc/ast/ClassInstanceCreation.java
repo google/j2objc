@@ -26,17 +26,18 @@ import javax.lang.model.type.TypeMirror;
 public class ClassInstanceCreation extends Expression {
 
   private ExecutablePair method = ExecutablePair.NULL;
+  private TypeMirror varargsType = null;
   // Indicates that this expression leaves the created object with a retain
   // count of 1. (i.e. does not call autorelease)
   private boolean hasRetainedResult = false;
-  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   // Used by anonymous classes where we have two outer scopes, one for the class and one for the
   // superclass.
-  private ChildLink<Expression> superOuterArg = ChildLink.create(Expression.class, this);
-  private ChildList<Expression> captureArgs = ChildList.create(Expression.class, this);
-  private ChildLink<Type> type = ChildLink.create(Type.class, this);
-  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
-  private ChildLink<TypeDeclaration> anonymousClassDeclaration =
+  private final ChildLink<Expression> superOuterArg = ChildLink.create(Expression.class, this);
+  private final ChildList<Expression> captureArgs = ChildList.create(Expression.class, this);
+  private final ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private final ChildLink<TypeDeclaration> anonymousClassDeclaration =
       ChildLink.create(TypeDeclaration.class, this);
 
   public ClassInstanceCreation() {}
@@ -44,6 +45,7 @@ public class ClassInstanceCreation extends Expression {
   public ClassInstanceCreation(ClassInstanceCreation other) {
     super(other);
     method = other.getExecutablePair();
+    varargsType = other.getVarargsType();
     hasRetainedResult = other.hasRetainedResult();
     expression.copyFrom(other.getExpression());
     superOuterArg.copyFrom(other.getSuperOuterArg());
@@ -86,9 +88,17 @@ public class ClassInstanceCreation extends Expression {
 
   @Override
   public TypeMirror getTypeMirror() {
-    //return method.element() != null ? method.element().getEnclosingElement().asType() : null;
     Type typeNode = type.get();
     return typeNode != null ? typeNode.getTypeMirror() : null;
+  }
+
+  public TypeMirror getVarargsType() {
+    return varargsType;
+  }
+
+  public ClassInstanceCreation setVarargsType(TypeMirror type) {
+    varargsType = type;
+    return this;
   }
 
   public boolean hasRetainedResult() {

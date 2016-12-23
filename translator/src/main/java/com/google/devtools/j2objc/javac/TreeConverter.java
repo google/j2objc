@@ -823,7 +823,8 @@ public class TreeConverter {
       }
     }
     return newNode
-        .setExecutablePair(new ExecutablePair((ExecutableElement) node.sym));
+        .setExecutableElement((ExecutableElement) node.sym)
+        .setVarargsType(node.varargsElement);
   }
 
   private TreeNode convertMemberReference(JCTree.JCMemberReference node) {
@@ -901,7 +902,8 @@ public class TreeConverter {
 
     if ("this".equals(methodName)) {
       ConstructorInvocation newNode = new ConstructorInvocation()
-          .setExecutablePair(new ExecutablePair(sym));
+          .setExecutablePair(new ExecutablePair(sym))
+          .setVarargsType(node.varargsElement);
       for (JCTree.JCExpression arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg));
       }
@@ -910,7 +912,8 @@ public class TreeConverter {
 
     if ("super".equals(methodName)) {
       SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-          .setExecutablePair(new ExecutablePair(sym));
+          .setExecutablePair(new ExecutablePair(sym))
+          .setVarargsType(node.varargsElement);
       if (target != null) {
         newNode.setExpression((Expression) convert(target));
       }
@@ -923,6 +926,7 @@ public class TreeConverter {
     if (target != null && "super".equals(getMemberName(target))) {
       SuperMethodInvocation newNode = new SuperMethodInvocation()
           .setExecutablePair(new ExecutablePair(sym, type))
+          .setVarargsType(node.varargsElement)
           .setName(convertSimpleName(sym, type, getPosition(node)));
       if (target.getKind() == Kind.MEMBER_SELECT) {
         // foo.bar.MyClass.super.print(...):
@@ -946,7 +950,8 @@ public class TreeConverter {
     }
     return newNode
         .setTypeMirror(node.type)
-        .setExecutablePair(new ExecutablePair(sym, type));
+        .setExecutablePair(new ExecutablePair(sym, type))
+        .setVarargsType(node.varargsElement);
   }
 
   private SimpleName convertSimpleName(Element element, TypeMirror type, SourcePosition pos) {
@@ -988,6 +993,7 @@ public class TreeConverter {
     }
     return newNode
         .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor))
+        .setVarargsType(node.varargsElement)
         .setExpression((Expression) convert(node.getEnclosingExpression()))
         .setType(Type.newType(node.type))
         .setAnonymousClassDeclaration((TypeDeclaration) convert(node.def));
@@ -1136,7 +1142,8 @@ public class TreeConverter {
         newNode.setAnonymousClassDeclaration(TreeUtil.remove(init.getAnonymousClassDeclaration()));
       }
       return newNode
-          .setExecutablePair(init.getExecutablePair());
+          .setExecutablePair(init.getExecutablePair())
+          .setVarargsType(init.getVarargsType());
     }
     return convertSingleVariable(node);
   }

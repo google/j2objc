@@ -13,9 +13,9 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Abstract base class of all AST node types that represent a method reference expression (added in
@@ -31,28 +31,35 @@ import javax.lang.model.element.ExecutableElement;
  */
 public abstract class MethodReference extends FunctionalExpression {
 
-  protected ExecutablePair method;
-  protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
+  protected ExecutableElement method;
+  protected TypeMirror varargsType;
+  protected final ChildList<Type> typeArguments = ChildList.create(Type.class, this);
 
   public MethodReference() {}
 
   public MethodReference(MethodReference other) {
     super(other);
-    method = other.getExecutablePair();
+    method = other.getExecutableElement();
+    varargsType = other.getVarargsType();
     typeArguments.copyFrom(other.getTypeArguments());
   }
 
-  public ExecutablePair getExecutablePair() {
+  public ExecutableElement getExecutableElement() {
     return method;
   }
 
-  public MethodReference setExecutablePair(ExecutablePair newMethod) {
+  public MethodReference setExecutableElement(ExecutableElement newMethod) {
     method = newMethod;
     return this;
   }
 
-  public ExecutableElement getExecutableElement() {
-    return method.element();
+  public TypeMirror getVarargsType() {
+    return varargsType;
+  }
+
+  public MethodReference setVarargsType(TypeMirror type) {
+    varargsType = type;
+    return this;
   }
 
   public List<Type> getTypeArguments() {

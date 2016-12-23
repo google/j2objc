@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node for a alternate constructor invocation. (i.e. "this(...);")
@@ -25,13 +26,15 @@ import javax.lang.model.type.ExecutableType;
 public class ConstructorInvocation extends Statement {
 
   private ExecutablePair method = ExecutablePair.NULL;
-  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private TypeMirror varargsType = null;
+  private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public ConstructorInvocation() {}
 
   public ConstructorInvocation(ConstructorInvocation other) {
     super(other);
     method = other.getExecutablePair();
+    varargsType = other.getVarargsType();
     arguments.copyFrom(other.getArguments());
   }
 
@@ -55,6 +58,15 @@ public class ConstructorInvocation extends Statement {
 
   public ExecutableType getExecutableType() {
     return method.type();
+  }
+
+  public TypeMirror getVarargsType() {
+    return varargsType;
+  }
+
+  public ConstructorInvocation setVarargsType(TypeMirror type) {
+    varargsType = type;
+    return this;
   }
 
   public List<Expression> getArguments() {

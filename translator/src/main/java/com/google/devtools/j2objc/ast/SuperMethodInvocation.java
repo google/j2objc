@@ -26,17 +26,19 @@ import javax.lang.model.type.TypeMirror;
 public class SuperMethodInvocation extends Expression {
 
   private ExecutablePair method = ExecutablePair.NULL;
-  private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private TypeMirror varargsType = null;
+  private final ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
+  private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   // Resolved by OuterReferenceResolver.
-  private ChildLink<Expression> receiver = ChildLink.create(Expression.class, this);
-  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private final ChildLink<Expression> receiver = ChildLink.create(Expression.class, this);
+  private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperMethodInvocation() {}
 
   public SuperMethodInvocation(SuperMethodInvocation other) {
     super(other);
     method = other.getExecutablePair();
+    varargsType = other.getVarargsType();
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
     receiver.copyFrom(other.getReceiver());
@@ -73,6 +75,15 @@ public class SuperMethodInvocation extends Expression {
   @Override
   public TypeMirror getTypeMirror() {
     return getExecutableType().getReturnType();
+  }
+
+  public TypeMirror getVarargsType() {
+    return varargsType;
+  }
+
+  public SuperMethodInvocation setVarargsType(TypeMirror type) {
+    varargsType = type;
+    return this;
   }
 
   public Name getQualifier() {
