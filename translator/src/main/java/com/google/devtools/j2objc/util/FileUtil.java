@@ -70,6 +70,9 @@ public class FileUtil {
   }
 
   public File getOutputDirectory() {
+    if (!outputDirectory.exists()) {
+      outputDirectory.mkdirs();
+    }
     return outputDirectory;
   }
 
