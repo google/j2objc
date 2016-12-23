@@ -97,6 +97,7 @@ public class JavacParser extends Parser {
         compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset());
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
+    addPaths(StandardLocation.PLATFORM_CLASS_PATH, Options.getBootClasspath(), fileManager);
     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
         Lists.newArrayList(options.fileUtil().getOutputDirectory()));
     fileManager.setLocation(StandardLocation.SOURCE_OUTPUT,
@@ -116,8 +117,6 @@ public class JavacParser extends Parser {
   private List<String> getJavacOptions(boolean processAnnotations) {
     List<String> javacOptions = new ArrayList<>();
     String encoding = options.fileUtil().getFileEncoding();
-
-    javacOptions.add("-Xbootclasspath:" + makePathString(Options.getBootClasspath()));
     if (encoding != null) {
       javacOptions.add("-encoding");
       javacOptions.add(encoding);
