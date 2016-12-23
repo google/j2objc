@@ -110,6 +110,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "V", 0x1, 0, 1, -1, -1, -1, -1 },
     { NULL, "V", 0x9, 0, 2, -1, -1, -1, -1 },
@@ -117,18 +118,17 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     { NULL, "Z", 0x1, 6, 4, -1, 7, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  methods[0].selector = @selector(isAccessible);
-  methods[1].selector = @selector(setAccessibleWithBoolean:);
-  methods[2].selector = @selector(setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:);
-  methods[3].selector = @selector(getAnnotationWithIOSClass:);
-  methods[4].selector = @selector(isAnnotationPresentWithIOSClass:);
-  methods[5].selector = @selector(getAnnotations);
-  methods[6].selector = @selector(getDeclaredAnnotations);
-  methods[7].selector = @selector(init);
+  methods[0].selector = @selector(init);
+  methods[1].selector = @selector(isAccessible);
+  methods[2].selector = @selector(setAccessibleWithBoolean:);
+  methods[3].selector = @selector(setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:);
+  methods[4].selector = @selector(getAnnotationWithIOSClass:);
+  methods[5].selector = @selector(isAnnotationPresentWithIOSClass:);
+  methods[6].selector = @selector(getAnnotations);
+  methods[7].selector = @selector(getDeclaredAnnotations);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "setAccessible", "Z", "[LJavaLangReflectAccessibleObject;Z", "getAnnotation", "LIOSClass;",

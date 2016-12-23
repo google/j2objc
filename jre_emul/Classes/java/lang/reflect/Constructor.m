@@ -132,52 +132,53 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
-    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, 1, -1, -1 },
     { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "LNSObject;", 0x81, 1, 2, 3, 4, -1, -1 },
-    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 5, 6, -1, 7, -1, -1 },
+    { NULL, "LNSObject;", 0x81, 2, 3, 4, 5, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 6, 7, -1, 8, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, 9, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  methods[0].selector = @selector(getName);
-  methods[1].selector = @selector(getModifiers);
-  methods[2].selector = @selector(getDeclaringClass);
-  methods[3].selector = @selector(getParameterTypes);
-  methods[4].selector = @selector(getGenericParameterTypes);
-  methods[5].selector = @selector(newInstanceWithNSObjectArray:);
-  methods[6].selector = @selector(getAnnotationWithIOSClass:);
-  methods[7].selector = @selector(getDeclaredAnnotations);
-  methods[8].selector = @selector(getParameterAnnotations);
-  methods[9].selector = @selector(getTypeParameters);
-  methods[10].selector = @selector(isSynthetic);
-  methods[11].selector = @selector(getExceptionTypes);
-  methods[12].selector = @selector(getGenericExceptionTypes);
-  methods[13].selector = @selector(toGenericString);
-  methods[14].selector = @selector(isVarArgs);
-  methods[15].selector = @selector(init);
+  methods[0].selector = @selector(init);
+  methods[1].selector = @selector(getName);
+  methods[2].selector = @selector(getModifiers);
+  methods[3].selector = @selector(getDeclaringClass);
+  methods[4].selector = @selector(getParameterTypes);
+  methods[5].selector = @selector(getGenericParameterTypes);
+  methods[6].selector = @selector(newInstanceWithNSObjectArray:);
+  methods[7].selector = @selector(getAnnotationWithIOSClass:);
+  methods[8].selector = @selector(getDeclaredAnnotations);
+  methods[9].selector = @selector(getParameterAnnotations);
+  methods[10].selector = @selector(getTypeParameters);
+  methods[11].selector = @selector(isSynthetic);
+  methods[12].selector = @selector(getExceptionTypes);
+  methods[13].selector = @selector(getGenericExceptionTypes);
+  methods[14].selector = @selector(toGenericString);
+  methods[15].selector = @selector(isVarArgs);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
-    "()Ljava/lang/Class<TT;>;", "newInstance", "[LNSObject;",
+    "()Ljava/lang/Class<TT;>;", "()[Ljava/lang/Class<*>;", "newInstance", "[LNSObject;",
     "LJavaLangInstantiationException;LJavaLangIllegalAccessException;"
     "LJavaLangIllegalArgumentException;LJavaLangReflectInvocationTargetException;",
     "([Ljava/lang/Object;)TT;", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;",
+    "()[Ljava/lang/reflect/TypeVariable<Ljava/lang/reflect/Method;>;",
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 8, -1
+    "Constructor", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 16, 0, -1, -1, -1, 10, -1
   };
   return &_JavaLangReflectConstructor;
 }

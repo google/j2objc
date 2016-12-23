@@ -277,12 +277,13 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
+    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x401, -1, -1, -1, 0, -1, -1 },
     { NULL, "LNSString;", 0x401, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x401, -1, -1, -1, -1, -1, -1 },
-    { NULL, "[LJavaLangReflectTypeVariable;", 0x401, -1, -1, -1, -1, -1, -1 },
-    { NULL, "[LIOSClass;", 0x401, -1, -1, -1, -1, -1, -1 },
-    { NULL, "[LIOSClass;", 0x401, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectTypeVariable;", 0x401, -1, -1, -1, 1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x401, -1, -1, -1, 2, -1, -1 },
+    { NULL, "[LIOSClass;", 0x401, -1, -1, -1, 2, -1, -1 },
     { NULL, "[[LJavaLangAnnotationAnnotation;", 0x401, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x401, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -291,38 +292,38 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
     { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 1, 2, -1, 3, -1, -1 },
-    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 4, 2, -1, 5, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 3, 4, -1, 5, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 6, 4, -1, 7, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x0, -1, -1, -1, -1, -1, -1 },
     { NULL, "[LJavaLangReflectType;", 0x0, -1, -1, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  methods[0].selector = @selector(getDeclaringClass);
-  methods[1].selector = @selector(getName);
-  methods[2].selector = @selector(getModifiers);
-  methods[3].selector = @selector(getTypeParameters);
-  methods[4].selector = @selector(getParameterTypes);
-  methods[5].selector = @selector(getExceptionTypes);
-  methods[6].selector = @selector(getParameterAnnotations);
-  methods[7].selector = @selector(toGenericString);
-  methods[8].selector = @selector(getParameterCount);
-  methods[9].selector = @selector(getGenericParameterTypes);
-  methods[10].selector = @selector(getParameters);
-  methods[11].selector = @selector(getGenericExceptionTypes);
-  methods[12].selector = @selector(isVarArgs);
-  methods[13].selector = @selector(isSynthetic);
-  methods[14].selector = @selector(getAnnotationWithIOSClass:);
-  methods[15].selector = @selector(getAnnotationsByTypeWithIOSClass:);
-  methods[16].selector = @selector(getDeclaredAnnotations);
-  methods[17].selector = @selector(hasRealParameterData);
-  methods[18].selector = @selector(getAllGenericParameterTypes);
-  methods[19].selector = @selector(init);
+  methods[0].selector = @selector(init);
+  methods[1].selector = @selector(getDeclaringClass);
+  methods[2].selector = @selector(getName);
+  methods[3].selector = @selector(getModifiers);
+  methods[4].selector = @selector(getTypeParameters);
+  methods[5].selector = @selector(getParameterTypes);
+  methods[6].selector = @selector(getExceptionTypes);
+  methods[7].selector = @selector(getParameterAnnotations);
+  methods[8].selector = @selector(toGenericString);
+  methods[9].selector = @selector(getParameterCount);
+  methods[10].selector = @selector(getGenericParameterTypes);
+  methods[11].selector = @selector(getParameters);
+  methods[12].selector = @selector(getGenericExceptionTypes);
+  methods[13].selector = @selector(isVarArgs);
+  methods[14].selector = @selector(isSynthetic);
+  methods[15].selector = @selector(getAnnotationWithIOSClass:);
+  methods[16].selector = @selector(getAnnotationsByTypeWithIOSClass:);
+  methods[17].selector = @selector(getDeclaredAnnotations);
+  methods[18].selector = @selector(hasRealParameterData);
+  methods[19].selector = @selector(getAllGenericParameterTypes);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
-    "()Ljava/lang/Class<*>;", "getAnnotation", "LIOSClass;",
+    "()Ljava/lang/Class<*>;", "()[Ljava/lang/reflect/TypeVariable<*>;", "()[Ljava/lang/Class<*>;",
+    "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "getAnnotationsByType",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;" };
   static const J2ObjcClassInfo _JavaLangReflectExecutable = {
