@@ -129,7 +129,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     for (DeclaredType inheritedType : typeUtil.getObjcOrderedInheritedTypes(type.asType())) {
       TypeElement inheritedElem = (TypeElement) inheritedType.asElement();
       for (ExecutableElement methodElem : ElementUtil.getMethods(inheritedElem)) {
-        if (methodElem.getModifiers().contains(Modifier.PRIVATE)) {
+        if (ElementUtil.isPrivate(methodElem)) {
           continue;
         }
         TypeMirror declaredReturnType = typeUtil.erasure(methodElem.getReturnType());
