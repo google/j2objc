@@ -76,6 +76,7 @@ public class Options {
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
   private String lintArgument = null;
+  private boolean reportJavadocWarnings = false;
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
@@ -470,6 +471,8 @@ public class Options {
         extractUnsequencedModifications = false;
       } else if (arg.equals("--doc-comments")) {
         docCommentsEnabled = true;
+      } else if (arg.equals("--doc-comment-warnings")) {
+        reportJavadocWarnings = true;
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         batchTranslateMaximum =
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
@@ -861,6 +864,10 @@ public class Options {
 
   public boolean dumpAST() {
     return dumpAST;
+  }
+  
+  public boolean reportJavadocWarnings() {
+    return reportJavadocWarnings;
   }
 
   // TODO(kstanger): remove after front-end conversion is complete.

@@ -1239,7 +1239,8 @@ public class TreeConverter {
   }
 
   private Javadoc convertJavadocComment(Element element) {
-    return JavadocConverter.convertJavadoc(element, env);
+    return JavadocConverter.convertJavadoc(element, env,
+        newUnit.getEnv().options().reportJavadocWarnings());
   }
 
   private static void addOcniComments(CompilationUnit unit, boolean jsniWarnings) {

@@ -63,10 +63,13 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
   private final Element element;
   private final DCTree.DCDocComment docComment;
   private final Position.LineMap lineMap;
+  private final boolean reportWarnings;
 
-  private JavadocConverter(Element element, DCTree.DCDocComment docComment) {
+  private JavadocConverter(Element element, DCTree.DCDocComment docComment,
+      boolean reportWarnings) {
     this.element = element;
     this.docComment = docComment;
+    this.reportWarnings = reportWarnings;
     char[] buf = docComment.comment.getText().toCharArray();
     this.lineMap = Position.makeLineMap(buf, buf.length, true);
   }
@@ -75,7 +78,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
    * Returns an AST node for the javadoc comment of a specified class,
    * method, or field element.
    */
-  static Javadoc convertJavadoc(Element element, JavacEnvironment env) {
+  static Javadoc convertJavadoc(Element element, JavacEnvironment env, boolean reportWarnings) {
     DocTrees docTrees = DocTrees.instance(env.task());
     TreePath path = docTrees.getPath(element);
     if (path == null) {
@@ -85,7 +88,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
     if (docComment == null) {
       return null; // Declaration does not have a javadoc comment.
     }
-    JavadocConverter converter = new JavadocConverter(element, docComment);
+    JavadocConverter converter = new JavadocConverter(element, docComment, reportWarnings);
     Javadoc result = new Javadoc();
     TagElement newTag = new TagElement();  // First tag has no name.
     converter.scan(docComment.getFirstSentence(), newTag);
@@ -138,11 +141,17 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitErroneous(ErroneousTree node, TagElement tag) {
-    // Update node's position to be relative to the whole source file, instead of just
-    // the doc-comment's start. That way, the diagnostic printer will fetch the correct
-    // text for the line the error is on.
-    ((DCTree.DCErroneous) node).pos = ((DCTree) node).pos(docComment).getStartPosition();
-    ErrorUtil.warning(node.getDiagnostic().toString());
+    if (reportWarnings) {
+      // Update node's position to be relative to the whole source file, instead of just
+      // the doc-comment's start. That way, the diagnostic printer will fetch the correct
+      // text for the line the error is on.
+      ((DCTree.DCErroneous) node).pos = ((DCTree) node).pos(docComment).getStartPosition();
+      ErrorUtil.warning(node.getDiagnostic().toString());
+    } else {
+      // Include erroneous text in doc-comment as is.
+      TreeNode newNode = setPos(node, new TextElement().setText(node.getBody()));
+      tag.addFragment(newNode);
+    }
     return null;
   }
 
