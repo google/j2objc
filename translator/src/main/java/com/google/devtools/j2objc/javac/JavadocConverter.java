@@ -138,6 +138,10 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitErroneous(ErroneousTree node, TagElement tag) {
+    // Update node's position to be relative to the whole source file, instead of just
+    // the doc-comment's start. That way, the diagnostic printer will fetch the correct
+    // text for the line the error is on.
+    ((DCTree.DCErroneous) node).pos = ((DCTree) node).pos(docComment).getStartPosition();
     ErrorUtil.warning(node.getDiagnostic().toString());
     return null;
   }
@@ -261,7 +265,6 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitText(TextTree node, TagElement tag) {
-    String body = node.getBody();
     String[] lines = node.getBody().split("\n");
     int lineOffset = 0;
     for (String line : lines) {

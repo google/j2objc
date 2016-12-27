@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.javac;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -144,10 +143,6 @@ public class JavacParser extends Parser {
     return javacOptions;
   }
 
-  private String makePathString(List<String> paths) {
-    return Joiner.on(":").join(paths);
-  }
-
   @Override
   public void parseFiles(Collection<String> paths, Handler handler, SourceVersion sourceVersion) {
     List<File> files = new ArrayList<>();
@@ -164,12 +159,13 @@ public class JavacParser extends Parser {
       } catch (IOException e) {
         // Error listener will report errors.
       }
-
       processDiagnostics(env.diagnostics());
+
       if (ErrorUtil.errorCount() == 0) {
         for (CompilationUnitTree ast : units) {
           com.google.devtools.j2objc.ast.CompilationUnit unit = TreeConverter
               .convertCompilationUnit(options, env, (JCTree.JCCompilationUnit) ast);
+          processDiagnostics(env.diagnostics());
           handler.handleParsedUnit(unit.getSourceFilePath(), unit);
         }
       }
