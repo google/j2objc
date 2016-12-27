@@ -728,38 +728,53 @@ public final class URLConnectionTest extends TestCase {
 //        assertEquals(1, server.getRequestCount());
 //    }
 
-    // TODO(tball): b/28067294
-//    public void testNonHexChunkSize() throws IOException {
-//        server.enqueue(new MockResponse()
-//                .setBody("5\r\nABCDE\r\nG\r\nFGHIJKLMNOPQRSTU\r\n0\r\n\r\n")
-//                .clearHeaders()
-//                .addHeader("Transfer-encoding: chunked"));
-//        server.play();
-//
-//        URLConnection connection = server.getUrl("/").openConnection();
-//        try {
-//            readAscii(connection.getInputStream(), Integer.MAX_VALUE);
-//            fail();
-//        } catch (IOException e) {
-//        }
-//    }
+    public void testNonHexChunkSize() throws IOException {
+        server.enqueue(new MockResponse()
+                .setBody("5\r\nABCDE\r\nG\r\nFGHIJKLMNOPQRSTU\r\n0\r\n\r\n")
+                .clearHeaders()
+                .addHeader("Transfer-encoding: chunked"));
+        server.play();
 
-    // TODO(tball): b/28067294
-//    public void testMissingChunkBody() throws IOException {
-//        server.enqueue(new MockResponse()
-//                .setBody("5")
-//                .clearHeaders()
-//                .addHeader("Transfer-encoding: chunked")
-//                .setSocketPolicy(DISCONNECT_AT_END));
-//        server.play();
-//
-//        URLConnection connection = server.getUrl("/").openConnection();
-//        try {
-//            readAscii(connection.getInputStream(), Integer.MAX_VALUE);
-//            fail();
-//        } catch (IOException e) {
-//        }
-//    }
+        URLConnection connection = server.getUrl("/").openConnection();
+
+        // j2objc: By default, URLConnection never times out (i.e. getReadTimeout() returns 0). This
+        // is problematic here. The use of chunked transfer encoding, plus the interaction between
+        // NSURLSession and MockWebServer, could mean that the socket backing the connection is kept
+        // alive, and so the data task created by NSURLSession would never finish if no explicit
+        // timeout is specified. The scenario where the socket is kept alive is documented in
+        // {@link com.google.mockwebserver.MockWebServer#serveConnection(Socket)}.
+        connection.setReadTimeout(1000);
+
+        try {
+            readAscii(connection.getInputStream(), Integer.MAX_VALUE);
+            fail();
+        } catch (IOException e) {
+        }
+    }
+
+    public void testMissingChunkBody() throws IOException {
+        server.enqueue(new MockResponse()
+                .setBody("5")
+                .clearHeaders()
+                .addHeader("Transfer-encoding: chunked")
+                .setSocketPolicy(DISCONNECT_AT_END));
+        server.play();
+
+        URLConnection connection = server.getUrl("/").openConnection();
+
+        // j2objc: By default, URLConnection never times out (i.e. getReadTimeout() returns 0). This
+        // is problematic here. The use of chunked transfer encoding, plus the interaction between
+        // NSURLSession and MockWebServer, could mean that the socket backing the connection is kept
+        // alive, and so the data task created by NSURLSession would never finish if no explicit
+        // timeout is specified. The scenario where the socket is kept alive is documented in
+        // {@link com.google.mockwebserver.MockWebServer#serveConnection(Socket)}.
+        connection.setReadTimeout(1000);
+        try {
+            readAscii(connection.getInputStream(), Integer.MAX_VALUE);
+            fail();
+        } catch (IOException e) {
+        }
+    }
 
     // JVM failure.
 //    /**

@@ -677,6 +677,8 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/UnknownServiceException.java
 
 JAVA_PRIVATE_SOURCES_NET = \
+  com/google/j2objc/net/DataEnqueuedInputStream.java \
+  com/google/j2objc/net/DataEnqueuedOutputStream.java \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
   com/google/j2objc/net/SecurityDataHandler.java \
