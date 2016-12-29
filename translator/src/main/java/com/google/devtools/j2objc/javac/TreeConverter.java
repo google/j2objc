@@ -581,7 +581,8 @@ public class TreeConverter {
   }
 
   private TreeNode convertCharLiteral(JCTree.JCLiteral node) {
-    return new CharacterLiteral((Character) node.getValue(), node.type);
+    return new CharacterLiteral((Character) node.getValue(), node.type)
+        .setConstantValue(node.getValue());
   }
 
   private TreeNode convertClassDeclaration(JCTree.JCClassDecl node) {
@@ -1115,7 +1116,8 @@ public class TreeConverter {
   }
 
   private TreeNode convertTypeCast(JCTree.JCTypeCast node) {
-    return new CastExpression(node.type, (Expression) convert(node.getExpression()));
+    Expression newNode = new CastExpression(node.type, (Expression) convert(node.getExpression()));
+    return convertExpression(node, newNode);
   }
 
   private TreeNode convertVariableDeclaration(JCTree.JCVariableDecl node) {
