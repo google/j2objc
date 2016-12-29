@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.sun.source.doctree.AuthorTree;
 import com.sun.source.doctree.CommentTree;
@@ -43,12 +42,13 @@ import com.sun.source.doctree.StartElementTree;
 import com.sun.source.doctree.TextTree;
 import com.sun.source.doctree.ThrowsTree;
 import com.sun.source.doctree.VersionTree;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.util.DocSourcePositions;
 import com.sun.source.util.DocTreeScanner;
 import com.sun.source.util.DocTrees;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.tree.DCTree;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.Position;
 import java.util.Collections;
 import java.util.List;
 import javax.lang.model.element.Element;
@@ -62,23 +62,27 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   private final Element element;
   private final DCTree.DCDocComment docComment;
-  private final Position.LineMap lineMap;
+  private final DocSourcePositions docSourcePositions;
+  private final String source;
+  private final CompilationUnitTree unit;
   private final boolean reportWarnings;
 
-  private JavadocConverter(Element element, DCTree.DCDocComment docComment,
-      boolean reportWarnings) {
+  private JavadocConverter(Element element, DCTree.DCDocComment docComment, String source,
+      DocTrees docTrees, CompilationUnitTree unit, boolean reportWarnings) {
     this.element = element;
     this.docComment = docComment;
+    this.source = source;
+    this.docSourcePositions = docTrees.getSourcePositions();
+    this.unit = unit;
     this.reportWarnings = reportWarnings;
-    char[] buf = docComment.comment.getText().toCharArray();
-    this.lineMap = Position.makeLineMap(buf, buf.length, true);
   }
 
   /**
    * Returns an AST node for the javadoc comment of a specified class,
    * method, or field element.
    */
-  static Javadoc convertJavadoc(Element element, JavacEnvironment env, boolean reportWarnings) {
+  static Javadoc convertJavadoc(Element element, String source, JavacEnvironment env,
+      boolean reportWarnings) {
     DocTrees docTrees = DocTrees.instance(env.task());
     TreePath path = docTrees.getPath(element);
     if (path == null) {
@@ -88,19 +92,24 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
     if (docComment == null) {
       return null; // Declaration does not have a javadoc comment.
     }
-    JavadocConverter converter = new JavadocConverter(element, docComment, reportWarnings);
+    JavadocConverter converter = new JavadocConverter(element, docComment, source, docTrees,
+        path.getCompilationUnit(), reportWarnings);
     Javadoc result = new Javadoc();
     TagElement newTag = new TagElement();  // First tag has no name.
     converter.scan(docComment.getFirstSentence(), newTag);
     converter.scan(docComment.getBody(), newTag);
     if (!newTag.getFragments().isEmpty()) {
-      copySpan(newTag, newTag.getFragments());
+      List<TreeNode> fragments = newTag.getFragments();
+      int start = fragments.get(0).getStartPosition();
+      TreeNode lastFragment = fragments.get(fragments.size() - 1);
+      int end = start + lastFragment.getLength();
+      converter.setPos(newTag, start, end);
       result.addTag(newTag);
     }
     for (DocTree tag : docComment.getBlockTags()) {
-      newTag = new TagElement();
-      converter.scan(tag, newTag);
-      if (!newTag.getFragments().isEmpty()) {
+      if (tag.getKind() != DocTree.Kind.ERRONEOUS) {
+        newTag = new TagElement();
+        converter.scan(tag, newTag);
         result.addTag(newTag);
       }
     }
@@ -128,7 +137,8 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
   @Override
   public Void visitEndElement(EndElementTree node, TagElement tag) {
     String text = String.format("</%s>", node.getName().toString());
-    tag.addFragment(setPos(node, new TextElement().setText(text)));
+    int pos = pos(node);
+    tag.addFragment(setPos(new TextElement().setText(text), pos, pos + text.length()));
     return null;
   }
 
@@ -209,7 +219,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
     for (TreeNode fragment : tag.getFragments()) {
       // Fix up positions to match JDT's.
       // TODO(tball): remove and fix JavadocGenerator after javac switch.
-      if (fragment.getKind() == Kind.TEXT_ELEMENT) {
+      if (fragment.getKind() == TreeNode.Kind.TEXT_ELEMENT) {
         TextElement text = (TextElement) fragment;
         text.setText(" " + text.getText());
         text.setSourceRange(text.getStartPosition(), text.getLength() + 1);
@@ -218,7 +228,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
       setPos(fragment, lastEnd, thisEnd);
       lastEnd = thisEnd;
     }
-    setPos(tag, pos(node), lastEnd);
+    setPos(tag, pos(node), endPos(node));
     tag.setLineNumber(nameNode.getLineNumber());
     return null;
   }
@@ -275,14 +285,14 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
   @Override
   public Void visitText(TextTree node, TagElement tag) {
     String[] lines = node.getBody().split("\n");
-    int lineOffset = 0;
+    int linePos = pos(node);
     for (String line : lines) {
       if (line.length() > 0) {
-        TreeNode newNode = setPos(node, new TextElement().setText(line));
-        newNode.setLineNumber(newNode.getLineNumber() + lineOffset);
+        linePos = source.indexOf(line, linePos);
+        int endPos = linePos + line.length();
+        TreeNode newNode = setPos(new TextElement().setText(line), linePos, endPos);
         tag.addFragment(newNode);
       }
-      lineOffset++;
     }
     return null;
   }
@@ -324,7 +334,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
    */
   private TreeNode setPos(DocTree node, TreeNode newNode) {
     int pos = pos(node);
-    return newNode.setPosition(new SourcePosition(pos, length(node), lineNumber(node)));
+    return newNode.setPosition(new SourcePosition(pos, length(node), lineNumber(pos)));
   }
 
   /**
@@ -332,36 +342,23 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
    * is unchanged.
    */
   private TreeNode setPos(TreeNode newNode, int pos, int endPos) {
-    return newNode.setPosition(new SourcePosition(pos, endPos - pos, newNode.getLineNumber()));
+    return newNode.setPosition(new SourcePosition(pos, endPos - pos, lineNumber(pos)));
   }
 
   private int pos(DocTree node) {
-    return (int) ((DCTree) node).getSourcePosition(docComment);
+    return (int) docSourcePositions.getStartPosition(unit, docComment, node);
+  }
+
+  private int endPos(DocTree node) {
+    return (int) docSourcePositions.getEndPosition(unit, docComment, node);
+  }
+
+  private int lineNumber(int pos) {
+    return (int) unit.getLineMap().getLineNumber(pos);
   }
 
   private int length(DocTree node) {
-    if (node instanceof DCTree.DCEndPosTree) {
-      return ((DCTree.DCEndPosTree<?>) node).getEndPos(docComment) - pos(node);
-    }
-    return node.toString().length();
-  }
-
-  private int lineNumber(DocTree node) {
-    return lineMap.getLineNumber(((DCTree) node).pos);
-  }
-
-  /**
-   * Set a parent node's position from its fragments span.
-   */
-  private static void copySpan(TreeNode toNode, List<TreeNode> fragments) {
-    if (fragments.size() > 0) {
-      TreeNode firstFrag = fragments.get(0);
-      int start = firstFrag.getStartPosition();
-      TreeNode lastFrag = fragments.get(fragments.size() - 1);
-      int end = lastFrag.getStartPosition() + lastFrag.getLength();
-      toNode.setSourceRange(start, end - start);
-      toNode.setLineNumber(firstFrag.getLineNumber());
-    }
+    return endPos(node) - pos(node);
   }
 
   private Name convertQualifiedName(JCTree qualifier) {
