@@ -732,6 +732,13 @@ public class TreeConverter {
             .setElement(node.sym);
       }
     }
+    if (ElementUtil.isPrimitiveConstant((VariableElement) node.sym)) {
+      return new QualifiedName()
+          .setName(convertSimpleName(node.sym, node.type, pos))
+          .setQualifier((Name) convert(selected))
+          .setElement(node.sym)
+          .setConstantValue(((VariableElement) node.sym).getConstantValue());
+    }
     FieldAccess newNode = new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
         .setExpression((Expression) convert(selected))
@@ -798,7 +805,7 @@ public class TreeConverter {
     return new InstanceofExpression()
         .setLeftOperand((Expression) convert(node.getExpression()))
         .setRightOperand(Type.newType(clazz))
-        .setTypeMirror(node.getType().type);
+        .setTypeMirror(node.type);
   }
 
   private TreeNode convertLabeledStatement(JCTree.JCLabeledStatement node) {
