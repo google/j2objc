@@ -124,6 +124,7 @@ import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
+import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.tree.DocCommentTable;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
@@ -436,7 +437,7 @@ public class TreeConverter {
                 convertSimpleName(methodDecl.sym, methodDecl.type, getNamePosition(methodDecl)))
             .setDefault((Expression) convert(methodDecl.defaultValue))
             .setExecutableElement(methodDecl.sym)
-            .setType(Type.newType(methodDecl.sym.getReturnType()));
+            .setType(convertType(methodDecl.sym.getReturnType()));
         List<Annotation> annotations = new ArrayList<>();
         for (AnnotationTree annotation : methodDecl.mods.annotations) {
           annotations.add((Annotation) convert(annotation));
@@ -462,10 +463,11 @@ public class TreeConverter {
   }
 
   private TreeNode convertArrayType(JCTree.JCArrayTypeTree node) {
-    ArrayType newNode = new ArrayType();
-    convertType(node, newNode);
+    ArrayType newNode = (ArrayType) new ArrayType();
     Type componentType = (Type) Type.newType(node.getType().type);
-    return newNode.setComponentType(componentType);
+    return newNode
+        .setComponentType(componentType)
+        .setTypeMirror(node.type);
   }
 
   private TreeNode convertAssert(JCTree.JCAssert node) {
@@ -881,7 +883,7 @@ public class TreeConverter {
         .setIsConstructor(ElementUtil.isConstructor(node.sym))
         .setExecutableElement(node.sym)
         .setBody((Block) convert(node.getBody()))
-        .setReturnType(Type.newType(node.type.asMethodType().getReturnType()));
+        .setReturnType(convertType(node.type));
   }
 
   private static String getMemberName(JCTree.JCExpression node) {
@@ -1003,7 +1005,7 @@ public class TreeConverter {
         .setExecutablePair(new ExecutablePair((ExecutableElement) node.constructor))
         .setVarargsType(node.varargsElement)
         .setExpression((Expression) convert(node.getEnclosingExpression()))
-        .setType(Type.newType(node.type))
+        .setType(convertType(node.clazz.type))
         .setAnonymousClassDeclaration((TypeDeclaration) convert(node.def));
   }
 
@@ -1095,9 +1097,27 @@ public class TreeConverter {
         .setFinally((Block) convert(node.getFinallyBlock()));
   }
 
-  private TreeNode convertType(JCTree.JCExpression node, Type newType) {
-    return newType
-        .setTypeMirror(node.type);
+  private Type convertType(TypeMirror typeMirror) {
+    com.sun.tools.javac.code.Type type = (com.sun.tools.javac.code.Type) typeMirror;
+    if (type.getKind() == TypeKind.EXECUTABLE) {
+      Type returnType = Type.newType(type.getReturnType());
+      if (type.hasTag(TypeTag.FORALL)) {
+        return new ParameterizedType()
+            .setType(returnType)
+            .setTypeMirror(type.getReturnType());
+      } else {
+        return returnType;
+      }
+    }
+    if (type.getKind() == TypeKind.DECLARED) {
+      List<? extends TypeMirror> typeArgs = ((DeclaredType) type).getTypeArguments();
+      if (!typeArgs.isEmpty()) {
+        return new ParameterizedType()
+            .setType(Type.newType(typeMirror))
+            .setTypeMirror(typeMirror);
+      }
+    }
+    return Type.newType(type);
   }
 
   private TypeMirror nameType(JCTree node) {
