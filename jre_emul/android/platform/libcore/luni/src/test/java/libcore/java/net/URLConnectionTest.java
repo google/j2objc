@@ -429,20 +429,23 @@ public final class URLConnectionTest extends TestCase {
 
     enum WriteKind { BYTE_BY_BYTE, SMALL_BUFFERS, LARGE_BUFFERS }
 
-    // TODO(tball): b/28067294
+    // j2objc: this test case is disabled because CFReadStream (which is the NSInputStream we give
+    // to the NSMutableURLRequest when we make a streamed POST request) logs a message
+    // "Stream [address] is sending an event before being opened", even though it does not affect
+    // test correctness. This only happens when small chunks are written to the piped
+    // (NS)OutputStream before the connection is fully established, and the message is never seen
+    // in the next two tests. Since the log message only adds noise, we disable this test.
 //    public void test_chunkedUpload_byteByByte() throws Exception {
 //        doUpload(TransferKind.CHUNKED, WriteKind.BYTE_BY_BYTE);
 //    }
 
-    // TODO(tball): b/28067294
-//    public void test_chunkedUpload_smallBuffers() throws Exception {
-//        doUpload(TransferKind.CHUNKED, WriteKind.SMALL_BUFFERS);
-//    }
+    public void test_chunkedUpload_smallBuffers() throws Exception {
+        doUpload(TransferKind.CHUNKED, WriteKind.SMALL_BUFFERS);
+    }
 
-    // TODO(tball): b/28067294
-//    public void test_chunkedUpload_largeBuffers() throws Exception {
-//        doUpload(TransferKind.CHUNKED, WriteKind.LARGE_BUFFERS);
-//    }
+    public void test_chunkedUpload_largeBuffers() throws Exception {
+        doUpload(TransferKind.CHUNKED, WriteKind.LARGE_BUFFERS);
+    }
 
     public void test_fixedLengthUpload_byteByByte() throws Exception {
         doUpload(TransferKind.FIXED_LENGTH, WriteKind.BYTE_BY_BYTE);
@@ -465,6 +468,14 @@ public final class URLConnectionTest extends TestCase {
         HttpURLConnection conn = (HttpURLConnection) server.getUrl("/").openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
+
+        // j2objc: URLConnection does not time out by default (i.e. getReadTimeout() returns 0).
+        // When we create the native NSMutableURLRequest, we set its timeoutInterval to
+        // JavaLangDouble_MAX_VALUE to make it never time out. This is problematic if the request
+        // uses chunked transfer encoding, as it causes the NSURLSessionDataTask to send malformed
+        // chunks and never terminate the request. A definite timeout is therefore needed here.
+        conn.setReadTimeout(1000);
+
         if (uploadKind == TransferKind.CHUNKED) {
             conn.setChunkedStreamingMode(-1);
         } else {
@@ -520,9 +531,6 @@ public final class URLConnectionTest extends TestCase {
 //    public void testConnectViaProxyUsingProxySystemProperty() throws Exception {
 //        testConnectViaProxy(ProxyConfig.PROXY_SYSTEM_PROPERTY);
 //    }
-
-    // TODO(tball): b/28067294
-    // TODO(tball): b/28067294
 
     private void testConnectViaProxy(ProxyConfig proxyConfig) throws Exception {
         MockResponse mockResponse = new MockResponse().setBody("this response comes via a proxy");
@@ -737,12 +745,11 @@ public final class URLConnectionTest extends TestCase {
 
         URLConnection connection = server.getUrl("/").openConnection();
 
-        // j2objc: By default, URLConnection never times out (i.e. getReadTimeout() returns 0). This
-        // is problematic here. The use of chunked transfer encoding, plus the interaction between
-        // NSURLSession and MockWebServer, could mean that the socket backing the connection is kept
-        // alive, and so the data task created by NSURLSession would never finish if no explicit
-        // timeout is specified. The scenario where the socket is kept alive is documented in
-        // {@link com.google.mockwebserver.MockWebServer#serveConnection(Socket)}.
+        // j2objc: URLConnection does not time out by default (i.e. getReadTimeout() returns 0).
+        // When we create the native NSMutableURLRequest, we set its timeoutInterval to
+        // JavaLangDouble_MAX_VALUE to make it never time out. This is problematic if the response
+        // uses chunked transfer encoding, as the NSURLSessionDataTask is unable to make progress
+        // and the read will never finish. A definite timeout is therefore needed here.
         connection.setReadTimeout(1000);
 
         try {
@@ -762,13 +769,9 @@ public final class URLConnectionTest extends TestCase {
 
         URLConnection connection = server.getUrl("/").openConnection();
 
-        // j2objc: By default, URLConnection never times out (i.e. getReadTimeout() returns 0). This
-        // is problematic here. The use of chunked transfer encoding, plus the interaction between
-        // NSURLSession and MockWebServer, could mean that the socket backing the connection is kept
-        // alive, and so the data task created by NSURLSession would never finish if no explicit
-        // timeout is specified. The scenario where the socket is kept alive is documented in
-        // {@link com.google.mockwebserver.MockWebServer#serveConnection(Socket)}.
+        // j2objc: See testNonHexChunkSize() above for why the timeout is needed.
         connection.setReadTimeout(1000);
+
         try {
             readAscii(connection.getInputStream(), Integer.MAX_VALUE);
             fail();

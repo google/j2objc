@@ -98,7 +98,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
   // Cache response failure, so multiple requests to a bad response throw the same exception.
   private IOException responseException;
 
-  /** Used to block getResponse() until a response or an error comes back. */
+  /** Guards both responseCode and responseException and is used to block getResponse(). */
   private final Object getResponseLock = new Object();
 
   // Delegate to handle native security data, to avoid a direct dependency on jre_security.
@@ -140,7 +140,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public void disconnect() {
     connected = false;
-    responseException = null;
 
     // Cancel the data task if it's still running.
     cancelDataTask();
@@ -157,6 +156,12 @@ public class IosHttpURLConnection extends HttpURLConnection {
     requestStream = null;
     nativePipedRequestStream = null;
     errorDataStream = null;
+
+    // Unblock any remaining pending getResponse(), if for any reason cancelDataTask() fails.
+    synchronized (getResponseLock) {
+      responseException = null;
+      getResponseLock.notifyAll();
+    }
   }
 
   /**
@@ -209,10 +214,25 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   @Override
   public void connect() throws IOException {
+    if (responseCode != -1) {
+      // Request already made.
+      return;
+    }
+
+    if (responseException != null) {
+      throw responseException;
+    }
+
+    if (connected) {
+      return;
+    }
+
+    connected = true;
+
     int timeout = getReadTimeout();
     responseBodyStream = new DataEnqueuedInputStream(timeout > 0 ? timeout : -1);
-    connected = true;
-    // Native connection created when request is made to server.
+    loadRequestCookies();
+    makeRequest();
   }
 
   @Override
@@ -418,6 +438,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
         nativePipedRequestStream =
             AsyncPipedNSInputStreamAdapter.create(requestStream, NATIVE_PIPED_STREAM_BUFFER_SIZE);
       }
+      connect();
       return requestStream;
     } else {
       if (nativeDataOutputStream == null) {
@@ -436,13 +457,23 @@ public class IosHttpURLConnection extends HttpURLConnection {
       // Request already made.
       return;
     }
-    loadRequestCookies();
+
+    connect();
     synchronized (getResponseLock) {
-      makeRequest();
-      try {
-        getResponseLock.wait();
-      } catch (InterruptedException e) {
-        // Ignored.
+      if (responseCode == -1 && responseException == null) {
+        try {
+          // There are three places where getResponseLock.notifyAll() is called: in disconnect(), in
+          // the native -URLSession:dataTask:didReceiveResponse:, and in the native
+          // -URLSession:task:didCompleteWithError:. The call in disconnect() is just a clean-up
+          // step, where as -URLSession:dataTask:didReceiveResponse: is called only if the
+          // connection is made and an HTTP response code is received. If a non-server error occurs
+          // (such as lost connection), -URLSession:task:didCompleteWithError: will be called and an
+          // exception will be set there. So the only condition we are waiting for here is if both
+          // responseCode and responseExecption are not set.
+          getResponseLock.wait();
+        } catch (InterruptedException e) {
+          // Ignored.
+        }
       }
     }
     if (responseException != null) {
@@ -505,15 +536,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
   }
 
   private native void makeRequest() throws IOException /*-[
-    if (self->responseCode_ != -1) {
-      // Request already made.
-      return;
-    }
-    if (self->responseException_) {
-      @throw self->responseException_;
-    }
-    [self connect];
-
     @autoreleasepool {
 
       NSMutableURLRequest *request =
@@ -581,16 +603,14 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
     NSHTTPURLResponse *response = (NSHTTPURLResponse *) urlResponse;
     int responseCode = (int) response.statusCode;
-    self->responseCode_ = responseCode;
     JavaNetHttpURLConnection_set_responseMessage_(self,
-        ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(
-            self->responseCode_));
+        ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(responseCode));
 
     // Clear request headers to make room for the response headers.
     [self->headers_ clear];
 
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
-    NSString *statusLine = [NSString stringWithFormat:@"HTTP/1.1 %d %@", self->responseCode_,
+    NSString *statusLine = [NSString stringWithFormat:@"HTTP/1.1 %d %@", responseCode,
         self->responseMessage_];
     [self addHeaderWithNSString:nil withNSString:statusLine];
 
@@ -623,6 +643,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
     // Unblock getResponse().
     @synchronized(getResponseLock_) {
+      self->responseCode_ = responseCode;
       [self->getResponseLock_ java_notifyAll];
     }
   }
@@ -648,14 +669,9 @@ public class IosHttpURLConnection extends HttpURLConnection {
   - (void)URLSession:(NSURLSession *)session
                 task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
-    if (!error) {
-      // No error, close the responseBodyStream.
-      @synchronized(responseBodyStreamLock_) {
-        [self->responseBodyStream_ endOffering];
-      }
-    } else {
+    JavaIoIOException *responseException = nil;
+    if (error) {
       NSString *url = [self->url_ description];  // Use original URL in any error text.
-      JavaIoIOException *responseException = nil;
       if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
         switch ([error code]) {
           case NSURLErrorBadURL:
@@ -684,11 +700,15 @@ didCompleteWithError:(NSError *)error {
       ComGoogleJ2objcNetNSErrorException *cause =
           create_ComGoogleJ2objcNetNSErrorException_initWithId_(error);
       [responseException initCauseWithNSException:cause];
-      JreStrongAssign(&self->responseException_, responseException);
+    }
 
-      // Close responseBodyStream with the exception so that subsequent calls to read() cause the
-      // same exception to be thrown.
-      @synchronized(responseBodyStreamLock_) {
+    @synchronized(responseBodyStreamLock_) {
+      if (!responseException) {
+        // No error, close the responseBodyStream.
+        [self->responseBodyStream_ endOffering];
+      } else {
+        // Close responseBodyStream with the exception so that subsequent calls to read() cause the
+        // same exception to be thrown.
         [self->responseBodyStream_ endOfferingWithJavaIoIOException:responseException];
       }
     }
@@ -698,8 +718,11 @@ didCompleteWithError:(NSError *)error {
       JreStrongAssign(&self->nativeDataTask_, nil);
     }
 
-    // Unblock getResponse().
+    // Unblock getResponse() and set responseException. This call to notifyAll() is needed because
+    // -URLSession:dataTask:didReceiveResponse: may not be called if a non-server error (such as
+    // lost connection) occurs.
     @synchronized(getResponseLock_) {
+      JreStrongAssign(&self->responseException_, responseException);
       [self->getResponseLock_ java_notifyAll];
     }
   }
