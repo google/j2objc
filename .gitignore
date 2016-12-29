@@ -15,3 +15,7 @@ dist/
 
 # Mac System Files
 .DS_Store
+
+# IntelliJ IDEA Files
+*.iml
+.idea
