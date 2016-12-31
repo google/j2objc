@@ -64,7 +64,7 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA;", "LB;");
   }
 
-  // TODO(user): Use com.google.j2objc.annotations.WeakOuter when transitioned to Java 8
+  // TODO(nbraswell): Use com.google.j2objc.annotations.WeakOuter when transitioned to Java 8
   private static String weakOuterAndInterface = "import java.lang.annotation.*;\n"
         + "@Target(ElementType.TYPE_USE) @interface WeakOuter {}"
         + "interface Simple { public int run(); }";

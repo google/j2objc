@@ -44,10 +44,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -62,7 +62,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
   }
 
   //Check for assumptions: In this case, a static block's class does not get marked as true
-  //TODO(user): Add static block used test
+  //TODO(malvania): Add static block used test
   public void testUnusedClass() throws IOException {
     String source = "class A {\n"
         + "  public static void abc(String s) {}\n"
@@ -75,10 +75,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -94,7 +94,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "  static class B {\n"
         + "    public static void abc(String s) {}\n"
         + "  }\n"
-        + "  class C {\n"
+        + "  class C {\n"   
         + "    public void xyz(String s) {}\n"
         + "  }\n"
         + "}\n";
@@ -103,10 +103,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -125,7 +125,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "  class B {\n"
         + "    public void abc(String s) {}\n"
         + "  }\n"
-        + "  class C {\n"
+        + "  class C {\n"   
         + "    public void xyz(String s) {}\n"
         + "  }\n"
         + "}\n";
@@ -134,10 +134,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -156,7 +156,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "  static class B {\n"
         + "    public static void abc(String s) {}\n"
         + "  }\n"
-        + "  class C {\n"
+        + "  class C {\n"   
         + "    public void xyz(String s) {}\n"
         + "  }\n"
         + "}\n";
@@ -165,10 +165,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -177,7 +177,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     assertTrue(unusedCodeMap.containsMethod("A$C", "xyz", "(Ljava/lang/String;)V"));
   }
 
-  //TODO(user): Enable testing for unused fields when ElementUtil glitch is fixed and fields
+  //TODO(malvania): Enable testing for unused fields when ElementUtil glitch is fixed and fields
   //                are tracked again. (See ElementReferenceMapper line 183, fields comment.)
   //public void testUnusedField() throws IOException {
   //  String source = "import static java.lang.System.out;\n"
@@ -196,11 +196,11 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
   //  final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
   //  final HashMap<String, Set<String>> overrideMap = new HashMap<>();
   //  final Set<String> staticSet = new HashSet<>();
-  //  ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+  //  ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
   //      overrideMap);
   //  mapper.run();
   //  Set<String> elementSet = elementMap.keySet();
-  //  UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+  //  UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
   //      overrideMap);
   //  tracker.markUsedElements();
   //
@@ -212,7 +212,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
   //  assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "bah")));
   //  assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "abc")));
   //
-  //  //TODO(user): Add necessary checks after visiting FieldAccess to check used/unused fields
+  //  //TODO(malvania): Add necessary checks after visiting FieldAccess to check used/unused fields
   //}
 
   public void testUsedStaticlyCalledConstructor() throws IOException {
@@ -222,17 +222,17 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "}\n"
         + "class B {\n"
         + "  public static void foo(A a) {}\n"
-        + "  static {foo(new A());}"
+        + "  static {foo(new A());}" 
         + "}\n";
 
     CompilationUnit unit = compileType("test", source);
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -253,10 +253,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -273,18 +273,18 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "}\n"
         + "class B {\n"
         + "  public static void foo() {new A();}\n"
-        + "  static {foo();}"
+        + "  static {foo();}" 
         + "}\n";
 
     CompilationUnit unit = compileType("test", source);
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
     Set<String> elementSet = elementMap.keySet();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -311,18 +311,18 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "}\n"
         + "class B {\n"
         + "  public static void foo() {new A();}\n"
-        + "  static {foo();}"
+        + "  static {foo();}" 
         + "}\n";
 
     CompilationUnit unit = compileType("test", source);
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
     Set<String> elementSet = elementMap.keySet();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -352,18 +352,18 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         + "}\n"
         + "class B extends A {\n"
         + "  public B() {super(1);}\n"
-        + "  static {new B();}"
+        + "  static {new B();}" 
         + "}\n";
 
     CompilationUnit unit = compileType("test", source);
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
     Set<String> elementSet = elementMap.keySet();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -407,11 +407,11 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
     Set<String> elementSet = elementMap.keySet();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -454,10 +454,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -490,7 +490,7 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements();
 
@@ -522,10 +522,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements(inputCodeMap);
 
@@ -552,10 +552,10 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
     final HashMap<String, ReferenceNode> elementMap = new HashMap<>();
     final HashMap<String, Set<String>> overrideMap = new HashMap<>();
     final Set<String> staticSet = new HashSet<>();
-    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet,
+    ElementReferenceMapper mapper = new ElementReferenceMapper(unit, elementMap, staticSet, 
         overrideMap);
     mapper.run();
-    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet,
+    UnusedCodeTracker tracker = new UnusedCodeTracker(unit.getEnv(), elementMap, staticSet, 
         overrideMap);
     tracker.markUsedElements(inputCodeMap);
     CodeReferenceMap unusedCodeMap = tracker.buildTreeShakerMap();
@@ -573,9 +573,9 @@ public class UnusedCodeTrackerTest  extends GenerationTest {
         .stitchMethodIdentifier("A", "foo", "(Ljava/lang/String;)V")).reachable);
   }
 
-  //TODO(user): Consult:
+  //TODO(malvania): Consult:
   //Any custom type in parameters must be created by calling some constructor/initializer?
   public void testUnusedType() throws IOException {
-    //TODO(user): Add test for unused types after visiting VariableDeclarationExpression
+    //TODO(malvania): Add test for unused types after visiting VariableDeclarationExpression
   }
 }

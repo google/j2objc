@@ -153,7 +153,7 @@ public class TreeShaker {
         if (env == null) {
           env = unit.getEnv();
         } else {
-          //TODO(user): Assertion fails! Remove this once we're sure all env utils are the same.
+          //TODO(malvania): Assertion fails! Remove this once we're sure all env utils are the same.
           //assert(unit.getEnv() == env);
         }
         new ElementReferenceMapper(unit, elementReferenceMap, staticSet, overrideMap).run();
@@ -184,7 +184,7 @@ public class TreeShaker {
     for (String clazz : map.getReferencedClasses()) {
       writer.write(clazz + "\n");
     }
-    //TODO(user): Add output formatting that can be easily read by the parser in translator.
+    //TODO(malvania): Add output formatting that can be easily read by the parser in translator.
     writer.write("Dead Methods:\n");
     for (Cell<String, String, ImmutableSet<String>> cell : map.getReferencedMethods().cellSet()) {
       writer.write(cell.toString() + "\n");

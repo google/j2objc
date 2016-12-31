@@ -66,7 +66,7 @@ public class ElementReferenceMapperTest extends GenerationTest {
         + "    final B b = new B() {\n"
         + "      @Override"
         + "      public void foo() {}\n"
-        + "    };\n"
+        + "    };\n" 
         + "    b.foo();\n"
         + "  }\n"
         + "  static { new A().launch(); }"
@@ -83,7 +83,7 @@ public class ElementReferenceMapperTest extends GenerationTest {
 
     assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
     assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("B")));
-    //TODO(user): Enable testing for unused fields when ElementUtil glitch is fixed
+    //TODO(malvania): Enable testing for unused fields when ElementUtil glitch is fixed
     //assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "b")));
     assertTrue(elementSet.contains(ElementReferenceMapper
         .stitchMethodIdentifier("A$1", "foo", "()V")));
@@ -111,7 +111,7 @@ public class ElementReferenceMapperTest extends GenerationTest {
         .stitchMethodIdentifier("A$B", "A$B", "(LA;I)V")));
   }
 
-  //TODO(user): Enable testing for unused fields when ElementUtil glitch is fixed and fields
+  //TODO(malvania): Enable testing for unused fields when ElementUtil glitch is fixed and fields
   //                are tracked again. (See ElementReferenceMapper line 183, fields comment.)
   //public void testFieldsReference() throws IOException {
   //  String source = "import static java.lang.System.out;\n"
@@ -159,7 +159,7 @@ public class ElementReferenceMapperTest extends GenerationTest {
     Set<String> elementSet = elementReferenceMap.keySet();
 
     assertTrue(elementSet.contains(ElementReferenceMapper.stitchClassIdentifier("A")));
-    //TODO(user): Enable testing for unused fields when ElementUtil glitch is fixed
+    //TODO(malvania): Enable testing for unused fields when ElementUtil glitch is fixed
     //assertTrue(elementSet.contains(ElementReferenceMapper.stitchFieldIdentifier("A", "baz")));
   }
 

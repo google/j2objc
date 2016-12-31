@@ -40,7 +40,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 /**
  * Reference-mapping code for TreeShaker functionality that uses the visitor pattern
  * to identify all elements in the source code
- *
+ * 
  * @author Priyank Malvania
  */
 public class ElementReferenceMapper extends UnitTreeVisitor {
@@ -75,7 +75,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
      *   Classes that contain public fields can possibly be referenced by the field indirectly,
      *   so we want to keep those class source files.
      */
-    //TODO(user): When FieldAccess detection is supported, mark that class as reachable there,
+    //TODO(malvania): When FieldAccess detection is supported, mark that class as reachable there,
     // and remove the containsPublicField flag here.
     @Override
     public boolean isDead() {
@@ -99,7 +99,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
 
     @Override
     public void addToBuilder(Builder builder) {
-      //TODO(user): Enable the following code when the FieldAccess use-marking is done.
+      //TODO(malvania): Enable the following code when the FieldAccess use-marking is done.
       //String className = elementUtil.getBinaryName(
       //    ElementUtil.getDeclaringClass(fieldFragment.getVariableElement()));
       //String fragmentIdentifier = fieldFragment.getName().getIdentifier();
@@ -153,7 +153,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
   private final Set<String> staticSet;
   private final HashMap<String, Set<String>> overrideMap;
 
-  public ElementReferenceMapper(CompilationUnit unit, HashMap<String, ReferenceNode>
+  public ElementReferenceMapper(CompilationUnit unit, HashMap<String, ReferenceNode> 
       elementReferenceMap, Set<String> staticSet, HashMap<String, Set<String>> overrideMap) {
     super(unit);
     this.elementReferenceMap = elementReferenceMap;
@@ -176,12 +176,12 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
     elementReferenceMap.putIfAbsent(stitchClassIdentifier(type), new ClassReferenceNode(type));
   }
 
-  //TODO(user): Add the field type class to reference classes.
-  //Currently, jdt only supports well known types. Soon, we can get type mirror from field
+  //TODO(malvania): Add the field type class to reference classes.
+  //Currently, jdt only supports well known types. Soon, we can get type mirror from field 
   //and resolve the type by its name using a resolve method in the parser environment.
   @Override
   public void endVisit(VariableDeclarationFragment fragment) {
-    //TODO(user): Add field to elementReferenceMap when field detection is enabled and the
+    //TODO(malvania): Add field to elementReferenceMap when field detection is enabled and the
     //  ElementUtil.getBinaryName() method doesn't break when called on a static block's
     //  ExecutableElement.
     //String fieldID = stitchFieldIdentifier(fragment);
@@ -369,7 +369,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
     return stitchOverrideMethodIdentifier(methodElement, typeUtil);
   }
 
-  public static String stitchOverrideMethodIdentifier(ExecutableElement methodElement,
+  public static String stitchOverrideMethodIdentifier(ExecutableElement methodElement, 
       TypeUtil inputTypeUtil) {
     String methodName = inputTypeUtil.getReferenceName(methodElement);
     String methodSignature = inputTypeUtil.getReferenceSignature(methodElement);
@@ -389,7 +389,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
     return stitchMethodIdentifier(methodElement, typeUtil, elementUtil);
   }
 
-  public static String stitchMethodIdentifier(ExecutableElement methodElement,
+  public static String stitchMethodIdentifier(ExecutableElement methodElement, 
       TypeUtil inputTypeUtil, ElementUtil inputElementUtil) {
     String className = inputElementUtil.getBinaryName(ElementUtil.getDeclaringClass(methodElement));
     String methodName = inputTypeUtil.getReferenceName(methodElement);
@@ -397,7 +397,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
     return stitchMethodIdentifier(className, methodName, methodSignature);
   }
 
-  public static String stitchMethodIdentifier(String className, String methodName,
+  public static String stitchMethodIdentifier(String className, String methodName, 
       String signature) {
     StringBuilder sb = new StringBuilder("[");
     sb.append(className);

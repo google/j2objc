@@ -33,7 +33,7 @@ import javax.lang.model.element.TypeElement;
 
 /**
  * UnusedCodeTracker traverses all elements of its elementReferenceMap and determines unused code.
- *
+ * 
  * @author Priyank Malvania
  */
 public class UnusedCodeTracker {
@@ -45,7 +45,7 @@ public class UnusedCodeTracker {
   private final Set<String> rootSet = new HashSet<String>();
   private final Set<MethodReferenceNode> declaredSet = new HashSet<MethodReferenceNode>();
 
-  public UnusedCodeTracker(TranslationEnvironment env, HashMap<String, ReferenceNode>
+  public UnusedCodeTracker(TranslationEnvironment env, HashMap<String, ReferenceNode> 
       elementReferenceMap, Set<String> staticSet, HashMap<String, Set<String>> overrideMap) {
     Preconditions.checkNotNull(env);
     Preconditions.checkNotNull(elementReferenceMap);
@@ -62,7 +62,7 @@ public class UnusedCodeTracker {
    * (it only detects the top-level method being invoked), this method allows treeshaker to track
    * which methods are being overridden. For all relevant methods (that are declared but not
    * invoked), checks all other methods with the same overrideID in the overrideMap, and compares
-   * each pair with the ElementUtil.overrides method.
+   * each pair with the ElementUtil.overrides method. 
    */
   public void mapOverridingMethods() {
     for (String key : elementReferenceMap.keySet()) {
@@ -101,7 +101,7 @@ public class UnusedCodeTracker {
    * Then, do tree shaker traversal starting from this root set.
    * @param publicRootSet: CodeReferenceMap with public root methods and classes.
    */
-  //TODO(user): Current paradigm: All methods in input CodeReferenceMap are assumed to be
+  //TODO(malvania): Current paradigm: All methods in input CodeReferenceMap are assumed to be 
   //  public roots to traverse from.
   //Classes in input CodeReferenceMap here allow user to add Dynamically Loaded Classes and keep
   //  their public methods in the public root set.
@@ -161,7 +161,7 @@ public class UnusedCodeTracker {
   public void traverseMethod(String methodID) {
     MethodReferenceNode node = (MethodReferenceNode) elementReferenceMap.get(methodID);
     if (node == null) {
-      //TODO(user): This might never be reached, because we create a node for every method,
+      //TODO(malvania): This might never be reached, because we create a node for every method,
       //                both invoked and declared.
       ErrorUtil.warning("Encountered .class method while accessing: " + methodID);
       return;

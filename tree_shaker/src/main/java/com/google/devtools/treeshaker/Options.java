@@ -165,7 +165,7 @@ class Options {
           usage("--tree-shaker-roots");
         }
         publicRootSetFile = new File(args[nArg]);
-      //TODO(user): Enable the bootclasspath option when we have a class file AST
+      //TODO(malvania): Enable the bootclasspath option when we have a class file AST
       //                parser that can use class jars.
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         options.bootclasspath = arg.substring(XBOOTCLASSPATH.length());
