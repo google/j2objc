@@ -189,6 +189,9 @@ public class TreeConverter {
     JCTree node = (JCTree) obj;
     TreeNode newNode = convertInner(node)
         .setPosition(getPosition(node));
+    if (newNode instanceof Expression) {
+      copyConstantValue(node, (Expression) newNode);
+    }
     newNode.validate();
     return newNode;
   }
@@ -478,7 +481,6 @@ public class TreeConverter {
 
   private TreeNode convertAssignment(JCTree.JCAssign node) {
     Assignment newNode = new Assignment();
-    convertExpression(node, newNode);
     return newNode
         .setOperator(Assignment.Operator.ASSIGN)
         .setLeftHandSide((Expression) convert(node.getVariable()))
@@ -487,7 +489,6 @@ public class TreeConverter {
 
   private TreeNode convertAssignOp(JCTree.JCAssignOp node) {
     Assignment newNode = new Assignment();
-    convertExpression(node, newNode);
     String operatorName = node.getOperator().getSimpleName().toString() + "=";
     return newNode
         .setOperator(Assignment.Operator.fromJdtOperatorName(operatorName))
@@ -497,7 +498,6 @@ public class TreeConverter {
 
   private TreeNode convertBinary(JCTree.JCBinary node) {
     InfixExpression newNode = new InfixExpression();
-    convertExpression(node, newNode);
     newNode
         .setTypeMirror(node.type)
         .setOperator(InfixExpression.Operator.parse(node.operator.name.toString()));
@@ -551,8 +551,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertBooleanLiteral(JCTree.JCLiteral node) {
-    BooleanLiteral newNode = new BooleanLiteral((Boolean) node.getValue(), node.type);
-    return convertExpression(node, newNode);
+    return new BooleanLiteral((Boolean) node.getValue(), node.type);
   }
 
   private TreeNode convertBreakStatement(JCTree.JCBreak node) {
@@ -583,8 +582,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertCharLiteral(JCTree.JCLiteral node) {
-    return new CharacterLiteral((Character) node.getValue(), node.type)
-        .setConstantValue(node.getValue());
+    return new CharacterLiteral((Character) node.getValue(), node.type);
   }
 
   private TreeNode convertClassDeclaration(JCTree.JCClassDecl node) {
@@ -681,15 +679,13 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertExpression(
-      JCTree.JCExpression node, Expression newNode) {
+  private TreeNode copyConstantValue(JCTree node, Expression newNode) {
     Object value = node.type.constValue();
     // Convert boolean values of 1/0 as true/false.
     if (TypeUtil.isBoolean(node.type.baseType()) && value instanceof Integer) {
       value = ((Integer) value).intValue() == 1;
     }
-    return newNode
-        .setConstantValue(value);
+    return newNode.setConstantValue(value);
   }
 
   private TreeNode convertExpressionStatement(JCTree.JCExpressionStatement node) {
@@ -738,15 +734,12 @@ public class TreeConverter {
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
           .setQualifier((Name) convert(selected))
-          .setElement(node.sym)
-          .setConstantValue(((VariableElement) node.sym).getConstantValue());
+          .setElement(node.sym);
     }
-    FieldAccess newNode = new FieldAccess()
+    return new FieldAccess()
         .setVariableElement((VariableElement) node.sym)
         .setExpression((Expression) convert(selected))
         .setName(convertSimpleName(node.sym, node.type, pos).setTypeMirror(node.type));
-    convertExpression(node, newNode);
-    return newNode;
   }
 
   private TreeNode convertForLoop(JCTree.JCForLoop node) {
@@ -778,7 +771,6 @@ public class TreeConverter {
 
   private TreeNode convertFunctionalExpression(JCTree.JCFunctionalExpression node,
       FunctionalExpression newNode) {
-    convertExpression(node, newNode);
     for (TypeMirror type : node.targets) {
       newNode.addTargetType(type);
     }
@@ -790,9 +782,7 @@ public class TreeConverter {
     if (text.equals("this")) {
       return new ThisExpression().setTypeMirror(node.type);
     }
-    SimpleName newNode = new SimpleName(node.sym, node.type);
-    convertExpression(node, newNode);
-    return newNode;
+    return new SimpleName(node.sym, node.type);
   }
 
   private TreeNode convertIf(JCTree.JCIf node) {
@@ -977,7 +967,6 @@ public class TreeConverter {
 
   private TreeNode convertNewArray(JCTree.JCNewArray node) {
     ArrayCreation newNode = new ArrayCreation();
-    convertExpression(node, newNode);
     List<Expression> dimensions = new ArrayList<>();
     for (JCTree.JCExpression dimension : node.getDimensions()) {
       dimensions.add((Expression) convert(dimension));
@@ -997,7 +986,6 @@ public class TreeConverter {
 
   private TreeNode convertNewClass(JCTree.JCNewClass node) {
     ClassInstanceCreation newNode = new ClassInstanceCreation();
-    convertExpression(node, newNode);
     for (JCTree.JCExpression arg : node.getArguments()) {
       newNode.addArgument((Expression) convert(arg));
     }
@@ -1010,9 +998,8 @@ public class TreeConverter {
   }
 
   private TreeNode convertNumberLiteral(JCTree.JCLiteral node) {
-    NumberLiteral newNode = new NumberLiteral((Number) node.getValue(), node.type)
+    return new NumberLiteral((Number) node.getValue(), node.type)
         .setToken(getTreeSource(node));
-    return convertExpression(node, newNode);
   }
 
   private PackageDeclaration convertPackage(JCTree.JCExpression node, PackageElement pkg) {
@@ -1056,8 +1043,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertStringLiteral(JCTree.JCLiteral node) {
-    StringLiteral newNode = new StringLiteral((String) node.getValue(), node.type);
-    return convertExpression(node, newNode);
+    return new StringLiteral((String) node.getValue(), node.type);
   }
 
   private TreeNode convertSwitch(JCTree.JCSwitch node) {
@@ -1143,8 +1129,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertTypeCast(JCTree.JCTypeCast node) {
-    Expression newNode = new CastExpression(node.type, (Expression) convert(node.getExpression()));
-    return convertExpression(node, newNode);
+    return new CastExpression(node.type, (Expression) convert(node.getExpression()));
   }
 
   private TreeNode convertVariableDeclaration(JCTree.JCVariableDecl node) {
