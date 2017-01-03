@@ -52,6 +52,10 @@ class Edge {
     return new Edge(origin, target, null, "(outer class " + target.getName() + ")");
   }
 
+  public static Edge newReceiverClassEdge(TypeNode origin, TypeNode target) {
+    return new Edge(origin, target, null, "(receiver class " + target.getName() + ")");
+  }
+
   public static Edge newCaptureEdge(TypeNode origin, TypeNode target, String varName) {
     return new Edge(origin, target, null,
         "(capture " + varName + " with type " + target.getName() + ")");

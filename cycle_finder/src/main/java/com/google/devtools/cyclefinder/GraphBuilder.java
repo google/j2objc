@@ -20,8 +20,15 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.CreationReference;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.MethodReference;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -295,14 +302,31 @@ public class GraphBuilder {
       }
     }
 
-    private void handleTypeDeclaration(TypeDeclaration node) {
-      TypeElement typeElem = node.getTypeElement();
+    private String getTypeDeclarationName(TreeNode node, TypeElement typeElem) {
+      if (node instanceof MethodReference) {
+        return "methodref:" + node.getLineNumber();
+      } else if (ElementUtil.isLambda(typeElem)) {
+        return "lambda:" + node.getLineNumber();
+      } else if (ElementUtil.isAnonymous(typeElem)) {
+        return "anonymous:" + node.getLineNumber();
+      } else {
+        return NameUtil.getName(typeElem.asType());
+      }
+    }
+
+    private void handleTypeDeclaration(TreeNode node, TypeElement typeElem) {
       TypeMirror type = typeElem.asType();
-      String name = ElementUtil.isAnonymous(typeElem)
-          ? "anonymous:" + node.getLineNumber() : NameUtil.getName(type);
-      TypeNode typeNode = createNode(type, nameUtil.getSignature(type), name);
+      TypeNode typeNode = createNode(
+          type, nameUtil.getSignature(type), getTypeDeclarationName(node, typeElem));
       if (captureInfo.needsOuterReference(typeElem)) {
         hasOuterRef.add(typeNode);
+      }
+      VariableElement receiverField = captureInfo.getReceiverField(typeElem);
+      if (receiverField != null) {
+        TypeNode receiverNode = getOrCreateNode(receiverField.asType());
+        if (receiverNode != null) {
+          addEdge(Edge.newReceiverClassEdge(typeNode, receiverNode));
+        }
       }
       if (ElementUtil.isAnonymous(typeElem)) {
         followCaptureFields(typeElem, typeNode);
@@ -311,8 +335,33 @@ public class GraphBuilder {
 
     @Override
     public boolean visit(TypeDeclaration node) {
-      handleTypeDeclaration(node);
+      handleTypeDeclaration(node, node.getTypeElement());
       return true;
+    }
+
+    @Override
+    public void endVisit(LambdaExpression node) {
+      handleTypeDeclaration(node, node.getTypeElement());
+    }
+
+    @Override
+    public void endVisit(CreationReference node) {
+      handleTypeDeclaration(node, node.getTypeElement());
+    }
+
+    @Override
+    public void endVisit(ExpressionMethodReference node) {
+      handleTypeDeclaration(node, node.getTypeElement());
+    }
+
+    @Override
+    public void endVisit(SuperMethodReference node) {
+      handleTypeDeclaration(node, node.getTypeElement());
+    }
+
+    @Override
+    public void endVisit(TypeMethodReference node) {
+      handleTypeDeclaration(node, node.getTypeElement());
     }
 
     @Override

@@ -375,9 +375,14 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("I.java", "interface I { int foo(); }");
     addSourceFile("A.java", "class A { int j = 1; I i = () -> j; }");
     findCycles();
-    // TODO(kstanger): Right now this makes sure that cycle_finder doesn't crash on lambdas, but it
-    // should be finding a cycle here.
-    assertNoCycles();
+    assertCycle("LA.$Lambda$1;", "LA;");
+  }
+
+  public void testMethodReferenceCycle() throws Exception {
+    addSourceFile("I.java", "interface I { int foo(); }");
+    addSourceFile("A.java", "class A { int bar() { return 1; } I i = this::bar; }");
+    findCycles();
+    assertCycle("LA.$Lambda$1;", "LA;");
   }
 
   private void assertContains(String substr, String str) {
