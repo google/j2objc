@@ -15,9 +15,12 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.j2objc.annotations.ReflectionSupport;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -31,6 +34,9 @@ public class PackageInfoLookup {
   private final Map<String, PackageData> map = new HashMap<>();
   private final FileUtil fileUtil;
 
+  private static final String REFLECTION_SUPPORT_REGEX =
+      "@(?:com\\.google\\.j2objc\\.annotations\\.)?ReflectionSupport\\s*"
+      + "\\([^\\)]*(FULL|NATIVE_ONLY)\\s*\\)";
   // Avoid allocating a new PackageData instance for packages with no attributes.
   private static final PackageData EMPTY_DATA = new PackageData(new PackageDataBuilder());
 
@@ -42,10 +48,12 @@ public class PackageInfoLookup {
 
     private final String objectiveCName;
     private final boolean parametersAreNonnullByDefault;
+    private final ReflectionSupport.Level reflectionSupportLevel;
 
     private PackageData(PackageDataBuilder builder) {
       this.objectiveCName = builder.objectiveCName;
       this.parametersAreNonnullByDefault = builder.parametersAreNonnullByDefault;
+      this.reflectionSupportLevel = builder.reflectionSupportLevel;
     }
   }
 
@@ -54,6 +62,7 @@ public class PackageInfoLookup {
     private boolean isEmpty = true;
     private String objectiveCName = null;
     private boolean parametersAreNonnullByDefault = false;
+    private ReflectionSupport.Level reflectionSupportLevel;
 
     private void setObjectiveCName(String objectiveCName) {
       this.objectiveCName = objectiveCName;
@@ -63,6 +72,11 @@ public class PackageInfoLookup {
     private void setParametersAreNonnullByDefault() {
       parametersAreNonnullByDefault = true;
       isEmpty = false;
+    }
+
+    private void setReflectionSupportLevel(ReflectionSupport.Level level) {
+       this.reflectionSupportLevel = level;
+       isEmpty = false;
     }
 
     private PackageData build() {
@@ -76,6 +90,10 @@ public class PackageInfoLookup {
 
   public boolean hasParametersAreNonnullByDefault(String packageName) {
     return getPackageData(packageName).parametersAreNonnullByDefault;
+  }
+
+  public ReflectionSupport.Level getReflectionSupportLevel(String packageName) {
+    return getPackageData(packageName).reflectionSupportLevel;
   }
 
   private PackageData getPackageData(String packageName) {
@@ -106,6 +124,34 @@ public class PackageInfoLookup {
     return EMPTY_DATA;
   }
 
+  /**
+   *  Return true if pkgInfo has the specified annotation.
+   *
+   *  @param pkgInfo package-info source code
+   *  @param annotation fully qualified name of the annotation
+   */
+  private static boolean hasAnnotation(String pkgInfo, String annotation) {
+    if (!annotation.contains(".")) {
+      ErrorUtil.warning(annotation + " is not a fully qualified name");
+    }
+    if (pkgInfo.contains("@" + annotation)) {
+      return true;
+    }
+    int idx = annotation.lastIndexOf(".");
+    String annotationPackageName = annotation.substring(0, idx);
+    String annotationSimpleName = annotation.substring(idx + 1);
+    if (pkgInfo.contains("@" + annotationSimpleName)) {
+      String importRegex =
+          "import\\s*" + annotationPackageName + "(\\.\\*|\\." + annotationSimpleName + ")";
+      Pattern p = Pattern.compile(importRegex);
+      Matcher m = p.matcher(pkgInfo);
+      if (m.find()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private PackageData parseDataFromSourceFile(InputFile file) throws IOException {
     PackageDataBuilder builder = new PackageDataBuilder();
     String pkgInfo = fileUtil.readFile(file);
@@ -131,9 +177,22 @@ public class PackageInfoLookup {
         || pkgInfo.contains("@javax.annotation.ParametersAreNonnullByDefault")) {
       builder.setParametersAreNonnullByDefault();
     }
+
+    // @ReflectionSupportLevel
+    if (hasAnnotation(pkgInfo, "com.google.j2objc.annotations.ReflectionSupport")) {
+      Pattern p = Pattern.compile(REFLECTION_SUPPORT_REGEX);
+      Matcher m = p.matcher(pkgInfo);
+      if (m.find()) {
+        String level = m.group(1);
+        builder.setReflectionSupportLevel(ReflectionSupport.Level.valueOf(level));
+      } else {
+        ErrorUtil.warning("Invalid ReflectionSupport Level in " + file.getUnitName());
+      }
+    }
     return builder.build();
   }
 
+  // TODO(user): Support parsing ReflectionSupport annotation from .class files
   private PackageData parseDataFromClassFile(InputFile file) throws IOException {
     PackageDataBuilder builder = new PackageDataBuilder();
     ClassReader classReader = new ClassReader(file.getInputStream());
