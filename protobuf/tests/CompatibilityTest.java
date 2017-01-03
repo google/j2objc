@@ -12,6 +12,9 @@
  * limitations under the License.
  */
 
+import abc_def.gHiJkL.Foo2bar;
+import abc_def.gHiJkL.Foo_bar;
+import abc_def.gHiJkL.fooBar;
 import com.google.j2objc.PrefixDummy;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -28,13 +31,19 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.ProtocolMessageEnum;
-
-import abc_def.gHiJkL.Foo2bar;
-import abc_def.gHiJkL.Foo_bar;
-import abc_def.gHiJkL.fooBar;
-
 import foo.bar.baz.PrefixDummy2;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import protos.EmptyFile;
 import protos.MsgWithDefaults;
 import protos.MsgWithDefaultsOrBuilder;
@@ -47,18 +56,6 @@ import protos.TypicalData;
 import protos.TypicalDataMessage;
 import protos.TypicalDataOrBuilder;
 import protos.TypicalDataSet;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests for various protocol buffer features to ensure that the generated
@@ -349,6 +346,27 @@ public class CompatibilityTest extends ProtobufTest {
     byte[] bytes = out.toByteArray();
     byte[] expected = new byte[]{ 0x09, 0x08, 0x07, 0x60, 0x01, 0x7A, 0x03, 0x66, 0x6F, 0x6F };
     checkBytes(expected, bytes);
+  }
+
+  public void testIOExceptionFromOutputStream() throws Exception {
+    // The issue being tested requires a proto that is larger than the CodedOutputStream buffer
+    // size.
+    TypicalData data;
+    try (InputStream in = getTestData("largeproto")) {
+      data = TypicalData.parseDelimitedFrom(in);
+    }
+    OutputStream out = new OutputStream() {
+      @Override
+      public void write(int b) throws IOException {
+        throw new IOException("test exception");
+      }
+    };
+    try {
+      data.writeTo(out);
+      fail("Expected IOException to be thrown.");
+    } catch (IOException e) {
+      // Expected
+    }
   }
 
   public void testMergeFromInvalidProtocolBufferException() throws Exception {

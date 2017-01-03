@@ -2430,6 +2430,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   CGPCodedOutputStream codedStream(output);
   WriteMessage(self, descriptor, &codedStream);
+  codedStream.FlushBuffer();
   NSAssert(!codedStream.HadError(), @"Serialization error");
 }
 
@@ -2438,6 +2439,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   CGPCodedOutputStream codedStream(output);
   CGPWriteInt32(SerializedSizeForMessage(self, descriptor), &codedStream);
   WriteMessage(self, descriptor, &codedStream);
+  codedStream.FlushBuffer();
   NSAssert(!codedStream.HadError(), @"Serialization error");
 }
 

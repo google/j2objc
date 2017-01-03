@@ -58,9 +58,6 @@ CGPCodedOutputStream::CGPCodedOutputStream(void *buffer, int size)
 }
 
 CGPCodedOutputStream::~CGPCodedOutputStream() {
-  if (output_ != NULL) {
-    FlushBuffer();
-  }
   [bytes_ release];
 }
 
