@@ -102,10 +102,7 @@ public class InnerClassExtractor extends UnitTreeVisitor {
         parentNode.remove();
       }
 
-      TypeElement type = node.getTypeElement();
-      if (type.getKind().isClass() && !ElementUtil.isStatic(type)) {
-        addCaptureFields(node);
-      }
+      addCaptureFields(node);
 
       // Make this node non-private, if necessary, and add it to the unit's type
       // list.
@@ -113,6 +110,7 @@ public class InnerClassExtractor extends UnitTreeVisitor {
       unitTypes.add(insertIdx, node);
 
       // Check for erroneous WeakOuter annotation on static inner class.
+      TypeElement type = node.getTypeElement();
       if (ElementUtil.isStatic(type) && ElementUtil.hasAnnotation(type, WeakOuter.class)) {
         ErrorUtil.warning("static class " + type.getQualifiedName() + " has WeakOuter annotation");
       }

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.jdt;
 
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.Element;
@@ -33,7 +34,15 @@ class JdtTypeElement extends JdtElement implements TypeElement {
 
   JdtTypeElement(ITypeBinding binding) {
     super(binding.getTypeDeclaration(), binding.getTypeDeclaration().getName(),
-        binding.getTypeDeclaration().getModifiers());
+        getModifiers(binding));
+  }
+
+  private static int getModifiers(ITypeBinding binding) {
+    int modifiers = binding.getTypeDeclaration().getModifiers();
+    if (binding.isAnonymous()) {
+      modifiers |= Modifier.STATIC;
+    }
+    return modifiers;
   }
 
   @Override

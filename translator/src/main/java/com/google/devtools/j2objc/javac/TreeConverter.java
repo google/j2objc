@@ -466,7 +466,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertArrayType(JCTree.JCArrayTypeTree node) {
-    ArrayType newNode = (ArrayType) new ArrayType();
+    ArrayType newNode = new ArrayType();
     Type componentType = (Type) Type.newType(node.getType().type);
     return newNode
         .setComponentType(componentType)
