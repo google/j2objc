@@ -24,6 +24,7 @@
  */
 package java.util.stream;
 
+import com.google.j2objc.annotations.WeakOuter;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Spliterator;
@@ -291,7 +292,8 @@ class StreamSpliterators {
             SpinedBuffer<P_OUT> b = new SpinedBuffer<>();
             buffer = b;
             bufferSink = ph.wrapSink(b::accept);
-            pusher = () -> spliterator.tryAdvance(bufferSink);
+            @WeakOuter BooleanSupplier weakOuter;
+            pusher = weakOuter = () -> spliterator.tryAdvance(bufferSink);
         }
 
         @Override
@@ -344,7 +346,8 @@ class StreamSpliterators {
             SpinedBuffer.OfInt b = new SpinedBuffer.OfInt();
             buffer = b;
             bufferSink = ph.wrapSink((Sink.OfInt) b::accept);
-            pusher = () -> spliterator.tryAdvance(bufferSink);
+            @WeakOuter BooleanSupplier weakOuter;
+            pusher = weakOuter = () -> spliterator.tryAdvance(bufferSink);
         }
 
         @Override
@@ -402,7 +405,8 @@ class StreamSpliterators {
             SpinedBuffer.OfLong b = new SpinedBuffer.OfLong();
             buffer = b;
             bufferSink = ph.wrapSink((Sink.OfLong) b::accept);
-            pusher = () -> spliterator.tryAdvance(bufferSink);
+            @WeakOuter BooleanSupplier weakOuter;
+            pusher = weakOuter = () -> spliterator.tryAdvance(bufferSink);
         }
 
         @Override
@@ -460,7 +464,8 @@ class StreamSpliterators {
             SpinedBuffer.OfDouble b = new SpinedBuffer.OfDouble();
             buffer = b;
             bufferSink = ph.wrapSink((Sink.OfDouble) b::accept);
-            pusher = () -> spliterator.tryAdvance(bufferSink);
+            @WeakOuter BooleanSupplier weakOuter;
+            pusher = weakOuter = () -> spliterator.tryAdvance(bufferSink);
         }
 
         @Override
@@ -1545,4 +1550,3 @@ class StreamSpliterators {
         }
     }
 }
-
