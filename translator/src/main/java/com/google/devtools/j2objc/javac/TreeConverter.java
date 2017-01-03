@@ -1155,7 +1155,7 @@ public class TreeConverter {
           .setVariableElement(var);
       convertBodyDeclaration(node, node.getModifiers(), newNode, var);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
-      TreeUtil.copyList(init.getArguments(), newNode.getArguments());
+      TreeUtil.moveList(init.getArguments(), newNode.getArguments());
       if (init.getAnonymousClassDeclaration() != null) {
         newNode.setAnonymousClassDeclaration(TreeUtil.remove(init.getAnonymousClassDeclaration()));
       }
