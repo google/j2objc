@@ -39,4 +39,35 @@ public class TranslationUtilTest extends GenerationTest {
         + "import com.google.j2objc.annotations.ReflectionSupport;");
     assertFalse(translationUtil.needsReflection(unit.getPackage()));
   }
+
+  public void testTypeNeedsReflection() throws IOException {
+    options.setStripReflection(true);
+    addSourceFile("@ReflectionSupport(ReflectionSupport.Level.FULL) package foo; "
+        + "import com.google.j2objc.annotations.ReflectionSupport;", "foo/package-info.java");
+    CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
+    TranslationUtil translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+
+    addSourceFile("@ReflectionSupport(ReflectionSupport.Level.NATIVE_ONLY) package bar; "
+        + "import com.google.j2objc.annotations.ReflectionSupport;", "bar/package-info.java");
+    unit = translateType("bar.A", "package bar; public class A {}");
+    translationUtil = unit.getEnv().translationUtil();
+    assertFalse(translationUtil.needsReflection(unit.getTypes().get(0)));
+
+    addSourceFile("@ReflectionSupport(ReflectionSupport.Level.NATIVE_ONLY) package baz; "
+        + "import com.google.j2objc.annotations.ReflectionSupport;", "baz/package-info.java");
+    unit = translateType("baz.A",
+        "package baz; import com.google.j2objc.annotations.ReflectionSupport; "
+        + "@ReflectionSupport(ReflectionSupport.Level.FULL) public class A {}");
+    translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
+
+    addSourceFile("@ReflectionSupport(ReflectionSupport.Level.FULL) package qux; "
+        + "import com.google.j2objc.annotations.ReflectionSupport;", "qux/package-info.java");
+    unit = translateType("qux.A",
+        "package qux; import com.google.j2objc.annotations.ReflectionSupport; "
+        + "@ReflectionSupport(ReflectionSupport.Level.NATIVE_ONLY) public class A {}");
+    translationUtil = unit.getEnv().translationUtil();
+    assertFalse(translationUtil.needsReflection(unit.getTypes().get(0)));
+  }
 }

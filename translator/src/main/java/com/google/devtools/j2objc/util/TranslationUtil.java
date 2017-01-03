@@ -47,6 +47,7 @@ import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
@@ -106,14 +107,27 @@ public final class TranslationUtil {
   }
 
   public boolean needsReflection(PackageDeclaration node) {
-    return needsReflection(getReflectionSupportLevel(
-        ElementUtil.getAnnotation(node.getPackageElement(), ReflectionSupport.class)));
+    return needsReflection(node.getPackageElement());
+  }
+
+  public boolean needsReflection(PackageElement node) {
+    if (needsReflection(getReflectionSupportLevel(
+        ElementUtil.getAnnotation(node, ReflectionSupport.class)))) {
+      return true;
+    }
+    // Check if package-info.java contains ReflectionSupport annotation
+    if (needsReflection(options.getPackageInfoLookup().getReflectionSupportLevel(
+        node.getSimpleName().toString()))) {
+      return true;
+    }
+    return false;
   }
 
   public boolean needsReflection(TypeElement type) {
     if (ElementUtil.isLambda(type)) {
       return false;
     }
+    PackageElement packageElement = ElementUtil.getPackage(type);
     while (type != null) {
       ReflectionSupport.Level level = getReflectionSupportLevel(
           ElementUtil.getAnnotation(type, ReflectionSupport.class));
@@ -121,6 +135,10 @@ public final class TranslationUtil {
         return level == ReflectionSupport.Level.FULL;
       }
       type = ElementUtil.getDeclaringClass(type);
+    }
+    // Check package level annotations
+    if (needsReflection(packageElement)) {
+      return true;
     }
     return !options.stripReflection();
   }
