@@ -672,6 +672,10 @@ public class TreeConverter {
         } else {
           newNode.addBodyDeclaration((BodyDeclaration) var);
         }
+      } else if (bodyDecl.getKind() == Kind.BLOCK) {
+        JCTree.JCBlock javacBlock = (JCTree.JCBlock) bodyDecl;
+        Block block = (Block) convert(javacBlock);
+        newNode.addBodyDeclaration(new Initializer(block, javacBlock.isStatic()));
       } else {
         newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl));
       }
@@ -1225,8 +1229,9 @@ public class TreeConverter {
   }
 
   private Comment convertAssociatedComment(JCTree node, Element element) {
+    boolean docCommentsEnabled = newUnit.getEnv().options().docCommentsEnabled();
     DocCommentTable docComments = unit.docComments;
-    if (docComments == null || !docComments.hasComment(node)) {
+    if (!docCommentsEnabled || docComments == null || !docComments.hasComment(node)) {
       return null;
     }
     com.sun.tools.javac.parser.Tokens.Comment javacComment = docComments.getComment(node);
@@ -1236,7 +1241,7 @@ public class TreeConverter {
         comment = new BlockComment();
         break;
       case JAVADOC:
-        comment = newUnit.getEnv().options().docCommentsEnabled()
+        comment = docCommentsEnabled
             ? convertJavadocComment(element) : new Javadoc();
         break;
       case LINE:

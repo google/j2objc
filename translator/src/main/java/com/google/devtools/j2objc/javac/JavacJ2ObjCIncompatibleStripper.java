@@ -26,6 +26,7 @@ import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
 import com.sun.tools.javac.tree.JCTree.JCImport;
 import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeInfo;
 import com.sun.tools.javac.tree.TreeScanner;
@@ -180,6 +181,8 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
         return ((JCIdent) name).getName().toString();
       case MEMBER_SELECT:
         return getFirstComponent(((JCFieldAccess) name).getExpression());
+      case METHOD_INVOCATION:
+        return getFirstComponent(((JCMethodInvocation) name).getMethodSelect());
       default:
         throw new AssertionError("unexpected kind: " + name.getKind());
     }
@@ -191,6 +194,8 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
         return ((JCIdent) name).getName().toString();
       case MEMBER_SELECT:
         return ((JCFieldAccess) name).getIdentifier().toString();
+      case METHOD_INVOCATION:
+        return getLastComponent(((JCMethodInvocation) name).getMethodSelect());
       default:
         throw new AssertionError("unexpected kind: " + name.getKind());
     }
