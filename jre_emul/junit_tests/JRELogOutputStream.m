@@ -36,8 +36,9 @@
 }
 
 - (void)writeWithInt:(jint)oneByte {
+  NSString *str = [NSString stringWithFormat:@"%c", (char) oneByte];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [logPane_ printByte:(jbyte) oneByte];
+    [logPane_ printString:str];
   });
 }
 
@@ -46,8 +47,11 @@
                    withInt:(jint)length {
   nil_chk(buffer);
   [JavaUtilArrays checkOffsetAndCountWithInt:buffer->size_ withInt:offset withInt:length];
+  NSString *str = [[[NSString alloc] initWithBytes:(void *)IOSByteArray_GetRef(buffer, offset)
+                                           length:length
+                                         encoding:NSUTF8StringEncoding] autorelease];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [logPane_ printBytes:(const char *)IOSByteArray_GetRef(buffer, offset) length:length];
+    [logPane_ printString:str];
   });
 }
 

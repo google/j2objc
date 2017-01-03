@@ -21,9 +21,5 @@
  * Defines a read-only text view for displaying log-style text output.
  */
 @interface JRELogPaneView : UITextView
-
-- (void)printByte:(char)b;
-
-- (void)printBytes:(const char  *)bytes length:(NSUInteger)n;
-
+- (void)printString:(NSString *)str;
 @end

@@ -659,6 +659,7 @@
 		06ED87C919759EFF00633227 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06ED87C819759EFF00633227 /* Images.xcassets */; };
 		06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06ED87F119772B3600633227 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
+		6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */; };
 		6A7BD5001E01E3CE00F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A7BD4FF1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.m */; };
 /* End PBXBuildFile section */
 
@@ -3620,6 +3621,7 @@
 		2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataOutputStream.m; sourceTree = "<group>"; };
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
+		6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6A7BD4FC1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncPipedNSInputStreamAdapter.h; path = build_result/Classes/com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.h; sourceTree = "<group>"; };
 		6A7BD4FD1E01E35800F91FE9 /* AsyncPipedNSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncPipedNSInputStreamAdapter.m; path = build_result/Classes/com/google/j2objc/io/AsyncPipedNSInputStreamAdapter.m; sourceTree = "<group>"; };
 		6A7BD4FE1E01E3B000F91FE9 /* AsyncPipedNSInputStreamAdapterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncPipedNSInputStreamAdapterTest.h; path = com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.h; sourceTree = "<group>"; };
@@ -6645,6 +6647,7 @@
 			children = (
 				06CBF5221AFBEB1E00CA582D /* dalvik_system_JniTest.cpp */,
 				06ED87C819759EFF00633227 /* Images.xcassets */,
+				6A13C26F1E15C9B7000C289D /* LaunchScreen.storyboard */,
 				06ED87C519759EFF00633227 /* JREAppDelegate.h */,
 				06ED87C619759EFF00633227 /* JREAppDelegate.m */,
 				06ED87EB1975F8AD00633227 /* JRELogOutputStream.h */,
@@ -6815,6 +6818,7 @@
 				06B390741BB32549004A4099 /* prefixes.properties in Resources */,
 				06ED87C119759EFF00633227 /* InfoPlist.strings in Resources */,
 				0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */,
+				6A13C2701E15C9B7000C289D /* LaunchScreen.storyboard in Resources */,
 				06ED87C919759EFF00633227 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7776,7 +7780,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -7836,7 +7839,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";

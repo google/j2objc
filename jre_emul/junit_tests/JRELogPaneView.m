@@ -33,17 +33,8 @@
   return self;
 }
 
-- (void)printByte:(char)b {
-  [self updateText:[NSString stringWithFormat:@"%@%c", self.text, b]];
-}
-
-- (void)printBytes:(const char  *)bytes length:(NSUInteger)n {
-  NSString *s = [[NSString alloc] initWithBytesNoCopy:(void *)bytes
-                                               length:n
-                                             encoding:NSUTF8StringEncoding
-                                         freeWhenDone:NO];
-  [self updateText:[self.text stringByAppendingString:s]];
-  RELEASE_(s);
+- (void)printString:(NSString *)str {
+  [self updateText:[self.text stringByAppendingString:str]];
 }
 
 - (void)updateText:(NSString *)newText {
