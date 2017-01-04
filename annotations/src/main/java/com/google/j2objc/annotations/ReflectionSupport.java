@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * @author Keith Stanger
  */
 @Target({ ElementType.TYPE, ElementType.PACKAGE })
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 public @interface ReflectionSupport {
 
   /**
