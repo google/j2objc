@@ -192,7 +192,6 @@ public class PackageInfoLookup {
     return builder.build();
   }
 
-  // TODO(user): Support parsing ReflectionSupport annotation from .class files
   private PackageData parseDataFromClassFile(InputFile file) throws IOException {
     PackageDataBuilder builder = new PackageDataBuilder();
     ClassReader classReader = new ClassReader(file.getInputStream());
@@ -210,6 +209,16 @@ public class PackageInfoLookup {
           };
         } else if (desc.equals("Ljavax/annotation/ParametersAreNonnullByDefault;")) {
           builder.setParametersAreNonnullByDefault();
+        } else if (desc.equals("Lcom/google/j2objc/annotations/ReflectionSupport;")) {
+          return new AnnotationVisitor(Opcodes.ASM5) {
+            @Override
+            public void visitEnum(String name, String desc, String value) {
+              if (desc.equals("Lcom/google/j2objc/annotations/ReflectionSupport$Level;")
+                  && name.equals("value")) {
+                builder.setReflectionSupportLevel(ReflectionSupport.Level.valueOf(value));
+              }
+            }
+          };
         }
         return null;
       }

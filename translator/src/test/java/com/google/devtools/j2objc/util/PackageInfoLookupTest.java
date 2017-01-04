@@ -46,5 +46,14 @@ public class PackageInfoLookupTest extends GenerationTest {
     packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
     assert
         packageInfoLookup.getReflectionSupportLevel("baz") == ReflectionSupport.Level.NATIVE_ONLY;
+
+    // Verify that ReflectionSupport annotation can be parsed from class files
+    String jarFilePath = getResourceAsFile("packageInfoLookupTest.jar");
+    options.fileUtil().getClassPathEntries().add(jarFilePath);
+    unit = translateType("com.google.test.packageInfoLookupTest.A",
+        "package com.google.test.packageInfoLookupTest; public class A {}");
+    packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
+    assert packageInfoLookup.getReflectionSupportLevel(unit.getPackage().getName().toString())
+        == ReflectionSupport.Level.FULL;
   }
 }
