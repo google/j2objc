@@ -108,12 +108,6 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
   }
 
   @Override
-  public void visitSelect(JCFieldAccess node) {
-    unusedImports.remove(getFirstComponent(node));
-    unusedStaticImports.remove(getFirstComponent(node));
-  }
-
-  @Override
   public void visitVarDef(JCVariableDecl node) {
     if (checkAnnotations(node.getModifiers().getAnnotations(), node)) {
       super.visitVarDef(node);
@@ -172,17 +166,6 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
   private boolean isJ2ObjCIncompatible(JCAnnotation modifier) {
     String name = getLastComponent(modifier.annotationType);
     return name.equals("J2ObjCIncompatible");
-  }
-
-  private String getFirstComponent(JCTree name) {
-    switch (name.getKind()) {
-      case IDENTIFIER:
-        return ((JCIdent) name).getName().toString();
-      case MEMBER_SELECT:
-        return getFirstComponent(((JCFieldAccess) name).getExpression());
-      default:
-        return "";
-    }
   }
 
   private String getLastComponent(JCTree name) {
