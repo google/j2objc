@@ -55,7 +55,9 @@ IOS_PRIVATE_OBJS = \
 	IOSReflection.o \
 	J2ObjC_icu.o \
 	java_lang_Character.o \
+	java_lang_Integer.o \
 	java_lang_IntegralToString.o \
+	java_lang_Long.o \
 	java_lang_Math.o \
 	java_lang_RealToString.o \
 	java_lang_StrictMath.o \
@@ -115,17 +117,18 @@ TRANSLATE_ARGS = -q -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
 TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
 include ../make/translate.mk
 
-FAT_LIB_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(GEN_OBJC_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR)
+FAT_LIB_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(GEN_OBJC_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR) \
+  $(J2OBJC_OPENJDK_NATIVE)
 
 # OBJCPP_BUILD is an optional environment variable for Objective-C++ build experiments.
 # J2ObjC and app releases should not be built with this flag, nor is its use supported.
 ifeq ($(OBJCPP_BUILD), YES)
 FAT_LIB_COMPILE = $(CLANG) $(OBJCPPFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) \
-  -I$(ANDROID_NATIVE_DIR)
+  -I$(ANDROID_NATIVE_DIR) -I$(J2OBJC_OPENJDK_NATIVE)
 # TODO(tball): add support for Obj-C++ precompiled header.
 else
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) \
-  -I$(ANDROID_NATIVE_DIR)
+  -I$(ANDROID_NATIVE_DIR) -I$(J2OBJC_OPENJDK_NATIVE)
 FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
 endif
 

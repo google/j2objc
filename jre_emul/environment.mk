@@ -78,6 +78,7 @@ NEW_LIBCORE_BASE = $(ANDROID_PLATFORM)/libcore
 NEW_ANDROID_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/main/java
 ANDROID_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/main/java
 J2OBJC_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/objc/java
+J2OBJC_OPENJDK_NATIVE = $(NEW_LIBCORE_BASE)/ojluni/src/objc/native
 NEW_ANDROID_LUNI_TEST_ROOT = $(NEW_LIBCORE_BASE)/luni/src/test/java
 NEW_ANDROID_TEST_SUPPORT_ROOT = $(NEW_LIBCORE_BASE)/support/src/test/java
 OKIO_ROOT = $(ANDROID_PLATFORM)/external/okhttp/okio/okio/src/main/java

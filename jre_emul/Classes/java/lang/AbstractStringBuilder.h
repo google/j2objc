@@ -122,7 +122,8 @@ void JreStringBuilder_appendChar(JreStringBuilder *sb, jchar ch);
 void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string);
 void JreStringBuilder_appendCharSequence(
     JreStringBuilder *sb, id<JavaLangCharSequence> s, jint start, jint end);
-void JreStringBuilder_appendRaw(JreStringBuilder *sb, const jchar *buf, jint length);
+void JreStringBuilder_appendInt(JreStringBuilder *sb, jint i);
+void JreStringBuilder_appendLong(JreStringBuilder *sb, jlong l);
 
 void JreStringBuilder_delete(JreStringBuilder *sb, jint start, jint end);
 void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, jint index);

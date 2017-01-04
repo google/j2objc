@@ -113,31 +113,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @see     java.lang.Character#MAX_RADIX
      * @see     java.lang.Character#MIN_RADIX
      */
-    public static String toString(long i, int radix) {
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
-            radix = 10;
-        if (radix == 10)
-            return toString(i);
-        char[] buf = new char[65];
-        int charPos = 64;
-        boolean negative = (i < 0);
-
-        if (!negative) {
-            i = -i;
-        }
-
-        while (i <= -radix) {
-            buf[charPos--] = Integer.digits[(int)(-(i % radix))];
-            i = i / radix;
-        }
-        buf[charPos] = Integer.digits[(int)(-i)];
-
-        if (negative) {
-            buf[--charPos] = '-';
-        }
-
-        return new String(buf, charPos, (65 - charPos));
-    }
+    public static native String toString(long i, int radix);
 
     /**
      * Returns a string representation of the {@code long}
@@ -239,17 +215,7 @@ public final class Long extends Number implements Comparable<Long> {
     /**
      * Convert the integer to an unsigned number.
      */
-    private static String toUnsignedString(long i, int shift) {
-        char[] buf = new char[64];
-        int charPos = 64;
-        int radix = 1 << shift;
-        long mask = radix - 1;
-        do {
-            buf[--charPos] = Integer.digits[(int)(i & mask)];
-            i >>>= shift;
-        } while (i != 0);
-        return new String(buf, charPos, (64 - charPos));
-    }
+    private static native String toUnsignedString(long i, int shift);
 
     /**
      * Returns a {@code String} object representing the specified
@@ -280,52 +246,7 @@ public final class Long extends Number implements Comparable<Long> {
      *
      * Will fail if i == Long.MIN_VALUE
      */
-    static void getChars(long i, int index, char[] buf) {
-        long q;
-        int r;
-        int charPos = index;
-        char sign = 0;
-
-        if (i < 0) {
-            sign = '-';
-            i = -i;
-        }
-
-        // Get 2 digits/iteration using longs until quotient fits into an int
-        while (i > Integer.MAX_VALUE) {
-            q = i / 100;
-            // really: r = i - (q * 100);
-            r = (int)(i - ((q << 6) + (q << 5) + (q << 2)));
-            i = q;
-            buf[--charPos] = Integer.DigitOnes[r];
-            buf[--charPos] = Integer.DigitTens[r];
-        }
-
-        // Get 2 digits/iteration using ints
-        int q2;
-        int i2 = (int)i;
-        while (i2 >= 65536) {
-            q2 = i2 / 100;
-            // really: r = i2 - (q * 100);
-            r = i2 - ((q2 << 6) + (q2 << 5) + (q2 << 2));
-            i2 = q2;
-            buf[--charPos] = Integer.DigitOnes[r];
-            buf[--charPos] = Integer.DigitTens[r];
-        }
-
-        // Fall thru to fast mode for smaller numbers
-        // assert(i2 <= 65536, i2);
-        for (;;) {
-            q2 = (i2 * 52429) >>> (16+3);
-            r = i2 - ((q2 << 3) + (q2 << 1));  // r = i2-(q2*10) ...
-            buf[--charPos] = Integer.digits[r];
-            i2 = q2;
-            if (i2 == 0) break;
-        }
-        if (sign != 0) {
-            buf[--charPos] = sign;
-        }
-    }
+    static native void getChars(long i, int index, char[] buf);
 
     // Requires positive x
     static int stringSize(long x) {

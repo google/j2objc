@@ -340,10 +340,10 @@ static void AppendArgs(
       case 'B':
       case 'I':
       case 'S':
-        IntegralToString_convertInt(sb, va_arg(va, jint));
+        JreStringBuilder_appendInt(sb, va_arg(va, jint));
         break;
       case 'J':
-        IntegralToString_convertLong(sb, va_arg(va, jlong));
+        JreStringBuilder_appendLong(sb, va_arg(va, jlong));
         break;
       case 'Z':
         JreStringBuilder_appendString(sb, (jboolean)va_arg(va, jint) ? @"true" : @"false");

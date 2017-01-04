@@ -72,18 +72,6 @@ public final class Integer extends Number implements Comparable<Integer> {
     public static final Class<Integer>  TYPE = (Class<Integer>) int[].class.getComponentType();
 
     /**
-     * All possible chars for representing a number as a String
-     */
-    final static char[] digits = {
-        '0' , '1' , '2' , '3' , '4' , '5' ,
-        '6' , '7' , '8' , '9' , 'a' , 'b' ,
-        'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
-        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
-        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
-        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
-    };
-
-    /**
      * Returns a string representation of the first argument in the
      * radix specified by the second argument.
      *
@@ -127,37 +115,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @see     java.lang.Character#MAX_RADIX
      * @see     java.lang.Character#MIN_RADIX
      */
-    public static String toString(int i, int radix) {
-
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
-            radix = 10;
-
-        /* Use the faster version */
-        if (radix == 10) {
-            return toString(i);
-        }
-
-        char buf[] = new char[33];
-        boolean negative = (i < 0);
-        int charPos = 32;
-
-        if (!negative) {
-            i = -i;
-        }
-
-        while (i <= -radix) {
-            int q = i / radix;
-            buf[charPos--] = digits[radix * q - i];
-            i = q;
-        }
-        buf[charPos] = digits[-i];
-
-        if (negative) {
-            buf[--charPos] = '-';
-        }
-
-        return new String(buf, charPos, (33 - charPos));
-    }
+    public static native String toString(int i, int radix);
 
     /**
      * Returns a string representation of the integer argument as an
@@ -257,47 +215,7 @@ public final class Integer extends Number implements Comparable<Integer> {
     /**
      * Convert the integer to an unsigned number.
      */
-    private static String toUnsignedString(int i, int shift) {
-        char[] buf = new char[32];
-        int charPos = 32;
-        int radix = 1 << shift;
-        int mask = radix - 1;
-        do {
-            buf[--charPos] = digits[i & mask];
-            i >>>= shift;
-        } while (i != 0);
-
-        return new String(buf, charPos, (32 - charPos));
-    }
-
-    private static final String[] SMALL_NEG_VALUES  = new String[100];
-    private static final String[] SMALL_NONNEG_VALUES = new String[100];
-
-    final static char [] DigitTens = {
-        '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
-        '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',
-        '2', '2', '2', '2', '2', '2', '2', '2', '2', '2',
-        '3', '3', '3', '3', '3', '3', '3', '3', '3', '3',
-        '4', '4', '4', '4', '4', '4', '4', '4', '4', '4',
-        '5', '5', '5', '5', '5', '5', '5', '5', '5', '5',
-        '6', '6', '6', '6', '6', '6', '6', '6', '6', '6',
-        '7', '7', '7', '7', '7', '7', '7', '7', '7', '7',
-        '8', '8', '8', '8', '8', '8', '8', '8', '8', '8',
-        '9', '9', '9', '9', '9', '9', '9', '9', '9', '9',
-        } ;
-
-    final static char [] DigitOnes = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        } ;
+    private static native String toUnsignedString(int i, int shift);
 
         // I use the "invariant division by multiplication" trick to
         // accelerate Integer.toString.  In particular we want to
@@ -328,39 +246,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @param   i   an integer to be converted.
      * @return  a string representation of the argument in base&nbsp;10.
      */
-    public static String toString(int i) {
-        if (i == Integer.MIN_VALUE)
-            return "-2147483648";
-
-        // Android-changed: cache the string literal for small values.
-        boolean negative = i < 0;
-        boolean small = negative ? i > -100 : i < 100;
-        if (small) {
-            final String[] smallValues = negative ? SMALL_NEG_VALUES : SMALL_NONNEG_VALUES;
-
-            if (negative) {
-                i = -i;
-                if (smallValues[i] == null) {
-                    smallValues[i] =
-                        i < 10 ? new String(new char[]{'-', DigitOnes[i]})
-                               : new String(new char[]{'-', DigitTens[i], DigitOnes[i]});
-                }
-            } else {
-                if (smallValues[i] == null) {
-                    smallValues[i] =
-                        i < 10 ? new String(new char[]{DigitOnes[i]})
-                               : new String(new char[]{DigitTens[i], DigitOnes[i]});
-                }
-            }
-            return smallValues[i];
-        }
-
-        int size = negative ? stringSize(-i) + 1 : stringSize(i);
-        char[] buf = new char[size];
-        getChars(i, size, buf);
-        // Android-changed: change string constructor.
-        return new String(buf);
-    }
+    public static native String toString(int i);
 
     /**
      * Places characters representing the integer i into the
@@ -371,39 +257,7 @@ public final class Integer extends Number implements Comparable<Integer> {
      *
      * Will fail if i == Integer.MIN_VALUE
      */
-    static void getChars(int i, int index, char[] buf) {
-        int q, r;
-        int charPos = index;
-        char sign = 0;
-
-        if (i < 0) {
-            sign = '-';
-            i = -i;
-        }
-
-        // Generate two digits per iteration
-        while (i >= 65536) {
-            q = i / 100;
-        // really: r = i - (q * 100);
-            r = i - ((q << 6) + (q << 5) + (q << 2));
-            i = q;
-            buf [--charPos] = DigitOnes[r];
-            buf [--charPos] = DigitTens[r];
-        }
-
-        // Fall thru to fast mode for smaller numbers
-        // assert(i <= 65536, i);
-        for (;;) {
-            q = (i * 52429) >>> (16+3);
-            r = i - ((q << 3) + (q << 1));  // r = i-(q*10) ...
-            buf [--charPos] = digits [r];
-            i = q;
-            if (i == 0) break;
-        }
-        if (sign != 0) {
-            buf [--charPos] = sign;
-        }
-    }
+    static native void getChars(int i, int index, char[] buf);
 
     final static int [] sizeTable = { 9, 99, 999, 9999, 99999, 999999, 9999999,
                                       99999999, 999999999, Integer.MAX_VALUE };

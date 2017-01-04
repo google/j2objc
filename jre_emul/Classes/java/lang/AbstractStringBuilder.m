@@ -17,12 +17,15 @@
 #include "java/lang/ArrayIndexOutOfBoundsException.h"
 #include "java/lang/Character.h"
 #include "java/lang/Integer.h"
+#include "java/lang/Long.h"
 #include "java/lang/NegativeArraySizeException.h"
 #include "java/lang/NullPointerException.h"
 #include "java/lang/OutOfMemoryError.h"
 #include "java/lang/StringIndexOutOfBoundsException.h"
 #include "java/util/Arrays.h"
 #include "java/util/stream/IntStream.h"
+#include "java_lang_Integer.h"
+#include "java_lang_Long.h"
 #include "libcore/util/EmptyArray.h"
 
 // Full name as expected by generated metadata.
@@ -207,6 +210,36 @@ void JreStringBuilder_appendCharSequence(
       sb->buffer_[j++] = [s charAtWithInt:i];
     }
   }
+  sb->count_ = newCount;
+}
+
+void JreStringBuilder_appendInt(JreStringBuilder *sb, jint i) {
+  if (i == JavaLangInteger_MIN_VALUE) {
+    JreStringBuilder_appendString(sb, @"-2147483648");
+    return;
+  }
+  jint appendedLength = (i < 0) ? JavaLangInteger_stringSizeWithInt_(-i) + 1
+      : JavaLangInteger_stringSizeWithInt_(i);
+  jint newCount = sb->count_ + appendedLength;
+  if (newCount > sb->bufferSize_) {
+    EnlargeBuffer(sb, newCount);
+  }
+  JavaLangInteger_getCharsRaw(i, newCount, sb->buffer_);
+  sb->count_ = newCount;
+}
+
+void JreStringBuilder_appendLong(JreStringBuilder *sb, jlong l) {
+  if (l == JavaLangLong_MIN_VALUE) {
+    JreStringBuilder_appendString(sb, @"-9223372036854775808");
+    return;
+  }
+  jint appendedLength = (l < 0) ? JavaLangLong_stringSizeWithLong_(-l) + 1
+      : JavaLangLong_stringSizeWithLong_(l);
+  jint newCount = sb->count_ + appendedLength;
+  if (newCount > sb->bufferSize_) {
+    EnlargeBuffer(sb, newCount);
+  }
+  JavaLangLong_getCharsRaw(l, newCount, sb->buffer_);
   sb->count_ = newCount;
 }
 
