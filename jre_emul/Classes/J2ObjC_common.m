@@ -332,10 +332,10 @@ static void AppendArgs(
         JreStringBuilder_appendChar(sb, (jchar)va_arg(va, jint));
         break;
       case 'D':
-        RealToString_appendDouble(sb, va_arg(va, jdouble));
+        JreStringBuilder_appendDouble(sb, va_arg(va, jdouble));
         break;
       case 'F':
-        RealToString_appendFloat(sb, (jfloat)va_arg(va, jdouble));
+        JreStringBuilder_appendFloat(sb, (jfloat)va_arg(va, jdouble));
         break;
       case 'B':
       case 'I':

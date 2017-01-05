@@ -28,6 +28,10 @@ package sun.misc;
 import java.util.Arrays;
 import java.util.regex.*;
 
+/*-[
+#include "java/lang/AbstractStringBuilder.h"
+]-*/
+
 /**
  * A class for converting between ASCII and decimal representations of a single
  * or double precision floating point number. Most conversions are provided via
@@ -81,20 +85,20 @@ public class FloatingDecimal{
     }
 
     /**
-     * Appends a double precision floating point value to an <code>Appendable</code>.
+     * Appends a double precision floating point value to a <code>JreStringBuilder</code>.
      * @param d The double precision value.
-     * @param buf The <code>Appendable</code> with the value appended.
+     * @param buf The <code>JreStringBuilder</code> with the value appended.
      */
-    public static void appendTo(double d, Appendable buf) {
+    public static void appendTo(double d, Object buf) {
         getBinaryToASCIIConverter(d).appendTo(buf);
     }
 
     /**
-     * Appends a single precision floating point value to an <code>Appendable</code>.
+     * Appends a single precision floating point value to a <code>JreStringBuilder</code>.
      * @param f The single precision value.
-     * @param buf The <code>Appendable</code> with the value appended.
+     * @param buf The <code>JreStringBuilder</code> with the value appended.
      */
-    public static void appendTo(float f, Appendable buf) {
+    public static void appendTo(float f, Object buf) {
         getBinaryToASCIIConverter(f).appendTo(buf);
     }
 
@@ -134,10 +138,10 @@ public class FloatingDecimal{
         public String toJavaFormatString();
 
         /**
-         * Appends a floating point value to an <code>Appendable</code>.
-         * @param buf The <code>Appendable</code> to receive the value.
+         * Appends a floating point value to a <code>JreStringBuilder</code>.
+         * @param buf The <code>JreStringBuilder</code> to receive the value.
          */
-        public void appendTo(Appendable buf);
+        public void appendTo(Object buf);
 
         /**
          * Retrieves the decimal exponent most closely corresponding to this value.
@@ -201,15 +205,9 @@ public class FloatingDecimal{
         }
 
         @Override
-        public void appendTo(Appendable buf) {
-            if (buf instanceof StringBuilder) {
-                ((StringBuilder) buf).append(image);
-            } else if (buf instanceof StringBuffer) {
-                ((StringBuffer) buf).append(image);
-            } else {
-                assert false;
-            }
-        }
+        public native void appendTo(Object buf) /*-[
+          JreStringBuilder_appendString((JreStringBuilder *)buf, image_);
+        ]-*/;
 
         @Override
         public int getDecimalExponent() {
@@ -303,16 +301,11 @@ public class FloatingDecimal{
         }
 
         @Override
-        public void appendTo(Appendable buf) {
-            int len = getChars(buffer);
-            if (buf instanceof StringBuilder) {
-                ((StringBuilder) buf).append(buffer, 0, len);
-            } else if (buf instanceof StringBuffer) {
-                ((StringBuffer) buf).append(buffer, 0, len);
-            } else {
-                assert false;
-            }
-        }
+        public native void appendTo(Object buf) /*-[
+          jint len = SunMiscFloatingDecimal_BinaryToASCIIBuffer_getCharsWithCharArray_(
+              self, buffer_);
+          JreStringBuilder_appendCharArraySubset((JreStringBuilder *)buf, buffer_, 0, len);
+        ]-*/;
 
         @Override
         public int getDecimalExponent() {

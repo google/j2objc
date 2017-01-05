@@ -27,6 +27,7 @@
 #include "java_lang_Integer.h"
 #include "java_lang_Long.h"
 #include "libcore/util/EmptyArray.h"
+#include "sun/misc/FloatingDecimal.h"
 
 // Full name as expected by generated metadata.
 #define JavaLangAbstractStringBuilder_INITIAL_CAPACITY 16
@@ -233,6 +234,14 @@ void JreStringBuilder_appendLong(JreStringBuilder *sb, jlong l) {
   EnsureCapacity(sb, newCount);
   JavaLangLong_getCharsRaw(l, newCount, sb->buffer_);
   sb->count_ = newCount;
+}
+
+void JreStringBuilder_appendDouble(JreStringBuilder *sb, jdouble d) {
+  SunMiscFloatingDecimal_appendToWithDouble_withId_(d, (id)sb);
+}
+
+void JreStringBuilder_appendFloat(JreStringBuilder *sb, jfloat f) {
+  SunMiscFloatingDecimal_appendToWithFloat_withId_(f, (id)sb);
 }
 
 - (jint)capacity {
