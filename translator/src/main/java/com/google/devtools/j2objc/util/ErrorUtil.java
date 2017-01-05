@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -27,8 +26,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
 
@@ -83,6 +82,7 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
    */
   public static void setTestMode() {
     errorStream = new PrintStream(new OutputStream() {
+      @Override
       public void write(int b) {}
     });
   }
@@ -106,6 +106,27 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
       fullMessage = tag + message;
     }
     return fullMessage;
+  }
+
+  public static void parserDiagnostic(Diagnostic<? extends JavaFileObject> diagnostic) {
+    Kind kind = diagnostic.getKind();
+    if (kind == Kind.ERROR) {
+      errorMessages.add(diagnostic.getMessage(null));
+      errorCount++;
+    } else if (kind == Kind.MANDATORY_WARNING || kind == Kind.WARNING) {
+      warningMessages.add(diagnostic.getMessage(null));
+      warningCount++;
+    } else {
+      return;
+    }
+    String msg;
+    if (CLANG_STYLE_ERROR_MSG) {
+      msg = String.format("error: %s:%d: %s", diagnostic.getSource().getName(),
+          diagnostic.getLineNumber(), diagnostic.getMessage(null).trim());
+    } else {
+      msg = diagnostic.toString().trim();
+    }
+    errorStream.println(msg);
   }
 
   // TODO(tball): Consider more ways to associate errors with GenerationUnits to aid debugging.

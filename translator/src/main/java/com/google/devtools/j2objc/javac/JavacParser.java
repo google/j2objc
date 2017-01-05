@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.ServiceLoader;
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
-import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager.Location;
@@ -201,14 +200,7 @@ public class JavacParser extends Parser {
 
   private void processDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
     for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-      Kind kind = diagnostic.getKind();
-      if (kind == Kind.ERROR) {
-        ErrorUtil.error(diagnostic.getMessage(null));
-      } else if (kind == Kind.MANDATORY_WARNING || kind == Kind.WARNING) {
-        ErrorUtil.warning(diagnostic.getMessage(null));
-      } else {
-        // Ignore other diagnostic types.
-      }
+      ErrorUtil.parserDiagnostic(diagnostic);
     }
   }
 
