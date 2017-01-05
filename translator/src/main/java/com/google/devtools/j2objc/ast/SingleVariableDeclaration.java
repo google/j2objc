@@ -59,6 +59,11 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     return annotations;
   }
 
+  public SingleVariableDeclaration setAnnotations(List<Annotation> annotations) {
+    this.annotations.replaceAll(annotations);
+    return this;
+  }
+
   public SingleVariableDeclaration addAnnotation(Annotation ann) {
     annotations.add(ann);
     return this;

@@ -429,6 +429,14 @@ public class TreeConverter {
         .setTypeName((Name) convert(node.getAnnotationType()));
   }
 
+  private List<Annotation> convertAnnotations(JCTree.JCModifiers modifiers) {
+    List<Annotation> annotations = new ArrayList<>();
+    for (AnnotationTree annotation : modifiers.getAnnotations()) {
+      annotations.add((Annotation) convert(annotation));
+    }
+    return annotations;
+  }
+
   private TreeNode convertAnnotationTypeDeclaration(JCTree.JCClassDecl node) {
     AnnotationTypeDeclaration newNode = new AnnotationTypeDeclaration();
     convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
@@ -441,13 +449,9 @@ public class TreeConverter {
             .setDefault((Expression) convert(methodDecl.defaultValue))
             .setExecutableElement(methodDecl.sym)
             .setType(convertType(methodDecl.sym.getReturnType()));
-        List<Annotation> annotations = new ArrayList<>();
-        for (AnnotationTree annotation : methodDecl.mods.annotations) {
-          annotations.add((Annotation) convert(annotation));
-        }
         newMember
             .setModifiers((int) methodDecl.getModifiers().flags)
-            .setAnnotations(annotations)
+            .setAnnotations(convertAnnotations(methodDecl.mods))
             .setJavadoc((Javadoc) getAssociatedJavaDoc(methodDecl, methodDecl.sym));
         newNode.addBodyDeclaration(newMember);
       } else {
@@ -540,13 +544,9 @@ public class TreeConverter {
 
   private TreeNode convertBodyDeclaration(JCTree node, JCTree.JCModifiers modifiers,
       BodyDeclaration newNode, Element element) {
-    List<Annotation> annotations = new ArrayList<>();
-    for (AnnotationTree annotation : modifiers.getAnnotations()) {
-      annotations.add((Annotation) convert(annotation));
-    }
     return newNode
         .setModifiers((int) modifiers.flags)
-        .setAnnotations(annotations)
+        .setAnnotations(convertAnnotations(modifiers))
         .setJavadoc((Javadoc) getAssociatedJavaDoc(node, element));
   }
 
@@ -1183,6 +1183,7 @@ public class TreeConverter {
     return new SingleVariableDeclaration()
         .setType(newType)
         .setIsVarargs(isVarargs)
+        .setAnnotations(convertAnnotations(node.getModifiers()))
         .setName(convertSimpleName(var, node.type, getNamePosition(node)))
         .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
