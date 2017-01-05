@@ -131,11 +131,15 @@ static void EnlargeBuffer(JreStringBuilder *sb, jint min) {
   sb->bufferSize_ = newSize;
 }
 
+static void EnsureCapacity(JreStringBuilder *sb, jint size) {
+  if (size > sb->bufferSize_) {
+    EnlargeBuffer(sb, size);
+  }
+}
+
 void JreStringBuilder_appendNull(JreStringBuilder *sb) {
   jint newCount = sb->count_ + 4;
-  if (newCount > sb->bufferSize_) {
-    EnlargeBuffer(sb, newCount);
-  }
+  EnsureCapacity(sb, newCount);
   jchar *buf = sb->buffer_ + sb->count_;
   *(buf++) = 'n';
   *(buf++) = 'u';
@@ -146,9 +150,7 @@ void JreStringBuilder_appendNull(JreStringBuilder *sb) {
 
 void JreStringBuilder_appendBuffer(JreStringBuilder *sb, const unichar *buffer, int length) {
   int newCount = sb->count_ + length;
-  if (newCount > sb->bufferSize_) {
-    EnlargeBuffer(sb, newCount);
-  }
+  EnsureCapacity(sb, newCount);
   memcpy(sb->buffer_ + sb->count_, buffer, length * sizeof(jchar));
   sb->count_ = newCount;
 }
@@ -166,9 +168,7 @@ void JreStringBuilder_appendCharArraySubset(
 }
 
 void JreStringBuilder_appendChar(JreStringBuilder *sb, jchar ch) {
-  if (sb->count_ == sb->bufferSize_) {
-    EnlargeBuffer(sb, sb->count_ + 1);
-  }
+  EnsureCapacity(sb, sb->count_ + 1);
   sb->buffer_[sb->count_++] = ch;
 }
 
@@ -179,9 +179,7 @@ void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string) {
   }
   jint length = (jint)CFStringGetLength((CFStringRef)string);
   jint newCount = sb->count_ + length;
-  if (newCount > sb->bufferSize_) {
-    EnlargeBuffer(sb, newCount);
-  }
+  EnsureCapacity(sb, newCount);
   CFStringGetCharacters((CFStringRef)string, CFRangeMake(0, length), sb->buffer_ + sb->count_);
   sb->count_ = newCount;
 }
@@ -196,9 +194,7 @@ void JreStringBuilder_appendCharSequence(
   }
   jint length = end - start;
   jint newCount = sb->count_ + length;
-  if (newCount > sb->bufferSize_) {
-    EnlargeBuffer(sb, newCount);
-  }
+  EnsureCapacity(sb, newCount);
   if ([s isKindOfClass:[NSString class]]) {
     [(NSString *)s getCharacters:sb->buffer_ + sb->count_ range:NSMakeRange(start, end - start)];
   } else if ([s isKindOfClass:[JavaLangAbstractStringBuilder class]]) {
@@ -221,9 +217,7 @@ void JreStringBuilder_appendInt(JreStringBuilder *sb, jint i) {
   jint appendedLength = (i < 0) ? JavaLangInteger_stringSizeWithInt_(-i) + 1
       : JavaLangInteger_stringSizeWithInt_(i);
   jint newCount = sb->count_ + appendedLength;
-  if (newCount > sb->bufferSize_) {
-    EnlargeBuffer(sb, newCount);
-  }
+  EnsureCapacity(sb, newCount);
   JavaLangInteger_getCharsRaw(i, newCount, sb->buffer_);
   sb->count_ = newCount;
 }
@@ -236,9 +230,7 @@ void JreStringBuilder_appendLong(JreStringBuilder *sb, jlong l) {
   jint appendedLength = (l < 0) ? JavaLangLong_stringSizeWithLong_(-l) + 1
       : JavaLangLong_stringSizeWithLong_(l);
   jint newCount = sb->count_ + appendedLength;
-  if (newCount > sb->bufferSize_) {
-    EnlargeBuffer(sb, newCount);
-  }
+  EnsureCapacity(sb, newCount);
   JavaLangLong_getCharsRaw(l, newCount, sb->buffer_);
   sb->count_ = newCount;
 }
@@ -493,9 +485,7 @@ void JreStringBuilder_reverse(JreStringBuilder *sb) {
     @throw [[[JavaLangStringIndexOutOfBoundsException alloc]
         initWithNSString:[NSString stringWithFormat:@"length < 0: %d", length]] autorelease];
   }
-  if (length > delegate_.bufferSize_) {
-    EnlargeBuffer(&delegate_, length);
-  }
+  EnsureCapacity(&delegate_, length);
   if (delegate_.count_ < length) {
     memset(delegate_.buffer_ + delegate_.count_, 0, (length - delegate_.count_) * sizeof(jchar));
   }
