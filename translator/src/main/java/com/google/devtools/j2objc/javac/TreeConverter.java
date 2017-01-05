@@ -734,7 +734,8 @@ public class TreeConverter {
             .setElement(node.sym);
       }
     }
-    if (ElementUtil.isPrimitiveConstant((VariableElement) node.sym)) {
+    if (ElementUtil.isPrimitiveConstant((VariableElement) node.sym)
+        && ElementUtil.isStatic(node.sym)) {
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
           .setQualifier((Name) convert(selected))
@@ -822,8 +823,8 @@ public class TreeConverter {
   private TreeNode convertMethodReference(JCTree.JCMemberReference node, MethodReference newNode) {
     convertFunctionalExpression(node, newNode);
     if (node.getTypeArguments() != null) {
-      for (Object typeArg : node.getTypeArguments()) {
-        newNode.addTypeArgument((Type) convert(typeArg));
+      for (JCTree.JCExpression typeArg : node.getTypeArguments()) {
+        newNode.addTypeArgument(Type.newType(typeArg.type));
       }
     }
     return newNode
@@ -843,12 +844,20 @@ public class TreeConverter {
     if (node.hasKind(JCTree.JCMemberReference.ReferenceKind.SUPER)) {
       SuperMethodReference newNode = new SuperMethodReference();
       convertMethodReference(node, newNode);
-      // Qualifier expression is <name>."super", so it's always a JCFieldAccess.
-      JCTree.JCFieldAccess expr = (JCTree.JCFieldAccess) node.getQualifierExpression();
-      return newNode
-          .setName(convertSimpleName(node.sym, node.type, getPosition(expr)))
-          .setQualifier(
-              convertSimpleName(nameSymbol(expr.selected), expr.type, getPosition(expr.selected)));
+      if (node.getQualifierExpression().getKind() == Kind.IDENTIFIER) {
+        // super::foo
+        return newNode
+            .setName(convertSimpleName(node.sym, node.type,
+                getPosition(node.getQualifierExpression())));
+      } else {
+        // Qualifier expression is <name>."super", so it's always a JCFieldAccess.
+        JCTree.JCFieldAccess expr = (JCTree.JCFieldAccess) node.getQualifierExpression();
+        return newNode
+            .setName(convertSimpleName(node.sym, node.type, getPosition(expr)))
+            .setQualifier(
+                convertSimpleName(nameSymbol(expr.selected), expr.type,
+                    getPosition(expr.selected)));
+      }
     }
     if (node.hasKind(JCTree.JCMemberReference.ReferenceKind.UNBOUND)
         || node.hasKind(JCTree.JCMemberReference.ReferenceKind.STATIC)) {
