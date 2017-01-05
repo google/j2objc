@@ -41,7 +41,6 @@ public class TranslationUtilTest extends GenerationTest {
   }
 
   public void testTypeNeedsReflection() throws IOException {
-    options.setStripReflection(true);
     addSourceFile("@ReflectionSupport(ReflectionSupport.Level.FULL) package foo; "
         + "import com.google.j2objc.annotations.ReflectionSupport;", "foo/package-info.java");
     CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
@@ -69,5 +68,15 @@ public class TranslationUtilTest extends GenerationTest {
         + "@ReflectionSupport(ReflectionSupport.Level.NATIVE_ONLY) public class A {}");
     translationUtil = unit.getEnv().translationUtil();
     assertFalse(translationUtil.needsReflection(unit.getTypes().get(0)));
+
+    options.setStripReflection(true);
+    unit = translateType("quux.A", "package quux; public class A {}");
+    translationUtil = unit.getEnv().translationUtil();
+    assertFalse(translationUtil.needsReflection(unit.getTypes().get(0)));
+
+    options.setStripReflection(false);
+    unit = translateType("quuz.A", "package quuz; public class A {}");
+    translationUtil = unit.getEnv().translationUtil();
+    assertTrue(translationUtil.needsReflection(unit.getTypes().get(0)));
   }
 }

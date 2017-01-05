@@ -107,20 +107,8 @@ public final class TranslationUtil {
   }
 
   public boolean needsReflection(PackageDeclaration node) {
-    return needsReflection(node.getPackageElement());
-  }
-
-  public boolean needsReflection(PackageElement node) {
-    if (needsReflection(getReflectionSupportLevel(
-        ElementUtil.getAnnotation(node, ReflectionSupport.class)))) {
-      return true;
-    }
-    // Check if package-info.java contains ReflectionSupport annotation
-    if (needsReflection(options.getPackageInfoLookup().getReflectionSupportLevel(
-        node.getSimpleName().toString()))) {
-      return true;
-    }
-    return false;
+    ReflectionSupport.Level level = getReflectionSupportLevelOnPackage(node.getPackageElement());
+    return needsReflection(level);
   }
 
   public boolean needsReflection(TypeElement type) {
@@ -128,19 +116,18 @@ public final class TranslationUtil {
       return false;
     }
     PackageElement packageElement = ElementUtil.getPackage(type);
+    ReflectionSupport.Level level = null;
     while (type != null) {
-      ReflectionSupport.Level level = getReflectionSupportLevel(
-          ElementUtil.getAnnotation(type, ReflectionSupport.class));
+      level = getReflectionSupportLevel(ElementUtil.getAnnotation(type, ReflectionSupport.class));
       if (level != null) {
         return level == ReflectionSupport.Level.FULL;
       }
       type = ElementUtil.getDeclaringClass(type);
     }
     // Check package level annotations
-    if (needsReflection(packageElement)) {
-      return true;
-    }
-    return !options.stripReflection();
+    level = getReflectionSupportLevelOnPackage(packageElement);
+
+    return needsReflection(level);
   }
 
   private boolean needsReflection(ReflectionSupport.Level level) {
@@ -149,6 +136,18 @@ public final class TranslationUtil {
     } else {
       return !options.stripReflection();
     }
+  }
+
+  private ReflectionSupport.Level getReflectionSupportLevelOnPackage(PackageElement node) {
+    ReflectionSupport.Level level = getReflectionSupportLevel(
+        ElementUtil.getAnnotation(node, ReflectionSupport.class));
+    if (level != null) {
+      return level;
+    }
+    // Check if package-info.java contains ReflectionSupport annotation
+    level = options.getPackageInfoLookup().getReflectionSupportLevel(
+        node.getSimpleName().toString());
+    return level;
   }
 
   public static ReflectionSupport.Level getReflectionSupportLevel(
