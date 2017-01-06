@@ -171,7 +171,7 @@ public class TreeConverter {
       }
       addOcniComments(converter.newUnit, options.jsniWarnings());
       return converter.newUnit;
-    } catch (IOException e) {
+    } catch (Throwable e) {
       ErrorUtil.fatalError(e, sourceFilePath);
       return null;
     }
