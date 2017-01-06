@@ -27,8 +27,6 @@
 #import "java/lang/NullPointerException.h"
 #import "java/util/logging/Level.h"
 #import "java/util/logging/Logger.h"
-#import "java_lang_IntegralToString.h"
-#import "java_lang_RealToString.h"
 #import "objc/runtime.h"
 
 void JreThrowNullPointerException() {

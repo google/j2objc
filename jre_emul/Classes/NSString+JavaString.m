@@ -30,8 +30,11 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/Character.h"
 #import "java/lang/ClassCastException.h"
+#import "java/lang/Double.h"
+#import "java/lang/Float.h"
 #import "java/lang/Integer.h"
 #import "java/lang/Iterable.h"
+#import "java/lang/Long.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/StringBuffer.h"
 #import "java/lang/StringBuilder.h"
@@ -53,8 +56,6 @@
 #import "java/util/regex/Pattern.h"
 #import "java/util/regex/PatternSyntaxException.h"
 #import "java/util/stream/IntStream.h"
-#import "java_lang_IntegralToString.h"
-#import "java_lang_RealToString.h"
 
 #define NSString_serialVersionUID -6849794470754667710LL
 
@@ -143,7 +144,7 @@ NSString *NSString_java_valueOfChars_offset_count_(IOSCharArray *data, jint offs
 }
 
 NSString *NSString_java_valueOfDouble_(jdouble value) {
-  return RealToString_doubleToString(value);
+  return JavaLangDouble_toStringWithDouble_(value);
 }
 
 + (NSString *)valueOfFloat:(float)value {
@@ -151,7 +152,7 @@ NSString *NSString_java_valueOfDouble_(jdouble value) {
 }
 
 NSString *NSString_java_valueOfFloat_(jfloat value) {
-  return RealToString_floatToString(value);
+  return JavaLangFloat_toStringWithFloat_(value);
 }
 
 + (NSString *)valueOfInt:(int)value {
@@ -159,7 +160,7 @@ NSString *NSString_java_valueOfFloat_(jfloat value) {
 }
 
 NSString *NSString_java_valueOfInt_(jint value) {
-  return IntegralToString_convertInt(NULL, value);
+  return JavaLangInteger_toStringWithInt_(value);
 }
 
 + (NSString *)valueOfLong:(long long int)value {
@@ -167,7 +168,7 @@ NSString *NSString_java_valueOfInt_(jint value) {
 }
 
 NSString *NSString_java_valueOfLong_(jlong value) {
-  return IntegralToString_convertLong(NULL, value);
+  return JavaLangLong_toStringWithLong_(value);
 }
 
 - (void)java_getChars:(int)sourceBegin
