@@ -398,4 +398,12 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTrue(methods.get(8).toString().startsWith("void yak()"));
     assertTrue(methods.get(9).toString().startsWith("void zebra()"));
   }
+  
+  // Verify that an empty statement following a type declaration is ignored.
+  // The JDT parser discards them, while javac includes them in the compilation unit.
+  public void testEmptyStatementsIgnored() throws IOException {
+    String source = "public interface A { void bar(); };";
+    CompilationUnit unit = translateType("A", source);
+    assertEquals(1, unit.getTypes().size());
+  }
 }

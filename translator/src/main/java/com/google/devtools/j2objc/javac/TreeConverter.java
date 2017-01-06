@@ -167,7 +167,10 @@ public class TreeConverter {
       PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
       converter.newUnit.setPackage(converter.convertPackage(javacUnit.pid, pkg));
       for (JCTree type : javacUnit.getTypeDecls()) {
-        converter.newUnit.addType((AbstractTypeDeclaration) converter.convert(type));
+        TreeNode newNode = converter.convert(type);
+        if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
+          converter.newUnit.addType((AbstractTypeDeclaration) newNode);
+        }
       }
       addOcniComments(converter.newUnit, options.jsniWarnings());
       return converter.newUnit;
