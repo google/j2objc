@@ -165,7 +165,8 @@ public class TreeConverter {
       converter.newUnit = new CompilationUnit(new TranslationEnvironment(options, env),
           sourceFilePath, mainTypeName, source);
       PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
-      converter.newUnit.setPackage(converter.convertPackage(javacUnit.pid, pkg));
+      converter.newUnit.setPackage(
+          converter.convertPackage((JCTree.JCExpression) javacUnit.getPackageName(), pkg));
       for (JCTree type : javacUnit.getTypeDecls()) {
         TreeNode newNode = converter.convert(type);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {

@@ -26,10 +26,10 @@ import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.ExpressionTree;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.file.JavacFileManager;
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCExpression;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -150,14 +150,10 @@ public class JavacParser extends Parser {
     }
     try (JavacEnvironment env = createEnvironment(files, null, false)) {
       List<CompilationUnitTree> units = new ArrayList<>();
-      try {
-        for (CompilationUnitTree unit : env.task().parse()) {
-          units.add(unit);
-        }
-        env.task().analyze();
-      } catch (IOException e) {
-        // Error listener will report errors.
+      for (CompilationUnitTree unit : env.task().parse()) {
+        units.add(unit);
       }
+      env.task().analyze();
       processDiagnostics(env.diagnostics());
 
       if (ErrorUtil.errorCount() == 0) {
@@ -234,16 +230,12 @@ public class JavacParser extends Parser {
       }
       try (JavacEnvironment env = createEnvironment(inputFiles, null, true)) {
         List<CompilationUnitTree> units = new ArrayList<>();
-        try {
-          for (CompilationUnitTree unit : env.task().parse()) {
-            units.add(unit);
-          }
-          // JavacTaskImpl.enter() parses and runs annotation processing, but
-          // not type checking and attribution (that's done by analyze()).
-          env.task().enter();
-        } catch (IOException e) {
-          // Error listener will report errors.
+        for (CompilationUnitTree unit : env.task().parse()) {
+          units.add(unit);
         }
+        // JavacTaskImpl.enter() parses and runs annotation processing, but
+        // not type checking and attribution (that's done by analyze()).
+        env.task().enter();
         processDiagnostics(env.diagnostics());
         // The source output directory is created and set in createEnvironment().
         File sourceOutputDirectory =
@@ -298,7 +290,7 @@ public class JavacParser extends Parser {
     @Override
     public String mainTypeName() {
       String qualifiedName = FileUtil.getMainTypeName(file);
-      JCExpression packageDecl = unit.pid;
+      ExpressionTree packageDecl = unit.getPackageName();
       if (packageDecl != null) {
         qualifiedName = packageDecl.toString() + "." + qualifiedName;
       }

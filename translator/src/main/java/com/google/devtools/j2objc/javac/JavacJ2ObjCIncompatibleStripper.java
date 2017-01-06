@@ -73,7 +73,7 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner {
         unusedImports.put(name, importNode);
       }
     }
-    scan(unit.packageAnnotations);
+    scan(unit.getPackageAnnotations());
     for (JCTree tree : unit.getTypeDecls()) {
       scan(tree);
     }
