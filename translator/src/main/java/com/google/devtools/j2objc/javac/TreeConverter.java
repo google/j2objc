@@ -1205,6 +1205,7 @@ public class TreeConverter {
             .setTypeMirror(varType);
       } else if (varType.getKind() == TypeKind.UNION) {
         newType = new UnionType();
+        newType.setTypeMirror(varType);
         for (TypeMirror t : ((javax.lang.model.type.UnionType) varType).getAlternatives()) {
           Type alternative = convertType(t, pos, false);
           alternative.setPosition(pos);
