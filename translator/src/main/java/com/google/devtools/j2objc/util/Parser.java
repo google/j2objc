@@ -20,14 +20,16 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * Interface for interacting with the Java compiler front-end.
  */
-public abstract class Parser {
+public abstract class Parser implements Closeable {
 
   protected final List<String> classpathEntries = Lists.newArrayList();
   protected final List<String> sourcepathEntries = Lists.newArrayList();
@@ -160,6 +162,12 @@ public abstract class Parser {
    */
   public abstract ProcessingResult processAnnotations(Iterable<String> fileArgs,
       List<ProcessingContext> inputs);
+  
+  /**
+   * Release any system resources used by this parser instance.
+   */
+  @Override
+  public void close() throws IOException {}
 
   /**
    * The ParseResult provides parser actions that can be performed without

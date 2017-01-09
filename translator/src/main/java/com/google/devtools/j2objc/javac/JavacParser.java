@@ -53,6 +53,8 @@ import javax.tools.ToolProvider;
  * @author Tom Ball
  */
 public class JavacParser extends Parser {
+  
+  private JavacFileManager fileManager; 
 
   public JavacParser(Options options){
     super(options);
@@ -77,7 +79,8 @@ public class JavacParser extends Parser {
 
   @Override
   public CompilationUnit parse(String mainType, String path, String source) {
-    try (JavacEnvironment parserEnv = createEnvironment(path, source)) {
+    try {
+      JavacEnvironment parserEnv = createEnvironment(path, source);
       JavacTaskImpl task = parserEnv.task();
       JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) task.parse().iterator().next();
       task.analyze();
@@ -91,7 +94,7 @@ public class JavacParser extends Parser {
 
   private JavacFileManager getFileManager(JavaCompiler compiler,
       DiagnosticCollector<JavaFileObject> diagnostics) throws IOException {
-    JavacFileManager fileManager = (JavacFileManager)
+    fileManager = (JavacFileManager)
         compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset());
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
@@ -148,7 +151,8 @@ public class JavacParser extends Parser {
     for (String path : paths) {
       files.add(new File(path));
     }
-    try (JavacEnvironment env = createEnvironment(files, null, false)) {
+    try {
+      JavacEnvironment env = createEnvironment(files, null, false);
       List<CompilationUnitTree> units = new ArrayList<>();
       for (CompilationUnitTree unit : env.task().parse()) {
         units.add(unit);
@@ -228,7 +232,8 @@ public class JavacParser extends Parser {
       for (ProcessingContext input : inputs) {
         inputFiles.add(new File(input.getFile().getPath()));
       }
-      try (JavacEnvironment env = createEnvironment(inputFiles, null, true)) {
+      try {
+        JavacEnvironment env = createEnvironment(inputFiles, null, true);
         List<CompilationUnitTree> units = new ArrayList<>();
         for (CompilationUnitTree unit : env.task().parse()) {
           units.add(unit);
@@ -248,6 +253,17 @@ public class JavacParser extends Parser {
     }
     // No annotation processors on classpath, or processing errors reported.
     return new JavacProcessingResult(generatedInputs, null);
+  }
+  
+  @Override
+  public void close() throws IOException {
+    if (fileManager != null) {
+      try {
+        fileManager.close();
+      } finally {
+        fileManager = null;
+      }
+    }
   }
 
   private void collectGeneratedInputs(

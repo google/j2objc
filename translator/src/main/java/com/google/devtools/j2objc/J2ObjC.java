@@ -89,9 +89,7 @@ public class J2ObjC {
   public static void run(List<String> fileArgs, Options options) {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
-    try {
-      Parser parser = createParser(options);
-
+    try (Parser parser = createParser(options)) {
       List<ProcessingContext> inputs = Lists.newArrayList();
       GenerationBatch batch = new GenerationBatch(options);
       batch.processFileArgs(fileArgs);
@@ -132,6 +130,8 @@ public class J2ObjC {
       translationProcessor.postProcess();
 
       options.getHeaderMap().printMappings();
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
     } finally {
       FileUtil.deleteTempDir(preProcessorTempDir);
       FileUtil.deleteTempDir(strippedSourcesDir);

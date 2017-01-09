@@ -89,6 +89,9 @@ public class GenerationTest extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     options = null;
+    if (parser != null) {
+      parser.close();
+    }
     FileUtil.deleteTempDir(tempDir);
     ErrorUtil.reset();
   }

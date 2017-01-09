@@ -25,8 +25,6 @@ import com.sun.tools.javac.model.JavacTypes;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
-import java.io.Closeable;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,7 +35,7 @@ import javax.lang.model.util.Types;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 
-class JavacEnvironment implements ParserEnvironment, Closeable {
+class JavacEnvironment implements ParserEnvironment {
 
   private final JavacTaskImpl task;
   private final JavacFileManager fileManager;
@@ -138,10 +136,5 @@ class JavacEnvironment implements ParserEnvironment, Closeable {
 
   public DiagnosticCollector<JavaFileObject> diagnostics() {
     return diagnostics;
-  }
-
-  @Override
-  public void close() throws IOException {
-    fileManager.close();
   }
 }
