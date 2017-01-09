@@ -18,6 +18,7 @@
 #import "java/lang/CharSequence.h"
 
 @class IOSCharArray;
+@class JavaLangStringBuffer;
 
 // Defines a string builder struct so that J2ObjC string concatenation does not
 // need to allocate a new ObjC string builder object.
@@ -33,9 +34,6 @@ typedef struct JreStringBuilder {
 }
 
 - (IOSCharArray *)getValue;
-
-- (void)setWithCharArray:(IOSCharArray *)val
-                 withInt:(jint)len;
 
 - (instancetype)init;
 
@@ -93,14 +91,6 @@ typedef struct JreStringBuilder {
 - (jint)offsetByCodePointsWithInt:(jint)index
                           withInt:(jint)codePointOffset;
 
-- (JavaLangAbstractStringBuilder *)appendWithChar:(jchar)c;
-
-- (JavaLangAbstractStringBuilder *)appendWithCharArray:(IOSCharArray *)str
-                                               withInt:(jint)offset
-                                               withInt:(jint)len;
-
-- (JavaLangAbstractStringBuilder *)appendWithNSString:(NSString *)str;
-
 @end
 
 CF_EXTERN_C_BEGIN
@@ -115,12 +105,14 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity);
 
 void JreStringBuilder_appendNull(JreStringBuilder *sb);
 void JreStringBuilder_appendBuffer(JreStringBuilder *sb, const unichar *buffer, int length);
+void JreStringBuilder_appendStringBuffer(JreStringBuilder *sb, JavaLangStringBuffer *toAppend);
 void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars);
 void JreStringBuilder_appendCharArraySubset(
     JreStringBuilder *sb, IOSCharArray *chars, jint offset, jint length);
 void JreStringBuilder_appendChar(JreStringBuilder *sb, jchar ch);
 void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string);
-void JreStringBuilder_appendCharSequence(
+void JreStringBuilder_appendCharSequence(JreStringBuilder *sb, id<JavaLangCharSequence> s);
+void JreStringBuilder_appendCharSequenceSubset(
     JreStringBuilder *sb, id<JavaLangCharSequence> s, jint start, jint end);
 void JreStringBuilder_appendInt(JreStringBuilder *sb, jint i);
 void JreStringBuilder_appendLong(JreStringBuilder *sb, jlong l);

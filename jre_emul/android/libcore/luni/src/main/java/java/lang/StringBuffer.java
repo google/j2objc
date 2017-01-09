@@ -295,11 +295,7 @@ public final class StringBuffer extends AbstractStringBuilder implements Seriali
      * @since 1.5
      */
     public synchronized native StringBuffer append(CharSequence s) /*-[
-      if (s == nil) {
-        JreStringBuilder_appendNull(&self->delegate_);
-      } else {
-        JreStringBuilder_appendCharSequence(&self->delegate_, s, 0, [s length]);
-      }
+      JreStringBuilder_appendCharSequence(&self->delegate_, s);
       return self;
     ]-*/;
 
@@ -323,7 +319,7 @@ public final class StringBuffer extends AbstractStringBuilder implements Seriali
      * @since 1.5
      */
     public synchronized native StringBuffer append(CharSequence s, int start, int end) /*-[
-      JreStringBuilder_appendCharSequence(&self->delegate_, s, start, end);
+      JreStringBuilder_appendCharSequenceSubset(&self->delegate_, s, start, end);
       return self;
     ]-*/;
 

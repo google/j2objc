@@ -21,6 +21,7 @@
 #include "java/lang/NegativeArraySizeException.h"
 #include "java/lang/NullPointerException.h"
 #include "java/lang/OutOfMemoryError.h"
+#include "java/lang/StringBuffer.h"
 #include "java/lang/StringIndexOutOfBoundsException.h"
 #include "java/util/Arrays.h"
 #include "java/util/stream/IntStream.h"
@@ -28,6 +29,10 @@
 #include "java_lang_Long.h"
 #include "libcore/util/EmptyArray.h"
 #include "sun/misc/FloatingDecimal.h"
+
+// AbstractStringBuilder is abstract and doesn't implement all members of Appendable or
+// CharSequence.
+#pragma clang diagnostic ignored "-Wprotocol"
 
 // Full name as expected by generated metadata.
 #define JavaLangAbstractStringBuilder_INITIAL_CAPACITY 16
@@ -63,23 +68,6 @@ static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
 
 - (IOSCharArray *)getValue {
   return [IOSCharArray arrayWithChars:delegate_.buffer_ count:delegate_.count_];
-}
-
-- (void)setWithCharArray:(IOSCharArray *)val
-                 withInt:(jint)len {
-  if (val == nil) {
-    val = LibcoreUtilEmptyArray_get_CHAR();
-  }
-  if (((IOSCharArray *) nil_chk(val))->size_ < len) {
-    @throw [[[JavaIoInvalidObjectException alloc] initWithNSString:@"count out of range"]
-        autorelease];
-  }
-  if (len > delegate_.bufferSize_) {
-    free(delegate_.buffer_);
-    NewBuffer(&delegate_, len);
-  }
-  memcpy(delegate_.buffer_, val->buffer_, len * sizeof(jchar));
-  delegate_.count_ = len;
 }
 
 void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
@@ -156,6 +144,16 @@ void JreStringBuilder_appendBuffer(JreStringBuilder *sb, const unichar *buffer, 
   sb->count_ = newCount;
 }
 
+void JreStringBuilder_appendStringBuffer(JreStringBuilder *sb, JavaLangStringBuffer *toAppend) {
+  if (toAppend) {
+    @synchronized(toAppend) {
+      JreStringBuilder_appendBuffer(sb, toAppend->delegate_.buffer_, toAppend->delegate_.count_);
+    }
+  } else {
+    JreStringBuilder_appendNull(sb);
+  }
+}
+
 void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars) {
   nil_chk(chars);
   JreStringBuilder_appendBuffer(sb, chars->buffer_, chars->size_);
@@ -185,7 +183,15 @@ void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string) {
   sb->count_ = newCount;
 }
 
-void JreStringBuilder_appendCharSequence(
+void JreStringBuilder_appendCharSequence(JreStringBuilder *sb, id<JavaLangCharSequence> s) {
+  if (s) {
+    JreStringBuilder_appendCharSequenceSubset(sb, s, 0, [s length]);
+  } else {
+    JreStringBuilder_appendNull(sb);
+  }
+}
+
+void JreStringBuilder_appendCharSequenceSubset(
     JreStringBuilder *sb, id<JavaLangCharSequence> s, jint start, jint end) {
   if (s == nil) {
     s = @"null";
@@ -683,23 +689,6 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
       delegate_.buffer_, 0, delegate_.count_, index, codePointOffset);
 }
 
-- (JavaLangAbstractStringBuilder *)appendWithChar:(jchar)c{
-  JreStringBuilder_appendChar(&self->delegate_, c);
-  return self;
-}
-
-- (JavaLangAbstractStringBuilder *)appendWithCharArray:(IOSCharArray *)str
-                                               withInt:(jint)offset
-                                               withInt:(jint)len{
-  JreStringBuilder_appendCharArraySubset(&self->delegate_, str, offset, len);
-  return self;
-}
-
-- (JavaLangAbstractStringBuilder *)appendWithNSString:(NSString *)str {
-  JreStringBuilder_appendString(&self->delegate_, str);
-  return self;
-}
-
 // Default methods in java.lang.CharSequence.
 - (id<JavaUtilStreamIntStream>)chars {
   return JavaLangCharSequence_chars(self);
@@ -740,55 +729,23 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "V", 0x1, 1, 0, -1, -1, -1, -1 },
-    { NULL, "V", 0x0, 2, 0, -1, -1, -1, -1 },
     { NULL, "V", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 3, 0, -1, -1, -1, -1 },
-    { NULL, "C", 0x1, 4, 0, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 2, 0, -1, -1, -1, -1 },
+    { NULL, "C", 0x1, 3, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 4, 0, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 5, 0, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 6, 0, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 7, 8, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 9, 8, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 10, 11, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 12, 13, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 15, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 16, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 17, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x0, 14, 18, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 19, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 20, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 21, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 22, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 23, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 24, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 0, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 25, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 26, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 14, 27, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 28, 8, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 29, 0, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 30, 0, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 31, 32, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 33, 0, -1, -1, -1, -1 },
-    { NULL, "LJavaLangCharSequence;", 0x1, 34, 8, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 33, 8, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 36, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 37, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 38, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 39, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 40, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 41, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 42, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 13, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 8, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 43, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 44, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, 35, 45, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 46, 16, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 46, 47, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 48, 16, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 48, 47, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAbstractStringBuilder;", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x401, 49, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 6, 7, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 8, 7, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 9, 10, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 11, 12, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 13, 0, -1, -1, -1, -1 },
+    { NULL, "LJavaLangCharSequence;", 0x1, 14, 7, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 13, 7, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 15, 16, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 15, 17, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 18, 16, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 18, 17, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x401, 19, -1, -1, -1, -1, -1 },
     { NULL, "[C", 0x10, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
@@ -798,73 +755,33 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   methods[2].selector = @selector(length);
   methods[3].selector = @selector(capacity);
   methods[4].selector = @selector(ensureCapacityWithInt:);
-  methods[5].selector = @selector(expandCapacityWithInt:);
-  methods[6].selector = @selector(trimToSize);
-  methods[7].selector = @selector(setLengthWithInt:);
-  methods[8].selector = @selector(charAtWithInt:);
-  methods[9].selector = @selector(codePointAtWithInt:);
-  methods[10].selector = @selector(codePointBeforeWithInt:);
-  methods[11].selector = @selector(codePointCountWithInt:withInt:);
-  methods[12].selector = @selector(offsetByCodePointsWithInt:withInt:);
-  methods[13].selector = @selector(getCharsWithInt:withInt:withCharArray:withInt:);
-  methods[14].selector = @selector(setCharAtWithInt:withChar:);
-  methods[15].selector = @selector(appendWithId:);
-  methods[16].selector = @selector(appendWithNSString:);
-  methods[17].selector = @selector(appendWithJavaLangStringBuffer:);
-  methods[18].selector = @selector(appendWithJavaLangAbstractStringBuilder:);
-  methods[19].selector = @selector(appendWithJavaLangCharSequence:);
-  methods[20].selector = @selector(appendWithJavaLangCharSequence:withInt:withInt:);
-  methods[21].selector = @selector(appendWithCharArray:);
-  methods[22].selector = @selector(appendWithCharArray:withInt:withInt:);
-  methods[23].selector = @selector(appendWithBoolean:);
-  methods[24].selector = @selector(appendWithChar:);
-  methods[25].selector = @selector(appendWithInt:);
-  methods[26].selector = @selector(appendWithLong:);
-  methods[27].selector = @selector(appendWithFloat:);
-  methods[28].selector = @selector(appendWithDouble:);
-  methods[29].selector = @selector(delete__WithInt:withInt:);
-  methods[30].selector = @selector(appendCodePointWithInt:);
-  methods[31].selector = @selector(deleteCharAtWithInt:);
-  methods[32].selector = @selector(replaceWithInt:withInt:withNSString:);
-  methods[33].selector = @selector(substringWithInt:);
-  methods[34].selector = @selector(subSequenceFrom:to:);
-  methods[35].selector = @selector(substringWithInt:withInt:);
-  methods[36].selector = @selector(insertWithInt:withCharArray:withInt:withInt:);
-  methods[37].selector = @selector(insertWithInt:withId:);
-  methods[38].selector = @selector(insertWithInt:withNSString:);
-  methods[39].selector = @selector(insertWithInt:withCharArray:);
-  methods[40].selector = @selector(insertWithInt:withJavaLangCharSequence:);
-  methods[41].selector = @selector(insertWithInt:withJavaLangCharSequence:withInt:withInt:);
-  methods[42].selector = @selector(insertWithInt:withBoolean:);
-  methods[43].selector = @selector(insertWithInt:withChar:);
-  methods[44].selector = @selector(insertWithInt:withInt:);
-  methods[45].selector = @selector(insertWithInt:withLong:);
-  methods[46].selector = @selector(insertWithInt:withFloat:);
-  methods[47].selector = @selector(insertWithInt:withDouble:);
-  methods[48].selector = @selector(indexOfWithNSString:);
-  methods[49].selector = @selector(indexOfWithNSString:withInt:);
-  methods[50].selector = @selector(lastIndexOfWithNSString:);
-  methods[51].selector = @selector(lastIndexOfWithNSString:withInt:);
-  methods[52].selector = @selector(reverse);
-  methods[53].selector = @selector(description);
-  methods[54].selector = @selector(getValue);
+  methods[5].selector = @selector(trimToSize);
+  methods[6].selector = @selector(setLengthWithInt:);
+  methods[7].selector = @selector(charAtWithInt:);
+  methods[8].selector = @selector(codePointAtWithInt:);
+  methods[9].selector = @selector(codePointBeforeWithInt:);
+  methods[10].selector = @selector(codePointCountWithInt:withInt:);
+  methods[11].selector = @selector(offsetByCodePointsWithInt:withInt:);
+  methods[12].selector = @selector(getCharsWithInt:withInt:withCharArray:withInt:);
+  methods[13].selector = @selector(setCharAtWithInt:withChar:);
+  methods[14].selector = @selector(substringWithInt:);
+  methods[15].selector = @selector(subSequenceFrom:to:);
+  methods[16].selector = @selector(substringWithInt:withInt:);
+  methods[17].selector = @selector(indexOfWithNSString:);
+  methods[18].selector = @selector(indexOfWithNSString:withInt:);
+  methods[19].selector = @selector(lastIndexOfWithNSString:);
+  methods[20].selector = @selector(lastIndexOfWithNSString:withInt:);
+  methods[21].selector = @selector(description);
+  methods[22].selector = @selector(getValue);
   #pragma clang diagnostic pop
-  static const J2ObjcFieldInfo fields[] = {
-    { "value_", "[C", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },
-    { "count_", "I", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },
-  };
   static const void *ptrTable[] = {
-    "I", "ensureCapacity", "expandCapacity", "setLength", "charAt", "codePointAt",
-    "codePointBefore", "codePointCount", "II", "offsetByCodePoints", "getChars", "II[CI",
-    "setCharAt", "IC", "append", "LNSObject;", "LNSString;", "LJavaLangStringBuffer;",
-    "LJavaLangAbstractStringBuilder;", "LJavaLangCharSequence;", "LJavaLangCharSequence;II", "[C",
-    "[CII", "Z", "C", "J", "F", "D", "delete", "appendCodePoint", "deleteCharAt", "replace",
-    "IILNSString;", "substring", "subSequence", "insert", "I[CII", "ILNSObject;", "ILNSString;",
-    "I[C", "ILJavaLangCharSequence;", "ILJavaLangCharSequence;II", "IZ", "IJ", "IF", "ID",
-    "indexOf", "LNSString;I", "lastIndexOf", "toString" };
+    "I", "ensureCapacity", "setLength", "charAt", "codePointAt", "codePointBefore",
+    "codePointCount", "II", "offsetByCodePoints", "getChars", "II[CI", "setCharAt", "IC",
+    "substring", "subSequence", "indexOf", "LNSString;", "LNSString;I", "lastIndexOf", "toString"
+  };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
-    "AbstractStringBuilder", "java.lang", ptrTable, methods, fields, 7, 0x400, 55, 2, -1, -1, -1,
-    -1, -1 };
+    "AbstractStringBuilder", "java.lang", ptrTable, methods, NULL, 7, 0x400, 23, 0, -1, -1, -1, -1,
+    -1 };
   return &_JavaLangAbstractStringBuilder;
 }
 

@@ -24,9 +24,6 @@ package java.lang;
  */
 abstract class AbstractStringBuilder implements Appendable, CharSequence {
 
-  char[] value;
-  int count;
-
   AbstractStringBuilder() {}
   AbstractStringBuilder(int i) {}
 
@@ -40,8 +37,6 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
 
   public void ensureCapacity(int i) {}
 
-  void expandCapacity(int i) {}
-
   public void trimToSize() {}
 
   public void setLength(int i) {}
@@ -53,7 +48,7 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
   public int codePointAt(int i) {
     return 0;
   }
-  
+
   public int codePointBefore(int i) {
     return 0;
   }
@@ -70,78 +65,6 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
 
   public void setCharAt(int i, char c) {}
 
-  public AbstractStringBuilder append(Object o) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(String s) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(StringBuffer sb) {
-    return null;
-  }
-
-  AbstractStringBuilder append(AbstractStringBuilder sb) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(CharSequence cs) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(CharSequence cs, int i, int j) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(char[] buf) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(char[] buf, int i, int j) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(boolean b) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(char c) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(int i) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(long l) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(float f) {
-    return null;
-  }
-
-  public AbstractStringBuilder append(double d) {
-    return null;
-  }
-
-  public AbstractStringBuilder delete(int i, int j) {
-    return null;
-  }
-
-  public AbstractStringBuilder appendCodePoint(int i) {
-    return null;
-  }
-
-  public AbstractStringBuilder deleteCharAt(int i) {
-    return null;
-  }
-
-  public AbstractStringBuilder replace(int i, int j, String s) {
-    return null;
-  }
-
   public String substring(int i) {
     return null;
   }
@@ -151,54 +74,6 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
   }
 
   public String substring(int i, int j) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, char[] buf, int j, int k) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, Object o) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, String s) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, char[] buf) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, CharSequence cs) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, CharSequence cs, int j, int k) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, boolean b) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, char c) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, int j) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, long l) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, float f) {
-    return null;
-  }
-
-  public AbstractStringBuilder insert(int i, double d) {
     return null;
   }
 
@@ -216,10 +91,6 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
 
   public int lastIndexOf(String s, int i) {
     return 0;
-  }
-
-  public AbstractStringBuilder reverse() {
-    return null;
   }
 
   public abstract String toString();
