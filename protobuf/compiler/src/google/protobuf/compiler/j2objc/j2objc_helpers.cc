@@ -42,6 +42,7 @@
 #include "third_party/abcl/strings/escaping.h"
 #include "third_party/abcl/strings/numbers.h"
 #include "third_party/abcl/strings/string_view.h"
+#include "third_party/abcl/strings/string_view_utils.h"
 #include "third_party/abcl/strings/strip.h"
 #include "third_party/abcl/strings/util.h"
 
@@ -126,7 +127,7 @@ string UnderscoresToCamelCaseImpl(const string& input, bool cap_next_letter) {
 }
 
 string StripProto(const string& filename) {
-  if (HasSuffixString(filename, ".protodevel")) {
+  if (strings::EndsWith(filename, ".protodevel")) {
     return StripSuffixString(filename, ".protodevel");
   } else {
     return StripSuffixString(filename, ".proto");
