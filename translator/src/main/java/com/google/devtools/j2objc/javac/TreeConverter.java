@@ -120,6 +120,7 @@ import com.google.j2objc.annotations.Property;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree.Kind;
+import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
@@ -166,7 +167,7 @@ public class TreeConverter {
           sourceFilePath, mainTypeName, source);
       PackageElement pkg = javacUnit.packge != null ? javacUnit.packge : env.defaultPackage();
       converter.newUnit.setPackage(
-          converter.convertPackage((JCTree.JCExpression) javacUnit.getPackageName(), pkg));
+          converter.convertPackage(pkg, Trees.instance(env.task())));
       for (JCTree type : javacUnit.getTypeDecls()) {
         TreeNode newNode = converter.convert(type);
         if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
@@ -1019,15 +1020,15 @@ public class TreeConverter {
         .setToken(getTreeSource(node));
   }
 
-  private PackageDeclaration convertPackage(JCTree.JCExpression node, PackageElement pkg) {
-    // javac doesn't include the "package" token in its AST, just the package name.
+  private PackageDeclaration convertPackage(PackageElement pkg, Trees trees) {
+    JCTree node = (JCTree) trees.getTree(pkg);
     PackageDeclaration newNode = new PackageDeclaration()
         .setPackageElement(pkg);
     for (JCTree.JCAnnotation pkgAnnotation : unit.getPackageAnnotations()) {
       newNode.addAnnotation((Annotation) convert(pkgAnnotation));
     }
     if (unit.sourcefile.toUri().getPath().endsWith("package-info.java")) {
-      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(unit, pkg));
+      newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, pkg));
     }
     return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, getPosition(node)))
         .setPosition(SourcePosition.NO_POSITION);
