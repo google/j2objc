@@ -132,6 +132,9 @@ public class SwitchRewriterTest extends GenerationTest {
 
   // Verify Java 7's switch statements with strings.
   public void testStringSwitchStatement() throws IOException {
+    addSourceFile("class Foo { static final String TEST = \"test1\"; }", "Foo.java");
+    addSourceFile("interface Bar { String TEST = \"test2\"; }", "Bar.java");
+    addSourcesToSourcepaths();
     String translation = translateSourceFile(
         "public class Test { "
         + "static final String constant = \"mumble\";"
@@ -140,17 +143,24 @@ public class SwitchRewriterTest extends GenerationTest {
         + "    case \"foo\": return 42;"
         + "    case \"bar\": return 666;"
         + "    case constant: return -1;"
+        + "    case Foo.TEST: return -2;"
+        + "    case Bar.TEST: return -3;"
         + "    default: return -1;"
         + "  }}}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "switch (JreIndexOfStr(s, (id[]){ @\"foo\", @\"bar\", Test_constant }, 3)) {",
+        "switch (JreIndexOfStr(s, (id[]){ @\"foo\", "
+            + "@\"bar\", Test_constant, Foo_TEST, Bar_TEST }, 5)) {",
         "  case 0:",
         "  return 42;",
         "  case 1:",
         "  return 666;",
         "  case 2:",
         "  return -1;",
+        "  case 3:",
+        "  return -2;",
+        "  case 4:",
+        "  return -3;",
         "  default:",
         "  return -1;",
         "}");

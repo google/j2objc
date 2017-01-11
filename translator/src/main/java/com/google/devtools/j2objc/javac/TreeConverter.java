@@ -739,8 +739,7 @@ public class TreeConverter {
             .setElement(node.sym);
       }
     }
-    if (ElementUtil.isPrimitiveConstant((VariableElement) node.sym)
-        && ElementUtil.isStatic(node.sym)) {
+    if (ElementUtil.isConstant((VariableElement) node.sym) && ElementUtil.isStatic(node.sym)) {
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
           .setQualifier((Name) convert(selected))
