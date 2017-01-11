@@ -275,10 +275,16 @@ $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
+ifeq ($(shell uname), Linux)
+MKTEMP_CMD = mktemp -d --tmpdir j2objc-jre_emul.XXXXXX
+else
+MKTEMP_CMD = mktemp -d -t j2objc-jre_emul
+endif
+
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(LAMBDA_SOURCES) \
   $(SOURCE_RETENTION_ANNOTATIONS) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
-	@stage_dir=`mktemp -d -t j2objc-jre_emul`; \
+	@stage_dir=`${MKTEMP_CMD}`; \
     ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
       -bootclasspath $(STUBS_DIR):$(LAMBDA_DIR) \
 	    -classpath $(ANNOTATIONS_JAR) \
