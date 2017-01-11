@@ -70,7 +70,7 @@ id makeException(Class exceptionClass) {
 }
 
 // TODO(tball): remove static method wrappers when reflection invocation calls functions directly.
-+ (NSString *)valueOf:(id<NSObject>)obj {
++ (NSString *)java_valueOf:(id<NSObject>)obj {
   return NSString_java_valueOf_((id)obj);
 }
 
@@ -78,7 +78,7 @@ NSString *NSString_java_valueOf_(id obj) {
   return obj ? [obj description] : @"null";
 }
 
-+ (NSString *)valueOfBool:(jboolean)value {
++ (NSString *)java_valueOfBool:(jboolean)value {
   return NSString_java_valueOfBool_(value);
 }
 
@@ -86,7 +86,7 @@ NSString *NSString_java_valueOfBool_(jboolean value) {
   return value ? @"true" : @"false";
 }
 
-+ (NSString *)valueOfChar:(jchar)value {
++ (NSString *)java_valueOfChar:(jchar)value {
   return NSString_java_valueOfChar_(value);
 }
 
@@ -98,7 +98,7 @@ NSString *NSString_java_valueOfChars_(IOSCharArray *data) {
   return NSString_java_valueOfChars_offset_count_(data, 0, data->size_);
 }
 
-+ (NSString *)valueOfChars:(IOSCharArray *)data {
++ (NSString *)java_valueOfChars:(IOSCharArray *)data {
   return NSString_java_valueOfChars_(data);
 }
 
@@ -133,13 +133,13 @@ NSString *NSString_java_valueOfChars_offset_count_(IOSCharArray *data, jint offs
   return result;
 }
 
-+ (NSString *)valueOfChars:(IOSCharArray *)data
-                    offset:(int)offset
-                     count:(int)count {
++ (NSString *)java_valueOfChars:(IOSCharArray *)data
+                         offset:(int)offset
+                          count:(int)count {
   return NSString_java_valueOfChars_offset_count_(data, offset, count);
 }
 
-+ (NSString *)valueOfDouble:(double)value {
++ (NSString *)java_valueOfDouble:(double)value {
   return NSString_java_valueOfDouble_(value);
 }
 
@@ -147,7 +147,7 @@ NSString *NSString_java_valueOfDouble_(jdouble value) {
   return JavaLangDouble_toStringWithDouble_(value);
 }
 
-+ (NSString *)valueOfFloat:(float)value {
++ (NSString *)java_valueOfFloat:(float)value {
   return NSString_java_valueOfFloat_(value);
 }
 
@@ -155,7 +155,7 @@ NSString *NSString_java_valueOfFloat_(jfloat value) {
   return JavaLangFloat_toStringWithFloat_(value);
 }
 
-+ (NSString *)valueOfInt:(int)value {
++ (NSString *)java_valueOfInt:(int)value {
   return NSString_java_valueOfInt_(value);
 }
 
@@ -163,7 +163,7 @@ NSString *NSString_java_valueOfInt_(jint value) {
   return JavaLangInteger_toStringWithInt_(value);
 }
 
-+ (NSString *)valueOfLong:(long long int)value {
++ (NSString *)java_valueOfLong:(long long int)value {
   return NSString_java_valueOfLong_(value);
 }
 

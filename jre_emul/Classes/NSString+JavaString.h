@@ -43,33 +43,33 @@
 @interface NSString (JavaString) <JavaIoSerializable, JavaLangComparable, JavaLangCharSequence>
 
 // String.valueOf(Object)
-+ (NSString *)valueOf:(id<NSObject>)obj;
++ (NSString *)java_valueOf:(id<NSObject>)obj;
 
 // String.valueOf(boolean)
-+ (NSString *)valueOfBool:(jboolean)value;
++ (NSString *)java_valueOfBool:(jboolean)value;
 
 // String.valueOf(char)
-+ (NSString *)valueOfChar:(jchar)value;
++ (NSString *)java_valueOfChar:(jchar)value;
 
 // String.valueOf(char[])
-+ (NSString *)valueOfChars:(IOSCharArray *)data;
++ (NSString *)java_valueOfChars:(IOSCharArray *)data;
 
 // String.valueOf(char[], offset, count)
-+ (NSString *)valueOfChars:(IOSCharArray *)data
-                    offset:(int)offset
-                     count:(int)count;
++ (NSString *)java_valueOfChars:(IOSCharArray *)data
+                         offset:(int)offset
+                          count:(int)count;
 
 // String.valueOf(double)
-+ (NSString *)valueOfDouble:(double)value;
++ (NSString *)java_valueOfDouble:(double)value;
 
 // String.valueOf(float)
-+ (NSString *)valueOfFloat:(float)value;
++ (NSString *)java_valueOfFloat:(float)value;
 
 // String.valueOf(int)
-+ (NSString *)valueOfInt:(int)value;
++ (NSString *)java_valueOfInt:(int)value;
 
 // String.valueOf(long)
-+ (NSString *)valueOfLong:(long long int)value;
++ (NSString *)java_valueOfLong:(long long int)value;
 
 // String.getChars(int, int, char[], int)
 - (void)java_getChars:(int)sourceBegin
