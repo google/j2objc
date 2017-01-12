@@ -53,5 +53,6 @@ JAVAC_JAR = tools.jar
 DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
 ASM_JAR = asm-5.0.4.jar
+ASM_SOURCE_JAR = asm-5.0.4-sources.jar
 
 PROTOBUF_JAR = protobuf-java-2.6.1.jar
