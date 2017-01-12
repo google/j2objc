@@ -25,7 +25,6 @@ import com.sun.tools.javac.model.JavacTypes;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.lang.model.element.Element;
@@ -97,19 +96,28 @@ class JavacEnvironment implements ParserEnvironment {
   private ClassSymbol enterClassJavac9(Name className) {
     // TODO(tball): remove reflection use when Java 9 is minimum version.
     try {
-      Field javaBaseField = Names.class.getDeclaredField("java_base");
-      Name javaBaseName = (Name) javaBaseField.get(javacNames);
-
-      Class<?> moduleSymbolCls = Class.forName("com.sun.tools.javac.code.Symbol.MethodSymbol");
-      Method enterModule = Symtab.class.getDeclaredMethod("enterModule", Name.class);
-      Object javaBaseModule = enterModule.invoke(symbolTable, javaBaseName);
-
-      Method enterClass = Symtab.class.getDeclaredMethod("enterClass", moduleSymbolCls, Name.class);
-      return (ClassSymbol) enterClass.invoke(symbolTable, javaBaseModule, className);
-    } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException
-        | InvocationTargetException | IllegalAccessException e) {
+      Method m = Symtab.class.getDeclaredMethod("enterClass", Name.class);
+      return (ClassSymbol) m.invoke(symbolTable, className);
+    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
       return null;
     }
+
+//  TODO(tball): update to this version with -source 1.9.
+//    try {
+//      Field javaBaseField = Names.class.getDeclaredField("java_base");
+//      Name javaBaseName = (Name) javaBaseField.get(javacNames);
+//
+//      Class<?> moduleSymbolCls = Class.forName("com.sun.tools.javac.code.Symbol.MethodSymbol");
+//      Method enterModule = Symtab.class.getDeclaredMethod("enterModule", Name.class);
+//      Object javaBaseModule = enterModule.invoke(symbolTable, javaBaseName);
+//
+//      Method enterClass =
+//          Symtab.class.getDeclaredMethod("enterClass", moduleSymbolCls, Name.class);
+//      return (ClassSymbol) enterClass.invoke(symbolTable, javaBaseModule, className);
+//    } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException
+//        | InvocationTargetException | IllegalAccessException e) {
+//      return null;
+//    }
   }
 
   public Context getContext() {
