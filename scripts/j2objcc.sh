@@ -43,6 +43,7 @@ if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
 fi
 
 declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow -Wno-compare-distinct-pointer-types"
+CC_FLAGS="${CC_FLAGS} -Wno-nullability-completeness"
 declare OBJC="-std=c11"
 declare OTHER_LIBS="-l z -l j2objc_main -l c++"
 declare SYSROOT_PATH="none"
