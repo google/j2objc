@@ -35,7 +35,6 @@
 #include <google/protobuf/compiler/j2objc/j2objc_enum.h>
 
 #include <string>
-#include "third_party/abcl/strings/numbers.h"
 
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 

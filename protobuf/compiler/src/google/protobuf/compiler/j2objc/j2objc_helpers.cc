@@ -38,13 +38,6 @@
 #include <map>
 #include <set>
 #include <sstream>
-#include "third_party/abcl/strings/case.h"
-#include "third_party/abcl/strings/escaping.h"
-#include "third_party/abcl/strings/numbers.h"
-#include "third_party/abcl/strings/string_view.h"
-#include "third_party/abcl/strings/string_view_utils.h"
-#include "third_party/abcl/strings/strip.h"
-#include "third_party/abcl/strings/util.h"
 
 namespace google {
 namespace protobuf {
@@ -127,7 +120,7 @@ string UnderscoresToCamelCaseImpl(const string& input, bool cap_next_letter) {
 }
 
 string StripProto(const string& filename) {
-  if (strings::EndsWith(filename, ".protodevel")) {
+  if (HasSuffixString(filename, ".protodevel")) {
     return StripSuffixString(filename, ".protodevel");
   } else {
     return StripSuffixString(filename, ".proto");
