@@ -541,4 +541,17 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  Test_1Local_initWithInt_(self, capture$0);",
         "}");
   }
+
+  public void testGenericConstructorCalledByAnonymousClass() throws IOException {
+    if (!options.isJDT()) {
+      // JDT fails with "could not find constructor".
+      String translation = translateSourceFile(
+          "class Test { <T> Test(T t) {} Test create() { return new Test(\"foo\") {}; } }",
+          "Test", "Test.m");
+      assertTranslatedLines(translation,
+          "void Test_1_initWithId_(Test_1 *self, id t) {",
+          "  Test_initWithId_(self, t);",
+          "}");
+    }
+  }
 }
