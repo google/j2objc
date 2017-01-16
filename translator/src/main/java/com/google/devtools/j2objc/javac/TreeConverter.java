@@ -593,19 +593,6 @@ public class TreeConverter {
   private TreeNode convertClassDeclaration(JCTree.JCClassDecl node) {
     // javac defines all type declarations with JCClassDecl, so differentiate here
     // to support our different declaration nodes.
-    if (node.sym.isAnonymous()) {
-      // TODO(kstanger): See if anonymous classes can follow the same code branch as regular class
-      // declarations.
-      TypeDeclaration newNode = new TypeDeclaration(node.sym);
-      newUnit.getEnv().elementUtil().mapElementType(node.sym, node.type);
-      for (JCTree bodyDecl : node.getMembers()) {
-        Object member = convert(bodyDecl);
-        if (member instanceof BodyDeclaration) {  // Not true for enum constants.
-          newNode.addBodyDeclaration((BodyDeclaration) member);
-        }
-      }
-      return newNode;
-    }
     if (node.sym.getKind() == ElementKind.ANNOTATION_TYPE) {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
     }
@@ -621,6 +608,9 @@ public class TreeConverter {
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
     for (JCTree superInterface : node.getImplementsClause()) {
       newNode.addSuperInterfaceType(Type.newType(nameType(superInterface)));
+    }
+    if (node.sym.isAnonymous()) {
+      newUnit.getEnv().elementUtil().mapElementType(node.sym, node.type);
     }
     return newNode;
   }

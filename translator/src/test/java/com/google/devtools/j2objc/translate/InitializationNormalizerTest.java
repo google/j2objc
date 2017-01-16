@@ -245,4 +245,18 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "private static final int C = A < B ? A : B; }", "Test", "Test.m");
     assertTranslation(translation, "#define Test_C 1");
   }
+  
+  // Verify that code in a double-brace is added to initialize method.
+  public void testDoubleBraceInitialization() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.*; class Test { static final Map<String, String> test = "
+        + "new HashMap<String, String>() {{ put(\"123\", \"123\"); }}; }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "void Test_1_init(Test_1 *self) {",
+        "JavaUtilHashMap_init(self);", 
+        "{",
+        "[self putWithId:@\"123\" withId:@\"123\"];",
+        "}",
+        "}");
+  }
 }
