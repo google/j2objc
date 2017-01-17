@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -40,6 +39,7 @@ import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
@@ -65,99 +65,110 @@ public class InitializationNormalizer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    normalizeMembers(node);
+    new TypeNormalizer(node).normalizeMembers();
   }
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    normalizeMembers(node);
+    new TypeNormalizer(node).normalizeMembers();
   }
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    normalizeMembers(node);
+    new TypeNormalizer(node).normalizeMembers();
   }
 
+  private class TypeNormalizer {
 
-  void normalizeMembers(AbstractTypeDeclaration node) {
-    TypeElement type = node.getTypeElement();
-    List<Statement> initStatements = Lists.newArrayList();
-    List<Statement> classInitStatements = node.getClassInitStatements();
+    private final AbstractTypeDeclaration node;
+    private final TypeElement type;
+    private final List<Statement> initStatements;
+    private final List<Statement> classInitStatements;
+    private int constInitIdx = 0;
 
-    // Scan class, gathering initialization statements in declaration order.
-    Iterator<BodyDeclaration> iterator = node.getBodyDeclarations().iterator();
-    while (iterator.hasNext()) {
-      BodyDeclaration member = iterator.next();
-      switch (member.getKind()) {
-        case INITIALIZER:
-          addInitializer((Initializer) member, initStatements, classInitStatements);
-          iterator.remove();
-          break;
-        case FIELD_DECLARATION:
-          addFieldInitializer((FieldDeclaration) member, initStatements, classInitStatements);
-          break;
-        default:
-          // Fall-through.
-      }
+    private TypeNormalizer(AbstractTypeDeclaration node) {
+      this.node = node;
+      type = node.getTypeElement();
+      initStatements = new ArrayList<>();
+      classInitStatements = node.getClassInitStatements();
     }
 
-    // Update any primary constructors with init statements.
-    if (type.getKind().isClass()) {
-      for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
-        if (isDesignatedConstructor(methodDecl)) {
-          TreeUtil.copyList(initStatements, getInitLocation(methodDecl));
-          addCaptureAssignments(methodDecl, type);
+    private void normalizeMembers() {
+      // Scan class, gathering initialization statements in declaration order.
+      Iterator<BodyDeclaration> iterator = node.getBodyDeclarations().iterator();
+      while (iterator.hasNext()) {
+        BodyDeclaration member = iterator.next();
+        switch (member.getKind()) {
+          case INITIALIZER:
+            addInitializer((Initializer) member);
+            iterator.remove();
+            break;
+          case FIELD_DECLARATION:
+            addFieldInitializer((FieldDeclaration) member);
+            break;
+          default:
+            // Fall-through.
+        }
+      }
+
+      // Update any primary constructors with init statements.
+      if (type.getKind().isClass()) {
+        for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(node)) {
+          if (isDesignatedConstructor(methodDecl)) {
+            TreeUtil.copyList(initStatements, getInitLocation(methodDecl));
+            addCaptureAssignments(methodDecl, type);
+          }
         }
       }
     }
-  }
 
-  /**
-   * Add a static or instance init block's statements to the appropriate list
-   * of initialization statements.
-   */
-  private void addInitializer(Initializer initializer, List<Statement> initStatements,
-      List<Statement> classInitStatements) {
-    List<Statement> list =
-        Modifier.isStatic(initializer.getModifiers()) ? classInitStatements : initStatements;
-    list.add(TreeUtil.remove(initializer.getBody()));
-  }
+    /**
+     * Add a static or instance init block's statements to the appropriate list
+     * of initialization statements.
+     */
+    private void addInitializer(Initializer initializer) {
+      List<Statement> list =
+          Modifier.isStatic(initializer.getModifiers()) ? classInitStatements : initStatements;
+      list.add(TreeUtil.remove(initializer.getBody()));
+    }
 
-  /**
-   * Strip field initializers, convert them to assignment statements, and
-   * add them to the appropriate list of initialization statements.
-   */
-  private void addFieldInitializer(
-      FieldDeclaration field, List<Statement> initStatements, List<Statement> classInitStatements) {
-    for (VariableDeclarationFragment frag : field.getFragments()) {
-      if (frag.getInitializer() != null) {
-        if (ElementUtil.isInstanceVar(frag.getVariableElement())) {
-          // always initialize instance variables, since they can't be constants
-          initStatements.add(makeAssignmentStatement(frag));
-        } else if (requiresInitializer(frag)) {
-          classInitStatements.add(makeAssignmentStatement(frag));
+    /**
+     * Strip field initializers, convert them to assignment statements, and
+     * add them to the appropriate list of initialization statements.
+     */
+    private void addFieldInitializer(FieldDeclaration field) {
+      for (VariableDeclarationFragment frag : field.getFragments()) {
+        if (frag.getInitializer() != null) {
+          handleFieldInitializer(frag);
         }
       }
     }
-  }
 
-  /**
-   * Determines if a variable declaration requires initialization. (ie. cannot
-   * be assigned to a literal value in ObjC.
-   */
-  private boolean requiresInitializer(VariableDeclarationFragment frag) {
-    // If the initializer is not a literal, but has a constant value, convert it
-    // to a literal. (as javac would do)
-    Object constantValue = frag.getInitializer().getConstantValue();
-    if (constantValue != null) {
+    /**
+     * Moves the field initializer to the appropriate list of initializer statements.
+     */
+    private void handleFieldInitializer(VariableDeclarationFragment frag) {
+      if (ElementUtil.isInstanceVar(frag.getVariableElement())) {
+        // always initialize instance variables, since they can't be constants
+        initStatements.add(makeAssignmentStatement(frag));
+        return;
+      }
+      Object constantValue = frag.getInitializer().getConstantValue();
+      if (constantValue == null) {
+        // The initializer does not have a constant value. Move it to the class initializer.
+        classInitStatements.add(makeAssignmentStatement(frag));
+        return;
+      }
       if (constantValue instanceof String
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
-        return true;
+        // String constant that can't be an ObjC literal. Move it to the class initializer but order
+        // constants such as this before other init statements.
+        classInitStatements.add(constInitIdx++, makeAssignmentStatement(frag));
+        return;
       }
+      // The initializer has a constant value, convert it to a literal. (as javac would do)
       frag.setInitializer(TreeUtil.newLiteral(constantValue, typeUtil));
-      return false;
     }
-    return true;
   }
 
   private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {
