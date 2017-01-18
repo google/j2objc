@@ -3277,8 +3277,6 @@
 		06F2903118972CCF00676F1D /* AbstractMethodError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractMethodError.m; path = build_result/Classes/java/lang/AbstractMethodError.m; sourceTree = "<group>"; };
 		06F2903218972CCF00676F1D /* Appendable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Appendable.m; path = build_result/Classes/java/lang/Appendable.m; sourceTree = "<group>"; };
 		06F2903318972CCF00676F1D /* AutoCloseable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AutoCloseable.m; path = build_result/Classes/java/lang/AutoCloseable.m; sourceTree = "<group>"; };
-		06F2903418972CCF00676F1D /* HexStringParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HexStringParser.h; path = build_result/Classes/java/lang/HexStringParser.h; sourceTree = "<group>"; };
-		06F2903518972CCF00676F1D /* HexStringParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HexStringParser.m; path = build_result/Classes/java/lang/HexStringParser.m; sourceTree = "<group>"; };
 		06F2903618972CCF00676F1D /* IncompatibleClassChangeError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IncompatibleClassChangeError.h; path = build_result/Classes/java/lang/IncompatibleClassChangeError.h; sourceTree = "<group>"; };
 		06F2903718972CD000676F1D /* IncompatibleClassChangeError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IncompatibleClassChangeError.m; path = build_result/Classes/java/lang/IncompatibleClassChangeError.m; sourceTree = "<group>"; };
 		06F2903818972CD000676F1D /* NoSuchFieldError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldError.h; path = build_result/Classes/java/lang/NoSuchFieldError.h; sourceTree = "<group>"; };
@@ -4688,8 +4686,6 @@
 				06721A4E1559C99E00645E1B /* Hashtable.m */,
 				06C73EE219180D6D001D3CC8 /* HeapBufferIterator.h */,
 				06C73EE319180D6D001D3CC8 /* HeapBufferIterator.m */,
-				06F2903418972CCF00676F1D /* HexStringParser.h */,
-				06F2903518972CCF00676F1D /* HexStringParser.m */,
 				0649A7031AE0796500DE2494 /* HostnameVerifier.h */,
 				0649A7041AE0796500DE2494 /* HostnameVerifier.m */,
 				06C73DC319180C8A001D3CC8 /* HttpCookie.h */,

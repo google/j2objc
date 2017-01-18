@@ -467,7 +467,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
-  java/lang/HexStringParser.java \
   java/lang/JavaLangAccess.java \
   java/math/BitLevel.java \
   java/math/Conversion.java \
