@@ -550,9 +550,14 @@ public class Options {
       sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
     }
 
-    // Java 6 had a 1G max heap limit, removed in Java 7.
-    if (batchTranslateMaximum == -1) {  // Not set by flag.
-      batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
+    if (isJDT()) {
+      // Java 6 had a 1G max heap limit, removed in Java 7.
+      if (batchTranslateMaximum == -1) {  // Not set by flag.
+        batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
+      }
+    } else {
+      // javac performs best when all sources are compiled by one task.
+      batchTranslateMaximum = Integer.MAX_VALUE;
     }
 
     int nFiles = args.length - nArg;
@@ -865,7 +870,7 @@ public class Options {
   public boolean dumpAST() {
     return dumpAST;
   }
-  
+
   public boolean reportJavadocWarnings() {
     return reportJavadocWarnings;
   }

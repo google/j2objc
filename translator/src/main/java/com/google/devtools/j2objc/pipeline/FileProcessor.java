@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
@@ -26,6 +25,7 @@ import com.google.devtools.j2objc.util.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +45,7 @@ abstract class FileProcessor {
   protected final Options options;
 
   private final int batchSize;
-  private final Set<ProcessingContext> batchInputs;
+  private final Set<ProcessingContext> batchInputs = new HashSet<>();
 
   private final boolean doBatching;
 
@@ -53,7 +53,6 @@ abstract class FileProcessor {
     this.parser = Preconditions.checkNotNull(parser);
     this.options = parser.options();
     batchSize = options.batchTranslateMaximum();
-    batchInputs = Sets.newLinkedHashSetWithExpectedSize(batchSize);
     doBatching = batchSize > 0;
     if (options.buildClosure()) {
       // Should be an error if the user specifies this with --build-closure
