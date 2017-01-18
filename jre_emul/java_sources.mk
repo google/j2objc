@@ -469,8 +469,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/EmulatedFieldsForLoading.java \
   java/lang/HexStringParser.java \
   java/lang/JavaLangAccess.java \
-  java/lang/RealToString.java \
-  java/lang/StringToReal.java \
   java/math/BitLevel.java \
   java/math/Conversion.java \
   java/math/Division.java \

@@ -42,7 +42,6 @@ IOS_PUBLIC_OBJS = \
 	jni.o
 
 IOS_PRIVATE_OBJS = \
-	cbigint.o \
 	DebugUtils.o \
 	FastPointerLookup.o \
 	IOSArrayClass.o \
@@ -59,9 +58,7 @@ IOS_PRIVATE_OBJS = \
 	java_lang_IntegralToString.o \
 	java_lang_Long.o \
 	java_lang_Math.o \
-	java_lang_RealToString.o \
 	java_lang_StrictMath.o \
-	java_lang_StringToReal.o \
 	java_util_regex_Matcher.o \
 	java_util_regex_Pattern.o \
 	sun_misc_Unsafe.o
