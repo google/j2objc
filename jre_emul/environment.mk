@@ -60,7 +60,6 @@ ANDROID_PLATFORM = android/platform
 ANDROID_CORE_ROOT = $(ANDROID_BASE)/frameworks/base/core/java
 ANDROID_CORE_TESTS_ROOT = $(ANDROID_BASE)/frameworks/base/core/tests/coretests/src
 LIBCORE_BASE = $(ANDROID_BASE)/libcore
-ANDROID_DALVIK_ROOT = $(LIBCORE_BASE)/dalvik/src/main/java
 ANDROID_JSON_ROOT = $(LIBCORE_BASE)/json/src/main/java
 ANDROID_JSON_TEST_ROOT = $(LIBCORE_BASE)/json/src/test/java
 ANDROID_LUNI_ROOT = $(LIBCORE_BASE)/luni/src/main/java
@@ -75,6 +74,7 @@ MOCKWEBSERVER_ROOT = $(ANDROID_PLATFORM)/external/mockwebserver/src/main/java
 # OpenJDK migration definitions.
 # TODO(tball): rename to above names when migration is complete.
 NEW_LIBCORE_BASE = $(ANDROID_PLATFORM)/libcore
+ANDROID_DALVIK_ROOT = $(NEW_LIBCORE_BASE)/dalvik/src/main/java
 NEW_ANDROID_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/main/java
 ANDROID_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/main/java
 J2OBJC_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/objc/java

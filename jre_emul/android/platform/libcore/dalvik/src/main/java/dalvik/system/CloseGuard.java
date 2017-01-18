@@ -40,6 +40,7 @@ package dalvik.system;
  *
  *       protected void finalize() throws Throwable {
  *           try {
+ *               // Note that guard could be null if the constructor threw.
  *               if (guard != null) {
  *                   guard.warnIfOpen();
  *               }
@@ -76,6 +77,7 @@ package dalvik.system;
  *
  *       protected void finalize() throws Throwable {
  *           try {
+ *               // Note that guard could be null if the constructor threw.
  *               if (guard != null) {
  *                   guard.warnIfOpen();
  *               }
@@ -93,12 +95,6 @@ package dalvik.system;
  * not have a reference to the object to cleanup explicitly. When used
  * in a method, the call to {@code open} should occur just after
  * resource acquisition.
- *
- * <p>
- *
- * Note that the null check on {@code guard} in the finalizer is to
- * cover cases where a constructor throws an exception causing the
- * {@code guard} to be uninitialized.
  *
  * @hide
  */
@@ -123,6 +119,16 @@ public final class CloseGuard {
     private static volatile Reporter REPORTER = new DefaultReporter();
 
     /**
+     * The default {@link Tracker}.
+     */
+    private static final DefaultTracker DEFAULT_TRACKER = new DefaultTracker();
+
+    /**
+     * Hook for customizing how CloseGuard issues are tracked.
+     */
+    private static volatile Tracker currentTracker = DEFAULT_TRACKER;
+
+    /**
      * Returns a CloseGuard instance. If CloseGuard is enabled, {@code
      * #open(String)} can be used to set up the instance to warn on
      * failure to close. If CloseGuard is disabled, a non-null no-op
@@ -144,6 +150,13 @@ public final class CloseGuard {
     }
 
     /**
+     * True if CloseGuard mechanism is enabled.
+     */
+    public static boolean isEnabled() {
+        return ENABLED;
+    }
+
+    /**
      * Used to replace default Reporter used to warn of CloseGuard
      * violations. Must be non-null.
      */
@@ -159,6 +172,32 @@ public final class CloseGuard {
      */
     public static Reporter getReporter() {
         return REPORTER;
+    }
+
+    /**
+     * Sets the {@link Tracker} that is notified when resources are allocated and released.
+     *
+     * <p>This is only intended for use by {@code dalvik.system.CloseGuardSupport} class and so
+     * MUST NOT be used for any other purposes.
+     *
+     * @throws NullPointerException if tracker is null
+     */
+    public static void setTracker(Tracker tracker) {
+        if (tracker == null) {
+            throw new NullPointerException("tracker == null");
+        }
+        currentTracker = tracker;
+    }
+
+    /**
+     * Returns {@link #setTracker(Tracker) last Tracker that was set}, or otherwise a default
+     * Tracker that does nothing.
+     *
+     * <p>This is only intended for use by {@code dalvik.system.CloseGuardSupport} class and so
+     * MUST NOT be used for any other purposes.
+     */
+    public static Tracker getTracker() {
+        return currentTracker;
     }
 
     private CloseGuard() {}
@@ -183,6 +222,7 @@ public final class CloseGuard {
         }
         String message = "Explicit termination method '" + closer + "' not called";
         allocationSite = new Throwable(message);
+        currentTracker.open(allocationSite);
     }
 
     private Throwable allocationSite;
@@ -192,6 +232,7 @@ public final class CloseGuard {
      * finalization.
      */
     public void close() {
+        currentTracker.close(allocationSite);
         allocationSite = null;
     }
 
@@ -214,10 +255,35 @@ public final class CloseGuard {
     }
 
     /**
+     * Interface to allow customization of tracking behaviour.
+     *
+     * <p>This is only intended for use by {@code dalvik.system.CloseGuardSupport} class and so
+     * MUST NOT be used for any other purposes.
+     */
+    public interface Tracker {
+        void open(Throwable allocationSite);
+        void close(Throwable allocationSite);
+    }
+
+    /**
+     * Default tracker which does nothing special and simply leaves it up to the GC to detect a
+     * leak.
+     */
+    private static final class DefaultTracker implements Tracker {
+        @Override
+        public void open(Throwable allocationSite) {
+        }
+
+        @Override
+        public void close(Throwable allocationSite) {
+        }
+    }
+
+    /**
      * Interface to allow customization of reporting behavior.
      */
-    public static interface Reporter {
-        public void report (String message, Throwable allocationSite);
+    public interface Reporter {
+        void report (String message, Throwable allocationSite);
     }
 
     /**

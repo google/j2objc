@@ -66,6 +66,11 @@ public final class BlockGuard {
         void onNetwork();
 
         /**
+         * Called on unbuffered input/ouput operations.
+         */
+        void onUnbufferedIO();
+
+        /**
          * Returns the policy bitmask, for shipping over Binder calls
          * to remote threads/processes and reinstantiating the policy
          * there.  The bits in the mask are from the DISALLOW_* and
@@ -118,6 +123,7 @@ public final class BlockGuard {
             public void onWriteToDisk() {}
             public void onReadFromDisk() {}
             public void onNetwork() {}
+            public void onUnbufferedIO() {}
             public int getPolicyMask() {
                 return 0;
             }
