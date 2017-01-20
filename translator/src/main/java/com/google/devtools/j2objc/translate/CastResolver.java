@@ -238,6 +238,10 @@ public class CastResolver extends UnitTreeVisitor {
     ExecutableType methodType = (ExecutableType) method.asType();
     String selector = nameTable.getMethodSelector(method);
     for (TypeMirror typeBound : typeUtil.getUpperBounds(receiverType)) {
+      if (TypeUtil.isDeclaredType(typeBound)) {
+        // Normalize any parameterized types before searching for method declarations.
+        typeBound = ((DeclaredType) typeBound).asElement().asType();
+      }
       TypeMirror returnType = null;
       for (DeclaredType inheritedType : typeUtil.getObjcOrderedInheritedTypes(typeBound)) {
         TypeElement inheritedElem = (TypeElement) inheritedType.asElement();

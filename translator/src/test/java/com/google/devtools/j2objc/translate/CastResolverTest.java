@@ -257,4 +257,13 @@ public class CastResolverTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "return b ? ((Test *) a1->foo_) : ((Test *) a2->foo_);");
   }
+
+  public void testCastLocallyParameterizedType() throws IOException {
+    addSourceFile("interface Foo<A> { A foo(); }", "Foo.java");
+    addSourceFile("interface Bar<B extends Number> extends Foo<B> {}", "Bar.java");
+    String translation = translateSourceFile(
+        "class Test { Integer test(Bar<Integer> bar) { return bar.foo(); } }", "Test", "Test.m");
+    // Needs the JavaLangInteger cast.
+    assertTranslation(translation, "return ((JavaLangInteger *) [((id<Bar>) nil_chk(bar)) foo]);");
+  }
 }
