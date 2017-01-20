@@ -1,6 +1,6 @@
 /*
 *******************************************************************************
-*   Copyright (C) 2000-2014, International Business Machines
+*   Copyright (C) 2000-2016, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *******************************************************************************
 *
@@ -51,13 +51,13 @@
  *  @stable ICU 2.4
  */
 #define U_COPYRIGHT_STRING \
-  " Copyright (C) 2014, International Business Machines Corporation and others. All Rights Reserved. "
+  " Copyright (C) 2016, International Business Machines Corporation and others. All Rights Reserved. "
 
 /** The current ICU major version as an integer.
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.4
  */
-#define U_ICU_VERSION_MAJOR_NUM 53
+#define U_ICU_VERSION_MAJOR_NUM 57
 
 /** The current ICU minor version as an integer.
  *  This value will change in the subsequent releases of ICU
@@ -83,7 +83,7 @@
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.6
  */
-#define U_ICU_VERSION_SUFFIX _53
+#define U_ICU_VERSION_SUFFIX _57
 
 /**
  * \def U_DEF2_ICU_ENTRY_POINT_RENAME
@@ -118,19 +118,19 @@
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.4
  */
-#define U_ICU_VERSION "53.1"
+#define U_ICU_VERSION "57.1"
 
 /** The current ICU library major/minor version as a string without dots, for library name suffixes.
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.6
  */
-#define U_ICU_VERSION_SHORT "53"
+#define U_ICU_VERSION_SHORT "57"
 
 #ifndef U_HIDE_INTERNAL_API
 /** Data version in ICU4C.
  * @internal ICU 4.4 Internal Use Only
  **/
-#define U_ICU_DATA_VERSION "53.1"
+#define U_ICU_DATA_VERSION "57.1"
 #endif  /* U_HIDE_INTERNAL_API */
 
 /*===========================================================================
@@ -146,7 +146,7 @@
  * This value may change in subsequent releases of ICU.
  * @stable ICU 2.4
  */
-#define UCOL_RUNTIME_VERSION 8
+#define UCOL_RUNTIME_VERSION 9
 
 /**
  * Collation builder code version.
@@ -157,11 +157,14 @@
  */
 #define UCOL_BUILDER_VERSION 9
 
+#ifndef U_HIDE_DEPRECATED_API
 /**
- * This is the version of collation tailorings.
- * This value may change in subsequent releases of ICU.
- * @stable ICU 2.4
+ * Constant 1.
+ * This was intended to be the version of collation tailorings,
+ * but instead the tailoring data carries a version number.
+ * @deprecated ICU 54
  */
 #define UCOL_TAILORINGS_VERSION 1
+#endif  /* U_HIDE_DEPRECATED_API */
 
 #endif
