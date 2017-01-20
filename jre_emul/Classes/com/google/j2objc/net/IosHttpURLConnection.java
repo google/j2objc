@@ -17,7 +17,6 @@
 
 package com.google.j2objc.net;
 
-import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.io.AsyncPipedNSInputStreamAdapter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -102,7 +101,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
   private final Object getResponseLock = new Object();
 
   // Delegate to handle native security data, to avoid a direct dependency on jre_security.
-  @Weak
   private final SecurityDataHandler securityDataHandler;
 
   private static final int NATIVE_PIPED_STREAM_BUFFER_SIZE = 8192;

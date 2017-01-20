@@ -17,6 +17,7 @@
 
 package com.google.j2objc.net;
 
+import com.google.j2objc.annotations.RetainedWith;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
@@ -40,6 +40,10 @@ import javax.net.ssl.SSLPeerUnverifiedException;
  * whenever possible.
  */
 public class IosHttpsURLConnection extends HttpsURLConnection implements SecurityDataHandler {
+
+  // TODO(tball): extract delegate code into separate private class, which both
+  // IosHttpURLConnection and this class use as a delegate.
+  @RetainedWith
   private final IosHttpURLConnection delegate;
   private final List<Certificate> serverCertificates = new ArrayList<>();
 
