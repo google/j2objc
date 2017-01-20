@@ -76,6 +76,8 @@ MOCKWEBSERVER_ROOT = $(ANDROID_PLATFORM)/external/mockwebserver/src/main/java
 NEW_LIBCORE_BASE = $(ANDROID_PLATFORM)/libcore
 ANDROID_DALVIK_ROOT = $(NEW_LIBCORE_BASE)/dalvik/src/main/java
 NEW_ANDROID_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/main/java
+J2OBJC_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/objc/java
+J2OBJC_LUNI_NATIVE = $(NEW_LIBCORE_BASE)/luni/src/objc/native
 ANDROID_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/main/java
 J2OBJC_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/objc/java
 J2OBJC_OPENJDK_NATIVE = $(NEW_LIBCORE_BASE)/ojluni/src/objc/native
@@ -125,7 +127,7 @@ JRE_SRC_ROOTS = $(JRE_ROOT) $(JRE_CONCURRENT_ROOT) $(JRE_KERNEL_ROOT) \
     $(JRE_MATH_ROOT) $(ANDROID_DALVIK_ROOT) $(ANDROID_LUNI_ROOT) \
     $(ANDROID_XML_ROOT) $(EMULATION_CLASS_DIR) $(JRE_ARCHIVE_ROOT) \
     $(ANDROID_CORE_ROOT) $(ANDROID_JSON_ROOT) $(J2OBJC_ANNOTATIONS_ROOT) \
-    $(JRE_BEANS_ROOT) $(NEW_ANDROID_LUNI_ROOT) $(ANDROID_OPENJDK_ROOT) \
+    $(JRE_BEANS_ROOT) $(NEW_ANDROID_LUNI_ROOT) $(J2OBJC_LUNI_ROOT) $(ANDROID_OPENJDK_ROOT) \
     $(OKIO_ROOT) $(LAMBDA_DIR) $(J2OBJC_OPENJDK_ROOT) $(JRE_NIO_CHAR_ROOT)
 JRE_SRC = $(subst $(eval) ,:,$(JRE_SRC_ROOTS))
 TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
@@ -141,6 +143,9 @@ TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 
+NATIVE_SOURCE_DIRS = $(APPLE_ROOT) $(ANDROID_NATIVE_DIR) $(J2OBJC_OPENJDK_NATIVE) \
+  $(J2OBJC_LUNI_NATIVE)
+
 # Clang warnings
 WARNINGS := $(CC_WARNINGS) $(WARNINGS) -Wno-unused-label -Wno-dangling-else
 
@@ -154,7 +159,7 @@ OBJCFLAGS += $(WARNINGS) -fno-strict-overflow \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I/System/Library/Frameworks/Security.framework/Headers \
-  -I$(ANDROID_INCLUDE) -I$(APPLE_ROOT)
+  -I$(ANDROID_INCLUDE) $(NATIVE_SOURCE_DIRS:%=-I%)
 
 # Only use the icu headers when building for OSX. For IOS these headers should
 # be available in the SDK.
