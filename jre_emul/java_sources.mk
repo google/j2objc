@@ -1304,6 +1304,7 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/kxml2/io/KXmlSerializer.java
 
 JAVA_PUBLIC_SOURCES_ZIP = \
+  java/net/JarURLConnection.java \
   java/util/jar/Attributes.java \
   java/util/jar/JarEntry.java \
   java/util/jar/JarException.java \
@@ -1340,6 +1341,8 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/io/HeapBufferIterator.java \
+  libcore/net/url/JarHandler.java \
+  libcore/net/url/JarURLConnectionImpl.java \
   libcore/util/CountingOutputStream.java
 
 JAVA_PUBLIC_SOURCES_SQL = \

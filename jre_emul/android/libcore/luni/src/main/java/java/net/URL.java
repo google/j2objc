@@ -19,15 +19,14 @@ package java.net;
 
 import com.google.j2objc.LibraryNotLinkedError;
 import com.google.j2objc.net.IosHttpHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Hashtable;
-
 import libcore.net.url.FileHandler;
+import libcore.net.url.JarHandler;
 import libcore.net.url.UrlUtils;
 
 /**
@@ -430,6 +429,13 @@ public final class URL implements Serializable {
             } catch (Exception e) {
                 throw new LibraryNotLinkedError("Https support", "jre_ssl",
                     "JavaxNetSslHttpsURLConnection");
+            }
+        } else if (protocol.equals("jar")) {
+            try {
+                String name = "libcore.net.url.JarHandler";
+                streamHandler = (URLStreamHandler) Class.forName(name).newInstance();
+            } catch (Exception e) {
+                throw new LibraryNotLinkedError("Jar support", "jre_zip", "JavaNetURLConnection");
             }
         }
         if (streamHandler != null) {
