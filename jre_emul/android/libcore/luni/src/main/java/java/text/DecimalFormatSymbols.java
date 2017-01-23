@@ -88,10 +88,10 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         this.decimalSeparator = localeData.decimalSeparator;
         this.groupingSeparator = localeData.groupingSeparator;
         this.patternSeparator = localeData.patternSeparator;
-        this.percent = localeData.percent;
+        this.percent = localeData.percent.charAt(0);
         this.perMill = localeData.perMill;
         this.monetarySeparator = localeData.monetarySeparator;
-        this.minusSign = localeData.minusSign;
+        this.minusSign = localeData.minusSign.charAt(0);
         this.infinity = localeData.infinity;
         this.NaN = localeData.NaN;
         this.exponentSeparator = localeData.exponentSeparator;

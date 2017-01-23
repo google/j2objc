@@ -86,9 +86,9 @@ public final class NativeDecimalFormat implements Cloneable {
     public NativeDecimalFormat(String pattern, LocaleData data) {
         this.nsFormatter = open(pattern, data.currencySymbol,
                 data.decimalSeparator, '#', data.exponentSeparator, data.groupingSeparator,
-                data.infinity, data.internationalCurrencySymbol, data.minusSign,
+                data.infinity, data.internationalCurrencySymbol, data.minusSign.charAt(0),
                 data.monetarySeparator, data.NaN, data.patternSeparator,
-                data.percent, data.perMill, data.zeroDigit);
+                data.percent.charAt(0), data.perMill, data.zeroDigit);
         this.lastPattern = pattern;
     }
 
@@ -170,9 +170,9 @@ public final class NativeDecimalFormat implements Cloneable {
         setDecimalFormatSymbols(this.nsFormatter, localeData.currencySymbol,
             localeData.decimalSeparator, '#', localeData.exponentSeparator,
             localeData.groupingSeparator, localeData.infinity,
-            localeData.internationalCurrencySymbol, localeData.minusSign,
+            localeData.internationalCurrencySymbol, localeData.minusSign.charAt(0),
             localeData.monetarySeparator, localeData.NaN, localeData.patternSeparator,
-            localeData.percent, localeData.perMill, localeData.zeroDigit);
+            localeData.percent.charAt(0), localeData.perMill, localeData.zeroDigit);
     }
 
     public char[] formatBigDecimal(BigDecimal value, FieldPosition field) {

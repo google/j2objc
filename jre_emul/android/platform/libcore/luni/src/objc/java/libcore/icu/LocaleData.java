@@ -19,12 +19,7 @@ package libcore.icu;
 import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.Locale;
-
 import libcore.util.Objects;
-
-/*-[
-#import "IOSLocaleData.h"
-]-*/
 
 /**
  * Passes locale-specific from ICU native code to Java.
@@ -83,19 +78,28 @@ public final class LocaleData {
     public String mediumDateFormat;
     public String shortDateFormat;
 
-    // Used by android.text.format.DateFormat.getTimeFormat.
-    // public String timeFormat12; // "hh:mm a"
-    // public String timeFormat24; // "HH:mm"
+    // Used by TimePicker. Not currently used by UTS#35.
+    /* J2ObjC unused.
+    public String narrowAm; // "a".
+    public String narrowPm; // "p".*/
+
+    // Used by DateFormat to implement 12- and 24-hour SHORT and MEDIUM.
+    // The first two are also used directly by frameworks code.
+    /* J2ObjC unused.
+    public String timeFormat_hm;
+    public String timeFormat_Hm;
+    public String timeFormat_hms;
+    public String timeFormat_Hms;*/
 
     // Used by DecimalFormatSymbols.
     public char zeroDigit;
     public char decimalSeparator;
     public char groupingSeparator;
-    public char patternSeparator = ';';  // There is no iOS API to fetch a locale-specific version.
-    public char percent;
+    public char patternSeparator;
+    public String percent;
     public char perMill;
     public char monetarySeparator;
-    public char minusSign;
+    public String minusSign;
     public String exponentSeparator;
     public String infinity;
     public String NaN;
@@ -112,27 +116,41 @@ public final class LocaleData {
     private LocaleData() {
     }
 
+    /* J2ObjC unused.
+    public static Locale mapInvalidAndNullLocales(Locale locale) {
+        if (locale == null) {
+            return Locale.getDefault();
+        }
+
+        if ("und".equals(locale.toLanguageTag())) {
+            return Locale.ROOT;
+        }
+
+        return locale;
+    }*/
+
     /**
      * Returns a shared LocaleData for the given locale.
      */
     public static LocaleData get(Locale locale) {
         if (locale == null) {
-            locale = Locale.getDefault();
+            throw new NullPointerException("locale == null");
         }
-        String localeName = locale.toString();
+
+        final String languageTag = locale.toLanguageTag();
         synchronized (localeDataCache) {
-            LocaleData localeData = localeDataCache.get(localeName);
+            LocaleData localeData = localeDataCache.get(languageTag);
             if (localeData != null) {
                 return localeData;
             }
         }
         LocaleData newLocaleData = initLocaleData(locale);
         synchronized (localeDataCache) {
-            LocaleData localeData = localeDataCache.get(localeName);
+            LocaleData localeData = localeDataCache.get(languageTag);
             if (localeData != null) {
                 return localeData;
             }
-            localeDataCache.put(localeName, newLocaleData);
+            localeDataCache.put(languageTag, newLocaleData);
             return newLocaleData;
         }
     }
@@ -158,12 +176,26 @@ public final class LocaleData {
     public String getTimeFormat(int style) {
         switch (style) {
         case DateFormat.SHORT:
+            /* J2ObjC changed - DateFormat.set24HourTimePref is Android-specific API.
+            if (DateFormat.is24Hour == null) {
+                return shortTimeFormat;
+            } else {
+                return DateFormat.is24Hour ? timeFormat_Hm : timeFormat_hm;
+            }*/
             return shortTimeFormat;
         case DateFormat.MEDIUM:
+            /* J2ObjC changed - DateFormat.set24HourTimePref is Android-specific API.
+            if (DateFormat.is24Hour == null) {
+                return mediumTimeFormat;
+            } else {
+                return DateFormat.is24Hour ? timeFormat_Hms : timeFormat_hms;
+            }*/
             return mediumTimeFormat;
         case DateFormat.LONG:
+            // CLDR doesn't really have anything we can use to obey the 12-/24-hour preference.
             return longTimeFormat;
         case DateFormat.FULL:
+            // CLDR doesn't really have anything we can use to obey the 12-/24-hour preference.
             return fullTimeFormat;
         }
         throw new AssertionError();
@@ -171,9 +203,18 @@ public final class LocaleData {
 
     private static LocaleData initLocaleData(Locale locale) {
         LocaleData localeData = new LocaleData();
-        if (!initLocaleDataImpl(locale.toString(), localeData)) {
+        if (!ICU.initLocaleDataNative(locale.toLanguageTag(), localeData)) {
             throw new AssertionError("couldn't initialize LocaleData for locale " + locale);
         }
+
+        // Get the SHORT and MEDIUM 12- and 24-hour time format strings.
+        /* J2ObjC unused.
+        localeData.timeFormat_hm = ICU.getBestDateTimePattern("hm", locale);
+        localeData.timeFormat_Hm = ICU.getBestDateTimePattern("Hm", locale);
+        localeData.timeFormat_hms = ICU.getBestDateTimePattern("hms", locale);
+        localeData.timeFormat_Hms = ICU.getBestDateTimePattern("Hms", locale);*/
+
+        // Fix up a couple of patterns.
         if (localeData.fullTimeFormat != null) {
             // There are some full time format patterns in ICU that use the pattern character 'v'.
             // Java doesn't accept this, so we replace it with 'z' which has about the same result
@@ -193,9 +234,4 @@ public final class LocaleData {
         }
         return localeData;
     }
-
-    private static native boolean initLocaleDataImpl(String localeId, LocaleData result) /*-[
-      [IOSLocaleData initLocaleDataImplWithNSString:localeId withLibcoreIcuLocaleData:result];
-      return YES;
-    ]-*/;
 }

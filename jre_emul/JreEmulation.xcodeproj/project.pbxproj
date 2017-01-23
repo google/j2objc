@@ -2369,8 +2369,6 @@
 		06B1E04F17F6403100F8940B /* Iterable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Iterable.h; path = java/lang/Iterable.h; sourceTree = "<group>"; };
 		06B1E05017F6403100F8940B /* Iterable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Iterable.m; path = java/lang/Iterable.m; sourceTree = "<group>"; };
 		06B390731BB32549004A4099 /* prefixes.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prefixes.properties; path = Tests/resources/prefixes.properties; sourceTree = SOURCE_ROOT; };
-		06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLocaleData.h; sourceTree = "<group>"; };
-		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
 		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
 		06BED66A18EDE33F004EA17D /* J2ObjC_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_common.h; sourceTree = "<group>"; };
@@ -3754,8 +3752,6 @@
 				066193A1155849BC0004DAFE /* IOSClass.m */,
 				06ED3D4617D163F80014750E /* IOSConcreteClass.h */,
 				06ED3D4717D163F80014750E /* IOSConcreteClass.m */,
-				06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */,
-				06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */,
 				066193B0155849BC0004DAFE /* IOSObjectArray.h */,
 				066193B1155849BC0004DAFE /* IOSObjectArray.m */,
 				51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */,

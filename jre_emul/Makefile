@@ -46,7 +46,6 @@ IOS_PRIVATE_OBJS = \
 	FastPointerLookup.o \
 	IOSArrayClass.o \
 	IOSConcreteClass.o \
-	IOSLocaleData.o \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSProxyClass.o \

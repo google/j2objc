@@ -2065,7 +2065,8 @@ public final class Formatter implements Closeable, Flushable {
         formatToken.setPrecision(FormatToken.UNSET);
 
         int startIndex = 0;
-        if (result.charAt(0) == localeData.minusSign) {
+        char minusSign = localeData.minusSign.charAt(0);
+        if (result.charAt(0) == minusSign) {
             if (formatToken.flagParenthesis) {
                 return wrapParentheses(result);
             }
@@ -2081,7 +2082,7 @@ public final class Formatter implements Closeable, Flushable {
         }
 
         char firstChar = result.charAt(0);
-        if (formatToken.flagZero && (firstChar == '+' || firstChar == localeData.minusSign)) {
+        if (formatToken.flagZero && (firstChar == '+' || firstChar == minusSign)) {
             startIndex = 1;
         }
 
