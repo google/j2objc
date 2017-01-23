@@ -203,7 +203,6 @@ class AnnotationPreProcessor {
             GenerationUnit unit = context.getGenerationUnit();
             generatedSource = new ProcessingContext(
                 new RegularInputFile(newSourceFile.toUri().getPath()), unit);
-            unit.incrementInputs();
             break;
           }
         }

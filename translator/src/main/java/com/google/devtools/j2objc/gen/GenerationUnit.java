@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 public class GenerationUnit {
 
   private String outputPath;
-  private int numUnits;
+  private int numUnits = 0;
   private int receivedUnits = 0;
   // It is useful for the generated code to be consistent. Therefore, the
   // ordering of generated code within this unit should be consistent. For this
@@ -64,14 +64,13 @@ public class GenerationUnit {
   }
 
   @VisibleForTesting
-  public GenerationUnit(String sourceName, int numUnits, Options options) {
+  public GenerationUnit(String sourceName, Options options) {
     this.sourceName = sourceName;
-    this.numUnits = numUnits;
     this.options = options;
   }
 
   public static GenerationUnit newSingleFileUnit(InputFile file, Options options) {
-    GenerationUnit unit = new GenerationUnit(file.getOriginalLocation(), 1, options);
+    GenerationUnit unit = new GenerationUnit(file.getOriginalLocation(), options);
     if (options.getHeaderMap().useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
@@ -80,12 +79,12 @@ public class GenerationUnit {
     return unit;
   }
 
-  public static GenerationUnit newCombinedJarUnit(String filename, int numInputs, Options options) {
+  public static GenerationUnit newCombinedJarUnit(String filename, Options options) {
     String outputPath = filename;
     if (outputPath.lastIndexOf(File.separatorChar) < outputPath.lastIndexOf(".")) {
       outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
     }
-    GenerationUnit unit = new GenerationUnit(filename, numInputs, options);
+    GenerationUnit unit = new GenerationUnit(filename, options);
     unit.outputPath = outputPath;
     return unit;
   }
@@ -128,8 +127,7 @@ public class GenerationUnit {
 
   /**
    * Increments the number of inputs for this GenerationUnit. This is called
-   * from the annotation preprocessor when an annotation processor has created
-   * a new source file.
+   * for each new ProcessingContext created with this GenerationUnit.
    */
   public void incrementInputs() {
     numUnits++;

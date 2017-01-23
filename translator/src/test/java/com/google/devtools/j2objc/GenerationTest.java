@@ -50,6 +50,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -363,7 +364,8 @@ public class GenerationTest extends TestCase {
   }
 
   protected String generateFromUnit(CompilationUnit unit, String filename) throws IOException {
-    GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), 1, options);
+    GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), options);
+    genUnit.incrementInputs();
     genUnit.addCompilationUnit(unit);
     TranslationProcessor.generateObjectiveCSource(genUnit);
     return getTranslatedFile(filename);
@@ -371,13 +373,12 @@ public class GenerationTest extends TestCase {
 
   protected String translateCombinedFiles(String outputPath, String extension, String... sources)
       throws IOException {
-    List<RegularInputFile> inputFiles = Lists.newArrayList();
+    List<ProcessingContext> inputs = new ArrayList<>();
+    GenerationUnit genUnit = GenerationUnit.newCombinedJarUnit(outputPath + ".testfile", options);
     for (String sourceFile : sources) {
-      inputFiles.add(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile));
+      inputs.add(new ProcessingContext(
+          new RegularInputFile(tempDir + "/" + sourceFile, sourceFile), genUnit));
     }
-    GenerationBatch batch = new GenerationBatch(options);
-    batch.addCombinedJar(outputPath + ".testfile", inputFiles);
-    List<ProcessingContext> inputs = batch.getInputs();
     parser.setEnableDocComments(options.docCommentsEnabled());
     new InputFilePreprocessor(parser).processInputs(inputs);
     new TranslationProcessor(parser, CodeReferenceMap.builder().build()).processInputs(inputs);

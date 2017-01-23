@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
@@ -153,8 +152,11 @@ public class GenerationBatch {
       ErrorUtil.error("No such file: " + filename);
       return;
     }
+    GenerationUnit combinedUnit = null;
+    if (options.getHeaderMap().combineSourceJars()) {
+      combinedUnit = GenerationUnit.newCombinedJarUnit(filename, options);
+    }
     try {
-      List<InputFile> inputFiles = Lists.newArrayList();
       ZipFile zfile = new ZipFile(f);
       try {
         Enumeration<? extends ZipEntry> enumerator = zfile.entries();
@@ -162,18 +164,16 @@ public class GenerationBatch {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
           if (internalPath.endsWith(".java")) {
-            inputFiles.add(new JarredInputFile(f.getPath(), internalPath));
+            InputFile newFile = new JarredInputFile(f.getPath(), internalPath);
+            if (combinedUnit != null) {
+              inputs.add(new ProcessingContext(newFile, combinedUnit));
+            } else {
+              addSource(newFile);
+            }
           }
         }
       } finally {
         zfile.close();  // Also closes input stream.
-      }
-      if (options.getHeaderMap().combineSourceJars()) {
-        addCombinedJar(filename, inputFiles);
-      } else {
-        for (InputFile file : inputFiles) {
-          addSource(file);
-        }
       }
     } catch (ZipException e) { // Also catches JarExceptions
       logger.fine(e.getMessage());
@@ -183,18 +183,11 @@ public class GenerationBatch {
     }
   }
 
-  @VisibleForTesting
-  public void addCombinedJar(String filename, Collection<? extends InputFile> inputFiles) {
-    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(filename, inputFiles.size(), options);
-    for (InputFile file : inputFiles) {
-      inputs.add(new ProcessingContext(file, unit));
-    }
-  }
-
   /**
    * Adds the given InputFile to this GenerationBatch,
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
+  @VisibleForTesting
   public void addSource(InputFile file) {
     inputs.add(ProcessingContext.fromFile(file, options));
   }

@@ -34,6 +34,7 @@ public class ProcessingContext {
     originalSourcePath = file.getOriginalLocation();
     this.file = file;
     this.generationUnit = generationUnit;
+    generationUnit.incrementInputs();
   }
 
   public static ProcessingContext fromFile(InputFile file, Options options) {
