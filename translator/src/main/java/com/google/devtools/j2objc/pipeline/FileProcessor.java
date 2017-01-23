@@ -113,7 +113,7 @@ abstract class FileProcessor {
   }
 
   protected boolean isBatchable(InputFile file) {
-    return doBatching && file.getContainingPath().endsWith(".java");
+    return doBatching && file.getAbsolutePath().endsWith(".java");
   }
 
   private void processBatch() {
@@ -124,7 +124,7 @@ abstract class FileProcessor {
     List<String> paths = Lists.newArrayListWithCapacity(batchInputs.size());
     final Map<String, ProcessingContext> inputMap = new CanonicalPathMap(batchInputs.size());
     for (ProcessingContext input : batchInputs) {
-      String path = input.getFile().getPath();
+      String path = input.getFile().getAbsolutePath();
       paths.add(path);
       inputMap.put(path, input);
     }

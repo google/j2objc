@@ -71,7 +71,7 @@ public class GenerationUnit {
   }
 
   public static GenerationUnit newSingleFileUnit(InputFile file, Options options) {
-    GenerationUnit unit = new GenerationUnit(file.getPath(), 1, options);
+    GenerationUnit unit = new GenerationUnit(file.getOriginalLocation(), 1, options);
     if (options.getHeaderMap().useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));

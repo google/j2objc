@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
  * @author Mike Thvedt
  */
 public class RegularInputFile implements InputFile {
-  private final String path;
+  private final String absolutePath;
   private final String unitPath;
 
   public RegularInputFile(String unitPath) {
@@ -35,18 +35,18 @@ public class RegularInputFile implements InputFile {
   }
 
   public RegularInputFile(String fsPath, String unitPath) {
-    this.path = fsPath;
+    this.absolutePath = fsPath;
     this.unitPath = unitPath;
   }
 
   @Override
   public boolean exists() {
-    return new File(path).exists();
+    return new File(absolutePath).exists();
   }
 
   @Override
   public InputStream getInputStream() throws IOException {
-    return new FileInputStream(new File(path));
+    return new FileInputStream(new File(absolutePath));
   }
 
   @Override
@@ -55,13 +55,13 @@ public class RegularInputFile implements InputFile {
   }
 
   @Override
-  public String getPath() {
-    return path;
+  public String getAbsolutePath() {
+    return absolutePath;
   }
 
   @Override
-  public String getContainingPath() {
-    return unitPath;
+  public String getOriginalLocation() {
+    return absolutePath;
   }
 
   @Override
@@ -76,11 +76,11 @@ public class RegularInputFile implements InputFile {
 
   @Override
   public long lastModified() {
-    return new File(path).lastModified();
+    return new File(absolutePath).lastModified();
   }
 
   @Override
   public String toString() {
-    return getPath();
+    return getOriginalLocation();
   }
 }

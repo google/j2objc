@@ -87,13 +87,13 @@ public class JarredInputFile implements InputFile {
   }
 
   @Override
-  public String getPath() {
-    return "jar:file:" + jarPath + "!" + internalPath;
+  public String getAbsolutePath() {
+    return jarPath;
   }
 
   @Override
-  public String getContainingPath() {
-    return jarPath;
+  public String getOriginalLocation() {
+    return "jar:file:" + jarPath + "!" + internalPath;
   }
 
   @Override
@@ -113,6 +113,6 @@ public class JarredInputFile implements InputFile {
 
   @Override
   public String toString() {
-    return getPath();
+    return getOriginalLocation();
   }
 }

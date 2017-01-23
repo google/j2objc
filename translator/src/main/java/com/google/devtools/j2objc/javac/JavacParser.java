@@ -230,7 +230,7 @@ public class JavacParser extends Parser {
     if (serviceIterator.hasNext()) {
       List<File> inputFiles = new ArrayList<>();
       for (ProcessingContext input : inputs) {
-        inputFiles.add(new File(input.getFile().getPath()));
+        inputFiles.add(new File(input.getFile().getAbsolutePath()));
       }
       try {
         JavacEnvironment env = createEnvironment(inputFiles, null, true);

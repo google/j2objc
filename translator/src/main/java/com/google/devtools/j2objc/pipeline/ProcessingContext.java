@@ -31,7 +31,7 @@ public class ProcessingContext {
   private final GenerationUnit generationUnit;
 
   public ProcessingContext(InputFile file, GenerationUnit generationUnit) {
-    originalSourcePath = file.getPath();
+    originalSourcePath = file.getOriginalLocation();
     this.file = file;
     this.generationUnit = generationUnit;
   }

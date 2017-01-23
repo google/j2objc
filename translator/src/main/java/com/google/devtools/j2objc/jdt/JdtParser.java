@@ -178,7 +178,8 @@ public class JdtParser extends Parser {
                     env, ast, sourceFilePath, FileUtil.getMainTypeName(file), source);
             handler.handleParsedUnit(sourceFilePath, unit);
           } catch (IOException e) {
-            ErrorUtil.error("Error reading file " + file.getPath() + ": " + e.getMessage());
+            ErrorUtil.error(
+                "Error reading file " + file.getOriginalLocation() + ": " + e.getMessage());
           }
         }
       }

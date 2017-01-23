@@ -36,17 +36,20 @@ public interface InputFile {
   Reader openReader(Charset charset) throws IOException;
 
   /**
-   * Gets a full path of a sourcefile. The "path" might not be an actual file system path
-   * (for example, if it is a jar URL). Used in J2ObjC for progress messages, error messages,
-   * and output comments.
+   * Gets a full path of a Java or JAR file. The path must be an actual file system path that can be
+   * used to read the soure. For Java source files extracted from a JAR file, return the absolute
+   * path of the extracted Java source file. For non-extracted JAR files, return the absolute path
+   * of the JAR file.
    */
-  String getPath();
+  String getAbsolutePath();
 
   /**
-   * Gets the relative path to the actual filesystem file.
-   * For example, this could be a .java file or a .jar file.
+   * Gets the original location of a Java source file.
+   * For Java source files directly from or extracted from a JAR file, return
+   * "jar:file:path/to/originalJarFile.jar!internal/path/to/SourceFile.java".
+   * Used in J2ObjC for progress messages, error messages, and output comments.
    */
-  String getContainingPath();
+  String getOriginalLocation();
 
   /**
    * The compilation unit name of this SourceFile.
