@@ -230,7 +230,9 @@ public class GraphBuilder {
     }
 
     private void followType(TypeMirror type, TypeNode node) {
-      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
+      List<? extends TypeMirror> supertypes = TypeUtil.isDeclaredType(type)
+          ? typeUtil.directSupertypes(type) : typeUtil.getUpperBounds(type);
+      for (TypeMirror supertype : supertypes) {
         TypeNode supertypeNode = getOrCreateNode(supertype);
         if (supertypeNode != null) {
           subtypes.put(supertypeNode, node);
