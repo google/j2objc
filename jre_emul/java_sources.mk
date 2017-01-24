@@ -582,6 +582,17 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/reflect/annotation/AnnotationSupport.java \
   sun/reflect/annotation/AnnotationType.java \
   sun/reflect/misc/ReflectUtil.java \
+  sun/util/locale/BaseLocale.java \
+  sun/util/locale/Extension.java \
+  sun/util/locale/InternalLocaleBuilder.java \
+  sun/util/locale/LanguageTag.java \
+  sun/util/locale/LocaleExtensions.java \
+  sun/util/locale/LocaleObjectCache.java \
+  sun/util/locale/LocaleSyntaxException.java \
+  sun/util/locale/LocaleUtils.java \
+  sun/util/locale/ParseStatus.java \
+  sun/util/locale/StringTokenIterator.java \
+  sun/util/locale/UnicodeLocaleExtension.java \
   sun/util/logging/LoggingProxy.java \
   sun/util/logging/LoggingSupport.java \
   sun/util/logging/PlatformLogger.java

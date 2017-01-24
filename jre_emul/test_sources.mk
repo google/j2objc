@@ -357,6 +357,7 @@ TEST_SOURCES := \
     libcore/java/util/CurrencyTest.java \
     libcore/java/util/EventObjectTest.java \
     libcore/java/util/FormatterTest.java \
+    libcore/java/util/LocaleTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldTimeZoneTest.java \
@@ -484,7 +485,6 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/IdentityHashMapTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedHashSetTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedListTest.java \
-    org/apache/harmony/luni/tests/java/util/LocaleTest.java \
     org/apache/harmony/luni/tests/java/util/NoSuchElementExceptionTest.java \
     org/apache/harmony/luni/tests/java/util/PriorityQueueTest.java \
     org/apache/harmony/luni/tests/java/util/RandomTest.java \
@@ -562,6 +562,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
+    org/apache/harmony/tests/java/util/LocaleTest.java \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
@@ -693,7 +694,8 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.1.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
-    serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser
+    serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     tests/targets/security/MD5.check \
@@ -731,6 +733,7 @@ BEANS_TEST_RESOURCES_SRCS = \
 TEST_RESOURCE_ROOTS = \
   apache_harmony/classlib/modules/luni/src/test/resources \
   android/libcore/luni/src/test/resources \
+  android/platform/libcore/harmony-tests/src/test/resources \
   apache_harmony/classlib/modules/logging/src/test/resources \
   apache_harmony/classlib/modules/beans/src/test/resources \
   Tests/resources
