@@ -1090,7 +1090,14 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   org/apache/harmony/security/x509/TBSCertList.java \
   org/apache/harmony/security/x509/Time.java \
   org/apache/harmony/security/x509/Validity.java \
-  org/apache/harmony/security/x509/X509PublicKey.java
+  org/apache/harmony/security/x509/X509PublicKey.java \
+  sun/security/jca/GetInstance.java \
+  sun/security/jca/JCAUtil.java \
+  sun/security/jca/ProviderConfig.java \
+  sun/security/jca/ProviderList.java \
+  sun/security/jca/Providers.java \
+  sun/security/jca/ServiceId.java \
+  sun/security/util/PropertyExpander.java
 
 JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/DefaultServerSocketFactory.java \
