@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="android/frameworks/base/core/java"/>
 	<classpathentry kind="src" path="android/frameworks/base/core/tests/coretests/src"/>
 	<classpathentry kind="src" path="android/frameworks/base/tests-runner/src"/>
-	<classpathentry kind="src" path="android/libcore/dalvik/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/harmony-tests/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/json/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/json/src/test/java"/>
@@ -30,7 +29,9 @@
 	<classpathentry kind="src" path="android/platform/external/mockwebserver/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/test/java"/>
+	<classpathentry kind="src" path="android/platform/libcore/dalvik/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/luni/src/main/java"/>
+	<classpathentry kind="src" path="android/platform/libcore/luni/src/objc/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/luni/src/test/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/main/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/objc/java"/>
