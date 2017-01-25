@@ -97,6 +97,8 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(exampleM, "com/google/test/Example.java");
     assertTranslation(packageInfoH, "com/google/test/package-info.java");
     assertTranslation(packageInfoM, "com/google/test/package-info.java");
+    assertNotInTranslation(packageInfoH, "J2ObjCTempDir");
+    assertNotInTranslation(packageInfoM, "J2ObjCTempDir");
     // Test the includes
     assertTranslation(exampleH, "#pragma push_macro(\"INCLUDE_ALL_ComGoogleTestExample\")");
     assertTranslation(exampleM, "#include \"com/google/test/Example.h\"");

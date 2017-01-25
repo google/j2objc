@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Translation tool for generating Objective C source files from Java sources.
@@ -133,6 +134,10 @@ public class J2ObjC {
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     } finally {
+      Set<String> tempDirs = options.fileUtil().getTempDirs();
+      for (String dir : tempDirs) {
+        FileUtil.deleteTempDir(new File(dir));
+      }
       FileUtil.deleteTempDir(preProcessorTempDir);
       FileUtil.deleteTempDir(strippedSourcesDir);
     }

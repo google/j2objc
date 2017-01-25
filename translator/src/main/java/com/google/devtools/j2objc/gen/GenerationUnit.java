@@ -69,12 +69,19 @@ public class GenerationUnit {
     this.options = options;
   }
 
+  public static GenerationUnit newSingleExtractedJarEntryUnit(
+      InputFile file, String sourceName, Options options) {
+    GenerationUnit unit = new GenerationUnit(sourceName, options);
+    if (options.getHeaderMap().useSourceDirectories()) {
+      unit.useSourceDirectoryForOutput(file);
+    }
+    return unit;
+  }
+
   public static GenerationUnit newSingleFileUnit(InputFile file, Options options) {
     GenerationUnit unit = new GenerationUnit(file.getOriginalLocation(), options);
     if (options.getHeaderMap().useSourceDirectories()) {
-      String outputPath = file.getUnitName();
-      outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
-      unit.outputPath = outputPath;
+      unit.useSourceDirectoryForOutput(file);
     }
     return unit;
   }
@@ -203,6 +210,12 @@ public class GenerationUnit {
     if (implBuilder.length() > 0) {
       nativeImplementationBlocks.put(qualifiedMainType, implBuilder.toString());
     }
+  }
+
+  private void useSourceDirectoryForOutput(InputFile sourceFile) {
+    String sourceDir = sourceFile.getUnitName();
+    sourceDir = sourceDir.substring(0, sourceDir.lastIndexOf(".java"));
+    outputPath = sourceDir;
   }
 
   public boolean isFullyParsed() {

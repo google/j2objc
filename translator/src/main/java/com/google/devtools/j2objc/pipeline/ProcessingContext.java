@@ -41,6 +41,12 @@ public class ProcessingContext {
     return new ProcessingContext(file, GenerationUnit.newSingleFileUnit(file, options));
   }
 
+  public static ProcessingContext fromExtractedJarEntry(
+      InputFile file, String sourceName, Options options) {
+    return new ProcessingContext(
+        file, GenerationUnit.newSingleExtractedJarEntryUnit(file, sourceName, options));
+  }
+
   public String getOriginalSourcePath() {
     return originalSourcePath;
   }

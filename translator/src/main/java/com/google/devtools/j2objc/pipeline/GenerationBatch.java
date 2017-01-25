@@ -19,10 +19,10 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -43,6 +43,7 @@ import java.util.zip.ZipFile;
 public class GenerationBatch {
 
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
+  private static final String J2OBJC_TEMP_DIR_PREFIX = "J2ObjCTempDir";
   private final Options options;
 
   private final List<ProcessingContext> inputs = Lists.newArrayList();
@@ -160,15 +161,22 @@ public class GenerationBatch {
       ZipFile zfile = new ZipFile(f);
       try {
         Enumeration<? extends ZipEntry> enumerator = zfile.entries();
+        File tempDir = FileUtil.createTempDir(J2OBJC_TEMP_DIR_PREFIX);
+        String tempDirPath = tempDir.getAbsolutePath();
+        options.fileUtil().addTempDir(tempDirPath);
+        options.fileUtil().appendSourcePath(tempDirPath);
+
         while (enumerator.hasMoreElements()) {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
           if (internalPath.endsWith(".java")) {
-            InputFile newFile = new JarredInputFile(f.getPath(), internalPath);
+            // Extract JAR file to a temporary directory
+            File outputFile = options.fileUtil().extractZipEntry(tempDir, zfile, entry);
+            InputFile newFile = new RegularInputFile(outputFile.getAbsolutePath(), internalPath);
             if (combinedUnit != null) {
               inputs.add(new ProcessingContext(newFile, combinedUnit));
             } else {
-              addSource(newFile);
+              addExtractedJarSource(newFile, filename, internalPath);
             }
           }
         }
@@ -181,6 +189,11 @@ public class GenerationBatch {
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
+  }
+
+  private void addExtractedJarSource(InputFile file, String jarFileName, String internalPath) {
+    String sourceName = "jar:file:" + jarFileName + "!" + internalPath;
+    inputs.add(ProcessingContext.fromExtractedJarEntry(file, sourceName, options));
   }
 
   /**

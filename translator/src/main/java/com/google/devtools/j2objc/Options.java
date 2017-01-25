@@ -564,9 +564,6 @@ public class Options {
     String[] files = new String[nFiles];
     for (int i = 0; i < nFiles; i++) {
       String path = args[i + nArg];
-      if (path.endsWith(".jar")) {
-        fileUtil.appendSourcePath(path);
-      }
       files[i] = path;
     }
     return files;

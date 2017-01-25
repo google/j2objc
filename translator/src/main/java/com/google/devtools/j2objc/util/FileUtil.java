@@ -15,6 +15,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
+import com.google.common.io.Files;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -26,9 +27,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import javax.annotation.Nullable;
 import javax.tools.JavaFileObject;
 
@@ -39,6 +45,7 @@ import javax.tools.JavaFileObject;
  */
 public class FileUtil {
 
+  private Set<String> tempDirs = new HashSet<>();
   private List<String> sourcePathEntries = Lists.newArrayList(".");
   private List<String> classPathEntries = Lists.newArrayList(".");
   private File outputDirectory = new File(".");
@@ -87,6 +94,14 @@ public class FileUtil {
 
   public Charset getCharset() {
     return charset;
+  }
+
+  public void addTempDir(String tempDir) {
+    tempDirs.add(tempDir);
+  }
+
+  public Set<String> getTempDirs() {
+    return tempDirs;
   }
 
   public static String getMainTypeName(InputFile file) {
@@ -233,5 +248,22 @@ public class FileUtil {
       }
       dir.delete();
     }
+  }
+
+  /**
+   * Extract a ZipEntry to the specified directory.
+   */
+  public File extractZipEntry(File dir, ZipFile zipFile, ZipEntry entry) throws IOException {
+    File outputFile = new File(dir, entry.getName());
+    File parentFile = outputFile.getParentFile();
+    if (!parentFile.isDirectory() && !parentFile.mkdirs()) {
+      throw new IOException("Could not extract file to " + dir.getPath());
+    }
+    try (InputStream inputStream = zipFile.getInputStream(entry);
+        InputStreamReader reader = new InputStreamReader(inputStream, charset)) {
+      String source = CharStreams.toString(reader);
+      Files.write(source, outputFile, charset);
+    }
+    return outputFile;
   }
 }
