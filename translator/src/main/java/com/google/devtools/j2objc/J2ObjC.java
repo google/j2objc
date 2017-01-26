@@ -90,7 +90,8 @@ public class J2ObjC {
   public static void run(List<String> fileArgs, Options options) {
     File preProcessorTempDir = null;
     File strippedSourcesDir = null;
-    try (Parser parser = createParser(options)) {
+    Parser parser = null;
+    try {
       List<ProcessingContext> inputs = Lists.newArrayList();
       GenerationBatch batch = new GenerationBatch(options);
       batch.processFileArgs(fileArgs);
@@ -99,6 +100,7 @@ public class J2ObjC {
         return;
       }
 
+      parser = createParser(options);
       Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);
       List<ProcessingContext> generatedInputs = processingResult.getGeneratedSources();
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.
@@ -131,9 +133,14 @@ public class J2ObjC {
       translationProcessor.postProcess();
 
       options.getHeaderMap().printMappings();
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
     } finally {
+      if (parser != null) {
+        try {
+          parser.close();
+        } catch (IOException e) {
+          ErrorUtil.error(e.getMessage());
+        }
+      }
       Set<String> tempDirs = options.fileUtil().getTempDirs();
       for (String dir : tempDirs) {
         FileUtil.deleteTempDir(new File(dir));
