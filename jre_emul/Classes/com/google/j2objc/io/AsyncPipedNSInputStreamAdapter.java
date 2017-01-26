@@ -77,6 +77,16 @@ public final class AsyncPipedNSInputStreamAdapter {
    */
   static final class OutputStreamAdapter extends OutputStream {
     private Delegate delegate;
+
+    /**
+     * An NSInputStream. We don't use it, but we need to use this to keep it alive as long as
+     * nativeOutputStream is. The reason is that, even though the two streams are created as a
+     * a bound pair by CFStreamCreateBoundPair, they don't own each other, and a consumer of the
+     * input stream may release it earlier than we do, but closing the output stream involves
+     * reading some states from the input stream.
+     */
+    private Object nativeInputStream;
+
     private Object nativeOutputStream; // NSOutputStream
     private Object leftoverData; // NSData
     @Weak private Object threadForClosing; // NSThread
@@ -89,8 +99,9 @@ public final class AsyncPipedNSInputStreamAdapter {
 
     private static final Logger logger = Logger.getLogger(OutputStreamAdapter.class.getName());
 
-    OutputStreamAdapter(Delegate delegate, Object nativeOutputStream) {
+    OutputStreamAdapter(Delegate delegate, Object nativeInputStream, Object nativeOutputStream) {
       this.delegate = delegate;
+      this.nativeInputStream = nativeInputStream;
       this.nativeOutputStream = nativeOutputStream;
     }
 
@@ -317,9 +328,12 @@ public final class AsyncPipedNSInputStreamAdapter {
     ComGoogleJ2objcIoAsyncPipedNSInputStreamAdapter_OutputStreamAdapter *adapter;
     adapter = [[ComGoogleJ2objcIoAsyncPipedNSInputStreamAdapter_OutputStreamAdapter alloc]
         initWithComGoogleJ2objcIoAsyncPipedNSInputStreamAdapter_Delegate:delegate
+        withId:(NSInputStream *)readStreamRef
         withId:(NSOutputStream *)writeStreamRef];
 
-    // writeStreamRef is now retained by the adapter, so call release once.
+    // Both readStreamRef and writeStreamRef now have retain count of 2 as they are retained by the
+    // adapter. We have no more use of writeStreamRef, so call release once. We will take care of
+    // readStreamRef before we exit the method.
     CFRelease(writeStreamRef);
 
     [adapter start];
