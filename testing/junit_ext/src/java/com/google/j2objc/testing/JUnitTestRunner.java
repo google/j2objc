@@ -103,7 +103,7 @@ public class JUnitTestRunner {
   private SortOrder sortOrder = SortOrder.ALPHABETICAL;
 
   public JUnitTestRunner() {
-    this(System.out);
+    this(System.err);
   }
 
   public JUnitTestRunner(PrintStream out) {
@@ -397,7 +397,7 @@ public class JUnitTestRunner {
 
     @Override
     public void testRunFinished(Result result) throws Exception {
-      out.printf("Executed %d tests, with %d failures (%d unexpected)\n", numTests, numFailures,
+      printf("Executed %d tests, with %d failures (%d unexpected)\n", numTests, numFailures,
           numUnexpected);
     }
 
@@ -406,7 +406,7 @@ public class JUnitTestRunner {
       numTests++;
       testFailure = null;
       testStartTime = System.currentTimeMillis();
-      out.printf("Test Case '-[%s]' started.\n", parseDescription(description));
+      printf("Test Case '-[%s]' started.\n", parseDescription(description));
     }
 
     @Override
@@ -418,8 +418,8 @@ public class JUnitTestRunner {
         statusMessage = "failed";
         out.print(testFailure.getTrace());
       }
-      out.printf("Test Case '-[%s]' %s (%.3f seconds).\n\n",
-          parseDescription(description), statusMessage, elapsedSeconds);
+      printf("Test Case '-[%s]' %s (%.3f seconds).\n\n", parseDescription(description),
+          statusMessage, elapsedSeconds);
     }
 
     @Override
@@ -438,6 +438,12 @@ public class JUnitTestRunner {
       String methodName = displayName.substring(0, p1);
       String className = displayName.substring(p1 + 1, p2);
       return replaceAll(className) + " " + methodName;
+    }
+
+    private void printf(String format, Object... args) {
+      // Avoid using printf() or println() because they will be flushed in pieces and cause
+      // interleaving with logger messages.
+      out.print(String.format(format, args));
     }
   }
 }
