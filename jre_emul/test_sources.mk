@@ -362,6 +362,7 @@ TEST_SOURCES := \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
+    libcore/java/util/TimeZoneTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
@@ -491,7 +492,6 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/SimpleTimeZoneTest.java \
     org/apache/harmony/luni/tests/java/util/StackTest.java \
     org/apache/harmony/luni/tests/java/util/StringTokenizerTest.java \
-    org/apache/harmony/luni/tests/java/util/TimeZoneTest.java \
     org/apache/harmony/luni/tests/java/util/TooManyListenersExceptionTest.java \
     org/apache/harmony/luni/tests/java/util/TreeMapTest.java \
     org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
@@ -563,6 +563,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/tests/java/util/LocaleTest.java \
+    org/apache/harmony/tests/java/util/TimeZoneTest.java \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \

@@ -24,60 +24,59 @@ import java.util.TimeZone;
 /**
  * Sample java.util.TimeZone subclass to test getDSTSavings() and getOffset(long)
  * APIs
- * 
  */
 public class Support_TimeZone extends TimeZone {
     private static final long serialVersionUID = 1L;
 
     int rawOffset;
 
-	boolean useDaylightTime;
+    boolean useDaylightTime;
 
-	public Support_TimeZone(int rawOffset, boolean useDaylightTime) {
-		this.rawOffset = rawOffset;
-		this.useDaylightTime = useDaylightTime;
-	}
+    public Support_TimeZone(int rawOffset, boolean useDaylightTime) {
+        this.rawOffset = rawOffset;
+        this.useDaylightTime = useDaylightTime;
+    }
 
-	@Override
+    @Override
     public int getRawOffset() {
-		return rawOffset;
-	}
+        return rawOffset;
+    }
 
-	/**
-	 * let's assume this timezone has daylight savings from the 4th month till
-	 * the 10th month of the year to ame things simple.
-	 */
-	@Override
+    /**
+     * let's assume this timezone has daylight savings from the 4th month till
+     * the 10th month of the year to ame things simple.
+     */
+    @Override
     public boolean inDaylightTime(java.util.Date p1) {
-		if (!useDaylightTime) {
+        if (!useDaylightTime) {
             return false;
         }
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(p1);
-		int month = cal.get(Calendar.MONTH);
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(p1);
+        int month = cal.get(Calendar.MONTH);
 
-		if (month > 4 && month < 10) {
+        if (month > 4 && month < 10) {
             return true;
         }
         return false;
-	}
+    }
 
-	@Override
+    @Override
     public boolean useDaylightTime() {
-		return useDaylightTime;
-	}
+        return useDaylightTime;
+    }
 
-	/*
-	 * return 0 to keep it simple, since this subclass is not used to test this
-	 * method..
-	 */
-	@Override
+    /*
+      * return 0 to keep it simple, since this subclass is not used to test this
+      * method..
+      */
+    @Override
     public int getOffset(int p1, int p2, int p3, int p4, int p5, int p6) {
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
+    @Override
     public void setRawOffset(int p1) {
-		rawOffset = p1;
-	}
+        rawOffset = p1;
+    }
 }

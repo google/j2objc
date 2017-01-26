@@ -69,23 +69,20 @@ public final class NativeTimeZone extends TimeZone {
 
 
   public static native NativeTimeZone get(String name) /*-[
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:name];
-    if (timeZone == nil) {
-      return nil;
-    }
-    return [ComGoogleJ2objcUtilNativeTimeZone getWithNativeTimeZoneWithId:timeZone];
+    return [ComGoogleJ2objcUtilNativeTimeZone fromNativeTimeZoneWithId:
+        [NSTimeZone timeZoneWithName:name]];
   ]-*/;
 
   public static native NativeTimeZone getDefaultNativeTimeZone() /*-[
-    NSTimeZone *timeZone = [NSTimeZone defaultTimeZone];
-    if (timeZone == nil) {  // Unlikely, but just to be defensive.
-      return nil;
-    }
-    return [ComGoogleJ2objcUtilNativeTimeZone getWithNativeTimeZoneWithId:timeZone];
+    return [ComGoogleJ2objcUtilNativeTimeZone fromNativeTimeZoneWithId:
+        [NSTimeZone defaultTimeZone]];
   ]-*/;
 
-  public static native NativeTimeZone getWithNativeTimeZone(Object nativeTimeZone) /*-[
+  private static native NativeTimeZone fromNativeTimeZone(Object nativeTimeZone) /*-[
     NSTimeZone *tz = (NSTimeZone *)nativeTimeZone;
+    if (!tz) {
+      return nil;
+    }
     NSDate *now = [NSDate date];
     NSInteger offset = [tz secondsFromGMTForDate:now];
     NSTimeInterval dstOffset = [tz daylightSavingTimeOffsetForDate:now];

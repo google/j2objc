@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.luni.tests.java.util;
+package org.apache.harmony.tests.java.util;
 
 import tests.support.Support_TimeZone;
 import java.util.Arrays;
@@ -134,44 +134,29 @@ public class TimeZoneTest extends junit.framework.TestCase {
                 "GMT", TimeZone.getTimeZone("GMT+").getID());
         assertEquals("Must return GMT when given TimeZone GMT-.",
                 "GMT", TimeZone.getTimeZone("GMT-").getID());
-
-        // j2objc: NSTimeZone can actually parse this format.
-        // assertEquals("Must return GMT when given an invalid TimeZone time GMT-8.45.",
-        //        "GMT", TimeZone.getTimeZone("GMT-8.45").getID());
-        assertEquals("Must return proper GMT formatted string for GMT-8.45.",
-                "GMT-0845", TimeZone.getTimeZone("GMT-8.45").getID());
-
+        /* j2objc: NSTimeZone can actually parse this format.
+        assertEquals("Must return GMT when given an invalid TimeZone time GMT-8.45.",
+                "GMT", TimeZone.getTimeZone("GMT-8.45").getID());*/
         assertEquals("Must return GMT when given an invalid TimeZone time GMT-123:23.",
                 "GMT", TimeZone.getTimeZone("GMT-123:23").getID());
-
-        // j2objc: NSTimeZone can actually parse this format.
-        // assertEquals("Must return proper GMT formatted string for GMT+8:30 (eg. GMT+08:20).",
-        //         "GMT+08:30", TimeZone.getTimeZone("GMT+8:30").getID());
+        /* j2objc: NSTimeZone can actually parse this format.
         assertEquals("Must return proper GMT formatted string for GMT+8:30 (eg. GMT+08:20).",
-                "GMT+0830", TimeZone.getTimeZone("GMT+8:30").getID());
-
+                "GMT+08:30", TimeZone.getTimeZone("GMT+8:30").getID());*/
         assertEquals("Must return proper GMT formatted string for GMT+3 (eg. GMT+08:20).",
                 "GMT+03:00", TimeZone.getTimeZone("GMT+3").getID());
-
-        // j2objc: NSTimeZone can actually parse this format.
-        // assertEquals("Must return proper GMT formatted string for GMT+3:02 (eg. GMT+08:20).",
-        //         "GMT+03:02", TimeZone.getTimeZone("GMT+3:02").getID());
+        /* j2objc: NSTimeZone can actually parse this format.
         assertEquals("Must return proper GMT formatted string for GMT+3:02 (eg. GMT+08:20).",
-                "GMT+0302", TimeZone.getTimeZone("GMT+3:02").getID());
-
+                "GMT+03:02", TimeZone.getTimeZone("GMT+3:02").getID());*/
         assertEquals("Must return proper GMT formatted string for GMT+2359 (eg. GMT+08:20).",
                 "GMT+23:59", TimeZone.getTimeZone("GMT+2359").getID());
         assertEquals("Must return proper GMT formatted string for GMT+520 (eg. GMT+08:20).",
                 "GMT+05:20", TimeZone.getTimeZone("GMT+520").getID());
         assertEquals("Must return proper GMT formatted string for GMT+052 (eg. GMT+08:20).",
                 "GMT+00:52", TimeZone.getTimeZone("GMT+052").getID());
-
-        // j2objc: NSTimeZone treats GMT-00 as GMT.
-        // // GMT-0 is an available ID in ICU, so replace it with GMT-00
-        // assertEquals("Must return proper GMT formatted string for GMT-00 (eg. GMT+08:20).",
-        //         "GMT-00:00", TimeZone.getTimeZone("GMT-00").getID());
+        /* j2objc: NSTimeZone treats GMT-00 as GMT.
+        // GMT-0 is an available ID in ICU, so replace it with GMT-00
         assertEquals("Must return proper GMT formatted string for GMT-00 (eg. GMT+08:20).",
-                "GMT", TimeZone.getTimeZone("GMT-00").getID());
+                "GMT-00:00", TimeZone.getTimeZone("GMT-00").getID());*/
     }
 
     /**
@@ -206,16 +191,14 @@ public class TimeZoneTest extends junit.framework.TestCase {
      */
     public void test_getDisplayNameZILjava_util_Locale() {
         TimeZone timezone = TimeZone.getTimeZone("Asia/Shanghai");
-
         // j2objc: disabled; use an older assertion that also works on OS X/iOS.
-        // /* Time zone data was changed in ICU49.2.  Many common short names were removed. */
-        // assertEquals("中国标准时间",
-        //         timezone.getDisplayName(false, TimeZone.LONG, Locale.CHINA));
-        // assertEquals("GMT+08:00",
-        //         timezone.getDisplayName(false, TimeZone.SHORT, Locale.CHINA));
+        /* Time zone data was changed in ICU49.2.  Many common short names were removed. */
+        /*assertEquals("中国标准时间",
+                timezone.getDisplayName(false, TimeZone.LONG, Locale.CHINA));
+        assertEquals("GMT+08:00",
+                timezone.getDisplayName(false, TimeZone.SHORT, Locale.CHINA));*/
         assertTrue("\u4e2d\u56fd\u6807\u51c6\u65f6\u95f4".equals(
                 timezone.getDisplayName(false, TimeZone.LONG, Locale.CHINA)));
-
         try {
             timezone.getDisplayName(false, 100, Locale.CHINA);
             fail("should throw IllegalArgumentException");
@@ -259,7 +242,6 @@ public class TimeZoneTest extends junit.framework.TestCase {
         assertTrue(ids.toString(), ids.contains("America/Dawson"));
         assertTrue(ids.toString(), ids.contains("America/Tijuana"));
         assertTrue(ids.toString(), ids.contains("America/Vancouver"));
-
         // j2objc: NSTimeZone does not list Canada/* as known time zone names.
         // assertTrue(ids.toString(), ids.contains("Canada/Pacific"));
         // assertTrue(ids.toString(), ids.contains("Canada/Yukon"));
@@ -306,12 +288,10 @@ public class TimeZoneTest extends junit.framework.TestCase {
      */
     public void test_hasSameRules_Ljava_util_TimeZone() {
         TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
-
         // j2objc: disabled. This test can be problematic. The first id in the ids array that does
         // not have the same id as tz may actually not have the same rules. We use another test in
         // NativeTimeZoneTest to cover the method hasSameRules.
-        /*
-        int offset = tz.getRawOffset();
+        /*int offset = tz.getRawOffset();
 
         String[] ids = TimeZone.getAvailableIDs(offset);
         int i = 0;
@@ -325,9 +305,7 @@ public class TimeZoneTest extends junit.framework.TestCase {
                     i++;
                 }
             }
-        }
-        */
-
+        }*/
         assertFalse("should return false when parameter is null", tz
                 .hasSameRules(null));
     }
