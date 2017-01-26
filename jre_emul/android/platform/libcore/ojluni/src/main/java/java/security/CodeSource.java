@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,13 +25,31 @@
 
 package java.security;
 
+
+import java.net.URL;
+import java.net.SocketPermission;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Hashtable;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.security.cert.*;
+
 /**
  * Legacy security code; do not use.
  */
 
-public class PrivilegedActionException extends Exception {
+public class CodeSource implements java.io.Serializable {
 
-    public PrivilegedActionException(Exception exception) { super(exception); }
+    public CodeSource(URL url, java.security.cert.Certificate certs[]) { }
 
-    public Exception getException() { return null; }
+    public CodeSource(URL url, CodeSigner[] signers) { }
+
+    public final URL getLocation() { return null; }
+
+    public final java.security.cert.Certificate[] getCertificates() { return null; }
+
+    public final CodeSigner[] getCodeSigners() { return null; }
+
+    public boolean implies(CodeSource codesource) { return true; }
 }

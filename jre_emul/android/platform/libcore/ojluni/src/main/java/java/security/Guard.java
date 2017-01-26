@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 1998, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,12 +26,31 @@
 package java.security;
 
 /**
- * Legacy security code; do not use.
+ * <p> This interface represents a guard, which is an object that is used
+ * to protect access to another object.
+ *
+ * <p>This interface contains a single method, <code>checkGuard</code>,
+ * with a single <code>object</code> argument. <code>checkGuard</code> is
+ * invoked (by the GuardedObject <code>getObject</code> method)
+ * to determine whether or not to allow access to the object.
+ *
+ * @see GuardedObject
+ *
+ * @author Roland Schemers
+ * @author Li Gong
  */
 
-public class PrivilegedActionException extends Exception {
+public interface Guard {
 
-    public PrivilegedActionException(Exception exception) { super(exception); }
-
-    public Exception getException() { return null; }
+    /**
+     * Determines whether or not to allow access to the guarded object
+     * <code>object</code>. Returns silently if access is allowed.
+     * Otherwise, throws a SecurityException.
+     *
+     * @param object the object being protected by the guard.
+     *
+     * @exception SecurityException if access is denied.
+     *
+     */
+    void checkGuard(Object object) throws SecurityException;
 }

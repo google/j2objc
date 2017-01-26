@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,12 +26,58 @@
 package java.security;
 
 /**
- * Legacy security code; do not use.
+ * An enumeration of cryptographic primitives.
+ *
+ * @since 1.7
  */
+public enum CryptoPrimitive {
+    /**
+     * Hash function
+     */
+    MESSAGE_DIGEST,
 
-public class PrivilegedActionException extends Exception {
+    /**
+     * Cryptographic random number generator
+     */
+    SECURE_RANDOM,
 
-    public PrivilegedActionException(Exception exception) { super(exception); }
+    /**
+     * Symmetric primitive: block cipher
+     */
+    BLOCK_CIPHER,
 
-    public Exception getException() { return null; }
+    /**
+     * Symmetric primitive: stream cipher
+     */
+    STREAM_CIPHER,
+
+    /**
+     * Symmetric primitive: message authentication code
+     */
+    MAC,
+
+    /**
+     * Symmetric primitive: key wrap
+     */
+    KEY_WRAP,
+
+    /**
+     * Asymmetric primitive: public key encryption
+     */
+    PUBLIC_KEY_ENCRYPTION,
+
+    /**
+     * Asymmetric primitive: signature scheme
+     */
+    SIGNATURE,
+
+    /**
+     * Asymmetric primitive: key encapsulation mechanism
+     */
+    KEY_ENCAPSULATION,
+
+    /**
+     * Asymmetric primitive: key agreement and key distribution
+     */
+    KEY_AGREEMENT
 }

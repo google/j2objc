@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2011, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,13 +25,20 @@
 
 package java.security;
 
+import java.util.Enumeration;
+import java.io.Serializable;
+
+
 /**
  * Legacy security code; do not use.
  */
 
-public class PrivilegedActionException extends Exception {
+public final class Permissions extends PermissionCollection
+implements Serializable
+{
+    public void add(Permission permission) { }
 
-    public PrivilegedActionException(Exception exception) { super(exception); }
+    public boolean implies(Permission permission) { return true; }
 
-    public Exception getException() { return null; }
+    public Enumeration<Permission> elements() { return null; }
 }

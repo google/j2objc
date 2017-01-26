@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2006, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,10 +28,8 @@ package java.security;
 /**
  * Legacy security code; do not use.
  */
+public interface DomainCombiner {
 
-public class PrivilegedActionException extends Exception {
-
-    public PrivilegedActionException(Exception exception) { super(exception); }
-
-    public Exception getException() { return null; }
+    ProtectionDomain[] combine(ProtectionDomain[] currentDomains,
+                                ProtectionDomain[] assignedDomains);
 }

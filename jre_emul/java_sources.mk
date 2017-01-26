@@ -234,10 +234,10 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
   java/security/AllPermission.java \
-  java/security/AllPermissionCollection.java \
   java/security/BasicPermission.java \
   java/security/Permission.java \
   java/security/PermissionCollection.java \
+  java/security/Permissions.java \
   java/text/Annotation.java \
   java/text/AttributedCharacterIterator.java \
   java/text/AttributedString.java \
@@ -872,12 +872,14 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/AccessControlContext.java \
   java/security/AccessControlException.java \
   java/security/AccessController.java \
+  java/security/AlgorithmConstraints.java \
   java/security/AlgorithmParameterGenerator.java \
   java/security/AlgorithmParameterGeneratorSpi.java \
   java/security/AlgorithmParameters.java \
   java/security/AlgorithmParametersSpi.java \
   java/security/CodeSigner.java \
   java/security/CodeSource.java \
+  java/security/CryptoPrimitive.java \
   java/security/DigestException.java \
   java/security/DomainCombiner.java \
   java/security/GeneralSecurityException.java \
@@ -901,8 +903,6 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/MessageDigestSpi.java \
   java/security/NoSuchAlgorithmException.java \
   java/security/NoSuchProviderException.java \
-  java/security/Permissions.java \
-  java/security/PermissionsHash.java \
   java/security/Policy.java \
   java/security/Principal.java \
   java/security/PrivateKey.java \
@@ -942,6 +942,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CertificateNotYetValidException.java \
   java/security/cert/CertificateParsingException.java \
   java/security/cert/CertStoreException.java \
+  java/security/cert/CertStoreParameters.java \
   java/security/cert/CRLReason.java \
   java/security/cert/Extension.java \
   java/security/cert/X509Certificate.java \

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2009, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,9 +29,17 @@ package java.security;
  * Legacy security code; do not use.
  */
 
-public class PrivilegedActionException extends Exception {
+public abstract class Permission implements Guard, java.io.Serializable {
 
-    public PrivilegedActionException(Exception exception) { super(exception); }
+    public Permission(String name) { }
 
-    public Exception getException() { return null; }
+    public void checkGuard(Object object) throws SecurityException { }
+
+    public abstract boolean implies(Permission permission);
+
+    public final String getName() { return null; }
+
+    public abstract String getActions();
+
+    public PermissionCollection newPermissionCollection() { return new Permissions(); }
 }

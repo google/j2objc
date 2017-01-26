@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 1998, 2001, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,9 +30,23 @@ package java.security;
  * Legacy security code; do not use.
  */
 
-public class PrivilegedActionException extends Exception {
+public class ProtectionDomain {
 
-    public PrivilegedActionException(Exception exception) { super(exception); }
+    public ProtectionDomain(CodeSource codesource,
+                            PermissionCollection permissions) { }
 
-    public Exception getException() { return null; }
+    public ProtectionDomain(CodeSource codesource,
+                            PermissionCollection permissions,
+                            ClassLoader classloader,
+                            Principal[] principals) { }
+
+    public final CodeSource getCodeSource() { return null; }
+
+    public final ClassLoader getClassLoader() { return null; }
+
+    public final Principal[] getPrincipals() { return null; }
+
+    public final PermissionCollection getPermissions() { return null; }
+
+    public boolean implies(Permission permission) { return true; }
 }
