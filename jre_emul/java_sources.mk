@@ -933,6 +933,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CertPathValidatorException.java \
   java/security/cert/CertPathValidatorResult.java \
   java/security/cert/CertPathValidatorSpi.java \
+  java/security/cert/CertSelector.java \
   java/security/cert/Certificate.java \
   java/security/cert/CertificateEncodingException.java \
   java/security/cert/CertificateException.java \
@@ -1112,8 +1113,6 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/util/PropertyExpander.java
 
 JAVA_PUBLIC_SOURCES_SSL = \
-  javax/net/DefaultServerSocketFactory.java \
-  javax/net/DefaultSocketFactory.java \
   javax/net/ServerSocketFactory.java \
   javax/net/SocketFactory.java \
   javax/net/ssl/DefaultSSLServerSocketFactory.java \
