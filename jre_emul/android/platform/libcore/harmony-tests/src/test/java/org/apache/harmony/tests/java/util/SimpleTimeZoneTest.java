@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.luni.tests.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.Calendar;
 import java.util.Date;

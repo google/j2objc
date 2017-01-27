@@ -582,6 +582,15 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/reflect/annotation/AnnotationSupport.java \
   sun/reflect/annotation/AnnotationType.java \
   sun/reflect/misc/ReflectUtil.java \
+  sun/util/calendar/AbstractCalendar.java \
+  sun/util/calendar/BaseCalendar.java \
+  sun/util/calendar/CalendarDate.java \
+  sun/util/calendar/CalendarSystem.java \
+  sun/util/calendar/CalendarUtils.java \
+  sun/util/calendar/Era.java \
+  sun/util/calendar/Gregorian.java \
+  sun/util/calendar/ImmutableGregorianDate.java \
+  sun/util/calendar/JulianCalendar.java \
   sun/util/locale/BaseLocale.java \
   sun/util/locale/Extension.java \
   sun/util/locale/InternalLocaleBuilder.java \

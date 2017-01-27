@@ -72,5 +72,8 @@ FIELD org.apache.harmony.xml.dom.InnerNodeImpl.children
 # Types that aren't actually in jre_emul.
 TYPE sun.misc.URLClassPath
 
+# False positive: sinceDate's value is privately created and owned.
+FIELD sun.util.calendar.Era.sinceDate
+
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml

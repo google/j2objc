@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -27,8 +27,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class CalendarTest extends junit.framework.TestCase {
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
+public class CalendarTest extends junit.framework.TestCase {
+	
 	Locale defaultLocale;
 
 	/**
@@ -97,275 +99,274 @@ public class CalendarTest extends junit.framework.TestCase {
 		assertTrue("Incorrect result 0e: " + cal.getTime(), cal.getTime()
 				.getTime() == 1010898000000L);
 
-		// TODO(tball): enable after b/10532393 is fixed.
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		assertTrue("Incorrect result 0f: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015736400000L);
-//
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DATE, 24);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		assertTrue("Incorrect result 0g: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1011848400000L);
-//
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.get(Calendar.WEEK_OF_YEAR); // Force fields to compute
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		assertTrue("Incorrect result 0h: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015909200000L);
-//
-//		// WEEK_OF_YEAR has priority over MONTH/DATE
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_YEAR, 170);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		cal.set(Calendar.MONTH, Calendar.JANUARY);
-//		cal.set(Calendar.DATE, 5);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		assertTrue("Incorrect result 1: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// WEEK_OF_YEAR has priority over MONTH/DATE
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		cal.set(Calendar.MONTH, Calendar.JANUARY);
-//		cal.set(Calendar.DATE, 5);
-//		cal.set(Calendar.DAY_OF_YEAR, 170);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		assertTrue("Incorrect result 1a: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DAY_OF_WEEK has no effect when other fields not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-//		assertTrue("Incorrect result 1b: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//        // Regression for HARMONY-4384
-//        // Set DAY_OF_WEEK without DATE
-//        cal.clear();
-//        cal.set(Calendar.YEAR, 2002);
-//        cal.set(Calendar.MONTH, Calendar.MARCH);
-//        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-//        assertEquals("Incorrect result 1b: " + cal.getTime(), 1015304400000L, cal.getTime()
-//                .getTime());
-//
-//
-//		// WEEK_OF_MONTH has priority
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
-//		cal.set(Calendar.WEEK_OF_MONTH, 3);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.DATE, 5);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		assertTrue("Incorrect result 2: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DAY_OF_WEEK_IN_MONTH has priority over WEEK_OF_YEAR
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 2);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.DATE, 5);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		assertTrue("Incorrect result 3: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// WEEK_OF_MONTH has priority, MONTH not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
-//		cal.set(Calendar.WEEK_OF_MONTH, 3);
-//		cal.set(Calendar.DATE, 25);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		assertTrue("Incorrect result 4: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1010984400000L);
-//
-//		// WEEK_OF_YEAR has priority when MONTH set last and DAY_OF_WEEK set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		cal.set(Calendar.DATE, 25);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		cal.set(Calendar.MONTH, Calendar.JANUARY);
-//		assertTrue("Incorrect result 5: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// Use MONTH/DATE when WEEK_OF_YEAR set but not DAY_OF_WEEK
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		assertTrue("Incorrect result 5a: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// Use MONTH/DATE when DAY_OF_WEEK is not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.WEEK_OF_MONTH, 1);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		assertTrue("Incorrect result 5b: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// WEEK_OF_MONTH has priority
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DATE, 5);
-//		cal.set(Calendar.WEEK_OF_MONTH, 3);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		assertTrue("Incorrect result 5c: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DATE has priority when set last
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.DATE, 11);
-//		assertTrue("Incorrect result 6: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DATE has priority when set last, MONTH not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 12);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		cal.set(Calendar.DATE, 14);
-//		assertTrue("Incorrect result 7: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1010984400000L);
-//
-//		// DAY_OF_YEAR has priority when MONTH set last and DATE not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_YEAR, 70);
-//		cal.set(Calendar.MONTH, Calendar.JANUARY);
-//		assertTrue("Incorrect result 8: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DAY/MONTH has priority when DATE set after DAY_OF_YEAR
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_YEAR, 170);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		assertTrue("Incorrect result 8a: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DAY_OF_YEAR has priority when set after DATE
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DATE, 15);
-//		cal.set(Calendar.DAY_OF_YEAR, 70);
-//		cal.set(Calendar.MONTH, Calendar.JANUARY);
-//		assertTrue("Incorrect result 8b: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DATE has priority when set last
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_YEAR, 70);
-//		cal.set(Calendar.DATE, 14);
-//		assertTrue("Incorrect result 9: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1010984400000L);
-//
-//		// DATE has priority when set last
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_YEAR, 15);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-//		cal.set(Calendar.DATE, 14);
-//		assertTrue("Incorrect result 9a: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1010984400000L);
-//
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//		cal.set(Calendar.DATE, 14);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		assertTrue("Incorrect result 9b: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DATE, 14);
-//		cal.set(Calendar.WEEK_OF_YEAR, 11);
-//		assertTrue("Incorrect result 9c: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1010984400000L);
-//
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.WEEK_OF_MONTH, 1);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.DATE, 11);
-//		assertTrue("Incorrect result 9d: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// DAY_OF_YEAR has priority when DAY_OF_MONTH set last and other fields
-//		// not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_YEAR, 70);
-//		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-//		assertTrue("Incorrect result 10: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// MONTH/DATE has priority when DAY_OF_WEEK_IN_MONTH set last but
-//		// DAY_OF_WEEK not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
-//		assertTrue("Incorrect result 11: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// MONTH/DATE has priority when WEEK_OF_YEAR set last but DAY_OF_WEEK
-//		// not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.WEEK_OF_YEAR, 15);
-//		assertTrue("Incorrect result 12: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// MONTH/DATE has priority when WEEK_OF_MONTH set last but DAY_OF_WEEK
-//		// not set
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DATE, 11);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.WEEK_OF_MONTH, 1);
-//		assertTrue("Incorrect result 13: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1015822800000L);
-//
-//		// Ensure last date field set is reset after computing
-//		cal.clear();
-//		cal.set(Calendar.YEAR, 2002);
-//		cal.set(Calendar.DAY_OF_YEAR, 111);
-//		cal.get(Calendar.YEAR);
-//		cal.set(Calendar.MONTH, Calendar.MARCH);
-//		cal.set(Calendar.AM_PM, Calendar.AM);
-//		assertTrue("Incorrect result 14: " + cal.getTime(), cal.getTime()
-//				.getTime() == 1016686800000L);
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		assertTrue("Incorrect result 0f: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015736400000L);
+
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DATE, 24);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		assertTrue("Incorrect result 0g: " + cal.getTime(), cal.getTime()
+				.getTime() == 1011848400000L);
+
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.get(Calendar.WEEK_OF_YEAR); // Force fields to compute
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		assertTrue("Incorrect result 0h: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015909200000L);
+
+		// WEEK_OF_YEAR has priority over MONTH/DATE
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_YEAR, 170);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.DATE, 5);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		assertTrue("Incorrect result 1: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// WEEK_OF_YEAR has priority over MONTH/DATE
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.DATE, 5);
+		cal.set(Calendar.DAY_OF_YEAR, 170);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		assertTrue("Incorrect result 1a: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DAY_OF_WEEK has no effect when other fields not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		assertTrue("Incorrect result 1b: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+        // Regression for HARMONY-4384
+        // Set DAY_OF_WEEK without DATE
+        cal.clear();
+        cal.set(Calendar.YEAR, 2002);
+        cal.set(Calendar.MONTH, Calendar.MARCH);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+        assertEquals("Incorrect result 1b: " + cal.getTime(), 1015304400000L, cal.getTime()
+                .getTime());
+
+
+		// WEEK_OF_MONTH has priority
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
+		cal.set(Calendar.WEEK_OF_MONTH, 3);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DATE, 5);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		assertTrue("Incorrect result 2: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DAY_OF_WEEK_IN_MONTH has priority over WEEK_OF_YEAR
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 2);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DATE, 5);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		assertTrue("Incorrect result 3: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// WEEK_OF_MONTH has priority, MONTH not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
+		cal.set(Calendar.WEEK_OF_MONTH, 3);
+		cal.set(Calendar.DATE, 25);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		assertTrue("Incorrect result 4: " + cal.getTime(), cal.getTime()
+				.getTime() == 1010984400000L);
+
+		// WEEK_OF_YEAR has priority when MONTH set last and DAY_OF_WEEK set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		cal.set(Calendar.DATE, 25);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		assertTrue("Incorrect result 5: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// Use MONTH/DATE when WEEK_OF_YEAR set but not DAY_OF_WEEK
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		assertTrue("Incorrect result 5a: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// Use MONTH/DATE when DAY_OF_WEEK is not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.WEEK_OF_MONTH, 1);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		assertTrue("Incorrect result 5b: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// WEEK_OF_MONTH has priority
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DATE, 5);
+		cal.set(Calendar.WEEK_OF_MONTH, 3);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		assertTrue("Incorrect result 5c: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DATE has priority when set last
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DATE, 11);
+		assertTrue("Incorrect result 6: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DATE has priority when set last, MONTH not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 12);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.DATE, 14);
+		assertTrue("Incorrect result 7: " + cal.getTime(), cal.getTime()
+				.getTime() == 1010984400000L);
+
+		// DAY_OF_YEAR has priority when MONTH set last and DATE not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_YEAR, 70);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		assertTrue("Incorrect result 8: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DAY/MONTH has priority when DATE set after DAY_OF_YEAR
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_YEAR, 170);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		assertTrue("Incorrect result 8a: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DAY_OF_YEAR has priority when set after DATE
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DATE, 15);
+		cal.set(Calendar.DAY_OF_YEAR, 70);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		assertTrue("Incorrect result 8b: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DATE has priority when set last
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_YEAR, 70);
+		cal.set(Calendar.DATE, 14);
+		assertTrue("Incorrect result 9: " + cal.getTime(), cal.getTime()
+				.getTime() == 1010984400000L);
+
+		// DATE has priority when set last
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_YEAR, 15);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+		cal.set(Calendar.DATE, 14);
+		assertTrue("Incorrect result 9a: " + cal.getTime(), cal.getTime()
+				.getTime() == 1010984400000L);
+
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.DATE, 14);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		assertTrue("Incorrect result 9b: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DATE, 14);
+		cal.set(Calendar.WEEK_OF_YEAR, 11);
+		assertTrue("Incorrect result 9c: " + cal.getTime(), cal.getTime()
+				.getTime() == 1010984400000L);
+
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.WEEK_OF_MONTH, 1);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DATE, 11);
+		assertTrue("Incorrect result 9d: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// DAY_OF_YEAR has priority when DAY_OF_MONTH set last and other fields
+		// not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_YEAR, 70);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		assertTrue("Incorrect result 10: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// MONTH/DATE has priority when DAY_OF_WEEK_IN_MONTH set last but
+		// DAY_OF_WEEK not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
+		assertTrue("Incorrect result 11: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// MONTH/DATE has priority when WEEK_OF_YEAR set last but DAY_OF_WEEK
+		// not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.WEEK_OF_YEAR, 15);
+		assertTrue("Incorrect result 12: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// MONTH/DATE has priority when WEEK_OF_MONTH set last but DAY_OF_WEEK
+		// not set
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DATE, 11);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.WEEK_OF_MONTH, 1);
+		assertTrue("Incorrect result 13: " + cal.getTime(), cal.getTime()
+				.getTime() == 1015822800000L);
+
+		// Ensure last date field set is reset after computing
+		cal.clear();
+		cal.set(Calendar.YEAR, 2002);
+		cal.set(Calendar.DAY_OF_YEAR, 111);
+		cal.get(Calendar.YEAR);
+		cal.set(Calendar.MONTH, Calendar.MARCH);
+		cal.set(Calendar.AM_PM, Calendar.AM);
+		assertTrue("Incorrect result 14: " + cal.getTime(), cal.getTime()
+				.getTime() == 1016686800000L);
 
 		int hour = cal.get(Calendar.HOUR);
 		cal.set(Calendar.HOUR, hour);
@@ -726,6 +727,17 @@ public class CalendarTest extends junit.framework.TestCase {
         assertTrue(0 <= calendar.toString().indexOf("?"));
     }
 
+    /**
+     * serialization/deserialization.
+     * J2ObjC: Calendar/TimeZone serialization is broken. (b/34764665)
+    public void testSerializationSelf() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2008, 3, 20, 17, 28, 12);
+
+        SerializationTest.verifySelf(calendar);
+    }*/
+
+
     private class MockGregorianCalendar extends GregorianCalendar {
         public int internal_get(int field) {
             return super.internalGet(field);
@@ -1032,6 +1044,18 @@ public class CalendarTest extends junit.framework.TestCase {
 		}
 		cal.set(Calendar.SECOND, 999);
 		cal.getDisplayNames(Calendar.MONTH, Calendar.SHORT, Locale.US);
+
+		// RI fails here
+		// invalid value for an un-related field when the calendar is not
+		// lenient
+		cal.setLenient(false);
+		cal.set(Calendar.SECOND, 999);
+		try {
+			cal.getDisplayNames(Calendar.MONTH, Calendar.SHORT, Locale.US);
+			fail("Should throw IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
 	}
 
 	private void assertDisplayNameMap(String[] values,

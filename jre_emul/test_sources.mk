@@ -355,13 +355,16 @@ TEST_SOURCES := \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
     libcore/java/util/CurrencyTest.java \
+    libcore/java/util/DateTest.java \
     libcore/java/util/EventObjectTest.java \
     libcore/java/util/FormatterTest.java \
+    libcore/java/util/GregorianCalendarTest.java \
     libcore/java/util/LocaleTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
+    libcore/java/util/SimpleTimeZoneTest.java \
     libcore/java/util/TimeZoneTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
@@ -477,11 +480,9 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/ArrayListTest.java \
     org/apache/harmony/luni/tests/java/util/ArraysTest.java \
     org/apache/harmony/luni/tests/java/util/CollectionsTest.java \
-    org/apache/harmony/luni/tests/java/util/DateTest.java \
     org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.java \
     org/apache/harmony/luni/tests/java/util/EnumSetTest.java \
     org/apache/harmony/luni/tests/java/util/EventObjectTest.java \
-    org/apache/harmony/luni/tests/java/util/GregorianCalendarTest.java \
     org/apache/harmony/luni/tests/java/util/HashSetTest.java \
     org/apache/harmony/luni/tests/java/util/IdentityHashMapTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedHashSetTest.java \
@@ -489,7 +490,6 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/NoSuchElementExceptionTest.java \
     org/apache/harmony/luni/tests/java/util/PriorityQueueTest.java \
     org/apache/harmony/luni/tests/java/util/RandomTest.java \
-    org/apache/harmony/luni/tests/java/util/SimpleTimeZoneTest.java \
     org/apache/harmony/luni/tests/java/util/StackTest.java \
     org/apache/harmony/luni/tests/java/util/StringTokenizerTest.java \
     org/apache/harmony/luni/tests/java/util/TooManyListenersExceptionTest.java \
@@ -558,11 +558,15 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
     org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
+    org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
+    org/apache/harmony/tests/java/util/DateTest.java \
+    org/apache/harmony/tests/java/util/GregorianCalendarTest.java \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/tests/java/util/LocaleTest.java \
+    org/apache/harmony/tests/java/util/SimpleTimeZoneTest.java \
     org/apache/harmony/tests/java/util/TimeZoneTest.java \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
@@ -581,7 +585,6 @@ TEST_SOURCES := \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/api/java/util/AbstractMapTest.java \
     tests/api/java/util/BitSetTest.java \
-    tests/api/java/util/CalendarTest.java \
     tests/api/java/util/FormattableFlagsTest.java \
     tests/api/java/util/ListResourceBundleTest.java \
     tests/api/java/util/ObservableTest.java \

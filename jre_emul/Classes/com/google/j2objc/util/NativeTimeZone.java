@@ -177,6 +177,20 @@ public final class NativeTimeZone extends TimeZone {
   ]-*/;
 
   /**
+   * Used by java.util.GregorianCalendar.
+   */
+  public native int getOffsetsByUtcTime(long utcTimeInMillis, int[] offsets) /*-[
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:(double)utcTimeInMillis / 1000.0];
+    NSTimeZone *tz = (NSTimeZone *)nativeTimeZone_;
+    jint totalOffset = (jint)[tz secondsFromGMTForDate:date] * 1000;
+    jint dstOffset = (jint)[tz daylightSavingTimeOffsetForDate:date] * 1000;
+    jint rawOffset = totalOffset - dstOffset;
+    *IOSIntArray_GetRef(offsets, 0) = rawOffset;
+    *IOSIntArray_GetRef(offsets, 1) = dstOffset;
+    return totalOffset;
+  ]-*/;
+
+  /**
    * This implementation is adapted from libcore's ZoneInfo.
    *
    * The method always assumes Gregorian calendar, and uses a simple formula to first derive the
