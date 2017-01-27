@@ -52,6 +52,7 @@ public class NameTable {
   private final ElementUtil elementUtil;
   private final CaptureInfo captureInfo;
   private final Map<VariableElement, String> variableNames = new HashMap<>();
+  private final Map<ExecutableElement, String> methodSelectorCache = new HashMap<>();
 
   public static final String INIT_NAME = "init";
   public static final String RETAIN_METHOD = "retain";
@@ -492,6 +493,16 @@ public class NameTable {
   }
 
   public String getMethodSelector(ExecutableElement method) {
+    String selector = methodSelectorCache.get(method);
+    if (selector != null) {
+      return selector;
+    }
+    selector = getMethodSelectorInner(method);
+    methodSelectorCache.put(method, selector);
+    return selector;
+  }
+
+  private String getMethodSelectorInner(ExecutableElement method) {
     String selector = ElementUtil.getSelector(method);
     if (selector != null) {
       return selector;
