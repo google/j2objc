@@ -937,11 +937,13 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CRLException.java \
   java/security/cert/CertPath.java \
   java/security/cert/CertPathBuilderException.java \
+  java/security/cert/CertPathChecker.java \
   java/security/cert/CertPathParameters.java \
   java/security/cert/CertPathValidator.java \
   java/security/cert/CertPathValidatorException.java \
   java/security/cert/CertPathValidatorResult.java \
   java/security/cert/CertPathValidatorSpi.java \
+  java/security/cert/CertSelector.java \
   java/security/cert/Certificate.java \
   java/security/cert/CertificateEncodingException.java \
   java/security/cert/CertificateException.java \
@@ -989,10 +991,23 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/spec/RSAPublicKeySpec.java \
   java/security/spec/X509EncodedKeySpec.java \
   java/util/UUID.java \
+  javax/crypto/BadPaddingException.java \
+  javax/crypto/Cipher.java \
+  javax/crypto/CipherSpi.java \
+  javax/crypto/ExemptionMechanism.java \
+  javax/crypto/ExemptionMechanismException.java \
+  javax/crypto/ExemptionMechanismSpi.java \
+  javax/crypto/IllegalBlockSizeException.java \
   javax/crypto/Mac.java \
   javax/crypto/MacSpi.java \
+  javax/crypto/NoSuchPaddingException.java \
+  javax/crypto/NullCipher.java \
   javax/crypto/SecretKey.java \
   javax/crypto/ShortBufferException.java \
+  javax/crypto/spec/IvParameterSpec.java \
+  javax/crypto/spec/PBEParameterSpec.java \
+  javax/crypto/spec/RC2ParameterSpec.java \
+  javax/crypto/spec/RC5ParameterSpec.java \
   javax/crypto/spec/SecretKeySpec.java \
   javax/security/auth/DestroyFailedException.java \
   javax/security/auth/Destroyable.java \
@@ -1019,6 +1034,8 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   com/google/j2objc/security/IosSecurityProvider.java \
   com/google/j2objc/security/cert/IosCertificateFactory.java \
   com/google/j2objc/security/cert/IosX509Certificate.java \
+  javax/crypto/JceSecurity.java \
+  javax/crypto/NullCipherSpi.java \
   org/apache/harmony/security/PrivateKeyImpl.java \
   org/apache/harmony/security/PublicKeyImpl.java \
   org/apache/harmony/security/asn1/ASN1Any.java \
@@ -1052,9 +1069,6 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   org/apache/harmony/security/asn1/DerInputStream.java \
   org/apache/harmony/security/asn1/DerOutputStream.java \
   org/apache/harmony/security/asn1/ObjectIdentifier.java \
-  org/apache/harmony/security/fortress/Engine.java \
-  org/apache/harmony/security/fortress/SecurityAccess.java \
-  org/apache/harmony/security/fortress/Services.java \
   org/apache/harmony/security/pkcs7/AuthenticatedAttributes.java \
   org/apache/harmony/security/pkcs7/ContentInfo.java \
   org/apache/harmony/security/pkcs7/SignedData.java \
@@ -1121,12 +1135,8 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/util/PropertyExpander.java
 
 JAVA_PUBLIC_SOURCES_SSL = \
-  javax/net/DefaultServerSocketFactory.java \
-  javax/net/DefaultSocketFactory.java \
   javax/net/ServerSocketFactory.java \
   javax/net/SocketFactory.java \
-  javax/net/ssl/DefaultSSLServerSocketFactory.java \
-  javax/net/ssl/DefaultSSLSocketFactory.java \
   javax/net/ssl/HandshakeCompletedEvent.java \
   javax/net/ssl/HandshakeCompletedListener.java \
   javax/net/ssl/HostnameVerifier.java \

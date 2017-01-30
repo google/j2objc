@@ -73,7 +73,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
   public static class SHA1 extends IosSHAMessageDigest {
 
     public SHA1() {
-      super("SHA1");
+      super("SHA-1");
     }
 
     @Override
@@ -93,7 +93,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
   public static class SHA256 extends IosSHAMessageDigest {
 
     public SHA256() {
-      super("SHA256");
+      super("SHA-256");
     }
 
     @Override
@@ -113,7 +113,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
   public static class SHA384 extends IosSHAMessageDigest {
 
     public SHA384() {
-      super("SHA384");
+      super("SHA-384");
     }
 
     @Override
@@ -133,7 +133,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest implements Clone
   public static class SHA512 extends IosSHAMessageDigest {
 
     public SHA512() {
-      super("SHA512");
+      super("SHA-512");
     }
 
     @Override

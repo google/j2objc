@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
-import org.apache.harmony.security.fortress.Services;
+//import org.apache.harmony.security.fortress.Services;
 
 /**
  * Provides Algorithm Name to OID and OID to Algorithm Name mappings. Some known
@@ -99,22 +99,22 @@ public class AlgNameMapper {
     private AlgNameMapper() {
     }
 
-    private static synchronized void checkCacheVersion() {
-        int newCacheVersion = Services.getCacheVersion();
-        if (newCacheVersion != cacheVersion) {
-            //
-            // Now search providers for mappings like
-            // Alg.Alias.<service>.<OID-INTS-DOT-SEPARATED>=<alg-name>
-            //  or
-            // Alg.Alias.<service>.OID.<OID-INTS-DOT-SEPARATED>=<alg-name>
-            //
-            Provider[] pl = Security.getProviders();
-            for (Provider element : pl) {
-                selectEntries(element);
-            }
-            cacheVersion = newCacheVersion;
-        }
-    }
+//    private static synchronized void checkCacheVersion() {
+//        int newCacheVersion = Services.getCacheVersion();
+//        if (newCacheVersion != cacheVersion) {
+//            //
+//            // Now search providers for mappings like
+//            // Alg.Alias.<service>.<OID-INTS-DOT-SEPARATED>=<alg-name>
+//            //  or
+//            // Alg.Alias.<service>.OID.<OID-INTS-DOT-SEPARATED>=<alg-name>
+//            //
+//            Provider[] pl = Security.getProviders();
+//            for (Provider element : pl) {
+//                selectEntries(element);
+//            }
+//            cacheVersion = newCacheVersion;
+//        }
+//    }
 
     /**
      * Returns OID for algName
@@ -123,7 +123,7 @@ public class AlgNameMapper {
      * @return OID as String
      */
     public static String map2OID(String algName) {
-        checkCacheVersion();
+//        checkCacheVersion();
 
         // alg2OidMap map contains upper case keys
         String result = alg2OidMap.get(algName.toUpperCase(Locale.US));
@@ -147,7 +147,7 @@ public class AlgNameMapper {
      * @return algorithm name
      */
     public static String map2AlgName(String oid) {
-        checkCacheVersion();
+//        checkCacheVersion();
 
         // oid2AlgMap map contains upper case values
         String algUC = oid2AlgMap.get(oid);
