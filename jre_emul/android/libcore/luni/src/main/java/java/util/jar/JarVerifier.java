@@ -17,7 +17,6 @@
 
 package java.util.jar;
 
-import org.apache.harmony.security.utils.JarUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -289,19 +288,20 @@ class JarVerifier {
             return;
         }
 
-        byte[] sBlockBytes = metaEntries.get(certFile);
-        try {
-            Certificate[] signerCertChain = JarUtils.verifySignature(
-                    new ByteArrayInputStream(sfBytes),
-                    new ByteArrayInputStream(sBlockBytes));
-            if (signerCertChain != null) {
-                certificates.put(signatureFile, signerCertChain);
-            }
-        } catch (IOException e) {
-            return;
-        } catch (GeneralSecurityException e) {
-            throw failedVerification(jarName, signatureFile);
-        }
+// TODO(tball): commented out until java.util.jar is updated to OpenJDK.
+//        byte[] sBlockBytes = metaEntries.get(certFile);
+//        try {
+//            Certificate[] signerCertChain = JarUtils.verifySignature(
+//                    new ByteArrayInputStream(sfBytes),
+//                    new ByteArrayInputStream(sBlockBytes));
+//            if (signerCertChain != null) {
+//                certificates.put(signatureFile, signerCertChain);
+//            }
+//        } catch (IOException e) {
+//            return;
+//        } catch (GeneralSecurityException e) {
+//            throw failedVerification(jarName, signatureFile);
+//        }
 
         // Verify manifest hash in .sf file
         Attributes attributes = new Attributes();

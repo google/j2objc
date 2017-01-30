@@ -905,6 +905,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/KeyPair.java \
   java/security/KeyPairGenerator.java \
   java/security/KeyPairGeneratorSpi.java \
+  java/security/KeyRep.java \
   java/security/KeyStore.java \
   java/security/KeyStoreException.java \
   java/security/KeyStoreSpi.java \
@@ -956,7 +957,10 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CertStoreParameters.java \
   java/security/cert/CRLReason.java \
   java/security/cert/Extension.java \
+  java/security/cert/PolicyQualifierInfo.java \
   java/security/cert/X509Certificate.java \
+  java/security/cert/X509CRL.java \
+  java/security/cert/X509CRLEntry.java \
   java/security/cert/X509Extension.java \
   java/security/interfaces/ECKey.java \
   java/security/interfaces/ECPrivateKey.java \
@@ -1003,6 +1007,8 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/NoSuchPaddingException.java \
   javax/crypto/NullCipher.java \
   javax/crypto/SecretKey.java \
+  javax/crypto/SecretKeyFactory.java \
+  javax/crypto/SecretKeyFactorySpi.java \
   javax/crypto/ShortBufferException.java \
   javax/crypto/spec/IvParameterSpec.java \
   javax/crypto/spec/PBEParameterSpec.java \
@@ -1036,8 +1042,6 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   com/google/j2objc/security/cert/IosX509Certificate.java \
   javax/crypto/JceSecurity.java \
   javax/crypto/NullCipherSpi.java \
-  org/apache/harmony/security/PrivateKeyImpl.java \
-  org/apache/harmony/security/PublicKeyImpl.java \
   org/apache/harmony/security/asn1/ASN1Any.java \
   org/apache/harmony/security/asn1/ASN1BitString.java \
   org/apache/harmony/security/asn1/ASN1Boolean.java \
@@ -1126,13 +1130,112 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   org/apache/harmony/security/x509/Time.java \
   org/apache/harmony/security/x509/Validity.java \
   org/apache/harmony/security/x509/X509PublicKey.java \
+  sun/misc/BASE64Decoder.java \
+  sun/misc/CEFormatException.java \
+  sun/misc/CEStreamExhausted.java \
+  sun/misc/CharacterDecoder.java \
+  sun/misc/CharacterEncoder.java \
+  sun/misc/HexDumpEncoder.java \
+  sun/misc/IOUtils.java \
   sun/security/jca/GetInstance.java \
   sun/security/jca/JCAUtil.java \
   sun/security/jca/ProviderConfig.java \
   sun/security/jca/ProviderList.java \
   sun/security/jca/Providers.java \
   sun/security/jca/ServiceId.java \
-  sun/security/util/PropertyExpander.java
+  sun/security/pkcs/ContentInfo.java \
+  sun/security/pkcs/ParsingException.java \
+  sun/security/pkcs/PKCS7.java \
+  sun/security/pkcs/PKCS9Attribute.java \
+  sun/security/pkcs/PKCS9Attributes.java \
+  sun/security/pkcs/SignerInfo.java \
+  sun/security/pkcs/SigningCertificateInfo.java \
+  sun/security/provider/X509Factory.java \
+  sun/security/util/BitArray.java \
+  sun/security/util/ByteArrayLexOrder.java \
+  sun/security/util/ByteArrayTagOrder.java \
+  sun/security/util/Cache.java \
+  sun/security/util/Debug.java \
+  sun/security/util/DerEncoder.java \
+  sun/security/util/DerIndefLenConverter.java \
+  sun/security/util/DerInputBuffer.java \
+  sun/security/util/DerInputStream.java \
+  sun/security/util/DerOutputStream.java \
+  sun/security/util/DerValue.java \
+  sun/security/util/ObjectIdentifier.java \
+  sun/security/util/PropertyExpander.java \
+  sun/security/util/Resources.java \
+  sun/security/util/ResourcesMgr.java \
+  sun/security/x509/AccessDescription.java \
+  sun/security/x509/AlgorithmId.java \
+  sun/security/x509/AttributeNameEnumeration.java \
+  sun/security/x509/AuthorityInfoAccessExtension.java \
+  sun/security/x509/AuthorityKeyIdentifierExtension.java \
+  sun/security/x509/AVA.java \
+  sun/security/x509/BasicConstraintsExtension.java \
+  sun/security/x509/CertAttrSet.java \
+  sun/security/x509/CertificateAlgorithmId.java \
+  sun/security/x509/CertificateExtensions.java \
+  sun/security/x509/CertificateIssuerExtension.java \
+  sun/security/x509/CertificateIssuerName.java \
+  sun/security/x509/CertificatePoliciesExtension.java \
+  sun/security/x509/CertificatePolicyId.java \
+  sun/security/x509/CertificatePolicyMap.java \
+  sun/security/x509/CertificateSerialNumber.java \
+  sun/security/x509/CertificateValidity.java \
+  sun/security/x509/CertificateVersion.java \
+  sun/security/x509/CertificateX509Key.java \
+  sun/security/x509/CRLDistributionPointsExtension.java \
+  sun/security/x509/CRLExtensions.java \
+  sun/security/x509/CRLNumberExtension.java \
+  sun/security/x509/CRLReasonCodeExtension.java \
+  sun/security/x509/DeltaCRLIndicatorExtension.java \
+  sun/security/x509/DistributionPoint.java \
+  sun/security/x509/DistributionPointName.java \
+  sun/security/x509/DNSName.java \
+  sun/security/x509/EDIPartyName.java \
+  sun/security/x509/ExtendedKeyUsageExtension.java \
+  sun/security/x509/Extension.java \
+  sun/security/x509/FreshestCRLExtension.java \
+  sun/security/x509/GeneralNameInterface.java \
+  sun/security/x509/GeneralName.java \
+  sun/security/x509/GeneralNames.java \
+  sun/security/x509/GeneralSubtree.java \
+  sun/security/x509/GeneralSubtrees.java \
+  sun/security/x509/InhibitAnyPolicyExtension.java \
+  sun/security/x509/IPAddressName.java \
+  sun/security/x509/IssuerAlternativeNameExtension.java \
+  sun/security/x509/IssuingDistributionPointExtension.java \
+  sun/security/x509/KeyIdentifier.java \
+  sun/security/x509/KeyUsageExtension.java \
+  sun/security/x509/NameConstraintsExtension.java \
+  sun/security/x509/NetscapeCertTypeExtension.java \
+  sun/security/x509/OCSPNoCheckExtension.java \
+  sun/security/x509/OIDMap.java \
+  sun/security/x509/OIDName.java \
+  sun/security/x509/OtherName.java \
+  sun/security/x509/PKIXExtensions.java \
+  sun/security/x509/PolicyConstraintsExtension.java \
+  sun/security/x509/PolicyInformation.java \
+  sun/security/x509/PolicyMappingsExtension.java \
+  sun/security/x509/PrivateKeyUsageExtension.java \
+  sun/security/x509/RDN.java \
+  sun/security/x509/ReasonFlags.java \
+  sun/security/x509/RFC822Name.java \
+  sun/security/x509/SerialNumber.java \
+  sun/security/x509/SubjectAlternativeNameExtension.java \
+  sun/security/x509/SubjectInfoAccessExtension.java \
+  sun/security/x509/SubjectKeyIdentifierExtension.java \
+  sun/security/x509/UniqueIdentity.java \
+  sun/security/x509/URIName.java \
+  sun/security/x509/X400Address.java \
+  sun/security/x509/X500Name.java \
+  sun/security/x509/X509AttributeName.java \
+  sun/security/x509/X509CertImpl.java \
+  sun/security/x509/X509CertInfo.java \
+  sun/security/x509/X509CRLEntryImpl.java \
+  sun/security/x509/X509CRLImpl.java \
+  sun/security/x509/X509Key.java
 
 JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ServerSocketFactory.java \

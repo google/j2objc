@@ -592,7 +592,6 @@ TEST_SOURCES := \
     tests/api/java/util/ResourceBundleTest.java \
     tests/api/java/util/TimerTaskTest.java \
     tests/api/java/util/TimerTest.java \
-    tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
     tests/security/interfaces/RSAKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
     tests/security/interfaces/RSAPublicKeyTest.java \
@@ -607,7 +606,6 @@ TEST_SOURCES := \
     tests/security/spec/InvalidKeySpecExceptionTest.java \
     tests/security/spec/InvalidParameterSpecExceptionTest.java \
     tests/security/spec/MGF1ParameterSpecTest.java \
-    tests/security/spec/PKCS8EncodedKeySpecTest.java \
     tests/security/spec/PSSParameterSpecTest.java \
     tests/security/spec/RSAKeyGenParameterSpecTest.java \
     tests/security/spec/RSAMultiPrimePrivateCrtKeySpecTest.java \
@@ -615,7 +613,6 @@ TEST_SOURCES := \
     tests/security/spec/RSAPrivateCrtKeySpecTest.java \
     tests/security/spec/RSAPrivateKeySpecTest.java \
     tests/security/spec/RSAPublicKeySpecTest.java \
-    tests/security/spec/X509EncodedKeySpecTest.java \
     tests/targets/security/MessageDigestTestMD5.java \
     tests/targets/security/MessageDigestTestSHA1.java \
     tests/targets/security/MessageDigestTestSHA256.java \
