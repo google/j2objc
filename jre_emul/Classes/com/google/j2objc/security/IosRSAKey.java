@@ -17,9 +17,6 @@
 
 package com.google.j2objc.security;
 
-import org.apache.harmony.security.asn1.BitString;
-import org.apache.harmony.security.asn1.DerInputStream;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Key;
@@ -28,6 +25,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import sun.security.util.DerInputStream;
 
 public abstract class IosRSAKey implements RSAKey, Key {
 
@@ -121,11 +119,11 @@ public abstract class IosRSAKey implements RSAKey, Key {
       }
       try {
         DerInputStream in = new DerInputStream(bytes);
-        in.readBitString(); // Ignore: bitstring of mod + exp.
-        in.readBitString();
-        modulus = new BigInteger(((BitString) in.content).bytes);
-        in.readBitString();
-        publicExponent = new BigInteger(((BitString) in.content).bytes);
+        in.getUnalignedBitString(); // Ignore: bitstring of mod + exp.
+        in.getUnalignedBitString();
+        modulus = new BigInteger(in.getUnalignedBitString().toByteArray());
+        in.getUnalignedBitString();
+        publicExponent = new BigInteger(in.getUnalignedBitString().toByteArray());
       } catch (IOException e) {
         // Should never happen, since bytes are extracted from a valid iOS secKeyRef.
         throw new AssertionError("failed decoding key parameters: " + e);
@@ -184,11 +182,11 @@ public abstract class IosRSAKey implements RSAKey, Key {
       }
       try {
         DerInputStream in = new DerInputStream(bytes);
-        in.readBitString(); // Ignore: bitstring of mod + exp.
-        in.readBitString();
-        modulus = new BigInteger(((BitString) in.content).bytes);
-        in.readBitString();
-        privateExponent = new BigInteger(((BitString) in.content).bytes);
+        in.getUnalignedBitString(); // Ignore: bitstring of mod + exp.
+        in.getUnalignedBitString();
+        modulus = new BigInteger(in.getUnalignedBitString().toByteArray());
+        in.getUnalignedBitString();
+        privateExponent = new BigInteger(in.getUnalignedBitString().toByteArray());
       } catch (IOException e) {
         // Should never happen, since bytes are extracted from a valid iOS secKeyRef.
         throw new AssertionError("failed decoding key parameters: " + e);

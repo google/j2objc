@@ -17,8 +17,6 @@
 
 package com.google.j2objc.security;
 
-import com.google.j2objc.security.cert.IosCertificateFactory;
-
 import java.security.Provider;
 
 /**
@@ -40,7 +38,7 @@ public class IosSecurityProvider extends Provider {
     put("SecureRandom.SHA1PRNG", PREFIX + "IosSecureRandomImpl");
 
     // X509 certificate provider.
-    put("CertificateFactory.X.509", "com.google.j2objc.security.cert.IosCertificateFactory");
+    put("CertificateFactory.X.509", "sun.security.provider.X509Factory");
 
     /* === Message Digests === */
     put("MessageDigest.SHA-1", PREFIX + "IosSHAMessageDigest$SHA1");
@@ -112,7 +110,6 @@ public class IosSecurityProvider extends Provider {
   // Reference all dynamically loaded classes, so they are linked into apps.
   @SuppressWarnings("unused")
   private static final Class<?>[] unused = {
-    IosCertificateFactory.class,
     IosMD5MessageDigest.class,
     IosRSAKeyFactory.class,
     IosRSAKeyPairGenerator.class,
