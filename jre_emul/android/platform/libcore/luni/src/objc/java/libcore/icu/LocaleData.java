@@ -116,7 +116,6 @@ public final class LocaleData {
     private LocaleData() {
     }
 
-    /* J2ObjC unused.
     public static Locale mapInvalidAndNullLocales(Locale locale) {
         if (locale == null) {
             return Locale.getDefault();
@@ -127,7 +126,7 @@ public final class LocaleData {
         }
 
         return locale;
-    }*/
+    }
 
     /**
      * Returns a shared LocaleData for the given locale.

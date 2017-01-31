@@ -332,7 +332,12 @@ jboolean Java_libcore_icu_ICU_initLocaleDataNative(
   result->monetarySeparator_ = [[numberFormatter currencyGroupingSeparator] characterAtIndex:0];
   LibcoreIcuLocaleData_set_minusSign_(result, [numberFormatter minusSign]);
   LibcoreIcuLocaleData_set_exponentSeparator_(result, [numberFormatter exponentSymbol]);
-  LibcoreIcuLocaleData_set_infinity_(result, [numberFormatter positiveInfinitySymbol]);
+  NSString *infinity = [numberFormatter positiveInfinitySymbol];
+  NSString *plusSign = [numberFormatter plusSign];
+  if ([infinity hasPrefix:plusSign]) {
+    infinity = [infinity substringFromIndex:plusSign.length];
+  }
+  LibcoreIcuLocaleData_set_infinity_(result, infinity);
   LibcoreIcuLocaleData_set_NaN_(result, [numberFormatter notANumberSymbol]);
   LibcoreIcuLocaleData_set_currencySymbol_(result, [numberFormatter currencySymbol]);
   LibcoreIcuLocaleData_set_internationalCurrencySymbol_(

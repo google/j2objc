@@ -558,6 +558,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
     org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
+    org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
@@ -696,6 +697,8 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
+    serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
