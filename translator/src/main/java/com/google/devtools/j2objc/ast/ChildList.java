@@ -86,9 +86,11 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
   public void accept(TreeVisitor visitor) {
     // Copy all the children into an array to avoid a
     // ConcurrentModificationException if the visitor removes one of the nodes.
-    ChildLink<?>[] array = delegate.toArray(new ChildLink<?>[delegate.size()]);
-    for (ChildLink<?> link : array) {
-      link.accept(visitor);
+    if (!delegate.isEmpty()) {
+      ChildLink<?>[] array = delegate.toArray(new ChildLink<?>[delegate.size()]);
+      for (ChildLink<?> link : array) {
+        link.accept(visitor);
+      }
     }
   }
 
