@@ -24,13 +24,11 @@ import javax.lang.model.type.TypeMirror;
 public class NumberLiteral extends Expression {
 
   private String token = null;
-  private Number value = null;
   private final TypeMirror typeMirror;
 
   public NumberLiteral(NumberLiteral other) {
     super(other);
     token = other.getToken();
-    value = other.getValue();
     typeMirror = other.getTypeMirror();
   }
 
@@ -39,7 +37,7 @@ public class NumberLiteral extends Expression {
   }
 
   public NumberLiteral(Number value, TypeMirror typeMirror) {
-    this.value = value;
+    this.constantValue = value;
     this.typeMirror = typeMirror;
   }
 
@@ -67,11 +65,11 @@ public class NumberLiteral extends Expression {
   }
 
   public Number getValue() {
-    return value;
+    return (Number) constantValue;
   }
 
   public NumberLiteral setValue(Number newValue) {
-    value = newValue;
+    constantValue = newValue;
     return this;
   }
 
@@ -89,7 +87,7 @@ public class NumberLiteral extends Expression {
   @Override
   public void validateInner() {
     super.validateInner();
-    Preconditions.checkNotNull(value);
+    Preconditions.checkNotNull(constantValue);
   }
 
   private static TypeMirror typeForNumber(Number value, TypeUtil typeUtil) {

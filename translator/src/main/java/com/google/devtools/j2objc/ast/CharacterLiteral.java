@@ -22,13 +22,11 @@ import javax.lang.model.type.TypeMirror;
  */
 public class CharacterLiteral extends Expression {
 
-  private char charValue = '\0';
   private final TypeMirror typeMirror;
 
   public CharacterLiteral(CharacterLiteral other) {
     super(other);
-    charValue = other.charValue();
-    typeMirror = other.getTypeMirror();
+    this.typeMirror = other.getTypeMirror();
   }
 
   public CharacterLiteral(char charValue, TypeUtil typeUtil) {
@@ -36,7 +34,7 @@ public class CharacterLiteral extends Expression {
   }
 
   public CharacterLiteral(char charValue, TypeMirror typeMirror) {
-    this.charValue = charValue;
+    this.constantValue = charValue;
     this.typeMirror = typeMirror;
   }
 
@@ -51,7 +49,7 @@ public class CharacterLiteral extends Expression {
   }
 
   public char charValue() {
-    return charValue;
+    return (Character) constantValue;
   }
 
   @Override

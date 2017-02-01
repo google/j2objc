@@ -22,20 +22,18 @@ import javax.lang.model.type.TypeMirror;
  */
 public class StringLiteral extends Expression {
 
-  private String literalValue = null;
   private TypeMirror typeMirror;
 
   public StringLiteral() {}
 
   public StringLiteral(StringLiteral other) {
     super(other);
-    literalValue = other.getLiteralValue();
-    typeMirror = other.getTypeMirror();
+    this.typeMirror = other.getTypeMirror();
   }
 
   public StringLiteral(String literalValue, TypeMirror type) {
-    this.literalValue = literalValue;
-    typeMirror = type;
+    this.constantValue = literalValue;
+    this.typeMirror = type;
   }
 
   public StringLiteral(String literalValue, TypeUtil typeUtil) {
@@ -58,11 +56,11 @@ public class StringLiteral extends Expression {
   }
 
   public String getLiteralValue() {
-    return literalValue;
+    return (String) constantValue;
   }
 
   public StringLiteral setLiteralValue(String value) {
-    literalValue = value;
+    constantValue = value;
     return this;
   }
 

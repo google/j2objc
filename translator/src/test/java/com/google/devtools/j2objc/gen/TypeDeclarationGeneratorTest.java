@@ -406,4 +406,24 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     CompilationUnit unit = translateType("A", source);
     assertEquals(1, unit.getTypes().size());
   }
+
+  // Verify that a boolean constant initialized with a constant expression like
+  // "true || false" does not cause class initialization code to be generated
+  // for it.
+  public void testBooleanExpressionConstants() throws IOException {
+    String translation = translateSourceFile("class Test {"
+        + "  static final boolean FOO = true && false;"
+        + "  static final boolean BAR = true || false;"
+        + "}", "Test", "Test.h");
+    // Verify boolean expressions are simplified.
+    assertTranslation(translation, "#define Test_FOO false");
+    assertTranslation(translation, "#define Test_BAR true");
+
+    // This class should not have an initialize method or reinitialize the constants.
+    assertTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(Test)");
+    translation = getTranslatedFile("Test.m");
+    assertNotInTranslation(translation, "+ (void)initialize {");
+    assertNotInTranslation(translation, "Test_FOO = false;");
+    assertNotInTranslation(translation, "Test_BAR = true;");
+  }
 }

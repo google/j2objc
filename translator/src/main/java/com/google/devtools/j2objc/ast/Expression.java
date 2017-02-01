@@ -21,7 +21,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public abstract class Expression extends TreeNode {
 
-  private Object constantValue;
+  protected Object constantValue;
 
   protected Expression(Expression other) {
     super(other);

@@ -22,15 +22,12 @@ import javax.lang.model.type.TypeMirror;
  */
 public class CStringLiteral extends Expression {
 
-  private String literalValue = null;
-
   public CStringLiteral(CStringLiteral other) {
     super(other);
-    literalValue = other.getLiteralValue();
   }
 
   public CStringLiteral(String literalValue) {
-    this.literalValue = literalValue;
+    this.constantValue = literalValue;
   }
 
   @Override
@@ -44,7 +41,7 @@ public class CStringLiteral extends Expression {
   }
 
   public String getLiteralValue() {
-    return literalValue;
+    return (String) constantValue;
   }
 
   @Override
