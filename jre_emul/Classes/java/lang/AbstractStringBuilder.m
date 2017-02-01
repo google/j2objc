@@ -185,7 +185,7 @@ void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string) {
 
 void JreStringBuilder_appendCharSequence(JreStringBuilder *sb, id<JavaLangCharSequence> s) {
   if (s) {
-    JreStringBuilder_appendCharSequenceSubset(sb, s, 0, [s length]);
+    JreStringBuilder_appendCharSequenceSubset(sb, s, 0, [s java_length]);
   } else {
     JreStringBuilder_appendNull(sb);
   }
@@ -196,7 +196,7 @@ void JreStringBuilder_appendCharSequenceSubset(
   if (s == nil) {
     s = @"null";
   }
-  if ((start | end) < 0 || start > end || end > [s length]) {
+  if ((start | end) < 0 || start > end || end > [s java_length]) {
     @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
   }
   jint length = end - start;
@@ -376,13 +376,13 @@ void JreStringBuilder_insertCharSequence(
     s = @"null";
   }
   if ((index | start | end) < 0 || index > sb->count_ || start > end
-      || end > [s length]) {
+      || end > [s java_length]) {
     @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
   }
   JreStringBuilder_insertString(sb, index, [[s subSequenceFrom:start to:end] description]);
 }
 
-- (jint)length {
+- (jint)java_length {
   return delegate_.count_;
 }
 

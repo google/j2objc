@@ -52,7 +52,7 @@ typedef struct JreStringBuilder {
           withCharArray:(IOSCharArray *)dst
                 withInt:(jint)dstStart;
 
-- (jint)length;
+- (jint)java_length;
 
 - (void)setCharAtWithInt:(jint)index
                 withChar:(jchar)ch;

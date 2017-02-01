@@ -1,5 +1,3 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -134,12 +132,12 @@ NSString *NSString_java_valueOfChars_offset_count_(IOSCharArray *data, jint offs
 }
 
 + (NSString *)java_valueOfChars:(IOSCharArray *)data
-                         offset:(int)offset
-                          count:(int)count {
+                         offset:(jint)offset
+                          count:(jint)count {
   return NSString_java_valueOfChars_offset_count_(data, offset, count);
 }
 
-+ (NSString *)java_valueOfDouble:(double)value {
++ (NSString *)java_valueOfDouble:(jdouble)value {
   return NSString_java_valueOfDouble_(value);
 }
 
@@ -147,7 +145,7 @@ NSString *NSString_java_valueOfDouble_(jdouble value) {
   return JavaLangDouble_toStringWithDouble_(value);
 }
 
-+ (NSString *)java_valueOfFloat:(float)value {
++ (NSString *)java_valueOfFloat:(jfloat)value {
   return NSString_java_valueOfFloat_(value);
 }
 
@@ -155,7 +153,7 @@ NSString *NSString_java_valueOfFloat_(jfloat value) {
   return JavaLangFloat_toStringWithFloat_(value);
 }
 
-+ (NSString *)java_valueOfInt:(int)value {
++ (NSString *)java_valueOfInt:(jint)value {
   return NSString_java_valueOfInt_(value);
 }
 
@@ -163,7 +161,7 @@ NSString *NSString_java_valueOfInt_(jint value) {
   return JavaLangInteger_toStringWithInt_(value);
 }
 
-+ (NSString *)java_valueOfLong:(long long int)value {
++ (NSString *)java_valueOfLong:(jlong)value {
   return NSString_java_valueOfLong_(value);
 }
 
@@ -171,10 +169,10 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   return JavaLangLong_toStringWithLong_(value);
 }
 
-- (void)java_getChars:(int)sourceBegin
-            sourceEnd:(int)sourceEnd
+- (void)java_getChars:(jint)sourceBegin
+            sourceEnd:(jint)sourceEnd
           destination:(IOSCharArray *)destination
-     destinationBegin:(int)destinationBegin {
+     destinationBegin:(jint)destinationBegin {
   id exception = nil;
   if (sourceBegin < 0) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
@@ -183,7 +181,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
     [exception autorelease];
 #endif
   }
-  if (sourceEnd > (int) [self length]) {
+  if (sourceEnd > (jint) [self length]) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:sourceEnd];
 #if ! __has_feature(objc_arc)
@@ -205,7 +203,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   jint destinationLength = destination->size_;
   if (destinationBegin + (jint)range.length > destinationLength) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
-                 initWithInt:(int) (destinationBegin + range.length)];
+                 initWithInt:(jint) (destinationBegin + range.length)];
 #if ! __has_feature(objc_arc)
     [exception autorelease];
 #endif
@@ -222,8 +220,8 @@ NSString *NSString_java_valueOfLong_(jlong value) {
 }
 
 + (NSString *)java_stringWithCharacters:(IOSCharArray *)value
-                                 offset:(int)offset
-                                 length:(int)count {
+                                 offset:(jint)offset
+                                 length:(jint)count {
   id exception = nil;
   if (offset < 0) {
     exception =
@@ -255,8 +253,8 @@ NSString *NSString_java_valueOfLong_(jlong value) {
 }
 
 // Package-private constructor, with parameters already checked.
-+ (NSString *)java_stringWithOffset:(int)offset
-                             length:(int)count
++ (NSString *)java_stringWithOffset:(jint)offset
+                             length:(jint)count
                          characters:(IOSCharArray *)value {
   if (count == 0) {
     return [NSString string];
@@ -294,16 +292,16 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   return (jint)[self caseInsensitiveCompare:another];
 }
 
-- (NSString *)java_substring:(int)beginIndex {
-  if (beginIndex < 0 || beginIndex > (int) [self length]) {
+- (NSString *)java_substring:(jint)beginIndex {
+  if (beginIndex < 0 || beginIndex > (jint) [self length]) {
     @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
                         initWithInt:beginIndex]);
   }
   return [self substringFromIndex:(NSUInteger) beginIndex];
 }
 
-- (NSString *)java_substring:(int)beginIndex
-                    endIndex:(int)endIndex {
+- (NSString *)java_substring:(jint)beginIndex
+                    endIndex:(jint)endIndex {
   if (beginIndex < 0) {
     @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
                         initWithInt:beginIndex]);
@@ -312,7 +310,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
     @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
                         initWithInt:endIndex - beginIndex]);
   }
-  if (endIndex > (int) [self length]) {
+  if (endIndex > (jint) [self length]) {
     @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
                         initWithInt:endIndex]);
   }
@@ -320,17 +318,17 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   return [self substringWithRange:range];
 }
 
-- (int)java_indexOf:(int)ch {
+- (jint)java_indexOf:(jint)ch {
   return [self java_indexOf:ch fromIndex:0];
 }
 
-- (int)java_indexOf:(int)ch fromIndex:(int)index {
+- (jint)java_indexOf:(jint)ch fromIndex:(jint)index {
   unichar c = (unichar) ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
-  return [self java_indexOfString:s fromIndex:(int)index];
+  return [self java_indexOfString:s fromIndex:(jint)index];
 }
 
-- (int)java_indexOfString:(NSString *)s {
+- (jint)java_indexOfString:(NSString *)s {
   if (!s) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -338,10 +336,10 @@ NSString *NSString_java_valueOfLong_(jlong value) {
     return 0;
   }
   NSRange range = [self rangeOfString:s];
-  return range.location == NSNotFound ? -1 : (int) range.location;
+  return range.location == NSNotFound ? -1 : (jint) range.location;
 }
 
-- (int)java_indexOfString:(NSString *)s fromIndex:(int)index {
+- (jint)java_indexOfString:(NSString *)s fromIndex:(jint)index {
   if (!s) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -360,48 +358,48 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   NSRange range = [self rangeOfString:s
                               options:NSLiteralSearch
                                 range:searchRange];
-  return range.location == NSNotFound ? -1 : (int) range.location;
+  return range.location == NSNotFound ? -1 : (jint) range.location;
 }
 
 - (jboolean)java_isEmpty {
   return [self length] == 0;
 }
 
-- (int)java_lastIndexOf:(int)ch {
+- (jint)java_lastIndexOf:(jint)ch {
   unichar c = (unichar) ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
   return [self java_lastIndexOfString:s];
 }
 
-- (int)java_lastIndexOf:(int)ch fromIndex:(int)index {
+- (jint)java_lastIndexOf:(jint)ch fromIndex:(jint)index {
   unichar c = (unichar) ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
-  return [self java_lastIndexOfString:s fromIndex:(int)index];
+  return [self java_lastIndexOfString:s fromIndex:(jint)index];
 }
 
-- (int)java_lastIndexOfString:(NSString *)s {
+- (jint)java_lastIndexOfString:(NSString *)s {
   if (!s) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   if ([s length] == 0) {
-    return (int) [self length];
+    return (jint) [self length];
   }
   NSRange range = [self rangeOfString:s options:NSBackwardsSearch];
-  return range.location == NSNotFound ? -1 : (int) range.location;
+  return range.location == NSNotFound ? -1 : (jint) range.location;
 }
 
-- (int)java_lastIndexOfString:(NSString *)s fromIndex:(int)index {
+- (jint)java_lastIndexOfString:(NSString *)s fromIndex:(jint)index {
   if (!s) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  int max = (int) [self length];
+  int max = (jint) [self length];
   if (index < 0) {
     return -1;
   }
   if (max == 0) {
     return max;
   }
-  int sLen = (int) [s length];
+  int sLen = (jint) [s length];
   if (sLen == 0) {
     return index;
   }
@@ -413,7 +411,11 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   NSRange range = [self rangeOfString:s
                               options:NSBackwardsSearch
                                 range:searchRange];
-  return range.location == NSNotFound ? -1 : (int) range.location;
+  return range.location == NSNotFound ? -1 : (jint) range.location;
+}
+
+- (jint)java_length {
+  return (jint) [self length];
 }
 
 - (IOSCharArray *)java_toCharArray {
@@ -427,8 +429,8 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   return [self characterAtIndex:(NSUInteger)index];
 }
 
-- (id<JavaLangCharSequence>)subSequenceFrom:(int)start
-                                         to:(int)end {
+- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
+                                         to:(jint)end {
   NSUInteger maxLength = [self length];
   if (start < 0 || start > end || (NSUInteger) end > maxLength) {
     @throw makeException([JavaLangStringIndexOutOfBoundsException class]);
@@ -513,7 +515,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            hibyte:(int)hibyte {
+                            hibyte:(jint)hibyte {
   return [NSString java_stringWithBytes:value
                                  hibyte:hibyte
                                  offset:0
@@ -522,8 +524,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count {
+                            offset:(jint)offset
+                            length:(jint)count {
   return [NSString java_stringWithBytes:value
                                  offset:offset
                                  length:count
@@ -531,8 +533,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count
+                            offset:(jint)offset
+                            length:(jint)count
                        charsetName:(NSString *)charset {
   NSStringEncoding encoding = parseCharsetName(charset);
   return [NSString java_stringWithBytes:value
@@ -542,8 +544,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count
+                            offset:(jint)offset
+                            length:(jint)count
                            charset:(JavaNioCharsetCharset *)charset {
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     ComGoogleJ2objcNioCharsetIOSCharset *iosCharset =
@@ -576,8 +578,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count
+                            offset:(jint)offset
+                            length:(jint)count
                           encoding:(NSStringEncoding)encoding {
   id exception = nil;
   if (offset < 0) {
@@ -588,7 +590,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     exception =
         [[JavaLangStringIndexOutOfBoundsException alloc] initWithInt:offset];
   }
-  if (offset > (int) value->size_ - count) {
+  if (offset > (jint) value->size_ - count) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:offset + count];
   }
@@ -602,8 +604,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (NSString *)java_stringWithInts:(IOSIntArray *)codePoints
-                           offset:(int)offset
-                           length:(int)count {
+                           offset:(jint)offset
+                           length:(jint)count {
   if (!codePoints) {
     @throw create_JavaLangNullPointerException_initWithNSString_(@"codePoints == null");
   }
@@ -656,7 +658,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   if (!encoding) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  int max_length = (int) [self maximumLengthOfBytesUsingEncoding:encoding];
+  int max_length = (jint) [self maximumLengthOfBytesUsingEncoding:encoding];
   jboolean includeBOM = (encoding == NSUTF16StringEncoding);
   if (includeBOM) {
     max_length += 2;
@@ -687,19 +689,19 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return result;
 }
 
-- (void)java_getBytesWithSrcBegin:(int)srcBegin
-                       withSrcEnd:(int)srcEnd
+- (void)java_getBytesWithSrcBegin:(jint)srcBegin
+                       withSrcEnd:(jint)srcEnd
                           withDst:(IOSByteArray *)dst
-                     withDstBegin:(int)dstBegin {
+                     withDstBegin:(jint)dstBegin {
   int copyLength = srcEnd - srcBegin;
   NSString *badParamMsg = nil;
   if (srcBegin < 0) {
     badParamMsg = @"srcBegin < 0";
   } else if (srcBegin > srcEnd) {
     badParamMsg = @"srcBegin > srcEnd";
-  } else if (srcEnd > (int) [self length]) {
+  } else if (srcEnd > (jint) [self length]) {
     badParamMsg = @"srcEnd > string length";
-  } else if (copyLength > (int) [self length]) {
+  } else if (copyLength > (jint) [self length]) {
     badParamMsg = @"dstBegin+(srcEnd-srcBegin) > dst.length";
   }
   if (badParamMsg) {
@@ -760,7 +762,7 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
       NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(locale, format, args);
 }
 
-- (jboolean)java_hasPrefix:(NSString *)aString offset:(int)offset {
+- (jboolean)java_hasPrefix:(NSString *)aString offset:(jint)offset {
   if (!aString) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -783,7 +785,7 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
   return [self java_split:str limit:0];
 }
 
-- (IOSObjectArray *)java_split:(NSString *)str limit:(int)n {
+- (IOSObjectArray *)java_split:(NSString *)str limit:(jint)n {
   if (!str) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -837,10 +839,10 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
   return result;
 }
 
-- (jboolean)java_regionMatches:(int)thisOffset
+- (jboolean)java_regionMatches:(jint)thisOffset
                        aString:(NSString *)aString
-                   otherOffset:(int)otherOffset
-                         count:(int)count {
+                   otherOffset:(jint)otherOffset
+                         count:(jint)count {
   return [self java_regionMatches:false
                        thisOffset:thisOffset
                           aString:aString
@@ -849,22 +851,22 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
 }
 
 - (jboolean)java_regionMatches:(jboolean)caseInsensitive
-                    thisOffset:(int)thisOffset
+                    thisOffset:(jint)thisOffset
                        aString:(NSString *)aString
-                   otherOffset:(int)otherOffset
-                         count:(int)count {
-  if (thisOffset < 0 || count > (int) [self length] - thisOffset) {
+                   otherOffset:(jint)otherOffset
+                         count:(jint)count {
+  if (thisOffset < 0 || count > (jint) [self length] - thisOffset) {
     return false;
   }
-  if (otherOffset < 0 || count > (int) [aString length] - otherOffset) {
+  if (otherOffset < 0 || count > (jint) [aString length] - otherOffset) {
     return false;
   }
   if (!aString) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSString *this_ = (thisOffset == 0 && count == (int) [self length])
+  NSString *this_ = (thisOffset == 0 && count == (jint) [self length])
       ? self : [self substringWithRange:NSMakeRange(thisOffset, count)];
-  NSString *other = (otherOffset == 0 && count == (int) [aString length])
+  NSString *other = (otherOffset == 0 && count == (jint) [aString length])
       ? aString : [aString substringWithRange:NSMakeRange(otherOffset, count)];
   NSUInteger options = NSLiteralSearch;
   if (caseInsensitive) {
@@ -892,27 +894,27 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
   if (!sequence) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  if ([sequence length] == 0) {
+  if ([sequence java_length] == 0) {
     return true;
   }
   NSRange range = [self rangeOfString:[sequence description]];
   return range.location != NSNotFound;
 }
 
-- (int)java_codePointAt:(int)index {
+- (jint)java_codePointAt:(jint)index {
   return JavaLangCharacter_codePointAtWithJavaLangCharSequence_withInt_(self, index);
 }
 
-- (int)java_codePointBefore:(int)index {
+- (jint)java_codePointBefore:(jint)index {
   return JavaLangCharacter_codePointBeforeWithJavaLangCharSequence_withInt_(self, index);
 }
 
-- (int)java_codePointCount:(int)beginIndex endIndex:(int)endIndex {
+- (jint)java_codePointCount:(jint)beginIndex endIndex:(jint)endIndex {
   return JavaLangCharacter_codePointCountWithJavaLangCharSequence_withInt_withInt_(
       self, beginIndex, endIndex);
 }
 
-- (int)java_offsetByCodePoints:(int)index codePointOffset:(int)offset {
+- (jint)java_offsetByCodePoints:(jint)index codePointOffset:(jint)offset {
   return JavaLangCharacter_offsetByCodePointsWithJavaLangCharSequence_withInt_withInt_(
       self, index, offset);
 }
@@ -957,7 +959,7 @@ jint javaStringHashCode(NSString *string) {
     unichar *chars = (unichar *)malloc(len * sizeof(unichar));
     [string getCharacters:chars range:NSMakeRange(0, len)];
     for (int i = 0; i < len; i++) {
-      hash = 31 * hash + (int)chars[i];
+      hash = 31 * hash + (jint)chars[i];
     }
     free(chars);
   }
@@ -1216,8 +1218,8 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 
 @implementation NSString_CaseInsensitiveComparator
 
-- (int)compareWithId:(NSString *)o1
-              withId:(NSString *)o2 {
+- (jint)compareWithId:(NSString *)o1
+               withId:(NSString *)o2 {
   if (!o1) {
     @throw makeException([JavaLangNullPointerException class]);
   }

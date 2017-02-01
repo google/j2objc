@@ -1,5 +1,3 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -38,8 +36,7 @@
 
 // A category that adds java.lang.String-like methods to NSString.  The method
 // list is not exhaustive, since methods that can be directly substituted are
-// inlined.  For example, "foo".length() is directly translated to
-// [@"foo" length].
+// inlined.
 @interface NSString (JavaString) <JavaIoSerializable, JavaLangComparable, JavaLangCharSequence>
 
 // String.valueOf(Object)
@@ -56,38 +53,38 @@
 
 // String.valueOf(char[], offset, count)
 + (NSString *)java_valueOfChars:(IOSCharArray *)data
-                         offset:(int)offset
-                          count:(int)count;
+                         offset:(jint)offset
+                          count:(jint)count;
 
 // String.valueOf(double)
-+ (NSString *)java_valueOfDouble:(double)value;
++ (NSString *)java_valueOfDouble:(jdouble)value;
 
 // String.valueOf(float)
-+ (NSString *)java_valueOfFloat:(float)value;
++ (NSString *)java_valueOfFloat:(jfloat)value;
 
 // String.valueOf(int)
-+ (NSString *)java_valueOfInt:(int)value;
++ (NSString *)java_valueOfInt:(jint)value;
 
 // String.valueOf(long)
-+ (NSString *)java_valueOfLong:(long long int)value;
++ (NSString *)java_valueOfLong:(jlong)value;
 
 // String.getChars(int, int, char[], int)
-- (void)java_getChars:(int)sourceBegin
-            sourceEnd:(int)sourceEnd
+- (void)java_getChars:(jint)sourceBegin
+            sourceEnd:(jint)sourceEnd
           destination:(IOSCharArray *)dest
-     destinationBegin:(int)dstBegin;
+     destinationBegin:(jint)dstBegin;
 
 // String(byte[])
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value;
 
 // String(byte[], int)
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            hibyte:(int)hibyte;
+                            hibyte:(jint)hibyte;
 
 // String(byte[], int, int)
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count;
+                            offset:(jint)offset
+                            length:(jint)count;
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
                             hibyte:(NSUInteger)hibyte
@@ -104,19 +101,19 @@
 
 // String(byte[], int, int, String)
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count
+                            offset:(jint)offset
+                            length:(jint)count
                        charsetName:(NSString *)charsetName;
 
 // String(byte[], int, int, Charset)
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count
+                            offset:(jint)offset
+                            length:(jint)count
                           charset:(JavaNioCharsetCharset *)charset;
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(int)offset
-                            length:(int)count
+                            offset:(jint)offset
+                            length:(jint)count
                           encoding:(NSStringEncoding)encoding;
 
 // String(char[])
@@ -124,18 +121,18 @@
 
 // String(char[], int, int)
 + (NSString *)java_stringWithCharacters:(IOSCharArray *)value
-                                 offset:(int)offset
-                                 length:(int)count;
+                                 offset:(jint)offset
+                                 length:(jint)count;
 
 // String(int, int, char[])
-+ (NSString *)java_stringWithOffset:(int)offset
-                             length:(int)length
++ (NSString *)java_stringWithOffset:(jint)offset
+                             length:(jint)length
                          characters:(IOSCharArray *)value;
 
 // String(int[], int, int)
 + (NSString *)java_stringWithInts:(IOSIntArray *)codePoints
-                           offset:(int)offset
-                           length:(int)count;
+                           offset:(jint)offset
+                           length:(jint)count;
 
 // String(StringBuffer)
 + (NSString *)java_stringWithJavaLangStringBuffer:(JavaLangStringBuffer *)sb;
@@ -144,38 +141,41 @@
 + (NSString *)java_stringWithJavaLangStringBuilder:(JavaLangStringBuilder *)sb;
 
 // String.substring(int)
-- (NSString *)java_substring:(int)beginIndex;
+- (NSString *)java_substring:(jint)beginIndex;
 
 // String.substring(int, int)
-- (NSString *)java_substring:(int)beginIndex
-                    endIndex:(int)endIndex;
+- (NSString *)java_substring:(jint)beginIndex
+                    endIndex:(jint)endIndex;
 
 // String.indexOf(int)
-- (int)java_indexOf:(int)ch;
+- (jint)java_indexOf:(jint)ch;
 
 // String.indexOf(int, int)
-- (int)java_indexOf:(int)ch fromIndex:(int)index;
+- (jint)java_indexOf:(jint)ch fromIndex:(jint)index;
 
 // String.indexOf(String)
-- (int)java_indexOfString:(NSString *)s;
+- (jint)java_indexOfString:(NSString *)s;
 
 // String.indexOf(String, int)
-- (int)java_indexOfString:(NSString *)s fromIndex:(int)index;
+- (jint)java_indexOfString:(NSString *)s fromIndex:(jint)index;
 
 // String.isEmpty()
 - (jboolean)java_isEmpty;
 
 // String.lastIndexOf(int)
-- (int)java_lastIndexOf:(int)ch;
+- (jint)java_lastIndexOf:(jint)ch;
 
 // String.lastIndexOf(int, int)
-- (int)java_lastIndexOf:(int)ch fromIndex:(int)index;
+- (jint)java_lastIndexOf:(jint)ch fromIndex:(jint)index;
 
 // String.lastIndexOf(String)
-- (int)java_lastIndexOfString:(NSString *)s;
+- (jint)java_lastIndexOfString:(NSString *)s;
 
 // String.lastIndexOf(String, int)
-- (int)java_lastIndexOfString:(NSString *)s fromIndex:(int)index;
+- (jint)java_lastIndexOfString:(NSString *)s fromIndex:(jint)index;
+
+// String.length()
+- (jint)java_length;
 
 // String.toCharArray()
 - (IOSCharArray *)java_toCharArray;
@@ -187,8 +187,8 @@
 - (jchar)charAtWithInt:(jint)index;
 
 // CharSequence.subSequence(int, int)
-- (id<JavaLangCharSequence>)subSequenceFrom:(int)start
-                                         to:(int)end;
+- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
+                                         to:(jint)end;
 
 // String.compareToIgnoreCase(String)
 - (jint)java_compareToIgnoreCase:(NSString *)another;
@@ -220,10 +220,10 @@
 - (IOSByteArray *)java_getBytesWithEncoding:(NSStringEncoding)encoding;
 
 // String.getBytes(int, int, byte[], int)
-- (void)java_getBytesWithSrcBegin:(int)srcBegin
-                       withSrcEnd:(int)srcEnd
+- (void)java_getBytesWithSrcBegin:(jint)srcBegin
+                       withSrcEnd:(jint)srcEnd
                           withDst:(IOSByteArray *)dst
-                     withDstBegin:(int)dstBegin;
+                     withDstBegin:(jint)dstBegin;
 
 // String.format(String, ...), String.format(Locale, String, ...)
 + (NSString *)java_formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args;
@@ -232,7 +232,7 @@
                           withNSObjectArray:(IOSObjectArray *)args;
 
 // String.startsWith(String, int)
-- (jboolean)java_hasPrefix:(NSString *)aString offset:(int)offset;
+- (jboolean)java_hasPrefix:(NSString *)aString offset:(jint)offset;
 
 // String.trim()
 - (NSString *)java_trim;
@@ -248,16 +248,16 @@
 - (NSString *)java_uppercaseStringWithJRELocale:(JavaUtilLocale *)locale;
 
 // String.regionMatches(...)
-- (jboolean)java_regionMatches:(int)thisOffset
+- (jboolean)java_regionMatches:(jint)thisOffset
                        aString:(NSString *)aString
-                   otherOffset:(int)otherOffset
-                         count:(int)count;
+                   otherOffset:(jint)otherOffset
+                         count:(jint)count;
 
 - (jboolean)java_regionMatches:(jboolean)caseInsensitive
-                    thisOffset:(int)thisOffset
+                    thisOffset:(jint)thisOffset
                        aString:(NSString *)aString
-                   otherOffset:(int)otherOffset
-                         count:(int)count;
+                   otherOffset:(jint)otherOffset
+                         count:(jint)count;
 
 // String.intern()
 - (NSString *)java_intern;
@@ -269,20 +269,20 @@
 - (jboolean)java_contains:(id<JavaLangCharSequence>)sequence;
 
 // String.codePointAt(int), codePointBefore(int), codePointCount(int, int)
-- (int)java_codePointAt:(int)index;
-- (int)java_codePointBefore:(int)index;
-- (int)java_codePointCount:(int)beginIndex endIndex:(int)endIndex;
+- (jint)java_codePointAt:(jint)index;
+- (jint)java_codePointBefore:(jint)index;
+- (jint)java_codePointCount:(jint)beginIndex endIndex:(jint)endIndex;
 
 // String.matches(), split(String, int)
 - (jboolean)java_matches:(NSString *)regex;
-- (IOSObjectArray *)java_split:(NSString *)regex limit:(int)limit;
+- (IOSObjectArray *)java_split:(NSString *)regex limit:(jint)limit;
 
 // String.contentEquals(CharSequence), contentEquals(StringBuffer)
 - (jboolean)java_contentEqualsCharSequence:(id<JavaLangCharSequence>)seq;
 - (jboolean)java_contentEqualsStringBuffer:(JavaLangStringBuffer *)sb;
 
 // String.offsetByCodePoints(int, int)
-- (int)java_offsetByCodePoints:(int)index codePointOffset:(int)offset;
+- (jint)java_offsetByCodePoints:(jint)index codePointOffset:(jint)offset;
 
 // String.join(CharSequence, CharSequence...)
 + (NSString *)java_joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter

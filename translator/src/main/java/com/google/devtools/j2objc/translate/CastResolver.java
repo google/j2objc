@@ -279,10 +279,6 @@ public class CastResolver extends UnitTreeVisitor {
     if (methodName.equals("hash") && methodElement.getReturnType().getKind() == TypeKind.INT) {
       return true;
     }
-    if (typeUtil.isString(ElementUtil.getDeclaringClass(methodElement))
-        && methodName.equals("length")) {
-      return true;
-    }
     return false;
   }
 

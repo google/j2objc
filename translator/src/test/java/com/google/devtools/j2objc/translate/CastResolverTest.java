@@ -38,10 +38,10 @@ public class CastResolverTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { void test() { "
         + "  String a = \"abc\"; "
-        + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
+        + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.hashCode() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a length]),"
+        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a hash]),"
           + " @\"baz\")");
   }
 
@@ -58,13 +58,13 @@ public class CastResolverTest extends GenerationTest {
     String translation = translateSourceFile(
       "import java.util.ArrayList; public class Test {"
       + "  int length; static ArrayList<String> strings = new ArrayList<String>();"
-      + "  public static void main(String[] args) { int n = strings.get(1).length(); }}",
+      + "  public static void main(String[] args) { int n = strings.get(1).hashCode(); }}",
       "Test", "Test.m");
     assertTranslation(translation, "((jint) [((NSString *) "
-      + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings)) getWithInt:1])) length]);");
+      + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings)) getWithInt:1])) hash]);");
   }
 
-  // Verify that String.length() and Object.hashCode() return values are cast when used.
+  // Verify that Object.hashCode() return value is cast when used.
   public void testStringLengthCompare() throws IOException {
     String translation = translateSourceFile(
         "public class Test { boolean test(String s) { return -2 < \"1\".length(); }"
@@ -72,7 +72,7 @@ public class CastResolverTest extends GenerationTest {
         + "  int test3() { return super.hashCode(); } }",
         "Test", "Test.m");
     // Verify referenced return value is cast.
-    assertTranslation(translation, "return -2 < ((jint) [@\"1\" length]);");
+    assertTranslation(translation, "return -2 < [@\"1\" java_length];");
     // Verify unused return value isn't.
     assertTranslation(translation, "[nil_chk(o) hash];");
     // Verify that super call to hashCode() is cast.

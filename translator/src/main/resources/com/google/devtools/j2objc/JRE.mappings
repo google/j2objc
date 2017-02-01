@@ -154,7 +154,7 @@ java.lang.String.lastIndexOf(I)I = java_lastIndexOf:
 java.lang.String.lastIndexOf(II)I = java_lastIndexOf:fromIndex:
 java.lang.String.lastIndexOf(Ljava/lang/String;)I = java_lastIndexOfString:
 java.lang.String.lastIndexOf(Ljava/lang/String;I)I = java_lastIndexOfString:fromIndex:
-java.lang.String.length()I = length
+java.lang.String.length()I = java_length
 java.lang.String.matches(Ljava/lang/String;)Z = java_matches:
 java.lang.String.offsetByCodePoints(II)I = java_offsetByCodePoints:codePointOffset:
 java.lang.String.regionMatches(ILjava/lang/String;II)Z = \
@@ -196,6 +196,7 @@ java.lang.String.valueOf([CII)Ljava/lang/String; = java_valueOfChars:offset:coun
 java.lang.String.copyValueOf([C)Ljava/lang/String; = java_valueOfChars:
 java.lang.String.copyValueOf([CII)Ljava/lang/String; = java_valueOfChars:offset:count:
 
+java.lang.CharSequence.length()I = java_length
 java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = subSequenceFrom:to:
 
 java.lang.Number.longValue()J = longLongValue
