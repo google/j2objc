@@ -20,6 +20,8 @@
 
 package android.os;
 
+import com.google.j2objc.annotations.RetainedWith;
+import com.google.j2objc.annotations.WeakOuter;
 import java.util.ArrayDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -209,6 +211,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
     private static volatile Executor sDefaultExecutor = SERIAL_EXECUTOR;
 
     private final WorkerRunnable<Params, Result> mWorker;
+    @RetainedWith
     private final FutureTask<Result> mFuture;
 
     private volatile Status mStatus = Status.PENDING;
@@ -270,7 +273,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * Creates a new asynchronous task. This constructor must be invoked on the UI thread.
      */
     public AsyncTask() {
-        mWorker = new WorkerRunnable<Params, Result>() {
+        @WeakOuter class WorkerRunnableImpl extends WorkerRunnable<Params, Result> {
             public Result call() throws Exception {
                 mTaskInvoked.set(true);
 
@@ -278,7 +281,8 @@ public abstract class AsyncTask<Params, Progress, Result> {
                 //noinspection unchecked
                 return postResult(doInBackground(mParams));
             }
-        };
+        }
+        mWorker = new WorkerRunnableImpl();
 
         mFuture = new FutureTask<Result>(mWorker) {
             @Override
@@ -305,9 +309,8 @@ public abstract class AsyncTask<Params, Progress, Result> {
     }
 
     private native Result postResult(Result result) /*-[
-        AndroidOsAsyncTask __block *blockSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [blockSelf finishWithId:result];
+            [self finishWithId:result];
         });
         return result;
     ]-*/;
@@ -611,9 +614,8 @@ public abstract class AsyncTask<Params, Progress, Result> {
      */
     protected native final void publishProgress(Progress... values) /*-[
         if (!AndroidOsAsyncTask_isCancelled(self)) {
-            AndroidOsAsyncTask __block *blockSelf = self;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [blockSelf onProgressUpdateWithNSObjectArray:values];
+                [self onProgressUpdateWithNSObjectArray:values];
             });
         }
     ]-*/;

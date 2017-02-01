@@ -44,10 +44,8 @@ FIELD java.util.stream.StreamSpliterators.UnorderedSliceSpliterator.s
 FIELD java.util.stream.Streams.ConcatSpliterator.aSpliterator
 FIELD java.util.stream.Streams.ConcatSpliterator.bSpliterator
 
-FIELD android.os.AsyncTask.mFuture
-FIELD android.os.AsyncTask.mWorker
+# mActive always refers to the active task and is cleared/reassigned upon completion.
 FIELD android.os.AsyncTask.SerialExecutor.mActive
-FIELD android.os.AsyncTask.SerialExecutor.mTasks
 
 # These thread fields are cleared when the thread finishes, regardless of any exceptions.
 FIELD java.lang.Thread.interruptActions
