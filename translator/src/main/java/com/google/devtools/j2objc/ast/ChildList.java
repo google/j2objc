@@ -14,9 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Lists;
-
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
 
   private final Class<T> childType;
   private final TreeNode parent;
-  private List<ChildLink<T>> delegate = Lists.newArrayList();
+  private ArrayListImpl<ChildLink<T>> delegate = new ArrayListImpl<>();
 
   public ChildList(Class<T> childType, TreeNode parent) {
     this.childType = childType;
@@ -60,12 +59,12 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
   public void add(int index, T node) {
     ChildLink<T> link = new Link(childType, parent);
     link.set(node);
-    delegate.add(index, link);
+    modifiableDelegate().add(index, link);
   }
 
   @Override
   public T remove(int index) {
-    ChildLink<T> link = delegate.remove(index);
+    ChildLink<T> link = modifiableDelegate().remove(index);
     T node = link.get();
     link.set(null);
     return node;
@@ -84,19 +83,30 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
   }
 
   public void accept(TreeVisitor visitor) {
-    // Copy all the children into an array to avoid a
-    // ConcurrentModificationException if the visitor removes one of the nodes.
     if (!delegate.isEmpty()) {
-      ChildLink<?>[] array = delegate.toArray(new ChildLink<?>[delegate.size()]);
-      for (ChildLink<?> link : array) {
+      ArrayListImpl<ChildLink<T>> childLinks = delegate;
+      childLinks.incrementCount();
+      for (ChildLink<?> link : childLinks) {
         link.accept(visitor);
       }
+      childLinks.decrementCount();
     }
   }
 
   @Override
   public String toString() {
     return delegate.toString();
+  }
+
+  /**
+   * Returns an ArrayListImpl that is safe to modify. If delegate.count does not equal to zero,
+   * returns a copy of delegate.
+   */
+  private ArrayListImpl<ChildLink<T>> modifiableDelegate() {
+    if (delegate.getCount() != 0) {
+      delegate = new ArrayListImpl<>(delegate);
+    }
+    return delegate;
   }
 
   private class Link extends ChildLink<T> {
@@ -108,7 +118,35 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
     @Override
     public void remove() {
       super.remove();
-      delegate.remove(this);
+      modifiableDelegate().remove(this);
+    }
+  }
+
+  /**
+   * Mutation-safe ArrayList. Increment count before iterating through the list and decrement count
+   * after iteration is complete. If count equals to zero, it's safe to mutate the list.
+   */
+  private static class ArrayListImpl<T> extends ArrayList<T> {
+    private int count = 0;
+
+    public ArrayListImpl() {
+      super();
+    }
+
+    public ArrayListImpl(ArrayListImpl<T> list) {
+      super(list);
+    }
+
+    public int getCount() {
+      return count;
+    }
+
+    public void incrementCount() {
+      ++count;
+    }
+
+    public void decrementCount() {
+      --count;
     }
   }
 }
