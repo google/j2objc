@@ -57,6 +57,12 @@ public class BooleanLiteral extends Expression {
   }
 
   @Override
+  public BooleanLiteral setConstantValue(Object value) {
+    assert value instanceof Boolean;
+    return (BooleanLiteral) super.setConstantValue(value);
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

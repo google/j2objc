@@ -65,6 +65,12 @@ public class StringLiteral extends Expression {
   }
 
   @Override
+  public StringLiteral setConstantValue(Object value) {
+    assert value instanceof String;
+    return (StringLiteral) super.setConstantValue(value);
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

@@ -115,7 +115,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
-import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.StatementTree;
@@ -680,9 +679,17 @@ public class TreeConverter {
 
   private TreeNode copyConstantValue(JCTree node, Expression newNode) {
     Object value = node.type.constValue();
-    // Convert boolean values of 1/0 as true/false.
-    if (TypeUtil.isBoolean(node.type.baseType()) && value instanceof Integer) {
-      value = ((Integer) value).intValue() == 1;
+    if (value instanceof Integer) {
+      switch (node.type.baseType().getKind()) {
+        case BOOLEAN:
+          // Convert boolean values of 1/0 as true/false.
+          value = ((Integer) value).intValue() == 1;
+          break;
+        case CHAR:
+          value = (char) ((Integer) value).intValue();
+          break;
+        default:  // value doesn't need to be changed.
+      }
     }
     return newNode.setConstantValue(value);
   }
