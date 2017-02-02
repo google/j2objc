@@ -74,12 +74,6 @@ public class NumberLiteral extends Expression {
   }
 
   @Override
-  public NumberLiteral setConstantValue(Object value) {
-    assert value instanceof Number;
-    return (NumberLiteral) super.setConstantValue(value);
-  }
-
-  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

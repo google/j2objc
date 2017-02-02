@@ -53,12 +53,6 @@ public class CharacterLiteral extends Expression {
   }
 
   @Override
-  public CharacterLiteral setConstantValue(Object value) {
-    assert value instanceof Character;
-    return (CharacterLiteral) super.setConstantValue(value);
-  }
-
-  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);
