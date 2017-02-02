@@ -45,6 +45,12 @@ public class CStringLiteral extends Expression {
   }
 
   @Override
+  public CStringLiteral setConstantValue(Object value) {
+    assert value == null || value instanceof String;
+    return (CStringLiteral) super.setConstantValue(value);
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);
