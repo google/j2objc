@@ -1,6 +1,7 @@
 
 #import "com/google/j2objc/testing/JUnitTestRunner.h"
 
+#include "java/lang/Thread.h"
 #include <errno.h>
 #include <execinfo.h>
 #include <signal.h>
@@ -51,5 +52,16 @@ void installSignalHandler() {
 
 int main(int argc, char *argv[]) {
   installSignalHandler();
-  UIApplicationMain(argc, argv, nil, @"TestRunnerAppDelegate");
+  @autoreleasepool {
+    @try {
+      UIApplicationMain(argc, argv, nil, @"TestRunnerAppDelegate");
+    }
+    @catch (NSException *e) {
+      JavaLangThread *currentThread = JavaLangThread_currentThread();
+      id uncaughtHandler = [currentThread getUncaughtExceptionHandler];
+      [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withNSException:e];
+      return 1;
+    }
+  }
+  return 0;
 }
