@@ -119,4 +119,15 @@ public class MaxFloatingPointTest extends TestCase {
     l /= 0.5;
     assertEquals(Long.MAX_VALUE, l);
   }
+
+  public void testNaNConversions() {
+    double d = Double.NaN;
+    float f = Float.NaN;
+    assertEquals(0L, (long) d);
+    assertEquals(0, (int) d);
+    assertEquals('\0', (char) d);
+    assertEquals(0L, (long) f);
+    assertEquals(0, (int) f);
+    assertEquals('\0', (char) f);
+  }
 }

@@ -159,15 +159,18 @@ FOUNDATION_EXPORT Class CreatePossiblyCapturingClass(const char *lambdaName, jin
  * Returns correct result when casting a double to an integral type. In C, a
  * float >= Integer.MAX_VALUE (allowing for rounding) returns 0x80000000,
  * while Java requires 0x7FFFFFFF.  A double >= Long.MAX_VALUE returns
- * 0x8000000000000000L, while Java requires 0x7FFFFFFFFFFFFFFFL.
+ * 0x8000000000000000L, while Java requires 0x7FFFFFFFFFFFFFFFL. Also in C, a
+ * floating point NaN value casts to the equivalent MIN_VALUE while Java
+ * requires that NaN casts to 0. (JLS 5.1.3)
  */
 __attribute__((always_inline)) inline jint JreFpToInt(jdouble d) {
   jint tmp = (jint)d;
-  return tmp == (jint)0x80000000 ? (d >= 0 ? 0x7FFFFFFF : tmp) : tmp;
+  return tmp == (jint)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
 }
 __attribute__((always_inline)) inline jlong JreFpToLong(jdouble d) {
   jlong tmp = (jlong)d;
-  return tmp == (jlong)0x8000000000000000LL ? (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp) : tmp;
+  return tmp == (jlong)0x8000000000000000LL
+      ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp)) : tmp;
 }
 __attribute__((always_inline)) inline jchar JreFpToChar(jdouble d) {
   unsigned tmp = (unsigned)d;
