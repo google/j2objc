@@ -41,6 +41,7 @@ public class IosSecurityProvider extends Provider {
 
     // X509 certificate provider.
     put("CertificateFactory.X.509", "com.google.j2objc.security.cert.IosCertificateFactory");
+    put("Alg.Alias.CertificateFactory.X509", "X.509");
 
     /* === Message Digests === */
     put("MessageDigest.SHA-1", PREFIX + "IosSHAMessageDigest$SHA1");

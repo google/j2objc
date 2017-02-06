@@ -100,6 +100,8 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/MySignature1.java \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
     org/apache/harmony/security/tests/support/TestKeyPair.java \
+    org/apache/harmony/security/tests/support/cert/MyCRL.java \
+    org/apache/harmony/security/tests/support/cert/TestUtils.java \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
@@ -593,6 +595,7 @@ TEST_SOURCES := \
     tests/api/java/util/ResourceBundleTest.java \
     tests/api/java/util/TimerTaskTest.java \
     tests/api/java/util/TimerTest.java \
+    tests/security/cert/X509Certificate2Test.java \
     tests/security/interfaces/RSAKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
     tests/security/interfaces/RSAPublicKeyTest.java \

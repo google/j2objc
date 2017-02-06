@@ -17,15 +17,24 @@
 
 package com.google.j2objc.security.cert;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
 import java.security.cert.CRL;
 import java.security.cert.CRLException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactorySpi;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,6 +50,9 @@ import java.util.List;
  */
 public class IosCertificateFactory extends CertificateFactorySpi {
 
+  private static final int BEGIN_CERT_LINE_LENGTH = "-----BEGIN CERTIFICATE-----\n".length();
+  private static final int END_CERT_LINE_LENGTH = "-----END CERTIFICATE-----\n".length();
+
   @Override
   public Certificate engineGenerateCertificate(InputStream inStream)
       throws CertificateException {
@@ -55,11 +67,29 @@ public class IosCertificateFactory extends CertificateFactorySpi {
     } catch (IOException e) {
       throw new CertificateException(e);
     }
-    return iosGenerateCertificate(out.toByteArray());
+    return iosGenerateCertificate(maybeDecodeBase64(out.toByteArray()));
+  }
+
+  /**
+   * Test whether array is a Base64-encoded certificate. If so, return
+   * the decoded content instead of the specified array.
+   *
+   * @see CertificateFactorySpi#engineGenerateCertificate(InputStream)
+   */
+  private byte[] maybeDecodeBase64(byte[] byteArray) {
+    try {
+      String pem = new String(byteArray);
+      // Remove required begin/end lines.
+      pem = pem.substring(BEGIN_CERT_LINE_LENGTH, pem.length() - END_CERT_LINE_LENGTH);
+      return Base64.getDecoder().decode(pem);
+    } catch (Exception e) {
+      // Not a valid PEM encoded certificate, return original array.
+      return byteArray;
+    }
   }
 
   private native Certificate iosGenerateCertificate(byte[] bytes) throws CertificateException /*-[
-    NSData *data = [[NSData alloc] initWithBytesNoCopy:bytes->buffer_ length:bytes->size_];
+    NSData *data = AUTORELEASE([[NSData alloc] initWithBytes:bytes->buffer_ length:bytes->size_]);
     SecCertificateRef newCertificate =
         SecCertificateCreateWithData(NULL, (__bridge CFDataRef) data);
     if (!newCertificate) {
