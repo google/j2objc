@@ -180,7 +180,7 @@ public class Options {
           ErrorUtil.error("Invalid front end environment flag: " + envFlag);
         }
       }
-      return JDT;
+      return JAVAC;
     }
   }
 
