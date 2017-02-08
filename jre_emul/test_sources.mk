@@ -111,6 +111,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/org/xml/sax/support/MockResolver.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
+    tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
     tests/security/interfaces/Util.java \
     tests/support/Support_ASimpleInputStream.java \
@@ -147,6 +148,7 @@ SUPPORT_SOURCES = \
     tests/support/ThrowingReader.java \
     tests/support/resource/Support_Resources.java \
     tests/targets/security/KeyStoreTest.java \
+    tests/targets/security/cert/CertificateFactoryTestX509.java \
     tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java
 
@@ -571,6 +573,13 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/LocaleTest.java \
     org/apache/harmony/tests/java/util/SimpleTimeZoneTest.java \
     org/apache/harmony/tests/java/util/TimeZoneTest.java \
+    org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
+    org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
+    org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \
+    org/apache/harmony/tests/javax/security/cert/CertificateNotYetValidExceptionTest.java \
+    org/apache/harmony/tests/javax/security/cert/CertificateParsingExceptionTest.java \
+    org/apache/harmony/tests/javax/security/cert/CertificateTest.java \
+    org/apache/harmony/tests/javax/security/cert/X509CertificateTest.java \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \

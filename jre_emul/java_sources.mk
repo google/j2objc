@@ -1027,6 +1027,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/security/cert/CertificateException.java \
   javax/security/cert/CertificateExpiredException.java \
   javax/security/cert/CertificateNotYetValidException.java \
+  javax/security/cert/CertificateParsingException.java \
   javax/security/cert/X509Certificate.java
 
 JAVA_PRIVATE_SOURCES_SECURITY = \
