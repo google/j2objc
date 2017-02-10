@@ -298,16 +298,17 @@ public final class URLConnectionTest extends TestCase {
         server.enqueue(new MockResponse().setBody("A"));
         server.play();
         HttpURLConnection connection = (HttpURLConnection) server.getUrl("/").openConnection();
+        assertEquals(200, connection.getResponseCode());
         assertNull(connection.getErrorStream());
     }
 
-//  JVM failure.
-//    public void testGetErrorStreamOnUnsuccessfulRequest() throws Exception {
-//        server.enqueue(new MockResponse().setResponseCode(404).setBody("A"));
-//        server.play();
-//        HttpURLConnection connection = (HttpURLConnection) server.getUrl("/").openConnection();
-//        assertEquals("A", readAscii(connection.getErrorStream(), Integer.MAX_VALUE));
-//    }
+    public void testGetErrorStreamOnUnsuccessfulRequest() throws Exception {
+        server.enqueue(new MockResponse().setResponseCode(404).setBody("A"));
+        server.play();
+        HttpURLConnection connection = (HttpURLConnection) server.getUrl("/").openConnection();
+        assertEquals(404, connection.getResponseCode());
+        assertEquals("A", readAscii(connection.getErrorStream(), Integer.MAX_VALUE));
+    }
 
     // Check that if we don't read to the end of a response, the next request on the
     // recycled connection doesn't get the unread tail of the first request's response.

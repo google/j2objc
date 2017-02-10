@@ -89,7 +89,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
   /** Used to guard responseBodyStream. */
   private final Object responseBodyStreamLock = new Object();
 
-  /** An InputStream for reading the error response. Unsupported in J2ObjC and is always null. */
+  /** An InputStream for reading the error response. */
   private InputStream errorDataStream;
 
   private List<HeaderEntry> headers = new ArrayList<HeaderEntry>();
@@ -618,21 +618,14 @@ public class IosHttpURLConnection extends HttpURLConnection {
       [self addHeaderWithNSString:key withNSString:value];
     }];
 
-    if (response.statusCode < JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
-      completionHandler(NSURLSessionResponseAllow);
-    } else {
-      completionHandler(NSURLSessionResponseCancel);
-
-      // Close responseBodyStream from the offering side.
-      @synchronized(responseBodyStreamLock_) {
-        [self->responseBodyStream_ endOffering];
-      }
-
-      // Set nativeDataTask to null.
-      @synchronized(nativeDataTaskLock_) {
-        JreStrongAssign(&self->nativeDataTask_, nil);
-      }
+    if (response.statusCode >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
+      // Make errorDataStream an alias to responseBodyStream. Since getInputStream() throws an
+      // exception when status code >= HTTP_BAD_REQUEST, it is guaranteed that responseBodyStream
+      // can only mean error stream going forward.
+      JreStrongAssign(&self->errorDataStream_, self->responseBodyStream_);
     }
+
+    completionHandler(NSURLSessionResponseAllow);
 
     // Since the original request might have been redirected, we might need to
     // update the URL to the redirected URL.
