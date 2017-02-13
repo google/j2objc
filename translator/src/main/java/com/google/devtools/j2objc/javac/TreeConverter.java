@@ -720,7 +720,12 @@ public class TreeConverter {
       return new TypeLiteral(node.type)
           .setType((Type) convertType(selected.type, pos, false).setPosition(getPosition(node)));
     }
-    if (selected.getKind() == Kind.IDENTIFIER && !node.sym.getKind().isField()) {
+    if (selected.getKind() == Kind.IDENTIFIER && (!node.sym.getKind().isField()
+        || ElementUtil.isConstant((VariableElement) node.sym))) {
+      if (selected.toString().equals("this")) {
+        // Just return the constant.
+        return new SimpleName(node.sym);
+      }
       JCIdent ident = (JCTree.JCIdent) selected;
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
@@ -736,7 +741,8 @@ public class TreeConverter {
             .setElement(node.sym);
       }
     }
-    if (ElementUtil.isConstant((VariableElement) node.sym) && ElementUtil.isStatic(node.sym)) {
+    if (ElementUtil.isConstant((VariableElement) node.sym) && ElementUtil.isStatic(node.sym)
+        && !(selected.getKind() == Kind.METHOD_INVOCATION)) {
       return new QualifiedName()
           .setName(convertSimpleName(node.sym, node.type, pos))
           .setQualifier((Name) convert(selected))
