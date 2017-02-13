@@ -268,6 +268,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/ArrayDeque.java \
   java/util/ArrayList.java \
   java/util/Arrays.java \
+  java/util/Base64.java \
   java/util/BitSet.java \
   java/util/Calendar.java \
   java/util/Collection.java \
@@ -737,7 +738,6 @@ JAVA_PRIVATE_SOURCES_NET = \
   okio/Util.java
 
 JAVA_PUBLIC_SOURCES_UTIL = \
-  java/util/Base64.java \
   java/util/EventListener.java \
   java/util/EventListenerProxy.java \
   java/util/EventObject.java \
