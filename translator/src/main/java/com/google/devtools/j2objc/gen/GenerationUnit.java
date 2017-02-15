@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.io.File;
 import java.util.Collection;
 import java.util.TreeMap;
@@ -175,6 +176,9 @@ public class GenerationUnit {
 
     for (AbstractTypeDeclaration type : unit.getTypes()) {
       generatedTypes.put(qualifiedMainType, GeneratedType.fromTypeDeclaration(type));
+      if (ElementUtil.isEnum(type.getTypeElement())) {
+        hasNullabilityAnnotations = true;
+      }
     }
   }
 

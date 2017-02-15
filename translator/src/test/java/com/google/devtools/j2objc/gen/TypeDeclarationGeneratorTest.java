@@ -355,6 +355,21 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "#endif");
   }
 
+  // Verify that enums always have nullability completeness suppressed.
+  public void testEnumNullabilityPragmas() throws IOException {
+    options.setNullability(true);
+    String translation = translateSourceFile("enum Test { A, B, C; }", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "#if __has_feature(nullability)",
+        "#pragma clang diagnostic push",
+        "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
+        "#endif");
+    assertTranslatedLines(translation,
+        "#if __has_feature(nullability)",
+        "#pragma clang diagnostic pop",
+        "#endif");
+  }
+
   public void testFieldWithIntersectionType() throws IOException {
     String translation = translateSourceFile(
         "class Test <T extends Comparable & Runnable> { T foo; }", "Test", "Test.h");
