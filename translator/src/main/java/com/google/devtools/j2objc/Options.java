@@ -174,9 +174,9 @@ public class Options {
     static FrontEnd defaultFrontEnd() {
       String envFlag = System.getenv(ENV_FRONT_END_FLAG);
       if (envFlag != null) {
-        if (envFlag.equalsIgnoreCase(JAVAC.name())) {
-          return JAVAC;
-        } else if (!envFlag.equalsIgnoreCase(JDT.name())) {
+        try {
+          return FrontEnd.valueOf(envFlag);
+        } catch (IllegalArgumentException e) {
           ErrorUtil.error("Invalid front end environment flag: " + envFlag);
         }
       }
