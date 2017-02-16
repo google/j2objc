@@ -53,6 +53,7 @@ public class NameTable {
   private final CaptureInfo captureInfo;
   private final Map<VariableElement, String> variableNames = new HashMap<>();
   private final Map<ExecutableElement, String> methodSelectorCache = new HashMap<>();
+  private final Map<TypeElement, String> fullNameCache = new HashMap<>();
 
   public static final String INIT_NAME = "init";
   public static final String RETAIN_METHOD = "retain";
@@ -742,7 +743,15 @@ public class NameTable {
    */
   public String getFullName(TypeElement element) {
     element = typeUtil.getObjcClass(element);
+    String fullName = fullNameCache.get(element);
+    if (fullName == null) {
+      fullName = getFullNameImpl(element);
+      fullNameCache.put(element, fullName);
+    }
+    return fullName;
+  }
 
+  private String getFullNameImpl(TypeElement element) {
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.
     if (ElementUtil.isPackageInfo(element)) {
