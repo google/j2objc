@@ -63,7 +63,8 @@ namespace {
     for (int i = 0; i < descriptor->field_count(); i++) {
       fields[i] = descriptor->field(i);
     }
-    sort(fields, fields + descriptor->field_count(), FieldOrderingByNumber());
+    std::sort(fields, fields + descriptor->field_count(),
+              FieldOrderingByNumber());
     return fields;
   }
 
