@@ -711,10 +711,14 @@ public class TreeConverter {
           .setQualifier((Name) convert(selected))
           .setTypeMirror(node.sym.asType());
     }
-    if (selected.toString().equals("super")) {
-      return new SuperFieldAccess()
+    if ("super".equals(getMemberName(selected))) {
+      SuperFieldAccess newNode = new SuperFieldAccess()
           .setVariableElement((VariableElement) node.sym)
           .setName(convertSimpleName(node.sym, node.type, pos));
+      if (selected.getKind() == Kind.MEMBER_SELECT) {
+        newNode.setQualifier((Name) convert(((JCTree.JCFieldAccess) selected).getExpression()));
+      }
+      return newNode;
     }
     if (node.getIdentifier().toString().equals("class")) {
       return new TypeLiteral(node.type)

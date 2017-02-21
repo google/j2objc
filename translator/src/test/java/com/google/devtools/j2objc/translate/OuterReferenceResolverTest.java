@@ -207,6 +207,13 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("this$0", ElementUtil.getName(var));
   }
 
+  public void testQualifiedFieldAccess() throws IOException {
+    addSourceFile("class A { int i; }", "A.java");
+    String translation = translateSourceFile(
+        "class B extends A { class C { int foo() { return B.super.i; } } }", "B", "B.m");
+    assertTranslation(translation, "return this$0_->i_;");
+  }
+
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
     captureInfo = unit.getEnv().captureInfo();

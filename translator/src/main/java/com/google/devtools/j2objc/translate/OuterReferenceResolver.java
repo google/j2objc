@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.ThisExpression;
@@ -377,6 +378,16 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
   @Override
   public boolean visit(FieldAccess node) {
     node.getExpression().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(SuperFieldAccess node) {
+    VariableElement var = node.getVariableElement();
+    Name path = getPathForField(var, node.getTypeMirror());
+    if (path != null) {
+      node.replaceWith(path);
+    }
     return false;
   }
 
