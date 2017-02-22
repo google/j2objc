@@ -218,6 +218,12 @@ TEST_SOURCES := \
     com/google/j2objc/StringTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.java \
+    com/google/j2objc/java8/CreationReferenceTest.java \
+    com/google/j2objc/java8/DefaultMethodsTest.java \
+    com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
+    com/google/j2objc/java8/LambdaTest.java \
+    com/google/j2objc/java8/SuperMethodReferenceTest.java \
+    com/google/j2objc/java8/TypeMethodReferenceTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/FileChannelTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
@@ -641,6 +647,7 @@ TEST_SOURCES := \
 SUITE_SOURCES = \
     ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
+    com/google/j2objc/java8/SmallTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/text/LargeTests.java \
     libcore/java/text/SmallTests.java \
@@ -657,19 +664,6 @@ ARC_TEST_SOURCES = \
 # translated and compiled with ARC.
 COPIED_ARC_TEST_SOURCES = \
     com/google/j2objc/arc/MemoryTest.java
-
-# Java8 sources are listed separately so that tests can still be run on systems with only Java7.
-JAVA8_TEST_SOURCES := \
-    com/google/j2objc/java8/CreationReferenceTest.java \
-    com/google/j2objc/java8/DefaultMethodsTest.java \
-    com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
-    com/google/j2objc/java8/LambdaTest.java \
-    com/google/j2objc/java8/SuperMethodReferenceTest.java \
-    com/google/j2objc/java8/TypeMethodReferenceTest.java \
-
-
-JAVA8_SUITE_SOURCES = \
-    com/google/j2objc/java8/SmallTests.java \
 
 # These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
 # The java.net SmallTests is also skipped, since it refers to these classes; SmallTests isn't

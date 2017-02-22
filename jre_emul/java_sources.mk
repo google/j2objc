@@ -131,6 +131,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/NullPointerException.java \
   java/lang/NumberFormatException.java \
   java/lang/OutOfMemoryError.java \
+  java/lang/Override.java \
   java/lang/Package.java \
   java/lang/Readable.java \
   java/lang/ReflectiveOperationException.java \
@@ -148,6 +149,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/StringBuffer.java \
   java/lang/StringBuilder.java \
   java/lang/StringIndexOutOfBoundsException.java \
+  java/lang/SuppressWarnings.java \
   java/lang/System.java \
   java/lang/Thread.java \
   java/lang/ThreadDeath.java \

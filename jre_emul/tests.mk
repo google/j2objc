@@ -24,10 +24,8 @@ include environment.mk
 include test_sources.mk
 include $(J2OBJC_ROOT)/make/translate_macros.mk
 
-
-ALL_TEST_SOURCES = $(TEST_SOURCES) $(JAVA8_TEST_SOURCES) $(ARC_TEST_SOURCES) \
-  $(COPIED_ARC_TEST_SOURCES)
-ALL_SUITE_SOURCES = $(SUITE_SOURCES) $(JAVA8_SUITE_SOURCES)
+ALL_TEST_SOURCES = $(TEST_SOURCES) $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
+ALL_SUITE_SOURCES = $(SUITE_SOURCES)
 
 TESTS_TO_RUN = $(filter-out $(TESTS_TO_SKIP),$(ALL_TEST_SOURCES))
 TESTS_TO_RUN := $(subst /,.,$(TESTS_TO_RUN:%.java=%))
@@ -67,10 +65,8 @@ TRANSLATE_ARGS = -q -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC)
     --extract-unsequenced -encoding UTF-8 \
     --prefixes Tests/resources/prefixes.properties
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
-TRANSLATE_SOURCES_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
 TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
-TRANSLATED_OBJC_JAVA8 = $(TRANSLATE_SOURCES_JAVA8:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
 
 TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
@@ -80,13 +76,6 @@ TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   ,\
   $(TRANSLATE_ARGS))
 
-TRANSLATE_ARTIFACT_JAVA8 := $(call emit_translate_rule,\
-  jre_emul_tests_java8,\
-  $(TESTS_DIR),\
-  $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES),\
-  ,\
-  $(TRANSLATE_ARGS) -source 8)
-
 TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   jre_emul_tests_arc,\
   $(TESTS_DIR)/arc,\
@@ -94,15 +83,12 @@ TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   ,\
   $(TRANSLATE_ARGS) -use-arc)
 
-TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_JAVA8) $(TRANSLATE_ARTIFACT_ARC)
+TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_ARC)
 
 # Make sure any generated source files are generated prior to translation.
 translate_dependencies: $(COPIED_ARC_TEST_SOURCES:%=$(GEN_JAVA_DIR)/%)
 
 $(TRANSLATED_OBJC): $(TRANSLATE_ARTIFACT)
-	@:
-
-$(TRANSLATED_OBJC_JAVA8): $(TRANSLATE_ARTIFACT_JAVA8)
 	@:
 
 $(TRANSLATED_OBJC_ARC): $(TRANSLATE_ARTIFACT_ARC)
