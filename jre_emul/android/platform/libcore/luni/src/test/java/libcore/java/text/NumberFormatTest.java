@@ -66,6 +66,25 @@ public class NumberFormatTest extends junit.framework.TestCase {
         assertEquals("double", nf.format(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE)));
     }
 
+    public void test_getIntegerInstance_ar() throws Exception {
+        // Previous versions of android use just the positive format string (ICU4C) although now we
+        // use '<positive_format>;<negative_format>' because of ICU4J denormalization.
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ar"));
+        String patternNI = ((DecimalFormat) numberFormat).toPattern();
+        assertTrue("#,##0.###;-#,##0.###".equals(patternNI) || "#,##0.###".equals(patternNI));
+        NumberFormat integerFormat = NumberFormat.getIntegerInstance(new Locale("ar"));
+        String patternII = ((DecimalFormat) integerFormat).toPattern();
+        assertTrue("#,##0;-#,##0".equals(patternII) || "#,##0".equals(patternII));
+    }
+
+    /* J2ObjC: The Arabic symbols don't appear to be available on macOS.
+    public void test_numberLocalization() throws Exception {
+        Locale arabic = new Locale("ar");
+        NumberFormat nf = NumberFormat.getNumberInstance(arabic);
+        assertEquals('\u0660', new DecimalFormatSymbols(arabic).getZeroDigit());
+        assertEquals("١٬٢٣٤٬٥٦٧٬٨٩٠", nf.format(1234567890));
+    }*/
+
     // Formatting percentages is confusing but deliberate.
     // Ensure we don't accidentally "fix" this.
     // https://code.google.com/p/android/issues/detail?id=10333
@@ -92,7 +111,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
         assertEquals("14%", nf.format(0.149));
 
         nf.setMaximumFractionDigits(1);
-        assertEquals("14.9%", nf.format(0.149));
+        // J2ObjC: Was a bad test using 0.149 as input because floating point representation might
+        // be less than 0.149 and round down to 14.8%.
+        assertEquals("14.9%", nf.format(0.1491));
     }
 
     // https://code.google.com/p/android/issues/detail?id=62269
@@ -180,7 +201,7 @@ public class NumberFormatTest extends junit.framework.TestCase {
     public void test_currencyFromLocale() {
         // French locale formats with "," as separator and Euro symbol after a non-breaking space.
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        assertEquals("50.00 €", nf.format(50));
+        assertEquals("50,00\u00a0€", nf.format(50));
 
         // British locale uses pound sign with no spacing.
         nf = NumberFormat.getCurrencyInstance(Locale.UK);
@@ -198,6 +219,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
         // Armenian Dram ISO 4217 code.
         nf.setCurrency(amd);
+        assertEquals(2, nf.getMinimumFractionDigits());  // Check DecimalFormat has not taken the
+        assertEquals(2, nf.getMaximumFractionDigits());  // currency specific fractional digits.
+        assertEquals("AMD50.00", nf.format(50.00));
 
         // Try and explicitly request fractional digits for the specified currency.
         nf.setMaximumFractionDigits(amd.getDefaultFractionDigits());
@@ -209,10 +233,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
         nf.setCurrency(Currency.getInstance("EUR"));
         assertEquals("€50.00", nf.format(50.00));
 
-        // TODO(tball): investigate iOS 10 failures, b/33557359.
         // Japanese Yen symbol.
-        //nf.setCurrency(Currency.getInstance("JPY"));
-        //assertEquals("¥50", nf.format(50.00));
+        nf.setCurrency(Currency.getInstance("JPY"));
+        assertEquals("¥50.00", nf.format(50.00));
 
         // Swiss Franc ISO 4217 code.
         nf.setCurrency(Currency.getInstance("CHF"));
@@ -221,13 +244,25 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
     // Test the setting of locale specific patterns which have different fractional digits.
     public void test_currencyWithPatternDigits() throws Exception {
-        // TODO(tball): investigate iOS 10 failures, b/33557359.
         // Japanese Yen 0 fractional digits.
-        //NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.JAPAN);
-        //assertEquals("¥50", nf.format(50.00));
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.JAPAN);
+        // TODO(tball): investigate iOS 10 failures, b/33557359.
+        //assertEquals("￥50", nf.format(50.00));
+
+        // Armenian Dram 0 fractional digits.
+        nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
+        assertEquals("֏\u00a050", nf.format(50.00));
 
         // Swiss Francs 2 fractional digits.
-        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
-        assertEquals("CHF 50.00", nf.format(50.00));
+        nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
+        assertEquals("CHF\u00a050.00", nf.format(50.00));
+    }
+
+    // http://b/28893763
+    public void test_setCurrency_leavesFractionDigitsUntouched() {
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+        format.setMinimumFractionDigits(0);
+        format.setCurrency(Currency.getInstance("USD"));
+        assertEquals("$10", format.format(10d));
     }
 }

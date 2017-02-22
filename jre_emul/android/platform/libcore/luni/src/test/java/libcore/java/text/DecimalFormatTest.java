@@ -48,44 +48,44 @@ public class DecimalFormatTest extends junit.framework.TestCase {
     }
 
     // Android fails this test, truncating to 127 digits.
-//    public void test_setMaximumIntegerDigits() throws Exception {
-//        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-//        numberFormat.setGroupingUsed(false);
-//        numberFormat.setMinimumIntegerDigits(400);
-//        // The RI's documentation suggests that the int should be formatted to 309 characters --
-//        // a magic number they don't explain -- but the BigInteger should be formatted to the 400
-//        // characters we asked for. In practice, the RI uses 309 in both cases.
-//        assertEquals(309, numberFormat.format(123).length());
-//        assertEquals(309, numberFormat.format(BigInteger.valueOf(123)).length());
-//    }
+    public void test_setMaximumIntegerDigits() throws Exception {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+        numberFormat.setGroupingUsed(false);
+        numberFormat.setMinimumIntegerDigits(400);
+        // The RI's documentation suggests that the int should be formatted to 309 characters --
+        // a magic number they don't explain -- but the BigInteger should be formatted to the 400
+        // characters we asked for. In practice, the RI uses 309 in both cases.
+        assertEquals(309, numberFormat.format(123).length());
+        assertEquals(309, numberFormat.format(BigInteger.valueOf(123)).length());
+    }
 
     // Regression test for http://b/1897917: BigDecimal does not take into account multiplier.
-//    public void testBigDecimalBug1897917() {
-//        // For example. the BigDecimal 0.17 formatted in PercentInstance is 0% instead of 17%:
-//        NumberFormat pf = NumberFormat.getPercentInstance();
-//        assertEquals("17%", pf.format(BigDecimal.valueOf(0.17)));
-//
-//        // Test long decimal formatted in PercentInstance with various fractions.
-//        String longDec = "11.2345678901234567890123456789012345678901234567890";
-//        BigDecimal bd = new BigDecimal(longDec);
-//        assertBigDecimalWithFraction(bd, "1,123.46%", 2);
-//        assertBigDecimalWithFraction(bd, "1,123.45678901%", 8);
-//        assertBigDecimalWithFraction(bd, "1,123.4567890123%", 10);
-//        assertBigDecimalWithFraction(bd, "1,123.45678901234567890123%", 20);
-//        assertBigDecimalWithFraction(bd, "1,123.456789012345678901234567890123%", 30);
-//
-//        // Test trailing zeros.
-//        assertDecFmtWithMultiplierAndFraction("3333.33333333", 3, 4, "10,000");
-//        assertDecFmtWithMultiplierAndFraction("3333.33333333", -3, 4, "-10,000");
-//        assertDecFmtWithMultiplierAndFraction("0.00333333", 3, 4, "0.01");
-//
-//        assertDecFmtWithMultiplierAndFractionByLocale("3330000000000000000000000000000000", 3, 4,
-//                    Locale.US, "9,990,000,000,000,000,000,000,000,000,000,000");
-//
-//        Locale en_IN = new Locale("en", "IN");
-//        assertDecFmtWithMultiplierAndFractionByLocale("3330000000000000000000000000000000", 3, 4,
-//                en_IN, "9,99,00,00,00,00,00,00,00,00,00,00,00,00,00,00,000");
-//    }
+    public void testBigDecimalBug1897917() {
+        // For example. the BigDecimal 0.17 formatted in PercentInstance is 0% instead of 17%:
+        NumberFormat pf = NumberFormat.getPercentInstance();
+        assertEquals("17%", pf.format(BigDecimal.valueOf(0.17)));
+
+        // Test long decimal formatted in PercentInstance with various fractions.
+        String longDec = "11.2345678901234567890123456789012345678901234567890";
+        BigDecimal bd = new BigDecimal(longDec);
+        assertBigDecimalWithFraction(bd, "1,123.46%", 2);
+        assertBigDecimalWithFraction(bd, "1,123.45678901%", 8);
+        assertBigDecimalWithFraction(bd, "1,123.4567890123%", 10);
+        assertBigDecimalWithFraction(bd, "1,123.45678901234567890123%", 20);
+        assertBigDecimalWithFraction(bd, "1,123.456789012345678901234567890123%", 30);
+
+        // Test trailing zeros.
+        assertDecFmtWithMultiplierAndFraction("3333.33333333", 3, 4, "10,000");
+        assertDecFmtWithMultiplierAndFraction("3333.33333333", -3, 4, "-10,000");
+        assertDecFmtWithMultiplierAndFraction("0.00333333", 3, 4, "0.01");
+
+        assertDecFmtWithMultiplierAndFractionByLocale("3330000000000000000000000000000000", 3, 4,
+                    Locale.US, "9,990,000,000,000,000,000,000,000,000,000,000");
+
+        Locale en_IN = new Locale("en", "IN");
+        assertDecFmtWithMultiplierAndFractionByLocale("3330000000000000000000000000000000", 3, 4,
+                en_IN, "9,99,00,00,00,00,00,00,00,00,00,00,00,00,00,00,000");
+    }
 
     public void testBigDecimalTestBigIntWithMultiplier() {
         // Big integer tests.
@@ -175,23 +175,23 @@ public class DecimalFormatTest extends junit.framework.TestCase {
         assertEquals(expectedResult, df.format(d));
     }
 
-//    public void testSetZeroDigitForPattern() {
-//        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-//        decimalFormatSymbols.setZeroDigit('a');
-//        DecimalFormat formatter = new DecimalFormat();
-//        formatter.setDecimalFormatSymbols(decimalFormatSymbols);
-//        formatter.applyLocalizedPattern("#.aa");
-//        assertEquals("e.fa", formatter.format(4.50));
-//    }
+    public void testSetZeroDigitForPattern() {
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+        decimalFormatSymbols.setZeroDigit('a');
+        DecimalFormat formatter = new DecimalFormat();
+        formatter.setDecimalFormatSymbols(decimalFormatSymbols);
+        formatter.applyLocalizedPattern("#.aa");
+        assertEquals("e.fa", formatter.format(4.50));
+    }
 
-//    public void testSetZeroDigitForFormatting() {
-//        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-//        decimalFormatSymbols.setZeroDigit('a');
-//        DecimalFormat formatter = new DecimalFormat();
-//        formatter.setDecimalFormatSymbols(decimalFormatSymbols);
-//        formatter.applyLocalizedPattern("#");
-//        assertEquals("eadacab", formatter.format(4030201));
-//    }
+    public void testSetZeroDigitForFormatting() {
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+        decimalFormatSymbols.setZeroDigit('a');
+        DecimalFormat formatter = new DecimalFormat();
+        formatter.setDecimalFormatSymbols(decimalFormatSymbols);
+        formatter.applyLocalizedPattern("#");
+        assertEquals("eadacab", formatter.format(4030201));
+    }
 
     public void testBug9087737() throws Exception {
         DecimalFormat df = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
@@ -230,7 +230,8 @@ public class DecimalFormatTest extends junit.framework.TestCase {
       try {
         df.format(null, new StringBuffer(), new FieldPosition(0));
         fail();
-      } catch (NullPointerException expected) {
+      // J2ObjC: Java docs actually specify that IAE is thrown for null input, not NPE.
+      } catch (IllegalArgumentException expected) {
       }
 
       try {
@@ -262,60 +263,77 @@ public class DecimalFormatTest extends junit.framework.TestCase {
     }
 
     // Confirm the fraction digits do not change when the currency is changed.
-//    public void testBug71369() {
-//        final String nonBreakingSpace = "\u00A0";
-//
-//        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.GERMAN);
-//        numberFormat.setCurrency(Currency.getInstance("USD"));
-//
-//        assertEquals("2,01" + nonBreakingSpace + "$", numberFormat.format(2.01));
-//
-//        numberFormat.setMinimumFractionDigits(0);
-//        numberFormat.setMaximumFractionDigits(0);
-//
-//        String expected = "2" + nonBreakingSpace + "$";
-//        assertEquals(expected, numberFormat.format(2.01));
-//
-//        // Changing the currency must not reset the digits.
-//        numberFormat.setCurrency(Currency.getInstance("EUR"));
-//        numberFormat.setCurrency(Currency.getInstance("USD"));
-//
-//        assertEquals(expected, numberFormat.format(2.01));
-//    }
+    public void testBug71369() {
+        final String nonBreakingSpace = "\u00A0";
+
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.GERMAN);
+        numberFormat.setCurrency(Currency.getInstance("USD"));
+
+        assertEquals("2,01" + nonBreakingSpace + "$", numberFormat.format(2.01));
+
+        numberFormat.setMinimumFractionDigits(0);
+        numberFormat.setMaximumFractionDigits(0);
+
+        String expected = "2" + nonBreakingSpace + "$";
+        assertEquals(expected, numberFormat.format(2.01));
+
+        // Changing the currency must not reset the digits.
+        numberFormat.setCurrency(Currency.getInstance("EUR"));
+        numberFormat.setCurrency(Currency.getInstance("USD"));
+
+        assertEquals(expected, numberFormat.format(2.01));
+    }
+
+    // http://b/27855939
+    public void testBug27855939() {
+        DecimalFormat df = new DecimalFormat("00");
+        assertEquals("01", df.format(BigDecimal.ONE));
+        assertEquals("00", df.format(BigDecimal.ZERO));
+    }
 
     // Confirm the currency symbol used by a format is determined by the locale of the format
     // not the current default Locale.
-//    public void testSetCurrency_symbolOrigin() {
-//        Currency currency = Currency.getInstance("CNY");
-//        Locale locale1 = Locale.CHINA;
-//        Locale locale2 = Locale.US;
-//        String locale1Symbol = currency.getSymbol(locale1);
-//        String locale2Symbol = currency.getSymbol(locale2);
-//        // This test only works if we can tell where the symbol came from, which requires they are
-//        // different across the two locales chosen.
-//        assertFalse(locale1Symbol.equals(locale2Symbol));
-//
-//        Locale originalLocale = Locale.getDefault();
-//        try {
-//            Locale.setDefault(locale1);
-//            String amountDefaultLocale1 =
-//                    formatArbitraryCurrencyAmountInLocale(currency, locale2);
-//
-//            Locale.setDefault(locale2);
-//            String amountDefaultLocale2 =
-//                    formatArbitraryCurrencyAmountInLocale(currency, locale2);
-//
-//            // This used to fail because Currency.getSymbol() was used without providing the
-//            // format's locale.
-//            assertEquals(amountDefaultLocale1, amountDefaultLocale2);
-//        } finally {
-//            Locale.setDefault(originalLocale);
-//        }
-//    }
-//
-//    private String formatArbitraryCurrencyAmountInLocale(Currency currency, Locale locale) {
-//        NumberFormat localeCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-//        localeCurrencyFormat.setCurrency(currency);
-//        return localeCurrencyFormat.format(1000);
-//    }
+    public void testSetCurrency_symbolOrigin() {
+        Currency currency = Currency.getInstance("CNY");
+        Locale locale1 = Locale.CHINA;
+        Locale locale2 = Locale.US;
+        String locale1Symbol = currency.getSymbol(locale1);
+        String locale2Symbol = currency.getSymbol(locale2);
+        // This test only works if we can tell where the symbol came from, which requires they are
+        // different across the two locales chosen.
+        assertFalse(locale1Symbol.equals(locale2Symbol));
+
+        Locale originalLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(locale1);
+            String amountDefaultLocale1 =
+                    formatArbitraryCurrencyAmountInLocale(currency, locale2);
+
+            Locale.setDefault(locale2);
+            String amountDefaultLocale2 =
+                    formatArbitraryCurrencyAmountInLocale(currency, locale2);
+
+            // This used to fail because Currency.getSymbol() was used without providing the
+            // format's locale.
+            assertEquals(amountDefaultLocale1, amountDefaultLocale2);
+        } finally {
+            Locale.setDefault(originalLocale);
+        }
+    }
+
+    // Test that overriding the currency symbol survives a roundrip through the
+    // DecimalFormat constructor.
+    // http://b/28732330
+    public void testSetCurrencySymbol() {
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.US);
+        decimalFormatSymbols.setCurrencySymbol("¥");
+        DecimalFormat decimalFormat = new DecimalFormat("¤#,##0.00", decimalFormatSymbols);
+        assertEquals("¥", decimalFormat.getDecimalFormatSymbols().getCurrencySymbol());
+    }
+
+    private String formatArbitraryCurrencyAmountInLocale(Currency currency, Locale locale) {
+        NumberFormat localeCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+        localeCurrencyFormat.setCurrency(currency);
+        return localeCurrencyFormat.format(1000);
+    }
 }

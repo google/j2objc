@@ -105,12 +105,13 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
+    org/apache/harmony/tests/java/text/Support_DecimalFormat.java \
+    org/apache/harmony/tests/java/text/Support_Format.java \
+    org/apache/harmony/tests/java/text/Support_MessageFormat.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
     org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
     org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
     org/apache/harmony/tests/org/xml/sax/support/MockResolver.java \
-    org/apache/harmony/text/tests/java/text/Support_Format.java \
-    org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
     tests/security/CertificateFactoryTest.java \
     tests/security/MessageDigestTest.java \
     tests/security/interfaces/Util.java \
@@ -562,7 +563,14 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
     org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
+    org/apache/harmony/tests/java/text/AttributedStringTest.java \
+    org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
+    org/apache/harmony/tests/java/text/DecimalFormatTest.java \
+    org/apache/harmony/tests/java/text/FieldPositionTest.java \
+    org/apache/harmony/tests/java/text/MessageFormatTest.java \
+    org/apache/harmony/tests/java/text/NumberFormatTest.java \
+    org/apache/harmony/tests/java/text/ParsePositionTest.java \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
@@ -583,9 +591,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
-    org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
-    org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
     org/json/JSONArrayTest.java \
     org/json/JSONObjectTest.java \
     org/json/JSONStringerTest.java \
@@ -709,6 +715,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser \
+    serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \
     serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser
