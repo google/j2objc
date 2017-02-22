@@ -66,6 +66,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
+import com.google.j2objc.annotations.Weak;
+
 /**
  * This class implements an identity transformer for
  * {@link javax.xml.transform.sax.SAXTransformerFactory#newTransformerHandler()}
@@ -1440,6 +1442,7 @@ public class TransformerIdentityImpl extends Transformer
   private DeclHandler m_resultDeclHandler;
 
   /** The Serializer, which may or may not be null. */
+  @Weak
   private Serializer m_serializer;
 
   /** The Result object. */

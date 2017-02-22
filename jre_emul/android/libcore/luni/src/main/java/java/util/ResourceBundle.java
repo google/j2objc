@@ -26,6 +26,7 @@ import java.net.URL;
 import java.nio.charset.Charsets;
 import static java.nio.charset.Charsets.UTF_8;
 import libcore.io.IoUtils;
+import java.util.PropertyResourceBundle;
 
 /**
  * {@code ResourceBundle} is an abstract class which is the superclass of classes which
@@ -105,14 +106,14 @@ public abstract class ResourceBundle {
         }
     }
 
-    private static final ResourceBundle MISSING = new MissingBundle();
+    public static final ResourceBundle MISSING = new MissingBundle();
 
-    private static final ResourceBundle MISSINGBASE = new MissingBundle();
+    public static final ResourceBundle MISSINGBASE = new MissingBundle();
 
-    private static final WeakHashMap<Object, Hashtable<String, ResourceBundle>> cache
+    public static final WeakHashMap<Object, Hashtable<String, ResourceBundle>> cache
             = new WeakHashMap<Object, Hashtable<String, ResourceBundle>>();
 
-    private static Locale cacheLocale = Locale.getDefault();
+    public static Locale cacheLocale = Locale.getDefault();
 
     /**
      * Constructs a new instance of this class.
@@ -233,7 +234,7 @@ public abstract class ResourceBundle {
         return bundle;
     }
 
-    private static MissingResourceException missingResourceException(String className, String key) {
+    public static MissingResourceException missingResourceException(String className, String key) {
         String detail = "Can't find resource for bundle '" + className + "', key '" + key + "'";
         throw new MissingResourceException(detail, className, key);
     }
@@ -271,7 +272,7 @@ public abstract class ResourceBundle {
         return getBundle(baseName, targetLocale, getLoader(), control);
     }
 
-    private static ClassLoader getLoader() {
+    public static ClassLoader getLoader() {
         ClassLoader cl = ResourceBundle.class.getClassLoader();
         if (cl == null) {
             cl = ClassLoader.getSystemClassLoader();
@@ -549,7 +550,7 @@ public abstract class ResourceBundle {
         return null;
     }
 
-    private static Hashtable<String, ResourceBundle> getLoaderCache(Object cacheKey) {
+    public static Hashtable<String, ResourceBundle> getLoaderCache(Object cacheKey) {
         synchronized (cache) {
             Hashtable<String, ResourceBundle> loaderCache = cache.get(cacheKey);
             if (loaderCache == null) {
@@ -585,7 +586,7 @@ public abstract class ResourceBundle {
      * Returns a locale with the most-specific field removed, or null if this
      * locale had an empty language, country and variant.
      */
-    private static Locale strip(Locale locale) {
+    public static Locale strip(Locale locale) {
         String language = locale.getLanguage();
         String country = locale.getCountry();
         String variant = locale.getVariant();
@@ -601,7 +602,7 @@ public abstract class ResourceBundle {
         return new Locale(language, country, variant);
     }
 
-    private void setLocale(Locale locale) {
+    public void setLocale(Locale locale) {
         this.locale = locale;
     }
 

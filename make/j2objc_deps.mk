@@ -90,10 +90,10 @@ protobuf_runtime_java: java_deps_dist
 protobuf_runtime_dist: jre_emul_dist protobuf_compiler_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime dist
 
-xalan_dist: translator_dist jre_emul_dist
+xalan_dist: annotations_dist translator_dist jre_emul_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/xalan dist
 
-xalan_java: java_deps_dist jre_emul_jar_dist
+xalan_java: annotations_dist java_deps_dist jre_emul_jar_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/xalan java
 
 

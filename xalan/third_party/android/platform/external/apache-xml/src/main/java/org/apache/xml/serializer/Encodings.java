@@ -353,13 +353,25 @@ public final class Encodings extends Object
                 }
                 else
                 {
-                    try {
-                        // Get the substring after the Mime names
-                        final String highVal = val.substring(len).trim();
-                        highChar = (char) Integer.decode(highVal).intValue();
-                    }
-                    catch( NumberFormatException e) {
+                    // Get the substring after the Mime names
+                    final String highVal = val.substring(len).trim();
+
+                    // Check obvious wrong values first to avoid throwing exceptions in normal cases;
+                    // we expect to sometimes get an empty string.
+                    if(highVal == null) {
                         highChar = 0;
+                    }
+                    else if(highVal.isEmpty()) {
+                        highChar = 0;
+                    }
+                    // Only throw an exception in unusual cases.
+                    else {
+                        try {
+                            highChar = (char) Integer.decode(highVal).intValue();
+                        }
+                        catch( NumberFormatException e) {
+                            highChar = 0;
+                        }
                     }
                     String mimeNames = val.substring(0, len);
                     StringTokenizer st =
