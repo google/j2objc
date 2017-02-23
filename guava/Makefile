@@ -31,16 +31,13 @@ CLASSPATH = $(DIST_JAR_DIR)/$(JSR305_JAR):$(DIST_JAR_DIR)/j2objc_annotations.jar
 
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
-J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch \
-  $(INCLUDE_DIRS:%=-I%) $(CC_WARNINGS)
+J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%) $(CC_WARNINGS)
 
 # Headers are installed in dist/include/guava/, so that developers can translate
 # and use other versions of Guava without conflict.
 DIST_GUAVA_INCLUDE_DIR = $(ARCH_INCLUDE_DIR)/guava
 
-TRANSLATE_ARGS = --segmented-headers --extract-unsequenced --batch-translate-max=300 \
-    -cp $(CLASSPATH) -encoding UTF-8 -J-Xmx2G -source 1.7 \
-    --hide-private-members --final-methods-as-functions -q
+TRANSLATE_ARGS = -classpath $(CLASSPATH) -encoding UTF-8
 
 TRANSLATE_MARK = $(BUILD_DIR)/.translate_mark
 OBJC_SOURCES = $(JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.m)

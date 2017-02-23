@@ -30,8 +30,7 @@ J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%) $(CC_WARNINGS)
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
-TRANSLATE_ARGS = -q --batch-translate-max=300 \
-    -sourcepath $(SOURCEPATH) -encoding UTF-8 -J-Xmx2G
+TRANSLATE_ARGS = -sourcepath $(SOURCEPATH) -encoding UTF-8
 include $(J2OBJC_ROOT)/make/translate.mk
 
 FAT_LIB_NAME = xalan
