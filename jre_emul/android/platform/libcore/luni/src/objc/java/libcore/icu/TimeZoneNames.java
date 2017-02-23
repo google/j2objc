@@ -22,8 +22,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
-
+import java.util.concurrent.TimeUnit;
 import libcore.util.BasicLruCache;
+//import libcore.util.ZoneInfoDB;
 
 /**
  * Provides access to ICU's time zone name data.
@@ -53,19 +54,12 @@ public final class TimeZoneNames {
     }
 
     public static class ZoneStringsCache extends BasicLruCache<Locale, String[][]> {
-        // De-duplicate the strings (http://b/2672057).
-        private final HashMap<String, String> internTable = new HashMap<String, String>();
-
         public ZoneStringsCache() {
-            // We make room for all the time zones known to the system, since each set of strings
-            // isn't particularly large (and we remove duplicates), but is currently (Honeycomb)
-            // really expensive to compute.
-            // If you change this, you might want to change the scope of the intern table too.
-            super(availableTimeZoneIds.length);
+            super(5); // Room for a handful of locales.
         }
 
         @Override protected String[][] create(Locale locale) {
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
 
             // Set up the 2D array used to hold the names. The first column contains the Olson ids.
             String[][] result = new String[availableTimeZoneIds.length][5];
@@ -73,23 +67,25 @@ public final class TimeZoneNames {
                 result[i][0] = availableTimeZoneIds[i];
             }
 
-            long nativeStart = System.currentTimeMillis();
+            long nativeStart = System.nanoTime();
             fillZoneStrings(locale.toString(), result);
-            long nativeEnd = System.currentTimeMillis();
+            long nativeEnd = System.nanoTime();
 
             internStrings(result);
             // Ending up in this method too often is an easy way to make your app slow, so we ensure
             // it's easy to tell from the log (a) what we were doing, (b) how long it took, and
             // (c) that it's all ICU's fault.
-            long end = System.currentTimeMillis();
-            long nativeDuration = nativeEnd - nativeStart;
-            long duration = end - start;
+            long end = System.nanoTime();
+            long nativeDuration = TimeUnit.NANOSECONDS.toMillis(nativeEnd - nativeStart);
+            long duration = TimeUnit.NANOSECONDS.toMillis(end - start);
             System.logI("Loaded time zone names for \"" + locale + "\" in " + duration + "ms" +
-                    " (" + nativeDuration + "ms in ICU)");
+                        " (" + nativeDuration + "ms in ICU)");
             return result;
         }
 
+        // De-duplicate the strings (http://b/2672057).
         private synchronized void internStrings(String[][] result) {
+            HashMap<String, String> internTable = new HashMap<String, String>();
             for (int i = 0; i < result.length; ++i) {
                 for (int j = 1; j < NAME_COUNT; ++j) {
                     String original = result[i][j];
@@ -139,10 +135,36 @@ public final class TimeZoneNames {
         return cachedZoneStrings.get(locale);
     }
 
+    /**
+     * Returns an array containing the time zone ids in use in the country corresponding to
+     * the given locale. This is not necessary for Java API, but is used by telephony as a
+     * fallback. We retrieve these strings from zone.tab rather than icu4c because the latter
+     * supplies them in alphabetical order where zone.tab has them in a kind of "importance"
+     * order (as defined in the zone.tab header).
+     * J2ObjC: unused.
+    public static String[] forLocale(Locale locale) {
+        String countryCode = locale.getCountry();
+        ArrayList<String> ids = new ArrayList<String>();
+        for (String line : ZoneInfoDB.getInstance().getZoneTab().split("\n")) {
+            if (line.startsWith(countryCode)) {
+                int olsonIdStart = line.indexOf('\t', 4) + 1;
+                int olsonIdEnd = line.indexOf('\t', olsonIdStart);
+                if (olsonIdEnd == -1) {
+                    olsonIdEnd = line.length(); // Not all zone.tab lines have a comment.
+                }
+                ids.add(line.substring(olsonIdStart, olsonIdEnd));
+            }
+        }
+        return ids.toArray(new String[ids.size()]);
+    }*/
+
+    /* J2ObjC: unused.
+    public static native String getExemplarLocation(String locale, String tz);*/
+
     private static void fillZoneStrings(String localeId, String[][] result) {
-      for (int i = 0; i < result.length; i++) {
-        fillZoneStringNames(localeId, result[i]);
-      }
+        for (int i = 0; i < result.length; i++) {
+            fillZoneStringNames(localeId, result[i]);
+        }
     }
 
     /**
@@ -151,14 +173,14 @@ public final class TimeZoneNames {
      */
     private static native void fillZoneStringNames(String localeId, String[] result) /*-[
       NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:localeId];
-      NSTimeZone *tz = [NSTimeZone timeZoneWithName:[result objectAtIndex:0]];
-      [result replaceObjectAtIndex:1
-          withObject:[tz localizedName:NSTimeZoneNameStyleStandard locale:locale]];
-      [result replaceObjectAtIndex:2 
-          withObject:[tz localizedName:NSTimeZoneNameStyleShortStandard locale:locale]];
-      [result replaceObjectAtIndex:3 
-          withObject:[tz localizedName:NSTimeZoneNameStyleDaylightSaving locale:locale]];
-      [result replaceObjectAtIndex:3 
-          withObject:[tz localizedName:NSTimeZoneNameStyleShortDaylightSaving locale:locale]];
+      NSTimeZone *tz = [NSTimeZone timeZoneWithName:IOSObjectArray_Get(result, 0)];
+      IOSObjectArray_Set(result, 1, [tz localizedName:NSTimeZoneNameStyleStandard locale:locale]);
+      IOSObjectArray_Set(result, 2,
+          [tz localizedName:NSTimeZoneNameStyleShortStandard locale:locale]);
+      IOSObjectArray_Set(result, 3,
+          [tz localizedName:NSTimeZoneNameStyleDaylightSaving locale:locale]);
+      IOSObjectArray_Set(result, 4,
+          [tz localizedName:NSTimeZoneNameStyleShortDaylightSaving locale:locale]);
+      [locale release];
     ]-*/;
 }
