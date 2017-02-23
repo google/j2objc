@@ -98,7 +98,7 @@ public class JavacParser extends Parser {
         compiler.getStandardFileManager(diagnostics, null, options.fileUtil().getCharset());
     addPaths(StandardLocation.CLASS_PATH, classpathEntries, fileManager);
     addPaths(StandardLocation.SOURCE_PATH, sourcepathEntries, fileManager);
-    addPaths(StandardLocation.PLATFORM_CLASS_PATH, Options.getBootClasspath(), fileManager);
+    addPaths(StandardLocation.PLATFORM_CLASS_PATH, options.getBootClasspath(), fileManager);
     List<String> processorPathEntries = options.getProcessorPathEntries();
     if (!processorPathEntries.isEmpty()) {
       addPaths(StandardLocation.ANNOTATION_PROCESSOR_PATH, processorPathEntries, fileManager);

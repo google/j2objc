@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -103,11 +104,24 @@ public class GeneratedType {
 
     builder = new SourceBuilder(emitLineDirectives);
     TypePrivateDeclarationGenerator.generate(builder, typeNode);
-    String privateDeclarationCode = builder.toString();
 
-    builder = new SourceBuilder(emitLineDirectives);
-    TypeImplementationGenerator.generate(builder, typeNode);
-    String implementationCode = builder.toString();
+    String privateDeclarationCode;
+    String implementationCode;
+    Options options = unit.getEnv().options();
+    if (unit.getEnv().translationUtil().generateImplementation(typeElement)) {
+      builder = new SourceBuilder(options.emitLineDirectives());
+      TypePrivateDeclarationGenerator.generate(builder, typeNode);
+      privateDeclarationCode = builder.toString();
+
+      builder = new SourceBuilder(options.emitLineDirectives());
+      TypeImplementationGenerator.generate(builder, typeNode);
+      implementationCode = builder.toString();
+    } else {
+      privateDeclarationCode = "";
+      implementationCode = String.format(
+          "// Implementation not generated because %s is on the bootclasspath.\n", 
+          ElementUtil.getQualifiedName(typeElement));
+    }
 
     ImmutableSet.Builder<Import> implementationIncludes = ImmutableSet.builder();
     implementationIncludes.addAll(privateDeclarationCollector.getSuperTypes());

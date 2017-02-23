@@ -41,6 +41,10 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.j2objc.annotations.ReflectionSupport;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,18 +61,24 @@ import javax.lang.model.type.TypeMirror;
 /**
  * General collection of utility methods.
  *
- * @author Keith Stanger
+ * @author Keith Stanger, Tom Ball
  */
 public final class TranslationUtil {
 
   private final TypeUtil typeUtil;
   private final NameTable nameTable;
   private final Options options;
+  private final ElementUtil elementUtil;
+  private final URLClassLoader jreEmulLoader;
 
-  public TranslationUtil(TypeUtil typeUtil, NameTable nameTable, Options options) {
+  public TranslationUtil(TypeUtil typeUtil, NameTable nameTable, Options options,
+      ElementUtil elementUtil) {
     this.typeUtil = typeUtil;
     this.nameTable = nameTable;
     this.options = options;
+    this.elementUtil = elementUtil;
+    this.jreEmulLoader = getJreEmulClassPath(options);
+    
   }
 
   public static TypeElement getSuperType(AbstractTypeDeclaration node) {
@@ -341,5 +351,39 @@ public final class TranslationUtil {
     } else {  // Boolean, Character, Number, String
       return TreeUtil.newLiteral(value, typeUtil);
     }
+  }
+
+  /**
+   * Returns true if an implementation for a type element should be generated.
+   * Normally this is true unless the type is defined in the translator's
+   * jre_emul.jar, to avoid duplicate types causing link errors. Types defined
+   * on the system bootclasspath are ignored, since translating them won't
+   * cause link errors later.
+   * <p>
+   * If the <code>-Xtranslate-bootclasspath</code> flag is specified
+   * (normally only when building the jre_emul libraries), then types
+   * are always generated.
+   */
+  public boolean generateImplementation(TypeElement typeElement) {
+    if (options.translateBootclasspathFiles()) {
+      return true;
+    }
+    String className = elementUtil.getBinaryName(typeElement).replace('.', '/');
+    String resourcePath = className.replace('.', '/') + ".class";
+    return jreEmulLoader.findResource(resourcePath) == null;
+  }
+
+  private URLClassLoader getJreEmulClassPath(Options options) {
+    List<URL> bootURLs = new ArrayList<>();
+    for (String path : options.getBootClasspath()) {
+      if (path.matches("^.*jre_emul.*jar$")) {
+        try {
+          bootURLs.add(new File(path).toURI().toURL());
+        } catch (MalformedURLException e) {
+          // Ignore bad path.
+        }
+      }
+    }
+    return new URLClassLoader(bootURLs.toArray(new URL[0]));
   }
 }

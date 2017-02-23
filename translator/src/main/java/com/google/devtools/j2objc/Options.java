@@ -77,6 +77,8 @@ public class Options {
   private boolean dumpAST = false;
   private String lintArgument = null;
   private boolean reportJavadocWarnings = false;
+  private boolean translateBootclasspath = false;
+  private String bootclasspath = System.getProperty("sun.boot.class.path");
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
@@ -101,7 +103,6 @@ public class Options {
   private static final String HELP_MSG_KEY = "help-message";
   private static final String X_HELP_MSG_KEY = "x-help-message";
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
-  private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
   private static final String TIMING_INFO_ARG = "--timing-info";
   private static final String ENV_FRONT_END_FLAG = "J2OBJC_FRONT_END";
@@ -492,6 +493,8 @@ public class Options {
       } else if (arg.startsWith("-Xlint")) {
         lintArgument = arg;
         lintOptions = LintOption.parse(arg);
+      } else if (arg.equals("-Xtranslate-bootclasspath")) {
+        translateBootclasspath = true;
       } else if (arg.equals("-Xuse-jdt")) {
         javaFrontEnd = FrontEnd.JDT;
       } else if (arg.equals("-Xuse-javac")) {
@@ -718,7 +721,7 @@ public class Options {
     return proGuardUsageFile;
   }
 
-  public static List<String> getBootClasspath() {
+  public List<String> getBootClasspath() {
     return getPathArgument(bootclasspath);
   }
 
@@ -870,6 +873,10 @@ public class Options {
 
   public boolean reportJavadocWarnings() {
     return reportJavadocWarnings;
+  }
+
+  public boolean translateBootclasspathFiles() {
+    return translateBootclasspath;
   }
 
   // TODO(kstanger): remove after front-end conversion is complete.
