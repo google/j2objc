@@ -246,8 +246,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
     public void test_currencyWithPatternDigits() throws Exception {
         // Japanese Yen 0 fractional digits.
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.JAPAN);
-        // TODO(tball): investigate iOS 10 failures, b/33557359.
-        //assertEquals("￥50", nf.format(50.00));
+        String result = nf.format(50.00);
+        // Allow either full-width (0xFFE5) or regular width yen sign (0xA5).
+        assertTrue(result.equals("￥50") || result.equals("¥50"));
 
         // Armenian Dram 0 fractional digits.
         nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("hy-AM"));
