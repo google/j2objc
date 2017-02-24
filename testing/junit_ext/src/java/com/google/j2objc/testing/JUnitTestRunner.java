@@ -137,6 +137,9 @@ public class JUnitTestRunner {
    * @returns Zero if all tests pass, non-zero otherwise.
    */
   public int run() {
+    if (outputFormat == OutputFormat.GTM_UNIT_TESTING) {
+      Thread.setDefaultUncaughtExceptionHandler(new GtmUncaughtExceptionHandler());
+    }
     Set<Class<?>> classesSet = getTestClasses();
     Class<?>[] classes = classesSet.toArray(new Class<?>[classesSet.size()]);
     sortClasses(classes, sortOrder);
@@ -383,6 +386,16 @@ public class JUnitTestRunner {
 
   private void onError(Exception e) {
     e.printStackTrace(out);
+  }
+
+  private class GtmUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+      out.print("Exception in thread \"" + t.getName() + "\" ");
+      e.printStackTrace(out);
+      out.println("** TEST FAILED **");
+    }
   }
 
   @WeakOuter
