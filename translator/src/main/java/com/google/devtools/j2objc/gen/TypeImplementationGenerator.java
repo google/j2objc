@@ -35,7 +35,6 @@ import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -47,7 +46,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class TypeImplementationGenerator extends TypeGenerator {
 
-  private static final Set<String> NSNUMBER_DESIGNATED_INITIALIZERS = ImmutableSet.of(
+  private static final ImmutableSet<String> NSNUMBER_DESIGNATED_INITIALIZERS = ImmutableSet.of(
       "initWithBool:",
       "initWithChar:",
       "initWithDouble:",
@@ -242,7 +241,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_BEGIN");
     }
-    syncLineNumbers(m.getName());  // avoid doc-comment
+    syncLineNumbers(m);  // avoid doc-comment
     String methodBody = generateStatement(m.getBody());
     print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
     if (isDesignatedInitializer) {

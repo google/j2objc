@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
 import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import com.google.devtools.j2objc.pipeline.TranslationProcessor;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -141,7 +142,7 @@ public class GenerationTest extends TestCase {
     unit.accept(new TreeVisitor() {
       @Override
       public boolean visit(MethodDeclaration node) {
-        if (node.getName().getIdentifier().equals("test")) {
+        if (ElementUtil.getName(node.getExecutableElement()).equals("test")) {
           statements.addAll(node.getBody().getStatements());
         }
         return false;
@@ -322,7 +323,7 @@ public class GenerationTest extends TestCase {
     unit.accept(new TreeVisitor() {
       @Override
       public boolean visit(MethodDeclaration node) {
-        String name = node.getName().getIdentifier();
+        String name = ElementUtil.getName(node.getExecutableElement());
         if (name.equals(NameTable.INIT_NAME)
             || name.equals(NameTable.FINALIZE_METHOD)
             || name.equals(NameTable.DEALLOC_METHOD)) {

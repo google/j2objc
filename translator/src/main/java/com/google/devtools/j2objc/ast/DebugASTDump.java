@@ -15,11 +15,13 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.gen.SourceBuilder;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -141,7 +143,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    printName(node.getName());
+    printName(node.getExecutableElement());
     return true;
   }
 
@@ -260,6 +262,11 @@ public class DebugASTDump extends TreeVisitor {
   public boolean visit(VariableDeclarationFragment node) {
     printName(node.getName());
     return true;
+  }
+
+  private void printName(Element element) {
+    sb.print(": ");
+    sb.print(ElementUtil.getName(element));
   }
 
   private void printName(Name name) {

@@ -642,7 +642,7 @@ public class DebugASTPrinter extends TreeVisitor {
       }
       sb.print(' ');
     }
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(meth));
     sb.print("(");
     for (Iterator<SingleVariableDeclaration> it = node.getParameters().iterator(); it.hasNext(); ) {
       it.next().accept(this);

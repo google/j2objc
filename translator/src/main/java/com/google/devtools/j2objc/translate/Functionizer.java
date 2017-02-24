@@ -378,7 +378,7 @@ public class Functionizer extends UnitTreeVisitor {
     FunctionDeclaration function =
         new FunctionDeclaration(nameTable.getFullFunctionName(elem), elem.getReturnType());
     function.setJniSignature(signatureGenerator.createJniFunctionSignature(elem));
-    function.setLineNumber(method.getName().getLineNumber());
+    function.setLineNumber(method.getLineNumber());
 
     if (!ElementUtil.isStatic(elem)) {
       VariableElement var = GeneratedVariableElement.newParameter(
@@ -427,7 +427,7 @@ public class Functionizer extends UnitTreeVisitor {
     String name = releasing ? nameTable.getReleasingConstructorName(element)
         : nameTable.getAllocatingConstructorName(element);
     FunctionDeclaration function = new FunctionDeclaration(name, declaringClass.asType());
-    function.setLineNumber(method.getName().getLineNumber());
+    function.setLineNumber(method.getLineNumber());
     function.setModifiers(ElementUtil.isPrivate(element) ? Modifier.PRIVATE : Modifier.PUBLIC);
     function.setReturnsRetained(!releasing);
     TreeUtil.copyList(method.getParameters(), function.getParameters());

@@ -727,8 +727,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (!m1.isConstructor() && m2.isConstructor()) {
         return 1;
       }
-      String m1Name = m1.getName().getIdentifier();
-      String m2Name = m2.getName().getIdentifier();
+      String m1Name = ElementUtil.getName(m1.getExecutableElement());
+      String m2Name = ElementUtil.getName(m2.getExecutableElement());
       if (!m1Name.equals(m2Name)) {
         return m1Name.compareToIgnoreCase(m2Name);
       }

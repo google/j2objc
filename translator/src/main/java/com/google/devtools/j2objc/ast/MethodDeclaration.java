@@ -28,7 +28,6 @@ public class MethodDeclaration extends BodyDeclaration {
   private boolean hasDeclaration = true;
   private boolean isUnavailable = false;
   private ChildLink<Type> returnType = ChildLink.create(Type.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
@@ -42,7 +41,6 @@ public class MethodDeclaration extends BodyDeclaration {
     hasDeclaration = other.hasDeclaration();
     isUnavailable = other.isUnavailable();
     returnType.copyFrom(other.getReturnType());
-    name.copyFrom(other.getName());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
   }
@@ -52,7 +50,6 @@ public class MethodDeclaration extends BodyDeclaration {
     executableElement = method;
     isConstructor = ElementUtil.isConstructor(method);
     returnType.set(Type.newType(method.getReturnType()));
-    name.set(new SimpleName(method));
   }
 
   @Override
@@ -105,15 +102,6 @@ public class MethodDeclaration extends BodyDeclaration {
     return this;
   }
 
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public MethodDeclaration setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
   public SingleVariableDeclaration getParameter(int index) {
     return parameters.get(index);
   }
@@ -137,7 +125,6 @@ public class MethodDeclaration extends BodyDeclaration {
       javadoc.accept(visitor);
       annotations.accept(visitor);
       returnType.accept(visitor);
-      name.accept(visitor);
       parameters.accept(visitor);
       body.accept(visitor);
     }

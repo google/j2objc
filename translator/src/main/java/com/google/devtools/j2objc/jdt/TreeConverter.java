@@ -942,7 +942,6 @@ public class TreeConverter {
       newNode.addParameter((SingleVariableDeclaration) TreeConverter.convert(param));
     }
     newNode
-        .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setIsConstructor(node.isConstructor())
         .setReturnType((Type) TreeConverter.convert(node.getReturnType2()))
         .setExecutableElement(BindingConverter.getExecutableElement(node.resolveBinding()))

@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.io.IOException;
 import javax.lang.model.type.TypeMirror;
@@ -44,7 +45,7 @@ public class CompoundTypeTest extends GenerationTest {
     for (BodyDeclaration body : decl.getBodyDeclarations()) {
       if (body instanceof MethodDeclaration) {
         MethodDeclaration method = (MethodDeclaration) body;
-        if (method.getName().getIdentifier().equals("thenTesting")) {
+        if (ElementUtil.getName(method.getExecutableElement()).equals("thenTesting")) {
           // Verify a normal type isn't marked as compound.
           TypeMirror returnType = method.getReturnType().getTypeMirror();
           assertFalse(TypeUtil.isIntersection(returnType));
@@ -71,7 +72,7 @@ public class CompoundTypeTest extends GenerationTest {
     for (BodyDeclaration body : decl.getBodyDeclarations()) {
       if (body instanceof MethodDeclaration) {
         MethodDeclaration method = (MethodDeclaration) body;
-        if (method.getName().getIdentifier().equals("thenTesting")) {
+        if (ElementUtil.getName(method.getExecutableElement()).equals("thenTesting")) {
           // The method's return type isn't compound, but the cast expression in
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) method.getBody().getStatements().get(0);

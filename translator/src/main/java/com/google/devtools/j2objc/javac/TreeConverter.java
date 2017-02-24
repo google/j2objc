@@ -900,7 +900,6 @@ public class TreeConverter {
       newNode.addParameter((SingleVariableDeclaration) convert(param));
     }
     return newNode
-        .setName(convertSimpleName(node.sym, node.type, getNamePosition(node)))
         .setIsConstructor(ElementUtil.isConstructor(node.sym))
         .setExecutableElement(node.sym)
         .setBody((Block) convert(node.getBody()))
