@@ -174,6 +174,11 @@ public class TreeConverter {
         }
       }
       addOcniComments(converter.newUnit, options.jsniWarnings());
+
+      // Enable this to debug tree conversion issues, otherwise let
+      // TranslationProcessor.applyMutations() handle verification.
+      // converter.newUnit.validate();
+
       return converter.newUnit;
     } catch (Throwable e) {
       ErrorUtil.fatalError(e, sourceFilePath);
@@ -196,7 +201,6 @@ public class TreeConverter {
     if (newNode instanceof Expression) {
       copyConstantValue(node, (Expression) newNode);
     }
-    newNode.validate();
     return newNode;
   }
 
