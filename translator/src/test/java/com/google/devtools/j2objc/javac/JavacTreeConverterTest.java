@@ -45,4 +45,19 @@ public class JavacTreeConverterTest extends GenerationTest {
     assertTranslation(translation,
         "return (JavaLangInteger_valueOfWithInt_(42), JavaLangInteger_SIZE);");
   }
+
+  // Javac bug with using a '*' wildcard in an import static statement then using elements from
+  // classes further up the type hierarchy.
+  public void testIncorrectEnclosingElementBug() throws IOException {
+    addSourceFile(
+        "package foo; public class A { "
+        + "public static final int FOO = 1; public static void bar() {} }", "foo/A.java");
+    addSourceFile("package foo; public class B extends A {}", "foo/B.java");
+    String translation = translateSourceFile(
+        "import static foo.B.*; class Test { void test() { int i = FOO; bar(); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "jint i = FooA_FOO;",
+        "FooA_bar();");
+  }
 }
