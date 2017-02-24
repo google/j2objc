@@ -131,7 +131,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/NullPointerException.java \
   java/lang/NumberFormatException.java \
   java/lang/OutOfMemoryError.java \
-  java/lang/Override.java \
   java/lang/Package.java \
   java/lang/Readable.java \
   java/lang/ReflectiveOperationException.java \
@@ -149,7 +148,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/StringBuffer.java \
   java/lang/StringBuilder.java \
   java/lang/StringIndexOutOfBoundsException.java \
-  java/lang/SuppressWarnings.java \
   java/lang/System.java \
   java/lang/Thread.java \
   java/lang/ThreadDeath.java \
@@ -166,7 +164,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/annotation/ElementType.java \
   java/lang/annotation/IncompleteAnnotationException.java \
   java/lang/annotation/Inherited.java \
-  java/lang/annotation/Native.java \
   java/lang/annotation/Repeatable.java \
   java/lang/annotation/Retention.java \
   java/lang/annotation/RetentionPolicy.java \
@@ -1635,7 +1632,7 @@ ANDROID_PRIVATE_SOURCES = \
   com/android/internal/util/ArrayUtils.java \
   com/google/android/collect/Lists.java \
   com/google/android/collect/Maps.java \
-  com/google/android/collect/Sets.java \
+  com/google/android/collect/Sets.java
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_OTHER = $(JAVA_PUBLIC_SOURCES_OTHER) $(JAVA_PRIVATE_SOURCES_OTHER)
@@ -1657,7 +1654,8 @@ JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 SOURCE_RETENTION_ANNOTATIONS = \
   java/lang/Override.java \
   java/lang/SuppressWarnings.java \
-  javax/annotation/Generated.java \
+  java/lang/annotation/Native.java \
+  javax/annotation/Generated.java
 
 JAVA_SOURCES = \
   $(JAVA_SOURCES_CORE) \
