@@ -139,7 +139,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -154,7 +153,6 @@ public class TreeConverter {
   private final JCTree.JCCompilationUnit unit;
   private final JavacEnvironment env;
   private CompilationUnit newUnit;
-  private final boolean hasWildcardStaticImport;
 
   public static CompilationUnit convertCompilationUnit(
       Options options, JavacEnvironment env, JCTree.JCCompilationUnit javacUnit) {
@@ -191,7 +189,6 @@ public class TreeConverter {
   private TreeConverter(JCTree.JCCompilationUnit javacUnit, JavacEnvironment javacEnv) {
     unit = javacUnit;
     env = javacEnv;
-    hasWildcardStaticImport = findWildcardStaticImport(javacUnit);
   }
 
   private TreeNode convert(Object obj) {
@@ -805,7 +802,7 @@ public class TreeConverter {
     if (text.equals("this")) {
       return new ThisExpression().setTypeMirror(node.type);
     }
-    return new SimpleName(fixEnclosing(node.sym), node.type);
+    return new SimpleName(node.sym.baseSymbol(), node.type);
   }
 
   private TreeNode convertIf(JCTree.JCIf node) {
@@ -914,9 +911,9 @@ public class TreeConverter {
     }
   }
 
-  private Element getMemberSymbol(JCTree.JCExpression node) {
+  private static Symbol getMemberSymbol(JCTree.JCExpression node) {
     switch (node.getKind()) {
-      case IDENTIFIER: return fixEnclosing(((JCTree.JCIdent) node).sym);
+      case IDENTIFIER: return ((JCTree.JCIdent) node).sym.baseSymbol();
       case MEMBER_SELECT: return ((JCTree.JCFieldAccess) node).sym;
       default: throw new AssertionError("Unexpected tree kind: " + node.getKind());
     }
@@ -926,13 +923,13 @@ public class TreeConverter {
     JCTree.JCExpression method = node.getMethodSelect();
     String methodName = getMemberName(method);
     ExecutableType type = (ExecutableType) method.type;
-    ExecutableElement elem = (ExecutableElement) getMemberSymbol(method);
+    Symbol.MethodSymbol sym = (Symbol.MethodSymbol) getMemberSymbol(method);
     JCTree.JCExpression target = method.getKind() == Kind.MEMBER_SELECT
         ? ((JCTree.JCFieldAccess) method).selected : null;
 
     if ("this".equals(methodName)) {
       ConstructorInvocation newNode = new ConstructorInvocation()
-          .setExecutablePair(new ExecutablePair(elem))
+          .setExecutablePair(new ExecutablePair(sym))
           .setVarargsType(node.varargsElement);
       for (JCTree.JCExpression arg : node.getArguments()) {
         newNode.addArgument((Expression) convert(arg));
@@ -942,7 +939,7 @@ public class TreeConverter {
 
     if ("super".equals(methodName)) {
       SuperConstructorInvocation newNode = new SuperConstructorInvocation()
-          .setExecutablePair(new ExecutablePair(elem))
+          .setExecutablePair(new ExecutablePair(sym))
           .setVarargsType(node.varargsElement);
       if (target != null) {
         newNode.setExpression((Expression) convert(target));
@@ -955,9 +952,9 @@ public class TreeConverter {
 
     if (target != null && "super".equals(getMemberName(target))) {
       SuperMethodInvocation newNode = new SuperMethodInvocation()
-          .setExecutablePair(new ExecutablePair(elem, type))
+          .setExecutablePair(new ExecutablePair(sym, type))
           .setVarargsType(node.varargsElement)
-          .setName(convertSimpleName(elem, type, getPosition(node)));
+          .setName(convertSimpleName(sym, type, getPosition(node)));
       if (target.getKind() == Kind.MEMBER_SELECT) {
         // foo.bar.MyClass.super.print(...):
         //   target: foo.bar.MyClass.super
@@ -971,7 +968,7 @@ public class TreeConverter {
     }
 
     MethodInvocation newNode = new MethodInvocation();
-    newNode.setName(convertSimpleName(elem, type, getPosition(method)));
+    newNode.setName(convertSimpleName(sym, type, getPosition(method)));
     if (target != null) {
       newNode.setExpression((Expression) convert(target));
     }
@@ -980,7 +977,7 @@ public class TreeConverter {
     }
     return newNode
         .setTypeMirror(node.type)
-        .setExecutablePair(new ExecutablePair(elem, type))
+        .setExecutablePair(new ExecutablePair(sym, type))
         .setVarargsType(node.varargsElement);
   }
 
@@ -1399,45 +1396,5 @@ public class TreeConverter {
         return null;
       }
     }
-  }
-
-  private static boolean findWildcardStaticImport(JCTree.JCCompilationUnit javacUnit) {
-    for (JCTree.JCImport imp : javacUnit.getImports()) {
-      if (imp.isStatic()) {
-        JCTree ident = imp.getQualifiedIdentifier();
-        if (ident.getKind() == Kind.MEMBER_SELECT
-            && ((JCTree.JCFieldAccess) ident).getIdentifier().toString().equals("*")) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  // Fixes a Javac bug where a static element has the wrong enclosing element.
-  private Element fixEnclosing(Element e) {
-    if (!hasWildcardStaticImport || !ElementUtil.isStatic(e)) {
-      // Bug only applies when there are wildcarded static imports.
-      // Bug only applies to static elements.
-      return e;
-    }
-    Element enclosing = e.getEnclosingElement();
-    if (enclosing == null || !(enclosing instanceof TypeElement)
-        || enclosing.getEnclosedElements().contains(e)) {
-      return e;
-    }
-    // 'e' is does not appear in its enclosing element's list of enclosed elements. This is bad.
-    // Search the type hierarchy of the enclosing to find an element with the same name as 'e'.
-    javax.lang.model.element.Name name = e.getSimpleName();
-    TypeElement javaObject = newUnit.getEnv().typeUtil().getJavaObject();
-    TypeElement superclass = ElementUtil.getSuperclass((TypeElement) enclosing);
-    while (superclass != null && !javaObject.equals(superclass)) {
-      for (Element enclosed : superclass.getEnclosedElements()) {
-        if (name.equals(enclosed.getSimpleName())) {
-          return enclosed;
-        }
-      }
-    }
-    return e;
   }
 }

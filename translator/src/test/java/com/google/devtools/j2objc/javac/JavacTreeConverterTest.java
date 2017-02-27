@@ -46,9 +46,11 @@ public class JavacTreeConverterTest extends GenerationTest {
         "return (JavaLangInteger_valueOfWithInt_(42), JavaLangInteger_SIZE);");
   }
 
-  // Javac bug with using a '*' wildcard in an import static statement then using elements from
-  // classes further up the type hierarchy.
-  public void testIncorrectEnclosingElementBug() throws IOException {
+  // javac qualifies members imported via non-canonical static imports by the
+  // the type of the import, not the type the member is declared in.
+  // In the example below, FOO's enclosing element is B rather than A.
+  // See: https://bugs.openjdk.java.net/browse/JDK-6225935.
+  public void testIncorrectEnclosingElementBug_staticOnDemandImport() throws IOException {
     addSourceFile(
         "package foo; public class A { "
         + "public static final int FOO = 1; public static void bar() {} }", "foo/A.java");
@@ -59,5 +61,20 @@ public class JavacTreeConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "jint i = FooA_FOO;",
         "FooA_bar();");
+  }
+
+  public void testIncorrectEnclosingElementBug_staticNamedImport() throws IOException {
+    addSourceFile(
+        "package foo; public class A { "
+            + "public static final int FOO = 1; public static void bar() {} }",
+        "foo/A.java");
+    addSourceFile("package foo; public class B extends A {}", "foo/B.java");
+    String translation =
+        translateSourceFile(
+            "import static foo.B.FOO; import static foo.B.bar;"
+                + "class Test { void test() { int i = FOO; bar(); } }",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(translation, "jint i = FooA_FOO;", "FooA_bar();");
   }
 }
