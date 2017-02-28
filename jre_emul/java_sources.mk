@@ -496,6 +496,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/ShortArrayBuffer.java \
   java/nio/charset/Charsets.java \
   java/nio/charset/ModifiedUtf8.java \
+  java/text/CalendarBuilder.java \
   java/text/CharacterIteratorFieldDelegate.java \
   java/text/DigitList.java \
   java/text/DontCareFieldPosition.java \

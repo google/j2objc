@@ -108,6 +108,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/java/text/Support_DecimalFormat.java \
     org/apache/harmony/tests/java/text/Support_Format.java \
     org/apache/harmony/tests/java/text/Support_MessageFormat.java \
+    org/apache/harmony/tests/java/text/Support_SimpleDateFormat.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
     org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
     org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
@@ -357,6 +358,7 @@ TEST_SOURCES := \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/CollatorTest.java \
+    libcore/java/text/DateFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/NormalizerTest.java \
@@ -571,12 +573,15 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
+    org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
+    org/apache/harmony/tests/java/text/DateFormatTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatTest.java \
     org/apache/harmony/tests/java/text/FieldPositionTest.java \
     org/apache/harmony/tests/java/text/MessageFormatTest.java \
     org/apache/harmony/tests/java/text/NumberFormatTest.java \
     org/apache/harmony/tests/java/text/ParsePositionTest.java \
+    org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \

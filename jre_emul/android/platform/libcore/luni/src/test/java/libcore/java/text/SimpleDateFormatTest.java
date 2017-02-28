@@ -17,6 +17,8 @@
 package libcore.java.text;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,6 +30,157 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 
     private static final TimeZone AMERICA_LOS_ANGELES = TimeZone.getTimeZone("America/Los_Angeles");
     private static final TimeZone AUSTRALIA_LORD_HOWE = TimeZone.getTimeZone("Australia/Lord_Howe");
+
+    private Locale defaultLocale;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        defaultLocale = Locale.getDefault();
+        // Locale affects timezone names / abbreviations so can affect formatting and parsing.
+        Locale.setDefault(Locale.US);
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        Locale.setDefault(defaultLocale);
+        super.tearDown();
+    }
+
+    // The RI fails this test.
+    public void test2DigitYearStartIsCloned() throws Exception {
+        // Test that get2DigitYearStart returns a clone.
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        Date originalDate = sdf.get2DigitYearStart();
+        assertNotSame(sdf.get2DigitYearStart(), originalDate);
+        assertEquals(sdf.get2DigitYearStart(), originalDate);
+        originalDate.setTime(0);
+        assertFalse(sdf.get2DigitYearStart().equals(originalDate));
+        // Test that set2DigitYearStart takes a clone.
+        Date newDate = new Date();
+        sdf.set2DigitYearStart(newDate);
+        assertNotSame(sdf.get2DigitYearStart(), newDate);
+        assertEquals(sdf.get2DigitYearStart(), newDate);
+        newDate.setTime(0);
+        assertFalse(sdf.get2DigitYearStart().equals(newDate));
+    }
+
+    // The RI fails this test because this is an ICU-compatible Android extension.
+    // Necessary for correct localization in various languages (http://b/2633414).
+    public void testStandAloneNames() throws Exception {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        Locale en = Locale.ENGLISH;
+        Locale pl = new Locale("pl");
+        Locale ru = new Locale("ru");
+
+        assertEquals("January", formatDate(en, "MMMM"));
+        assertEquals("January", formatDate(en, "LLLL"));
+        assertEquals("stycznia", formatDate(pl, "MMMM"));
+        assertEquals("stycze\u0144", formatDate(pl, "LLLL"));
+
+        assertEquals("Thursday", formatDate(en, "EEEE"));
+        assertEquals("Thursday", formatDate(en, "cccc"));
+        assertEquals("\u0447\u0435\u0442\u0432\u0435\u0440\u0433", formatDate(ru, "EEEE"));
+        assertEquals("\u0447\u0435\u0442\u0432\u0435\u0440\u0433", formatDate(ru, "cccc"));
+
+        assertEquals(Calendar.JUNE, parseDate(en, "yyyy-MMMM-dd", "1980-June-12").get(Calendar.MONTH));
+        assertEquals(Calendar.JUNE, parseDate(en, "yyyy-LLLL-dd", "1980-June-12").get(Calendar.MONTH));
+        assertEquals(Calendar.JUNE, parseDate(pl, "yyyy-MMMM-dd", "1980-czerwca-12").get(Calendar.MONTH));
+        assertEquals(Calendar.JUNE, parseDate(pl, "yyyy-LLLL-dd", "1980-czerwiec-12").get(Calendar.MONTH));
+
+        assertEquals(Calendar.TUESDAY, parseDate(en, "EEEE", "Tuesday").get(Calendar.DAY_OF_WEEK));
+        assertEquals(Calendar.TUESDAY, parseDate(en, "cccc", "Tuesday").get(Calendar.DAY_OF_WEEK));
+        assertEquals(Calendar.TUESDAY, parseDate(ru, "EEEE", "\u0432\u0442\u043e\u0440\u043d\u0438\u043a").get(Calendar.DAY_OF_WEEK));
+        assertEquals(Calendar.TUESDAY, parseDate(ru, "cccc", "\u0412\u0442\u043e\u0440\u043d\u0438\u043a").get(Calendar.DAY_OF_WEEK));
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void testFiveCount_parsing() throws Exception {
+      // It's pretty silly to try to parse the shortest names, because they're almost always
+      // ambiguous.
+      assertCannotParse(Locale.ENGLISH, "MMMMM", "J");
+      assertCannotParse(Locale.ENGLISH, "LLLLL", "J");
+      assertCannotParse(Locale.ENGLISH, "EEEEE", "T");
+      assertCannotParse(Locale.ENGLISH, "ccccc", "T");
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void testFiveCount_M() throws Exception {
+      TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+      assertEquals("1", formatDate(Locale.ENGLISH, "M"));
+      assertEquals("01", formatDate(Locale.ENGLISH, "MM"));
+      assertEquals("Jan", formatDate(Locale.ENGLISH, "MMM"));
+      assertEquals("January", formatDate(Locale.ENGLISH, "MMMM"));
+      assertEquals("J", formatDate(Locale.ENGLISH, "MMMMM"));
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void testFiveCount_L() throws Exception {
+      TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+      assertEquals("1", formatDate(Locale.ENGLISH, "L"));
+      assertEquals("01", formatDate(Locale.ENGLISH, "LL"));
+      assertEquals("Jan", formatDate(Locale.ENGLISH, "LLL"));
+      assertEquals("January", formatDate(Locale.ENGLISH, "LLLL"));
+      assertEquals("J", formatDate(Locale.ENGLISH, "LLLLL"));
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void testFiveCount_E() throws Exception {
+      TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+      assertEquals("Thu", formatDate(Locale.ENGLISH, "E"));
+      assertEquals("Thu", formatDate(Locale.ENGLISH, "EE"));
+      assertEquals("Thu", formatDate(Locale.ENGLISH, "EEE"));
+      assertEquals("Thursday", formatDate(Locale.ENGLISH, "EEEE"));
+      assertEquals("T", formatDate(Locale.ENGLISH, "EEEEE"));
+      // assertEquals("Th", formatDate(Locale.ENGLISH, "EEEEEE")); // icu4c doesn't support 6.
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void testFiveCount_c() throws Exception {
+      assertEquals("Thu", formatDate(Locale.ENGLISH, "c"));
+      assertEquals("Thu", formatDate(Locale.ENGLISH, "cc"));
+      assertEquals("Thu", formatDate(Locale.ENGLISH, "ccc"));
+      assertEquals("Thursday", formatDate(Locale.ENGLISH, "cccc"));
+      assertEquals("T", formatDate(Locale.ENGLISH, "ccccc"));
+      // assertEquals("Th", formatDate(Locale.ENGLISH, "cccccc")); // icu4c doesn't support 6.
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void testFiveCount_Z() throws Exception {
+      assertEquals("+0000", formatDate(Locale.ENGLISH, "Z"));
+      assertEquals("+0000", formatDate(Locale.ENGLISH, "ZZ"));
+      assertEquals("+0000", formatDate(Locale.ENGLISH, "ZZZ"));
+      assertEquals("GMT+00:00", formatDate(Locale.ENGLISH, "ZZZZ"));
+      assertEquals("+00:00", formatDate(Locale.ENGLISH, "ZZZZZ"));
+
+      TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
+      assertEquals("-0800", formatDate(Locale.ENGLISH, "Z", tz));
+      assertEquals("-0800", formatDate(Locale.ENGLISH, "ZZ", tz));
+      assertEquals("-0800", formatDate(Locale.ENGLISH, "ZZZ", tz));
+      assertEquals("GMT-08:00", formatDate(Locale.ENGLISH, "ZZZZ", tz));
+      assertEquals("-08:00", formatDate(Locale.ENGLISH, "ZZZZZ", tz));
+    }
+
+    // The RI fails this test because it doesn't fully support UTS #35.
+    // https://code.google.com/p/android/issues/detail?id=39616
+    public void test_parsing_Z() throws Exception {
+      TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+      assertEquals(1325421240000L, parseTime("yyyy-MM-dd' 'Z", "2012-01-01 -1234"));
+      assertEquals(1325421240000L, parseTime("yyyy-MM-dd' 'ZZ", "2012-01-01 -1234"));
+      assertEquals(1325421240000L, parseTime("yyyy-MM-dd' 'ZZZ", "2012-01-01 -1234"));
+      assertEquals(1325421240000L, parseTime("yyyy-MM-dd' 'ZZZZ", "2012-01-01 GMT-12:34"));
+      assertEquals(1325421240000L, parseTime("yyyy-MM-dd' 'ZZZZZ", "2012-01-01 -12:34"));
+    }
+
+    private static long parseTime(String fmt, String value) {
+      return parseDate(Locale.ENGLISH, fmt, value).getTime().getTime();
+    }
 
     public void test2038() {
         SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
@@ -43,6 +196,45 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
                 format.format(new Date(Integer.MAX_VALUE * 1000L)));
         assertEquals("Sun Feb 07 06:28:16 2106",
                 format.format(new Date((2L + Integer.MAX_VALUE + Integer.MAX_VALUE) * 1000L)));
+    }
+
+    private String formatDate(Locale l, String fmt) {
+        return formatDate(l, fmt, TimeZone.getTimeZone("UTC"));
+    }
+
+    private String formatDate(Locale l, String fmt, TimeZone tz) {
+        DateFormat dateFormat = new SimpleDateFormat(fmt, l);
+        dateFormat.setTimeZone(tz);
+        return dateFormat.format(new Date(0));
+    }
+
+    private static void assertCannotParse(Locale l, String fmt, String value) {
+        SimpleDateFormat sdf = new SimpleDateFormat(fmt, l);
+        ParsePosition pp = new ParsePosition(0);
+        Date d = sdf.parse(value, pp);
+        assertNull("Value " + value + " must not parse in locale " + l + " with format " + fmt, d);
+    }
+
+    private static Calendar parseDate(Locale l, String fmt, String value) {
+        SimpleDateFormat sdf = new SimpleDateFormat(fmt, l);
+        ParsePosition pp = new ParsePosition(0);
+        Date d = sdf.parse(value, pp);
+        if (d == null) {
+            fail(pp.toString());
+        }
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        c.setTime(d);
+        return c;
+    }
+
+    // http://code.google.com/p/android/issues/detail?id=13420
+    public void testParsingUncommonTimeZoneAbbreviations() {
+        String fmt = "yyyy-MM-dd HH:mm:ss.SSS z";
+        String date = "2010-12-23 12:44:57.0 CET";
+        // ICU considers "CET" (Central European Time) to be common in Britain...
+        assertEquals(1293104697000L, parseDate(Locale.UK, fmt, date).getTimeInMillis());
+        // ...but not in the US.
+        assertCannotParse(Locale.US, fmt, date);
     }
 
     // In Honeycomb, only one Olson id was associated with CET (or any other "uncommon"
@@ -120,6 +312,23 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         assertEquals(0, calendar.get(Calendar.MINUTE));
     }
 
+    public void testNonDstZoneNameWithDstTimestamp() throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm zzzz", Locale.US);
+        Calendar calendar = new GregorianCalendar(AMERICA_LOS_ANGELES);
+        calendar.setTime(format.parse("2010-12-21T10:00 Pacific Daylight Time")); // 17:00 GMT-7
+        assertEquals(9, calendar.get(Calendar.HOUR_OF_DAY)); // 17:00 GMT-8
+        assertEquals(0, calendar.get(Calendar.MINUTE));
+    }
+
+    // http://b/4723412
+    public void testDstZoneWithNonDstTimestampForNonHourDstZone() throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm zzzz", Locale.US);
+        Calendar calendar = new GregorianCalendar(AUSTRALIA_LORD_HOWE);
+        calendar.setTime(format.parse("2011-06-21T20:00 Lord Howe Daylight Time")); // 9:00 GMT+11
+        assertEquals(19, calendar.get(Calendar.HOUR_OF_DAY)); // 9:00 GMT+10:30
+        assertEquals(30, calendar.get(Calendar.MINUTE));
+    }
+
     public void testNonDstZoneWithDstTimestampForNonHourDstZone() throws Exception {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm zzzz", Locale.US);
         Calendar calendar = new GregorianCalendar(AUSTRALIA_LORD_HOWE);
@@ -136,6 +345,15 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         }
     }
 
+    // http://code.google.com/p/android/issues/detail?id=14963
+    public void testParseTimezoneOnly() throws Exception {
+        /* J2ObjC: Mac/iOS doesn't seem to like "UTC", so using "GMT" instead.
+        new SimpleDateFormat("z", Locale.FRANCE).parse("UTC");
+        new SimpleDateFormat("z", Locale.US).parse("UTC");*/
+        new SimpleDateFormat("z", Locale.FRANCE).parse("GMT");
+        new SimpleDateFormat("z", Locale.US).parse("GMT");
+    }
+
     // http://code.google.com/p/android/issues/detail?id=36689
     public void testParseArabic() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ar", "EG"));
@@ -144,12 +362,33 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         // Can we parse an ASCII-formatted date in an Arabic locale?
         Date d = sdf.parse("2012-08-29 10:02:45");
         assertEquals(1346259765000L, d.getTime());
+
+        // Can we format a date correctly in an Arabic locale?
+        String formatted = sdf.format(d);
+        //assertEquals("٢٠١٢-٠٨-٢٩ ١٠:٠٢:٤٥", formatted);  J2ObjC: Arabic numerals not available.
+
+        // Can we parse the Arabic-formatted date in an Arabic locale, and get the same date
+        // we started with?
+        Date d2 = sdf.parse(formatted);
+        assertEquals(d, d2);
     }
 
     public void test_59383() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("d. MMM yyyy H:mm", Locale.GERMAN);
         sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
         assertEquals(1376927400000L, sdf.parse("19. Aug 2013 8:50").getTime());
+        assertEquals(1376927400000L, sdf.parse("19. Aug. 2013 8:50").getTime());
+    }
+
+    // http://b/16969112
+    public void test_fractionalSeconds() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        assertEquals("1970-01-02 02:17:36.7", sdf.format(sdf.parse("1970-01-02 02:17:36.7")));
+
+        // We only have millisecond precision for Date objects, so we'll lose
+        // information from the fractional seconds section of the string presentation.
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        assertEquals("1970-01-02 02:17:36.789000", sdf.format(sdf.parse("1970-01-02 02:17:36.789564")));
     }
 
     public void test_nullLocales() {
@@ -174,5 +413,42 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("sl"));
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         assertEquals("1. 01. 70", df.format(0L));
+    }
+
+    public void testLenientParsingForZ() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        Date date = sdf.parse("2016-01-06T23:05:49.480+00:00");
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("+00:00"));
+        calendar.setTime(date);
+        assertEquals(11, calendar.get(Calendar.HOUR));
+        assertEquals(5, calendar.get(Calendar.MINUTE));
+        assertEquals(49, calendar.get(Calendar.SECOND));
+
+        Date date2 = sdf.parse("2016-01-06T23:05:49.480+00:00");
+        assertEquals(date, date2);
+
+        try {
+            date = sdf.parse("2016-01-06T23:05:49.480+00pissoff");
+            fail();
+        } catch (ParseException expected) {
+        }
+
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date date3 = sdf2.parse("2016-01-06T23:05:49.480+00:00");
+        assertEquals(date, date3);
+        try {
+            sdf2.parse("2016-01-06T23:05:49.480+0000");
+            fail();
+        } catch (ParseException expected) {
+        }
+    }
+
+    // http://b/27760434
+    public void testTimeZoneNotChangedByParse() throws Exception {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy HH:mm:ss zzz");
+        df.setTimeZone(tz);
+        df.parse("22 Jul 1977 12:23:45 HST");
+        assertEquals(tz, df.getTimeZone());
     }
 }
