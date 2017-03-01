@@ -203,7 +203,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(SingleVariableDeclaration node) {
-    printName(node.getName());
+    printName(node.getVariableElement());
     return true;
   }
 
@@ -260,7 +260,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationFragment node) {
-    printName(node.getName());
+    printName(node.getVariableElement());
     return true;
   }
 

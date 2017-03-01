@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
@@ -105,7 +106,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
           Expression initializer = decl.getInitializer();
           if (initializer != null) {
             Assignment assignment = new Assignment(
-                decl.getName().copy(), TreeUtil.remove(initializer));
+                new SimpleName(decl.getVariableElement()), TreeUtil.remove(initializer));
             statements.add(++i, new ExpressionStatement(assignment));
           }
         }

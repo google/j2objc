@@ -297,7 +297,7 @@ public class StatementGenerator extends UnitTreeVisitor {
       buffer.append("@catch (");
       exceptionType.accept(this);
       buffer.append(" *");
-      exception.getName().accept(this);
+      buffer.append(nameTable.getVariableQualifiedName(exception.getVariableElement()));
       buffer.append(") {\n");
       printStatements(node.getBody().getStatements());
       buffer.append("}\n");
@@ -728,7 +728,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     if (buffer.charAt(buffer.length() - 1) != '*') {
       buffer.append(" ");
     }
-    node.getName().accept(this);
+    buffer.append(nameTable.getVariableQualifiedName(node.getVariableElement()));
     for (int i = 0; i < node.getExtraDimensions(); i++) {
       buffer.append("[]");
     }
@@ -870,7 +870,8 @@ public class StatementGenerator extends UnitTreeVisitor {
       List<VariableDeclarationExpression> resources) {
     VariableDeclarationExpression resource = resources.get(0);
     // Resource declaration can only have one fragment.
-    String resourceName = resource.getFragment(0).getName().getFullyQualifiedName();
+    String resourceName =
+        nameTable.getVariableQualifiedName(resource.getFragment(0).getVariableElement());
     String primaryExceptionName = UnicodeUtils.format("__primaryException%d", resources.size());
 
     buffer.append("{\n");
@@ -966,7 +967,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationFragment node) {
-    node.getName().accept(this);
+    buffer.append(nameTable.getVariableQualifiedName(node.getVariableElement()));
     Expression initializer = node.getInitializer();
     if (initializer != null) {
       buffer.append(" = ");

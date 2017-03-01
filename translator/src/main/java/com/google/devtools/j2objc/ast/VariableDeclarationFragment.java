@@ -40,7 +40,6 @@ public class VariableDeclarationFragment extends VariableDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      name.accept(visitor);
       initializer.accept(visitor);
     }
     visitor.endVisit(this);

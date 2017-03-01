@@ -860,7 +860,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print("...");
     }
     sb.print(' ');
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getVariableElement()));
     for (int i = 0; i < node.getExtraDimensions(); i++) {
       sb.print("[]");
     }
@@ -1126,7 +1126,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationFragment node) {
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getVariableElement()));
     for (int i = 0; i < node.getExtraDimensions(); i++) {
       sb.print("[]");
     }

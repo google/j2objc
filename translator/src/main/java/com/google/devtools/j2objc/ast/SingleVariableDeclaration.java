@@ -83,7 +83,6 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     if (visitor.visit(this)) {
       annotations.accept(visitor);
       type.accept(visitor);
-      name.accept(visitor);
       initializer.accept(visitor);
     }
     visitor.endVisit(this);

@@ -23,7 +23,6 @@ public abstract class VariableDeclaration extends TreeNode {
 
   private VariableElement variableElement;
   private int extraDimensions = 0;
-  protected ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   protected ChildLink<Expression> initializer = ChildLink.create(Expression.class, this);
 
   public VariableDeclaration() {}
@@ -32,14 +31,12 @@ public abstract class VariableDeclaration extends TreeNode {
     super(other);
     variableElement = other.getVariableElement();
     extraDimensions = other.getExtraDimensions();
-    name.copyFrom(other.getName());
     initializer.copyFrom(other.getInitializer());
   }
 
   public VariableDeclaration(VariableElement variableElement, Expression initializer) {
     super();
     this.variableElement = variableElement;
-    name.set(new SimpleName(variableElement));
     this.initializer.set(initializer);
   }
 
@@ -58,15 +55,6 @@ public abstract class VariableDeclaration extends TreeNode {
 
   public VariableDeclaration setExtraDimensions(int newExtraDimensions) {
     extraDimensions = newExtraDimensions;
-    return this;
-  }
-
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public VariableDeclaration setName(SimpleName newName) {
-    name.set(newName);
     return this;
   }
 

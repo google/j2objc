@@ -1307,7 +1307,6 @@ public class TreeConverter {
   private static TreeNode convertVariableDeclaration(
       org.eclipse.jdt.core.dom.VariableDeclaration node, VariableDeclaration newNode) {
     return newNode
-        .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setVariableElement(BindingConverter.getVariableElement(node.resolveBinding()))
         .setExtraDimensions(node.getExtraDimensions())
         .setInitializer((Expression) TreeConverter.convert(node.getInitializer()));

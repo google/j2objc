@@ -239,7 +239,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     AbstractTypeDeclaration r1 = types.get(1);
     assertEquals("Test_1", nameTable.getFullName(r1.getTypeElement()));
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
-      if (var.getName().getIdentifier().equals("val$i")) {
+      if (ElementUtil.getName(var.getVariableElement()).equals("val$i")) {
         fail("found field that shouldn't be declared");
       }
     }
@@ -249,7 +249,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertEquals("Test_1_1", nameTable.getFullName(r2.getTypeElement()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r2)) {
-      if (var.getName().getIdentifier().equals("val$i")) {
+      if (ElementUtil.getName(var.getVariableElement()).equals("val$i")) {
         found = true;
       }
     }
@@ -278,7 +278,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertEquals("Test_1", nameTable.getFullName(r1.getTypeElement()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
-      if (var.getName().getIdentifier().equals("val$i")) {
+      if (ElementUtil.getName(var.getVariableElement()).equals("val$i")) {
         found = true;
       }
     }
@@ -307,7 +307,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertEquals("Test_1", nameTable.getFullName(r1.getTypeElement()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
-      if (var.getName().getIdentifier().equals("val$i")) {
+      if (ElementUtil.getName(var.getVariableElement()).equals("val$i")) {
         found = true;
       }
     }

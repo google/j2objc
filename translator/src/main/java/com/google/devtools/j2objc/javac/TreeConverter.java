@@ -1198,7 +1198,6 @@ public class TreeConverter {
         .setType(newType)
         .setIsVarargs(isVarargs)
         .setAnnotations(convertAnnotations(node.getModifiers()))
-        .setName(convertSimpleName(var, node.type, getNamePosition(node)))
         .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
   }
@@ -1234,7 +1233,6 @@ public class TreeConverter {
     Type newType = convertType(var.asType(), getPosition(node), isVarargs);
     VariableDeclarationFragment fragment = new VariableDeclarationFragment();
     fragment
-        .setName(convertSimpleName(var, node.type, getNamePosition(node)))
         .setVariableElement(var)
         .setInitializer((Expression) convert(node.getInitializer()));
     return new VariableDeclarationExpression()

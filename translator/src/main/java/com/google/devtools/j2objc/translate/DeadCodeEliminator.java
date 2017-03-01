@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -177,8 +178,9 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         while (fragmentsIter.hasNext()) {
           VariableDeclarationFragment fragment = fragmentsIter.next();
           // Don't delete any constants because we can't detect their use.
-          if (fragment.getVariableElement().getConstantValue() == null
-              && deadCodeMap.containsField(clazz, fragment.getName().getIdentifier())) {
+          VariableElement var = fragment.getVariableElement();
+          if (var.getConstantValue() == null
+              && deadCodeMap.containsField(clazz, ElementUtil.getName(var))) {
             fragmentsIter.remove();
           }
         }
