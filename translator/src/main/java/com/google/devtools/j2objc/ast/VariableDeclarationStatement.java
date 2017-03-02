@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node type for a local variable declaration.
@@ -25,7 +26,6 @@ public class VariableDeclarationStatement extends Statement {
 
   private int modifiers = 0;
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
-  private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);
 
@@ -34,14 +34,12 @@ public class VariableDeclarationStatement extends Statement {
   public VariableDeclarationStatement(VariableDeclarationStatement other) {
     super(other);
     annotations.copyFrom(other.getAnnotations());
-    type.copyFrom(other.getType());
     fragments.copyFrom(other.getFragments());
   }
 
   public VariableDeclarationStatement(VariableDeclarationFragment fragment) {
     VariableElement variableElement = fragment.getVariableElement();
     modifiers = ElementUtil.fromModifierSet(variableElement.getModifiers());
-    type.set(Type.newType(variableElement.asType()));
     fragments.add(fragment);
   }
 
@@ -72,13 +70,8 @@ public class VariableDeclarationStatement extends Statement {
     return this;
   }
 
-  public Type getType() {
-    return type.get();
-  }
-
-  public VariableDeclarationStatement setType(Type newType) {
-    type.set(newType);
-    return this;
+  public TypeMirror getTypeMirror() {
+    return fragments.get(0).getVariableElement().asType();
   }
 
   public List<VariableDeclarationFragment> getFragments() {
@@ -94,7 +87,6 @@ public class VariableDeclarationStatement extends Statement {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       annotations.accept(visitor);
-      type.accept(visitor);
       fragments.accept(visitor);
     }
     visitor.endVisit(this);

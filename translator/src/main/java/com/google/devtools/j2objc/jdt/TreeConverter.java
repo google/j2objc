@@ -1338,8 +1338,7 @@ public class TreeConverter {
     for (Object fragment : node.fragments()) {
       newNode.addFragment((VariableDeclarationFragment) TreeConverter.convert(fragment));
     }
-    return newNode
-        .setType((Type) TreeConverter.convert(node.getType()));
+    return newNode;
   }
 
   private static TreeNode convertWhileStatement(org.eclipse.jdt.core.dom.WhileStatement node) {

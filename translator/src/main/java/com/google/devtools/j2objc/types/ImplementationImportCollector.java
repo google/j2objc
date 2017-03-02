@@ -279,7 +279,7 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationStatement node) {
-    addImports(node.getType());
+    addImports(node.getTypeMirror());
     return true;
   }
 }

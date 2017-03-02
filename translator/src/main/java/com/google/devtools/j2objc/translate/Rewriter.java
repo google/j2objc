@@ -213,19 +213,21 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(VariableDeclarationStatement node) {
-    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-        rewriteExtraDimensions(node.getType(), node.getFragments());
-    if (newDeclarations != null) {
-      List<Statement> statements = ((Block) node.getParent()).getStatements();
-      int location = 0;
-      while (location < statements.size() && !node.equals(statements.get(location))) {
-        location++;
-      }
-      for (Integer dimensions : newDeclarations.keySet()) {
-        List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
-        VariableDeclarationStatement newDecl = new VariableDeclarationStatement(fragments.get(0));
-        newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
-        statements.add(++location, newDecl);
+    if (options.isJDT()) {
+      ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
+          rewriteExtraDimensions(node.getFragments());
+      if (newDeclarations != null) {
+        List<Statement> statements = ((Block) node.getParent()).getStatements();
+        int location = 0;
+        while (location < statements.size() && !node.equals(statements.get(location))) {
+          location++;
+        }
+        for (Integer dimensions : newDeclarations.keySet()) {
+          List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
+          VariableDeclarationStatement newDecl = new VariableDeclarationStatement(fragments.get(0));
+          newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
+          statements.add(++location, newDecl);
+        }
       }
     }
   }
@@ -234,7 +236,7 @@ public class Rewriter extends UnitTreeVisitor {
   public void endVisit(FieldDeclaration node) {
     if (options.isJDT()) {
       ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-          rewriteExtraDimensions(null, node.getFragments());
+          rewriteExtraDimensions(node.getFragments());
       if (newDeclarations != null) {
         List<BodyDeclaration> bodyDecls = TreeUtil.asDeclarationSublist(node);
         for (Integer dimensions : newDeclarations.keySet()) {
@@ -262,9 +264,8 @@ public class Rewriter extends UnitTreeVisitor {
     return true;
   }
 
-  // TODO(user): Param typeNode can be removed after VariableDeclarationStatement.type is pruned.
   private ListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
-      Type typeNode, List<VariableDeclarationFragment> fragments) {
+      List<VariableDeclarationFragment> fragments) {
     // Removes extra dimensions on variable declaration fragments and creates extra field
     // declaration nodes if necessary.
     // eg. "int i1, i2[], i3[][];" becomes "int i1; int[] i2; int[][] i3".
@@ -276,9 +277,6 @@ public class Rewriter extends UnitTreeVisitor {
       int dimensions = frag.getExtraDimensions();
       if (masterDimensions == -1) {
         masterDimensions = dimensions;
-        if (typeNode != null && dimensions != 0) {
-          typeNode.replaceWith(Type.newType(frag.getVariableElement().asType()));
-        }
       } else if (dimensions != masterDimensions) {
         if (newDeclarations == null) {
           newDeclarations = LinkedListMultimap.create();

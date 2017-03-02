@@ -1169,8 +1169,7 @@ public class TreeConverter {
       return newNode;
     }
     if (var.getKind() == ElementKind.LOCAL_VARIABLE) {
-      return new VariableDeclarationStatement(var, (Expression) convert(node.getInitializer()))
-          .setType(convertType(var.asType(), pos, false));
+      return new VariableDeclarationStatement(var, (Expression) convert(node.getInitializer()));
     }
     if (var.getKind() == ElementKind.ENUM_CONSTANT) {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration()
