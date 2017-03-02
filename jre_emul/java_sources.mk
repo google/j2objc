@@ -344,6 +344,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/TreeMap.java \
   java/util/TreeSet.java \
   java/util/UnknownFormatConversionException.java \
+  java/util/UnknownFormatFlagsException.java \
   java/util/UnsafeArrayList.java \
   java/util/Vector.java \
   java/util/WeakHashMap.java \
@@ -576,9 +577,11 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/SneakyThrow.java \
   sun/misc/CompoundEnumeration.java \
   sun/misc/DoubleConsts.java \
+  sun/misc/FDBigInt.java \
   sun/misc/FDBigInteger.java \
   sun/misc/FloatConsts.java \
   sun/misc/FloatingDecimal.java \
+  sun/misc/FormattedFloatingDecimal.java \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
   sun/reflect/CallerSensitive.java \
@@ -754,7 +757,6 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/Stack.java \
   java/util/Timer.java \
   java/util/TimerTask.java \
-  java/util/UnknownFormatFlagsException.java \
   java/util/logging/ConsoleHandler.java \
   java/util/logging/MemoryHandler.java \
   java/util/logging/SimpleFormatter.java \

@@ -585,6 +585,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
+    org/apache/harmony/tests/java/util/FormatterTest.java \
     org/apache/harmony/tests/java/util/GregorianCalendarTest.java \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
