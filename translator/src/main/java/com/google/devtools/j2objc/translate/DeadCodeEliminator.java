@@ -123,7 +123,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         || Modifier.isPrivate(modifiers)) {
       return false;
     }
-    TypeMirror type = ((FieldDeclaration) decl).getType().getTypeMirror();
+    TypeMirror type = ((FieldDeclaration) decl).getTypeMirror();
     if (!(type.getKind().isPrimitive() || typeUtil.isString(type))) {
       return false;
     }

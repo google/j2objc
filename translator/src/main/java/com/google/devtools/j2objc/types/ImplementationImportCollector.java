@@ -134,7 +134,7 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    addImports(node.getType());
+    addImports(node.getTypeMirror());
     return true;
   }
 

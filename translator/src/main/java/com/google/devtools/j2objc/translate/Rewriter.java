@@ -232,15 +232,17 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(FieldDeclaration node) {
-    ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-        rewriteExtraDimensions(node.getType(), node.getFragments());
-    if (newDeclarations != null) {
-      List<BodyDeclaration> bodyDecls = TreeUtil.asDeclarationSublist(node);
-      for (Integer dimensions : newDeclarations.keySet()) {
-        List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
-        FieldDeclaration newDecl = new FieldDeclaration(fragments.get(0));
-        newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
-        bodyDecls.add(newDecl);
+    if (options.isJDT()) {
+      ListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
+          rewriteExtraDimensions(null, node.getFragments());
+      if (newDeclarations != null) {
+        List<BodyDeclaration> bodyDecls = TreeUtil.asDeclarationSublist(node);
+        for (Integer dimensions : newDeclarations.keySet()) {
+          List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
+          FieldDeclaration newDecl = new FieldDeclaration(fragments.get(0));
+          newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
+          bodyDecls.add(newDecl);
+        }
       }
     }
   }
@@ -260,6 +262,7 @@ public class Rewriter extends UnitTreeVisitor {
     return true;
   }
 
+  // TODO(user): Param typeNode can be removed after VariableDeclarationStatement.type is pruned.
   private ListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
       Type typeNode, List<VariableDeclarationFragment> fragments) {
     // Removes extra dimensions on variable declaration fragments and creates extra field
@@ -273,7 +276,7 @@ public class Rewriter extends UnitTreeVisitor {
       int dimensions = frag.getExtraDimensions();
       if (masterDimensions == -1) {
         masterDimensions = dimensions;
-        if (dimensions != 0) {
+        if (typeNode != null && dimensions != 0) {
           typeNode.replaceWith(Type.newType(frag.getVariableElement().asType()));
         }
       } else if (dimensions != masterDimensions) {
@@ -299,7 +302,7 @@ public class Rewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(PropertyAnnotation node) {
     FieldDeclaration field = (FieldDeclaration) node.getParent();
-    TypeMirror fieldType = field.getType().getTypeMirror();
+    TypeMirror fieldType = field.getTypeMirror();
     VariableDeclarationFragment firstVarNode = field.getFragment(0);
     if (typeUtil.isString(fieldType)) {
       node.addAttribute("copy");

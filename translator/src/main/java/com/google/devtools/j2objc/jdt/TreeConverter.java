@@ -781,8 +781,7 @@ public class TreeConverter {
     for (Object fragment : node.fragments()) {
       newNode.addFragment((VariableDeclarationFragment) convert(fragment));
     }
-    return newNode
-        .setType((Type) convert(node.getType()));
+    return newNode;
   }
 
   private static TreeNode convertForStatement(org.eclipse.jdt.core.dom.ForStatement node) {
