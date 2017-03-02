@@ -33,6 +33,8 @@ public class IosSecurityProvider extends Provider {
 
   private static final String PREFIX = "com.google.j2objc.security.";
 
+  private static final long serialVersionUID = 1L;
+
   public IosSecurityProvider() {
     super(PROVIDER_NAME, 1.0, "J2ObjC's iOS Security Framework-backed provider");
 
@@ -40,7 +42,7 @@ public class IosSecurityProvider extends Provider {
     put("SecureRandom.SHA1PRNG", PREFIX + "IosSecureRandomImpl");
 
     // X509 certificate provider.
-    put("CertificateFactory.X.509", "com.google.j2objc.security.cert.IosCertificateFactory");
+    put("CertificateFactory.X.509", "sun.security.provider.X509Factory");
     put("Alg.Alias.CertificateFactory.X509", "X.509");
 
     /* === Message Digests === */

@@ -34,6 +34,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
   static final String PUBLIC_KEY_TAG = "com.google.j2objc.security.publickey";
   static final String PRIVATE_KEY_TAG = "com.google.j2objc.security.privatekey";
+  private static final long serialVersionUID = 1L;
 
   public IosRSAKey(BigInteger modulus) {
     this.modulus = modulus;
@@ -65,11 +66,20 @@ public abstract class IosRSAKey implements RSAKey, Key {
     return iosSecKey;
   }
 
+  private static native long decode(byte[] encoded) /*-[
+    CFDataRef data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault,
+        (const UInt8 *)encoded->buffer_, encoded->size_, kCFAllocatorNull);
+    jlong secKey = (jlong) SecCertificateCreateWithData(NULL, data);
+    CFRelease(data);
+    return secKey;
+  ]-*/;
+
   protected abstract void decodeParameters();
 
   public static class IosRSAPublicKey extends IosRSAKey implements RSAPublicKey {
 
     private BigInteger publicExponent;
+    private static final long serialVersionUID = 1L;
 
     public IosRSAPublicKey(long iosSecKey) {
       super(iosSecKey);
@@ -78,6 +88,10 @@ public abstract class IosRSAKey implements RSAKey, Key {
     public IosRSAPublicKey(RSAPublicKeySpec spec) {
       super(spec.getModulus());
       this.publicExponent = spec.getPublicExponent();
+    }
+
+    public IosRSAPublicKey(byte[] encoded) {
+      this(decode(encoded));
     }
 
     @Override
@@ -134,6 +148,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
   public static class IosRSAPrivateKey extends IosRSAKey implements RSAPrivateKey {
 
     private BigInteger privateExponent;
+    private static final long serialVersionUID = 1L;
 
     public IosRSAPrivateKey(long iosSecKey) {
       super(iosSecKey);
@@ -142,6 +157,10 @@ public abstract class IosRSAKey implements RSAKey, Key {
     public IosRSAPrivateKey(RSAPrivateKeySpec spec) {
       super(spec.getModulus());
       this.privateExponent = spec.getPrivateExponent();
+    }
+
+    public IosRSAPrivateKey(byte[] encoded) {
+      this(decode(encoded));
     }
 
     @Override
