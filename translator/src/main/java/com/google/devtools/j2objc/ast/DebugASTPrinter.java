@@ -1044,9 +1044,10 @@ public class DebugASTPrinter extends TreeVisitor {
     node.getName().accept(this);
     printTypeParameters(node.getTypeElement().getTypeParameters());
     sb.print(' ');
-    if (node.getSuperclassType() != null) {
+    TypeMirror superclassTypeMirror = node.getSuperclassTypeMirror();
+    if (!TypeUtil.isNone(superclassTypeMirror)) {
       sb.print("extends ");
-      node.getSuperclassType().accept(this);
+      sb.print(superclassTypeMirror.toString());
       sb.print(' ');
     }
     if (!node.getSuperInterfaceTypes().isEmpty()) {

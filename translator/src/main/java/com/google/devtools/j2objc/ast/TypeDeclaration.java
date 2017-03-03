@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import java.util.List;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -25,7 +24,9 @@ import javax.lang.model.type.TypeMirror;
 public class TypeDeclaration extends AbstractTypeDeclaration {
 
   private boolean isInterface = false;
-  private final ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
+
+  // DeadCodeEliminator will set this field if its superclass is marked as unused
+  private boolean stripSuperclass = false;
   private final ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
   private final ChildLink<Expression> superOuter = ChildLink.create(Expression.class, this);
   private final ChildList<Expression> superCaptureArgs = ChildList.create(Expression.class, this);
@@ -35,7 +36,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   public TypeDeclaration(TypeDeclaration other) {
     super(other);
     isInterface = other.isInterface();
-    superclassType.copyFrom(other.getSuperclassType());
+    stripSuperclass = other.stripSuperclass;
     superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
     superOuter.copyFrom(other.getSuperOuter());
     superCaptureArgs.copyFrom(other.getSuperCaptureArgs());
@@ -44,10 +45,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   public TypeDeclaration(TypeElement typeElement) {
     super(typeElement);
     isInterface = typeElement.getKind().isInterface();
-    TypeMirror superclassMirror = typeElement.getSuperclass();
-    if (superclassMirror != null && superclassMirror.getKind() != TypeKind.NONE) {
-      superclassType.set(Type.newType(superclassMirror));
-    }
     for (TypeMirror interfaceMirror : typeElement.getInterfaces()) {
       superInterfaceTypes.add(Type.newType(interfaceMirror));
     }
@@ -67,13 +64,12 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     return this;
   }
 
-  public Type getSuperclassType() {
-    return superclassType.get();
+  public TypeMirror getSuperclassTypeMirror() {
+    return stripSuperclass ? null : getTypeElement().getSuperclass();
   }
 
-  public TypeDeclaration setSuperclassType(Type newSuperclassType) {
-    superclassType.set(newSuperclassType);
-    return this;
+  public void stripSuperclass() {
+    stripSuperclass = true;
   }
 
   public List<Type> getSuperInterfaceTypes() {
@@ -104,7 +100,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
       javadoc.accept(visitor);
       annotations.accept(visitor);
       name.accept(visitor);
-      superclassType.accept(visitor);
       superInterfaceTypes.accept(visitor);
       bodyDeclarations.accept(visitor);
       classInitStatements.accept(visitor);

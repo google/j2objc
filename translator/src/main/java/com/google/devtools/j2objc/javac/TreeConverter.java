@@ -603,10 +603,6 @@ public class TreeConverter {
     TypeDeclaration newNode =
         (TypeDeclaration) convertAbstractTypeDeclaration(node, new TypeDeclaration());
 
-    JCTree.JCExpression extendsClause = node.getExtendsClause();
-    if (extendsClause != null) {
-      newNode.setSuperclassType(Type.newType(nameType((node.getExtendsClause()))));
-    }
     newNode.setInterface(
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
     for (JCTree superInterface : node.getImplementsClause()) {
@@ -1161,7 +1157,6 @@ public class TreeConverter {
 
   private TreeNode convertVariableDeclaration(JCTree.JCVariableDecl node) {
     VarSymbol var = node.sym;
-    SourcePosition pos = getPosition(node);
     if (var.getKind() == ElementKind.FIELD) {
       FieldDeclaration newNode = new FieldDeclaration(var,
           (Expression) convert(node.getInitializer()));

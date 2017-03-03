@@ -84,11 +84,8 @@ public final class TranslationUtil {
   public static TypeElement getSuperType(AbstractTypeDeclaration node) {
     // Use the AST as the source of truth where possible.
     if (node instanceof TypeDeclaration) {
-      Type superType = ((TypeDeclaration) node).getSuperclassType();
-      if (superType != null) {
-        return TypeUtil.asTypeElement(superType.getTypeMirror());
-      }
-      return null;
+      TypeMirror superclassTypeMirror = ((TypeDeclaration) node).getSuperclassTypeMirror();
+      return superclassTypeMirror == null ? null : TypeUtil.asTypeElement(superclassTypeMirror);
     } else {
       return ElementUtil.getSuperclass(node.getTypeElement());
     }

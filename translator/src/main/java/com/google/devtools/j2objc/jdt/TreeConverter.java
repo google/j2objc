@@ -1245,7 +1245,6 @@ public class TreeConverter {
   private static TreeNode convertTypeDeclaration(org.eclipse.jdt.core.dom.TypeDeclaration node) {
     TypeDeclaration newNode =
         (TypeDeclaration) convertAbstractTypeDeclaration(node, new TypeDeclaration());
-    newNode.setSuperclassType((Type) convert(node.getSuperclassType()));
     newNode.setInterface(node.isInterface());
     for (Object superInterface : node.superInterfaceTypes()) {
       newNode.addSuperInterfaceType((Type) convert(superInterface));

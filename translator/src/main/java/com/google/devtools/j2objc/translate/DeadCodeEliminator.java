@@ -54,7 +54,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
     eliminateDeadCode(type, node.getBodyDeclarations());
     // Also strip supertypes.
     if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
-      node.setSuperclassType(null);
+      node.stripSuperclass();
       node.getSuperInterfaceTypes().clear();
     }
   }
