@@ -3178,8 +3178,6 @@
 		06ED3DE117D166080014750E /* TimerTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TimerTask.m; path = build_result/Classes/java/util/TimerTask.m; sourceTree = "<group>"; };
 		06ED3DE217D1666A0014750E /* ICU.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ICU.h; path = build_result/Classes/libcore/icu/ICU.h; sourceTree = "<group>"; };
 		06ED3DE317D1666A0014750E /* ICU.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ICU.m; path = build_result/Classes/libcore/icu/ICU.m; sourceTree = "<group>"; };
-		06ED3DE417D1666A0014750E /* NativeDecimalFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NativeDecimalFormat.h; path = build_result/Classes/libcore/icu/NativeDecimalFormat.h; sourceTree = "<group>"; };
-		06ED3DE517D1666A0014750E /* NativeDecimalFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NativeDecimalFormat.m; path = build_result/Classes/libcore/icu/NativeDecimalFormat.m; sourceTree = "<group>"; };
 		06ED3DE617D1666A0014750E /* TimeZoneNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeZoneNames.h; path = build_result/Classes/libcore/icu/TimeZoneNames.h; sourceTree = "<group>"; };
 		06ED3DE717D1666A0014750E /* TimeZoneNames.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TimeZoneNames.m; path = build_result/Classes/libcore/icu/TimeZoneNames.m; sourceTree = "<group>"; };
 		06ED3DE817D1667D0014750E /* StringPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StringPool.h; path = build_result/Classes/libcore/internal/StringPool.h; sourceTree = "<group>"; };
@@ -5147,8 +5145,6 @@
 				0649A79E1AE07A4300DE2494 /* NameList.m */,
 				064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */,
 				064FB7DD1727081D00DC0D51 /* NamespaceSupport.m */,
-				06ED3DE417D1666A0014750E /* NativeDecimalFormat.h */,
-				06ED3DE517D1666A0014750E /* NativeDecimalFormat.m */,
 				6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */,
 				6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */,
 				068677D2166C342C005A5AD7 /* NavigableMap.h */,

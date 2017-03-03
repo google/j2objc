@@ -535,7 +535,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/TerminalOp.java \
   libcore/icu/ICU.java \
   libcore/icu/LocaleData.java \
-  libcore/icu/NativeDecimalFormat.java \
   libcore/icu/TimeZoneNames.java \
   libcore/io/AsynchronousCloseMonitor.java \
   libcore/io/DeleteOnExit.java \
