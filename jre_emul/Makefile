@@ -277,11 +277,11 @@ endif
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(LAMBDA_SOURCES) \
   $(SOURCE_RETENTION_ANNOTATIONS) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
-	@stage_dir=`${MKTEMP_CMD}`; \
-    ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
-      -bootclasspath $(STUBS_DIR):$(LAMBDA_DIR) \
-	    -classpath $(ANNOTATIONS_JAR) \
-	    -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
+	@set -e; stage_dir=`${MKTEMP_CMD}`; \
+	  ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
+	  -bootclasspath $(STUBS_DIR):$(LAMBDA_DIR) \
+	  -classpath $(ANNOTATIONS_JAR) \
+	  -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
 
