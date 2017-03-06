@@ -234,4 +234,14 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
         Arrays.equals(Arrays.copyOfRange(randomData, 0, PARTIAL_SIZE), consumer.getBytes()));
   }
 
+  @AutoreleasePool
+  public void testTrivialCreate() {
+    DataProvider provider = new DataProvider();
+    Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
+    assertNotNull(stream);
+
+    // This is to test that the background thread created by the adapter is retaining the stream
+    // objects properly. If it were not, the program would crash after this method exits and its
+    // outer autorelease pool drains.
+  }
 }

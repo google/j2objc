@@ -89,6 +89,7 @@ public final class AsyncPipedNSInputStreamAdapter {
 
     private Object nativeOutputStream; // NSOutputStream
     private Object leftoverData; // NSData
+    private Object waitForStreamOpenLock; // NSCondition
     @Weak private Object threadForClosing; // NSThread
 
     /** If true, once the remaining leftover data is written, close() will be called. */
@@ -188,7 +189,11 @@ public final class AsyncPipedNSInputStreamAdapter {
 
     /** Spawns a new thread to use a runloop to handle the asynchronous data requests. */
     native void start() /*-[
+      waitForStreamOpenLock_ = [[NSCondition alloc] init];
+      [waitForStreamOpenLock_ lock];
       [NSThread detachNewThreadSelector:@selector(run) toTarget:self withObject:nil];
+      [waitForStreamOpenLock_ wait];
+      [waitForStreamOpenLock_ unlock];
     ]-*/;
 
     /** Schedule the actual native close on the dedicated thread. */
@@ -233,6 +238,10 @@ public final class AsyncPipedNSInputStreamAdapter {
           [(NSOutputStream *)nativeOutputStream_ scheduleInRunLoop:runLoop
                                                            forMode:NSRunLoopCommonModes];
           [(NSOutputStream *)nativeOutputStream_ open];
+
+          [waitForStreamOpenLock_ lock];
+          [waitForStreamOpenLock_ signal];
+          [waitForStreamOpenLock_ unlock];
 
           // Run forever until the event source (the output stream) is exhausted.
           CFRunLoopRun();
