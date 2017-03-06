@@ -14,22 +14,26 @@
 
 package com.google.devtools.j2objc.ast;
 
+import java.util.Collections;
 import java.util.List;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node type for an enum declaration.
  */
 public class EnumDeclaration extends AbstractTypeDeclaration {
 
-  private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
+  // DeadCodeEliminator will set this field if this enum is marked as unused
+  private boolean stripSuperInterfaces = false;
+
   private ChildList<EnumConstantDeclaration> enumConstants =
       ChildList.create(EnumConstantDeclaration.class, this);
-  
+
   public EnumDeclaration() {}
 
   public EnumDeclaration(EnumDeclaration other) {
     super(other);
-    superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
+    stripSuperInterfaces = other.stripSuperInterfaces;
     enumConstants.copyFrom(other.getEnumConstants());
   }
 
@@ -38,19 +42,18 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
     return Kind.ENUM_DECLARATION;
   }
 
-  public List<Type> getSuperInterfaceTypes() {
-    return superInterfaceTypes;
+  public List<? extends TypeMirror> getSuperInterfaceTypeMirrors() {
+    return stripSuperInterfaces ? Collections.emptyList() : getTypeElement().getInterfaces();
   }
-  
-  public EnumDeclaration addSuperInterfaceType(Type type) {
-    superInterfaceTypes.add(type);
-    return this;
+
+  public void stripSuperInterfaces() {
+    stripSuperInterfaces = true;
   }
 
   public List<EnumConstantDeclaration> getEnumConstants() {
     return enumConstants;
   }
-  
+
   public EnumDeclaration addEnumConstant(EnumConstantDeclaration constant) {
     enumConstants.add(constant);
     return this;
@@ -62,7 +65,6 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
       javadoc.accept(visitor);
       annotations.accept(visitor);
       name.accept(visitor);
-      superInterfaceTypes.accept(visitor);
       enumConstants.accept(visitor);
       bodyDeclarations.accept(visitor);
       classInitStatements.accept(visitor);

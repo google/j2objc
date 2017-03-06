@@ -54,8 +54,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
     eliminateDeadCode(type, node.getBodyDeclarations());
     // Also strip supertypes.
     if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
-      node.stripSuperclass();
-      node.getSuperInterfaceTypes().clear();
+      node.stripSupertypes();
     }
   }
 
@@ -66,7 +65,7 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
     if (deadCodeMap.containsClass(elementUtil.getBinaryName(type))) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.getEnumConstants().clear();
-      node.getSuperInterfaceTypes().clear();
+      node.stripSuperInterfaces();
     }
   }
 

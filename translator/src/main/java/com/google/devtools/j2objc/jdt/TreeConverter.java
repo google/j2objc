@@ -734,9 +734,6 @@ public class TreeConverter {
   private static TreeNode convertEnumDeclaration(org.eclipse.jdt.core.dom.EnumDeclaration node) {
     EnumDeclaration newNode =
         (EnumDeclaration) convertAbstractTypeDeclaration(node, new EnumDeclaration());
-    for (Object superInterface : node.superInterfaceTypes()) {
-      newNode.addSuperInterfaceType((Type) convert(superInterface));
-    }
     for (Object enumConstant : node.enumConstants()) {
       newNode.addEnumConstant((EnumConstantDeclaration) convert(enumConstant));
     }
@@ -1246,9 +1243,6 @@ public class TreeConverter {
     TypeDeclaration newNode =
         (TypeDeclaration) convertAbstractTypeDeclaration(node, new TypeDeclaration());
     newNode.setInterface(node.isInterface());
-    for (Object superInterface : node.superInterfaceTypes()) {
-      newNode.addSuperInterfaceType((Type) convert(superInterface));
-    }
     return newNode;
   }
 

@@ -36,7 +36,6 @@ import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.FunctionElement;
@@ -93,18 +92,18 @@ public final class TranslationUtil {
 
   public static List<TypeElement> getInterfaceTypes(AbstractTypeDeclaration node) {
     // Use the AST as the source of truth where possible.
-    List<Type> astInterfaces = null;
+    List<? extends TypeMirror> astInterfaces = null;
     if (node instanceof TypeDeclaration) {
-      astInterfaces = ((TypeDeclaration) node).getSuperInterfaceTypes();
+      astInterfaces = ((TypeDeclaration) node).getSuperInterfaceTypeMirrors();
     } else if (node instanceof EnumDeclaration) {
-      astInterfaces = ((EnumDeclaration) node).getSuperInterfaceTypes();
-    }
-    if (astInterfaces == null) {  // AnnotationTypeDeclaration
+      astInterfaces = ((EnumDeclaration) node).getSuperInterfaceTypeMirrors();
+    } else {  // AnnotationTypeDeclaration
       return ElementUtil.getInterfaces(node.getTypeElement());
     }
+
     List<TypeElement> result = new ArrayList<>();
-    for (Type type : astInterfaces) {
-      result.add(TypeUtil.asTypeElement(type.getTypeMirror()));
+    for (TypeMirror typeMirror : astInterfaces) {
+      result.add(TypeUtil.asTypeElement(typeMirror));
     }
     return result;
   }

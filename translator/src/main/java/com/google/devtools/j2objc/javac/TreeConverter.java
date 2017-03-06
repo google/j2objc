@@ -605,9 +605,6 @@ public class TreeConverter {
 
     newNode.setInterface(
         node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
-    for (JCTree superInterface : node.getImplementsClause()) {
-      newNode.addSuperInterfaceType(Type.newType(nameType(superInterface)));
-    }
     if (node.sym.isAnonymous()) {
       newUnit.getEnv().elementUtil().mapElementType(node.sym, node.type);
     }
@@ -655,9 +652,6 @@ public class TreeConverter {
     newNode
         .setName(convertSimpleName(node.sym, node.type, getNamePosition(node)))
         .setTypeElement(node.sym);
-    for (JCTree superInterface : node.getImplementsClause()) {
-      newNode.addSuperInterfaceType(Type.newType(nameType(superInterface)));
-    }
     for (JCTree bodyDecl : node.getMembers()) {
       if (bodyDecl.getKind() == Kind.VARIABLE) {
         TreeNode var = convertVariableDeclaration((JCTree.JCVariableDecl) bodyDecl);

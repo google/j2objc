@@ -1050,10 +1050,12 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print(superclassTypeMirror.toString());
       sb.print(' ');
     }
-    if (!node.getSuperInterfaceTypes().isEmpty()) {
+    List<? extends TypeMirror> superInterfaceTypeMirrors = node.getSuperInterfaceTypeMirrors();
+    if (!superInterfaceTypeMirrors.isEmpty()) {
       sb.print(node.isInterface() ? "extends " : "implements "); //$NON-NLS-2$
-      for (Iterator<Type> it = node.getSuperInterfaceTypes().iterator(); it.hasNext(); ) {
-        it.next().accept(this);
+      for (Iterator<? extends TypeMirror> it = node.getSuperInterfaceTypeMirrors().iterator();
+          it.hasNext(); ) {
+        sb.print(it.next().toString());
         if (it.hasNext()) {
           sb.print(", ");
         }
