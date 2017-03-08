@@ -798,10 +798,11 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         IOSByteArray* rawCert = [IOSByteArray arrayWithNSData:remoteCertificateData];
         [securityDataHandler_ handleSecCertificateDataWithByteArray:rawCert];
       }
-
-      completionHandler(NSURLSessionAuthChallengeUseCredential,
-          [NSURLCredential credentialForTrust:serverTrust]);
     }
+
+    // Continue with default handling
+    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+
   }
   ]-*/
 
