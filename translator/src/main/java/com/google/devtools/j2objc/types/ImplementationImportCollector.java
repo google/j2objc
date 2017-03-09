@@ -175,7 +175,7 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
     if (Modifier.isAbstract(node.getModifiers())) {
       return false;
     }
-    addImports(node.getReturnType());
+    addImports(node.getReturnTypeMirror());
     return true;
   }
 

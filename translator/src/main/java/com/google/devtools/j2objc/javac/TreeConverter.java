@@ -889,8 +889,7 @@ public class TreeConverter {
     return newNode
         .setIsConstructor(ElementUtil.isConstructor(node.sym))
         .setExecutableElement(node.sym)
-        .setBody((Block) convert(node.getBody()))
-        .setReturnType(convertType(node.type));
+        .setBody((Block) convert(node.getBody()));
   }
 
   private static String getMemberName(JCTree.JCExpression node) {

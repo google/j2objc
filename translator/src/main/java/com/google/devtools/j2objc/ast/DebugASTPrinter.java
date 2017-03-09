@@ -637,9 +637,7 @@ public class DebugASTPrinter extends TreeVisitor {
     ExecutableElement meth = node.getExecutableElement();
     printTypeParameters(meth.getTypeParameters());
     if (!node.isConstructor()) {
-      if (node.getReturnType() != null) {
-        node.getReturnType().accept(this);
-      }
+      sb.print(node.getReturnTypeMirror().toString());
       sb.print(' ');
     }
     sb.print(ElementUtil.getName(meth));

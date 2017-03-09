@@ -86,7 +86,7 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
     // Generate a body which throws a NSInvalidArgumentException.
     String bodyCode = "// can't call an abstract method\n"
         + "[self doesNotRecognizeSelector:_cmd];";
-    if (!TypeUtil.isVoid(node.getReturnType().getTypeMirror())) {
+    if (!TypeUtil.isVoid(node.getReturnTypeMirror())) {
       bodyCode += "\nreturn 0;"; // Never executes, but avoids a gcc warning.
     }
     body.addStatement(new NativeStatement(bodyCode));

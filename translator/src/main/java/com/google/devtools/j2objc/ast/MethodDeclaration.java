@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node type for a method declaration.
@@ -27,7 +28,6 @@ public class MethodDeclaration extends BodyDeclaration {
   private boolean isConstructor = false;
   private boolean hasDeclaration = true;
   private boolean isUnavailable = false;
-  private ChildLink<Type> returnType = ChildLink.create(Type.class, this);
   private ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
@@ -40,7 +40,6 @@ public class MethodDeclaration extends BodyDeclaration {
     isConstructor = other.isConstructor();
     hasDeclaration = other.hasDeclaration();
     isUnavailable = other.isUnavailable();
-    returnType.copyFrom(other.getReturnType());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
   }
@@ -49,7 +48,6 @@ public class MethodDeclaration extends BodyDeclaration {
     super(method);
     executableElement = method;
     isConstructor = ElementUtil.isConstructor(method);
-    returnType.set(Type.newType(method.getReturnType()));
   }
 
   @Override
@@ -93,13 +91,8 @@ public class MethodDeclaration extends BodyDeclaration {
     return this;
   }
 
-  public Type getReturnType() {
-    return returnType.get();
-  }
-
-  public MethodDeclaration setReturnType(Type newType) {
-    returnType.set(newType);
-    return this;
+  public TypeMirror getReturnTypeMirror() {
+    return executableElement.getReturnType();
   }
 
   public SingleVariableDeclaration getParameter(int index) {
@@ -124,7 +117,6 @@ public class MethodDeclaration extends BodyDeclaration {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);
-      returnType.accept(visitor);
       parameters.accept(visitor);
       body.accept(visitor);
     }

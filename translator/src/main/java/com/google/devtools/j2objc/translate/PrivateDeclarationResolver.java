@@ -151,7 +151,7 @@ public class PrivateDeclarationResolver extends UnitTreeVisitor {
     boolean isPrivate = Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     if (!isPrivate) {
-      addPublicType(node.getReturnType());
+      addPublicType(node.getReturnTypeMirror());
     }
     return false;
   }

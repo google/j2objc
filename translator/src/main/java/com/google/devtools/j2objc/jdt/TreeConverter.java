@@ -939,7 +939,6 @@ public class TreeConverter {
     }
     newNode
         .setIsConstructor(node.isConstructor())
-        .setReturnType((Type) TreeConverter.convert(node.getReturnType2()))
         .setExecutableElement(BindingConverter.getExecutableElement(node.resolveBinding()))
         .setBody((Block) TreeConverter.convert(node.getBody()));
     maybeAddImplicitSuperCall(newNode);

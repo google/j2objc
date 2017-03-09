@@ -47,7 +47,7 @@ public class CompoundTypeTest extends GenerationTest {
         MethodDeclaration method = (MethodDeclaration) body;
         if (ElementUtil.getName(method.getExecutableElement()).equals("thenTesting")) {
           // Verify a normal type isn't marked as compound.
-          TypeMirror returnType = method.getReturnType().getTypeMirror();
+          TypeMirror returnType = method.getReturnTypeMirror();
           assertFalse(TypeUtil.isIntersection(returnType));
           // The method's return type isn't compound, but the cast expression in
           // its return statement is.
