@@ -452,11 +452,8 @@ public class TreeConverter {
       if (bodyDecl.getKind() == Kind.METHOD) {
         JCTree.JCMethodDecl methodDecl = (JCTree.JCMethodDecl) bodyDecl;
         AnnotationTypeMemberDeclaration newMember = new AnnotationTypeMemberDeclaration()
-            .setName(
-                convertSimpleName(methodDecl.sym, methodDecl.type, getNamePosition(methodDecl)))
             .setDefault((Expression) convert(methodDecl.defaultValue))
-            .setExecutableElement(methodDecl.sym)
-            .setType(convertType(methodDecl.sym.getReturnType()));
+            .setExecutableElement(methodDecl.sym);
         newMember
             .setModifiers((int) methodDecl.getModifiers().flags)
             .setAnnotations(convertAnnotations(methodDecl.mods))

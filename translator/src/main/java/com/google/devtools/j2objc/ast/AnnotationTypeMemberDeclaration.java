@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Node for an annotation type member declaration.
@@ -22,8 +23,6 @@ import javax.lang.model.element.ExecutableElement;
 public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 
   private ExecutableElement element = null;
-  private ChildLink<Type> type = ChildLink.create(Type.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildLink<Expression> defaultValue = ChildLink.create(Expression.class, this);
 
   public AnnotationTypeMemberDeclaration() {}
@@ -31,8 +30,6 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
   public AnnotationTypeMemberDeclaration(AnnotationTypeMemberDeclaration other) {
     super(other);
     element = other.getExecutableElement();
-    type.copyFrom(other.getType());
-    name.copyFrom(other.getName());
     defaultValue.copyFrom(other.getDefault());
   }
 
@@ -50,22 +47,8 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
     return this;
   }
 
-  public Type getType() {
-    return type.get();
-  }
-
-  public AnnotationTypeMemberDeclaration setType(Type newType) {
-    type.set(newType);
-    return this;
-  }
-
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public AnnotationTypeMemberDeclaration setName(SimpleName newName) {
-    name.set(newName);
-    return this;
+  public TypeMirror getTypeMirror() {
+    return element.asType();
   }
 
   public Expression getDefault() {
@@ -82,8 +65,6 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);
-      type.accept(visitor);
-      name.accept(visitor);
       defaultValue.accept(visitor);
     }
     visitor.endVisit(this);

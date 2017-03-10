@@ -112,7 +112,7 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   @Override
   public boolean visit(AnnotationTypeMemberDeclaration node) {
     if (filter.include(node)) {
-      addForwardDecl(node.getType());
+      addForwardDecl(node.getTypeMirror());
     }
     return false;
   }

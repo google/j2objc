@@ -203,7 +203,7 @@ public class MetadataWriter extends UnitTreeVisitor {
       if (typeNode instanceof AnnotationTypeDeclaration) {
         // Add property accessor and static default methods.
         for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
-          String name = decl.getName().getIdentifier();
+          String name = ElementUtil.getName(decl.getExecutableElement());
           String returnType = getTypeName(decl.getExecutableElement().getReturnType());
           String metadata = UnicodeUtils.format("    { NULL, %s, 0x%x, -1, -1, -1, -1, -1, -1 },\n",
               cStr(returnType),

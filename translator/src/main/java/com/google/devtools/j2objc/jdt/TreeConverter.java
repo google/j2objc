@@ -447,8 +447,6 @@ public class TreeConverter {
     convertBodyDeclaration(node, newNode);
     return newNode
         .setExecutableElement(BindingConverter.getExecutableElement(node.resolveBinding()))
-        .setName((SimpleName) convert(node.getName()))
-        .setType((Type) convert(node.getType()))
         .setDefault((Expression) convert(node.getDefault()));
   }
 

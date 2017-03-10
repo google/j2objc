@@ -72,9 +72,9 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.printIndent();
     printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
-    node.getType().accept(this);
+    sb.print(node.getTypeMirror().toString());
     sb.print(' ');
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getExecutableElement()));
     sb.print("()");
     if (node.getDefault() != null) {
       sb.print(" default ");
