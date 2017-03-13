@@ -1729,4 +1729,19 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  int foo; }}", "Test", "Test.m");
     assertTranslation(translation, "__unused jint foo;");
   }
+
+  // Verify that empty statements line offset to owning statement is preserved.
+  public void testEmptyStatementFormatting() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {\n"
+        + "  void foo(int a, int b) {\n"
+        + "    if (a < b) ;\n"  // Empty statement on same line as if statement.
+        + "  }\n"
+        + "  void bar(int c, int d) {\n"
+        + "    if (c < d)\n"
+        + "      ;\n"           // Empty statement on different line than if statement.
+        + "  }}", "Test", "Test.m");
+    assertTranslation(translation, "if (a < b) ;");
+    assertTranslatedLines(translation, "if (c < d)", ";");
+  }
 }

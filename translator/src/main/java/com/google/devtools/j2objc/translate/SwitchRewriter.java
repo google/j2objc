@@ -62,9 +62,13 @@ public class SwitchRewriter extends UnitTreeVisitor {
     fixEnumValue(node);
 
     List<Statement> stmts = node.getStatements();
-    if (!stmts.isEmpty() && stmts.get(stmts.size() - 1) instanceof SwitchCase) {
-      // Last switch case doesn't have an associated statement, so add an empty one.
-      stmts.add(new EmptyStatement());
+    Statement lastStmt = stmts.get(stmts.size() - 1);
+    if (!stmts.isEmpty() && lastStmt instanceof SwitchCase) {
+      // Last switch case doesn't have an associated statement, so add an empty one
+      // with the same line number as the switch case to keep line numbers synced.
+      EmptyStatement emptyStmt = new EmptyStatement();
+      emptyStmt.setLineNumber(lastStmt.getLineNumber());
+      stmts.add(emptyStmt);
     }
   }
 

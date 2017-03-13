@@ -85,6 +85,7 @@ import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
@@ -381,6 +382,14 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(EmptyStatement node) {
+    // Preserve line number difference with owner, to allow suppression of
+    // clang empty-statement warnings in Java source.
+    TreeNode parent = node.getParent();
+    if (parent.getKind() != Kind.SWITCH_STATEMENT
+        && node.getLineNumber() != parent.getLineNumber()) {
+      buffer.newline();
+      buffer.printIndent();
+    }
     buffer.append(";\n");
     return false;
   }
@@ -792,9 +801,13 @@ public class StatementGenerator extends UnitTreeVisitor {
     expr.accept(this);
     buffer.append(") ");
     buffer.append("{\n");
+    buffer.indent();
     for (Statement stmt : node.getStatements()) {
+      buffer.printIndent();
       stmt.accept(this);
     }
+    buffer.unindent();
+    buffer.printIndent();
     buffer.append("}\n");
     return false;
   }
