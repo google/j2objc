@@ -352,7 +352,7 @@ public class ElementReferenceMapper extends UnitTreeVisitor {
       inputElementUtil) {
     TypeElement declaringClass = ElementUtil.getDeclaringClass(fragment.getVariableElement());
     String className = inputElementUtil.getBinaryName(declaringClass);
-    String fragmentIdentifier = fragment.getName().getIdentifier();
+    String fragmentIdentifier = ElementUtil.getName(fragment.getVariableElement());
     return stitchFieldIdentifier(className, fragmentIdentifier);
   }
 
