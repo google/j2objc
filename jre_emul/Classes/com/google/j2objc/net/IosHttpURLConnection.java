@@ -654,6 +654,19 @@ public class IosHttpURLConnection extends HttpURLConnection {
   ]-*/
 
   /*
+   * NSURLSessionDataDelegate method: should we store the response in the cache.
+   */
+  /*-[
+  - (void)URLSession:(NSURLSession *)session
+            dataTask:(NSURLSessionDataTask *)dataTask
+   willCacheResponse:(NSCachedURLResponse *)proposedResponse
+   completionHandler:(void (^)(NSCachedURLResponse *cachedResponse))completionHandler {
+    completionHandler( self->useCaches_ ? proposedResponse : nil );
+  }
+  ]-*/
+
+
+  /*
    * NSURLSessionDelegate method: task completed.
    */
   /*-[
