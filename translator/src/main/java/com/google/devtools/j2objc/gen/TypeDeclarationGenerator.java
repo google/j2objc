@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -315,54 +316,73 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printProperties() {
-    Iterable<VariableDeclarationFragment> fields = getAllInstanceFields();
+    Iterable<VariableDeclarationFragment> fields = getAllFields();
     for (VariableDeclarationFragment fragment : fields) {
       FieldDeclaration fieldDecl = (FieldDeclaration) fragment.getParent();
       VariableElement varElement = fragment.getVariableElement();
-      if (!ElementUtil.isStatic(varElement)) {
-        PropertyAnnotation property = (PropertyAnnotation)
-            TreeUtil.getAnnotation(Property.class, fieldDecl.getAnnotations());
-        if (property != null) {
-          print("@property ");
-          TypeMirror varType = varElement.asType();
-          String propertyName = nameTable.getVariableBaseName(varElement);
+      PropertyAnnotation property = (PropertyAnnotation)
+          TreeUtil.getAnnotation(Property.class, fieldDecl.getAnnotations());
+      if (property != null) {
+        print("@property ");
+        TypeMirror varType = varElement.asType();
+        String propertyName = nameTable.getVariableBaseName(varElement);
 
-          // Add default getter/setter here, as each fragment needs its own attributes
-          // to support its unique accessors.
-          Set<String> attributes = property.getPropertyAttributes();
-          TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-          if (property.getGetter() == null) {
-            ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
-            if (getter != null) {
-              attributes.add("getter=" + NameTable.getMethodName(getter));
-              if (!ElementUtil.isSynchronized(getter)) {
-                attributes.add("nonatomic");
-              }
+        // Add default getter/setter here, as each fragment needs its own attributes
+        // to support its unique accessors.
+        Set<String> attributes = property.getPropertyAttributes();
+        TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
+        if (property.getGetter() == null) {
+          ExecutableElement getter = findGetterMethod(propertyName, varType, declaringClass);
+          if (getter != null) {
+            attributes.add("getter=" + NameTable.getMethodName(getter));
+            if (!ElementUtil.isSynchronized(getter)) {
+              attributes.add("nonatomic");
             }
           }
-          if (property.getSetter() == null) {
-            ExecutableElement setter = findSetterMethod(propertyName, declaringClass);
-            if (setter != null) {
-              attributes.add("setter=" + NameTable.getMethodName(setter));
-              if (!ElementUtil.isSynchronized(setter)) {
-                attributes.add("nonatomic");
-              }
-            }
-          }
-
-          if (!attributes.isEmpty()) {
-            print('(');
-            print(PropertyAnnotation.toAttributeString(attributes));
-            print(") ");
-          }
-
-          String objcType = nameTable.getObjCType(varType);
-          print(objcType);
-          if (!objcType.endsWith("*")) {
-            print(' ');
-          }
-          println(propertyName + ";");
         }
+        if (property.getSetter() == null) {
+          ExecutableElement setter = findSetterMethod(propertyName, declaringClass);
+          if (setter != null) {
+            attributes.add("setter=" + NameTable.getMethodName(setter));
+            if (!ElementUtil.isSynchronized(setter)) {
+              attributes.add("nonatomic");
+            }
+          }
+        }
+
+        if (ElementUtil.isStatic(varElement)) {
+          attributes.add("class");
+        } else if (attributes.contains("class")) {
+          ErrorUtil.error(fragment, "Only static fields can be translated to class properties");
+        }
+        if (attributes.contains("class") && !options.staticAccessorMethods()) {
+          // Class property accessors must be present, as they are not synthesized by runtime.
+          ErrorUtil.error(fragment, "Class properties require either a --swift-friendly or"
+              + " --static-accessor-methods flag");
+        }
+
+        if (options.nullability()) {
+          if (ElementUtil.hasNullableAnnotation(varElement)) {
+            attributes.add("nullable");
+          } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
+            attributes.add("nonnull");
+          } else if (!attributes.contains("null_unspecified")) {
+            attributes.add("null_resettable");
+          }
+        }
+
+        if (!attributes.isEmpty()) {
+          print('(');
+          print(PropertyAnnotation.toAttributeString(attributes));
+          print(") ");
+        }
+
+        String objcType = nameTable.getObjCType(varType);
+        print(objcType);
+        if (!objcType.endsWith("*")) {
+          print(' ');
+        }
+        println(propertyName + ";");
       }
     }
   }

@@ -61,9 +61,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final NameTable nameTable;
   protected final String typeName;
   protected final Options options;
+  protected final boolean parametersNonnullByDefault;
 
   private final List<BodyDeclaration> declarations;
-  private final boolean parametersNonnullByDefault;
 
   protected TypeGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder);
@@ -201,6 +201,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         IS_STATIC_FIELD);
   }
 
+  protected Iterable<VariableDeclarationFragment> getAllFields() {
+    return TreeUtil.asFragments(
+        Iterables.filter(typeNode.getBodyDeclarations(), FieldDeclaration.class));
+  }
+
   protected Iterable<BodyDeclaration> getInnerDeclarations() {
     return Iterables.filter(declarations, IS_INNER_DECL);
   }
@@ -283,7 +288,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
     }
-    sb.append(UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element, false)));
+    sb.append(UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element)));
 
     List<SingleVariableDeclaration> params = m.getParameters();
     String[] selParts = selector.split(":");
@@ -301,7 +306,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         }
         VariableElement var = params.get(i).getVariableElement();
         String typeName = nameTable.getObjCType(var.asType());
-        sb.append(UnicodeUtils.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var, true),
+        sb.append(UnicodeUtils.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var),
             nameTable.getVariableShortName(var)));
       }
     }
@@ -313,16 +318,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
    * Returns an Objective-C nullability attribute string if there is a matching
    * JSR305 annotation, or an empty string.
    */
-  private String nullability(Element element, boolean isParameter) {
+  private String nullability(Element element) {
     if (options.nullability()) {
       if (ElementUtil.hasNullableAnnotation(element)) {
         return " __nullable";
       }
-      if (ElementUtil.hasNonnullAnnotation(element)) {
-        return " __nonnull";
-      }
-      if (isParameter && !((VariableElement) element).asType().getKind().isPrimitive()
-          && (parametersNonnullByDefault || ElementUtil.hasNonnullAnnotation(element))) {
+      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
         return " __nonnull";
       }
     }

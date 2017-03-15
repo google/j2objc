@@ -754,4 +754,17 @@ public final class ElementUtil {
   public TypeMirror getType(Element element) {
     return elementTypeMap.containsKey(element) ? elementTypeMap.get(element) : element.asType();
   }
+
+  /**
+   * Returns whether an element is marked as always being non-null. Field, method,
+   * and parameter elements can be defined as non-null with a Nonnull annotation.
+   * Method parameters can also be defined as non-null by annotating the owning
+   * package or type element with the ParametersNonnullByDefault annotation.
+   */
+  public static boolean isNonnull(Element element, boolean parametersNonnullByDefault) {
+    return hasNonnullAnnotation(element)
+        || (isParameter(element)
+            && parametersNonnullByDefault
+            && !((VariableElement) element).asType().getKind().isPrimitive());
+  }
 }

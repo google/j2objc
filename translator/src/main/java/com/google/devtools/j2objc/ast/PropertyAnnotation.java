@@ -36,7 +36,8 @@ public class PropertyAnnotation extends Annotation {
 
   private static final List<String> PROPERTY_ATTRIBUTES = ImmutableList.of(
       "weak", "readonly", "copy", "assign", "nonatomic",
-      "getter", "setter", "retain", "unsafe_unretained",
+      "getter", "setter", "retain", "unsafe_unretained", "class",
+      "nonnull", "nullable", "null_resettable", "null_unspecified",
       // Default values aren't kept, but may be listed in set when debugging.
       "atomic", "readwrite", "strong");
   private static final Ordering<String> ATTRIBUTE_ORDERING = Ordering.explicit(PROPERTY_ATTRIBUTES);

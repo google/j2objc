@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -247,6 +248,34 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertErrorCount(1);
   }
 
+  public void testClassProperties() throws IOException {
+    options.setStaticAccessorMethods(true);
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+        + "public class Test {  "
+        + "@Property static int test; "
+        + "@Property(\"nonatomic\") static double d; }", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "@property (class) jint test;",
+        "@property (nonatomic, class) jdouble d;");
+
+    // Verify class attributes aren't assigned to instance fields.
+    translateSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+        + "public class Test {  "
+        + "@Property(\"class\") int test; }", "Test", "Test.h");
+    assertErrorCount(1);
+
+    // Verify static accessor generation must be enabled for class properties.
+    ErrorUtil.reset();
+    options.setStaticAccessorMethods(false);
+    translateSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+        + "public class Test {  "
+        + "@Property static int test; }", "Test", "Test.h");
+    assertErrorCount(1);
+  }
+
   public void testNullabilityAttributes() throws IOException {
     String source = "import javax.annotation.*; "
         + "@ParametersAreNonnullByDefault public class Test {"
@@ -370,6 +399,32 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "#endif");
   }
 
+  public void testPropertyNullability() throws IOException {
+    String source = "import javax.annotation.*;"
+        + "import com.google.j2objc.annotations.Property;"
+        + "@ParametersAreNonnullByDefault public class Test {"
+        + "  @Nullable @Property String test;"
+        + "  @Property String test2;"
+        + "  @Property @Nonnull String test3;"
+        + "  @Property(\"nonatomic\") String test4;"
+        + "  @Property(\"null_resettable\") String test5;"
+        + "  @Property(\"null_unspecified\") String test6;"
+        + "}";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "Test", "Test.h");
+
+    assertTranslatedLines(translation,
+        "@property (copy, nullable) NSString *test;",
+        "@property (copy, null_resettable) NSString *test2;",
+        "@property (copy, nonnull) NSString *test3;",
+        "@property (copy, nonatomic, null_resettable) NSString *test4;");
+
+    // Verify explicit nullability parameters override default.
+    assertTranslatedLines(translation,
+        "@property (copy, null_resettable) NSString *test5;",
+        "@property (copy, null_unspecified) NSString *test6;");
+  }
+
   public void testFieldWithIntersectionType() throws IOException {
     String translation = translateSourceFile(
         "class Test <T extends Comparable & Runnable> { T foo; }", "Test", "Test.h");
@@ -413,7 +468,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTrue(methods.get(8).toString().startsWith("void yak()"));
     assertTrue(methods.get(9).toString().startsWith("void zebra()"));
   }
-  
+
   // Verify that an empty statement following a type declaration is ignored.
   // The JDT parser discards them, while javac includes them in the compilation unit.
   public void testEmptyStatementsIgnored() throws IOException {
