@@ -30,12 +30,16 @@ import java.nio.charset.UnsupportedCharsetException;
  * @author Tom Ball
  */
 public class IOSCharsetEncoder extends CharsetEncoder {
+
+  private final long nsEncoding;
   private char[] inBuffer;
   private byte[] byteBuffer;
   private int outIndex;
 
-  protected IOSCharsetEncoder(Charset charset, float maxBytesPerChar) {
-    super(charset, maxBytesPerChar, maxBytesPerChar, new byte[] { (byte) '?' });
+  protected IOSCharsetEncoder(
+      Charset charset, float averageBytesPerChar, float maxBytesPerChar, long nsEncoding) {
+    super(charset, averageBytesPerChar, maxBytesPerChar);
+    this.nsEncoding = nsEncoding;
   }
 
   @Override
@@ -79,7 +83,7 @@ public class IOSCharsetEncoder extends CharsetEncoder {
       System.arraycopy(inBuffer, 0, chars, 0, inBuffer.length);
       inBuffer = null;
     } else {
-      if (((IOSCharset) cs).nsEncoding() == /* NSUnicodeStringEncoding */ 10L) {
+      if (nsEncoding == /* NSUnicodeStringEncoding */ 10L) {
         // Prepend required BOM for Java's big-endian encoding default.
         chars = new char[in.remaining() + 1];
         chars[0] = (char) 0xFEFF;
@@ -90,7 +94,7 @@ public class IOSCharsetEncoder extends CharsetEncoder {
       }
     }
     in.get(chars, i, chars.length - i);
-    byte[] bytes = encode(chars, ((IOSCharset) cs).nsEncoding());
+    byte[] bytes = encode(chars, nsEncoding);
     if (bytes.length == 0) {
       inBuffer = chars;
     } else {

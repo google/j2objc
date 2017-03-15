@@ -25,9 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 /*-[
-#import "java/io/UnsupportedEncodingException.h"
-#import "java/lang/System.h"
-#import "java/util/logging/Logger.h"
+#include "com/google/j2objc/nio/charset/IOSCharsetDecoder.h"
+#include "com/google/j2objc/nio/charset/IOSCharsetEncoder.h"
+#include "java/io/UnsupportedEncodingException.h"
+#include "java/lang/System.h"
 ]-*/
 
 /**
@@ -37,25 +38,21 @@ import java.util.Set;
  */
 public class IOSCharset extends Charset {
 
-  // The NSStringEncoding enum value for this charset.
-  private long nsEncoding;
-
-  // The maximum number of bytes in any character.
-  private float charBytes;
+  // CharsetInfo*
+  private final long charsetInfo;
 
   private static Map<String, IOSCharset> encodings = new HashMap<String, IOSCharset>();
 
   public static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
 
-  private IOSCharset(long nsEncoding, String canonicalName, String[] aliases, float charBytes) {
+  private IOSCharset(String canonicalName, String[] aliases, long info) {
     super(canonicalName, aliases);
-    this.nsEncoding = nsEncoding;
-    this.charBytes = charBytes;
+    charsetInfo = info;
   }
 
-  public long nsEncoding() {
-    return nsEncoding;
-  }
+  public native long nsEncoding() /*-[
+    return ((CharsetInfo *)self->charsetInfo_)->nsEncoding;
+  ]-*/;
 
   @Override
   public boolean contains(Charset charset) {
@@ -63,14 +60,18 @@ public class IOSCharset extends Charset {
   }
 
   @Override
-  public CharsetEncoder newEncoder() {
-    return new IOSCharsetEncoder(this, charBytes);
-  }
+  public native CharsetEncoder newEncoder() /*-[
+    CharsetInfo *info = (CharsetInfo *)self->charsetInfo_;
+    return create_ComGoogleJ2objcNioCharsetIOSCharsetEncoder_initWithJavaNioCharsetCharset_withFloat_withFloat_withLong_(
+        self, info->averageBytesPerChar, info->maxBytesPerChar, info->nsEncoding);
+  ]-*/;
 
   @Override
-  public CharsetDecoder newDecoder() {
-    return new IOSCharsetDecoder(this);
-  }
+  public native CharsetDecoder newDecoder() /*-[
+    CharsetInfo *info = (CharsetInfo *)self->charsetInfo_;
+    return create_ComGoogleJ2objcNioCharsetIOSCharsetDecoder_initWithJavaNioCharsetCharset_withFloat_withFloat_withLong_(
+        self, info->averageCharsPerByte, info->maxCharsPerByte, info->nsEncoding);
+  ]-*/;
 
   public static Set<String> getAvailableCharsetNames() {
     return getEncodings().keySet();
@@ -98,11 +99,14 @@ public class IOSCharset extends Charset {
 
   /*-[
   typedef struct {
-    NSStringEncoding encoding;
-    NSString *name;
+    NSStringEncoding nsEncoding;
+    NSString *javaName;
     NSString **aliases;
     unsigned aliasCount;
-    unsigned charBytes;
+    jfloat averageBytesPerChar;
+    jfloat maxBytesPerChar;
+    jfloat averageCharsPerByte;
+    jfloat maxCharsPerByte;
   } CharsetInfo;
 
   static const NSString *utf8_aliases[] = { @"unicode-1-1-utf-8", @"UTF8" };
@@ -145,39 +149,57 @@ public class IOSCharset extends Charset {
   //
   // All encoding names must be uppercase, so map lookups are case-insensitive.
   static const CharsetInfo iosCharsets[] = {
-    { NSUTF8StringEncoding, @"UTF-8", (NSString **) utf8_aliases, 2, 1 },
-    { NSASCIIStringEncoding, @"US-ASCII", (NSString **) ascii_aliases, 16, 1 },
-    { NSJapaneseEUCStringEncoding, @"EUC-JP", (NSString **) eucjp_aliases, 7, 2 },
-    { NSISOLatin1StringEncoding, @"ISO-8859-1", (NSString **) iso8859_aliases, 15, 1 },
-    { NSSymbolStringEncoding, @"X-MACSYMBOL", (NSString **) symbol_aliases, 1, 1 },
-    { NSShiftJISStringEncoding, @"SHIFT_JIS", (NSString **) shiftjis_aliases, 6, 1 },
-    { NSISOLatin2StringEncoding, @"ISO-8859-2", (NSString **) latin2_aliases, 13, 1 },
-    { NSUnicodeStringEncoding, @"UTF-16", (NSString **) utf16_aliases, 5, 2 },
-    { NSWindowsCP1251StringEncoding, @"WINDOWS-1251", (NSString **) win1251_aliases, 3, 1 },
-    { NSWindowsCP1252StringEncoding, @"WINDOWS-1252", (NSString **) win1252_aliases, 2, 1 },
-    { NSWindowsCP1253StringEncoding, @"WINDOWS-1253", (NSString **) win1253_aliases, 2, 1 },
-    { NSWindowsCP1254StringEncoding, @"WINDOWS-1254", (NSString **) win1254_aliases, 2, 1 },
-    { NSWindowsCP1250StringEncoding, @"WINDOWS-1250", (NSString **) win1250_aliases, 2, 1 },
-    { NSISO2022JPStringEncoding, @"ISO-2022-JP", (NSString **) iso2022_aliases, 5, 2 },
-    { NSMacOSRomanStringEncoding, @"X-MACROMAN", (NSString **) macroman_aliases, 1, 1 },
-    { NSUTF16BigEndianStringEncoding, @"UTF-16BE", (NSString **) utf16be_aliases, 4, 2 },
-    { NSUTF16LittleEndianStringEncoding, @"UTF-16LE", (NSString **) utf16le_aliases, 3, 2 },
-    { NSUTF32StringEncoding, @"UTF-32", (NSString **) utf32_aliases, 2, 4 },
-    { NSUTF32BigEndianStringEncoding, @"UTF-32BE", (NSString **) utf32be_aliases, 2, 4 },
-    { NSUTF32LittleEndianStringEncoding, @"UTF-32LE", (NSString **) utf32le_aliases, 2, 4 }
+    { NSUTF8StringEncoding, @"UTF-8", (NSString **) utf8_aliases, 2,
+      1.1f, 3.0f, 1.0f, 1.0f },
+    { NSASCIIStringEncoding, @"US-ASCII", (NSString **) ascii_aliases, 16,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSJapaneseEUCStringEncoding, @"EUC-JP", (NSString **) eucjp_aliases, 7,
+      3.0f, 3.0f, 0.5f, 1.0f },
+    { NSISOLatin1StringEncoding, @"ISO-8859-1", (NSString **) iso8859_aliases, 15,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSSymbolStringEncoding, @"X-MACSYMBOL", (NSString **) symbol_aliases, 1,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSShiftJISStringEncoding, @"SHIFT_JIS", (NSString **) shiftjis_aliases, 6,
+      2.0f, 2.0f, 0.5f, 1.0f },
+    { NSISOLatin2StringEncoding, @"ISO-8859-2", (NSString **) latin2_aliases, 13,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSUnicodeStringEncoding, @"UTF-16", (NSString **) utf16_aliases, 5,
+      2.0f, 4.0f, 0.5f, 1.0f },
+    { NSWindowsCP1251StringEncoding, @"WINDOWS-1251", (NSString **) win1251_aliases, 3,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSWindowsCP1252StringEncoding, @"WINDOWS-1252", (NSString **) win1252_aliases, 2,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSWindowsCP1253StringEncoding, @"WINDOWS-1253", (NSString **) win1253_aliases, 2,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSWindowsCP1254StringEncoding, @"WINDOWS-1254", (NSString **) win1254_aliases, 2,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSWindowsCP1250StringEncoding, @"WINDOWS-1250", (NSString **) win1250_aliases, 2,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSISO2022JPStringEncoding, @"ISO-2022-JP", (NSString **) iso2022_aliases, 5,
+      4.0f, 8.0f, 0.5f, 1.0f },
+    { NSMacOSRomanStringEncoding, @"X-MACROMAN", (NSString **) macroman_aliases, 1,
+      1.0f, 1.0f, 1.0f, 1.0f },
+    { NSUTF16BigEndianStringEncoding, @"UTF-16BE", (NSString **) utf16be_aliases, 4,
+      2.0f, 2.0f, 0.5f, 1.0f },
+    { NSUTF16LittleEndianStringEncoding, @"UTF-16LE", (NSString **) utf16le_aliases, 3,
+      2.0f, 2.0f, 0.5f, 1.0f },
+    { NSUTF32StringEncoding, @"UTF-32", (NSString **) utf32_aliases, 2,
+      4.0f, 4.0f, 0.25f, 1.0f },
+    { NSUTF32BigEndianStringEncoding, @"UTF-32BE", (NSString **) utf32be_aliases, 2,
+      4.0f, 4.0f, 0.25f, 1.0f },
+    { NSUTF32LittleEndianStringEncoding, @"UTF-32LE", (NSString **) utf32le_aliases, 2,
+      4.0f, 4.0f, 0.25f, 1.0f },
   };
   static const int numIosCharsets = sizeof(iosCharsets) / sizeof(CharsetInfo);
 
-  static ComGoogleJ2objcNioCharsetIOSCharset *addEncoding(CharsetInfo info) {
-    IOSObjectArray *aliases = [IOSObjectArray arrayWithObjects:info.aliases
-                                                         count:info.aliasCount
+  static ComGoogleJ2objcNioCharsetIOSCharset *addEncoding(const CharsetInfo *info) {
+    IOSObjectArray *aliases = [IOSObjectArray arrayWithObjects:info->aliases
+                                                         count:info->aliasCount
                                                           type:NSString_class_()];
-    ComGoogleJ2objcNioCharsetIOSCharset *cs = [[[ComGoogleJ2objcNioCharsetIOSCharset alloc]
-                                                initWithLong:info.encoding
-                                                withNSString:info.name
-                                           withNSStringArray:aliases
-                                                   withFloat:info.charBytes] autorelease];
-    [ComGoogleJ2objcNioCharsetIOSCharset_encodings putWithId:info.name withId:cs];
+    ComGoogleJ2objcNioCharsetIOSCharset *cs =
+        create_ComGoogleJ2objcNioCharsetIOSCharset_initWithNSString_withNSStringArray_withLong_(
+            info->javaName, aliases, (jlong)info);
+    [ComGoogleJ2objcNioCharsetIOSCharset_encodings putWithId:info->javaName withId:cs];
     return cs;
   }
   ]-*/
@@ -194,14 +216,14 @@ public class IOSCharset extends Charset {
       }
     }
     // Return UTF-8 default, like JRE does.
-    return addEncoding(iosCharsets[0]);
+    return addEncoding(&iosCharsets[0]);
   ]-*/;
 
   private static native Map<String, IOSCharset> getEncodings() /*-[
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
       for (jint i = 0; i < numIosCharsets; i++) {
-        addEncoding(iosCharsets[i]);
+        addEncoding(&iosCharsets[i]);
       }
     });
     return ComGoogleJ2objcNioCharsetIOSCharset_encodings;

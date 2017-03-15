@@ -30,12 +30,16 @@ import java.nio.charset.UnsupportedCharsetException;
  * @author Tom Ball
  */
 public class IOSCharsetDecoder extends CharsetDecoder {
+
+  private final long nsEncoding;
   private byte[] inBuffer;
   private char[] charBuffer;
   private int outIndex;
 
-  protected IOSCharsetDecoder(Charset charset) {
-    super(charset, 1, 4);
+  protected IOSCharsetDecoder(
+      Charset charset, float averageCharsPerByte, float maxCharsPerByte, long nsEncoding) {
+    super(charset, averageCharsPerByte, maxCharsPerByte);
+    this.nsEncoding = nsEncoding;
   }
 
   @Override
@@ -80,7 +84,7 @@ public class IOSCharsetDecoder extends CharsetDecoder {
       bytes = new byte[in.remaining()];
     }
     in.get(bytes, i, bytes.length - i);
-    String s = decode(bytes, ((IOSCharset) cs).nsEncoding());
+    String s = decode(bytes, nsEncoding);
     if (s.isEmpty()) {
       inBuffer = bytes;
     } else {
