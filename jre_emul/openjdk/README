@@ -1,0 +1,10 @@
+Name: OpenJDK
+URL: http://hg.openjdk.java.net/jdk8/jdk8/
+Version: jdk8-b132
+License: The GNU General Public License (GPL)
+License File: LICENSE
+
+Modifications:
+- Added support for a secondary digit grouping size in DecimalFormat, allowing correct formatting of
+  the Indian number system.
+- Search for "J2ObjC" for inline commends describing local modifications.
