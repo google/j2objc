@@ -126,7 +126,7 @@ public class EnumRewriter extends UnitTreeVisitor {
 
     StringBuffer sb = new StringBuffer("id names[] = {\n  ");
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
-      sb.append("@\"" + constant.getName() + "\", ");
+      sb.append("@\"" + ElementUtil.getName(constant.getVariableElement()) + "\", ");
     }
     sb.append("\n};");
     stmts.add(new NativeStatement(sb.toString()));

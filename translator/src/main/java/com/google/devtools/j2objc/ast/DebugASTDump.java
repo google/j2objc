@@ -102,7 +102,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(EnumConstantDeclaration node) {
-    printName(node.getName());
+    printName(node.getVariableElement());
     return true;
   }
 
@@ -221,7 +221,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(SuperMethodReference node) {
-    printName(node.getName());
+    printName(node.getExecutableElement());
     return true;
   }
 

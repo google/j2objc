@@ -29,7 +29,6 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   private VariableElement variableElement = null;
   private ExecutablePair method = ExecutablePair.NULL;
   private TypeMirror varargsType = null;
-  private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
   private final ChildLink<TypeDeclaration> anonymousClassDeclaration =
       ChildLink.create(TypeDeclaration.class, this);
@@ -41,7 +40,6 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     variableElement = other.getVariableElement();
     method = other.getExecutablePair();
     varargsType = other.getVarargsType();
-    name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
@@ -86,15 +84,6 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     return this;
   }
 
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public EnumConstantDeclaration setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
   public List<Expression> getArguments() {
     return arguments;
   }
@@ -118,7 +107,6 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       annotations.accept(visitor);
-      name.accept(visitor);
       arguments.accept(visitor);
       anonymousClassDeclaration.accept(visitor);
     }

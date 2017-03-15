@@ -715,8 +715,7 @@ public class TreeConverter {
     newNode
         .setVariableElement(BindingConverter.getVariableElement(node.resolveVariable()))
         .setExecutablePair(new ExecutablePair(element, BindingConverter.getType(methodBinding)))
-        .setVarargsType(getVarargsType(methodBinding, node.arguments()))
-        .setName((SimpleName) convert(node.getName()));
+        .setVarargsType(getVarargsType(methodBinding, node.arguments()));
     for (Object argument : node.arguments()) {
       newNode.addArgument((Expression) convert(argument));
     }
@@ -1149,8 +1148,7 @@ public class TreeConverter {
     SuperMethodReference newNode = new SuperMethodReference();
     convertMethodReference(node, newNode, node.resolveMethodBinding(), false);
     return newNode
-        .setQualifier((Name) TreeConverter.convert(node.getQualifier()))
-        .setName((SimpleName) TreeConverter.convert(node.getName()));
+        .setQualifier((Name) TreeConverter.convert(node.getQualifier()));
   }
 
   private static TreeNode convertSwitchCase(org.eclipse.jdt.core.dom.SwitchCase node) {

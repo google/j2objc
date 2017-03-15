@@ -848,14 +848,11 @@ public class TreeConverter {
       convertMethodReference(node, newNode);
       if (node.getQualifierExpression().getKind() == Kind.IDENTIFIER) {
         // super::foo
-        return newNode
-            .setName(convertSimpleName(node.sym, node.type,
-                getPosition(node.getQualifierExpression())));
+        return newNode;
       } else {
         // Qualifier expression is <name>."super", so it's always a JCFieldAccess.
         JCTree.JCFieldAccess expr = (JCTree.JCFieldAccess) node.getQualifierExpression();
         return newNode
-            .setName(convertSimpleName(node.sym, node.type, getPosition(expr)))
             .setQualifier(
                 convertSimpleName(nameSymbol(expr.selected), expr.type,
                     getPosition(expr.selected)));
@@ -1158,7 +1155,6 @@ public class TreeConverter {
     }
     if (var.getKind() == ElementKind.ENUM_CONSTANT) {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration()
-          .setName(convertSimpleName(var, node.type, getNamePosition(node)))
           .setVariableElement(var);
       convertBodyDeclaration(node, node.getModifiers(), newNode, var);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());

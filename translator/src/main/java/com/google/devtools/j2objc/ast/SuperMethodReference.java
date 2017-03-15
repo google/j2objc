@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.ast;
 public class SuperMethodReference extends MethodReference {
 
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   // Resolved by OuterReferenceResolver.
   private ChildLink<Expression> receiver = ChildLink.create(Expression.class, this);
 
@@ -28,7 +27,6 @@ public class SuperMethodReference extends MethodReference {
   public SuperMethodReference(SuperMethodReference other) {
     super(other);
     qualifier.copyFrom(other.getQualifier());
-    name.copyFrom(other.getName());
     receiver.copyFrom(other.getReceiver());
   }
 
@@ -43,15 +41,6 @@ public class SuperMethodReference extends MethodReference {
 
   public SuperMethodReference setQualifier(Name newQualifier) {
     qualifier.set(newQualifier);
-    return this;
-  }
-
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public SuperMethodReference setName(SimpleName newName) {
-    name.set(newName);
     return this;
   }
 
@@ -71,7 +60,6 @@ public class SuperMethodReference extends MethodReference {
       lambdaCaptureArgs.accept(visitor);
       qualifier.accept(visitor);
       typeArguments.accept(visitor);
-      name.accept(visitor);
       receiver.accept(visitor);
     }
     visitor.endVisit(this);

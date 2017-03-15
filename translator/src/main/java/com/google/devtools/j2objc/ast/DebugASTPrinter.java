@@ -358,7 +358,7 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.printIndent();
     printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getVariableElement()));
     if (!node.getArguments().isEmpty()) {
       sb.print('(');
       for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
@@ -932,7 +932,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print(".");
     }
     sb.print("super::");
-    sb.print(node.getName().toString());
+    sb.print(ElementUtil.getName(node.getExecutableElement()));
     return false;
   }
 
