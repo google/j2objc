@@ -509,11 +509,6 @@ NSString *NSString_java_valueOfLong_(jlong value) {
                             charset:charset];
 }
 
-NSStringEncoding parseCharsetName(NSString *charset) {
-  JavaNioCharsetCharset *cs = JavaNioCharsetCharset_forNameUEEWithNSString_(charset);
-  return (NSStringEncoding)[(ComGoogleJ2objcNioCharsetIOSCharset *)cs nsEncoding];
-}
-
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
                             hibyte:(jint)hibyte {
   return [NSString java_stringWithBytes:value
@@ -536,11 +531,10 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                             offset:(jint)offset
                             length:(jint)count
                        charsetName:(NSString *)charset {
-  NSStringEncoding encoding = parseCharsetName(charset);
   return [NSString java_stringWithBytes:value
                                  offset:offset
                                  length:count
-                               encoding:encoding];
+                                charset:JavaNioCharsetCharset_forNameUEEWithNSString_(charset)];
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
@@ -556,8 +550,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                                    length:count
                                  encoding:encoding];
   }
-  JavaNioCharBuffer *cb =
-      [charset decodeWithJavaNioByteBuffer:JavaNioByteBuffer_wrapWithByteArray_(value)];
+  JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
+      JavaNioByteBuffer_wrapWithByteArray_withInt_withInt_(value, offset, count)];
   return [NSString stringWithCharacters:[cb array]->buffer_ + [cb position] length:[cb remaining]];
 }
 
@@ -625,18 +619,14 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (IOSByteArray *)java_getBytes  {
-  JavaNioCharsetCharset *charset = JavaNioCharsetCharset_defaultCharset();
-  NSStringEncoding encoding =
-      (NSStringEncoding)[(ComGoogleJ2objcNioCharsetIOSCharset *)charset nsEncoding];
-  return [self java_getBytesWithEncoding:encoding];
+  return [self java_getBytesWithCharset:JavaNioCharsetCharset_defaultCharset()];
 }
 
 - (IOSByteArray *)java_getBytesWithCharsetName:(NSString *)charsetName {
   if (!charsetName) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSStringEncoding encoding = parseCharsetName(charsetName);
-  return [self java_getBytesWithEncoding:encoding];
+  return [self java_getBytesWithCharset:JavaNioCharsetCharset_forNameUEEWithNSString_(charsetName)];
 }
 
 - (IOSByteArray *)java_getBytesWithCharset:(JavaNioCharsetCharset *)charset {
