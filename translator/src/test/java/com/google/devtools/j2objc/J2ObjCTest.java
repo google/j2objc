@@ -224,4 +224,11 @@ public class J2ObjCTest extends GenerationTest {
     J2ObjC.run(Collections.singletonList(examplePath), options);
     assertErrorCount(0);
   }
+
+  // Test for warning if compiling jar with -g.
+  public void testJarSourceDebug() throws Exception {
+    options.setEmitLineDirectives(true);
+    J2ObjC.run(Collections.singletonList(jarPath), options);
+    assertWarningCount(1);
+  }
 }

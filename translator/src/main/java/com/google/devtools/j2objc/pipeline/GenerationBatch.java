@@ -153,6 +153,13 @@ public class GenerationBatch {
       ErrorUtil.error("No such file: " + filename);
       return;
     }
+
+    // Warn if source debugging is specified for a jar file, since native debuggers
+    // don't support Java-like source paths.
+    if (options.emitLineDirectives()) {
+      ErrorUtil.warning("source debugging of jar files is not supported: " + filename);
+    }
+
     GenerationUnit combinedUnit = null;
     if (options.getHeaderMap().combineSourceJars()) {
       combinedUnit = GenerationUnit.newCombinedJarUnit(filename, options);
