@@ -6,7 +6,6 @@ sudo: false
 
 env:
   - LATEST_JAVA=true
-  - LATEST_JAVA=false
 
 matrix:
   allow_failures:
