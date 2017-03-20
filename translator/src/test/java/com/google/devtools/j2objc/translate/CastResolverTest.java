@@ -266,4 +266,11 @@ public class CastResolverTest extends GenerationTest {
     // Needs the JavaLangInteger cast.
     assertTranslation(translation, "return ((JavaLangInteger *) [((id<Bar>) nil_chk(bar)) foo]);");
   }
+
+  public void testCastInSuperFieldAccess() throws IOException {
+    addSourceFile("class A <T> { T foo; }", "A.java");
+    String translation = translateSourceFile("class Test extends A<String> {"
+        + " int fooLength() { return super.foo.length(); } }", "Test", "Test.m");
+    assertTranslation(translation, "(NSString *) nil_chk(foo_)");
+  }
 }

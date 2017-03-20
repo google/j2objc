@@ -1140,7 +1140,7 @@ public class TreeConverter {
     return new SuperFieldAccess()
         .setVariableElement(BindingConverter.getVariableElement(node.resolveFieldBinding()))
         .setQualifier((Name) convert(node.getQualifier()))
-        .setName((SimpleName) convert(node.getName()));
+        .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()));
   }
 
   private static TreeNode convertSuperMethodReference(
@@ -1186,8 +1186,7 @@ public class TreeConverter {
             BindingConverter.getExecutableElement(methodBinding),
             BindingConverter.getType(methodBinding)))
         .setVarargsType(getVarargsType(methodBinding, node.arguments()))
-        .setQualifier((Name) TreeConverter.convert(node.getQualifier()))
-        .setName((SimpleName) TreeConverter.convert(node.getName()));
+        .setQualifier((Name) TreeConverter.convert(node.getQualifier()));
   }
 
   private static TreeNode convertTagElement(org.eclipse.jdt.core.dom.TagElement node) {
@@ -1268,7 +1267,6 @@ public class TreeConverter {
     }
     convertMethodReference(node, newNode, methodBinding, !BindingUtil.isStatic(methodBinding));
     return newNode
-        .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setType((Type) TreeConverter.convert(node.getType()));
   }
 

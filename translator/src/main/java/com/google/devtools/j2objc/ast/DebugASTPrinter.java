@@ -901,7 +901,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print(".");
     }
     sb.print("super.");
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getVariableElement()));
     return false;
   }
 
@@ -913,7 +913,7 @@ public class DebugASTPrinter extends TreeVisitor {
     }
     sb.print("super.");
     printTypeParameters(node.getExecutableElement().getTypeParameters());
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getExecutableElement()));
     sb.print("(");
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
       it.next().accept(this);
@@ -1096,7 +1096,7 @@ public class DebugASTPrinter extends TreeVisitor {
       }
       sb.print('>');
     }
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getExecutableElement()));
     return false;
   }
 

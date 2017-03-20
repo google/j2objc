@@ -80,8 +80,14 @@ public class OldAndroidInputStreamReaderTest extends TestCase {
      * Checks if several encodings works with InputStreamReader
      */
     public void testStringy() throws Exception {
+        /* J2ObjC: U+DC03 is an invalid unicode character, and NSString differs from Java in how it
+         * handles invalid characters. NSString will stop producing bytes at the first invalid, or
+         * for UTF-16 encodings it will write the invalid bytes straight through to the encoded
+         * bytes. Java will alway replace an invalid character with an appropriate replacement
+         * sequence.
         String src = "The quick brown fox\u00A0\u00FF" +
-                "\uFFFC\uD7C5\uDC03bloof";
+                "\uFFFC\uD7C5\uDC03bloof";*/
+        String src = "The quick brown fox\u00A0\u00FF\uFFFC\uD7C5bloof";
 
         String[] enc = new String[]{
                 "utf-8", "us-ascii", "iso-8859-1", "utf-16be", "utf-16le",

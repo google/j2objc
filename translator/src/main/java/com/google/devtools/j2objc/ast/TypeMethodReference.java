@@ -19,28 +19,17 @@ package com.google.devtools.j2objc.ast;
 public class TypeMethodReference extends MethodReference {
 
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public TypeMethodReference() {}
 
   public TypeMethodReference(TypeMethodReference other) {
     super(other);
     type.copyFrom(other.getType());
-    name.copyFrom(other.getName());
   }
 
   @Override
   public Kind getKind() {
     return Kind.TYPE_METHOD_REFERENCE;
-  }
-
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public TypeMethodReference setName(SimpleName newName) {
-    name.set(newName);
-    return this;
   }
 
   public Type getType() {
@@ -59,7 +48,6 @@ public class TypeMethodReference extends MethodReference {
       lambdaCaptureArgs.accept(visitor);
       type.accept(visitor);
       typeArguments.accept(visitor);
-      name.accept(visitor);
     }
     visitor.endVisit(this);
   }

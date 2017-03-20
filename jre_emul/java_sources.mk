@@ -460,8 +460,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/ReflectionStrippedError.java \
   com/google/j2objc/WeakProxy.java \
   com/google/j2objc/nio/charset/IOSCharset.java \
-  com/google/j2objc/nio/charset/IOSCharsetDecoder.java \
-  com/google/j2objc/nio/charset/IOSCharsetEncoder.java \
+  com/google/j2objc/nio/charset/IconvCharsetDecoder.java \
+  com/google/j2objc/nio/charset/IconvCharsetEncoder.java \
   com/google/j2objc/util/NativeTimeZone.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \

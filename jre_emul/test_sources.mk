@@ -227,6 +227,7 @@ TEST_SOURCES := \
     com/google/j2objc/java8/TypeMethodReferenceTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/nio/FileChannelTest.java \
+    com/google/j2objc/nio/charset/CharsetTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
     com/google/j2objc/security/IosSHAMessageDigestTest.java \
     com/google/j2objc/util/NativeTimeZoneTest.java \

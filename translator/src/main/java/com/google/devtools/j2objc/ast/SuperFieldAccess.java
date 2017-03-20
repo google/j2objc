@@ -24,7 +24,7 @@ public class SuperFieldAccess extends Expression {
 
   private VariableElement variableElement = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private TypeMirror typeMirror = null;
 
   public SuperFieldAccess() {}
 
@@ -32,7 +32,7 @@ public class SuperFieldAccess extends Expression {
     super(other);
     variableElement = other.getVariableElement();
     qualifier.copyFrom(other.getQualifier());
-    name.copyFrom(other.getName());
+    typeMirror = other.typeMirror;
   }
 
   @Override
@@ -49,10 +49,14 @@ public class SuperFieldAccess extends Expression {
     return this;
   }
 
+  public SuperFieldAccess setTypeMirror(TypeMirror typeMirror) {
+    this.typeMirror = typeMirror;
+    return this;
+  }
+
   @Override
   public TypeMirror getTypeMirror() {
-    SimpleName nameNode = name.get();
-    return nameNode != null ? nameNode.getTypeMirror() : null;
+    return typeMirror;
   }
 
   public Name getQualifier() {
@@ -64,20 +68,10 @@ public class SuperFieldAccess extends Expression {
     return this;
   }
 
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public SuperFieldAccess setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       qualifier.accept(visitor);
-      name.accept(visitor);
     }
     visitor.endVisit(this);
   }

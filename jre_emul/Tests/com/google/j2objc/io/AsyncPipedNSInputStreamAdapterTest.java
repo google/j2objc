@@ -130,15 +130,18 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
   /**
    * An asynchronous data provider.
    */
-  class DataProvider implements AsyncPipedNSInputStreamAdapter.Delegate {
+  static class DataProvider implements AsyncPipedNSInputStreamAdapter.Delegate {
     int offset;
+    final byte[] data;
     final int dataSize;
 
-    DataProvider() {
-      dataSize = randomData.length;
+    DataProvider(byte[] data) {
+      this.data = data;
+      dataSize = this.data.length;
     }
 
-    DataProvider(int stopWritingAt) {
+    DataProvider(byte[] data, int stopWritingAt) {
+      this.data = data;
       dataSize = stopWritingAt;
     }
 
@@ -155,7 +158,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
         if (len == 0) {
           stream.close();
         } else {
-          stream.write(randomData, offset, len);
+          stream.write(data, offset, len);
           offset += len;
           if (offset >= dataSize) {
             stream.close();
@@ -182,7 +185,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
   @AutoreleasePool
   public void testFullWriteAndRead() {
-    DataProvider provider = new DataProvider();
+    DataProvider provider = new DataProvider(randomData);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer();
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
@@ -192,7 +195,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
   @AutoreleasePool
   public void testNothingWritten() {
-    DataProvider provider = new DataProvider(0);
+    DataProvider provider = new DataProvider(randomData, 0);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer();
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
@@ -202,7 +205,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
   @AutoreleasePool
   public void testNothingRead() {
-    DataProvider provider = new DataProvider();
+    DataProvider provider = new DataProvider(randomData);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer(0);
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
@@ -212,7 +215,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
   @AutoreleasePool
   public void testPartialRead() {
-    DataProvider provider = new DataProvider();
+    DataProvider provider = new DataProvider(randomData);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer(PARTIAL_SIZE);
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
@@ -223,7 +226,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
   @AutoreleasePool
   public void testPartialWrite() {
-    DataProvider provider = new DataProvider(PARTIAL_SIZE);
+    DataProvider provider = new DataProvider(randomData, PARTIAL_SIZE);
     NativeInputStreamConsumer consumer = new NativeInputStreamConsumer();
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     consumer.readUntilEnd(stream);
@@ -236,7 +239,7 @@ public class AsyncPipedNSInputStreamAdapterTest extends TestCase {
 
   @AutoreleasePool
   public void testTrivialCreate() {
-    DataProvider provider = new DataProvider();
+    DataProvider provider = new DataProvider(randomData);
     Object stream = AsyncPipedNSInputStreamAdapter.create(provider, STREAM_BUFFER_SIZE);
     assertNotNull(stream);
 

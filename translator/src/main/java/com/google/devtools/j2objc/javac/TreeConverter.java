@@ -705,7 +705,7 @@ public class TreeConverter {
     if ("super".equals(getMemberName(selected))) {
       SuperFieldAccess newNode = new SuperFieldAccess()
           .setVariableElement((VariableElement) node.sym)
-          .setName(convertSimpleName(node.sym, node.type, pos));
+          .setTypeMirror(node.type);
       if (selected.getKind() == Kind.MEMBER_SELECT) {
         newNode.setQualifier((Name) convert(((JCTree.JCFieldAccess) selected).getExpression()));
       }
@@ -863,7 +863,6 @@ public class TreeConverter {
       TypeMethodReference newNode = new TypeMethodReference();
       convertMethodReference(node, newNode);
       return newNode
-          .setName(convertSimpleName(node.sym, node.type, pos))
           .setType(convertType(node.type, pos, false));
     }
 
@@ -936,8 +935,7 @@ public class TreeConverter {
     if (target != null && "super".equals(getMemberName(target))) {
       SuperMethodInvocation newNode = new SuperMethodInvocation()
           .setExecutablePair(new ExecutablePair(sym, type))
-          .setVarargsType(node.varargsElement)
-          .setName(convertSimpleName(sym, type, getPosition(node)));
+          .setVarargsType(node.varargsElement);
       if (target.getKind() == Kind.MEMBER_SELECT) {
         // foo.bar.MyClass.super.print(...):
         //   target: foo.bar.MyClass.super

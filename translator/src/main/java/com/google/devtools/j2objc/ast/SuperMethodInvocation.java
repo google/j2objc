@@ -28,7 +28,6 @@ public class SuperMethodInvocation extends Expression {
   private ExecutablePair method = ExecutablePair.NULL;
   private TypeMirror varargsType = null;
   private final ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
-  private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   // Resolved by OuterReferenceResolver.
   private final ChildLink<Expression> receiver = ChildLink.create(Expression.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -40,14 +39,12 @@ public class SuperMethodInvocation extends Expression {
     method = other.getExecutablePair();
     varargsType = other.getVarargsType();
     qualifier.copyFrom(other.getQualifier());
-    name.copyFrom(other.getName());
     receiver.copyFrom(other.getReceiver());
     arguments.copyFrom(other.getArguments());
   }
 
   public SuperMethodInvocation(ExecutablePair method) {
     this.method = method;
-    name.set(new SimpleName(method.element()));
   }
 
   @Override
@@ -95,15 +92,6 @@ public class SuperMethodInvocation extends Expression {
     return this;
   }
 
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public SuperMethodInvocation setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
   public Expression getReceiver() {
     return receiver.get();
   }
@@ -126,7 +114,6 @@ public class SuperMethodInvocation extends Expression {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       qualifier.accept(visitor);
-      name.accept(visitor);
       receiver.accept(visitor);
       arguments.accept(visitor);
     }
