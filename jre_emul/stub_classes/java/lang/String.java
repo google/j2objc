@@ -60,8 +60,6 @@ public class String implements CharSequence, Comparable<String>, Serializable {
 
   public String(int[] codePoints, int offset, int length) {}
 
-  String(int i, int j, char[] chars) {}
-
   public String(String s) {}
 
   public String(StringBuffer sb) {}
@@ -329,4 +327,3 @@ public class String implements CharSequence, Comparable<String>, Serializable {
     }
   }
 }
-

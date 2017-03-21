@@ -53,7 +53,6 @@ public class Mappings {
       .put("java.lang.String.<init>([C)V", "java_stringWithCharacters:")
       .put("java.lang.String.<init>([CII)V", "java_stringWithCharacters:offset:length:")
       .put("java.lang.String.<init>([III)V", "java_stringWithInts:offset:length:")
-      .put("java.lang.String.<init>(II[C)V", "java_stringWithOffset:length:characters:")
       .put("java.lang.String.<init>(Ljava/lang/StringBuffer;)V",
           "java_stringWithJavaLangStringBuffer:")
       .put("java.lang.String.<init>(Ljava/lang/StringBuilder;)V",

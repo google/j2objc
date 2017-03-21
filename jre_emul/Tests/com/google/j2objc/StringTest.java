@@ -183,4 +183,36 @@ public class StringTest extends TestCase {
 
     assertEquals("abc", new String(new byte[] { 97, 98, 99 }, SIMPLE_CHARSET));
   }
+
+  public void testStringConstructorNullPointer() {
+    char[] chars = null;
+
+    try {
+      String.valueOf(chars);
+      fail("String.valueOf([C): Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+
+    try {
+      String.valueOf(chars, 0, 1);
+      fail("String.valueOf([CII): Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+
+    try {
+      new String(chars);
+      fail("String([C): Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+
+    try {
+      new String(chars, 0, 1);
+      fail("String([CII): Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+  }
 }

@@ -119,11 +119,6 @@
                                  offset:(jint)offset
                                  length:(jint)count;
 
-// String(int, int, char[])
-+ (NSString *)java_stringWithOffset:(jint)offset
-                             length:(jint)length
-                         characters:(IOSCharArray *)value;
-
 // String(int[], int, int)
 + (NSString *)java_stringWithInts:(IOSIntArray *)codePoints
                            offset:(jint)offset
