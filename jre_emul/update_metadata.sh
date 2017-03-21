@@ -8,14 +8,14 @@ TEMP_DIR=metadata_temp
 REPLACE_SCRIPT=../scripts/replace_metadata.py
 J2OBJC=../dist/j2objc
 STUBS_DIR=stub_classes
-SOURCE_FLAG="-source 1.8"
+TRANSLATION_FLAGS="-Xtranslate-bootclasspath"
 
 function update_file {
   objc_source=$1
   java_source=$2
   translated_source=$TRANSLATION_DIR/${java_source/.java/.m}
   result_source=$TEMP_DIR/$objc_source
-  $J2OBJC -d $TRANSLATION_DIR $SOURCE_FLAG $STUBS_DIR/$java_source
+  $J2OBJC -d $TRANSLATION_DIR $TRANSLATION_FLAGS $STUBS_DIR/$java_source
   $REPLACE_SCRIPT $objc_source $translated_source $result_source
 
   if ! diff -q $objc_source $result_source; then

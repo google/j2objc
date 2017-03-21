@@ -1015,32 +1015,32 @@ jint javaStringHashCode(NSString *string) {
     { NULL, "I", 0x1, 49, 32, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 49, 13, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 49, 46, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 50, 13, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 51, 32, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 52, 53, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 52, 54, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 55, 56, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 55, 57, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 58, 59, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 60, 59, -1, -1, -1, -1 },
-    { NULL, "[LNSString;", 0x1, 61, 13, -1, -1, -1, -1 },
-    { NULL, "[LNSString;", 0x1, 61, 46, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 62, 13, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 62, 46, -1, -1, -1, -1 },
-    { NULL, "LJavaLangCharSequence;", 0x1, 63, 32, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 64, 25, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 64, 32, -1, -1, -1, -1 },
-    { NULL, "[C", 0x1, 65, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 66, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 66, 67, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 68, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 68, 67, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 50, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 51, 13, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 52, 32, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 53, 54, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 53, 55, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 56, 57, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 56, 58, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 59, 60, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 61, 60, -1, -1, -1, -1 },
+    { NULL, "[LNSString;", 0x1, 62, 13, -1, -1, -1, -1 },
+    { NULL, "[LNSString;", 0x1, 62, 46, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 63, 13, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 63, 46, -1, -1, -1, -1 },
+    { NULL, "LJavaLangCharSequence;", 0x1, 64, 32, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 65, 25, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 65, 32, -1, -1, -1, -1 },
+    { NULL, "[C", 0x1, 66, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 67, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 67, 68, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, 69, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 70, 37, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 70, 14, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 71, 72, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 71, 73, -1, 74, -1, -1 },
+    { NULL, "LNSString;", 0x1, 69, 68, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 70, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 71, 37, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 71, 14, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x89, 72, 73, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 72, 74, -1, 75, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
@@ -1098,7 +1098,7 @@ jint javaStringHashCode(NSString *string) {
   methods[51].selector = @selector(java_lastIndexOf:fromIndex:);
   methods[52].selector = @selector(java_lastIndexOfString:);
   methods[53].selector = @selector(java_lastIndexOfString:fromIndex:);
-  methods[54].selector = @selector(length);
+  methods[54].selector = @selector(java_length);
   methods[55].selector = @selector(java_matches:);
   methods[56].selector = @selector(java_offsetByCodePoints:codePointOffset:);
   methods[57].selector = @selector(java_regionMatches:thisOffset:aString:otherOffset:count:);
@@ -1126,12 +1126,12 @@ jint javaStringHashCode(NSString *string) {
   methods[79].selector = @selector(java_joinWithJavaLangCharSequence:withJavaLangIterable:);
   #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 75, 76,
+    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 76, 77,
       -1 },
     { "serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },
     { "serialPersistentFields", "[LJavaIoObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
-      77, -1, -1 },
+      78, -1, -1 },
   };
   static const void *ptrTable[] = {
     "[B", "[BI", "[BII", "[BIII", "[BIILNSString;", "LJavaIoUnsupportedEncodingException;",
@@ -1142,19 +1142,19 @@ jint javaStringHashCode(NSString *string) {
     "codePointBefore", "codePointCount", "II", "compareTo", "compareToIgnoreCase", "concat",
     "contains", "LJavaLangCharSequence;", "endsWith", "equalsIgnoreCase", "getBytes",
     "LJavaNioCharsetCharset;", "II[BI", "getChars", "II[CI", "indexOf", "LNSString;I", "intern",
-    "isEmpty", "lastIndexOf", "matches", "offsetByCodePoints", "regionMatches", "ZILNSString;II",
-    "ILNSString;II", "replace", "CC", "LJavaLangCharSequence;LJavaLangCharSequence;", "replaceAll",
-    "LNSString;LNSString;", "replaceFirst", "split", "startsWith", "subSequence", "substring",
-    "toCharArray", "toLowerCase", "LJavaUtilLocale;", "toUpperCase", "trim", "contentEquals",
-    "join", "LJavaLangCharSequence;[LJavaLangCharSequence;",
-    "LJavaLangCharSequence;LJavaLangIterable;",
+    "isEmpty", "lastIndexOf", "length", "matches", "offsetByCodePoints", "regionMatches",
+    "ZILNSString;II", "ILNSString;II", "replace", "CC",
+    "LJavaLangCharSequence;LJavaLangCharSequence;", "replaceAll", "LNSString;LNSString;",
+    "replaceFirst", "split", "startsWith", "subSequence", "substring", "toCharArray", "toLowerCase",
+    "LJavaUtilLocale;", "toUpperCase", "trim", "contentEquals", "join",
+    "LJavaLangCharSequence;[LJavaLangCharSequence;", "LJavaLangCharSequence;LJavaLangIterable;",
     "(Ljava/lang/CharSequence;Ljava/lang/Iterable<+Ljava/lang/CharSequence;>;)Ljava/lang/String;",
     &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
     &NSString_serialPersistentFields, "LNSString_CaseInsensitiveComparator;",
     "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
     "Ljava/io/Serializable;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 80, 3, -1, 78, -1, 79, -1 };
+    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 80, 3, -1, 79, -1, 80, -1 };
   return &_NSString;
 }
 

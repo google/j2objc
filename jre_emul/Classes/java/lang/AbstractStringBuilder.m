@@ -726,33 +726,33 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x0, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x0, -1, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 1, 0, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "V", 0x1, 2, 0, -1, -1, -1, -1 },
-    { NULL, "C", 0x1, 3, 0, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 4, 0, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 3, 0, -1, -1, -1, -1 },
+    { NULL, "C", 0x1, 4, 0, -1, -1, -1, -1 },
     { NULL, "I", 0x1, 5, 0, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 6, 7, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 8, 7, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 9, 10, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 11, 12, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 13, 0, -1, -1, -1, -1 },
-    { NULL, "LJavaLangCharSequence;", 0x1, 14, 7, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 13, 7, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 15, 16, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 15, 17, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 18, 16, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 18, 17, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x401, 19, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 6, 0, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 7, 8, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 9, 8, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 10, 11, -1, -1, -1, -1 },
+    { NULL, "V", 0x1, 12, 13, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 14, 0, -1, -1, -1, -1 },
+    { NULL, "LJavaLangCharSequence;", 0x1, 15, 8, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 14, 8, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 16, 17, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 16, 18, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 19, 17, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 19, 18, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x401, 20, -1, -1, -1, -1, -1 },
     { NULL, "[C", 0x10, -1, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(initWithInt:);
-  methods[2].selector = @selector(length);
+  methods[2].selector = @selector(java_length);
   methods[3].selector = @selector(capacity);
   methods[4].selector = @selector(ensureCapacityWithInt:);
   methods[5].selector = @selector(trimToSize);
@@ -775,7 +775,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   methods[22].selector = @selector(getValue);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
-    "I", "ensureCapacity", "setLength", "charAt", "codePointAt", "codePointBefore",
+    "I", "length", "ensureCapacity", "setLength", "charAt", "codePointAt", "codePointBefore",
     "codePointCount", "II", "offsetByCodePoints", "getChars", "II[CI", "setCharAt", "IC",
     "substring", "subSequence", "indexOf", "LNSString;", "LNSString;I", "lastIndexOf", "toString"
   };
