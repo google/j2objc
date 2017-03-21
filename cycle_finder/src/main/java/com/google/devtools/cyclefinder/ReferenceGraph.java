@@ -17,6 +17,7 @@ package com.google.devtools.cyclefinder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.SetMultimap;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,5 +103,19 @@ public class ReferenceGraph {
       }
     }
     return subgraph;
+  }
+
+  public void print(PrintStream printStream) {
+    ArrayList<TypeNode> typeNodes = new ArrayList<>(edges.keySet());
+    Collections.sort(typeNodes, (a, b) -> a.getName().compareTo(b.getName()));
+    for (TypeNode typeNode : typeNodes) {
+      ArrayList<Edge> outgoingEdges = new ArrayList<>(edges.get(typeNode));
+      Collections.sort(
+          outgoingEdges, (a, b) -> a.getTarget().getName().compareTo(b.getTarget().getName()));
+      printStream.println("class: " + typeNode);
+      for (Edge e : outgoingEdges) {
+        printStream.println("       " + e);
+      }
+    }
   }
 }

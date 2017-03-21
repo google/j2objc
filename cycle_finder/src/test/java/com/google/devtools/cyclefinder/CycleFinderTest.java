@@ -38,6 +38,8 @@ public class CycleFinderTest extends TestCase {
   List<List<Edge>> cycles;
   List<String> whitelistEntries;
   List<String> blacklistEntries;
+  boolean printReferenceGraph;
+  ReferenceGraph referenceGraph;
 
   static {
     // Prevents errors and warnings from being printed to the console.
@@ -50,6 +52,8 @@ public class CycleFinderTest extends TestCase {
     inputFiles = new ArrayList<>();
     whitelistEntries = new ArrayList<>();
     blacklistEntries = new ArrayList<>();
+    printReferenceGraph = false;
+    referenceGraph = null;
   }
 
   @Override
@@ -385,6 +389,18 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA.$Lambda$1;", "LA;");
   }
 
+  public void testPrintReferenceGraph() throws Exception {
+    addSourceFile("A.java", "class A { B<? extends C> b; }");
+    addSourceFile("B.java", "class B<T> { T t; }");
+    addSourceFile("C.java", "class C { A a; }");
+    printReferenceGraph = true;
+    findCycles();
+    String graph = printReferenceGraphToString();
+    assertContains("class: LB<+LC;>;", graph);
+    assertContains("A -> (field b with type B<? extends C>)", graph);
+    assertContains("C -> (field a with type A)", graph);
+  }
+
   private void assertContains(String substr, String str) {
     assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
   }
@@ -418,6 +434,12 @@ public class CycleFinderTest extends TestCase {
     return cyclesOut.toString();
   }
 
+  private String printReferenceGraphToString() {
+    ByteArrayOutputStream referenceGraphOut = new ByteArrayOutputStream();
+    referenceGraph.print(new PrintStream(referenceGraphOut));
+    return referenceGraphOut.toString();
+  }
+
   private void findCycles() throws IOException {
     Options options = new Options();
     if (!whitelistEntries.isEmpty()) {
@@ -432,8 +454,14 @@ public class CycleFinderTest extends TestCase {
     }
     options.setSourceFiles(inputFiles);
     options.setClasspath(System.getProperty("java.class.path"));
+    if (printReferenceGraph) {
+      options.setPrintReferenceGraph();
+    }
     CycleFinder finder = new CycleFinder(options);
     cycles = finder.findCycles();
+    if (printReferenceGraph) {
+      referenceGraph = finder.getReferenceGraph();
+    }
     if (ErrorUtil.errorCount() > 0) {
       fail("CycleFinder failed with errors:\n"
            + Joiner.on("\n").join(ErrorUtil.getErrorMessages()));

@@ -47,6 +47,8 @@ public class CycleFinder {
   private final NameList blacklist;
   private final List<List<Edge>> cycles = new ArrayList<>();
 
+  private ReferenceGraph referenceGraph = null;
+
   static {
     // Enable assertions in the cycle finder.
     ClassLoader loader = CycleFinder.class.getClassLoader();
@@ -130,7 +132,7 @@ public class CycleFinder {
     return strippedDir;
   }
 
-  public List<List<Edge>> findCycles() throws IOException {
+  public void constructGraph() throws IOException {
     Parser parser = createParser();
     NameList whitelist =
         NameList.createFromFiles(options.getWhitelistFiles(), options.fileEncoding());
@@ -152,12 +154,16 @@ public class CycleFinder {
     FileUtil.deleteTempDir(strippedDir);
 
     if (ErrorUtil.errorCount() > 0) {
-      return null;
+      return;
     }
 
-    // Construct the graph and find cycles.
-    ReferenceGraph graph = graphBuilder.constructGraph().getGraph();
-    for (ReferenceGraph component : graph.getStronglyConnectedComponents(getSeedNodes(graph))) {
+    // Construct the graph.
+    referenceGraph = graphBuilder.constructGraph().getGraph();
+  }
+
+  public List<List<Edge>> findCycles() {
+    for (ReferenceGraph component :
+        referenceGraph.getStronglyConnectedComponents(getSeedNodes(referenceGraph))) {
       handleStronglyConnectedComponent(component);
     }
     return cycles;
@@ -190,6 +196,10 @@ public class CycleFinder {
         unusedTypes.remove(e.getOrigin());
       }
     }
+  }
+
+  public ReferenceGraph getReferenceGraph() {
+    return referenceGraph;
   }
 
   private boolean shouldAddCycle(List<Edge> cycle) {
@@ -228,9 +238,14 @@ public class CycleFinder {
     CycleFinder finder = new CycleFinder(options);
     finder.testFileExistence();
     exitOnErrors();
-    List<List<Edge>> cycles = finder.findCycles();
+    finder.constructGraph();
     exitOnErrors();
-    printCycles(cycles, System.out);
-    System.exit(ErrorUtil.errorCount() + cycles.size());
+    if (options.printReferenceGraph()) {
+      finder.getReferenceGraph().print(System.out);
+    } else {
+      List<List<Edge>> cycles = finder.findCycles();
+      printCycles(cycles, System.out);
+      System.exit(ErrorUtil.errorCount() + cycles.size());
+    }
   }
 }

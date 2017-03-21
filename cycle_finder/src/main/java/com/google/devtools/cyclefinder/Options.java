@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -59,6 +58,7 @@ class Options {
   private List<String> blacklistFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
+  private boolean printReferenceGraph = false;
 
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
@@ -134,6 +134,15 @@ class Options {
       sourceVersion = sv;
   }
 
+  public boolean printReferenceGraph() {
+    return printReferenceGraph;
+  }
+
+  @VisibleForTesting
+  public void setPrintReferenceGraph() {
+     printReferenceGraph = true;
+  }
+
   public static void usage(String invalidUseMsg) {
     System.err.println("cycle_finder: " + invalidUseMsg);
     System.err.println(usageMessage);
@@ -198,6 +207,8 @@ class Options {
         } catch (IllegalArgumentException e) {
           usage("invalid source release: " + args[nArg]);
         }
+      } else if (arg.equals("--print-reference-graph")) {
+        options.printReferenceGraph = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
