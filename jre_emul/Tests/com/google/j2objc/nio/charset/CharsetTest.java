@@ -39,9 +39,8 @@ public class CharsetTest extends TestCase {
         .onUnmappableCharacter(CodingErrorAction.REPLACE);
     assertEquals(expected, decoder.decode(ByteBuffer.wrap(bytes)).toString());
     assertEquals(expected, cs.decode(ByteBuffer.wrap(bytes)).toString());
-    /* TODO(kstanger): Enable these when b/36119620 is resolved.
     assertEquals(expected, new String(bytes, charsetName));
-    assertEquals(expected, new String(bytes, cs));*/
+    assertEquals(expected, new String(bytes, cs));
   }
 
   public void testDecoding() throws IOException {

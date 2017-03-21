@@ -67,6 +67,13 @@ id makeException(Class exceptionClass) {
   return exception;
 }
 
+static void checkBounds(jint length, jint offset, jint count) {
+  if ((offset | count) < 0 || offset > length - count) {
+    @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_withInt_withInt_(
+        length, offset, count);
+  }
+}
+
 // TODO(tball): remove static method wrappers when reflection invocation calls functions directly.
 + (NSString *)java_valueOf:(id<NSObject>)obj {
   return NSString_java_valueOf_((id)obj);
@@ -486,11 +493,10 @@ NSString *NSString_java_valueOfLong_(jlong value) {
 
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value {
-  NSStringEncoding encoding = [NSString defaultCStringEncoding];
   return [self java_stringWithBytes:value
                              offset:0
                              length:value->size_
-                           encoding:encoding];
+                            charset:JavaNioCharsetCharset_defaultCharset()];
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
@@ -524,7 +530,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   return [NSString java_stringWithBytes:value
                                  offset:offset
                                  length:count
-                               encoding:NSUTF8StringEncoding];
+                                charset:JavaNioCharsetCharset_defaultCharset()];
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value
@@ -541,14 +547,18 @@ NSString *NSString_java_valueOfLong_(jlong value) {
                             offset:(jint)offset
                             length:(jint)count
                            charset:(JavaNioCharsetCharset *)charset {
+  nil_chk(value);
+  checkBounds(value->size_, offset, count);
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
-    ComGoogleJ2objcNioCharsetIOSCharset *iosCharset =
-        (ComGoogleJ2objcNioCharsetIOSCharset *) charset;
-    NSStringEncoding encoding = (NSStringEncoding) [iosCharset nsEncoding];
-    return [NSString java_stringWithBytes:value
-                                   offset:offset
-                                   length:count
-                                 encoding:encoding];
+    NSStringEncoding encoding =
+        (NSStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset nsEncoding];
+    NSString *result = [[[NSString alloc] initWithBytes:value->buffer_ + offset
+                                                 length:count
+                                               encoding:encoding] autorelease];
+    // NSString can return nil if there are invalid bytes in the input.
+    if (result) {
+      return result;
+    }
   }
   JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
       JavaNioByteBuffer_wrapWithByteArray_withInt_withInt_(value, offset, count)];
@@ -569,32 +579,6 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   NSString *s = [NSString stringWithCharacters:chars length:length];
   free(chars);
   return s;
-}
-
-+ (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(jint)offset
-                            length:(jint)count
-                          encoding:(NSStringEncoding)encoding {
-  id exception = nil;
-  if (offset < 0) {
-    exception =
-        [[JavaLangStringIndexOutOfBoundsException alloc] initWithInt:offset];
-  }
-  if (count < 0) {
-    exception =
-        [[JavaLangStringIndexOutOfBoundsException alloc] initWithInt:offset];
-  }
-  if (offset > (jint) value->size_ - count) {
-    exception = [[JavaLangStringIndexOutOfBoundsException alloc]
-                 initWithInt:offset + count];
-  }
-  if (exception) {
-    @throw [exception autorelease];
-  }
-
-  return [[[NSString alloc] initWithBytes:value->buffer_ + offset
-                                   length:count
-                                 encoding:encoding] autorelease];
 }
 
 + (NSString *)java_stringWithInts:(IOSIntArray *)codePoints

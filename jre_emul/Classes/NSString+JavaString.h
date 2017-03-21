@@ -111,11 +111,6 @@
                             length:(jint)count
                           charset:(JavaNioCharsetCharset *)charset;
 
-+ (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(jint)offset
-                            length:(jint)count
-                          encoding:(NSStringEncoding)encoding;
-
 // String(char[])
 + (NSString *)java_stringWithCharacters:(IOSCharArray *)value;
 
