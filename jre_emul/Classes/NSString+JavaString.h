@@ -212,8 +212,6 @@
 // String.getBytes(Charset)
 - (IOSByteArray *)java_getBytesWithCharset:(JavaNioCharsetCharset *)charset;
 
-- (IOSByteArray *)java_getBytesWithEncoding:(NSStringEncoding)encoding;
-
 // String.getBytes(int, int, byte[], int)
 - (void)java_getBytesWithSrcBegin:(jint)srcBegin
                        withSrcEnd:(jint)srcEnd

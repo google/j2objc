@@ -613,25 +613,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   return [self java_getBytesWithCharset:JavaNioCharsetCharset_forNameUEEWithNSString_(charsetName)];
 }
 
-- (IOSByteArray *)java_getBytesWithCharset:(JavaNioCharsetCharset *)charset {
-  nil_chk(charset);
-  if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
-    ComGoogleJ2objcNioCharsetIOSCharset *iosCharset =
-        (ComGoogleJ2objcNioCharsetIOSCharset *) charset;
-    NSStringEncoding encoding = (NSStringEncoding) [iosCharset nsEncoding];
-    return [self java_getBytesWithEncoding:encoding];
-  }
-  JavaNioByteBuffer *bb = [charset encodeWithJavaNioCharBuffer:
-      JavaNioCharBuffer_wrapWithCharArray_([IOSCharArray arrayWithNSString:self])];
-  IOSByteArray *result = [IOSByteArray arrayWithLength:[bb remaining]];
-  [bb getWithByteArray:result];
-  return result;
-}
-
-- (IOSByteArray *)java_getBytesWithEncoding:(NSStringEncoding)encoding {
-  if (!encoding) {
-    @throw makeException([JavaLangNullPointerException class]);
-  }
+static IOSByteArray *GetBytesWithEncoding(NSString *self, NSStringEncoding encoding) {
   int max_length = (jint) [self maximumLengthOfBytesUsingEncoding:encoding];
   jboolean includeBOM = (encoding == NSUTF16StringEncoding);
   if (includeBOM) {
@@ -647,19 +629,42 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   }
   NSRange range = NSMakeRange(0, [self length]);
   NSUInteger used_length;
+  NSRange remainingRange;
   [self getBytes:p
        maxLength:max_length
       usedLength:&used_length
         encoding:encoding
          options:0
            range:range
-  remainingRange:NULL];
+  remainingRange:&remainingRange];
   if (includeBOM) {
     used_length += 2;
   }
-  IOSByteArray *result = [IOSByteArray arrayWithBytes:(jbyte *)buffer
-                                                count:(jint)used_length];
+  IOSByteArray *result = nil;
+  // If remainingRange.length > 0 then getBytes failed to encode the whole string, possibly due to a
+  // character that can't be represented in the desired encoding.
+  if (remainingRange.length == 0) {
+    result = [IOSByteArray arrayWithBytes:(jbyte *)buffer count:(jint)used_length];
+  }
   free(buffer);
+  return result;
+}
+
+- (IOSByteArray *)java_getBytesWithCharset:(JavaNioCharsetCharset *)charset {
+  nil_chk(charset);
+  IOSByteArray *result;
+  if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
+    NSStringEncoding encoding =
+        (NSStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset nsEncoding];
+    result = GetBytesWithEncoding(self, encoding);
+    if (result) {
+      return result;
+    }
+  }
+  JavaNioByteBuffer *bb = [charset encodeWithJavaNioCharBuffer:
+      JavaNioCharBuffer_wrapWithCharArray_([IOSCharArray arrayWithNSString:self])];
+  result = [IOSByteArray arrayWithLength:[bb remaining]];
+  [bb getWithByteArray:result];
   return result;
 }
 
