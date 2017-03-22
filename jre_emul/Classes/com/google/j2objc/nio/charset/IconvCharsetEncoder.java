@@ -42,7 +42,7 @@ public class IconvCharsetEncoder extends CharsetEncoder {
   protected IconvCharsetEncoder(
       Charset charset, float averageBytesPerChar, float maxBytesPerChar, byte[] replacement,
       long iconvName) {
-    super(charset, averageBytesPerChar, maxBytesPerChar, replacement);
+    super(charset, averageBytesPerChar, maxBytesPerChar, replacement, /* trusted */ true);
     this.iconvName = iconvName;
   }
 

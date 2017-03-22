@@ -189,7 +189,8 @@ public abstract class CharsetEncoder {
       this(cs, averageBytesPerChar, maxBytesPerChar, replacement, false);
     }
 
-    CharsetEncoder(Charset cs,
+    // J2ObjC: Added protected access for the encoder in com.google.j2objc.nio.charset.
+    protected CharsetEncoder(Charset cs,
                    float averageBytesPerChar,
                    float maxBytesPerChar,
                    byte[] replacement,
