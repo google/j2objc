@@ -53,12 +53,12 @@ public class WeakReferenceTest extends TestCase {
 
   @Test
   public void testWeakReference() {
-    final boolean[] dealloced = { false };
+    final int[] finalizeCount = { 0 };
     for (@AutoreleasePool int i = 0; i < 1; i++) {
       // Create a referent inside this autorelease pool.
       Object referent = new Object() {
         public void finalize() {
-          dealloced[0] = true;
+          finalizeCount[0]++;
         }
       };
       weakRef = new WeakReference<Object>(referent);
@@ -67,12 +67,12 @@ public class WeakReferenceTest extends TestCase {
       // Clear referent ref, verify it's still available in the reference.
       referent = null;
       assertNotNull("weakRef cleared too soon", weakRef.get());
-      assertFalse("referent dealloc'ed too soon", dealloced[0]);
+      assertEquals("referent dealloc'ed too soon", 0, finalizeCount[0]);
     }
 
     // Verify weak reference was cleared.
     assertNull("weakRef wasn't cleared", weakRef.get());
-    assertTrue("referent wasn't dealloc'ed", dealloced[0]);
+    assertEquals("referent wasn't dealloc'ed", 1, finalizeCount[0]);
   }
 
   @Test
