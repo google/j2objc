@@ -458,6 +458,7 @@ public class CycleFinderTest extends TestCase {
       options.setPrintReferenceGraph();
     }
     CycleFinder finder = new CycleFinder(options);
+    finder.constructGraph();
     cycles = finder.findCycles();
     if (printReferenceGraph) {
       referenceGraph = finder.getReferenceGraph();
