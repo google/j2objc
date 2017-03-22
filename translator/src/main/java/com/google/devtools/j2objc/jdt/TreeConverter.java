@@ -954,7 +954,6 @@ public class TreeConverter {
             BindingConverter.getExecutableElement(methodBinding),
             BindingConverter.getType(methodBinding)))
         .setTypeMirror(BindingConverter.getType(node.resolveTypeBinding()))
-        .setName((SimpleName) TreeConverter.convert(node.getName()))
         .setExpression((Expression) TreeConverter.convert(node.getExpression()))
         .setVarargsType(getVarargsType(methodBinding, node.arguments()));
   }

@@ -949,7 +949,6 @@ public class TreeConverter {
     }
 
     MethodInvocation newNode = new MethodInvocation();
-    newNode.setName(convertSimpleName(sym, type, getPosition(method)));
     if (target != null) {
       newNode.setExpression((Expression) convert(target));
     }

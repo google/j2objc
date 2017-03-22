@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
@@ -126,7 +125,6 @@ public class GwtConverter extends UnitTreeVisitor {
         && args.size() == 1) {
       // Convert GWT.create(Foo.class) to Foo.class.newInstance().
       ExecutableElement newMethod = ElementUtil.findMethod(typeUtil.getJavaClass(), "newInstance");
-      node.setName(new SimpleName(newMethod));
       Expression clazz = args.remove(0);
       node.setExpression(clazz);
       node.setExecutablePair(new ExecutablePair(newMethod));

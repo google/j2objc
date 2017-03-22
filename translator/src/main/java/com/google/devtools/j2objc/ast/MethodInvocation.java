@@ -31,7 +31,6 @@ public class MethodInvocation extends Expression {
   private TypeMirror typeMirror = null;
   private TypeMirror varargsType = null;
   private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
-  private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public MethodInvocation() {}
@@ -42,7 +41,6 @@ public class MethodInvocation extends Expression {
     typeMirror = other.getTypeMirror();
     varargsType = other.getVarargsType();
     expression.copyFrom(other.getExpression());
-    name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
   }
 
@@ -50,7 +48,6 @@ public class MethodInvocation extends Expression {
     this.method = method;
     this.typeMirror = typeMirror;
     this.expression.set(expression);
-    name.set(new SimpleName(method.element()));
   }
 
   public MethodInvocation(ExecutablePair method, Expression expression) {
@@ -107,15 +104,6 @@ public class MethodInvocation extends Expression {
     return this;
   }
 
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public MethodInvocation setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
   public List<Expression> getArguments() {
     return arguments;
   }
@@ -129,7 +117,6 @@ public class MethodInvocation extends Expression {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       expression.accept(visitor);
-      name.accept(visitor);
       arguments.accept(visitor);
     }
     visitor.endVisit(this);
@@ -144,7 +131,6 @@ public class MethodInvocation extends Expression {
   public void validateInner() {
     super.validateInner();
     Preconditions.checkNotNull(method);
-    Preconditions.checkNotNull(name.get());
     Preconditions.checkNotNull(typeMirror);
   }
 }

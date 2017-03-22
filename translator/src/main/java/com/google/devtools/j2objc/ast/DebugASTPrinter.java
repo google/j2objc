@@ -675,7 +675,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print(".");
     }
     printTypeParameters(node.getExecutableElement().getTypeParameters());
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getExecutableElement()));
     sb.print('(');
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
       it.next().accept(this);
