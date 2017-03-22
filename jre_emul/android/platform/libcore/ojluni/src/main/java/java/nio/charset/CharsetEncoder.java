@@ -33,7 +33,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
-import java.lang.ref.WeakReference;
 import java.nio.charset.CoderMalfunctionError;                  // javadoc
 
 
@@ -322,8 +321,8 @@ public abstract class CharsetEncoder {
     }
 
 
-
-    private WeakReference<CharsetDecoder> cachedDecoder = null;
+    // J2ObjC: Removed use of WeakReference.
+    private CharsetDecoder cachedDecoder = null;
 
     /**
      * Tells whether or not the given byte array is a legal replacement value
@@ -342,13 +341,17 @@ public abstract class CharsetEncoder {
      *          is a legal replacement value for this encoder
      */
     public boolean isLegalReplacement(byte[] repl) {
+        /* J2ObjC: Removed use of WeakReference.
         WeakReference<CharsetDecoder> wr = cachedDecoder;
         CharsetDecoder dec = null;
-        if ((wr == null) || ((dec = wr.get()) == null)) {
+        if ((wr == null) || ((dec = wr.get()) == null)) {*/
+        CharsetDecoder dec = cachedDecoder;
+        if (dec == null) {
             dec = charset().newDecoder();
             dec.onMalformedInput(CodingErrorAction.REPORT);
             dec.onUnmappableCharacter(CodingErrorAction.REPORT);
-            cachedDecoder = new WeakReference<CharsetDecoder>(dec);
+            //cachedDecoder = new WeakReference<CharsetDecoder>(dec);
+            cachedDecoder = dec;
         } else {
             dec.reset();
         }
