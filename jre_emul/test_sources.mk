@@ -535,6 +535,7 @@ TEST_SOURCES := \
     org/apache/harmony/security/tests/java/security/SecureRandomSpiTest.java \
     org/apache/harmony/security/tests/java/security/SignatureSpiTest.java \
     org/apache/harmony/security/tests/java/security/SignatureTest.java \
+    org/apache/harmony/tests/java/io/InputStreamReaderTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
@@ -738,7 +739,7 @@ ANDROID_TEST_RESOURCES_SRCS = \
     wrong.xml \
     tests/api/java/io/testFields.ser \
     tests/api/java/io/testFieldsDefaulted.ser \
-    tests/api/java/io/testFieldsDeprecated.ser
+    tests/api/java/io/testfile-utf8.txt
 LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res.properties \
     bundles/java/util/logging/res2.properties \
@@ -758,6 +759,7 @@ TEST_RESOURCE_ROOTS = \
   apache_harmony/classlib/modules/luni/src/test/resources \
   android/libcore/luni/src/test/resources \
   android/platform/libcore/harmony-tests/src/test/resources \
+  android/platform/libcore/luni/src/test/resources \
   apache_harmony/classlib/modules/logging/src/test/resources \
   apache_harmony/classlib/modules/beans/src/test/resources \
   Tests/resources

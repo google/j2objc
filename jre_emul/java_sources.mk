@@ -583,6 +583,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/misc/FormattedFloatingDecimal.java \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
+  sun/nio/cs/StreamDecoder.java \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/annotation/AnnotationSupport.java \
@@ -877,7 +878,8 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/nio/SelectorImpl.java \
   java/nio/SelectorProviderImpl.java \
   java/nio/ServerSocketChannelImpl.java \
-  java/nio/SocketChannelImpl.java
+  java/nio/SocketChannelImpl.java \
+  sun/nio/ch/ChannelInputStream.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
