@@ -268,7 +268,9 @@ $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-ifeq ($(shell uname), Linux)
+# The following test returns true on Linux or with GNU tools installed,
+# otherwise false on macOS which uses the BSD version.
+ifeq ($(shell mktemp --version >/dev/null 2>&1 && echo GNU || echo BSD), GNU)
 MKTEMP_CMD = mktemp -d --tmpdir j2objc-jre_emul.XXXXXX
 else
 MKTEMP_CMD = mktemp -d -t j2objc-jre_emul
