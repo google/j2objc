@@ -782,30 +782,6 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
   }
   ]-*/
 
-  /*-[
-  - (void)URLSession:(NSURLSession *)session
- didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
-   completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
-       NSURLCredential *credential))completionHandler {
-    if (securityDataHandler_) {
-      SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
-      CFIndex count = SecTrustGetCertificateCount(serverTrust);
-
-      for (CFIndex i = 0; i < count; i++) {
-        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);
-        NSData* remoteCertificateData =
-            [(NSData *) SecCertificateCopyData(certificate) autorelease];
-        IOSByteArray* rawCert = [IOSByteArray arrayWithNSData:remoteCertificateData];
-        [securityDataHandler_ handleSecCertificateDataWithByteArray:rawCert];
-      }
-    }
-
-    // Continue with default handling
-    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
-
-  }
-  ]-*/
-
   private void addHeader(String k, String v) {
     headers.add(new HeaderEntry(k, v));
   }
