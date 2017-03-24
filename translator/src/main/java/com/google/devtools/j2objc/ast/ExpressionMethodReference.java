@@ -19,14 +19,12 @@ package com.google.devtools.j2objc.ast;
 public class ExpressionMethodReference extends MethodReference {
 
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public ExpressionMethodReference() {}
 
   public ExpressionMethodReference(ExpressionMethodReference other) {
     super(other);
     expression.copyFrom(other.getExpression());
-    name.copyFrom(other.getName());
   }
 
   @Override
@@ -43,15 +41,6 @@ public class ExpressionMethodReference extends MethodReference {
     return this;
   }
 
-  public SimpleName getName() {
-    return name.get();
-  }
-
-  public ExpressionMethodReference setName(SimpleName newName) {
-    name.set(newName);
-    return this;
-  }
-
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
@@ -59,7 +48,6 @@ public class ExpressionMethodReference extends MethodReference {
       lambdaCaptureArgs.accept(visitor);
       expression.accept(visitor);
       typeArguments.accept(visitor);
-      name.accept(visitor);
     }
     visitor.endVisit(this);
   }

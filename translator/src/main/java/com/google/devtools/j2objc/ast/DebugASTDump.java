@@ -114,7 +114,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(ExpressionMethodReference node) {
-    printName(node.getName());
+    printName(node.getExecutableElement());
     return true;
   }
 

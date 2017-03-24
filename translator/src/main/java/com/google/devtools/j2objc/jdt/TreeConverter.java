@@ -751,9 +751,7 @@ public class TreeConverter {
         && expression instanceof Name
         && !ElementUtil.isVariable(((Name) expression).getElement());
     convertMethodReference(node, newNode, methodBinding, consumesFirstParam);
-    return newNode
-        .setName((SimpleName) TreeConverter.convert(node.getName()))
-        .setExpression(expression);
+    return newNode.setExpression(expression);
   }
 
   private static TreeNode convertExpressionStatement(

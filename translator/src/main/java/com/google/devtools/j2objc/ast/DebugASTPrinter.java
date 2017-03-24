@@ -408,7 +408,7 @@ public class DebugASTPrinter extends TreeVisitor {
   public boolean visit(ExpressionMethodReference node) {
     node.getExpression().accept(this);
     sb.print("::");
-    node.getName().accept(this);
+    sb.print(ElementUtil.getName(node.getExecutableElement()));
     return false;
   }
 

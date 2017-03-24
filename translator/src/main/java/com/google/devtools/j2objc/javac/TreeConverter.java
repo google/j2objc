@@ -868,9 +868,7 @@ public class TreeConverter {
 
     ExpressionMethodReference newNode = new ExpressionMethodReference();
     convertMethodReference(node, newNode);
-    return newNode
-        .setName(convertSimpleName(node.sym, node.type, pos))
-        .setExpression((Expression) convert(node.getQualifierExpression()));
+    return newNode.setExpression((Expression) convert(node.getQualifierExpression()));
   }
 
   private TreeNode convertMethodDeclaration(JCTree.JCMethodDecl node) {
