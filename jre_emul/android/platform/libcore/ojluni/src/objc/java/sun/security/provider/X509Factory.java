@@ -25,18 +25,32 @@
 
 package sun.security.provider;
 
-import java.io.*;
-import java.util.*;
-import java.security.cert.*;
-import sun.security.x509.X509CertImpl;
-import sun.security.x509.X509CRLImpl;
-import sun.security.pkcs.PKCS7;
-//import sun.security.provider.certpath.X509CertPath;
-//import sun.security.provider.certpath.X509CertificatePair;
-import sun.security.util.DerValue;
-import sun.security.util.Cache;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.cert.CRL;
+import java.security.cert.CRLException;
+import java.security.cert.CertPath;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactorySpi;
+import java.security.cert.X509CRL;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import sun.misc.BASE64Decoder;
+import sun.security.pkcs.PKCS7;
 import sun.security.pkcs.ParsingException;
+import sun.security.provider.certpath.X509CertPath;
+import sun.security.provider.certpath.X509CertificatePair;
+import sun.security.util.Cache;
+import sun.security.util.DerValue;
+import sun.security.x509.X509CRLImpl;
+import sun.security.x509.X509CertImpl;
 
 /**
  * This class defines a certificate factory for X.509 v3 certificates &
@@ -84,9 +98,7 @@ public class X509Factory extends CertificateFactorySpi {
         if (is == null) {
             // clear the caches (for debugging)
             certCache.clear();
-            // TODO(tball): enable when certpath provider is added.
-//             X509CertificatePair.clearCache();
-            throw new CertificateException("Missing input stream");
+            X509CertificatePair.clearCache();
         }
         try {
             byte[] encoding = readOneBlock(is);
@@ -232,21 +244,19 @@ public class X509Factory extends CertificateFactorySpi {
     public CertPath engineGenerateCertPath(InputStream inStream)
         throws CertificateException
     {
-        // TODO(tball): enable when certpath provider is added.
-        throw new AssertionError("sun.security.provider.certpath not implemented");
-//        if (inStream == null) {
-//            throw new CertificateException("Missing input stream");
-//        }
-//        try {
-//            byte[] encoding = readOneBlock(inStream);
-//            if (encoding != null) {
-//                return new X509CertPath(new ByteArrayInputStream(encoding));
-//            } else {
-//                throw new IOException("Empty input");
-//            }
-//        } catch (IOException ioe) {
-//            throw new CertificateException(ioe.getMessage());
-//        }
+        if (inStream == null) {
+            throw new CertificateException("Missing input stream");
+        }
+        try {
+            byte[] encoding = readOneBlock(inStream);
+            if (encoding != null) {
+                return new X509CertPath(new ByteArrayInputStream(encoding));
+            } else {
+                throw new IOException("Empty input");
+            }
+        } catch (IOException ioe) {
+            throw new CertificateException(ioe.getMessage());
+        }
     }
 
     /**
@@ -265,21 +275,19 @@ public class X509Factory extends CertificateFactorySpi {
     public CertPath engineGenerateCertPath(InputStream inStream,
         String encoding) throws CertificateException
     {
-        // TODO(tball): enable when certpath provider is added.
-        throw new AssertionError("sun.security.provider.certpath not implemented");
-//        if (inStream == null) {
-//            throw new CertificateException("Missing input stream");
-//        }
-//        try {
-//            byte[] data = readOneBlock(inStream);
-//            if (data != null) {
-//                return new X509CertPath(new ByteArrayInputStream(data), encoding);
-//            } else {
-//                throw new IOException("Empty input");
-//            }
-//        } catch (IOException ioe) {
-//            throw new CertificateException(ioe.getMessage());
-//        }
+        if (inStream == null) {
+            throw new CertificateException("Missing input stream");
+        }
+        try {
+            byte[] data = readOneBlock(inStream);
+            if (data != null) {
+                return new X509CertPath(new ByteArrayInputStream(data), encoding);
+            } else {
+                throw new IOException("Empty input");
+            }
+        } catch (IOException ioe) {
+            throw new CertificateException(ioe.getMessage());
+        }
     }
 
     /**
@@ -300,9 +308,7 @@ public class X509Factory extends CertificateFactorySpi {
         engineGenerateCertPath(List<? extends Certificate> certificates)
         throws CertificateException
     {
-        // TODO(tball): enable when certpath provider is added.
-        throw new AssertionError("sun.security.provider.certpath not implemented");
-//        return(new X509CertPath(certificates));
+        return(new X509CertPath(certificates));
     }
 
     /**
@@ -318,9 +324,7 @@ public class X509Factory extends CertificateFactorySpi {
      * @since 1.4
      */
     public Iterator<String> engineGetCertPathEncodings() {
-        // TODO(tball): enable when certpath provider is added.
-        throw new AssertionError("sun.security.provider.certpath not implemented");
-//        return(X509CertPath.getEncodingsStatic());
+        return(X509CertPath.getEncodingsStatic());
     }
 
     /**

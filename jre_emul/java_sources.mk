@@ -943,7 +943,10 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CRL.java \
   java/security/cert/CRLException.java \
   java/security/cert/CertPath.java \
+  java/security/cert/CertPathBuilder.java \
   java/security/cert/CertPathBuilderException.java \
+  java/security/cert/CertPathBuilderResult.java \
+  java/security/cert/CertPathBuilderSpi.java \
   java/security/cert/CertPathChecker.java \
   java/security/cert/CertPathParameters.java \
   java/security/cert/CertPathValidator.java \
@@ -959,15 +962,34 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/cert/CertificateFactorySpi.java \
   java/security/cert/CertificateNotYetValidException.java \
   java/security/cert/CertificateParsingException.java \
+  java/security/cert/CertificateRevokedException.java \
+  java/security/cert/CertStore.java \
   java/security/cert/CertStoreException.java \
   java/security/cert/CertStoreParameters.java \
+  java/security/cert/CertStoreSpi.java \
+  java/security/cert/CollectionCertStoreParameters.java \
   java/security/cert/CRLReason.java \
+  java/security/cert/CRLSelector.java \
   java/security/cert/Extension.java \
+  java/security/cert/PKIXBuilderParameters.java \
+  java/security/cert/PKIXCertPathBuilderResult.java \
+  java/security/cert/PKIXCertPathChecker.java \
+  java/security/cert/PKIXCertPathValidatorResult.java \
+  java/security/cert/PKIXParameters.java \
+  java/security/cert/PKIXReason.java \
+  java/security/cert/PKIXRevocationChecker.java \
+  java/security/cert/PolicyNode.java \
   java/security/cert/PolicyQualifierInfo.java \
+  java/security/cert/TrustAnchor.java \
   java/security/cert/X509Certificate.java \
+  java/security/cert/X509CertSelector.java \
   java/security/cert/X509CRL.java \
   java/security/cert/X509CRLEntry.java \
+  java/security/cert/X509CRLSelector.java \
   java/security/cert/X509Extension.java \
+  java/security/interfaces/DSAKey.java \
+  java/security/interfaces/DSAParams.java \
+  java/security/interfaces/DSAPublicKey.java \
   java/security/interfaces/ECKey.java \
   java/security/interfaces/ECPrivateKey.java \
   java/security/interfaces/ECPublicKey.java \
@@ -977,6 +999,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/interfaces/RSAPrivateKey.java \
   java/security/interfaces/RSAPublicKey.java \
   java/security/spec/AlgorithmParameterSpec.java \
+  java/security/spec/DSAPublicKeySpec.java \
   java/security/spec/ECField.java \
   java/security/spec/ECFieldF2m.java \
   java/security/spec/ECFieldFp.java \
@@ -1016,6 +1039,10 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/SecretKeyFactory.java \
   javax/crypto/SecretKeyFactorySpi.java \
   javax/crypto/ShortBufferException.java \
+  javax/crypto/interfaces/DHKey.java \
+  javax/crypto/interfaces/DHPublicKey.java \
+  javax/crypto/spec/DHParameterSpec.java \
+  javax/crypto/spec/DHPublicKeySpec.java \
   javax/crypto/spec/IvParameterSpec.java \
   javax/crypto/spec/PBEParameterSpec.java \
   javax/crypto/spec/RC2ParameterSpec.java \
@@ -1047,6 +1074,7 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   com/google/j2objc/security/IosSecurityProvider.java \
   com/google/j2objc/security/cert/IosCertificateFactory.java \
   com/google/j2objc/security/cert/IosX509Certificate.java \
+  java/security/cert/CertPathHelperImpl.java \
   javax/crypto/JceSecurity.java \
   javax/crypto/NullCipherSpi.java \
   sun/misc/BASE64Decoder.java \
@@ -1069,7 +1097,45 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/pkcs/PKCS9Attributes.java \
   sun/security/pkcs/SignerInfo.java \
   sun/security/pkcs/SigningCertificateInfo.java \
+  sun/security/provider/CertPathProvider.java \
   sun/security/provider/X509Factory.java \
+  sun/security/provider/certpath/AdaptableX509CertSelector.java \
+  sun/security/provider/certpath/AdjacencyList.java \
+  sun/security/provider/certpath/AlgorithmChecker.java \
+  sun/security/provider/certpath/BasicChecker.java \
+  sun/security/provider/certpath/Builder.java \
+  sun/security/provider/certpath/BuildStep.java \
+  sun/security/provider/certpath/CertId.java \
+  sun/security/provider/certpath/CertPathHelper.java \
+  sun/security/provider/certpath/CertStoreHelper.java \
+  sun/security/provider/certpath/CollectionCertStore.java \
+  sun/security/provider/certpath/ConstraintsChecker.java \
+  sun/security/provider/certpath/DistributionPointFetcher.java \
+  sun/security/provider/certpath/ForwardBuilder.java \
+  sun/security/provider/certpath/ForwardState.java \
+  sun/security/provider/certpath/IndexedCollectionCertStore.java \
+  sun/security/provider/certpath/KeyChecker.java \
+  sun/security/provider/certpath/OCSP.java \
+  sun/security/provider/certpath/OCSPRequest.java \
+  sun/security/provider/certpath/OCSPResponse.java \
+  sun/security/provider/certpath/PKIX.java \
+  sun/security/provider/certpath/PKIXCertPathValidator.java \
+  sun/security/provider/certpath/PKIXMasterCertPathValidator.java \
+  sun/security/provider/certpath/PolicyChecker.java \
+  sun/security/provider/certpath/PolicyNodeImpl.java \
+  sun/security/provider/certpath/ReverseBuilder.java \
+  sun/security/provider/certpath/ReverseState.java \
+  sun/security/provider/certpath/RevocationChecker.java \
+  sun/security/provider/certpath/State.java \
+  sun/security/provider/certpath/SunCertPathBuilder.java \
+  sun/security/provider/certpath/SunCertPathBuilderException.java \
+  sun/security/provider/certpath/SunCertPathBuilderParameters.java \
+  sun/security/provider/certpath/SunCertPathBuilderResult.java \
+  sun/security/provider/certpath/UntrustedChecker.java \
+  sun/security/provider/certpath/URICertStore.java \
+  sun/security/provider/certpath/Vertex.java \
+  sun/security/provider/certpath/X509CertificatePair.java \
+  sun/security/provider/certpath/X509CertPath.java \
   sun/security/util/BitArray.java \
   sun/security/util/ByteArrayLexOrder.java \
   sun/security/util/ByteArrayTagOrder.java \
@@ -1081,10 +1147,14 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/util/DerInputStream.java \
   sun/security/util/DerOutputStream.java \
   sun/security/util/DerValue.java \
+  sun/security/util/DisabledAlgorithmConstraints.java \
+  sun/security/util/KeyUtil.java \
+  sun/security/util/Length.java \
   sun/security/util/ObjectIdentifier.java \
   sun/security/util/PropertyExpander.java \
   sun/security/util/Resources.java \
   sun/security/util/ResourcesMgr.java \
+  sun/security/util/UntrustedCertificates.java \
   sun/security/x509/AccessDescription.java \
   sun/security/x509/AlgorithmId.java \
   sun/security/x509/AttributeNameEnumeration.java \
@@ -1100,6 +1170,7 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/x509/CertificatePoliciesExtension.java \
   sun/security/x509/CertificatePolicyId.java \
   sun/security/x509/CertificatePolicyMap.java \
+  sun/security/x509/CertificatePolicySet.java \
   sun/security/x509/CertificateSerialNumber.java \
   sun/security/x509/CertificateValidity.java \
   sun/security/x509/CertificateVersion.java \
@@ -1125,6 +1196,7 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   sun/security/x509/IPAddressName.java \
   sun/security/x509/IssuerAlternativeNameExtension.java \
   sun/security/x509/IssuingDistributionPointExtension.java \
+  sun/security/x509/InvalidityDateExtension.java \
   sun/security/x509/KeyIdentifier.java \
   sun/security/x509/KeyUsageExtension.java \
   sun/security/x509/NameConstraintsExtension.java \
