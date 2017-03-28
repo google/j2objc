@@ -43,16 +43,10 @@ DIST_JAR = $(DIST_JAR_DIR)/protobuf_runtime.jar
 
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
-ifndef PROTOBUF_ROOT_DIR
-ifndef IS_CLEAN_GOAL
-$(error PROTOBUF_ROOT_DIR not defined)
-endif
-endif
+$(call check_protobuf_dir)
 
-PROTO_PATH = $(PROTOBUF_ROOT_DIR)/src
 DESCRIPTOR_PROTO_RELATIVE = google/protobuf/descriptor.proto
-PROTOC = protoc
-DESCRIPTOR_PROTO = $(PROTO_PATH)/$(DESCRIPTOR_PROTO_RELATIVE)
+DESCRIPTOR_PROTO = $(PROTOBUF_INCLUDE_PATH)/$(DESCRIPTOR_PROTO_RELATIVE)
 DESCRIPTOR_PROTO_M = $(GEN_OBJC_DIR)/com/google/protobuf/DescriptorProtos.m
 DESCRIPTOR_PROTO_H = $(DESCRIPTOR_PROTO_M:.m=.h)
 
@@ -121,9 +115,8 @@ clean:
 	@rm -rf $(PROTOBUF_LICENSE_DIST)
 	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
-DESCRIPTOR_PROTO_M_CMD = $(PROTOC) --plugin=protoc-gen-j2objc=$(PROTOC_PLUGIN) \
-  --proto_path=$(PROTO_PATH) --j2objc_out=$(GEN_OBJC_DIR)
-DESCRIPTOR_PROTO_M_CMD += $(DESCRIPTOR_PROTO)
+DESCRIPTOR_PROTO_M_CMD = $(PROTOBUF_PROTOC) --plugin=protoc-gen-j2objc=$(PROTOC_PLUGIN) \
+  --proto_path=$(PROTOBUF_INCLUDE_PATH) --j2objc_out=$(GEN_OBJC_DIR) $(DESCRIPTOR_PROTO)
 
 $(DESCRIPTOR_PROTO_M): $(DESCRIPTOR_PROTO) $(PROTOC_PLUGIN)
 	@mkdir -p $(@D)
@@ -137,7 +130,6 @@ $(ARCH_BUILD_DIR)/.dist_headers: $(HEADERS)
 	tar cf - -C src $(SOURCE_HEADERS) | tar xfpm - -C $(ARCH_INCLUDE_DIR)
 	tar cf - -C $(GEN_OBJC_DIR) $(GENERATED_HEADERS) | tar xfpm - -C $(ARCH_INCLUDE_DIR)
 	@touch $@
-
 
 RUNTIME_JAR = $(JAVA_DEPS_JAR_DIR)/$(PROTOBUF_JAR)
 

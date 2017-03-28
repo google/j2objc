@@ -19,6 +19,8 @@ JARJAR_JAR = jarjar-1.4.jar
 JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
 JUNIT_JAR = j2objc_junit.jar
 
+PROTOBUF_JAR = protobuf-java-2.6.1.jar
+
 ECLIPSE_JARS = \
     org.eclipse.core.contenttype-3.4.200.v20140207-1251.jar \
     org.eclipse.core.jobs-3.6.1.v20141014-1248.jar \
@@ -54,5 +56,3 @@ DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
 ASM_JAR = asm-5.0.4.jar
 ASM_SOURCE_JAR = asm-5.0.4-sources.jar
-
-PROTOBUF_JAR = protobuf-java-2.6.1.jar

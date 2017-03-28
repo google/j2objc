@@ -147,6 +147,17 @@ ifeq ($(findstring test,$(notdir $(MAKECMDGOALS))),test)
 IS_TEST_GOAL = 1
 endif
 
+ifndef PROTOBUF_ROOT_DIR
+ifndef IS_CLEAN_GOAL
+check_protobuf_dir = $(error PROTOBUF_ROOT_DIR not defined)
+endif
+endif
+
+PROTOBUF_LIB_PATH = $(PROTOBUF_ROOT_DIR)/lib
+PROTOBUF_INCLUDE_PATH = $(PROTOBUF_ROOT_DIR)/include
+PROTOBUF_BIN_PATH = $(PROTOBUF_ROOT_DIR)/bin
+PROTOBUF_PROTOC = $(PROTOBUF_BIN_PATH)/protoc
+
 # Avoid bash 'arument list too long' errors.
 # See http://stackoverflow.com/questions/512567/create-a-file-from-a-large-makefile-variable
 # TODO(iroth): When make 3.82 is available, use the $(file ...) function instead.
