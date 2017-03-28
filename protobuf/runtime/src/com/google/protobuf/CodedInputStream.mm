@@ -32,6 +32,9 @@
 
 #import "com/google/protobuf/ByteString.h"
 #import "java/io/InputStream.h"
+#import "java/nio/ByteBuffer.h"
+#import "java/nio/CharBuffer.h"
+#import "java/nio/charset/Charset.h"
 
 namespace {
 
@@ -392,13 +395,36 @@ bool CGPCodedInputStream::Refresh() {
   }
 }
 
+static NSString *RetainedStringFromBytes(const uint8 *bytes, uint32 size) {
+  NSString *result = (NSString *)CFStringCreateWithBytes(
+      NULL, bytes, size, kCFStringEncodingUTF8, false);
+  if (result) {
+    return result;
+  }
+
+  // CFString failed to decode the bytes, possibly due to an invalid UTF-8
+  // sequence. Java's decoder will replace malformed bytes with a replacement
+  // character but we have to copy the data into a ByteBuffer and out of a
+  // CharBuffer.
+  static JavaNioCharsetCharset *utf8Charset;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    utf8Charset = JavaNioCharsetCharset_forNameWithNSString_(@"UTF-8");
+  });
+  IOSByteArray *javaBytes = [IOSByteArray newArrayWithBytes:(const jbyte *)bytes count:size];
+  JavaNioByteBuffer *bb = JavaNioByteBuffer_wrapWithByteArray_(javaBytes);
+  JavaNioCharBuffer *cb = [utf8Charset decodeWithJavaNioByteBuffer:bb];
+  [javaBytes release];
+  return [[NSString alloc] initWithCharacters:[cb array]->buffer_ + [cb position]
+                                       length:[cb remaining]];
+}
+
 bool CGPCodedInputStream::ReadRetainedNSString(NSString **value) {
   uint32 size;
   if (!ReadVarint32(&size)) return false;
 
   if ((unsigned)BufferSize() >= size) {
-    *value = (NSString *)CFStringCreateWithBytes(
-        NULL, buffer_, size, kCFStringEncodingUTF8, false);
+    *value = RetainedStringFromBytes(buffer_, size);
     Advance(size);
     return true;
   }
@@ -407,9 +433,7 @@ bool CGPCodedInputStream::ReadRetainedNSString(NSString **value) {
   // string then copying into a CFStringRef.
   string string;
   if (!ReadStringFallback(&string, size)) return false;
-  *value = (NSString *)CFStringCreateWithBytes(
-      NULL, reinterpret_cast<const uint8*>(string.data()), size,
-      kCFStringEncodingUTF8, false);
+  *value = RetainedStringFromBytes(reinterpret_cast<const uint8*>(string.data()), size);
   return true;
 }
 

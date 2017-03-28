@@ -1340,4 +1340,17 @@ public class CompatibilityTest extends ProtobufTest {
     assertTrue(value instanceof Internal.EnumLite);
     assertEquals(9, ((Internal.EnumLite) value).getNumber());
   }
+
+  public void testEmptyString() throws Exception {
+    byte[] rawData = asBytes(new int[]{ 0x7A, 0x00 });
+    TypicalData data = TypicalData.parseFrom(new ByteArrayInputStream(rawData));
+    assertEquals("", data.getMyString());
+  }
+
+  public void testInvalidUtf8Bytes() throws Exception {
+    byte[] rawData = asBytes(new int[]{
+        0x7A, 0x0A, 0x61, 0x62, 0x63, 0xFF, 0xD8, 0xFF, 0xE0, 0x64, 0x65, 0x66 });
+    TypicalData data = TypicalData.parseFrom(new ByteArrayInputStream(rawData));
+    assertEquals("abc\ufffd\ufffd\ufffd\ufffddef", data.getMyString());
+  }
 }
