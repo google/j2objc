@@ -44,7 +44,7 @@ public class CharsetTest extends TestCase {
   }
 
   public void testDecoding() throws IOException {
-    // UTF-8 with some invalic bytes.
+    // UTF-8 with some invalid bytes.
     byte[] invalidUtf8 = {
       91, 92, -1, -40, -1, -32, 1, 16, 74, 0, 70, -27, -101, 73, 70, -28, -72, -83, -27, -101 };
     assertCorrectDecoding(
