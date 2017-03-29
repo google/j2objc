@@ -178,7 +178,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("InnerClassExtractor");
 
     // Generate method shims for classes implementing interfaces that have default methods
-    new DefaultMethodShimGenerator(unit).run();
+    new DefaultMethodShimGenerator(unit, deadCodeMap).run();
     ticker.tick("DefaultMethodShimGenerator");
 
     // Normalize init statements

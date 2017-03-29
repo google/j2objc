@@ -366,4 +366,56 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(header, "- (id)someDeadMethod;");
     assertNotInTranslation(header, "- (NSString *)someDeadMethod;");
   }
+
+  public void testDeadDefaultInterfaceMethod() throws IOException {
+    // Test dead method
+    String source = "interface I { default void foo() { } } "
+        + " class A implements I { } ";
+    CodeReferenceMap map = CodeReferenceMap.builder().addMethod("I", "foo", "()V").build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile(source, "A", "A.m");
+    assertNotInTranslation(translation, "I_foo(self);");
+
+    // Test dead class
+    map = CodeReferenceMap.builder().addClass("I").build();
+    setDeadCodeMap(map);
+    translation = translateSourceFile(source, "A", "A.m");
+    assertNotInTranslation(translation, "I_foo(self);");
+  }
+
+  public void testDeadMethodShimGenerator() throws IOException {
+    String sourceI = "interface I <T> { "
+        + " void foo(T t); "
+        + " void bar(T t); "
+        + " void baz(T t); } ";
+    String sourceA = "class A { "
+        + " public void foo(String s) { } "
+        + " public void bar(String s) { } "
+        + " public void baz(String s) { } } ";
+    String sourceB = "class B extends A implements I<String> { } ";
+    addSourceFile(sourceI, "I.java");
+    addSourceFile(sourceA, "A.java");
+    addSourceFile(sourceB, "B.java");
+    CodeReferenceMap map = CodeReferenceMap.builder()
+        .addMethod("I", "foo", "(Ljava/lang/Object;)V")
+        .addMethod("I", "baz", "(Ljava/lang/Object;)V")
+        .addMethod("A", "baz", "(Ljava/lang/String;)V")
+        .build();
+    setDeadCodeMap(map);
+
+    String aImpl = translateSourceFile("A", "A.m");
+    String bImpl = translateSourceFile("B", "B.m");
+    String iHeader = translateSourceFile("I", "I.h");
+
+    assertTranslation(aImpl, "(void)fooWithNSString:(NSString *)s");
+    assertNotInTranslation(bImpl, "[self fooWithNSString:arg0];");
+    assertNotInTranslation(iHeader, "(void)fooWithId:(id)t");
+
+    assertTranslation(bImpl, "[self barWithNSString:arg0];");
+    assertTranslation(iHeader, "(void)barWithId:(id)t");
+
+    assertNotInTranslation(aImpl, "(void)bazWithNSString:(NSString *)s");
+    assertNotInTranslation(bImpl, "[self bazWithNSString:arg0];");
+    assertNotInTranslation(iHeader, "(void)bazWithId:(id)t");
+  }
 }

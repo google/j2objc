@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashSet;
@@ -60,8 +61,11 @@ import javax.lang.model.type.TypeMirror;
  */
 public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
-  public DefaultMethodShimGenerator(CompilationUnit unit) {
+  private CodeReferenceMap deadCodeMap;
+
+  public DefaultMethodShimGenerator(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
     super(unit);
+    this.deadCodeMap = deadCodeMap;
   }
 
   /**
@@ -117,9 +121,11 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
       for (ExecutableElement methodElem : Iterables.filter(
           ElementUtil.getMethods(typeElem), ElementUtil::isInstanceMethod)) {
-        ExecutablePair method = new ExecutablePair(
-            methodElem, typeUtil.asMemberOf(type, methodElem));
-        collector.put(getOverrideSignature(method), method);
+        if (!isDeadMethod(methodElem)) {
+          ExecutablePair method = new ExecutablePair(
+              methodElem, typeUtil.asMemberOf(type, methodElem));
+          collector.put(getOverrideSignature(method), method);
+        }
       }
     }
 
@@ -156,6 +162,10 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
       for (Map.Entry<String, ExecutablePair> entry : newSelectors.entrySet()) {
         addRenamingMethodShim(entry.getKey(), entry.getValue(), impl);
       }
+    }
+
+    private boolean isDeadMethod(ExecutableElement methodElem) {
+      return deadCodeMap != null && deadCodeMap.containsMethod(methodElem, typeUtil);
     }
 
     private ExecutablePair resolveImplementation(Iterable<ExecutablePair> allMethods) {
