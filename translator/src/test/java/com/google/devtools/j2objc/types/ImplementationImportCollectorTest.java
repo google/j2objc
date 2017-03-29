@@ -203,4 +203,13 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertNotInTranslation(translation, "Map.h");
     assertNotInTranslation(translation, "List.h");
   }
+
+  public void testReturnExpressionTypeIncluded() throws IOException {
+    addSourceFile("interface I {}", "I.java");
+    addSourceFile("class J implements I {}", "J.java");
+    addSourceFile("class A { J j; }", "A.java");
+    String translation = translateSourceFile(
+        "class B extends A { I foo() { return j; } }", "B", "B.m");
+    assertTranslation(translation, "#include \"J.h\"");
+  }
 }

@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -221,6 +222,14 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
       }
     }
     return true;
+  }
+
+  @Override
+  public void endVisit(ReturnStatement node) {
+    Expression expr = node.getExpression();
+    if (expr != null) {
+      addImports(expr.getTypeMirror());
+    }
   }
 
   @Override
