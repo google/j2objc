@@ -92,8 +92,7 @@ test_junit_cycles: cycle_finder_dist
 test_cycle_finder: cycle_finder_dist
 	@cd cycle_finder && $(MAKE) test
 
-test: test_translator test_jre_emul \
-   test_cycle_finder test_jre_cycles test_junit_cycles
+test: test_translator test_jre_emul test_cycle_finder test_jre_cycles
 
 test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 	@cd protobuf/tests && $(MAKE) test
