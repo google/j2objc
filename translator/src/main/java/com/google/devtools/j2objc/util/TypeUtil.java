@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -690,8 +689,7 @@ public final class TypeUtil {
    * from the outermost class declaration to the inner class declaration.
    */
   public String getReferenceName(ExecutableElement element) {
-    if (!ElementUtil.isConstructor(element)
-        || ElementUtil.getDeclaringClass(element).getNestingKind() != NestingKind.MEMBER) {
+    if (!ElementUtil.isConstructor(element)) {
       return ElementUtil.getName(element);
     }
     TypeElement parent = ElementUtil.getDeclaringClass(element);
