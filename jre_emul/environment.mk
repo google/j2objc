@@ -79,7 +79,7 @@ J2OBJC_LUNI_ROOT = $(NEW_LIBCORE_BASE)/luni/src/objc/java
 J2OBJC_LUNI_NATIVE = $(NEW_LIBCORE_BASE)/luni/src/objc/native
 ANDROID_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/main/java
 J2OBJC_OPENJDK_ROOT = $(NEW_LIBCORE_BASE)/ojluni/src/objc/java
-J2OBJC_OPENJDK_NATIVE = $(NEW_LIBCORE_BASE)/ojluni/src/objc/native
+ANDROID_OPENJDK_NATIVE = $(NEW_LIBCORE_BASE)/ojluni/src/main/native
 NEW_ANDROID_LUNI_TEST_ROOT = $(NEW_LIBCORE_BASE)/luni/src/test/java
 NEW_ANDROID_TEST_SUPPORT_ROOT = $(NEW_LIBCORE_BASE)/support/src/test/java
 NEW_ANDROID_APACHE_TEST_ROOT = $(NEW_LIBCORE_BASE)/harmony-tests/src/test/java
@@ -146,7 +146,7 @@ TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC)
 
 NATIVE_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR) \
-  $(J2OBJC_OPENJDK_NATIVE) $(J2OBJC_LUNI_NATIVE)
+  $(ANDROID_OPENJDK_NATIVE) $(J2OBJC_LUNI_NATIVE)
 
 # Clang warnings
 WARNINGS := $(CC_WARNINGS) $(WARNINGS) -Wno-unused-label -Wno-dangling-else
