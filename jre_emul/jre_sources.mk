@@ -1311,7 +1311,7 @@ JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/IosHttpsURLConnection.java
 
 JAVA_PUBLIC_SOURCES_XML = \
-  java/util/PropertiesXmlLoader.java \
+  com/google/j2objc/util/PropertiesXmlLoader.java \
   javax/xml/XMLConstants.java \
   javax/xml/datatype/DatatypeConfigurationException.java \
   javax/xml/datatype/DatatypeConstants.java \

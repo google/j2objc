@@ -872,7 +872,8 @@ class Properties extends Hashtable<Object,Object> {
         throws IOException, InvalidPropertiesFormatException {
       XmlLoader loader = XmlLoader.INSTANCE;
       if (loader == null) {
-        throw new LibraryNotLinkedError("XML support", "jre_xml", "JavaUtilPropertiesXmlLoader");
+        throw new LibraryNotLinkedError(
+            "XML support", "jre_xml", "ComGoogleJ2objcUtilPropertiesXmlLoader");
       }
       loader.load(this, in);
     }
@@ -881,7 +882,7 @@ class Properties extends Hashtable<Object,Object> {
      * Creates a dynamic dependency on XML support so that XML support can be excluded from the
      * application binary without incurring link errors.
      */
-    static interface XmlLoader {
+    public static interface XmlLoader {
       void load(Properties p, InputStream in) throws IOException, InvalidPropertiesFormatException;
 
       static final XmlLoader INSTANCE = getXmlLoader();
@@ -889,7 +890,7 @@ class Properties extends Hashtable<Object,Object> {
 
     private static XmlLoader getXmlLoader() {
       try {
-        Class<?> loaderClass = Class.forName("java.util.PropertiesXmlLoader");
+        Class<?> loaderClass = Class.forName("com.google.j2objc.util.PropertiesXmlLoader");
         return (XmlLoader) loaderClass.newInstance();
       } catch (Exception e) {
         return null;

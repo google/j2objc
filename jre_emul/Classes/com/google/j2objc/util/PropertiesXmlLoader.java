@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package java.util;
+package com.google.j2objc.util;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -26,6 +26,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
 
 /**
  * Dynamically loaded implementation for Properties.loadFromXML(). Public so that users can add an
