@@ -10,9 +10,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Java source file list definitions for jre_emul library. Public sources are
-# those classes that are part of the public API, and do not non-public classes
+# Source file list definitions for jre_emul library. Public sources are those
+# classes that are part of the public API, and do not include non-public classes
 # or classes from non-public packages (like libcore.*).
+
+NATIVE_JRE_SOURCES_CORE = \
+  DebugUtils.m \
+  FastPointerLookup.m \
+  IOSArray.m \
+  IOSArrayClass.m \
+  IOSClass.m \
+  IOSConcreteClass.m \
+  IOSObjectArray.m \
+  IOSPrimitiveArray.m \
+  IOSPrimitiveClass.m \
+  IOSProtocolClass.m \
+  IOSProxyClass.m \
+  IOSReference.m \
+  IOSReflection.m \
+  J2ObjC_common.m \
+  J2ObjC_icu.m \
+  JreRetainedWith.m \
+  NSCopying+JavaCloneable.m \
+  NSDataInputStream.m \
+  NSDataOutputStream.m \
+  NSDictionaryMap.m \
+  NSException+JavaThrowable.m \
+  NSNumber+JavaNumber.m \
+  NSObject+JavaObject.m \
+  NSString+JavaString.m \
+  java/lang/AbstractStringBuilder.m \
+  java/lang/Iterable.m \
+  java/lang/reflect/AccessibleObject.m \
+  java/lang/reflect/Constructor.m \
+  java/lang/reflect/Executable.m \
+  java/lang/reflect/Field.m \
+  java/lang/reflect/Method.m \
+  java_lang_Character.m \
+  java_lang_Integer.m \
+  java_lang_IntegralToString.m \
+  java_lang_Long.m \
+  java_lang_Math.m \
+  java_lang_StrictMath.m \
+  java_util_regex_Matcher.m \
+  java_util_regex_Pattern.m \
+  jni.m \
+  libcore_icu_ICU.m \
+  objc-sync.m \
+  sun_misc_Unsafe.m
 
 # Java sources to be translated normally and included in the core library.
 JAVA_PUBLIC_SOURCES_CORE = \
@@ -1645,6 +1690,57 @@ SOURCE_RETENTION_ANNOTATIONS = \
   java/lang/annotation/Native.java \
   javax/annotation/Generated.java
 
+# Java classes with hand written obj-c implementations. Shouldn't be translated,
+# but need to include the .java file in jre_emul.jar.
+EMULATED_JAVA_SOURCES = \
+  java/lang/AbstractStringBuilder.java \
+  java/lang/Class.java \
+  java/lang/Cloneable.java \
+  java/lang/Iterable.java \
+  java/lang/Number.java \
+  java/lang/Object.java \
+  java/lang/String.java \
+  java/lang/Throwable.java \
+  java/lang/reflect/AccessibleObject.java \
+  java/lang/reflect/AnnotatedType.java \
+  java/lang/reflect/Constructor.java \
+  java/lang/reflect/Executable.java \
+  java/lang/reflect/Field.java \
+  java/lang/reflect/Method.java
+
+# All non-generated headers that should be made public.
+PUBLIC_NATIVE_HEADERS = \
+  IOSArray.h \
+  IOSClass.h \
+  IOSMetadata.h \
+  IOSObjectArray.h \
+  IOSPrimitiveArray.h \
+  J2ObjC_common.h \
+  J2ObjC_header.h \
+  J2ObjC_source.h \
+  J2ObjC_types.h \
+  JavaObject.h \
+  JreEmulation.h \
+  JreRetainedWith.h \
+  NSCopying+JavaCloneable.h \
+  NSDataInputStream.h \
+  NSDataOutputStream.h \
+  NSDictionaryMap.h \
+  NSException+JavaThrowable.h \
+  NSNumber+JavaNumber.h \
+  NSObject+JavaObject.h \
+  NSString+JavaString.h \
+  java/lang/AbstractStringBuilder.h \
+  java/lang/Iterable.h \
+  java/lang/reflect/AccessibleObject.h \
+  java/lang/reflect/Constructor.h \
+  java/lang/reflect/Executable.h \
+  java/lang/reflect/Field.h \
+  java/lang/reflect/Method.h \
+  jni.h
+
+NO_TRANSLATE_JAVA_SOURCES = $(SOURCE_RETENTION_ANNOTATIONS) $(EMULATED_JAVA_SOURCES)
+
 JAVA_PUBLIC_SOURCES = \
   $(JAVA_PUBLIC_SOURCES_CORE) \
   $(JAVA_PUBLIC_SOURCES_IO) \
@@ -1677,3 +1773,5 @@ JAVA_PRIVATE_SOURCES = \
   $(ANDROID_PRIVATE_SOURCES)
 
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
+
+NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE)
