@@ -54,3 +54,24 @@ filegroup(
         exclude = ["build_result/**/*"],
     ),
 )
+
+load(
+    "//googledata/devsite/_common/en/_shared/tools/javadoc:build_defs.bzl",
+    "googledata_devsite__common_en__shared_tools_javadoc_build_defs__side_effects",
+    "javadoc_with_doclava",
+)
+
+googledata_devsite__common_en__shared_tools_javadoc_build_defs__side_effects()
+
+javadoc_with_doclava(
+    name = "javadoc",
+    srcs = [
+        ":libannotations_lib-src.jar",
+    ],
+    bookpath = "/j2objc/_book.yaml",
+    devsitepath = "/j2objc/javadoc/annotations/",
+    javadocoptions = "-sourcepath $(location :libannotations_lib-src.jar)",
+    outzip = "javadoc.zip",
+    packages = ["com.google.j2objc.annotations"],
+    projectpath = "/j2objc/_project.yaml",
+)
