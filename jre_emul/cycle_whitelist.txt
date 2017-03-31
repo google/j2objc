@@ -44,6 +44,9 @@ FIELD java.util.stream.StreamSpliterators.UnorderedSliceSpliterator.s
 FIELD java.util.stream.Streams.ConcatSpliterator.aSpliterator
 FIELD java.util.stream.Streams.ConcatSpliterator.bSpliterator
 
+# streams is a WeakHashMap.
+FIELD java.util.zip.ZipFile.streams
+
 # mActive always refers to the active task and is cleared/reassigned upon completion.
 FIELD android.os.AsyncTask.SerialExecutor.mActive
 

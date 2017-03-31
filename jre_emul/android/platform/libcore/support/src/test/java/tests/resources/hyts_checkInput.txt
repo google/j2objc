@@ -1,0 +1,4 @@
+	crc.reset();
+	crc.update(1);
+	//System.out.print("value of crc"+crc.getValue()); 
+	

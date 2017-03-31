@@ -73,7 +73,8 @@ public class FileNotFoundException extends IOException {
      *
      * @since 1.2
      */
-    private FileNotFoundException(String path, String reason) {
+    // J2ObjC: Made package-private to allow access from native code.
+    /*private*/ FileNotFoundException(String path, String reason) {
         super(path + ((reason == null)
                       ? ""
                       : " (" + reason + ")"));

@@ -1480,6 +1480,15 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/kxml2/io/KXmlParser.java \
   org/kxml2/io/KXmlSerializer.java
 
+NATIVE_JRE_SOURCES_ZIP = \
+  io_util.m \
+  java_util_zip_Deflater.m \
+  java_util_zip_Inflater.m \
+  java_util_zip_ZipFile.m \
+  jni_util.m \
+  jvm.m \
+  zip_util.m
+
 JAVA_PUBLIC_SOURCES_ZIP = \
   java/net/JarURLConnection.java \
   java/util/jar/Attributes.java \
@@ -1505,7 +1514,6 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/zip/Inflater.java \
   java/util/zip/InflaterInputStream.java \
   java/util/zip/InflaterOutputStream.java \
-  java/util/zip/Zip64.java \
   java/util/zip/ZipConstants.java \
   java/util/zip/ZipEntry.java \
   java/util/zip/ZipError.java \
@@ -1515,12 +1523,17 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/zip/ZipOutputStream.java
 
 JAVA_PRIVATE_SOURCES_ZIP = \
+  java/util/zip/ZStreamRef.java \
+  java/util/zip/ZipCoder.java \
+  java/util/zip/ZipConstants64.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/io/HeapBufferIterator.java \
   libcore/net/url/JarHandler.java \
   libcore/net/url/JarURLConnectionImpl.java \
-  libcore/util/CountingOutputStream.java
+  libcore/util/CountingOutputStream.java \
+  sun/misc/Cleaner.java \
+  sun/nio/ch/DirectBuffer.java
 
 JAVA_PUBLIC_SOURCES_SQL = \
   java/sql/Array.java \
@@ -1774,4 +1787,4 @@ JAVA_PRIVATE_SOURCES = \
 
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
-NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE)
+NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP)

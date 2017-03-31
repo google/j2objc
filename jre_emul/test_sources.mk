@@ -391,9 +391,12 @@ TEST_SOURCES := \
     libcore/java/util/zip/OldAndroidChecksumTest.java \
     libcore/java/util/zip/OldAndroidDeflateTest.java \
     libcore/java/util/zip/OldAndroidGZIPStreamTest.java \
+    libcore/java/util/zip/OldAndroidZipFileTest.java \
     libcore/java/util/zip/OldAndroidZipStreamTest.java \
     libcore/java/util/zip/OldDataFormatExceptionTest.java \
     libcore/java/util/zip/OldZipExceptionTest.java \
+    libcore/java/util/zip/OldZipFileTest.java \
+    libcore/java/util/zip/OldZipInputStreamTest.java \
     libcore/java/util/zip/Zip64FileTest.java \
     libcore/java/util/zip/ZipEntryTest.java \
     libcore/java/util/zip/ZipFileTest.java \
@@ -595,6 +598,23 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/LocaleTest.java \
     org/apache/harmony/tests/java/util/SimpleTimeZoneTest.java \
     org/apache/harmony/tests/java/util/TimeZoneTest.java \
+    org/apache/harmony/tests/java/util/zip/Adler32Test.java \
+    org/apache/harmony/tests/java/util/zip/CRC32Test.java \
+    org/apache/harmony/tests/java/util/zip/CheckedInputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/CheckedOutputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/DeflaterInputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/DeflaterOutputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/DeflaterTest.java \
+    org/apache/harmony/tests/java/util/zip/GZIPInputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/GZIPOutputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/InflaterInputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/InflaterOutputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/InflaterTest.java \
+    org/apache/harmony/tests/java/util/zip/ZipEntryTest.java \
+    org/apache/harmony/tests/java/util/zip/ZipErrorTest.java \
+    org/apache/harmony/tests/java/util/zip/ZipFileTest.java \
+    org/apache/harmony/tests/java/util/zip/ZipInputStreamTest.java \
+    org/apache/harmony/tests/java/util/zip/ZipOutputStreamTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \
@@ -720,7 +740,13 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \
-    serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser
+    serialization/org/apache/harmony/tests/java/util/Locale_Bug_26387905.ser \
+    serialization/org/apache/harmony/tests/java/util/zip/ZipErrorTest.golden.ser \
+    tests/resources/hyts_compDiction.bin \
+    tests/resources/hyts_compressD.bin \
+    tests/resources/hyts_construOD.bin \
+    tests/resources/hyts_construODI.bin \
+    tests/resources/hyts_gInput.txt.gz
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     tests/targets/security/MD5.check \
@@ -739,7 +765,11 @@ ANDROID_TEST_RESOURCES_SRCS = \
     wrong.xml \
     tests/api/java/io/testFields.ser \
     tests/api/java/io/testFieldsDefaulted.ser \
-    tests/api/java/io/testfile-utf8.txt
+    tests/api/java/io/testfile-utf8.txt \
+    tests/resources/Broken_manifest.jar \
+    tests/resources/hyts_ZipFile.zip \
+    tests/resources/hyts_available.tst \
+    tests/resources/hyts_checkInput.txt
 LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res.properties \
     bundles/java/util/logging/res2.properties \
@@ -760,6 +790,7 @@ TEST_RESOURCE_ROOTS = \
   android/libcore/luni/src/test/resources \
   android/platform/libcore/harmony-tests/src/test/resources \
   android/platform/libcore/luni/src/test/resources \
+  android/platform/libcore/support/src/test/java \
   apache_harmony/classlib/modules/logging/src/test/resources \
   apache_harmony/classlib/modules/beans/src/test/resources \
   Tests/resources
