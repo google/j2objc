@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2016 The Android Open Source Project
  * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -26,23 +27,23 @@
 package java.lang.reflect;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.AnnotationFormatError;
-import java.lang.annotation.Repeatable;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import sun.reflect.annotation.AnnotationSupport;
-import sun.reflect.annotation.AnnotationType;
+import libcore.reflect.AnnotatedElements;
 
+// Android-changed: Removed some references to bytecode spec below that do not
+// apply and added a note about annotation ordering.
 /**
  * Represents an annotated element of the program currently running in this
  * VM.  This interface allows annotations to be read reflectively.  All
  * annotations returned by methods in this interface are immutable and
  * serializable. The arrays returned by methods of this interface may be modified
  * by callers without affecting the arrays returned to other callers.
+ *
+ * <p>Android note: methods that return multiple annotations of different types such as
+ * {@link #getAnnotations()} and {@link #getDeclaredAnnotations()} can be affected
+ * by the explicit character-code ordering of annotations types specified by the DEX format.
+ * Annotations of different types on a single element are not guaranteed to be returned in the order
+ * they are declared in source.
  *
  * <p>The {@link #getAnnotationsByType(Class)} and {@link
  * #getDeclaredAnnotationsByType(Class)} methods support multiple
@@ -61,18 +62,11 @@ import sun.reflect.annotation.AnnotationType;
  * <ul>
  *
  * <li> An annotation <i>A</i> is <em>directly present</em> on an
- * element <i>E</i> if <i>E</i> has a {@code
- * RuntimeVisibleAnnotations} or {@code
- * RuntimeVisibleParameterAnnotations} or {@code
- * RuntimeVisibleTypeAnnotations} attribute, and the attribute
- * contains <i>A</i>.
+ * element <i>E</i> if <i>E</i> is annotated by <i>A</i> in the original source.
  *
  * <li>An annotation <i>A</i> is <em>indirectly present</em> on an
- * element <i>E</i> if <i>E</i> has a {@code RuntimeVisibleAnnotations} or
- * {@code RuntimeVisibleParameterAnnotations} or {@code RuntimeVisibleTypeAnnotations}
- * attribute, and <i>A</i> 's type is repeatable, and the attribute contains
- * exactly one annotation whose value element contains <i>A</i> and whose
- * type is the containing annotation type of <i>A</i> 's type.
+ * element <i>E</i> if <i>E</i> is annotated by a container annotation
+ * of <i>A</i>.
  *
  * <li>An annotation <i>A</i> is present on an element <i>E</i> if either:
  *
@@ -322,28 +316,13 @@ public interface AnnotatedElement {
      * @since 1.8
      */
     default <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
-         /*
-          * Definition of associated: directly or indirectly present OR
-          * neither directly nor indirectly present AND the element is
-          * a Class, the annotation type is inheritable, and the
-          * annotation type is associated with the superclass of the
-          * element.
-          */
-         T[] result = getDeclaredAnnotationsByType(annotationClass);
-
-         if (result.length == 0 && // Neither directly nor indirectly present
-             this instanceof Class && // the element is a class
-             AnnotationType.getInstance(annotationClass).isInherited()) { // Inheritable
-             Class<?> superClass = ((Class<?>) this).getSuperclass();
-             if (superClass != null) {
-                 // Determine if the annotation is associated with the
-                 // superclass
-                 result = superClass.getAnnotationsByType(annotationClass);
-             }
-         }
-
-         return result;
-     }
+        // This method does not handle inherited annotations and is intended for use for
+        // {@code Method}, {@code Field}, {@code Package}. The {@link Class#getAnnotationsByType}
+        // is implemented explicitly. Therefore this implementation does not fulfill the documented
+        // default implementation for {@link AnnotatedElement#getAnnotationsByType(Class)} but in an
+        // undetectable way because Class is final.
+        return AnnotatedElements.getDirectOrIndirectAnnotationsByType(this, annotationClass);
+    }
 
     /**
      * Returns this element's annotation for the specified type if
@@ -366,17 +345,17 @@ public interface AnnotatedElement {
      * @since 1.8
      */
     default <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
-         Objects.requireNonNull(annotationClass);
-         // Loop over all directly-present annotations looking for a matching one
-         for (Annotation annotation : getDeclaredAnnotations()) {
-             if (annotationClass.equals(annotation.annotationType())) {
-                 // More robust to do a dynamic cast at runtime instead
-                 // of compile-time only.
-                 return annotationClass.cast(annotation);
-             }
-         }
-         return null;
-     }
+        Objects.requireNonNull(annotationClass);
+        // Loop over all directly-present annotations looking for a matching one
+        for (Annotation annotation : getDeclaredAnnotations()) {
+            if (annotationClass.equals(annotation.annotationType())) {
+                // More robust to do a dynamic cast at runtime instead
+                // of compile-time only.
+                return annotationClass.cast(annotation);
+            }
+        }
+        return null;
+    }
 
     /**
      * Returns this element's annotation(s) for the specified type if
@@ -423,14 +402,7 @@ public interface AnnotatedElement {
      * @since 1.8
      */
     default <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
-        Objects.requireNonNull(annotationClass);
-        return AnnotationSupport.
-            getDirectlyAndIndirectlyPresent(Arrays.stream(getDeclaredAnnotations()).
-                                            collect(Collectors.toMap(Annotation::annotationType,
-                                                                     Function.identity(),
-                                                                     ((first,second) -> first),
-                                                                     LinkedHashMap::new)),
-                                            annotationClass);
+        return AnnotatedElements.getDirectOrIndirectAnnotationsByType(this, annotationClass);
     }
 
     /**
