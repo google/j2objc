@@ -34,12 +34,26 @@ public class PropertyAnnotation extends Annotation {
 
   private final Set<String> attributes;
 
-  private static final List<String> PROPERTY_ATTRIBUTES = ImmutableList.of(
-      "weak", "readonly", "copy", "assign", "nonatomic",
-      "getter", "setter", "retain", "unsafe_unretained", "class",
-      "nonnull", "nullable", "null_resettable", "null_unspecified",
-      // Default values aren't kept, but may be listed in set when debugging.
-      "atomic", "readwrite", "strong");
+  private static final ImmutableList<String> PROPERTY_ATTRIBUTES =
+      ImmutableList.of(
+          "weak",
+          "readonly",
+          "copy",
+          "assign",
+          "nonatomic",
+          "getter",
+          "setter",
+          "retain",
+          "unsafe_unretained",
+          "class",
+          "nonnull",
+          "nullable",
+          "null_resettable",
+          "null_unspecified",
+          // Default values aren't kept, but may be listed in set when debugging.
+          "atomic",
+          "readwrite",
+          "strong");
   private static final Ordering<String> ATTRIBUTE_ORDERING = Ordering.explicit(PROPERTY_ATTRIBUTES);
   private static final Comparator<String> ATTRIBUTES_COMPARATOR = new Comparator<String>() {
     @Override

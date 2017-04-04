@@ -32,32 +32,38 @@ import javax.lang.model.element.VariableElement;
 public class Mappings {
 
   /**
-   * We convert all the String constructor invocations to factory method
-   * invocations because we want to avoid calling [NSString alloc].
+   * We convert all the String constructor invocations to factory method invocations because we want
+   * to avoid calling [NSString alloc].
    */
-  public static final Map<String, String> STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS =
+  public static final ImmutableMap<String, String> STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS =
       ImmutableMap.<String, String>builder()
-      .put("java.lang.String.<init>()V", "string")
-      .put("java.lang.String.<init>(Ljava/lang/String;)V", "stringWithString:")
-      .put("java.lang.String.<init>([B)V", "java_stringWithBytes:")
-      .put("java.lang.String.<init>([BLjava/lang/String;)V", "java_stringWithBytes:charsetName:")
-      .put("java.lang.String.<init>([BLjava/nio/charset/Charset;)V",
-          "java_stringWithBytes:charset:")
-      .put("java.lang.String.<init>([BI)V", "java_stringWithBytes:hibyte:")
-      .put("java.lang.String.<init>([BII)V", "java_stringWithBytes:offset:length:")
-      .put("java.lang.String.<init>([BIII)V", "java_stringWithBytes:hibyte:offset:length:")
-      .put("java.lang.String.<init>([BIILjava/lang/String;)V",
-           "java_stringWithBytes:offset:length:charsetName:")
-      .put("java.lang.String.<init>([BIILjava/nio/charset/Charset;)V",
-           "java_stringWithBytes:offset:length:charset:")
-      .put("java.lang.String.<init>([C)V", "java_stringWithCharacters:")
-      .put("java.lang.String.<init>([CII)V", "java_stringWithCharacters:offset:length:")
-      .put("java.lang.String.<init>([III)V", "java_stringWithInts:offset:length:")
-      .put("java.lang.String.<init>(Ljava/lang/StringBuffer;)V",
-          "java_stringWithJavaLangStringBuffer:")
-      .put("java.lang.String.<init>(Ljava/lang/StringBuilder;)V",
-           "java_stringWithJavaLangStringBuilder:")
-      .build();
+          .put("java.lang.String.<init>()V", "string")
+          .put("java.lang.String.<init>(Ljava/lang/String;)V", "stringWithString:")
+          .put("java.lang.String.<init>([B)V", "java_stringWithBytes:")
+          .put(
+              "java.lang.String.<init>([BLjava/lang/String;)V", "java_stringWithBytes:charsetName:")
+          .put(
+              "java.lang.String.<init>([BLjava/nio/charset/Charset;)V",
+              "java_stringWithBytes:charset:")
+          .put("java.lang.String.<init>([BI)V", "java_stringWithBytes:hibyte:")
+          .put("java.lang.String.<init>([BII)V", "java_stringWithBytes:offset:length:")
+          .put("java.lang.String.<init>([BIII)V", "java_stringWithBytes:hibyte:offset:length:")
+          .put(
+              "java.lang.String.<init>([BIILjava/lang/String;)V",
+              "java_stringWithBytes:offset:length:charsetName:")
+          .put(
+              "java.lang.String.<init>([BIILjava/nio/charset/Charset;)V",
+              "java_stringWithBytes:offset:length:charset:")
+          .put("java.lang.String.<init>([C)V", "java_stringWithCharacters:")
+          .put("java.lang.String.<init>([CII)V", "java_stringWithCharacters:offset:length:")
+          .put("java.lang.String.<init>([III)V", "java_stringWithInts:offset:length:")
+          .put(
+              "java.lang.String.<init>(Ljava/lang/StringBuffer;)V",
+              "java_stringWithJavaLangStringBuffer:")
+          .put(
+              "java.lang.String.<init>(Ljava/lang/StringBuilder;)V",
+              "java_stringWithJavaLangStringBuilder:")
+          .build();
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
 

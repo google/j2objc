@@ -134,7 +134,7 @@ public class TreeUtil {
     return getNearestAncestorWithType(MethodDeclaration.class, node);
   }
 
-  private static final List<Class<?>> EXECUTABLE_DECLARATION_TYPES =
+  private static final ImmutableList<Class<?>> EXECUTABLE_DECLARATION_TYPES =
       ImmutableList.of(MethodDeclaration.class, FunctionDeclaration.class);
 
   public static TypeMirror getOwningReturnType(TreeNode node) {
@@ -285,8 +285,9 @@ public class TreeUtil {
     return getEnclosingType(node).getBodyDeclarations();
   }
 
-  private static final List<Class<?>> NODE_TYPES_WITH_ELEMENTS = ImmutableList.of(
-      AbstractTypeDeclaration.class, MethodDeclaration.class, VariableDeclaration.class);
+  private static final ImmutableList<Class<?>> NODE_TYPES_WITH_ELEMENTS =
+      ImmutableList.of(
+          AbstractTypeDeclaration.class, MethodDeclaration.class, VariableDeclaration.class);
 
   public static Element getEnclosingElement(TreeNode node) {
     return getDeclaredElement(getNearestAncestorWithTypeOneOf(NODE_TYPES_WITH_ELEMENTS, node));
