@@ -143,12 +143,6 @@ FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size
   return self;
 #endif
 
-// Defined in J2ObjC_common.m
-FOUNDATION_EXPORT id CreateNonCapturing(const char *lambdaName, jint numProtocols,
-    Protocol *protocols[], jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]);
-FOUNDATION_EXPORT Class CreatePossiblyCapturingClass(const char *lambdaName, jint numProtocols,
-    Protocol *protocols[], jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]);
-
 #define J2OBJC_IGNORE_DESIGNATED_BEGIN \
   _Pragma("clang diagnostic push") \
   _Pragma("clang diagnostic ignored \"-Wobjc-designated-initializers\"")

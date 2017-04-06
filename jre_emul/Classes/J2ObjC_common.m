@@ -218,31 +218,6 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
   [*(id *)pVar release];
 }
 
-// empty implementation base class for lambdas
-@implementation LambdaBase
-@end
-
-Class CreatePossiblyCapturingClass(
-    const char *lambdaName, jint numProtocols, Protocol *protocols[],
-    jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]) {
-  Class cls = objc_allocateClassPair([LambdaBase class], lambdaName, 0);
-  for (jint i = 0; i < numProtocols; i++) {
-    class_addProtocol(cls, protocols[i]);
-  }
-  for (jint i = 0; i < numMethods; i++) {
-    class_addMethod(cls, selectors[i], impls[i], signatures[i]);
-  }
-  objc_registerClassPair(cls);
-  return cls;
-};
-
-id CreateNonCapturing(
-    const char *lambdaName, jint numProtocols, Protocol *protocols[],
-    jint numMethods, SEL selectors[], IMP impls[], const char *signatures[]) {
-  return NSAllocateObject(CreatePossiblyCapturingClass(lambdaName, numProtocols,
-      protocols, numMethods, selectors, impls, signatures), 0, nil);
-};
-
 jint JreIndexOfStr(NSString *str, NSString **values, jint size) {
   for (int i = 0; i < size; i++) {
     if ([str isEqualToString:values[i]]) {
