@@ -162,27 +162,17 @@ public abstract class IosRSASignature extends SignatureSpi {
   - (jboolean)nativeEngineVerify:(SecKeyRef)publicKey
                        signature:(IOSByteArray *)signature
                        hashBytes:(uint8_t *)hashBytes
-                            size:(size_t)hashBytesSize
-                         padding:(SecPadding)secPadding {
+                            size:(size_t)hashBytesSize {
     size_t signatureSize = SecKeyGetBlockSize(publicKey);
     if (signatureSize != (size_t)signature->size_) {
       return false;
     }
     OSStatus status = SecKeyRawVerify(publicKey,
-                                      secPadding,
+                                      kSecPaddingNone,
                                       hashBytes,
                                       hashBytesSize,
                                       (uint8_t*)signature->buffer_,
                                       signatureSize);
-    if (status != errSecSuccess) {
-      // Try verifying without padding.
-      status = SecKeyRawVerify(publicKey,
-                               kSecPaddingNone,
-                               hashBytes,
-                               hashBytesSize,
-                               (uint8_t*)signature->buffer_,
-                               signatureSize);
-    }
     return status == errSecSuccess;
   }
   ]-*/
@@ -214,8 +204,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
                                    hashBytes:hashBytes
-                                        size:hashBytesSize
-                                     padding:kSecPaddingPKCS1MD5];
+                                        size:hashBytesSize];
       free(hashBytes);
       return result;
     ]-*/;
@@ -248,8 +237,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
                                    hashBytes:hashBytes
-                                        size:hashBytesSize
-                                     padding:kSecPaddingPKCS1SHA1];
+                                        size:hashBytesSize];
       free(hashBytes);
       return result;
     ]-*/;
@@ -282,8 +270,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
                                    hashBytes:hashBytes
-                                        size:hashBytesSize
-                                     padding:kSecPaddingPKCS1SHA256];
+                                        size:hashBytesSize];
       free(hashBytes);
       return result;
     ]-*/;
@@ -316,8 +303,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
                                    hashBytes:hashBytes
-                                        size:hashBytesSize
-                                     padding:kSecPaddingPKCS1SHA384];
+                                        size:hashBytesSize];
       free(hashBytes);
       return result;
     ]-*/;
@@ -350,8 +336,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       jboolean result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                        signature:sigBytes
                                        hashBytes:hashBytes
-                                            size:hashBytesSize
-                                     padding:kSecPaddingPKCS1SHA512];
+                                            size:hashBytesSize];
       free(hashBytes);
       return result;
     ]-*/;
