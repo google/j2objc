@@ -261,7 +261,7 @@ freeZip(jzfile *zip)
 #ifdef USE_MMAP
     if (zip->usemmap) {
         if (zip->maddr != NULL)
-            munmap((char *)zip->maddr, zip->mlen);
+            munmap((char *)zip->maddr, (size_t)zip->mlen);
     } else
 #endif
     {
@@ -638,7 +638,8 @@ readCEN(jzfile *zip, jint knownTotal)
             */
             zip->mlen = cenpos - offset + cenlen + endhdrlen;
             zip->offset = offset;
-            mappedAddr = mmap64(0, zip->mlen, PROT_READ, MAP_SHARED, zip->zfd, (off64_t) offset);
+            mappedAddr =
+                mmap64(0, (size_t)zip->mlen, PROT_READ, MAP_SHARED, zip->zfd, (off64_t) offset);
             zip->maddr = (mappedAddr == (void*) MAP_FAILED) ? NULL :
                 (unsigned char*)mappedAddr;
 
