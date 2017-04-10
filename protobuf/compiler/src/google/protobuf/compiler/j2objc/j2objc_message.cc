@@ -48,26 +48,6 @@ namespace j2objc {
 
 namespace {
 
-  struct FieldOrderingByNumber {
-    inline bool operator()(const FieldDescriptor* a,
-                           const FieldDescriptor* b) const {
-      return a->number() < b->number();
-    }
-  };
-
-  // Sort the fields of the given Descriptor by number into a new[]'d array
-  // and return it.
-  const FieldDescriptor** SortFieldsByNumber(const Descriptor* descriptor) {
-    const FieldDescriptor** fields =
-        new const FieldDescriptor*[descriptor->field_count()];
-    for (int i = 0; i < descriptor->field_count(); i++) {
-      fields[i] = descriptor->field(i);
-    }
-    std::sort(fields, fields + descriptor->field_count(),
-              FieldOrderingByNumber());
-    return fields;
-  }
-
   string GetMessageFlags(const Descriptor *descriptor) {
     std::vector<string> flags;
     if (descriptor->extension_range_count() > 0) {
@@ -78,6 +58,7 @@ namespace {
     }
     return JoinFlags(flags);
   }
+
 } // namespace
 
 MessageGenerator::MessageGenerator(const Descriptor* descriptor)
@@ -269,11 +250,9 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
 }
 
 void MessageGenerator::GenerateSource(io::Printer* printer) {
-  std::unique_ptr<const FieldDescriptor * []> sorted_fields(
-      SortFieldsByNumber(descriptor_));
   uint32_t singularFieldCount = 0;
   for (int i = 0; i < descriptor_->field_count(); i++) {
-    if (!sorted_fields[i]->is_repeated()) {
+    if (!descriptor_->field(i)->is_repeated()) {
       singularFieldCount++;
     }
   }
@@ -301,7 +280,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
 
   printer->Indent();
   for (int i = 0; i < descriptor_->field_count(); i++) {
-    field_generators_.get(sorted_fields[i]).GenerateDeclaration(printer);
+    field_generators_.get(descriptor_->field(i)).GenerateDeclaration(printer);
   }
   printer->Outdent();
 
@@ -322,7 +301,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Print("static CGPFieldData fields[] = {\n");
   printer->Indent();
   for (int i = 0; i < descriptor_->field_count(); i++) {
-    field_generators_.get(sorted_fields[i]).GenerateFieldData(printer);
+    field_generators_.get(descriptor_->field(i)).GenerateFieldData(printer);
   }
   printer->Outdent();
   printer->Print(

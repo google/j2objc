@@ -190,6 +190,21 @@ J2OBJC_ETERNAL_SINGLETON
 
 @end
 
+int SerializationOrderComp(const void *a, const void *b) {
+  return CGPFieldGetNumber(*(const CGPFieldDescriptor **)a) -
+      CGPFieldGetNumber(*(const CGPFieldDescriptor **)b);
+}
+
+IOSObjectArray *CGPGetSerializationOrderFields(CGPDescriptor *descriptor) {
+  IOSObjectArray *result = descriptor->serializationOrderFields_;
+  if (!result) {
+    result = [descriptor->fields_ copyWithZone:nil];
+    qsort(result->buffer_, result->size_, sizeof(id), SerializationOrderComp);
+    descriptor->serializationOrderFields_ = result;
+  }
+  return result;
+}
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_Descriptor)
 
 @implementation ComGoogleProtobufDescriptors_FieldDescriptor

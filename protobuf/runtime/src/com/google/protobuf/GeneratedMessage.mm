@@ -1891,8 +1891,9 @@ static void WriteField(id msg, CGPFieldDescriptor *field, CGPCodedOutputStream *
 }
 
 static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream *output) {
-  NSUInteger fieldsCount = descriptor->fields_->size_;
-  CGPFieldDescriptor **fieldsBuf = descriptor->fields_->buffer_;
+  IOSObjectArray *orderedFields = CGPGetSerializationOrderFields(descriptor);
+  NSUInteger fieldsCount = orderedFields->size_;
+  CGPFieldDescriptor **fieldsBuf = orderedFields->buffer_;
   CGPExtensionMap *extensionMap = MessageExtensionMap(msg, descriptor);
   if (extensionMap == NULL) {
     for (NSUInteger i = 0; i < fieldsCount; i++) {

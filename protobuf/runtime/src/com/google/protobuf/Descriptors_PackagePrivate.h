@@ -89,6 +89,7 @@ typedef struct CGPFieldData {
   CGPMessageFlags flags_;
   size_t storageSize_;
   IOSObjectArray *fields_;
+  IOSObjectArray *serializationOrderFields_;
   ComGoogleProtobufGeneratedMessage *defaultInstance_;
 }
 
@@ -156,6 +157,8 @@ CGP_ALWAYS_INLINE inline BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
 CGP_ALWAYS_INLINE inline BOOL CGPIsMessageSetWireFormat(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagMessageSetWireFormat;
 }
+
+IOSObjectArray *CGPGetSerializationOrderFields(CGPDescriptor *descriptor);
 
 CGPEnumDescriptor *CGPInitializeEnumType(
     Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values,
