@@ -28,10 +28,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "com/google/protobuf/ExtensionRegistry.h"
+#include "com/google/protobuf/ExtensionRegistry.h"
 
-#import "com/google/protobuf/Descriptors_PackagePrivate.h"
-#import "com/google/protobuf/Extension.h"
+#include "com/google/protobuf/Descriptors_PackagePrivate.h"
+#include "com/google/protobuf/Extension.h"
+#include "com/google/protobuf/GeneratedMessage.h"
 
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufExtensionRegistry)
 
@@ -48,6 +49,11 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
 }
 
 - (void)addWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  CGPExtensionRegistryAdd(self, extension);
+}
+
+- (void)addWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (ComGoogleProtobufGeneratedMessage_GeneratedExtension *)extension {
   CGPExtensionRegistryAdd(self, extension);
 }
 

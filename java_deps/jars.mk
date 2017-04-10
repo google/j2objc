@@ -19,7 +19,7 @@ JARJAR_JAR = jarjar-1.4.jar
 JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
 JUNIT_JAR = j2objc_junit.jar
 
-PROTOBUF_JAR = protobuf-java-2.6.1.jar
+PROTOBUF_JAR = protobuf-java-3.2.0.jar
 
 ECLIPSE_JARS = \
     org.eclipse.core.contenttype-3.4.200.v20140207-1251.jar \

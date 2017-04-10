@@ -23,8 +23,7 @@ SRCS = \
   google/protobuf/compiler/j2objc/j2objc_file.cc \
   google/protobuf/compiler/j2objc/j2objc_generator.cc \
   google/protobuf/compiler/j2objc/j2objc_helpers.cc \
-  google/protobuf/compiler/j2objc/j2objc_message.cc \
-  google/protobuf/stubs/strutil.cc
+  google/protobuf/compiler/j2objc/j2objc_message.cc
 
 OBJS = $(SRCS:%.cc=$(BUILD_DIR)/%.o)
 
@@ -63,10 +62,6 @@ $(PROTOC_PLUGIN_DIST): $(PROTOC_PLUGIN)
 	install $< $@
 
 $(BUILD_DIR)/%.o: src/%.cc
-	@mkdir -p $(@D)
-	$(CXX) -MD -c -o $@ $(CXXFLAGS) $<
-
-$(BUILD_DIR)/%.o: ../google/src/%.cc
 	@mkdir -p $(@D)
 	$(CXX) -MD -c -o $@ $(CXXFLAGS) $<
 

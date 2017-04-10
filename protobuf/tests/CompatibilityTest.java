@@ -16,6 +16,7 @@ import abc_def.gHiJkL.Foo2bar;
 import abc_def.gHiJkL.Foo_bar;
 import abc_def.gHiJkL.fooBar;
 import com.google.j2objc.PrefixDummy;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -24,8 +25,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ExtensionRegistryLite;
-import com.google.protobuf.GeneratedMessage;
-import com.google.protobuf.GeneratedMessage.ExtendableMessageOrBuilder;
 import com.google.protobuf.Internal;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -880,12 +879,12 @@ public class CompatibilityTest extends ProtobufTest {
   }
 
   public void testGetSerializedSize() throws Exception {
-    GeneratedMessage data = TypicalData.newBuilder().setMyInt(1).build();
+    AbstractMessage data = TypicalData.newBuilder().setMyInt(1).build();
     assertEquals(2, data.getSerializedSize());
   }
 
   public void testGetAllFields() throws Exception {
-    GeneratedMessage data = TypicalData.newBuilder()
+    AbstractMessage data = TypicalData.newBuilder()
         .setMyInt(1)
         .addRepeatedInt32(2)
         .setExtension(Typical.myExtension, TypicalDataMessage.getDefaultInstance())
@@ -1324,15 +1323,6 @@ public class CompatibilityTest extends ProtobufTest {
     expectSubstringIndexOutOfBounds(bs1, -1, 1);
     expectSubstringIndexOutOfBounds(bs1, 0, 17);
     expectSubstringIndexOutOfBounds(bs1, 7, 6);
-  }
-
-  public void testExtendableMessageOrBuilder() throws Exception {
-    TypicalData.Builder builder = TypicalData.newBuilder().setMyInt(42);
-    TypicalData data = builder.build();
-    Object o = builder;
-    ExtendableMessageOrBuilder emob = (ExtendableMessageOrBuilder) o;
-    o = data;
-    emob = (ExtendableMessageOrBuilder) o;
   }
 
   public void testInternalEnumLite() throws Exception {

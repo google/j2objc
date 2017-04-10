@@ -36,12 +36,13 @@
 #ifndef __ComGoogleProtobufGeneratedMessage_H__
 #define __ComGoogleProtobufGeneratedMessage_H__
 
-#import "JreEmulation.h"
+#include "JreEmulation.h"
 
-#import "com/google/protobuf/Extension.h"
-#import "com/google/protobuf/Message.h"
-#import "com/google/protobuf/MessageOrBuilder.h"
-#import "com/google/protobuf/common.h"
+#include "com/google/protobuf/AbstractMessage.h"
+#include "com/google/protobuf/Extension.h"
+#include "com/google/protobuf/Message.h"
+#include "com/google/protobuf/MessageOrBuilder.h"
+#include "com/google/protobuf/common.h"
 
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
@@ -50,7 +51,7 @@ struct CGPFieldData;
 
 typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtension;
 
-@interface ComGoogleProtobufGeneratedMessage : NSObject<ComGoogleProtobufMessage>
+@interface ComGoogleProtobufGeneratedMessage : ComGoogleProtobufAbstractMessage
 
 + (id)getDescriptor;
 
@@ -78,21 +79,27 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 
 - (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
+- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (jboolean)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension;
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension;
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index;
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index;
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withInt:(jint)index;
 
 - (jint)getExtensionCountWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
-
-// Support older API that accepts Extension instead of ExtensionLite
-- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index;
 - (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (jint)getExtensionCountWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension;
 
 @end
 
@@ -114,17 +121,21 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
 - (id)setExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value;
+- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
+- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withId:(id)value;
 
 - (id)addExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value;
+- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
+- (id)addExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withId:(id)value;
 
 - (id)clearExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
-
-// Support older API that accepts Extension instead of ExtensionLite
-- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
-- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
 - (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (id)clearExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension;
 
 @end
 

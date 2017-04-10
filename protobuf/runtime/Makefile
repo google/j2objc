@@ -23,6 +23,7 @@ include $(J2OBJC_ROOT)/make/j2objc_deps.mk
 include $(J2OBJC_ROOT)/java_deps/jars.mk
 
 SRCS = \
+  com/google/protobuf/AbstractMessage.m \
   com/google/protobuf/ByteString.m \
   com/google/protobuf/CodedInputStream.mm \
   com/google/protobuf/CodedOutputStream.mm \

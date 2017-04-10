@@ -2897,9 +2897,23 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_Extendabl
     (ComGoogleProtobufExtensionLite *)extension {
   return GetSingularExtension(&extensionMap_, extension);
 }
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetSingularExtension(&extensionMap_, extension);
+}
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
+  return GetSingularExtension(&extensionMap_, extension);
+}
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index {
+  return GetRepeatedExtension(&extensionMap_, extension, index);
+}
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index {
+  return GetRepeatedExtension(&extensionMap_, extension, index);
+}
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withInt:(jint)index {
   return GetRepeatedExtension(&extensionMap_, extension, index);
 }
 
@@ -2907,26 +2921,23 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_Extendabl
     (ComGoogleProtobufExtensionLite *)extension {
   return GetExtensionCount(extension, &extensionMap_);
 }
+- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetExtensionCount(extension, &extensionMap_);
+}
+- (jint)getExtensionCountWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
+  return GetExtensionCount(extension, &extensionMap_);
+}
 
 - (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
-
-// Support older API that accepts Extension instead of ExtensionLite
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
-  return GetSingularExtension(&extensionMap_, extension);
-}
-
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index {
-  return GetRepeatedExtension(&extensionMap_, extension, index);
-}
-
-- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
-  return GetExtensionCount(extension, &extensionMap_);
-}
-
 - (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
+}
+- (jboolean)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
 
@@ -2951,9 +2962,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
     (ComGoogleProtobufExtensionLite *)extension {
   return GetSingularExtension(&extensionMap_, extension);
 }
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetSingularExtension(&extensionMap_, extension);
+}
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
+  return GetSingularExtension(&extensionMap_, extension);
+}
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withInt:(jint)index {
+  return GetRepeatedExtension(&extensionMap_, extension, index);
+}
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index {
+  return GetRepeatedExtension(&extensionMap_, extension, index);
+}
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withInt:(jint)index {
   return GetRepeatedExtension(&extensionMap_, extension, index);
 }
 
@@ -2961,9 +2986,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
     (ComGoogleProtobufExtensionLite *)extension {
   return GetExtensionCount(extension, &extensionMap_);
 }
+- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetExtensionCount(extension, &extensionMap_);
+}
+- (jint)getExtensionCountWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
+  return GetExtensionCount(extension, &extensionMap_);
+}
 
 - (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
+  return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
+}
+- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
+}
+- (jboolean)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
 
@@ -2974,6 +3013,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
   extensionMap_[field].set(ToReflectionType(field, value));
   return self;
 }
+- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
+  return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
+- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withId:(id)value {
+  return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
 
 - (id)addExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value {
@@ -2983,39 +3029,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
       ToReflectionTypeSingular(CGPFieldGetJavaType(field), value));
   return self;
 }
+- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
+  return [self addExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
+- (id)addExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension withId:(id)value {
+  return [self addExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
 
 - (id)clearExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension {
   extensionMap_.erase(extension->fieldDescriptor_);
   return self;
 }
-
-// Support older API that accepts Extension instead of ExtensionLite
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
-  return GetSingularExtension(&extensionMap_, extension);
-}
-
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index {
-  return GetRepeatedExtension(&extensionMap_, extension, index);
-}
-
-- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
-  return GetExtensionCount(extension, &extensionMap_);
-}
-
-- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
-  return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
-}
-
-- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
-  return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
-}
-
-- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
-  return [self addExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
-}
-
 - (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return [self clearExtensionWithComGoogleProtobufExtensionLite:extension];
+}
+- (id)clearExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension {
   return [self clearExtensionWithComGoogleProtobufExtensionLite:extension];
 }
 

@@ -13,8 +13,10 @@
  */
 
 import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.protobuf.GeneratedMessage;
-
+import com.google.protobuf.AbstractMessage;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import protos.MessageWithExtensions;
 import protos.NoFields;
 import protos.SingleInt;
@@ -25,10 +27,6 @@ import protos.SingleRepeatedLong;
 import protos.SingleRepeatedMessage;
 import protos.SizeTest;
 import protos.TypicalData;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 /*-[
 #include "my_malloc.h"
@@ -70,7 +68,7 @@ class MemoryBenchmarks {
     memUsageRepeatedIntExtension(10);
   }
 
-  private static void memUsageEmptyProto(final Class<? extends GeneratedMessage> protoClass) {
+  private static void memUsageEmptyProto(final Class<? extends AbstractMessage> protoClass) {
     System.out.println("*** memUsageEmptyProto - " + protoClass.getName() + " ***");
     testMemUsage(new Runnable() {
       public void run() {
@@ -81,7 +79,7 @@ class MemoryBenchmarks {
         }
       }
 
-      public native Object newBuilder(Class<? extends GeneratedMessage> protoClass) /*-[
+      public native Object newBuilder(Class<? extends AbstractMessage> protoClass) /*-[
         return [protoClass.objcClass newBuilder];
       ]-*/;
     });

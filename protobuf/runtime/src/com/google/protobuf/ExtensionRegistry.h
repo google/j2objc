@@ -54,6 +54,8 @@ typedef ComGoogleProtobufExtensionRegistry_ExtensionInfo CGPExtensionInfo;
 + (ComGoogleProtobufExtensionRegistry *)getEmptyRegistry;
 
 - (void)addWithComGoogleProtobufExtension:(ComGoogleProtobufExtension *)extension;
+- (void)addWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (ComGoogleProtobufGeneratedMessage_GeneratedExtension *)extension;
 
 - (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
     findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:
