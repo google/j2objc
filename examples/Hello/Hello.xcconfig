@@ -7,5 +7,5 @@
 J2OBJC_DIST = ../../dist;
 
 HEADER_SEARCH_PATHS = "${J2OBJC_DIST}/include";
-LIBRARY_SEARCH_PATHS = "${J2OBJC_DIST}/lib";
-OTHER_LDFLAGS = "-ljre_core"
+FRAMEWORK_SEARCH_PATHS = "${J2OBJC_DIST}/frameworks";
+OTHER_LDFLAGS = "-liconv";

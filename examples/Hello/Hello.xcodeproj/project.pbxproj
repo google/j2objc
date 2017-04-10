@@ -13,15 +13,14 @@
 		069A97AF1C6A86AD00A00560 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97AD1C6A86AD00A00560 /* Main.storyboard */; };
 		069A97B11C6A86AD00A00560 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B01C6A86AD00A00560 /* Assets.xcassets */; };
 		069A97B41C6A86AD00A00560 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B21C6A86AD00A00560 /* LaunchScreen.storyboard */; };
-		069A97D51C6A897900A00560 /* Hello.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 069A97D41C6A897900A00560 /* Hello.xcconfig */; };
 		069A97DC1C6AB52A00A00560 /* Status.java in Sources */ = {isa = PBXBuildFile; fileRef = 069A97DB1C6AB52A00A00560 /* Status.java */; };
 		06CCF1371C77E42800CDF952 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97A81C6A86AD00A00560 /* AppDelegate.m */; };
 		06CCF1381C77E42800CDF952 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97A51C6A86AD00A00560 /* main.m */; };
-		06CCF13C1C77E42800CDF952 /* Hello.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 069A97D41C6A897900A00560 /* Hello.xcconfig */; };
 		06CCF13D1C77E42800CDF952 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B21C6A86AD00A00560 /* LaunchScreen.storyboard */; };
 		06CCF13E1C77E42800CDF952 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B01C6A86AD00A00560 /* Assets.xcassets */; };
 		06CCF13F1C77E42800CDF952 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97AD1C6A86AD00A00560 /* Main.storyboard */; };
 		06CCF1471C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */; };
+		06E954AE1E9C2A4500BA08E2 /* JRE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06E954AD1E9C2A4500BA08E2 /* JRE.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -64,6 +63,7 @@
 		069A97DB1C6AB52A00A00560 /* Status.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Status.java; path = org/j2objc/Status.java; sourceTree = "<group>"; };
 		06CCF1441C77E42800CDF952 /* Hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerNoJ2ObjC.m; sourceTree = "<group>"; };
+		06E954AD1E9C2A4500BA08E2 /* JRE.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JRE.framework; path = ../../dist/frameworks/JRE.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06E954AE1E9C2A4500BA08E2 /* JRE.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +91,7 @@
 				069A97D41C6A897900A00560 /* Hello.xcconfig */,
 				069A97A31C6A86AD00A00560 /* Hello */,
 				069A97A21C6A86AD00A00560 /* Products */,
+				06E954AA1E9C294A00BA08E2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,6 +128,14 @@
 				069A97A51C6A86AD00A00560 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		06E954AA1E9C294A00BA08E2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				06E954AD1E9C2A4500BA08E2 /* JRE.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,7 +183,7 @@
 		069A97991C6A86AD00A00560 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = com.google;
 				TargetAttributes = {
 					069A97A01C6A86AD00A00560 = {
@@ -205,7 +215,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				069A97D51C6A897900A00560 /* Hello.xcconfig in Resources */,
 				069A97B41C6A86AD00A00560 /* LaunchScreen.storyboard in Resources */,
 				069A97B11C6A86AD00A00560 /* Assets.xcassets in Resources */,
 				069A97AF1C6A86AD00A00560 /* Main.storyboard in Resources */,
@@ -216,7 +225,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06CCF13C1C77E42800CDF952 /* Hello.xcconfig in Resources */,
 				06CCF13D1C77E42800CDF952 /* LaunchScreen.storyboard in Resources */,
 				06CCF13E1C77E42800CDF952 /* Assets.xcassets in Resources */,
 				06CCF13F1C77E42800CDF952 /* Main.storyboard in Resources */,
@@ -283,8 +291,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -328,8 +338,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
