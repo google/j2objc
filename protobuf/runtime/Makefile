@@ -38,6 +38,20 @@ SRCS = \
   com/google/protobuf/RepeatedField.m \
   com/google/protobuf/WireFormat.mm
 
+# This headers list defines those headers included by all client code
+# of the ProtobufRuntime framework.
+STATIC_FRAMEWORK_PUBLIC_HEADERS = \
+  com/google/protobuf/AbstractMessage.h \
+  com/google/protobuf/ByteString.h \
+  com/google/protobuf/Descriptors.h \
+  com/google/protobuf/Extension.h \
+  com/google/protobuf/ExtensionLite.h \
+  com/google/protobuf/ExtensionRegistry.h \
+  com/google/protobuf/ExtensionRegistryLite.h \
+  com/google/protobuf/GeneratedMessage.h \
+  com/google/protobuf/InvalidProtocolBufferException.h \
+  com/google/protobuf/ProtocolStringList.h
+
 SRC_DIR = $(CURDIR)/src
 
 DIST_JAR = $(DIST_JAR_DIR)/protobuf_runtime.jar
