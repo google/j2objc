@@ -3627,8 +3627,7 @@ public class FormatterTest extends TestCase {
                 { BigDecimal.ONE, "% 0(20e", " 00000001.000000e+00" },
 
                 { BigDecimal.TEN, "%e", "1.000000e+01" },
-                //{ BigDecimal.TEN, "%#.0e", "1.e+01" },  J2ObjC changed.
-                { BigDecimal.TEN, "%#.0e", "1.0e+01" },
+                { BigDecimal.TEN, "%#.0e", "1.e+01" },
                 { BigDecimal.TEN, "%# 9.8e", " 1.00000000e+01" },
                 { BigDecimal.TEN, "%#+0(8.4e", "+1.0000e+01" },
                 { BigDecimal.TEN, "%-+17.6e", "+1.000000e+01    " },

@@ -514,13 +514,9 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
   java/lang/JavaLangAccess.java \
-  java/math/BitLevel.java \
-  java/math/Conversion.java \
-  java/math/Division.java \
-  java/math/Elementary.java \
-  java/math/Logical.java \
-  java/math/Multiplication.java \
-  java/math/Primality.java \
+  java/math/BitSieve.java \
+  java/math/MutableBigInteger.java \
+  java/math/SignedMutableBigInteger.java \
   java/net/NetFactory.java \
   java/nio/ByteArrayBuffer.java \
   java/nio/ByteBufferAsCharBuffer.java \
