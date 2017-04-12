@@ -27,6 +27,7 @@ import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.util.Elements;
@@ -64,14 +65,14 @@ class JavacEnvironment implements ParserEnvironment {
     Name className = javacNames.fromString(name);
 
     // Check first if compiler already created or loaded the class.
-    ClassSymbol symbol = symbolTable.classes.get(className);
+    ClassSymbol symbol = getClass(className);
     if (symbol == null) {
       // Not available, read it from a class file.
       // Note: the enterName(Name) method moved from ClassReader to
       // Symtab in Java 9. Reflection is used to support both locations.
       symbol = enterClassJavac(className);
       if (symbol != null) {
-        symbolTable.classes.put(className, symbol);
+        putClass(className, symbol);
       } else {
         symbol = enterClassJavac9(className);
         // The symbolTable is already updated in Java 9.
@@ -80,8 +81,52 @@ class JavacEnvironment implements ParserEnvironment {
     return symbol;
   }
 
+  @SuppressWarnings("unchecked")
+  private ClassSymbol getClass(Name className) {
+    try {
+      return (ClassSymbol)
+          ((Map<Name, ClassSymbol>) Symtab.class.getField("classes").get(symbolTable))
+              .get(className);
+    } catch (ReflectiveOperationException e) {
+      // continue
+    }
+    try {
+      // Java 9
+      Class<?> moduleSymbolCls = Class.forName("com.sun.tools.javac.code.Symbol$ModuleSymbol");
+      Object javaBaseModule = Symtab.class.getDeclaredField("java_base").get(symbolTable);
+      return (ClassSymbol)
+          Symtab.class
+              .getMethod("getClass", moduleSymbolCls, Name.class)
+              .invoke(symbolTable, javaBaseModule, className);
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void putClass(Name className, ClassSymbol symbol) {
+    try {
+      ((Map<Name, ClassSymbol>) Symtab.class.getField("classes").get(symbolTable))
+          .put(className, symbol);
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
+    }
+  }
+
   public PackageElement defaultPackage() {
-    return symbolTable.unnamedPackage;
+    try {
+      return (PackageElement) Symtab.class.getField("unnamedPackage").get(symbolTable);
+    } catch (NoSuchFieldException e) {
+      // continue
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
+    }
+    try {
+      Object unnamedModule = Symtab.class.getField("unnamedModule");
+      return (PackageElement) unnamedModule.getClass().getField("unnamedPackage").get(symbolTable);
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
+    }
   }
 
   private ClassSymbol enterClassJavac(Name className) {
@@ -98,26 +143,20 @@ class JavacEnvironment implements ParserEnvironment {
     try {
       Method m = Symtab.class.getDeclaredMethod("enterClass", Name.class);
       return (ClassSymbol) m.invoke(symbolTable, className);
-    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-      return null;
+    } catch (NoSuchMethodException e) {
+      // continue
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
     }
-
-//  TODO(tball): update to this version with -source 1.9.
-//    try {
-//      Field javaBaseField = Names.class.getDeclaredField("java_base");
-//      Name javaBaseName = (Name) javaBaseField.get(javacNames);
-//
-//      Class<?> moduleSymbolCls = Class.forName("com.sun.tools.javac.code.Symbol.MethodSymbol");
-//      Method enterModule = Symtab.class.getDeclaredMethod("enterModule", Name.class);
-//      Object javaBaseModule = enterModule.invoke(symbolTable, javaBaseName);
-//
-//      Method enterClass =
-//          Symtab.class.getDeclaredMethod("enterClass", moduleSymbolCls, Name.class);
-//      return (ClassSymbol) enterClass.invoke(symbolTable, javaBaseModule, className);
-//    } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException
-//        | InvocationTargetException | IllegalAccessException e) {
-//      return null;
-//    }
+    try {
+      Class<?> moduleSymbolCls = Class.forName("com.sun.tools.javac.code.Symbol$ModuleSymbol");
+      Object javaBaseModule = Symtab.class.getDeclaredField("java_base").get(symbolTable);
+      Method enterClass =
+          Symtab.class.getDeclaredMethod("enterClass", moduleSymbolCls, Name.class);
+      return (ClassSymbol) enterClass.invoke(symbolTable, javaBaseModule, className);
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError(e.getMessage(), e);
+    }
   }
 
   public Context getContext() {
