@@ -48,7 +48,7 @@ static double defaultValue = 3.1416;
 }
 
 - (void)testGetName {
-  JavaLangReflectMethod *hashMethod = [class_ getMethod:@"hash"
+  JavaLangReflectMethod *hashMethod = [class_ getMethod:@"hashCode"
                                          parameterTypes:nil];
   XCTAssertNotNil(hashMethod, @"hashMethod not found", nil);
   NSString *name = [hashMethod getName];
@@ -87,7 +87,7 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testByteReturn {
-  id result = invokeValueMethod(@"charValue");
+  id result = invokeValueMethod(@"byteValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangByte class]],
                @"incorrect type returned", nil);
   JavaLangByte *b = (JavaLangByte *) result;
@@ -119,7 +119,7 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testLongReturn {
-  id result = invokeValueMethod(@"longLongValue");
+  id result = invokeValueMethod(@"longValue");
   XCTAssertTrue([result isKindOfClass:[JavaLangLong class]],
                @"incorrect type returned", nil);
   JavaLangLong *l = (JavaLangLong *) result;

@@ -232,6 +232,7 @@ TEST_SOURCES := \
     com/google/j2objc/security/IosSHAMessageDigestTest.java \
     com/google/j2objc/util/NativeTimeZoneTest.java \
     dalvik/system/JniTest.java \
+    java/io/FileTest.java \
     java/lang/SystemTest.java \
     java/lang/ref/PhantomReferenceTest.java \
     java/lang/ref/SoftReferenceTest.java \
