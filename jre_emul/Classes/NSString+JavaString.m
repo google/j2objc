@@ -659,14 +659,29 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
       NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(locale, format, args);
 }
 
-- (jboolean)java_hasPrefix:(NSString *)aString offset:(jint)offset {
-  if (!aString) {
-    @throw makeException([JavaLangNullPointerException class]);
+static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
+  NSUInteger selfLen = [self length];
+  NSUInteger rangeLen = [other length];
+  if (startIdx < 0 || startIdx + rangeLen > selfLen) {
+    return false;
   }
-  NSRange range = NSMakeRange(offset, [aString length]);
-  return [self compare:aString
-               options:NSLiteralSearch
-                 range:range] == NSOrderedSame;
+  NSRange range = NSMakeRange(startIdx, rangeLen);
+  return [self compare:other options:NSLiteralSearch range:range] == NSOrderedSame;
+}
+
+- (jboolean)java_hasPrefix:(NSString *)prefix {
+  nil_chk(prefix);
+  return RangeIsEqual(self, prefix, 0);
+}
+
+- (jboolean)java_hasPrefix:(NSString *)prefix offset:(jint)offset {
+  nil_chk(prefix);
+  return RangeIsEqual(self, prefix, offset);
+}
+
+- (jboolean)java_hasSuffix:(NSString *)suffix {
+  nil_chk(suffix);
+  return RangeIsEqual(self, suffix, (jint)[self length] - (jint)[suffix length]);
 }
 
 - (NSString *)java_trim {
@@ -997,7 +1012,7 @@ jint javaStringHashCode(NSString *string) {
   methods[33].selector = @selector(java_compareToIgnoreCase:);
   methods[34].selector = @selector(java_concat:);
   methods[35].selector = @selector(java_contains:);
-  methods[36].selector = @selector(hasSuffix:);
+  methods[36].selector = @selector(java_hasSuffix:);
   methods[37].selector = @selector(java_equalsIgnoreCase:);
   methods[38].selector = @selector(java_getBytes);
   methods[39].selector = @selector(java_getBytesWithCharset:);
@@ -1025,7 +1040,7 @@ jint javaStringHashCode(NSString *string) {
   methods[61].selector = @selector(java_replaceFirst:withReplacement:);
   methods[62].selector = @selector(java_split:);
   methods[63].selector = @selector(java_split:limit:);
-  methods[64].selector = @selector(hasPrefix:);
+  methods[64].selector = @selector(java_hasPrefix:);
   methods[65].selector = @selector(java_hasPrefix:offset:);
   methods[66].selector = @selector(subSequenceFrom:to:);
   methods[67].selector = @selector(java_substring:);

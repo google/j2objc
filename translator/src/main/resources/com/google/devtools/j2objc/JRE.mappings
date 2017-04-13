@@ -44,8 +44,8 @@
 # with "java_" defines a method in one of the jre_emul library's
 # categories (such as NSObject+JavaObject). If the selector name doesn't
 # start with "java_", then it is directly mapped to a public method on that
-# Foundation class. For example, "hasPrefix:" doesn't have a prefix because
-# String.startsWith(String) is directly mapped to NSString's "hasPrefix:"
+# Foundation class. For example, "lowercaseString" doesn't have a prefix because
+# String.toLowerCase() is directly mapped to NSString's "lowercaseString:"
 # method; String.startsWith(String,int) is mapped to the NSString+JavaString
 # category method "java_hasPrefix:offset:" because NSString does not have
 # an equivalent method.
@@ -127,7 +127,7 @@ java.lang.String.concat(Ljava/lang/String;)Ljava/lang/String; = java_concat:
 java.lang.String.contains(Ljava/lang/CharSequence;)Z = java_contains:
 java.lang.String.contentEquals(Ljava/lang/CharSequence;)Z = java_contentEqualsCharSequence:
 java.lang.String.contentEquals(Ljava/lang/StringBuffer;)Z = java_contentEqualsStringBuffer:
-java.lang.String.endsWith(Ljava/lang/String;)Z = hasSuffix:
+java.lang.String.endsWith(Ljava/lang/String;)Z = java_hasSuffix:
 java.lang.String.equals(Ljava/lang/Object;)Z = isEqual:
 java.lang.String.equalsIgnoreCase(Ljava/lang/String;)Z = java_equalsIgnoreCase:
 java.lang.String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String; = \
@@ -170,7 +170,7 @@ java.lang.String.replaceFirst(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/St
     java_replaceFirst:withReplacement:
 java.lang.String.split(Ljava/lang/String;)[Ljava/lang/String; = java_split:
 java.lang.String.split(Ljava/lang/String;I)[Ljava/lang/String; = java_split:limit:
-java.lang.String.startsWith(Ljava/lang/String;)Z = hasPrefix:
+java.lang.String.startsWith(Ljava/lang/String;)Z = java_hasPrefix:
 java.lang.String.startsWith(Ljava/lang/String;I)Z = java_hasPrefix:offset:
 java.lang.String.subSequence(II)Ljava/lang/CharSequence; = subSequenceFrom:to:
 java.lang.String.substring(I)Ljava/lang/String; = java_substring:

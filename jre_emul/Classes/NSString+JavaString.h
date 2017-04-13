@@ -219,8 +219,10 @@
                                withNSString:(NSString *)format
                           withNSObjectArray:(IOSObjectArray *)args;
 
-// String.startsWith(String, int)
-- (jboolean)java_hasPrefix:(NSString *)aString offset:(jint)offset;
+// String.startsWith(String), String.startsWith(String, int), String.endsWith(String)
+- (jboolean)java_hasPrefix:(NSString *)prefix;
+- (jboolean)java_hasPrefix:(NSString *)prefix offset:(jint)offset;
+- (jboolean)java_hasSuffix:(NSString *)suffix;
 
 // String.trim()
 - (NSString *)java_trim;

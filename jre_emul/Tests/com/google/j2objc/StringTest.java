@@ -215,4 +215,39 @@ public class StringTest extends TestCase {
       // Expected.
     }
   }
+
+  public void testStartsWithAndEndsWith() {
+    String s = "hello";
+    assertTrue(s.startsWith("hell"));
+    assertTrue(s.startsWith("llo", 2));
+    assertTrue(s.startsWith(""));
+    assertTrue(s.startsWith("", 3));
+    assertFalse(s.startsWith("", -1));
+    assertFalse(s.startsWith("", 100));
+    assertTrue(s.startsWith("", 5));
+    assertTrue(s.endsWith("lo"));
+    assertTrue(s.endsWith(""));
+    assertFalse(s.startsWith("hello!"));
+    assertFalse(s.startsWith("llo!", 2));
+    assertFalse(s.endsWith("hi hello"));
+
+    try {
+      s.startsWith(null);
+      fail("Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+    try {
+      s.startsWith(null, 1);
+      fail("Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+    try {
+      s.endsWith(null);
+      fail("Expected NPE");
+    } catch (NullPointerException e) {
+      // Expected.
+    }
+  }
 }
