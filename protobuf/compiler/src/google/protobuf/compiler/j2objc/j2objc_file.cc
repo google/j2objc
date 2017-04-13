@@ -59,6 +59,7 @@ void AddSourceImports(std::set<string> &imports) {
   imports.insert("J2ObjC_source.h");
   imports.insert("com/google/protobuf/RepeatedField.h");
   imports.insert("com/google/protobuf/Descriptors_PackagePrivate.h");
+  imports.insert("java/lang/IllegalArgumentException.h");
 }
 
 void PrintSourcePreamble(io::Printer *printer) {
@@ -177,7 +178,6 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
     for (int i = 0; i < file_->message_type_count(); i++) {
       MessageGenerator generator(file_->message_type(i));
       generator.CollectMessageOrBuilderImports(headers);
-      generator.CollectHeaderImports(headers);
       generator.CollectForwardDeclarations(declarations);
       generator.CollectMessageOrBuilderForwardDeclarations(declarations);
     }
@@ -257,16 +257,11 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
   headers.insert(GetFileName(".h"));
   headers.insert("com/google/protobuf/ExtensionRegistry.h");
   headers.insert("com/google/protobuf/ExtensionRegistryLite.h");
-  if (GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->message_type_count(); i++) {
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles()) {
       headers.insert(GetHeader(file_->message_type(i)));
-    }
-  } else {
-    for (int i = 0; i < file_->message_type_count(); i++) {
+    } else {
       MessageGenerator(file_->message_type(i)).CollectSourceImports(headers);
-    }
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).CollectSourceImports(headers);
     }
   }
   for (int i = 0; i < file_->extension_count(); i++) {
@@ -403,13 +398,12 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
 
   GenerateBoilerplate(&printer);
 
-  EnumGenerator generator(descriptor);
   std::set<string> headers;
   headers.insert(output_dir_ + descriptor->name() + ".h");
   AddSourceImports(headers);
-  generator.CollectSourceImports(headers);
   PrintImports(headers, &printer);
 
+  EnumGenerator generator(descriptor);
   generator.GenerateSource(&printer);
 }
 
@@ -422,14 +416,12 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
-
-  MessageGenerator generator(descriptor);
   std::set<string> headers;
   headers.insert(output_dir_ + descriptor->name() + "OrBuilder.h");
   AddHeaderImports(headers);
-  generator.CollectHeaderImports(headers);
   PrintImports(headers, &printer);
 
+  MessageGenerator generator(descriptor);
   std::set<string> declarations;
   generator.CollectForwardDeclarations(declarations);
   PrintForwardDeclarations(declarations, &printer);

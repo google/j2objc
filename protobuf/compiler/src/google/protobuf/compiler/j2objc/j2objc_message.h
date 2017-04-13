@@ -61,8 +61,7 @@ class MessageGenerator {
   void CollectMessageOrBuilderForwardDeclarations(
       std::set<string>& declarations) const;
   void CollectMessageOrBuilderImports(std::set<string> &imports) const;
-  void CollectHeaderImports(std::set<string> &imports) const;
-  void CollectSourceImports(std::set<string> &imports) const;
+  void CollectSourceImports(std::set<string> &imports);
 
  private:
   void GenerateBuilderHeader(io::Printer* printer);

@@ -23,8 +23,7 @@ SRCS = \
   google/protobuf/compiler/j2objc/j2objc_file.cc \
   google/protobuf/compiler/j2objc/j2objc_generator.cc \
   google/protobuf/compiler/j2objc/j2objc_helpers.cc \
-  google/protobuf/compiler/j2objc/j2objc_message.cc \
-  google/protobuf/compiler/j2objc/j2objc_oneof.cc
+  google/protobuf/compiler/j2objc/j2objc_message.cc
 
 OBJS = $(SRCS:%.cc=$(BUILD_DIR)/%.o)
 

@@ -46,8 +46,6 @@ namespace j2objc {
 
 string SafeName(const string& name);
 
-string UnderscoresToCamelCase(const string& input, bool cap_next_letter);
-
 // Converts the field's name to camel-case, e.g. "foo_bar_baz" becomes
 // "fooBarBaz" or "FooBarBaz", respectively.
 string UnderscoresToCamelCase(const FieldDescriptor* field);

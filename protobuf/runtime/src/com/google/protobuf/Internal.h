@@ -41,8 +41,6 @@
 
 - (jint)getNumber;
 
-+ (instancetype)forNumberWithInt:(jint)value;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufInternal_EnumLite)

@@ -50,7 +50,6 @@ class EnumGenerator {
   explicit EnumGenerator(const EnumDescriptor* descriptor);
   ~EnumGenerator();
 
-  void CollectSourceImports(std::set<string> &imports) const;
   void GenerateHeader(io::Printer* printer);
   void GenerateSource(io::Printer* printer);
 

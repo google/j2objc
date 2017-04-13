@@ -97,6 +97,20 @@ namespace {
     }
   }
 
+  int GetHasBitIndex(const FieldDescriptor *descriptor) {
+    if (descriptor->is_repeated()) {
+      return 0;
+    }
+    const Descriptor *containing_type = descriptor->containing_type();
+    int hasBitIndex = 0;
+    for (int i = 0; i < descriptor->index(); i++) {
+      if (!containing_type->field(i)->is_repeated()) {
+        hasBitIndex++;
+      }
+    }
+    return hasBitIndex;
+  }
+
   string GetListType(const FieldDescriptor *descriptor) {
     if (GetJavaType(descriptor) == JAVATYPE_STRING) {
       return "ComGoogleProtobufProtocolStringList";
@@ -121,7 +135,7 @@ namespace {
     (*variables)["field_data_class_name"] = GetFieldDataClassName(descriptor);
     (*variables)["default_value_type"] = GetDefaultValueTypeName(descriptor);
     (*variables)["default_value"] = DefaultValue(descriptor);
-    (*variables)["has_bit_index"] = "0";
+    (*variables)["has_bit_index"] = SimpleItoa(GetHasBitIndex(descriptor));
     (*variables)["containing_type_name"] =
         ClassName(descriptor->containing_type());
     (*variables)["options_data"] = GetFieldOptionsData(descriptor);
@@ -188,14 +202,6 @@ void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
       "  .containingType = \"$containing_type_name$\",\n"
       "  .optionsData = $options_data$,\n"
       "},\n");
-}
-
-SingleFieldGenerator::SingleFieldGenerator(
-    const FieldDescriptor *descriptor, uint32_t *numHasBits)
-  : FieldGenerator(descriptor) {
-  if (descriptor->containing_oneof() == NULL) {
-    variables_["has_bit_index"] = SimpleItoa((*numHasBits)++);
-  }
 }
 
 void SingleFieldGenerator::CollectSourceImports(
@@ -288,8 +294,7 @@ void RepeatedFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
 FieldGeneratorMap::FieldGeneratorMap(const Descriptor* descriptor)
   : descriptor_(descriptor),
     field_generators_(
-        new std::unique_ptr<FieldGenerator>[descriptor->field_count()]),
-    numHasBits_(0) {
+        new std::unique_ptr<FieldGenerator>[descriptor->field_count()]) {
 
   // Construct all the FieldGenerators.
   for (int i = 0; i < descriptor->field_count(); i++) {
@@ -302,7 +307,7 @@ FieldGenerator* FieldGeneratorMap::MakeGenerator(
   if (field->is_repeated()) {
     return new RepeatedFieldGenerator(field);
   } else {
-    return new SingleFieldGenerator(field, &numHasBits_);
+    return new SingleFieldGenerator(field);
   }
 }
 
