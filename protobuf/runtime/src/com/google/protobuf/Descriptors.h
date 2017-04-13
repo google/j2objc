@@ -43,6 +43,7 @@
 @class ComGoogleProtobufDescriptors_EnumDescriptor;
 @class ComGoogleProtobufDescriptors_EnumValueDescriptor;
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
+@class ComGoogleProtobufDescriptors_OneofDescriptor;
 @class ComGoogleProtobufGeneratedMessage;
 @class ComGoogleProtobufGeneratedMessage_Builder;
 @protocol ComGoogleProtobufProtocolMessageEnum;
@@ -53,10 +54,13 @@ typedef ComGoogleProtobufDescriptors_EnumDescriptor CGPEnumDescriptor;
 typedef ComGoogleProtobufDescriptors_EnumValueDescriptor CGPEnumValueDescriptor;
 typedef ComGoogleProtobufDescriptors_FieldDescriptor CGPFieldDescriptor;
 typedef ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum CGPFieldJavaType;
+typedef ComGoogleProtobufDescriptors_OneofDescriptor CGPOneofDescriptor;
 
 @interface ComGoogleProtobufDescriptors_Descriptor : NSObject
 
 - (id<JavaUtilList>)getFields;
+
+- (id<JavaUtilList>)getOneofs;
 
 - (CGPFieldDescriptor *)findFieldByNumberWithInt:(jint)fieldId;
 
@@ -81,6 +85,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_Descriptor)
 - (BOOL)isRepeated;
 
 - (BOOL)isExtension;
+
+- (CGPOneofDescriptor *)getContainingOneof;
 
 - (CGPDescriptor *)getMessageType;
 
@@ -117,5 +123,19 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumDescriptor)
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_EnumValueDescriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumValueDescriptor)
+
+@interface ComGoogleProtobufDescriptors_OneofDescriptor : NSObject
+
+- (NSString *)getName;
+
+- (CGPDescriptor *)getContainingType;
+
+- (id<JavaUtilList>)getFields;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_OneofDescriptor)
+
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_OneofDescriptor)
 
 #endif // __ComGoogleProtobufDescriptors_H__

@@ -1,3 +1,4 @@
+
 // Protocol Buffers - Google's data interchange format
 // Copyright 2008 Google Inc.  All rights reserved.
 // https://developers.google.com/protocol-buffers/
@@ -28,25 +29,47 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Created by Michelle Chen on 12/05/12.
-//
-//  Hand written counterpart of com.google.protobuf.Internal
+// Author: kstanger@google.com (Keith Stanger)
+//  Based on original Protocol Buffers design by
+//  Sanjay Ghemawat, Jeff Dean, Kenton Varda, and others.
 
-#ifndef ComGoogleProtobufInternal_H
-#define ComGoogleProtobufInternal_H
+#ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_ONEOF_CASE_H__
+#define GOOGLE_PROTOBUF_COMPILER_J2OBJC_ONEOF_CASE_H__
 
-#include "J2ObjC_header.h"
+#include <string>
+#include <vector>
 
-@protocol ComGoogleProtobufInternal_EnumLite <JavaObject>
+#include "google/protobuf/compiler/j2objc/common.h"
 
-- (jint)getNumber;
+namespace google {
+namespace protobuf {
+namespace compiler {
+namespace j2objc {
 
-+ (instancetype)forNumberWithInt:(jint)value;
+class OneofGenerator {
+ public:
+  explicit OneofGenerator(const OneofDescriptor* descriptor);
+  ~OneofGenerator();
 
-@end
+  void CollectMessageOrBuilderForwardDeclarations(
+      std::set<string> &declarations) const;
+  void CollectHeaderImports(std::set<string> &imports) const;
+  void CollectSourceImports(std::set<string> &imports) const;
+  void GenerateStorageDeclaration(io::Printer* printer) const;
+  void GenerateOneofData(io::Printer* printer) const;
+  void GenerateHeader(io::Printer* printer);
+  void GenerateSource(io::Printer* printer);
+  void GenerateMessageOrBuilder(io::Printer* printer);
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufInternal_EnumLite)
+ private:
+  const OneofDescriptor* descriptor_;
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufInternal_EnumLite)
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(OneofGenerator);
+};
 
-#endif // ComGoogleProtobufInternal_H
+}  // namespace j2objc
+}  // namespace compiler
+}  // namespace protobuf
+}  // namespace google
+
+#endif  // GOOGLE_PROTOBUF_COMPILER_J2OBJC_ONEOF_CASE_H__
