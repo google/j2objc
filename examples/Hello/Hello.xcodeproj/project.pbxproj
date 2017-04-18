@@ -61,6 +61,7 @@
 		069A97B51C6A86AD00A00560 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		069A97D41C6A897900A00560 /* Hello.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Hello.xcconfig; sourceTree = "<group>"; };
 		069A97DB1C6AB52A00A00560 /* Status.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Status.java; path = org/j2objc/Status.java; sourceTree = "<group>"; };
+		06B9901D1EA6BDF000581403 /* HelloJ2ObjC.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = HelloJ2ObjC.entitlements; sourceTree = "<group>"; };
 		06CCF1441C77E42800CDF952 /* Hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerNoJ2ObjC.m; sourceTree = "<group>"; };
 		06E954AD1E9C2A4500BA08E2 /* JRE.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JRE.framework; path = ../../dist/frameworks/JRE.framework; sourceTree = "<group>"; };
@@ -116,6 +117,7 @@
 				069A97B01C6A86AD00A00560 /* Assets.xcassets */,
 				069A97B21C6A86AD00A00560 /* LaunchScreen.storyboard */,
 				069A97B51C6A86AD00A00560 /* Info.plist */,
+				06B9901D1EA6BDF000581403 /* HelloJ2ObjC.entitlements */,
 				069A97A41C6A86AD00A00560 /* Supporting Files */,
 				06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */,
 			);
