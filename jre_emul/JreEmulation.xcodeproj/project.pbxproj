@@ -704,6 +704,8 @@
 		06E4E833197F1E4E005DDE69 /* JRELogPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87E31975CE5E00633227 /* JRELogPaneView.m */; };
 		06E4E834197F1E4E005DDE69 /* JRELogOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */; };
 		06E4E835197F1E4E005DDE69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C219759EFF00633227 /* main.m */; };
+		06E5B7BC1EA58AE3003278F2 /* AbstractCookiesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */; };
+		06E5B7BD1EA58AE3003278F2 /* OldCookieHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E5B7BB1EA58AE3003278F2 /* OldCookieHandlerTest.m */; };
 		06ED87B919759EFF00633227 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		06ED87BA19759EFF00633227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067A99561954DF06009171DD /* CoreGraphics.framework */; };
 		06ED87BB19759EFF00633227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067A99581954DF06009171DD /* UIKit.framework */; };
@@ -3118,6 +3120,8 @@
 		06DED82F1D0B688E00870669 /* MacSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MacSpi.m; path = build_result/Classes/javax/crypto/MacSpi.m; sourceTree = "<group>"; };
 		06DED8301D0B688E00870669 /* ShortBufferException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShortBufferException.h; path = build_result/Classes/javax/crypto/ShortBufferException.h; sourceTree = "<group>"; };
 		06DED8311D0B688E00870669 /* ShortBufferException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ShortBufferException.m; path = build_result/Classes/javax/crypto/ShortBufferException.m; sourceTree = "<group>"; };
+		06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractCookiesTest.m; path = libcore/java/net/AbstractCookiesTest.m; sourceTree = "<group>"; };
+		06E5B7BB1EA58AE3003278F2 /* OldCookieHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OldCookieHandlerTest.m; path = libcore/java/net/OldCookieHandlerTest.m; sourceTree = "<group>"; };
 		06E9E7ED1BE133C900F7BEB2 /* IosHttpsURLConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosHttpsURLConnection.m; path = build_result/Classes/com/google/j2objc/net/IosHttpsURLConnection.m; sourceTree = "<group>"; };
 		06E9E7EE1BE14CC100F7BEB2 /* IosHttpsURLConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosHttpsURLConnection.h; path = build_result/Classes/com/google/j2objc/net/IosHttpsURLConnection.h; sourceTree = "<group>"; };
 		06ED3D4617D163F80014750E /* IOSConcreteClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSConcreteClass.h; sourceTree = "<group>"; };
@@ -6160,6 +6164,7 @@
 			isa = PBXGroup;
 			children = (
 				0620280D1D512E03001EE455 /* AbstractCollectionTest.m */,
+				06E5B7BA1EA58AE3003278F2 /* AbstractCookiesTest.m */,
 				062024E71D512AA2001EE455 /* AbstractExecutorServiceTest.m */,
 				0620280E1D512E03001EE455 /* AbstractListTest.m */,
 				062029061D512EFC001EE455 /* AbstractMapTest.m */,
@@ -6577,6 +6582,7 @@
 				062025E31D512CA1001EE455 /* OldCharArrayReaderTest.m */,
 				062025E41D512CA1001EE455 /* OldCharArrayWriterTest.m */,
 				0620268A1D512D08001EE455 /* OldCharset_AbstractTest.m */,
+				06E5B7BB1EA58AE3003278F2 /* OldCookieHandlerTest.m */,
 				062026DD1D512D17001EE455 /* OldDataFormatExceptionTest.m */,
 				062025E51D512CA1001EE455 /* OldDataInputOutputStreamTest.m */,
 				062025E61D512CA1001EE455 /* OldDataInputStreamTest.m */,
@@ -7340,6 +7346,7 @@
 				062026141D512CA1001EE455 /* OldAndroidBufferedReaderTest.m in Sources */,
 				0620282C1D512E03001EE455 /* AbstractListTest.m in Sources */,
 				0620282E1D512E03001EE455 /* AbstractQueueTest.m in Sources */,
+				06E5B7BC1EA58AE3003278F2 /* AbstractCookiesTest.m in Sources */,
 				062026641D512CBE001EE455 /* EnumTest.m in Sources */,
 				062025691D512B37001EE455 /* DelayQueueTest.m in Sources */,
 				069C24021E9EEEF700CE6BAF /* DateTest.m in Sources */,
@@ -7392,6 +7399,7 @@
 				062027451D512D82001EE455 /* PropertyChangeListenerProxyTest.m in Sources */,
 				062026AA1D512D08001EE455 /* URITest.m in Sources */,
 				062028FD1D512EDB001EE455 /* JSONArrayTest.m in Sources */,
+				06E5B7BD1EA58AE3003278F2 /* OldCookieHandlerTest.m in Sources */,
 				0620261A1D512CA1001EE455 /* OldAndroidDataOutputStreamTest.m in Sources */,
 				062025161D512ACA001EE455 /* AtomicReferenceFieldUpdaterTest.m in Sources */,
 				062027761D512D9D001EE455 /* MockFooChild.m in Sources */,

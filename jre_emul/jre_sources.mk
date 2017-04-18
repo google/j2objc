@@ -688,7 +688,6 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/CookieManager.java \
   java/net/CookiePolicy.java \
   java/net/CookieStore.java \
-  java/net/CookieStoreImpl.java \
   java/net/DatagramPacket.java \
   java/net/DatagramSocket.java \
   java/net/DatagramSocketImpl.java \
@@ -702,6 +701,7 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/Inet6Address.java \
   java/net/InetAddress.java \
   java/net/InetSocketAddress.java \
+  java/net/InMemoryCookieStore.java \
   java/net/InterfaceAddress.java \
   java/net/MalformedURLException.java \
   java/net/MulticastSocket.java \
