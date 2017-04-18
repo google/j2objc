@@ -23,6 +23,12 @@ import java.lang.annotation.Target;
  * Annotation that specifies how an enhanced for loop should be translated by
  * the J2ObjC translator.
  *
+ * <p>Example usage:
+ * <pre>
+ * for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) Runnable r : tasks) {
+ *   r.run();
+ * }</pre>
+ *
  * @author Keith Stanger
  */
 @Target(ElementType.LOCAL_VARIABLE)

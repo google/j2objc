@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
 
 
 /**
- * Annotation that indicates a variable has a weak relationship to its owner.
+ * Annotation that indicates a variable has a weak relationship to its owner. The variable will be
+ * declared with the __unsafe_unretained annotation.
  *
  * @author Tom Ball
  */

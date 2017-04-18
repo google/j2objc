@@ -25,6 +25,28 @@ import java.lang.annotation.Target;
  * Annotation that indicates the translator should inject an autorelease pool
  * around the method body. Only valid on methods that don't return anything.
  *
+ * <p>Useful in high-level contexts to ensure that temporary objects allocated within the method or
+ * loop are deallocated.
+ *
+ * <p>Example usage:
+ * <pre>
+ * // Temporary objects allocated during execution of this method will
+ * // be deallocated upon returning from this method.
+ * &#64;AutoreleasePool
+ * public void doWork() {
+ *   ...
+ * }
+ *
+ * public void doWork(Iterable&lt;Runnable&gt; workToDo) {
+ *   // Adding @AutoreleasePool on the loop variable causes a separate
+ *   // autorelease pool to be attached to each loop iteration, clearing
+ *   // up temporary objects after each iteration
+ *   for (@AutoreleasePool Runnable item : workToDo) {
+ *     item.run();
+ *   }
+ * }
+ * </pre>
+ *
  * @author Pankaj Kakkar
  */
 @Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE})
