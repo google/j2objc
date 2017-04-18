@@ -29,6 +29,12 @@
 
 @implementation JRETestRunListener
 
+static BOOL printStats = NO;
+
++ (void)initialize {
+  printStats = getenv("JUNIT_PRINT_STATS");
+}
+
 vm_size_t usedMemory(void) {
   struct task_basic_info info;
   mach_msg_type_number_t size = sizeof(info);
@@ -62,22 +68,29 @@ NSString *memUsage() {
 }
 
 - (void)testRunStartedWithOrgJunitRunnerDescription:(OrgJunitRunnerDescription *)description_ {
-  NSLog(@"test run started");
+  if (printStats) {
+    NSLog(@"test run started");
+  }
 }
 
 - (void)testRunFinishedWithOrgJunitRunnerResult:(OrgJunitRunnerResult *)result {
-  NSLog(@"test run finished  %@", memUsage());
+  if (printStats) {
+    NSLog(@"test run finished  %@", memUsage());
+  }
 }
 
 - (void)testStartedWithOrgJunitRunnerDescription:(OrgJunitRunnerDescription *)description_ {
-  NSLog(@"%@.%@", [[description_ getTestClass] getSimpleName], [description_ getMethodName]);
-  self.startTime = CACurrentMediaTime();
+  if (printStats) {
+    NSLog(@"%@.%@", [[description_ getTestClass] getSimpleName], [description_ getMethodName]);
+    self.startTime = CACurrentMediaTime();
+  }
 }
 
 - (void)testFinishedWithOrgJunitRunnerDescription:(OrgJunitRunnerDescription *)description_{
-  CFTimeInterval elapsedTime = CACurrentMediaTime() - self.startTime;
-  NSLog(@"    %.3f secs%@", elapsedTime, memUsage());
+  if (printStats) {
+    CFTimeInterval elapsedTime = CACurrentMediaTime() - self.startTime;
+    NSLog(@"    %.3f secs%@", elapsedTime, memUsage());
+  }
 }
-
 
 @end
