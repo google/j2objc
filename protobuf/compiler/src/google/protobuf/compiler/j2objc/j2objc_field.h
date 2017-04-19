@@ -76,9 +76,7 @@ class FieldGenerator {
 
 class SingleFieldGenerator : public FieldGenerator {
  public:
-  SingleFieldGenerator(const FieldDescriptor *descriptor)
-      : FieldGenerator(descriptor) {
-  }
+  SingleFieldGenerator(const FieldDescriptor *descriptor, uint32_t *numHasBits);
 
   virtual ~SingleFieldGenerator() { }
 
@@ -124,12 +122,16 @@ class FieldGeneratorMap {
   ~FieldGeneratorMap();
 
   const FieldGenerator& get(const FieldDescriptor* field) const;
+  uint32_t numHasBits() const {
+    return numHasBits_;
+  }
 
  private:
   const Descriptor* descriptor_;
   std::unique_ptr<std::unique_ptr<FieldGenerator> []> field_generators_;
+  uint32_t numHasBits_;
 
-  static FieldGenerator* MakeGenerator(const FieldDescriptor* field);
+  FieldGenerator* MakeGenerator(const FieldDescriptor* field);
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(FieldGeneratorMap);
 };

@@ -28,11 +28,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: tball@google.com (Tom Ball)
+// Author: kstanger@google.com (Keith Stanger)
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, Cyrus Najmabadi, and others.
 
-#include <google/protobuf/compiler/j2objc/j2objc_enum.h>
+#include <google/protobuf/compiler/j2objc/j2objc_oneof.h>
 
 #include <string>
 
@@ -43,59 +43,109 @@ namespace protobuf {
 namespace compiler {
 namespace j2objc {
 
-EnumGenerator::EnumGenerator(const EnumDescriptor* descriptor)
+namespace {
+
+string CapitalizedName(const OneofDescriptor* descriptor) {
+  return UnderscoresToCamelCase(descriptor->name(), true);
+}
+
+string NotSetName(const OneofDescriptor* descriptor) {
+  return ToUpper(CapitalizedName(descriptor)) + "_NOT_SET";
+}
+
+string CaseClassName(const OneofDescriptor *descriptor) {
+  return ClassName(descriptor->containing_type()) + "_"
+      + UnderscoresToCamelCase(descriptor->name(), true) + "Case";
+}
+
+string CaseValueName(const FieldDescriptor *descriptor) {
+  return ToUpper(descriptor->name());
+}
+
+void FillValueNames(
+    const OneofDescriptor* descriptor, std::vector<string> *names) {
+  for (int i = 0; i < descriptor->field_count(); i++) {
+    names->push_back(CaseValueName(descriptor->field(i)));
+  }
+  names->push_back(NotSetName(descriptor));
+}
+
+void FillNumbers(
+    const OneofDescriptor* descriptor, std::vector<int> *numbers) {
+  for (int i = 0; i < descriptor->field_count(); i++) {
+    numbers->push_back(descriptor->field(i)->number());
+  }
+  numbers->push_back(0);
+}
+
+} // namespace
+
+OneofGenerator::OneofGenerator(const OneofDescriptor* descriptor)
   : descriptor_(descriptor) {
-    for (int i = 0; i < descriptor_->value_count(); i++) {
-      const EnumValueDescriptor* value = descriptor_->value(i);
-      const EnumValueDescriptor* canonical_value =
-        descriptor_->FindValueByNumber(value->number());
-
-      if (value == canonical_value) {
-        canonical_values_.push_back(value);
-      } else {
-        Alias alias;
-        alias.value = value;
-        alias.canonical_value = canonical_value;
-        aliases_.push_back(alias);
-      }
-    }
 }
 
-EnumGenerator::~EnumGenerator() {
+OneofGenerator::~OneofGenerator() {
 }
 
-void EnumGenerator::CollectSourceImports(std::set<string> &imports) const {
+void OneofGenerator::CollectMessageOrBuilderForwardDeclarations(
+    std::set<string> &declarations) const {
+  declarations.insert("@class " + CaseClassName(descriptor_));
+}
+
+void OneofGenerator::CollectHeaderImports(std::set<string> &imports) const {
+  imports.insert("com/google/protobuf/Internal.h");
+}
+
+void OneofGenerator::CollectSourceImports(std::set<string> &imports) const {
   imports.insert("java/lang/IllegalArgumentException.h");
 }
 
-void EnumGenerator::GenerateHeader(io::Printer* printer) {
+void OneofGenerator::GenerateStorageDeclaration(io::Printer* printer) const {
+  printer->Print("jint $javaname$_;\n",
+                 "javaname", CapitalizedName(descriptor_));
+}
+
+void OneofGenerator::GenerateOneofData(io::Printer* printer) const {
   printer->Print(
-    "\ntypedef NS_ENUM(NSUInteger, $classname$) {\n",
-    "classname", CEnumName(descriptor_));
+      "{\n"
+      "  .name = \"$name$\",\n"
+      "  .javaName = \"$javaname$\",\n"
+      "  .firstFieldIdx = $firstidx$,\n"
+      "  .fieldCount = $count$,\n"
+      "  .offset = offsetof($classname$_Storage, $javaname$_),\n"
+      "},\n",
+      "name", descriptor_->name(),
+      "javaname", CapitalizedName(descriptor_),
+      "classname", ClassName(descriptor_->containing_type()),
+      "firstidx", SimpleItoa(descriptor_->field(0)->index()),
+      "count", SimpleItoa(descriptor_->field_count()));
+}
+
+void OneofGenerator::GenerateHeader(io::Printer* printer) {
+  printer->Print(
+      "\ntypedef NS_ENUM(NSUInteger, $classname$_Enum) {\n",
+      "classname", CaseClassName(descriptor_));
   printer->Indent();
 
-  for (int i = 0; i < canonical_values_.size(); i++) {
+  for (int i = 0; i < descriptor_->field_count(); i++) {
     printer->Print(
-      "$name$ = $value$,\n",
-      "name", EnumValueName(canonical_values_[i]),
-      "value", SimpleItoa(i));
+        "$classname$_Enum_$name$ = $value$,\n",
+        "classname", CaseClassName(descriptor_),
+        "name", CaseValueName(descriptor_->field(i)),
+        "value", SimpleItoa(i));
   }
+  printer->Print(
+      "$classname$_Enum_$name$ = $value$,\n",
+      "classname", CaseClassName(descriptor_),
+      "name", NotSetName(descriptor_),
+      "value", SimpleItoa(descriptor_->field_count()));
 
   printer->Outdent();
-  printer->Print("};\n\n");
+  printer->Print("};\n");
 
-  for (int i = 0; i < canonical_values_.size(); i++) {
-    printer->Print(
-        "#define $classname$_$name$_VALUE $value$\n",
-        "classname", ClassName(descriptor_),
-        "name", canonical_values_[i]->name(),
-        "value", SimpleItoa(canonical_values_[i]->number()));
-  }
-
-  printer->Print(
-      "\n"
+  printer->Print("\n"
       "@interface $classname$ :"
-      " JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> {\n"
+      " JavaLangEnum<ComGoogleProtobufInternal_EnumLite> {\n"
       " @private\n"
       "  jint value_;\n"
       "}\n"
@@ -124,40 +174,47 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
           "jint value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
           "NSUInteger ordinal);\n\n",
-      "classname", ClassName(descriptor_));
+      "classname", CaseClassName(descriptor_));
 
-  for (int i = 0; i < canonical_values_.size(); i++) {
+  for (int i = 0; i < descriptor_->field_count(); i++) {
     printer->Print(
         "inline $classname$ *$classname$_get_$name$();\n"
         "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
-        "classname", ClassName(descriptor_),
-        "name", canonical_values_[i]->name());
+        "classname", CaseClassName(descriptor_),
+        "name", CaseValueName(descriptor_->field(i)));
   }
+  printer->Print(
+      "inline $classname$ *$classname$_get_$name$();\n"
+      "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
+      "classname", CaseClassName(descriptor_),
+      "name", NotSetName(descriptor_));
 }
 
 const int kMaxRowChars = 80;
 
-void EnumGenerator::GenerateSource(io::Printer* printer) {
-  printer->Print(
-      "\nJ2OBJC_INITIALIZED_DEFN($classname$)\n"
+void OneofGenerator::GenerateSource(io::Printer* printer) {
+  std::vector<string> valueNames;
+  FillValueNames(descriptor_, &valueNames);
+  std::vector<int> numbers;
+  FillNumbers(descriptor_, &numbers);
+
+  printer->Print("\n"
+      "J2OBJC_INITIALIZED_DEFN($classname$)\n"
       "\n"
       "$classname$ *$classname$_values_[$count$];\n"
-      "\n"
-      "static ComGoogleProtobufDescriptors_EnumDescriptor"
-          " *$classname$_descriptor = nil;\n"
       "\n"
       "@implementation $classname$\n"
       "\n"
       "+ (void)initialize {\n"
       "  if (self == [$classname$ class]) {\n"
       "    static NSString *names[] = {",
-      "classname", ClassName(descriptor_),
-      "count", SimpleItoa(canonical_values_.size()));
+      "classname", CaseClassName(descriptor_),
+      "count", SimpleItoa(descriptor_->field_count() + 1));
 
   // Count characters and only add line breaks when the line exceeds the max.
   int row_chars = kMaxRowChars + 1;
-  for (int i = 0; i < canonical_values_.size(); i++) {
-    string name = canonical_values_[i]->name();
+  for (int i = 0; i < valueNames.size(); i++) {
+    string name = valueNames[i];
     size_t added_chars = name.length() + 5;
     if (row_chars + added_chars > kMaxRowChars) {
       printer->Print("\n     ");
@@ -170,8 +227,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "    };\n"
       "    static jint int_values[] = {");
   row_chars = kMaxRowChars + 1;
-  for (int i = 0; i < canonical_values_.size(); i++) {
-    string value = SimpleItoa(canonical_values_[i]->number());
+  for (int i = 0; i < numbers.size(); i++) {
+    string value = SimpleItoa(numbers[i]);
     size_t added_chars = value.length() + 2;
     if (row_chars + added_chars > kMaxRowChars) {
       printer->Print("\n     ");
@@ -183,9 +240,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
 
   printer->Print("\n"
       "    };\n"
-      "    $classname$_descriptor = "
-          "CGPInitializeEnumType(self, $count$, $classname$_values_, names,"
-          " int_values);\n"
+      "    CGPInitializeOneofCaseEnum("
+          "self, $count$, $classname$_values_, names, int_values);\n"
       "    J2OBJC_SET_INITIALIZED($classname$)\n"
       "  }\n"
       "}\n"
@@ -208,15 +264,6 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "- (jint)getNumber {\n"
       "  return value_;\n"
-      "}\n"
-      "\n"
-      "+ (ComGoogleProtobufDescriptors_EnumDescriptor *)getDescriptor {\n"
-      "  return $classname$_descriptor;\n"
-      "}\n"
-      "\n"
-      "- (ComGoogleProtobufDescriptors_EnumValueDescriptor *)"
-          "getValueDescriptor {\n"
-      "  return $classname$_descriptor->values_->buffer_[[self ordinal]];\n"
       "}\n"
       "\n"
       "@end\n"
@@ -263,8 +310,15 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  }\n"
       "  return $classname$_values_[ordinal];\n"
       "}\n",
-      "classname", ClassName(descriptor_),
-      "count", SimpleItoa(canonical_values_.size()));
+      "classname", CaseClassName(descriptor_),
+      "count", SimpleItoa(descriptor_->field_count() + 1));
+}
+
+void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
+  printer->Print("\n"
+      "- ($classname$ *)get$capitalized_name$Case;\n",
+      "classname", CaseClassName(descriptor_),
+      "capitalized_name", CapitalizedName(descriptor_));
 }
 
 }  // namespace j2objc

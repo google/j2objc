@@ -15,6 +15,7 @@ JAVA_TESTS = \
   CompatibilityTest.java \
   EnumsTest.java \
   MessagesTest.java \
+  OneofTest.java \
   PrimitivesTest.java \
   StringsTest.java
 OTHER_JAVA_SOURCES = \
@@ -32,6 +33,7 @@ PROTOS = \
   enum_fields.proto \
   funny_names.proto \
   message_fields.proto \
+  oneof_fields.proto \
   package_prefix.proto \
   prefix_option.proto \
   primitives.proto \

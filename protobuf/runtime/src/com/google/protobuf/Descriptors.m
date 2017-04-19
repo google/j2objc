@@ -41,6 +41,7 @@
 #import "com/google/protobuf/WireFormat.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Double.h"
+#import "java/lang/Enum.h"
 #import "java/lang/Float.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/Integer.h"
@@ -85,13 +86,15 @@ size_t CGPGetTypeSize(CGPFieldJavaType type) {
 
 void CGPInitDescriptor(
     CGPDescriptor **pDescriptor, Class messageClass, Class builderClass, CGPMessageFlags flags,
-    size_t storageSize, jint fieldCount, CGPFieldData *fieldData) {
-  CGPFieldDescriptor *fieldsBuf[fieldCount];
+    size_t storageSize, jint fieldCount, CGPFieldData *fieldData, jint oneofCount,
+    CGPOneofData *oneofData) {
+  IOSObjectArray *fields = [IOSObjectArray arrayWithLength:fieldCount
+      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
+  CGPFieldDescriptor **fieldsBuf = fields->buffer_;
   for (jint i = 0; i < fieldCount; i++) {
     fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]];
   }
-  IOSObjectArray *fields = [IOSObjectArray arrayWithObjects:fieldsBuf count:fieldCount
-      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
+
   CGPDescriptor *descriptor = [[CGPDescriptor alloc]
       initWithMessageClass:messageClass
               builderClass:builderClass
@@ -99,6 +102,23 @@ void CGPInitDescriptor(
                storageSize:storageSize
                     fields:fields];
   *pDescriptor = descriptor;
+
+  if (oneofCount > 0) {
+    IOSObjectArray *oneofs = [IOSObjectArray newArrayWithLength:oneofCount
+        type:ComGoogleProtobufDescriptors_OneofDescriptor_class_()];
+    for (jint i = 0; i < oneofCount; i++) {
+      CGPOneofDescriptor *newOneof = [[CGPOneofDescriptor alloc] initWithData:&oneofData[i]
+                                                               containingType:descriptor];
+      oneofs->buffer_[i] = newOneof;
+      uint32_t firstFieldIdx = oneofData[i].firstFieldIdx;
+      uint32_t lastFieldIdx = firstFieldIdx + oneofData[i].fieldCount;
+      for (uint32_t j = firstFieldIdx; j < lastFieldIdx; j++) {
+        fieldsBuf[j]->containingOneof_ = newOneof;
+      }
+    }
+    descriptor->oneofs_ = oneofs;
+  }
+
   for (CGPFieldDescriptor *field in descriptor->fields_) {
     CGPFieldFixDefaultValue(field);
   }
@@ -127,8 +147,8 @@ CGPEnumDescriptor *CGPInitializeEnumType(
     // Construct the Java enum instance.
     JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *newEnum =
         objc_constructInstance(enumClass, (void *)enumPtr);
-    [newEnum initWithNSString:names[i] withInt:i];
-    *(int *)(enumPtr + valueOffset) = intValues[i];
+    JavaLangEnum_initWithNSString_withInt_(newEnum, names[i], i);
+    *(jint *)(enumPtr + valueOffset) = intValues[i];
     values[i] = newEnum;
     enumPtr += enumSize;
 
@@ -145,6 +165,25 @@ CGPEnumDescriptor *CGPInitializeEnumType(
   CGPEnumDescriptor *enumDesc =
       objc_constructInstance([CGPEnumDescriptor class], (void *)enumDescPtr);
   return [enumDesc initWithValueOffset:valueOffset retainedValues:valuesArray];
+}
+
+void CGPInitializeOneofCaseEnum(
+    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufInternal_EnumLite> **values,
+    NSString **names, jint *intValues) {
+  Ivar valueIvar = class_getInstanceVariable(enumClass, "value_");
+  ptrdiff_t valueOffset = ivar_getOffset(valueIvar);
+
+  size_t enumSize = class_getInstanceSize(enumClass);
+  uintptr_t enumPtr = (uintptr_t)calloc(valuesCount, enumSize);
+
+  for (jint i = 0; i < valuesCount; i++) {
+    JavaLangEnum<ComGoogleProtobufInternal_EnumLite> *newEnum =
+        objc_constructInstance(enumClass, (void *)enumPtr);
+    JavaLangEnum_initWithNSString_withInt_(newEnum, names[i], i);
+    *(jint *)(enumPtr + valueOffset) = intValues[i];
+    values[i] = newEnum;
+    enumPtr += enumSize;
+  }
 }
 
 static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPFieldType type) {
@@ -172,6 +211,10 @@ static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPF
 
 - (id<JavaUtilList>)getFields {
   return [JavaUtilArrays asListWithNSObjectArray:fields_];
+}
+
+- (id<JavaUtilList>)getOneofs {
+  return [JavaUtilArrays asListWithNSObjectArray:oneofs_];
 }
 
 - (CGPFieldDescriptor *)findFieldByNumberWithInt:(jint)fieldId {
@@ -272,6 +315,10 @@ static ComGoogleProtobufDescriptorProtos_FieldOptions *InitFieldOptions(const ch
 
 - (BOOL)isExtension {
   return data_->flags & CGPFieldFlagExtension;
+}
+
+- (CGPOneofDescriptor *)getContainingOneof {
+  return containingOneof_;
 }
 
 - (CGPDescriptor *)getMessageType {
@@ -422,6 +469,50 @@ J2OBJC_ETERNAL_SINGLETON
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumValueDescriptor)
+
+@implementation ComGoogleProtobufDescriptors_OneofDescriptor
+
+- (instancetype)initWithData:(CGPOneofData *)data
+              containingType:(CGPDescriptor *)containingType {
+  if (self = [self init]) {
+    data_ = data;
+    containingType_ = containingType;
+  }
+  return self;
+}
+
+- (NSString *)getName {
+  return [NSString stringWithUTF8String:data_->name];
+}
+
+- (CGPDescriptor *)getContainingType {
+  return containingType_;
+}
+
+- (id<JavaUtilList>)getFields {
+  jint toIndex = data_->firstFieldIdx + data_->fieldCount;
+  return [[containingType_ getFields] subListWithInt:data_->firstFieldIdx withInt:toIndex];
+}
+
+J2OBJC_ETERNAL_SINGLETON
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_OneofDescriptor)
+
+Class<ComGoogleProtobufInternal_EnumLite> CGPOneofGetCaseClass(CGPOneofDescriptor *oneof) {
+  Class containingCls = oneof->containingType_->messageClass_;
+  const char *containingName = class_getName(containingCls);
+  size_t len = strlen(containingName) + strlen(oneof->data_->javaName) + 6;
+  char *clsName = (char *)malloc(len);
+  strcpy(clsName, containingName);
+  strcat(clsName, "_");
+  strcat(clsName, oneof->data_->javaName);
+  strcat(clsName, "Case");
+  Class<ComGoogleProtobufInternal_EnumLite> cls = objc_getClass(clsName);
+  free(clsName);
+  return cls;
+}
 
 // The remainder of this file is copied from the translation of the types
 // FieldDescriptor.Type and FieldDescriptor.JavaType in Descriptor.java.
