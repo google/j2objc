@@ -57,12 +57,12 @@ class MessageGenerator {
   void GenerateSource(io::Printer* printer);
   void GenerateMessageOrBuilder(io::Printer* printer);
   void GenerateExtensionRegistrationCode(io::Printer* printer);
-  void CollectForwardDeclarations(std::set<string> &declarations) const;
+  void CollectForwardDeclarations(std::set<string>* declarations) const;
   void CollectMessageOrBuilderForwardDeclarations(
-      std::set<string>& declarations) const;
-  void CollectMessageOrBuilderImports(std::set<string> &imports) const;
-  void CollectHeaderImports(std::set<string> &imports) const;
-  void CollectSourceImports(std::set<string> &imports) const;
+      std::set<string>* declarations) const;
+  void CollectMessageOrBuilderImports(std::set<string>* imports) const;
+  void CollectHeaderImports(std::set<string>* imports) const;
+  void CollectSourceImports(std::set<string>* imports) const;
 
  private:
   void GenerateBuilderHeader(io::Printer* printer);

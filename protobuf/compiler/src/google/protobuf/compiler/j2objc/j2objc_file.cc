@@ -69,23 +69,23 @@ void PrintSourcePreamble(io::Printer *printer) {
       "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n");
 }
 
-void PrintImports(const std::set<string> &imports, io::Printer *printer) {
-  if (!imports.empty()) {
+void PrintImports(const std::set<string>* imports, io::Printer *printer) {
+  if (!imports->empty()) {
     printer->Print("\n");
   }
-  for (std::set<string>::const_iterator it = imports.begin();
-       it != imports.end(); it++) {
+  for (std::set<string>::const_iterator it = imports->begin();
+       it != imports->end(); it++) {
     printer->Print("#import \"$header$\"\n", "header", *it);
   }
 }
 
-void PrintForwardDeclarations(const std::set<string> &declarations,
+void PrintForwardDeclarations(const std::set<string>* declarations,
                               io::Printer *printer) {
-  if (!declarations.empty()) {
+  if (!declarations->empty()) {
     printer->Print("\n");
   }
-  for (std::set<string>::const_iterator it = declarations.begin();
-       it != declarations.end(); it++) {
+  for (std::set<string>::const_iterator it = declarations->begin();
+       it != declarations->end(); it++) {
     printer->Print("$declaration$;\n", "declaration", *it);
   }
 }
@@ -176,15 +176,15 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
   if (!GenerateMultipleFiles()) {
     for (int i = 0; i < file_->message_type_count(); i++) {
       MessageGenerator generator(file_->message_type(i));
-      generator.CollectMessageOrBuilderImports(headers);
-      generator.CollectHeaderImports(headers);
-      generator.CollectForwardDeclarations(declarations);
-      generator.CollectMessageOrBuilderForwardDeclarations(declarations);
+      generator.CollectMessageOrBuilderImports(&headers);
+      generator.CollectHeaderImports(&headers);
+      generator.CollectForwardDeclarations(&declarations);
+      generator.CollectMessageOrBuilderForwardDeclarations(&declarations);
     }
   }
 
-  PrintImports(headers, &printer);
-  PrintForwardDeclarations(declarations, &printer);
+  PrintImports(&headers, &printer);
+  PrintForwardDeclarations(&declarations, &printer);
 
   // need to write out all enums first
   if (!GenerateMultipleFiles()) {
@@ -263,16 +263,16 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
     }
   } else {
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator(file_->message_type(i)).CollectSourceImports(headers);
+      MessageGenerator(file_->message_type(i)).CollectSourceImports(&headers);
     }
     for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).CollectSourceImports(headers);
+      EnumGenerator(file_->enum_type(i)).CollectSourceImports(&headers);
     }
   }
   for (int i = 0; i < file_->extension_count(); i++) {
-    ExtensionGenerator(file_->extension(i)).CollectSourceImports(headers);
+    ExtensionGenerator(file_->extension(i)).CollectSourceImports(&headers);
   }
-  PrintImports(headers, &printer);
+  PrintImports(&headers, &printer);
   PrintSourcePreamble(&printer);
 
   if (file_->extension_count() > 0) {
@@ -387,7 +387,7 @@ void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
   GenerateBoilerplate(&printer);
   std::set<string> headers;
   AddHeaderImports(headers);
-  PrintImports(headers, &printer);
+  PrintImports(&headers, &printer);
 
   EnumGenerator generator(descriptor);
   generator.GenerateHeader(&printer);
@@ -407,8 +407,8 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
   std::set<string> headers;
   headers.insert(output_dir_ + descriptor->name() + ".h");
   AddSourceImports(headers);
-  generator.CollectSourceImports(headers);
-  PrintImports(headers, &printer);
+  generator.CollectSourceImports(&headers);
+  PrintImports(&headers, &printer);
 
   generator.GenerateSource(&printer);
 }
@@ -427,12 +427,12 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
   std::set<string> headers;
   headers.insert(output_dir_ + descriptor->name() + "OrBuilder.h");
   AddHeaderImports(headers);
-  generator.CollectHeaderImports(headers);
-  PrintImports(headers, &printer);
+  generator.CollectHeaderImports(&headers);
+  PrintImports(&headers, &printer);
 
   std::set<string> declarations;
-  generator.CollectForwardDeclarations(declarations);
-  PrintForwardDeclarations(declarations, &printer);
+  generator.CollectForwardDeclarations(&declarations);
+  PrintForwardDeclarations(&declarations, &printer);
   generator.GenerateHeader(&printer);
 }
 
@@ -449,9 +449,9 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
   MessageGenerator generator(descriptor);
   std::set<string> headers;
   headers.insert(output_dir_ + descriptor->name() + ".h");
-  generator.CollectSourceImports(headers);
+  generator.CollectSourceImports(&headers);
   AddSourceImports(headers);
-  PrintImports(headers, &printer);
+  PrintImports(&headers, &printer);
   PrintSourcePreamble(&printer);
   generator.GenerateSource(&printer);
 }
@@ -468,12 +468,12 @@ void FileGenerator::GenerateMessageOrBuilder(GeneratorContext* context,
   MessageGenerator generator(descriptor);
 
   std::set<string> headers;
-  generator.CollectMessageOrBuilderImports(headers);
-  PrintImports(headers, &printer);
+  generator.CollectMessageOrBuilderImports(&headers);
+  PrintImports(&headers, &printer);
 
   std::set<string> declarations;
-  generator.CollectMessageOrBuilderForwardDeclarations(declarations);
-  PrintForwardDeclarations(declarations, &printer);
+  generator.CollectMessageOrBuilderForwardDeclarations(&declarations);
+  PrintForwardDeclarations(&declarations, &printer);
   generator.GenerateMessageOrBuilder(&printer);
 }
 

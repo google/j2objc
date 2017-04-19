@@ -60,11 +60,11 @@ class FieldGenerator {
   virtual void GenerateDeclaration(io::Printer *printer) const = 0;
   virtual void GenerateFieldData(io::Printer *printer) const;
 
-  virtual void CollectForwardDeclarations(std::set<string> &declarations) const;
+  virtual void CollectForwardDeclarations(std::set<string>* declarations) const;
   virtual void CollectMessageOrBuilderForwardDeclarations(
-      std::set<string> &declarations) const;
-  virtual void CollectSourceImports(std::set<string> &imports) const;
-  virtual void CollectMessageOrBuilderImports(std::set<string> &imports) const;
+      std::set<string>* declarations) const;
+  virtual void CollectSourceImports(std::set<string>* imports) const;
+  virtual void CollectMessageOrBuilderImports(std::set<string>* imports) const;
 
  protected:
   const FieldDescriptor* descriptor_;
@@ -86,7 +86,7 @@ class SingleFieldGenerator : public FieldGenerator {
 
   virtual void GenerateDeclaration(io::Printer* printer) const;
 
-  virtual void CollectSourceImports(std::set<string> &imports) const;
+  virtual void CollectSourceImports(std::set<string>* imports) const;
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(SingleFieldGenerator);
@@ -106,10 +106,10 @@ class RepeatedFieldGenerator : public FieldGenerator {
 
   virtual void GenerateDeclaration(io::Printer* printer) const;
 
-  virtual void CollectForwardDeclarations(std::set<string> &declarations) const;
+  virtual void CollectForwardDeclarations(std::set<string>* declarations) const;
   virtual void CollectMessageOrBuilderForwardDeclarations(
-      std::set<string> &declarations) const;
-  virtual void CollectMessageOrBuilderImports(std::set<string> &imports) const;
+      std::set<string>* declarations) const;
+  virtual void CollectMessageOrBuilderImports(std::set<string>* imports) const;
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(RepeatedFieldGenerator);

@@ -59,11 +59,11 @@ ExtensionGenerator::ExtensionGenerator(const FieldDescriptor* descriptor)
 ExtensionGenerator::~ExtensionGenerator() {
 }
 
-void ExtensionGenerator::CollectSourceImports(std::set<string> &imports) {
-  imports.insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
+void ExtensionGenerator::CollectSourceImports(std::set<string>* imports) {
+  imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
   if (!descriptor_->is_repeated()
       && GetJavaType(descriptor_) == JAVATYPE_ENUM) {
-    imports.insert(GetHeader(descriptor_->enum_type()));
+    imports->insert(GetHeader(descriptor_->enum_type()));
   }
 }
 

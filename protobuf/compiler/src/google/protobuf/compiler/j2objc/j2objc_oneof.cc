@@ -88,16 +88,16 @@ OneofGenerator::~OneofGenerator() {
 }
 
 void OneofGenerator::CollectMessageOrBuilderForwardDeclarations(
-    std::set<string> &declarations) const {
-  declarations.insert("@class " + CaseClassName(descriptor_));
+    std::set<string>* declarations) const {
+  declarations->insert("@class " + CaseClassName(descriptor_));
 }
 
-void OneofGenerator::CollectHeaderImports(std::set<string> &imports) const {
-  imports.insert("com/google/protobuf/Internal.h");
+void OneofGenerator::CollectHeaderImports(std::set<string>* imports) const {
+  imports->insert("com/google/protobuf/Internal.h");
 }
 
-void OneofGenerator::CollectSourceImports(std::set<string> &imports) const {
-  imports.insert("java/lang/IllegalArgumentException.h");
+void OneofGenerator::CollectSourceImports(std::set<string>* imports) const {
+  imports->insert("java/lang/IllegalArgumentException.h");
 }
 
 void OneofGenerator::GenerateStorageDeclaration(io::Printer* printer) const {

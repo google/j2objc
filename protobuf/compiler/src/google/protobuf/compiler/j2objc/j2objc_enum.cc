@@ -64,8 +64,8 @@ EnumGenerator::EnumGenerator(const EnumDescriptor* descriptor)
 EnumGenerator::~EnumGenerator() {
 }
 
-void EnumGenerator::CollectSourceImports(std::set<string> &imports) const {
-  imports.insert("java/lang/IllegalArgumentException.h");
+void EnumGenerator::CollectSourceImports(std::set<string>* imports) const {
+  imports->insert("java/lang/IllegalArgumentException.h");
 }
 
 void EnumGenerator::GenerateHeader(io::Printer* printer) {

@@ -71,9 +71,9 @@ MessageGenerator::~MessageGenerator() {
 }
 
 void MessageGenerator::CollectForwardDeclarations(
-    std::set<string>& declarations) const {
-  declarations.insert("@class " + ClassName(descriptor_) + "_Builder");
-  declarations.insert("@class ComGoogleProtobufDescriptors_Descriptor");
+    std::set<string>* declarations) const {
+  declarations->insert("@class " + ClassName(descriptor_) + "_Builder");
+  declarations->insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
@@ -86,12 +86,12 @@ void MessageGenerator::CollectForwardDeclarations(
   }
 }
 
-void MessageGenerator::CollectMessageOrBuilderImports(std::set<string> &imports)
+void MessageGenerator::CollectMessageOrBuilderImports(std::set<string>* imports)
     const {
   if (descriptor_->extension_range_count() > 0) {
-    imports.insert("com/google/protobuf/GeneratedMessage.h");
+    imports->insert("com/google/protobuf/GeneratedMessage.h");
   } else {
-    imports.insert("com/google/protobuf/MessageOrBuilder.h");
+    imports->insert("com/google/protobuf/MessageOrBuilder.h");
   }
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -106,7 +106,7 @@ void MessageGenerator::CollectMessageOrBuilderImports(std::set<string> &imports)
 }
 
 void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
-    std::set<string> &declarations) const {
+    std::set<string>* declarations) const {
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
         .CollectMessageOrBuilderForwardDeclarations(declarations);
@@ -123,14 +123,14 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
   }
 }
 
-void MessageGenerator::CollectHeaderImports(std::set<string> &imports) const {
+void MessageGenerator::CollectHeaderImports(std::set<string>* imports) const {
   for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).CollectHeaderImports(imports);
   }
 }
 
-void MessageGenerator::CollectSourceImports(std::set<string> &imports) const {
-  imports.insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
+void MessageGenerator::CollectSourceImports(std::set<string>* imports) const {
+  imports->insert("com/google/protobuf/GeneratedMessage_PackagePrivate.h");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i)).CollectSourceImports(imports);

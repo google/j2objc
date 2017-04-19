@@ -129,16 +129,16 @@ namespace {
   }
 
   void CollectCommonForwardDeclarations(
-      std::set<string> &declarations, const FieldDescriptor *descriptor) {
+      std::set<string>* declarations, const FieldDescriptor *descriptor) {
     JavaType type = GetJavaType(descriptor);
     if (type == JAVATYPE_BYTES) {
-      declarations.insert("@class ComGoogleProtobufByteString");
+      declarations->insert("@class ComGoogleProtobufByteString");
     } else if (type == JAVATYPE_ENUM) {
-      declarations.insert("@class " + ClassName(descriptor->enum_type()));
+      declarations->insert("@class " + ClassName(descriptor->enum_type()));
     } else if (type == JAVATYPE_MESSAGE) {
       string classname = ClassName(descriptor->message_type());
-      declarations.insert("@class " + classname);
-      declarations.insert("@class " + classname + "_Builder");
+      declarations->insert("@class " + classname);
+      declarations->insert("@class " + classname + "_Builder");
     }
   }
 }  // namespace
@@ -151,21 +151,21 @@ FieldGenerator::FieldGenerator(const FieldDescriptor *descriptor)
 FieldGenerator::~FieldGenerator() {
 }
 
-void FieldGenerator::CollectForwardDeclarations(std::set<string> &declarations)
+void FieldGenerator::CollectForwardDeclarations(std::set<string>* declarations)
     const {
   CollectCommonForwardDeclarations(declarations, descriptor_);
 }
 
 void FieldGenerator::CollectMessageOrBuilderForwardDeclarations(
-    std::set<string> &declarations) const {
+    std::set<string>* declarations) const {
   CollectCommonForwardDeclarations(declarations, descriptor_);
 }
 
-void FieldGenerator::CollectSourceImports(std::set<string> &imports) const {
+void FieldGenerator::CollectSourceImports(std::set<string>* imports) const {
 }
 
 void FieldGenerator::CollectMessageOrBuilderImports(
-    std::set<string> &imports) const {}
+    std::set<string>* imports) const {}
 
 void FieldGenerator::GenerateFieldHeader(io::Printer *printer) const {
   printer->Print(variables_,
@@ -199,10 +199,10 @@ SingleFieldGenerator::SingleFieldGenerator(
 }
 
 void SingleFieldGenerator::CollectSourceImports(
-    std::set<string> &imports) const {
+    std::set<string>* imports) const {
   FieldGenerator::CollectSourceImports(imports);
   if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
-    imports.insert(GetHeader(descriptor_->enum_type()));
+    imports->insert(GetHeader(descriptor_->enum_type()));
   }
 }
 
@@ -233,23 +233,23 @@ void SingleFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
 }
 
 void RepeatedFieldGenerator::CollectForwardDeclarations(
-    std::set<string> &declarations) const {
+    std::set<string>* declarations) const {
   FieldGenerator::CollectForwardDeclarations(declarations);
-  declarations.insert("@protocol JavaLangIterable");
+  declarations->insert("@protocol JavaLangIterable");
 }
 
 void RepeatedFieldGenerator::CollectMessageOrBuilderForwardDeclarations(
-    std::set<string> &declarations) const {
+    std::set<string>* declarations) const {
   FieldGenerator::CollectMessageOrBuilderForwardDeclarations(declarations);
-  declarations.insert("@protocol " + GetListType(descriptor_));
+  declarations->insert("@protocol " + GetListType(descriptor_));
 }
 
 void RepeatedFieldGenerator::CollectMessageOrBuilderImports(
-    std::set<string> &imports) const {
+    std::set<string>* imports) const {
   if (GetJavaType(descriptor_) == JAVATYPE_STRING) {
     // When translated against an older Java protobuf runtime, the caller
     // will need the full type info for ProtocolStringList.
-    imports.insert("com/google/protobuf/ProtocolStringList.h");
+    imports->insert("com/google/protobuf/ProtocolStringList.h");
   }
 }
 
