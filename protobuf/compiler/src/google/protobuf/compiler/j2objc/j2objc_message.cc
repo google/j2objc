@@ -153,17 +153,7 @@ void MessageGenerator::CollectSourceImports(std::set<string>* imports) const {
   }
 }
 
-void MessageGenerator::GenerateEnumHeader(io::Printer* printer) {
-  for (int i = 0; i < descriptor_->enum_type_count(); i++) {
-    EnumGenerator(descriptor_->enum_type(i)).GenerateHeader(printer);
-  }
-
-  for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i)).GenerateEnumHeader(printer);
-  }
-}
-
-void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
+void MessageGenerator::GenerateHeader(io::Printer* printer) {
   string superclassName = "ComGoogleProtobufGeneratedMessage";
   if (descriptor_->extension_range_count() > 0) {
     superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableMessage";
@@ -261,16 +251,15 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
         .GenerateMembersHeader(printer);
   }
 
+  for (int i = 0; i < descriptor_->enum_type_count(); i++) {
+    EnumGenerator(descriptor_->enum_type(i)).GenerateHeader(printer);
+  }
+
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i)).GenerateMessageHeader(printer);
+    MessageGenerator(descriptor_->nested_type(i)).GenerateHeader(printer);
   }
 
   GenerateBuilderHeader(printer);
-}
-
-void MessageGenerator::GenerateHeader(io::Printer* printer) {
-  GenerateEnumHeader(printer);
-  GenerateMessageHeader(printer);
 }
 
 void MessageGenerator::GenerateSource(io::Printer* printer) {

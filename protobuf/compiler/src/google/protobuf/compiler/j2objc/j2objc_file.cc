@@ -186,16 +186,6 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
   PrintImports(&headers, &printer);
   PrintForwardDeclarations(&declarations, &printer);
 
-  // need to write out all enums first
-  if (!GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).GenerateHeader(&printer);
-    }
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator(file_->message_type(i)).GenerateEnumHeader(&printer);
-    }
-  }
-
   printer.Print("\n"
       "@interface $classname$ : NSObject\n"
       "\n"
@@ -234,10 +224,14 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
   }
 
   if (!GenerateMultipleFiles()) {
+    for (int i = 0; i < file_->enum_type_count(); i++) {
+      EnumGenerator(file_->enum_type(i)).GenerateHeader(&printer);
+    }
+
     for (int i = 0; i < file_->message_type_count(); i++) {
       MessageGenerator generator(file_->message_type(i));
       generator.GenerateMessageOrBuilder(&printer);
-      generator.GenerateMessageHeader(&printer);
+      generator.GenerateHeader(&printer);
     }
   }
 }

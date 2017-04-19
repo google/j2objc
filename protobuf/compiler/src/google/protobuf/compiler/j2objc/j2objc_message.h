@@ -51,8 +51,6 @@ class MessageGenerator {
   explicit MessageGenerator(const Descriptor* descriptor);
   ~MessageGenerator();
 
-  void GenerateEnumHeader(io::Printer* printer);
-  void GenerateMessageHeader(io::Printer* printer);
   void GenerateHeader(io::Printer* printer);
   void GenerateSource(io::Printer* printer);
   void GenerateMessageOrBuilder(io::Printer* printer);
