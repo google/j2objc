@@ -28,10 +28,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Created by Keith Stanger on Mar. 20, 2013.
+//  Created by Keith Stanger on Apr. 3, 2017.
 //
-//  Hand written counterpart for com.google.protobuf.GeneratedMessage and
-//  friends.
+//  Hand written counterpart for com.google.protobuf.AbstractMessage.
 
 #ifndef __ComGoogleProtobufAbstractMessage_H__
 #define __ComGoogleProtobufAbstractMessage_H__
