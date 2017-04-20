@@ -81,8 +81,9 @@ void MessageGenerator::CollectForwardDeclarations(
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i))
-        .CollectForwardDeclarations(declarations);
+    MessageGenerator generator(descriptor_->nested_type(i));
+    generator.CollectMessageOrBuilderForwardDeclarations(declarations);
+    generator.CollectForwardDeclarations(declarations);
   }
 }
 
@@ -98,11 +99,6 @@ void MessageGenerator::CollectMessageOrBuilderImports(std::set<string>* imports)
     field_generators_.get(descriptor_->field(i))
         .CollectMessageOrBuilderImports(imports);
   }
-
-  for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i))
-        .CollectMessageOrBuilderImports(imports);
-  }
 }
 
 void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
@@ -116,16 +112,17 @@ void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(
     OneofGenerator(descriptor_->oneof_decl(i))
         .CollectMessageOrBuilderForwardDeclarations(declarations);
   }
-
-  for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i))
-        .CollectMessageOrBuilderForwardDeclarations(declarations);
-  }
 }
 
 void MessageGenerator::CollectHeaderImports(std::set<string>* imports) const {
   for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).CollectHeaderImports(imports);
+  }
+
+  for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    MessageGenerator generator(descriptor_->nested_type(i));
+    generator.CollectMessageOrBuilderImports(imports);
+    generator.CollectHeaderImports(imports);
   }
 }
 
@@ -256,7 +253,9 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i)).GenerateHeader(printer);
+    MessageGenerator generator(descriptor_->nested_type(i));
+    generator.GenerateMessageOrBuilder(printer);
+    generator.GenerateHeader(printer);
   }
 
   GenerateBuilderHeader(printer);
@@ -524,11 +523,6 @@ void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
       "\n"
       "J2OBJC_TYPE_LITERAL_HEADER($classname$OrBuilder)\n",
       "classname", ClassName(descriptor_));
-
-  for (int i = 0; i < descriptor_->nested_type_count(); i++) {
-    MessageGenerator(descriptor_->nested_type(i))
-        .GenerateMessageOrBuilder(printer);
-  }
 }
 
 void MessageGenerator::GenerateExtensionRegistrationCode(io::Printer* printer) {
