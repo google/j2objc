@@ -122,8 +122,6 @@ namespace {
     (*variables)["default_value_type"] = GetDefaultValueTypeName(descriptor);
     (*variables)["default_value"] = DefaultValue(descriptor);
     (*variables)["has_bit_index"] = "0";
-    (*variables)["containing_type_name"] =
-        ClassName(descriptor->containing_type());
     (*variables)["options_data"] = GetFieldOptionsData(descriptor);
     (*variables)["list_type"] = GetListType(descriptor);
   }
@@ -185,7 +183,7 @@ void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
       "  .hasBitIndex = $has_bit_index$,\n"
       "  .offset = offsetof($classname$_Storage, $camelcase_name$_),\n"
       "  .className = $field_data_class_name$,\n"
-      "  .containingType = \"$containing_type_name$\",\n"
+      "  .containingType = NULL,\n"  // Used by extensions.
       "  .optionsData = $options_data$,\n"
       "},\n");
 }

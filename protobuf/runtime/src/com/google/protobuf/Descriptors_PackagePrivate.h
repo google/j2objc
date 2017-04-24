@@ -105,8 +105,7 @@ typedef struct CGPOneofData {
 - (instancetype)initWithMessageClass:(Class)messageClass
                         builderClass:(Class)builderClass
                                flags:(CGPMessageFlags)flags
-                         storageSize:(size_t)storageSize
-                              fields:(IOSObjectArray *)fields;
+                         storageSize:(size_t)storageSize;
 
 @end
 
@@ -118,10 +117,12 @@ typedef struct CGPOneofData {
   // Either nil, a Descriptor or a EnumDescriptor depending on the field type.
   id valueType_;
   ComGoogleProtobufDescriptorProtos_FieldOptions *fieldOptions_;
+  CGPDescriptor *containingType_;
   CGPOneofDescriptor *containingOneof_;
 }
 
-- (instancetype)initWithData:(CGPFieldData *)data;
+- (instancetype)initWithData:(CGPFieldData *)data
+              containingType:(CGPDescriptor *)containingType;
 
 @end
 
@@ -239,8 +240,6 @@ CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
 CGP_ALWAYS_INLINE inline jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
   return *(jint *)((char *)enumObj + descriptor->valueOffset_);
 }
-
-CGPDescriptor *CGPFieldGetContainingType(CGPFieldDescriptor *field);
 
 id CGPFieldGetDefaultValue(CGPFieldDescriptor *field);
 

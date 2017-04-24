@@ -88,20 +88,21 @@ void CGPInitDescriptor(
     CGPDescriptor **pDescriptor, Class messageClass, Class builderClass, CGPMessageFlags flags,
     size_t storageSize, jint fieldCount, CGPFieldData *fieldData, jint oneofCount,
     CGPOneofData *oneofData) {
-  IOSObjectArray *fields = [IOSObjectArray arrayWithLength:fieldCount
-      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
-  CGPFieldDescriptor **fieldsBuf = fields->buffer_;
-  for (jint i = 0; i < fieldCount; i++) {
-    fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]];
-  }
-
   CGPDescriptor *descriptor = [[CGPDescriptor alloc]
       initWithMessageClass:messageClass
               builderClass:builderClass
                      flags:flags
-               storageSize:storageSize
-                    fields:fields];
+               storageSize:storageSize];
   *pDescriptor = descriptor;
+
+  IOSObjectArray *fields = [IOSObjectArray newArrayWithLength:fieldCount
+      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
+  CGPFieldDescriptor **fieldsBuf = fields->buffer_;
+  for (jint i = 0; i < fieldCount; i++) {
+    fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]
+                                             containingType:descriptor];
+  }
+  descriptor->fields_ = fields;
 
   if (oneofCount > 0) {
     IOSObjectArray *oneofs = [IOSObjectArray newArrayWithLength:oneofCount
@@ -196,14 +197,12 @@ static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPF
 - (instancetype)initWithMessageClass:(Class)messageClass
                         builderClass:(Class)builderClass
                                flags:(CGPMessageFlags)flags
-                         storageSize:(size_t)storageSize
-                              fields:(IOSObjectArray *)fields {
+                         storageSize:(size_t)storageSize {
   if (self = [self init]) {
     messageClass_ = messageClass;
     builderClass_ = builderClass;
     flags_ = flags;
     storageSize_ = storageSize;
-    fields_ = [fields retain];
     defaultInstance_ = CGPNewMessage(self);
   }
   return self;
@@ -274,12 +273,14 @@ static ComGoogleProtobufDescriptorProtos_FieldOptions *InitFieldOptions(const ch
   return msg;
 }
 
-- (instancetype)initWithData:(CGPFieldData *)data {
+- (instancetype)initWithData:(CGPFieldData *)data
+              containingType:(CGPDescriptor *)containingType {
   if (self = [self init]) {
     data_ = data;
     tag_ = TagFromData(data);
     javaType_ = [GetTypeObj(data->type)->javaType_ ordinal];
     fieldOptions_ = InitFieldOptions(data->optionsData);
+    containingType_ = containingType;
   }
   return self;
 }
@@ -414,12 +415,6 @@ void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         break;
       }
   }
-}
-
-CGPDescriptor *CGPFieldGetContainingType(CGPFieldDescriptor *field) {
-  Class msgClass = objc_getClass(field->data_->containingType);
-  NSCAssert(msgClass != nil, @"Containing message type not found.");
-  return [msgClass performSelector:@selector(getDescriptor)];
 }
 
 CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, jint value) {
