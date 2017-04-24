@@ -80,6 +80,17 @@ public final class Unsafe {
      */
     private static native long objectFieldOffset0(Field field);
 
+    public static long staticFieldOffset(Field f) {
+        if (!Modifier.isStatic(f.getModifiers())) {
+            throw new IllegalArgumentException("valid for static fields only");
+        }
+        return objectFieldOffset0(f);
+    }
+
+    public static Object staticFieldBase(Field f) {
+      return null;
+    }
+
     /**
      * Gets the offset from the start of an array object's memory to
      * the memory used to store its initial (zeroeth) element.
@@ -511,7 +522,12 @@ public final class Unsafe {
 //    public native void copyMemoryFromPrimitiveArray(Object src, long srcOffset,
 //            long dstAddr, long bytes);
 
-    public native void copyMemory(long srcAddr, long dstAddr, long bytes);
+    public native void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset,
+                                  long bytes);
+
+    public void copyMemory(long srcAddr, long dstAddr, long bytes) {
+      copyMemory(null, srcAddr, null, dstAddr, bytes);
+    }
 
 
     // The following contain CAS-based Java implementations used on

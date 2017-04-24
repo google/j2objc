@@ -343,8 +343,12 @@ static void SetWithRawValue(
   return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
-- (int)unsafeOffset {
-  return (int) ivar_getOffset(ivar_);
+- (jlong)unsafeOffset {
+  if (IsStatic(self)) {
+    return (jlong)JrePtrAtIndex(ptrTable_, metadata_->staticRefIdx);
+  } else {
+    return (jlong)ivar_getOffset(ivar_);
+  }
 }
 
 // isEqual and hash are uniquely identified by their class and field names.

@@ -83,7 +83,7 @@
 - (id<JavaLangReflectType>)getGenericType;
 
 // Should only be used by sun.misc.Unsafe.
-- (int)unsafeOffset;
+- (jlong)unsafeOffset;
 
 @end
 

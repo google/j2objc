@@ -181,7 +181,7 @@ jint Java_sun_misc_Unsafe_getArrayIndexScaleForComponentType(
  */
 jlong Java_sun_misc_Unsafe_objectFieldOffset0(
     JNIEnv *env, jclass cls, JavaLangReflectField *field) {
-  return (jlong) [field unsafeOffset];
+  return [field unsafeOffset];
 }
 
 
@@ -208,7 +208,9 @@ void Java_sun_misc_Unsafe_setMemory(
  * Method:    copyMemory
  * Signature: (JJJ)V
  */
-void Java_sun_misc_Unsafe_copyMemory(JNIEnv *env, jobject self, jlong src, jlong dst, jlong size) {
+void Java_sun_misc_Unsafe_copyMemory(
+    JNIEnv *env, jobject self, jobject srcBase, jlong srcOffset, jobject destBase, jlong destOffset,
+    jlong size) {
   if (size == 0) {
     return;
   }
@@ -217,7 +219,7 @@ void Java_sun_misc_Unsafe_copyMemory(JNIEnv *env, jobject self, jlong src, jlong
     create_JavaLangIllegalAccessException_initWithNSString_(@"wrong number of bytes");
   }
   size_t sz = (size_t)size;
-  memcpy((void*)dst, (void*)src, sz);
+  memcpy((void *)PTR(destBase, destOffset), (void *)PTR(srcBase, srcOffset), sz);
 }
 
 /*
