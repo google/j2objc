@@ -783,7 +783,14 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
   ]-*/
 
   private void addHeader(String k, String v) {
-    headers.add(new HeaderEntry(k, v));
+    if (k != null && (k.equalsIgnoreCase("Set-Cookie") || k.equalsIgnoreCase("Set-Cookie2"))) {
+      CookieSplitter cs = new CookieSplitter(v);
+      while (cs.hasNext()) {
+        headers.add(new HeaderEntry(k, cs.next()));
+      }
+    } else {
+      headers.add(new HeaderEntry(k, v));
+    }
   }
 
   private void removeHeader(String k) {
@@ -844,6 +851,57 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
       JreStrongAssign(&self->nativeDataTask_, nil);
     }
   ]-*/;
+
+  /**
+   * Splits a string with one or more cookies separated with a comma. Since
+   * some attribute values can also have commas, like the expires date field,
+   * this does a look ahead to detect where it's a separator or not.
+   */
+  private static class CookieSplitter {
+    String s;
+    char[] buf;
+    int pos;
+
+    CookieSplitter(String s) {
+      this.s = s;
+      buf = s.toCharArray();
+      pos = 0;
+    }
+
+    boolean hasNext() {
+      return pos < buf.length;
+    }
+
+    String next() {
+      int start = pos;
+      while (skipSpace()) {
+        if (buf[pos] == ',') {
+          int lastComma = pos++;
+          skipSpace();
+          int nextStart = pos;
+          while (pos < buf.length && buf[pos] != '=' && buf[pos] != ';' && buf[pos] != ',') {
+            pos++;
+          }
+          if (pos < buf.length && buf[pos] == '=') {
+            // pos is inside the next cookie, so back up and return it.
+            pos = nextStart;
+            return s.substring(start, lastComma);
+          }
+          pos = lastComma;
+        }
+        pos++;
+      }
+      return s.substring(start);
+    }
+
+    // Skip whitespace, returning true if there are more chars to read.
+    private boolean skipSpace() {
+      while (pos < buf.length && Character.isWhitespace(buf[pos])) {
+        pos++;
+      }
+      return pos < buf.length;
+    }
+  }
 
   static {
     RESPONSE_CODES.put(100, "Continue");
