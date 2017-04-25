@@ -191,8 +191,6 @@ void CGPInitializeOneofCaseEnum(
     Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufInternal_EnumLite> **values,
     NSString **names, jint *intValues);
 
-void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor);
-
 CGP_ALWAYS_INLINE inline jint CGPFieldGetNumber(const CGPFieldDescriptor *field) {
   return field->data_->number;
 }
