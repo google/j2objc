@@ -138,21 +138,8 @@ public final class SystemClock {
       return elapsedRealtime();  // Not aware of any iOS API to track deep sleep time.
     }
 
-    /**
-     * Returns milliseconds since boot, including time spent in sleep.
-     *
-     * @return elapsed milliseconds since boot.
-     */
-    public native static long elapsedRealtime() /*-[
-      return (long long) [[NSProcessInfo processInfo] systemUptime] * 1000LL;
-    ]-*/;
-
-    /**
-     * Returns nanoseconds since boot, including time spent in sleep.
-     *
-     * @return elapsed nanoseconds since boot.
-     */
-    public static native long elapsedRealtimeNanos() /*-[
+    /*-[
+    static long long boottime_us() {
       // MIB = Management Information Base (man sysctl).
       #define MIB_SIZE 2
       int mib[MIB_SIZE];
@@ -167,6 +154,40 @@ public final class SystemClock {
                             initWithNSString:@"sysctl" withInt:errno]);
       }
       return ((long long) boottime.tv_sec) * 1.e6 + boottime.tv_usec;
+    }
+
+    static long long uptime_us() {
+      // source: http://stackoverflow.com/a/40497811
+      long long before_now;
+      long long after_now;
+      struct timeval now;
+
+      after_now = boottime_us();
+      do {
+        before_now = after_now;
+        gettimeofday(&now, NULL);
+        after_now = boottime_us();
+      } while (after_now != before_now);
+      return ((long long) now.tv_sec) * 1.e6 + now.tv_usec - before_now;
+    }
+    ]-*/
+
+    /**
+     * Returns milliseconds since boot, including time spent in sleep.
+     *
+     * @return elapsed milliseconds since boot.
+     */
+    public native static long elapsedRealtime() /*-[
+      return (long long)(uptime_us() / 1000.0);
+    ]-*/;
+
+    /**
+     * Returns nanoseconds since boot, including time spent in sleep.
+     *
+     * @return elapsed nanoseconds since boot.
+     */
+    public static native long elapsedRealtimeNanos() /*-[
+      return uptime_us() * 1000;
     ]-*/;
 
     /**
