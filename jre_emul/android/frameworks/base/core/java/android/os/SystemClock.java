@@ -139,7 +139,7 @@ public final class SystemClock {
     }
 
     /*-[
-    static long long boottime_us() {
+    static long long boottime_usec() {
       // MIB = Management Information Base (man sysctl).
       #define MIB_SIZE 2
       int mib[MIB_SIZE];
@@ -156,17 +156,17 @@ public final class SystemClock {
       return ((long long) boottime.tv_sec) * 1.e6 + boottime.tv_usec;
     }
 
-    static long long uptime_us() {
+    static long long uptime_usec() {
       // source: http://stackoverflow.com/a/40497811
       long long before_now;
       long long after_now;
       struct timeval now;
 
-      after_now = boottime_us();
+      after_now = boottime_usec();
       do {
         before_now = after_now;
         gettimeofday(&now, NULL);
-        after_now = boottime_us();
+        after_now = boottime_usec();
       } while (after_now != before_now);
       return ((long long) now.tv_sec) * 1.e6 + now.tv_usec - before_now;
     }
@@ -178,7 +178,7 @@ public final class SystemClock {
      * @return elapsed milliseconds since boot.
      */
     public native static long elapsedRealtime() /*-[
-      return (long long)(uptime_us() / 1000.0);
+      return (long long)(uptime_usec() / 1000.0);
     ]-*/;
 
     /**
@@ -187,7 +187,7 @@ public final class SystemClock {
      * @return elapsed nanoseconds since boot.
      */
     public static native long elapsedRealtimeNanos() /*-[
-      return uptime_us() * 1000;
+      return uptime_usec() * 1000;
     ]-*/;
 
     /**
