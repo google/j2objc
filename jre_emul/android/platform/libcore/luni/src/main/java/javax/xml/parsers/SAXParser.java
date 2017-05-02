@@ -99,7 +99,10 @@ public abstract class SAXParser {
 
         // implementors should override this method
         throw new UnsupportedOperationException(
-            "This SAXParser, \"" + this.getClass().getName() + "\", does not support the reset functionality.");
+            "This SAXParser, \"" + this.getClass().getName() + "\", does not support the reset functionality."
+            + "  Specification \"" + this.getClass().getPackage().getSpecificationTitle() + "\""
+            + " version \"" + this.getClass().getPackage().getSpecificationVersion() + "\""
+            );
     }
 
     /**
@@ -484,7 +487,12 @@ public abstract class SAXParser {
      */
     public Schema getSchema() {
         throw new UnsupportedOperationException(
-            "This parser does not support specification");
+            "This parser does not support specification \""
+            + this.getClass().getPackage().getSpecificationTitle()
+            + "\" version \""
+            + this.getClass().getPackage().getSpecificationVersion()
+            + "\""
+            );
     }
 
     /**
@@ -506,6 +514,11 @@ public abstract class SAXParser {
      */
     public boolean isXIncludeAware() {
         throw new UnsupportedOperationException(
-            "This parser does not support specification");
+            "This parser does not support specification \""
+            + this.getClass().getPackage().getSpecificationTitle()
+            + "\" version \""
+            + this.getClass().getPackage().getSpecificationVersion()
+            + "\""
+            );
     }
 }

@@ -78,6 +78,9 @@ public abstract class SAXParserFactory {
         if (factoryClassName == null) {
             throw new FactoryConfigurationError("factoryClassName == null");
         }
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
         try {
             Class<?> type = classLoader != null
                     ? classLoader.loadClass(factoryClassName)
@@ -254,7 +257,12 @@ public abstract class SAXParserFactory {
      */
     public Schema getSchema() {
         throw new UnsupportedOperationException(
-            "This parser does not support specification");
+            "This parser does not support specification \""
+            + this.getClass().getPackage().getSpecificationTitle()
+            + "\" version \""
+            + this.getClass().getPackage().getSpecificationVersion()
+            + "\""
+            );
     }
 
     /**
@@ -308,7 +316,12 @@ public abstract class SAXParserFactory {
      */
     public void setSchema(Schema schema) {
         throw new UnsupportedOperationException(
-            "This parser does not support specification");
+            "This parser does not support specification \""
+            + this.getClass().getPackage().getSpecificationTitle()
+            + "\" version \""
+            + this.getClass().getPackage().getSpecificationVersion()
+            + "\""
+            );
     }
 
     /**
@@ -332,7 +345,12 @@ public abstract class SAXParserFactory {
      */
     public void setXIncludeAware(final boolean state) {
         throw new UnsupportedOperationException(
-            "This parser does not support specification");
+            "This parser does not support specification \""
+            + this.getClass().getPackage().getSpecificationTitle()
+            + "\" version \""
+            + this.getClass().getPackage().getSpecificationVersion()
+            + "\""
+            );
     }
 
     /**
@@ -349,7 +367,12 @@ public abstract class SAXParserFactory {
      */
     public boolean isXIncludeAware() {
         throw new UnsupportedOperationException(
-            "This parser does not support specification");
+            "This parser does not support specification \""
+            + this.getClass().getPackage().getSpecificationTitle()
+            + "\" version \""
+            + this.getClass().getPackage().getSpecificationVersion()
+            + "\""
+            );
     }
 }
 

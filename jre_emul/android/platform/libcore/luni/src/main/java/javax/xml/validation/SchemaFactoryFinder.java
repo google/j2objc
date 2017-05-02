@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// $Id: XPathFactoryFinder.java 670432 2008-06-23 02:02:08Z mrglavas $
+// $Id: SchemaFactoryFinder.java 727367 2008-12-17 13:05:26Z mrglavas $
 
-package javax.xml.xpath;
+package javax.xml.validation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,20 +29,49 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
-import javax.xml.validation.SchemaFactory;
+import javax.xml.XMLConstants;
 import libcore.io.IoUtils;
 
 /**
- * Implementation of {@link XPathFactory#newInstance(String)}.
+ * Implementation of {@link SchemaFactory#newInstance(String)}.
  *
  * @author <a href="Kohsuke.Kawaguchi@Sun.com">Kohsuke Kawaguchi</a>
- * @version $Revision: 670432 $, $Date: 2008-06-22 19:02:08 -0700 (Sun, 22 Jun 2008) $
+ * @version $Revision: 727367 $, $Date: 2008-12-17 05:05:26 -0800 (Wed, 17 Dec 2008) $
  * @since 1.5
  */
-final class XPathFactoryFinder {
+final class SchemaFactoryFinder  {
+
+    /** XML Schema language identifiers. */
+    private static final String W3C_XML_SCHEMA10_NS_URI = "http://www.w3.org/XML/XMLSchema/v1.0";
+    private static final String W3C_XML_SCHEMA11_NS_URI = "http://www.w3.org/XML/XMLSchema/v1.1";
 
     /** debug support code. */
     private static boolean debug = false;
+
+    /**
+     * <p>Cache properties for performance. Use a static class to avoid double-checked
+     * locking.</p>
+     */
+    private static class CacheHolder {
+
+        private static Properties cacheProps = new Properties();
+
+        static {
+            String javah = System.getProperty("java.home");
+            String configFile = javah + File.separator + "lib" + File.separator + "jaxp.properties";
+            File f = new File(configFile);
+            if (f.exists()) {
+                if (debug) debugPrintln("Read properties file " + f);
+                try {
+                    cacheProps.load(new FileInputStream(f));
+                } catch (Exception ex) {
+                    if (debug) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Default columns per line.
@@ -54,16 +83,6 @@ final class XPathFactoryFinder {
         // Allow simply setting the prop to turn on debug
         debug = val != null && (! "false".equals(val));
     }
-
-    /**
-     * <p>Cache properties for performance.</p>
-     */
-    private static Properties cacheProps = new Properties();
-
-    /**
-     * <p>First time requires initialization overhead.</p>
-     */
-    private static boolean firstTime = true;
 
     /**
      * <p>Conditional debug printing.</p>
@@ -87,26 +106,26 @@ final class XPathFactoryFinder {
      *
      * @param loader
      *      to be used to load resource, {@link SchemaFactory}, and
-     *      {@code SchemaFactoryLoader} implementations during
+     *      {@link SchemaFactoryLoader} implementations during
      *      the resolution process.
      *      If this parameter is null, the default system class loader
      *      will be used.
      */
-    public XPathFactoryFinder(ClassLoader loader) {
+    public SchemaFactoryFinder(ClassLoader loader) {
         this.classLoader = loader;
-        if (debug) {
+        if( debug ) {
             debugDisplayClassLoader();
         }
     }
 
     private void debugDisplayClassLoader() {
         if (classLoader == Thread.currentThread().getContextClassLoader()) {
-            debugPrintln("using thread context class loader (" + classLoader + ") for search");
+            debugPrintln("using thread context class loader ("+classLoader+") for search");
             return;
         }
 
-        if (classLoader==ClassLoader.getSystemClassLoader()) {
-            debugPrintln("using system class loader (" + classLoader + ") for search");
+        if (classLoader == ClassLoader.getSystemClassLoader()) {
+            debugPrintln("using system class loader ("+classLoader+") for search");
             return;
         }
 
@@ -114,40 +133,43 @@ final class XPathFactoryFinder {
     }
 
     /**
-     * <p>Creates a new {@link XPathFactory} object for the specified
+     * <p>Creates a new {@link SchemaFactory} object for the specified
      * schema language.</p>
      *
-     * @param uri
-     *       Identifies the underlying object model.
+     * @param schemaLanguage
+     *      See {@link SchemaFactory Schema Language} table in <code>SchemaFactory</code>
+     *      for the list of available schema languages.
      *
      * @return <code>null</code> if the callee fails to create one.
      *
      * @throws NullPointerException
-     *      If the parameter is null.
+     *      If the <tt>schemaLanguage</tt> parameter is null.
      */
-    public XPathFactory newFactory(String uri) {
-        if (uri == null) {
-            throw new NullPointerException("uri == null");
+    public SchemaFactory newFactory(String schemaLanguage) {
+        if (schemaLanguage == null) {
+            throw new NullPointerException("schemaLanguage == null");
         }
-        XPathFactory f = _newFactory(uri);
+        SchemaFactory f = _newFactory(schemaLanguage);
         if (debug) {
             if (f != null) {
-                debugPrintln("factory '" + f.getClass().getName() + "' was found for " + uri);
+                debugPrintln("factory '" + f.getClass().getName() + "' was found for " + schemaLanguage);
             } else {
-                debugPrintln("unable to find a factory for " + uri);
+                debugPrintln("unable to find a factory for " + schemaLanguage);
             }
         }
         return f;
     }
 
     /**
-     * <p>Lookup a {@link XPathFactory} for the given object model.</p>
+     * <p>Lookup a <code>SchemaFactory</code> for the given <code>schemaLanguage</code>.</p>
      *
-     * @param uri identifies the object model.
+     * @param schemaLanguage Schema language to lookup <code>SchemaFactory</code> for.
+     *
+     * @return <code>SchemaFactory</code> for the given <code>schemaLanguage</code>.
      */
-    private XPathFactory _newFactory(String uri) {
-        XPathFactory xpf;
-        String propertyName = SERVICE_CLASS.getName() + ":" + uri;
+    private SchemaFactory _newFactory(String schemaLanguage) {
+        SchemaFactory sf;
+        String propertyName = SERVICE_CLASS.getName() + ":" + schemaLanguage;
 
         // system property look up
         try {
@@ -155,42 +177,37 @@ final class XPathFactoryFinder {
             String r = System.getProperty(propertyName);
             if (r != null && r.length() > 0) {
                 if (debug) debugPrintln("The value is '"+r+"'");
-                xpf = createInstance(r);
-                if(xpf!=null)    return xpf;
-            } else if (debug) {
+                sf = createInstance(r);
+                if(sf!=null)    return sf;
+            }
+            else if (debug) {
                 debugPrintln("The property is undefined.");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        String javah = System.getProperty("java.home");
-        String configFile = javah + File.separator +
-        "lib" + File.separator + "jaxp.properties";
-
-        String factoryClassName = null ;
+        // The VM ran out of memory or there was some other serious problem. Re-throw.
+        catch (VirtualMachineError vme) {
+            throw vme;
+        }
+        // ThreadDeath should always be re-thrown
+        catch (ThreadDeath td) {
+            throw td;
+        }
+        catch (Throwable t) {
+            if( debug ) {
+                debugPrintln("failed to look up system property '"+propertyName+"'" );
+                t.printStackTrace();
+            }
+        }
 
         // try to read from $java.home/lib/jaxp.properties
         try {
-            if(firstTime){
-                synchronized(cacheProps){
-                    if(firstTime){
-                        File f=new File( configFile );
-                        firstTime = false;
-                        if (f.exists()) {
-                            if (debug) debugPrintln("Read properties file " + f);
-                            cacheProps.load(new FileInputStream(f));
-                        }
-                    }
-                }
-            }
-            factoryClassName = cacheProps.getProperty(propertyName);
+            String factoryClassName = CacheHolder.cacheProps.getProperty(propertyName);
             if (debug) debugPrintln("found " + factoryClassName + " in $java.home/jaxp.properties");
 
             if (factoryClassName != null) {
-                xpf = createInstance(factoryClassName);
-                if(xpf != null){
-                    return xpf;
+                sf = createInstance(factoryClassName);
+                if(sf != null){
+                    return sf;
                 }
             }
         } catch (Exception ex) {
@@ -203,8 +220,9 @@ final class XPathFactoryFinder {
         for (URL resource : createServiceFileIterator()) {
             if (debug) debugPrintln("looking into " + resource);
             try {
-                xpf = loadFromServicesFile(uri, resource.toExternalForm(), resource.openStream());
-                if(xpf!=null)    return xpf;
+                sf = loadFromServicesFile(schemaLanguage,resource.toExternalForm(),
+                        resource.openStream());
+                if(sf!=null)    return sf;
             } catch(IOException e) {
                 if( debug ) {
                     debugPrintln("failed to read "+resource);
@@ -213,10 +231,14 @@ final class XPathFactoryFinder {
             }
         }
 
-        // platform default
-        if(uri.equals(XPathFactory.DEFAULT_OBJECT_MODEL_URI)) {
-            if (debug) debugPrintln("attempting to use the platform default W3C DOM XPath lib");
-            return createInstance("org.apache.xpath.jaxp.XPathFactoryImpl");
+        // platform defaults
+        if (schemaLanguage.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI) || schemaLanguage.equals(W3C_XML_SCHEMA10_NS_URI)) {
+            if (debug) debugPrintln("attempting to use the platform default XML Schema 1.0 validator");
+            return createInstance("org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        }
+        else if (schemaLanguage.equals(W3C_XML_SCHEMA11_NS_URI)) {
+            if (debug) debugPrintln("attempting to use the platform default XML Schema 1.1 validator");
+            return createInstance("org.apache.xerces.jaxp.validation.XMLSchema11Factory");
         }
 
         if (debug) debugPrintln("all things were tried, but none was found. bailing out.");
@@ -232,7 +254,7 @@ final class XPathFactoryFinder {
      * @return null
      *      if it fails. Error messages will be printed by this method.
      */
-    XPathFactory createInstance( String className ) {
+    SchemaFactory createInstance( String className ) {
         try {
             if (debug) debugPrintln("instantiating "+className);
             Class clazz;
@@ -243,8 +265,8 @@ final class XPathFactoryFinder {
             if(debug)       debugPrintln("loaded it from "+which(clazz));
             Object o = clazz.newInstance();
 
-            if( o instanceof XPathFactory )
-                return (XPathFactory)o;
+            if( o instanceof SchemaFactory )
+                return (SchemaFactory)o;
 
             if (debug) debugPrintln(className+" is not assignable to "+SERVICE_CLASS.getName());
         }
@@ -257,19 +279,60 @@ final class XPathFactoryFinder {
             throw td;
         }
         catch (Throwable t) {
-            if (debug) {
-                debugPrintln("failed to instantiate "+className);
-                t.printStackTrace();
-            }
+            debugPrintln("failed to instantiate "+className);
+            if(debug)   t.printStackTrace();
         }
         return null;
     }
 
-    /** Searches for a XPathFactory for a given uri in a META-INF/services file. */
-    private XPathFactory loadFromServicesFile(String uri, String resourceName, InputStream in) {
+    /**
+     * Returns an {@link Iterator} that enumerates all
+     * the META-INF/services files that we care.
+     */
+    private Iterable<URL> createServiceFileIterator() {
+        if (classLoader == null) {
+            ClassLoader classLoader = SchemaFactoryFinder.class.getClassLoader();
+            return Collections.singleton(classLoader.getResource(SERVICE_ID));
+        } else {
+            try {
+                Enumeration<URL> e = classLoader.getResources(SERVICE_ID);
+                if (debug && !e.hasMoreElements()) {
+                    debugPrintln("no "+SERVICE_ID+" file was found");
+                }
 
-        if (debug) debugPrintln("Reading " + resourceName );
+                // wrap it into an Iterator.
+                return Collections.list(e);
+            } catch (IOException e) {
+                if (debug) {
+                    debugPrintln("failed to enumerate resources "+SERVICE_ID);
+                    e.printStackTrace();
+                }
+                return Collections.emptySet();
+            }
+        }
+    }
 
+    /** Searches for a SchemaFactory for a given schema language in a META-INF/services file. */
+    private SchemaFactory loadFromServicesFile(String schemaLanguage, String resourceName, InputStream in) {
+
+        if (debug) debugPrintln("Reading "+resourceName );
+
+        // Read the service provider name in UTF-8 as specified in
+        // the jar spec.  Unfortunately this fails in Microsoft
+        // VJ++, which does not implement the UTF-8
+        // encoding. Theoretically, we should simply let it fail in
+        // that case, since the JVM is obviously broken if it
+        // doesn't support such a basic standard.  But since there
+        // are still some users attempting to use VJ++ for
+        // development, we have dropped in a fallback which makes a
+        // second attempt using the platform's default encoding. In
+        // VJ++ this is apparently ASCII, which is a subset of
+        // UTF-8... and since the strings we'll be reading here are
+        // also primarily limited to the 7-bit ASCII range (at
+        // least, in English versions), this should work well
+        // enough to keep us on the air until we're ready to
+        // officially decommit from VJ++. [Edited comment from
+        // jkesselm]
         BufferedReader rd;
         try {
             rd = new BufferedReader(new InputStreamReader(in, "UTF-8"), DEFAULT_LINE_LENGTH);
@@ -277,8 +340,8 @@ final class XPathFactoryFinder {
             rd = new BufferedReader(new InputStreamReader(in), DEFAULT_LINE_LENGTH);
         }
 
-        String factoryClassName;
-        XPathFactory resultFactory = null;
+        String factoryClassName = null;
+        SchemaFactory resultFactory = null;
         // See spec for provider-configuration files: http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Provider%20Configuration%20File
         while (true) {
             try {
@@ -303,14 +366,14 @@ final class XPathFactoryFinder {
                 }
 
                 try {
-                    // Found the right XPathFactory if its isObjectModelSupported(String uri) method returns true.
-                    XPathFactory foundFactory = createInstance(factoryClassName);
-                    if (foundFactory.isObjectModelSupported(uri)) {
+                    // Found the right SchemaFactory if its isSchemaLanguageSupported(schemaLanguage) method returns true.
+                    SchemaFactory foundFactory = (SchemaFactory) createInstance(factoryClassName);
+                    if (foundFactory.isSchemaLanguageSupported(schemaLanguage)) {
                         resultFactory = foundFactory;
                         break;
                     }
-                } catch (Exception ignored) {
                 }
+                catch (Exception ignored) {}
             }
             else {
                 break;
@@ -322,33 +385,7 @@ final class XPathFactoryFinder {
         return resultFactory;
     }
 
-    /**
-     * Returns an {@link Iterator} that enumerates all
-     * the META-INF/services files that we care.
-     */
-    private Iterable<URL> createServiceFileIterator() {
-        if (classLoader == null) {
-            URL resource = XPathFactoryFinder.class.getClassLoader().getResource(SERVICE_ID);
-            return Collections.singleton(resource);
-        } else {
-            try {
-                Enumeration<URL> e = classLoader.getResources(SERVICE_ID);
-                if (debug && !e.hasMoreElements()) {
-                    debugPrintln("no "+SERVICE_ID+" file was found");
-                }
-
-                return Collections.list(e);
-            } catch (IOException e) {
-                if (debug) {
-                    debugPrintln("failed to enumerate resources "+SERVICE_ID);
-                    e.printStackTrace();
-                }
-                return Collections.emptySet();
-            }
-        }
-    }
-
-    private static final Class SERVICE_CLASS = XPathFactory.class;
+    private static final Class SERVICE_CLASS = SchemaFactory.class;
     private static final String SERVICE_ID = "META-INF/services/" + SERVICE_CLASS.getName();
 
     private static String which( Class clazz ) {
@@ -365,7 +402,8 @@ final class XPathFactoryFinder {
      */
     private static String which(String classname, ClassLoader loader) {
         String classnameAsResource = classname.replace('.', '/') + ".class";
-        if (loader==null) loader = ClassLoader.getSystemClassLoader();
+
+        if (loader == null)  loader = ClassLoader.getSystemClassLoader();
 
         URL it = loader.getResource(classnameAsResource);
         return it != null ? it.toString() : null;

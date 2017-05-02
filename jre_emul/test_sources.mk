@@ -146,6 +146,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_TestResource_fr_FR.java \
     tests/support/Support_TestResource_fr_FR_VAR.java \
     tests/support/Support_TimeZone.java \
+    tests/support/Support_Xml.java \
     tests/support/Support_UnmodifiableCollectionTest.java \
     tests/support/Support_UnmodifiableMapTest.java \
     tests/support/ThrowingReader.java \
