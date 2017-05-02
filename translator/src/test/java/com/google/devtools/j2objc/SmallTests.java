@@ -58,6 +58,7 @@ import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdderTest;
 import com.google.devtools.j2objc.translate.MetadataWriterTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
+import com.google.devtools.j2objc.translate.NumberMethodRewriterTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
 import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
@@ -134,6 +135,7 @@ public class SmallTests {
     MethodReferenceTest.class,
     NameTableTest.class,
     NilCheckResolverTest.class,
+    NumberMethodRewriterTest.class,
     ObjectiveCHeaderGeneratorTest.class,
     ObjectiveCImplementationGeneratorTest.class,
     ObjectiveCSegmentedHeaderGeneratorTest.class,

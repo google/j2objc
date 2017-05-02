@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.translate.LambdaRewriter;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdder;
 import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
+import com.google.devtools.j2objc.translate.NumberMethodRewriter;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
@@ -144,6 +145,10 @@ public class TranslationProcessor extends FileProcessor {
     // Update code that has GWT references.
     new GwtConverter(unit).run();
     ticker.tick("GwtConverter");
+
+    // Add default equals/hashCode methods to Number subclasses, if necessary.
+    new NumberMethodRewriter(unit).run();
+    ticker.tick("NumberMethodRewriter");
 
     // Before: Rewriter - Pruning unreachable statements must happen before
     //   rewriting labeled break statements.
