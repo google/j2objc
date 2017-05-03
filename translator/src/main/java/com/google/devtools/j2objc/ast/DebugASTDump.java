@@ -227,7 +227,7 @@ public class DebugASTDump extends TreeVisitor {
 
   @Override
   public boolean visit(TagElement node) {
-    String tagName = node.getTagName();
+    String tagName = node.getTagKind().toString();
     sb.print(' ');
     sb.print(tagName != null ? tagName : "null");
     return true;

@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.TagElement;
+import com.google.devtools.j2objc.ast.TagElement.TagKind;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -95,7 +96,9 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
     JavadocConverter converter = new JavadocConverter(element, docComment, source, docTrees,
         path.getCompilationUnit(), reportWarnings);
     Javadoc result = new Javadoc();
-    TagElement newTag = new TagElement();  // First tag has no name.
+
+    // First tag is the description.
+    TagElement newTag = new TagElement().setTagKind(TagElement.TagKind.DESCRIPTION);
     converter.scan(docComment.getFirstSentence(), newTag);
     converter.scan(docComment.getBody(), newTag);
     if (!newTag.getFragments().isEmpty()) {
@@ -118,7 +121,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitAuthor(AuthorTree node, TagElement tag) {
-    setTagValues(tag, TagElement.TAG_AUTHOR, node, node.getName());
+    setTagValues(tag, TagElement.TagKind.AUTHOR, node, node.getName());
     return null;
   }
 
@@ -130,7 +133,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitDeprecated(DeprecatedTree node, TagElement tag) {
-    setTagValues(tag, TagElement.TAG_DEPRECATED, node, node.getBody());
+    setTagValues(tag, TagElement.TagKind.DEPRECATED, node, node.getBody());
     return null;
   }
 
@@ -173,7 +176,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitLink(LinkTree node, TagElement tag) {
-    TagElement newTag = new TagElement().setTagName("@" + node.getTagName());
+    TagElement newTag = new TagElement().setTagKind(TagKind.parse("@" + node.getTagName()));
     setPos(node, newTag);
     if (node.getLabel().isEmpty()) {
       scan(node.getReference(), newTag);
@@ -187,8 +190,8 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
   @Override
   public Void visitLiteral(LiteralTree node, TagElement tag) {
     TagElement newTag = new TagElement();
-    String tagName = node.getKind() == DocTree.Kind.CODE ? "@code" : "@literal";
-    setTagValues(newTag, tagName, node, node.getBody());
+    TagKind tagKind = node.getKind() == DocTree.Kind.CODE ? TagKind.CODE : TagKind.LITERAL;
+    setTagValues(newTag, tagKind, node, node.getBody());
     tag.addFragment(newTag);
     return null;
   }
@@ -201,7 +204,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
     }
     List<? extends VariableElement> params = element instanceof ExecutableElement
         ? ((ExecutableElement) element).getParameters() : Collections.emptyList();
-        tag.setTagName(TagElement.TAG_PARAM);
+        tag.setTagKind(TagElement.TagKind.PARAM);
     String name = identifier.toString();
     VariableElement param = null;
     for (VariableElement p : params) {
@@ -249,7 +252,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitReturn(ReturnTree node, TagElement tag) {
-    tag.setTagName(TagElement.TAG_RETURN);
+    tag.setTagKind(TagElement.TagKind.RETURN);
     setPos(node, tag);
     scan(node.getDescription(), tag);
     return null;
@@ -257,7 +260,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitSee(SeeTree node, TagElement tag) {
-    tag.setTagName(TagElement.TAG_SEE);
+    tag.setTagKind(TagElement.TagKind.SEE);
     setPos(node, tag);
     scan(node.getReference(), tag);
     return null;
@@ -265,7 +268,7 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitSince(SinceTree node, TagElement tag) {
-    setTagValues(tag, TagElement.TAG_SINCE, node, node.getBody());
+    setTagValues(tag, TagElement.TagKind.SINCE, node, node.getBody());
     return null;
   }
 
@@ -299,31 +302,31 @@ class JavadocConverter extends DocTreeScanner<Void, TagElement> {
 
   @Override
   public Void visitThrows(ThrowsTree node, TagElement tag) {
-    setTagValues(tag, TagElement.TAG_THROWS, node, node.getExceptionName());
+    setTagValues(tag, TagElement.TagKind.THROWS, node, node.getExceptionName());
     scan(node.getDescription(), tag);
     return null;
   }
 
   @Override
   public Void visitVersion(VersionTree node, TagElement tag) {
-    setTagValues(tag, TagElement.TAG_VERSION, node, node.getBody());
+    setTagValues(tag, TagElement.TagKind.VERSION, node, node.getBody());
     return null;
   }
 
   /**
    * Updates a tag element with values from the javadoc node.
    */
-  private TagElement setTagValues(TagElement tag, String tagName, DocTree javadocNode,
+  private TagElement setTagValues(TagElement tag, TagKind tagKind, DocTree javadocNode,
       DocTree body) {
-    tag.setTagName(tagName);
+    tag.setTagKind(tagKind);
     setPos(javadocNode, tag);
     scan(body, tag);
     return tag;
   }
 
-  private TagElement setTagValues(TagElement tag, String tagName, DocTree javadocNode,
+  private TagElement setTagValues(TagElement tag, TagKind tagKind, DocTree javadocNode,
       List<? extends DocTree> body) {
-    tag.setTagName(tagName);
+    tag.setTagKind(tagKind);
     setPos(javadocNode, tag);
     scan(body, tag);
     return tag;

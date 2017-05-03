@@ -235,4 +235,14 @@ public class JavadocGeneratorTest extends GenerationTest {
         "- seealso: "
         + "<a href=\"http://developers.facebook.com/docs/reference/javascript/FB.init/\">");
   }
+
+  // Verify that unknown tags are not printed.
+  public void testUnknownTag() throws IOException {
+    String translation = translateSourceFile(
+        "/** Class javadoc for Test.\n"
+        + " * @jls 11.2 Some JLS reference.\n"
+        + " */ class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertNotInTranslation(translation, "11.2 Some JLS reference.");
+  }
 }

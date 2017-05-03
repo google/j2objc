@@ -19,17 +19,16 @@ import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TagElement;
+import com.google.devtools.j2objc.ast.TagElement.TagKind;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
 import java.text.BreakIterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 
@@ -85,8 +84,7 @@ public class JavadocGenerator extends AbstractSourceGenerator {
 
       List<TagElement> tags = javadoc.getTags();
       for (TagElement tag : tags) {
-        if (tag.getTagName() == null) {
-          // Description section.
+        if (tag.getTagKind() == TagKind.DESCRIPTION) {
           String description = printTagFragments(tag.getFragments());
 
           // Extract first sentence from description.
@@ -126,61 +124,67 @@ public class JavadocGenerator extends AbstractSourceGenerator {
   }
 
   private String printTag(TagElement tag) {
-    String tagName = tag.getTagName();
-    if (tagName != null) {
-      // Remove @param tags for parameterized types, such as "@param <T> the type".
-      // TODO(tball): update when (if) Xcode supports Objective C type parameter documenting.
-      if (tagName.equals(TagElement.TAG_PARAM) && hasTypeParam(tag.getFragments())) {
-        return "";
-      }
+    TagKind kind = tag.getTagKind();
 
-      // Xcode 7 compatible tags.
-      if (tagName.equals(TagElement.TAG_AUTHOR)
-          || tagName.equals(TagElement.TAG_EXCEPTION)
-          || tagName.equals(TagElement.TAG_PARAM)
-          || tagName.equals(TagElement.TAG_RETURN)
-          || tagName.equals(TagElement.TAG_SINCE)
-          || tagName.equals(TagElement.TAG_THROWS)
-          || tagName.equals(TagElement.TAG_VERSION)) {
-        // Skip
-        String comment = printTagFragments(tag.getFragments()).trim();
-        return comment.isEmpty() ? "" : String.format("%s %s", tagName, comment);
-      }
-
-      if (tagName.equals(TagElement.TAG_DEPRECATED)) {
-        // Deprecated annotation translated instead.
-        return "";
-      }
-
-      if (tagName.equals(TagElement.TAG_SEE)) {
-        String comment = printTagFragments(tag.getFragments()).trim();
-        return comment.isEmpty() ? "" : "- seealso: " + comment;
-      }
-
-      if (tagName.equals(TagElement.TAG_CODE)) {
-        String text = printTagFragments(tag.getFragments());
-        if (spanningPreTag) {
-          return text;
-        }
-        return String.format("<code>%s</code>", text.trim());
-      }
-
-      if (tagName.equals(TagElement.TAG_LINK)) {
-        return formatLinkTag(tag, "<code>%s</code>");
-      }
-
-      if (tagName.equals(TagElement.TAG_LINKPLAIN)) {
-        return formatLinkTag(tag, "%s");
-      }
-
-      if (tagName.equals(TagElement.TAG_LITERAL)) {
-        String text = printTagFragments(tag.getFragments()).trim();
-        if (spanningPreTag) {
-          return text;
-        }
-        return escapeHtmlText(text);
-      }
+    // Remove @param tags for parameterized types, such as "@param <T> the type".
+    // TODO(tball): update when (if) Xcode supports Objective C type parameter documenting.
+    if (kind == TagKind.PARAM && hasTypeParam(tag.getFragments())) {
+      return "";
     }
+
+    // Xcode 7 compatible tags.
+    if (kind == TagKind.AUTHOR
+        || kind == TagKind.EXCEPTION
+        || kind == TagKind.PARAM
+        || kind == TagKind.RETURN
+        || kind == TagKind.SINCE
+        || kind == TagKind.THROWS
+        || kind == TagKind.VERSION) {
+      // Skip
+      String comment = printTagFragments(tag.getFragments()).trim();
+      return comment.isEmpty() ? "" : String.format("%s %s", kind, comment);
+    }
+
+    if (kind == TagKind.DEPRECATED) {
+      // Deprecated annotation translated instead.
+      return "";
+    }
+
+    if (kind == TagKind.SEE) {
+      String comment = printTagFragments(tag.getFragments()).trim();
+      return comment.isEmpty() ? "" : "- seealso: " + comment;
+    }
+
+    if (kind == TagKind.CODE) {
+      String text = printTagFragments(tag.getFragments());
+      if (spanningPreTag) {
+        return text;
+      }
+      return String.format("<code>%s</code>", text.trim());
+    }
+
+    if (kind == TagKind.LINK) {
+      return formatLinkTag(tag, "<code>%s</code>");
+    }
+
+    if (kind == TagKind.LINKPLAIN) {
+      return formatLinkTag(tag, "%s");
+    }
+
+    if (kind == TagKind.LITERAL) {
+      String text = printTagFragments(tag.getFragments()).trim();
+      if (spanningPreTag) {
+        return text;
+      }
+      return escapeHtmlText(text);
+    }
+
+    if (kind == TagKind.UNKNOWN) {
+      // Skip unknown tags. If --doc-comment-warnings was specified, a warning was
+      // already created.
+      return "";
+    }
+
     return printTagFragments(tag.getFragments());
   }
 

@@ -99,6 +99,7 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.TagElement;
+import com.google.devtools.j2objc.ast.TagElement.TagKind;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.ThrowStatement;
@@ -1188,7 +1189,7 @@ public class TreeConverter {
 
   private static TreeNode convertTagElement(org.eclipse.jdt.core.dom.TagElement node) {
     TagElement newNode = new TagElement()
-        .setTagName(node.getTagName());
+        .setTagKind(TagKind.parse(node.getTagName()));
     for (Object fragment : node.fragments()) {
       newNode.addFragment(TreeConverter.convert(fragment));
     }

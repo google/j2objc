@@ -21,28 +21,59 @@ import java.util.List;
  */
 public class TagElement extends TreeNode {
 
-  public static final String TAG_AUTHOR = "@author";
-  public static final String TAG_CODE = "@code";
-  public static final String TAG_DEPRECATED = "@deprecated";
-  public static final String TAG_EXCEPTION = "@exception";
-  public static final String TAG_LINK = "@link";
-  public static final String TAG_LINKPLAIN = "@linkplain";
-  public static final String TAG_LITERAL = "@literal";
-  public static final String TAG_PARAM = "@param";
-  public static final String TAG_RETURN = "@return";
-  public static final String TAG_SEE = "@see";
-  public static final String TAG_SINCE = "@since";
-  public static final String TAG_THROWS = "@throws";
-  public static final String TAG_VERSION = "@version";
+  /**
+   * The kinds of TagElements.
+   */
+  public enum TagKind {
+    AUTHOR("@author"),
+    CODE("@code"),
+    DEPRECATED("@deprecated"),
+    EXCEPTION("@exception"),
+    LINK("@link"),
+    LINKPLAIN("@linkplain"),
+    LITERAL("@literal"),
+    PARAM("@param"),
+    RETURN("@return"),
+    SEE("@see"),
+    SINCE("@since"),
+    THROWS("@throw"),
+    VERSION("@version"),
 
-  private String tagName;
+    // Tag elements that don't have a tag name.
+    DESCRIPTION(""),
+    UNKNOWN("");
+
+    private final String tagName;
+
+    TagKind(String name) {
+      tagName = name;
+    }
+
+    public static TagKind parse(String tagName) {
+      for (TagKind tk : values()) {
+        if (tagName.equals(tk.tagName)) {
+          return tk;
+        }
+      }
+      return UNKNOWN;
+    }
+
+    @Override
+    public String toString() {
+      return tagName;
+    }
+  }
+
+  private TagKind tagKind;
   private ChildList<TreeNode> fragments = ChildList.create(TreeNode.class, this);
 
-  public TagElement() {}
+  public TagElement() {
+    this.tagKind = TagKind.UNKNOWN;
+  }
 
   public TagElement(TagElement other) {
     super(other);
-    tagName = other.getTagName();
+    this.tagKind = other.getTagKind();
     fragments.copyFrom(other.getFragments());
   }
 
@@ -51,12 +82,12 @@ public class TagElement extends TreeNode {
     return Kind.TAG_ELEMENT;
   }
 
-  public String getTagName() {
-    return tagName;
+  public TagKind getTagKind() {
+    return tagKind;
   }
 
-  public TagElement setTagName(String tagName) {
-    this.tagName = tagName;
+  public TagElement setTagKind(TagKind tagKind) {
+    this.tagKind = tagKind;
     return this;
   }
 
