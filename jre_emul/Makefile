@@ -24,12 +24,7 @@ include jre_sources.mk
 
 MAIN_OBJ = J2ObjCMain.o
 
-JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
-
-ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES)
 JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
-
-ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
 
 MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 
@@ -41,9 +36,8 @@ GEN_OBJC_DIR = $(TRANSLATED_SOURCE_DIR)
 TRANSLATE_NAME = jre_emul
 TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
-TRANSLATE_ARGS = -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
+TRANSLATE_ARGS = -sourcepath $(JRE_SRC) \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --doc-comments -Xtranslate-bootclasspath
-TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
 include ../make/translate.mk
 
 FAT_LIB_SOURCE_DIRS = $(NATIVE_SOURCE_DIRS) $(GEN_OBJC_DIR)
@@ -164,12 +158,15 @@ test: libs_dist $(DIST_DIR)/j2objcc
 
 clean:
 	@rm -rf $(BUILD_DIR) $(GEN_OBJC_DIR)
-	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(DIST_LIBS) $(MAIN_LIB_DIST)
+	@rm -f $(DIST_DIR)/j2objcc $(DIST_LIBS) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 	@rm -f $(JRE_EMUL_LICENSES)
 	@rm -rf $(STATIC_FRAMEWORK_DIR)
+	@$(MAKE) -f java.mk clean
 
-dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
+dist: jre_emul_jars_dist libs_dist $(DIST_DIR)/j2objcc licenses
+
+jars_dist: jre_emul_jars_dist
 
 libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
 
@@ -179,50 +176,6 @@ $(ARCH_LIB_DIR)/%.a: $(ARCH_BUILD_DIR)/%.a
 
 $(MAIN_LIB_DIST): $(MAIN_LIB) | $(DIST_LIB_MACOSX_DIR)
 	@install -m 0644 $< $@
-
-java: emul_jar_dist java_sources_manifest
-
-emul_jar_dist: $(EMULATION_JAR_DIST)
-	@:
-
-emul_src_jar_dist: $(EMULATION_SRC_JAR_DIST)
-	@:
-
-$(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
-	@install -m 0644 $< $@
-
-$(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
-	@install -m 0644 $< $@
-
-# The following test returns true on Linux or with GNU tools installed,
-# otherwise false on macOS which uses the BSD version.
-ifeq ($(shell mktemp --version >/dev/null 2>&1 && echo GNU || echo BSD), GNU)
-MKTEMP_CMD = mktemp -d --tmpdir j2objc-jre_emul.XXXXXX
-else
-MKTEMP_CMD = mktemp -d -t j2objc-jre_emul
-endif
-
-$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "building jre_emul.jar"
-	@set -e; stage_dir=`${MKTEMP_CMD}`; \
-	  ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
-	  -classpath $(ANNOTATIONS_JAR) \
-	  -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
-	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
-	rm -rf $$stage_dir
-
-$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "building jre_emul-src.jar"
-	@../scripts/gen_java_source_jar.py -sourcepath $(JRE_SRC) \
-	  -o $(EMULATION_SRC_JAR) $^
-
-$(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "building $$(basename $@)"
-	@if [ -e $@ ]; then rm $@; fi
-	@for i in $^; do echo $(CURDIR)/$$i >> $@; done
-
-java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
-	@:
 
 define objc_sources_manifest_target
 $(BUILD_DIR)/$(1).mf: $(2)
@@ -259,9 +212,6 @@ OBJC_SOURCES_MANIFESTS := \
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
 all_objc_sources_manifests: $(OBJC_SOURCES_MANIFESTS)
-
-find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
-	$(DIST_DIR)/cycle_finder -source 1.8 -w cycle_whitelist.txt -s $(JAVA_SOURCES_MANIFEST)
 
 licenses: $(JRE_EMUL_LICENSES)
 	@:

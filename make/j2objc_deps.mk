@@ -32,24 +32,24 @@ annotations_dist:
 java_deps_dist:
 	@$(MAKE) -C $(J2OBJC_ROOT)/java_deps dist
 
-jre_emul_jar_dist: annotations_dist
-	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul emul_jar_dist
+jre_emul_jars_dist: annotations_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul -f java.mk jars_dist
 
 translator: annotations_dist java_deps_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/translator dist
 
-translator_dist: translator jre_emul_jar_dist
+translator_dist: translator jre_emul_jars_dist
 
-jre_emul_dist: translator_dist
+jre_emul_dist: translator_dist jre_emul_jars_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul dist
 
 jre_emul_java_manifest:
-	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul java_sources_manifest
+	@$(MAKE) -C $(J2OBJC_ROOT)/jre_emul -f java.mk java_sources_manifest
 
 junit_dist: translator_dist jre_emul_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/junit dist
 
-junit_java: java_deps_dist jre_emul_jar_dist
+junit_java: java_deps_dist jre_emul_jars_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/junit java
 
 junit_manifest:
@@ -64,7 +64,7 @@ javax_inject_dist: translator_dist jre_emul_dist java_deps_dist
 guava_dist: translator_dist jre_emul_dist jsr305_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/guava dist
 
-guava_java: java_deps_dist jre_emul_jar_dist
+guava_java: java_deps_dist jre_emul_jars_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/guava java
 
 cycle_finder_dist: annotations_dist java_deps_dist translator_dist
@@ -93,7 +93,7 @@ protobuf_runtime_dist: jre_emul_dist protobuf_compiler_dist
 xalan_dist: translator_dist jre_emul_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/xalan dist
 
-xalan_java: java_deps_dist jre_emul_jar_dist
+xalan_java: java_deps_dist jre_emul_jars_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/xalan java
 
 
@@ -101,7 +101,7 @@ else
 
 annotations_dist:
 java_deps_dist:
-jre_emul_jar_dist:
+jre_emul_jars_dist:
 translator:
 translator_dist:
 jre_emul_dist:

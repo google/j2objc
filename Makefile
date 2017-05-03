@@ -84,7 +84,7 @@ test_jre_emul: jre_emul_dist junit_dist
 	@cd jre_emul && $(MAKE) -f tests.mk test
 
 test_jre_cycles: cycle_finder_dist
-	@cd jre_emul && $(MAKE) find_cycles
+	@$(MAKE) -C jre_emul -f java.mk find_cycles
 
 test_junit_cycles: cycle_finder_dist
 	@cd junit && $(MAKE) find_cycles

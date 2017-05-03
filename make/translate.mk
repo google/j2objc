@@ -21,9 +21,6 @@
 #   TRANSLATE_OBJCPP
 #   TRANSLATE_DEPENDENCIES
 #
-# This variable is intended for use only by the jre_emul library.
-#   TRANSLATE_USE_SYSTEM_BOOT_PATH
-#
 # This variable is intended for global translation flags, and so should not
 # be set in Makefiles. Flags are separated by semi-colons, to avoid complex
 # argument escaping in scripts.
