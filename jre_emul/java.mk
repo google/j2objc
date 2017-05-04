@@ -55,7 +55,7 @@ else
 MKTEMP_CMD = mktemp -d -t j2objc-jre_emul
 endif
 
-$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES)
+$(EMULATION_JAR): $(ALL_JAVA_SOURCES)
 	@mkdir -p $(@D)
 	@echo "building jre_emul.jar"
 	@set -e; stage_dir=`${MKTEMP_CMD}`; \
@@ -65,13 +65,13 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES)
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
 
-$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES)
+$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES)
 	@mkdir -p $(@D)
 	@echo "building jre_emul-src.jar"
 	@../scripts/gen_java_source_jar.py -sourcepath $(JRE_SRC) \
 	  -o $(EMULATION_SRC_JAR) $^
 
-$(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(NO_TRANSLATE_JAVA_SOURCES)
+$(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES)
 	@mkdir -p $(@D)
 	@echo "building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
