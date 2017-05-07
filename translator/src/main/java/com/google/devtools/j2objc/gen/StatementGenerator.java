@@ -981,7 +981,7 @@ public class StatementGenerator extends UnitTreeVisitor {
   }
 
   private void acceptMacroArgument(Expression expr) {
-    if (needsBracketsForMacro(expr)) {
+    if (needsParenthesesForMacro(expr)) {
       buffer.append('(');
       expr.accept(this);
       buffer.append(')');
@@ -990,7 +990,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     }
   }
 
-  private boolean needsBracketsForMacro(Expression expr) {
+  private boolean needsParenthesesForMacro(Expression expr) {
     boolean[] hasComma = { false };
     expr.accept(new TreeVisitor() {
       @Override
@@ -1000,11 +1000,11 @@ public class StatementGenerator extends UnitTreeVisitor {
       }
       @Override
       public boolean visit(CommaExpression node) {
-        return false;  // Adds brackets around children.
+        return false;  // Adds parentheses around children.
       }
       @Override
       public boolean visit(FunctionInvocation node) {
-        return false;  // Adds brackets around children.
+        return false;  // Adds parentheses around children.
       }
       @Override
       public boolean visit(StringLiteral node) {
