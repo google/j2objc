@@ -1015,6 +1015,11 @@ public class TreeConverter {
       newNode.addAnnotation((Annotation) convert(pkgAnnotation));
     }
     if (unit.sourcefile.toUri().getPath().endsWith("package-info.java")) {
+      if (node == null) {
+        // Java 8 javac bug, fixed in Java 9. Doc-comments in package-info.java
+        // sources are keyed to their compilation unit, not their package node.
+        node = unit;
+      }
       newNode.setJavadoc((Javadoc) getAssociatedJavaDoc(node, pkg));
     }
     return (PackageDeclaration) newNode.setName(convertName((PackageSymbol) pkg, getPosition(node)))
