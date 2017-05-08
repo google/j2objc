@@ -102,7 +102,8 @@ JRE_EMUL_LICENSES = \
   $(DIST_LICENSE_DIR)/android_license.txt \
   $(DIST_LICENSE_DIR)/apache_harmony_license.txt \
   $(DIST_LICENSE_DIR)/apple_license.txt \
-  $(DIST_LICENSE_DIR)/icu_license.txt
+  $(DIST_LICENSE_DIR)/icu_license.txt \
+  $(DIST_LICENSE_DIR)/openjdk_license.txt
 
 fat_lib_dependencies: translate
 
@@ -227,6 +228,10 @@ $(DIST_LICENSE_DIR)/apple_license.txt: apple_apsl/LICENSE
 	@install -m 0644 $< $@
 
 $(DIST_LICENSE_DIR)/icu_license.txt: icu4c/LICENSE
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
+$(DIST_LICENSE_DIR)/openjdk_license.txt: openjdk/LICENSE
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 
