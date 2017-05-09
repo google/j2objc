@@ -17,6 +17,7 @@
 
 package java.util.logging;
 
+import com.google.j2objc.util.logging.IOSLogHandler;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

@@ -12,10 +12,13 @@
  * limitations under the License.
  */
 
-package java.util.logging;
+package com.google.j2objc.util.logging;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /*-[
 // TODO(tball): update ASL use to iOS 10's os_log and remove clang pragmas.
@@ -55,7 +58,7 @@ import java.io.StringWriter;
  *
  * @author Tom Ball
  */
-class IOSLogHandler extends Handler {
+public class IOSLogHandler extends Handler {
 
   static class IOSLogFormatter extends Formatter {
 
@@ -68,8 +71,9 @@ class IOSLogHandler extends Handler {
     }
   }
 
-  static final String IOS_LOG_MANAGER_DEFAULTS =
-      ".level=INFO\nhandlers=java.util.logging.IOSLogHandler\n";
+  // TODO(tball): Replace this with a system property that defines a java.util.logging.config.class.
+  public static final String IOS_LOG_MANAGER_DEFAULTS =
+      ".level=INFO\nhandlers=com.google.j2objc.util.logging.IOSLogHandler\n";
 
   private static final String ASLCLIENT = "IOSLogHandler-aslclient";
 
@@ -128,12 +132,13 @@ class IOSLogHandler extends Handler {
 
     NSThread *currentThread = [NSThread currentThread];
     NSMutableDictionary *threadData = [currentThread threadDictionary];
-    ASLClientHolder *logClient = [threadData objectForKey:JavaUtilLoggingIOSLogHandler_ASLCLIENT];
+    ASLClientHolder *logClient =
+        [threadData objectForKey:ComGoogleJ2objcUtilLoggingIOSLogHandler_ASLCLIENT];
     if (!logClient) {
       aslclient aslClient = asl_open([[currentThread name] UTF8String],
           [[[NSBundle mainBundle] bundleIdentifier] UTF8String], ASL_OPT_NO_DELAY | ASL_OPT_STDERR);
       logClient = AUTORELEASE([[ASLClientHolder alloc] initWithClient:aslClient]);
-      [threadData setObject:logClient forKey:JavaUtilLoggingIOSLogHandler_ASLCLIENT];
+      [threadData setObject:logClient forKey:ComGoogleJ2objcUtilLoggingIOSLogHandler_ASLCLIENT];
     }
     asl_log(logClient->_client, NULL, aslLevel, "%s", [logMessage UTF8String]);
   ]-*/;
