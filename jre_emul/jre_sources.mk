@@ -549,6 +549,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/Grego.java \
   java/util/JumboEnumSet.java \
   java/util/RegularEnumSet.java \
+  java/util/logging/Logging.java \
   java/util/logging/LoggingProxyImpl.java \
   java/util/stream/AbstractPipeline.java \
   java/util/stream/AbstractShortCircuitTask.java \
@@ -797,6 +798,7 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/Timer.java \
   java/util/TimerTask.java \
   java/util/logging/ConsoleHandler.java \
+  java/util/logging/FileHandler.java \
   java/util/logging/MemoryHandler.java \
   java/util/logging/SimpleFormatter.java \
   java/util/logging/StreamHandler.java \

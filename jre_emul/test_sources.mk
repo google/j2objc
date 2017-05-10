@@ -91,8 +91,6 @@ SUPPORT_SOURCES = \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject1/MockHomonymySubject.java \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.java \
     org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.java \
-    org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
-    org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
@@ -386,6 +384,16 @@ TEST_SOURCES := \
     libcore/java/util/TimeZoneTest.java \
     libcore/java/util/TreeMapTest.java \
     libcore/java/util/TreeSetTest.java \
+    libcore/java/util/logging/OldErrorManagerTest.java \
+    libcore/java/util/logging/OldFileHandlerTest.java \
+    libcore/java/util/logging/OldFormatterTest.java \
+    libcore/java/util/logging/OldLevelTest.java \
+    libcore/java/util/logging/OldLoggerTest.java \
+    libcore/java/util/logging/OldLogManagerTest.java \
+    libcore/java/util/logging/OldLogRecordTest.java \
+    libcore/java/util/logging/OldMemoryHandlerTest.java \
+    libcore/java/util/logging/OldSimpleFormatterTest.java \
+    libcore/java/util/logging/OldXMLFormatterTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
     libcore/java/util/zip/DeflaterOutputStreamTest.java \
     libcore/java/util/zip/DeflaterTest.java \
@@ -432,19 +440,6 @@ TEST_SOURCES := \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/SimpleBeanInfoTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/ErrorManagerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/FilterTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/FormatterTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/HandlerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/LevelTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/LogRecordTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/LoggerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/MemoryHandlerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/SimpleFormatterTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/StreamHandlerTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/XMLFormatterTest.java \
     org/apache/harmony/luni/tests/java/lang/ArithmeticExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/ArrayIndexOutOfBoundsExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/ArrayStoreExceptionTest.java \
@@ -686,7 +681,6 @@ SUITE_SOURCES = \
     libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
-    org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/json/SmallTests.java \
 
 ARC_TEST_SOURCES = \
@@ -780,6 +774,17 @@ LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res3.properties \
     bundles/java/util/logging/res_en_US.properties \
     bundles/java/util/logging/res_zh_CN.properties \
+    sun/util/logging/resources/logging_de.properties \
+    sun/util/logging/resources/logging_es.properties \
+    sun/util/logging/resources/logging_fr.properties \
+    sun/util/logging/resources/logging_it.properties \
+    sun/util/logging/resources/logging_ja.properties \
+    sun/util/logging/resources/logging_ko.properties \
+    sun/util/logging/resources/logging.properties \
+    sun/util/logging/resources/logging_pt_BR.properties \
+    sun/util/logging/resources/logging_sv.properties \
+    sun/util/logging/resources/logging_zh_CN.properties \
+    sun/util/logging/resources/logging_zh_TW.properties \
     config/java/util/logging/logging.config
 ZIP_TEST_RESOURCES_SRCS = \
     tests/resources/java/util/zip/EmptyArchive.zip \
@@ -794,6 +799,7 @@ TEST_RESOURCE_ROOTS = \
   android/libcore/luni/src/test/resources \
   android/platform/libcore/harmony-tests/src/test/resources \
   android/platform/libcore/luni/src/test/resources \
+  android/platform/libcore/ojluni/src/main/resources \
   android/platform/libcore/support/src/test/java \
   apache_harmony/classlib/modules/logging/src/test/resources \
   apache_harmony/classlib/modules/beans/src/test/resources \

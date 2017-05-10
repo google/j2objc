@@ -27,7 +27,7 @@ FIELD java.util.concurrent.Phaser.QNode.phaser
 FIELD java.util.concurrent.ThreadPoolExecutor.workers
 FIELD java.util.concurrent.ThreadPoolExecutor.workQueue
 
-FIELD java.util.logging.Logger.children
+FIELD java.util.logging.LogManager.LogNode.children
 
 FIELD java.util.stream.AbstractTask.leftChild
 FIELD java.util.stream.AbstractTask.rightChild
