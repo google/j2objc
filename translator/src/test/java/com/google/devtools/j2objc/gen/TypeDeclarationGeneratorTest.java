@@ -409,6 +409,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  @Property(\"nonatomic\") String test4;"
         + "  @Property(\"null_resettable\") String test5;"
         + "  @Property(\"null_unspecified\") String test6;"
+        + "  @Property int test7;"
+        + "  @Property (\"readonly, nonatomic\") double test8;"
         + "}";
     options.setNullability(true);
     String translation = translateSourceFile(source, "Test", "Test.h");
@@ -423,6 +425,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "@property (copy, null_resettable) NSString *test5;",
         "@property (copy, null_unspecified) NSString *test6;");
+
+    // Verify primitive properties don't have nullability parameters.
+    assertTranslatedLines(translation,
+        "@property jint test7;",
+        "@property (readonly, nonatomic) jdouble test8;");
   }
 
   public void testFieldWithIntersectionType() throws IOException {

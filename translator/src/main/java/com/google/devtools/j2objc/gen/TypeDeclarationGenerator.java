@@ -361,7 +361,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
               + " --static-accessor-methods flag");
         }
 
-        if (options.nullability()) {
+        if (options.nullability() && !varElement.asType().getKind().isPrimitive()) {
           if (ElementUtil.hasNullableAnnotation(varElement)) {
             attributes.add("nullable");
           } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
