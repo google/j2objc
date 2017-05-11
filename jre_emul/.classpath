@@ -15,7 +15,6 @@
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/support/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/concurrent/src/test/java"/>
-	<classpathentry kind="src" path="apache_harmony/classlib/modules/logging/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni/src/test/api/common"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/text/src/test/java"/>
