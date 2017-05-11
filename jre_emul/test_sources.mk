@@ -735,6 +735,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser \
+    serialization/org/apache/harmony/regex/tests/java/util/regex/PatternTest.golden.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormat.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbols.ser \
     serialization/org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.golden.ser \

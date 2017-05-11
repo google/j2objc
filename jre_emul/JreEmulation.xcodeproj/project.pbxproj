@@ -2312,12 +2312,8 @@
 		068677E3166C345F005A5AD7 /* Matcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Matcher.m; path = build_result/Classes/java/util/regex/Matcher.m; sourceTree = "<group>"; };
 		068677E4166C345F005A5AD7 /* MatchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchResult.h; path = build_result/Classes/java/util/regex/MatchResult.h; sourceTree = "<group>"; };
 		068677E5166C345F005A5AD7 /* MatchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatchResult.m; path = build_result/Classes/java/util/regex/MatchResult.m; sourceTree = "<group>"; };
-		068677E6166C345F005A5AD7 /* MatchResultImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchResultImpl.h; path = build_result/Classes/java/util/regex/MatchResultImpl.h; sourceTree = "<group>"; };
-		068677E7166C345F005A5AD7 /* MatchResultImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatchResultImpl.m; path = build_result/Classes/java/util/regex/MatchResultImpl.m; sourceTree = "<group>"; };
 		068677E8166C345F005A5AD7 /* Pattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pattern.h; path = build_result/Classes/java/util/regex/Pattern.h; sourceTree = "<group>"; };
 		068677E9166C345F005A5AD7 /* Pattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pattern.m; path = build_result/Classes/java/util/regex/Pattern.m; sourceTree = "<group>"; };
-		068677EA166C345F005A5AD7 /* Splitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Splitter.h; path = build_result/Classes/java/util/regex/Splitter.h; sourceTree = "<group>"; };
-		068677EB166C345F005A5AD7 /* Splitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Splitter.m; path = build_result/Classes/java/util/regex/Splitter.m; sourceTree = "<group>"; };
 		06898A7617BAF8C400D7B114 /* IOSReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSReference.h; sourceTree = "<group>"; };
 		06898A7817BAFAB400D7B114 /* IOSReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReference.m; sourceTree = "<group>"; };
 		0692DF5E1AE8560300C14F19 /* jni.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jni.m; sourceTree = "<group>"; };
@@ -2419,8 +2415,8 @@
 		069C244F1E9EF14E00CE6BAF /* MyCRL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyCRL.m; path = org/apache/harmony/security/tests/support/cert/MyCRL.m; sourceTree = "<group>"; };
 		069C24501E9EF14E00CE6BAF /* TestUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUtils.m; path = org/apache/harmony/security/tests/support/cert/TestUtils.m; sourceTree = "<group>"; };
 		069FC49D1AF2A2290095A289 /* AbstractStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractStringBuilder.h; path = java/lang/AbstractStringBuilder.h; sourceTree = "<group>"; };
-		069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Matcher.m; path = android/libcore/luni/src/main/native/java_util_regex_Matcher.m; sourceTree = SOURCE_ROOT; };
-		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
+		069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Matcher.m; path = android/platform/libcore/luni/src/main/native/java_util_regex_Matcher.m; sourceTree = SOURCE_ROOT; };
+		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/platform/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
 		069FE7F91D8B1FF3006D0FD8 /* sun_misc_Unsafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = sun_misc_Unsafe.m; path = android/libcore/luni/src/main/native/sun_misc_Unsafe.m; sourceTree = SOURCE_ROOT; };
 		069FE7FB1D8B2042006D0FD8 /* AnnotatedElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotatedElements.h; path = build_result/Classes/libcore/reflect/AnnotatedElements.h; sourceTree = "<group>"; };
 		069FE7FC1D8B2043006D0FD8 /* AnnotatedElements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotatedElements.m; path = build_result/Classes/libcore/reflect/AnnotatedElements.m; sourceTree = "<group>"; };
@@ -5196,8 +5192,6 @@
 				068677E3166C345F005A5AD7 /* Matcher.m */,
 				068677E4166C345F005A5AD7 /* MatchResult.h */,
 				068677E5166C345F005A5AD7 /* MatchResult.m */,
-				068677E6166C345F005A5AD7 /* MatchResultImpl.h */,
-				068677E7166C345F005A5AD7 /* MatchResultImpl.m */,
 				06721B4C1559CC0300645E1B /* Math.h */,
 				067219E81559C87100645E1B /* Math.m */,
 				067855D1169F37710042431C /* MathContext.h */,
@@ -5801,8 +5795,6 @@
 				06C73D8919180C0C001D3CC8 /* SparseLongArray.h */,
 				06C73D8A19180C0C001D3CC8 /* SparseLongArray.m */,
 				06C73E9319180CC9001D3CC8 /* spi */,
-				068677EA166C345F005A5AD7 /* Splitter.h */,
-				068677EB166C345F005A5AD7 /* Splitter.m */,
 				0649A6AE1AE0780600DE2494 /* SQLClientInfoException.h */,
 				0649A6AF1AE0780600DE2494 /* SQLClientInfoException.m */,
 				0649A6B01AE0780600DE2494 /* SQLData.h */,

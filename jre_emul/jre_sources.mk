@@ -481,11 +481,9 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/logging/LoggingMXBean.java \
   java/util/logging/LoggingPermission.java \
   java/util/regex/MatchResult.java \
-  java/util/regex/MatchResultImpl.java \
   java/util/regex/Matcher.java \
   java/util/regex/Pattern.java \
   java/util/regex/PatternSyntaxException.java \
-  java/util/regex/Splitter.java \
   java/util/stream/BaseStream.java \
   java/util/stream/Collector.java \
   java/util/stream/Collectors.java \

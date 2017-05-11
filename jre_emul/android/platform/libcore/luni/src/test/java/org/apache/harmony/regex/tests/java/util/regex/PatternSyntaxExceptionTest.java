@@ -78,12 +78,14 @@ public class PatternSyntaxExceptionTest extends TestCase {
     s = e.getMessage();
     assertFalse(s.contains("^"));
 
-    // No pattern, but index specified
+    // No pattern, but index specified. NOTE: This is an "unusual" case since
+    // it make no sense to provide an index and not a pattern.
     e = new PatternSyntaxException("Foo", null, 0);
     assertEquals(0, e.getIndex());
 
     s = e.getMessage();
-    assertFalse(s.contains("^"));
+    assertTrue(s.contains("^"));
+    assertTrue(s.contains("null"));
   }
 
   public void testCase() {
