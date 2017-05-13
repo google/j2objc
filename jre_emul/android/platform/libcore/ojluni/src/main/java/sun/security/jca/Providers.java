@@ -26,10 +26,9 @@
 
 package sun.security.jca;
 
-import java.util.*;
-
+import com.google.j2objc.security.IosSecurityProvider;
 import java.security.Provider;
-import java.security.Security;
+import sun.security.provider.CertPathProvider;
 
 /**
  * Collection of methods to get and set provider list. Also includes
@@ -254,4 +253,10 @@ public class Providers {
         threadListsUsed--;
     }
 
+    // J2ObjC: reference security providers so they can be dynamically loaded.
+    @SuppressWarnings("unused")
+    private static final Class<?>[] unused = new Class[] {
+        IosSecurityProvider.class,
+        CertPathProvider.class,
+    };
 }
