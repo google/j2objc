@@ -341,4 +341,18 @@ public class NilCheckResolverTest extends GenerationTest {
     // "t" needs a nil_chk.
     assertTranslation(translation, "return create_Test_Inner_initWithTest_(nil_chk(t));");
   }
+
+  // Verify "throw null" throws a null pointer exception. JLS 14.18:
+  //   "If [the throws expression produces] a null value, then an instance of
+  //    class NullPointerException is created and thrown instead of null."
+  public void testThrowNull() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "void test1() { throw null; }"
+        + "void test2(RuntimeException e) { throw e; }"
+        + "void test3() { throw new RuntimeException(); }}", "Test", "Test.m");
+    assertTranslation(translation, "@throw nil_chk(nil);");
+    assertTranslation(translation, "@throw nil_chk(e);");
+    assertTranslation(translation, "@throw create_JavaLangRuntimeException_init();");
+  }
 }

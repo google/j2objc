@@ -1368,9 +1368,12 @@ public class StatementGeneratorTest extends GenerationTest {
         + "      else { throw new SecondException(); }"
         + "    } catch (FirstException|SecondException e) { throw e; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
-    assertTranslation(translation, "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
-    assertNotInTranslation(translation, "@catch (JavaLangException *e) {\n    @throw e;\n  }");
+    assertTranslation(translation,
+        "@catch (Test_FirstException *e) {\n    @throw nil_chk(e);\n  }");
+    assertTranslation(translation,
+        "@catch (Test_SecondException *e) {\n    @throw nil_chk(e);\n  }");
+    assertNotInTranslation(translation,
+        "@catch (JavaLangException *e) {\n    @throw nil_chk(e);\n  }");
   }
 
   public void testDifferentTypesInConditionalExpression() throws IOException {
@@ -1522,7 +1525,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "}",
         "@catch (JavaIoIOException *e) {",
         " [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithId:e];",
-        " @throw e;",
+        " @throw nil_chk(e);",
         "}");
   }
 

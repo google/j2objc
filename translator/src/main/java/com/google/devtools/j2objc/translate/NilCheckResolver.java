@@ -750,6 +750,11 @@ public class NilCheckResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(ThrowStatement node) {
+    Expression expr = node.getExpression();
+    if (!(expr.getKind() == TreeNode.Kind.CONSTRUCTOR_INVOCATION)) {
+      addNilCheck(expr);
+    }
+
     handleThrows();
     scope.terminates = true;
   }
