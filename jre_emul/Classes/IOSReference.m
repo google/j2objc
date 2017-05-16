@@ -75,6 +75,7 @@ static void ReferentSubclassDealloc(id self, SEL _cmd);
 static void ReferentSubclassRelease(id self, SEL _cmd);
 static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd);
 static void WhileLocked(void (^block)(void));
+static CFMutableSetRef CreateSoftReferenceSet();
 
 // Global recursive mutux.
 static pthread_mutex_t reference_mutex;
@@ -90,7 +91,7 @@ static NSMutableSet *referent_subclasses;
 
 // Set of all soft ref queue candidates. These are only released when
 // the runtime is notified of a low memory condition.
-static NSMutableSet *soft_references;
+static CFMutableSetRef soft_references;
 
 static jboolean in_low_memory_cleanup;
 
@@ -130,8 +131,8 @@ static jboolean in_low_memory_cleanup;
 + (void)handleMemoryWarning:(NSNotification *)notification {
   WhileLocked(^{
     in_low_memory_cleanup = true;
-    [soft_references release];
-    soft_references = [[NSMutableSet alloc] init];
+    CFRelease(soft_references);
+    soft_references = CreateSoftReferenceSet();
     in_low_memory_cleanup = false;
   });
 }
@@ -147,7 +148,7 @@ static jboolean in_low_memory_cleanup;
     weak_refs_map = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     referent_subclasses = [[NSMutableSet alloc] init];
     referent_subclass_map = [[NSMutableDictionary alloc] init];
-    soft_references = [[NSMutableSet alloc] init];
+    soft_references = CreateSoftReferenceSet();
 
 #ifdef SUPPORTS_SOFT_REFERENCES
     // Register for iOS low memory notifications, to clear pending soft references.
@@ -160,6 +161,14 @@ static jboolean in_low_memory_cleanup;
   }
 }
 
+static CFMutableSetRef CreateSoftReferenceSet() {
+  CFSetCallBacks softReferenceSetCallBacks = kCFTypeSetCallBacks;
+  // Set equal callback to NULL to use pointer equality.
+  softReferenceSetCallBacks.equal = NULL;
+  // Set hash callback to NULL to compute hash codes by converting pointers to integers
+  softReferenceSetCallBacks.hash = NULL;
+  return CFSetCreateMutable(NULL, 0, &softReferenceSetCallBacks);
+}
 
 static void WhileLocked(void (^block)(void)) {
   pthread_mutex_lock(&reference_mutex);
@@ -271,7 +280,7 @@ static void RemoveReferenceAssociation(id referent, JavaLangRefReference *refere
   if (set) {
     CFSetRemoveValue(set, reference);
     if ([reference isKindOfClass:[JavaLangRefSoftReference class]] && !hasSoftReference(set)) {
-      [soft_references removeObject:referent];
+      CFSetRemoveValue(soft_references, referent);
     }
   }
 }
@@ -339,7 +348,7 @@ static void ReferentSubclassRelease(id self, SEL _cmd) {
       CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, self);
       if (set && hasSoftReference(set)) {
         // referent is softly reachable. Save it from deallocation.
-        [soft_references addObject:self];
+        CFSetAddValue(soft_references, self);
       }
     }
     RealReferentRelease(self);

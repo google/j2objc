@@ -148,6 +148,27 @@ public class SoftReferenceTest extends TestCase {
     assertTrue("referent wasn't dealloc'ed", dealloced[0]);
   }
 
+  @Test
+  public void testSoftReferenceSet() {
+    // soft_references in IOSReference should not call referent's hashCode().
+    final int[] hashCodeCount = { 0 };
+    for (@AutoreleasePool int i = 0; i < 1; i++) {
+      Object referent = new Object() {
+        @Override
+        public int hashCode() {
+          hashCodeCount[0]++;
+          return super.hashCode();
+        }
+      };
+
+      softRef = new SoftReference<Object>(referent);
+      referent = null;
+    }
+    fakeLowMemoryNotification();
+    // Verify that referent's hashCode() was not called
+    assertEquals("referent's hashCode() was called", 0, hashCodeCount[0]);
+  }
+
   private static native void fakeLowMemoryNotification() /*-[
     [IOSReference handleMemoryWarning:nil];
   ]-*/;

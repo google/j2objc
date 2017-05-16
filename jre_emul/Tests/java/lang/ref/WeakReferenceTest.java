@@ -109,4 +109,24 @@ public class WeakReferenceTest extends TestCase {
     new WeakReference(obj);
     assertSame(Object.class, obj.getClass());
   }
+
+  @Test
+  public void testWeakReferenceMap() {
+    // weak_ref_maps in IOSReference should not call referent's hashCode().
+    final int[] hashCodeCount = { 0 };
+    for (@AutoreleasePool int i = 0; i < 1; i++) {
+      Object referent = new Object() {
+        @Override
+        public int hashCode() {
+          hashCodeCount[0]++;
+          return super.hashCode();
+        }
+      };
+
+      weakRef = new WeakReference<Object>(referent);
+      referent = null;
+    }
+    // Verify that referent's hashCode() was not called
+    assertEquals("referent's hashCode() was called", 0, hashCodeCount[0]);
+  }
 }
