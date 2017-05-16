@@ -381,6 +381,9 @@ string GetFieldFlags(const FieldDescriptor *field) {
   if (field->options().packed()) {
     flags.push_back("CGPFieldFlagPacked");
   }
+  if (IsMapField(field)) {
+    flags.push_back("CGPFieldFlagMap");
+  }
   return JoinFlags(flags);
 }
 

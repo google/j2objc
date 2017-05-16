@@ -84,6 +84,18 @@ size_t CGPGetTypeSize(CGPFieldJavaType type) {
 #undef GET_TYPE_SIZE_CASE
 }
 
+IOSObjectArray *CreateFields(
+    jint fieldCount, CGPFieldData *fieldData, CGPDescriptor *containingType) {
+  IOSObjectArray *fields = [IOSObjectArray newArrayWithLength:fieldCount
+      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
+  CGPFieldDescriptor **fieldsBuf = fields->buffer_;
+  for (jint i = 0; i < fieldCount; i++) {
+    fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]
+                                             containingType:containingType];
+  }
+  return fields;
+}
+
 void CGPInitDescriptor(
     CGPDescriptor **pDescriptor, Class messageClass, Class builderClass, CGPMessageFlags flags,
     size_t storageSize, jint fieldCount, CGPFieldData *fieldData, jint oneofCount,
@@ -93,20 +105,16 @@ void CGPInitDescriptor(
               builderClass:builderClass
                      flags:flags
                storageSize:storageSize];
+  // The descriptor must be at least partially initialized and available before creating the field
+  // descriptors below.
   *pDescriptor = descriptor;
 
-  IOSObjectArray *fields = [IOSObjectArray newArrayWithLength:fieldCount
-      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
-  CGPFieldDescriptor **fieldsBuf = fields->buffer_;
-  for (jint i = 0; i < fieldCount; i++) {
-    fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]
-                                             containingType:descriptor];
-  }
-  descriptor->fields_ = fields;
+  descriptor->fields_ = CreateFields(fieldCount, fieldData, descriptor);
 
   if (oneofCount > 0) {
     IOSObjectArray *oneofs = [IOSObjectArray newArrayWithLength:oneofCount
         type:ComGoogleProtobufDescriptors_OneofDescriptor_class_()];
+    CGPFieldDescriptor **fieldsBuf = descriptor->fields_->buffer_;
     for (jint i = 0; i < oneofCount; i++) {
       CGPOneofDescriptor *newOneof = [[CGPOneofDescriptor alloc] initWithData:&oneofData[i]
                                                                containingType:descriptor];
@@ -119,6 +127,12 @@ void CGPInitDescriptor(
     }
     descriptor->oneofs_ = oneofs;
   }
+}
+
+CGPDescriptor *NewMapEntryDescriptor(CGPFieldData *fieldData) {
+  CGPDescriptor *descriptor = [[CGPDescriptor alloc] init];
+  descriptor->fields_ = CreateFields(2, fieldData, descriptor);
+  return descriptor;
 }
 
 CGPEnumDescriptor *CGPInitializeEnumType(
@@ -308,6 +322,10 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
       break;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
       {
+        if (CGPFieldIsMap(descriptor)) {
+          descriptor->valueType_ = NewMapEntryDescriptor(data->mapEntryFields);
+          break;
+        }
         Class msgClass = objc_getClass(data->className);
         CGPDescriptor *msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
         data->defaultValue.valueId = msgDescriptor->defaultInstance_;

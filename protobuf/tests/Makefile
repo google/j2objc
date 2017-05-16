@@ -14,6 +14,7 @@ JAVA_TESTS = \
   ByteStringTest.java \
   CompatibilityTest.java \
   EnumsTest.java \
+  MapsTest.java \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
@@ -32,6 +33,7 @@ PROTOS = \
   empty_file.proto \
   enum_fields.proto \
   funny_names.proto \
+  map_fields.proto \
   message_fields.proto \
   oneof_fields.proto \
   package_prefix.proto \

@@ -81,6 +81,7 @@ void MessageGenerator::CollectForwardDeclarations(
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator generator(descriptor_->nested_type(i));
     generator.CollectMessageOrBuilderForwardDeclarations(declarations);
     generator.CollectForwardDeclarations(declarations);
@@ -120,6 +121,7 @@ void MessageGenerator::CollectHeaderImports(std::set<string>* imports) const {
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator generator(descriptor_->nested_type(i));
     generator.CollectMessageOrBuilderImports(imports);
     generator.CollectHeaderImports(imports);
@@ -146,6 +148,7 @@ void MessageGenerator::CollectSourceImports(std::set<string>* imports) const {
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator(descriptor_->nested_type(i)).CollectSourceImports(imports);
   }
 }
@@ -253,6 +256,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator generator(descriptor_->nested_type(i));
     generator.GenerateMessageOrBuilder(printer);
     generator.GenerateHeader(printer);
@@ -320,6 +324,16 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "classname", ClassName(descriptor_));
   printer->Indent();
   printer->Indent();
+  if (field_generators_.numMapFields() > 0) {
+    printer->Print("static CGPFieldData mapEntryFields[] = {\n");
+    printer->Indent();
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      field_generators_.get(descriptor_->field(i))
+          .GenerateMapEntryFieldData(printer);
+    }
+    printer->Outdent();
+    printer->Print("};\n");
+  }
   printer->Print("static CGPFieldData fields[] = {\n");
   printer->Indent();
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -430,6 +444,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator(descriptor_->nested_type(i)).GenerateSource(printer);
   }
 
@@ -532,6 +547,7 @@ void MessageGenerator::GenerateExtensionRegistrationCode(io::Printer* printer) {
   }
 
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator(descriptor_->nested_type(i))
         .GenerateExtensionRegistrationCode(printer);
   }

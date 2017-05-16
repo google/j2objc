@@ -28,29 +28,84 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Created by Keith Stanger on Apr. 3, 2017.
+//  Created by Keith Stanger on Apr. 19, 2017.
 //
-//  Hand written counterpart for com.google.protobuf.AbstractMessage.
+//  Hand written counterpart for com.google.protobuf.MapEntry.
 
-#ifndef __ComGoogleProtobufAbstractMessage_H__
-#define __ComGoogleProtobufAbstractMessage_H__
+#include "com/google/protobuf/MapEntry.h"
 
-#include "JreEmulation.h"
-
-#include "com/google/protobuf/Message.h"
-
-@interface ComGoogleProtobufAbstractMessage : NSObject<ComGoogleProtobufMessage>
+@interface ComGoogleProtobufMapEntry () {
+ @public
+  id key_;
+  id value_;
+}
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage)
-
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage)
-
-@interface ComGoogleProtobufAbstractMessage_Builder : NSObject<ComGoogleProtobufMessage_Builder>
+@interface ComGoogleProtobufMapEntry_Builder () {
+ @public
+  id key_;
+  id value_;
+}
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage_Builder)
+@implementation ComGoogleProtobufMapEntry
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage_Builder)
+- (instancetype)initWithKey:(id)key value:(id)value {
+  if (self == [self init]) {
+    key_ = [key retain];
+    value_ = [value retain];
+  }
+  return self;
+}
 
-#endif // __ComGoogleProtobufAbstractMessage_H__
+- (id)getKey {
+  return key_;
+}
+
+- (id)getValue {
+  return value_;
+}
+
+- (ComGoogleProtobufMapEntry_Builder *)toBuilder {
+  ComGoogleProtobufMapEntry_Builder *builder =
+      [[[ComGoogleProtobufMapEntry_Builder alloc] init] autorelease];
+  builder->key_ = [key_ retain];
+  builder->value_ = [value_ retain];
+  return builder;
+}
+
+- (void)dealloc {
+  [key_ release];
+  [value_ release];
+  [super dealloc];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufMapEntry)
+
+@implementation ComGoogleProtobufMapEntry_Builder
+
+- (ComGoogleProtobufMapEntry_Builder *)setKeyWithId:(id)key {
+  JreStrongAssign(&key_, key);
+  return self;
+}
+
+- (ComGoogleProtobufMapEntry_Builder *)setValueWithId:(id)value {
+  JreStrongAssign(&value_, value);
+  return self;
+}
+
+- (ComGoogleProtobufMapEntry *)build {
+  return [[[ComGoogleProtobufMapEntry alloc] initWithKey:key_ value:value_] autorelease];
+}
+
+- (void)dealloc {
+  [key_ release];
+  [value_ release];
+  [super dealloc];
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufMapEntry_Builder)

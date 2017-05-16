@@ -55,6 +55,7 @@ typedef union {
 #define CGPValueField_Bool valueBool
 #define CGPValueField_Enum valueId
 #define CGPValueField_Retainable valueId
+#define CGPValueField_Id valueId
 
 typedef NS_OPTIONS(uint32_t, CGPMessageFlags) {
   CGPMessageFlagExtendable = 1 << 0,
@@ -66,6 +67,7 @@ typedef NS_OPTIONS(uint32_t, CGPFieldFlags) {
   CGPFieldFlagRepeated = 1 << 1,
   CGPFieldFlagExtension = 1 << 2,
   CGPFieldFlagPacked = 1 << 3,
+  CGPFieldFlagMap = 1 << 4,
 };
 
 typedef struct CGPFieldData {
@@ -77,7 +79,10 @@ typedef struct CGPFieldData {
   CGPValue defaultValue;
   uint32_t hasBitIndex;
   uint32_t offset;
-  const char *className;
+  union {
+    const char *className;
+    struct CGPFieldData *mapEntryFields;
+  };
   const char *containingType;
   const char *optionsData;
 } CGPFieldData;
@@ -201,6 +206,18 @@ CGP_ALWAYS_INLINE inline BOOL CGPFieldIsRequired(const CGPFieldDescriptor *field
 
 CGP_ALWAYS_INLINE inline BOOL CGPFieldIsRepeated(const CGPFieldDescriptor *field) {
   return field->data_->flags & CGPFieldFlagRepeated;
+}
+
+CGP_ALWAYS_INLINE inline BOOL CGPFieldIsMap(const CGPFieldDescriptor *field) {
+  return field->data_->flags & CGPFieldFlagMap;
+}
+
+CGP_ALWAYS_INLINE inline CGPFieldDescriptor *CGPFieldMapKey(const CGPFieldDescriptor *field) {
+  return ((CGPDescriptor *)field->valueType_)->fields_->buffer_[0];
+}
+
+CGP_ALWAYS_INLINE inline CGPFieldDescriptor *CGPFieldMapValue(const CGPFieldDescriptor *field) {
+  return ((CGPDescriptor *)field->valueType_)->fields_->buffer_[1];
 }
 
 CGP_ALWAYS_INLINE inline BOOL CGPFieldIsPacked(const CGPFieldDescriptor *field) {

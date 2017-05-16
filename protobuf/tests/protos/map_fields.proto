@@ -1,0 +1,39 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+
+package protos;
+
+option java_package = "protos";
+option java_multiple_files = true;
+
+message MapMsg {
+  map<string, string> string_string = 1;
+  map<string, int32> string_int = 2;
+  map<string, MapValue> string_message = 3;
+
+  map<int32, string> int_string = 4;
+  map<int32, int32> int_int = 5;
+  map<int32, MapValue> int_message = 6;
+
+  enum Color {
+    GREEN = 0;
+    YELLOW = 1;
+    RED = 2;
+  }
+  map<bool, Color> bool_enum = 7;
+}
+
+message MapValue {
+  required string foo = 1;
+}

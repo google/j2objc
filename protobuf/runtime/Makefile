@@ -34,6 +34,8 @@ SRCS = \
   com/google/protobuf/ExtensionRegistryLite.mm \
   com/google/protobuf/GeneratedMessage.mm \
   com/google/protobuf/InvalidProtocolBufferException.m \
+  com/google/protobuf/MapEntry.m \
+  com/google/protobuf/MapField.m \
   com/google/protobuf/ProtocolStringList.m \
   com/google/protobuf/RepeatedField.m \
   com/google/protobuf/WireFormat.mm
@@ -50,6 +52,7 @@ STATIC_FRAMEWORK_PUBLIC_HEADERS = \
   com/google/protobuf/ExtensionRegistryLite.h \
   com/google/protobuf/GeneratedMessage.h \
   com/google/protobuf/InvalidProtocolBufferException.h \
+  com/google/protobuf/MapEntry.h \
   com/google/protobuf/ProtocolStringList.h
 
 SRC_DIR = $(CURDIR)/src

@@ -72,6 +72,13 @@
 #define TYPE_ASSIGN_Retainable(assignee, value) \
   ([assignee autorelease], assignee = [value retain])
 
+#define HASH_Int(value) value
+#define HASH_Long(value) (int)((uint64_t)value ^ ((uint64_t)value >> 32))
+#define HASH_Float(value) *(int *)&value
+#define HASH_Double(value) (int)(*(uint64_t *)&value ^ (*(uint64_t *)&value >> 32))
+#define HASH_Bool(value) (value ? 1231 : 1237)
+#define HASH_Id(value) (int)[value hash]
+
 // Functions that box a value from its field storage type into an object type.
 // For enums, the boxed type is the same as its storage type. (a Java enum
 // object)

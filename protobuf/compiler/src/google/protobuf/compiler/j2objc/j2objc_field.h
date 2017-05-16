@@ -58,6 +58,7 @@ class FieldGenerator {
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const = 0;
 
   virtual void GenerateDeclaration(io::Printer *printer) const = 0;
+  virtual void GenerateMapEntryFieldData(io::Printer *printer) const;
   virtual void GenerateFieldData(io::Printer *printer) const;
 
   virtual void CollectForwardDeclarations(std::set<string>* declarations) const;
@@ -69,6 +70,9 @@ class FieldGenerator {
  protected:
   const FieldDescriptor* descriptor_;
   std::map<string, string> variables_;
+
+  virtual void GenerateFieldDataOffset(io::Printer *printer) const;
+  virtual void GenerateClassNameOrMapData(io::Printer *printer) const;
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(FieldGenerator);
@@ -115,6 +119,51 @@ class RepeatedFieldGenerator : public FieldGenerator {
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(RepeatedFieldGenerator);
 };
 
+class MapFieldGenerator : public FieldGenerator {
+ public:
+  MapFieldGenerator(
+      const FieldDescriptor *descriptor, uint32_t entry_fields_idx);
+
+  virtual ~MapFieldGenerator() { }
+
+  virtual void GenerateFieldBuilderHeader(io::Printer* printer) const;
+  virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
+  virtual void GenerateDeclaration(io::Printer* printer) const;
+  virtual void GenerateMapEntryFieldData(io::Printer *printer) const;
+
+  virtual void CollectForwardDeclarations(std::set<string>* declarations) const;
+  virtual void CollectMessageOrBuilderForwardDeclarations(
+      std::set<string>* declarations) const;
+  virtual void CollectSourceImports(std::set<string>* imports) const;
+
+ protected:
+  virtual void GenerateClassNameOrMapData(io::Printer *printer) const;
+
+ private:
+  const FieldDescriptor* key_field_;
+  const FieldDescriptor* value_field_;
+
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(MapFieldGenerator);
+};
+
+class MapEntryFieldGenerator : public FieldGenerator {
+ public:
+  MapEntryFieldGenerator(const FieldDescriptor *descriptor)
+      : FieldGenerator(descriptor) {
+  }
+  virtual ~MapEntryFieldGenerator() { }
+
+  virtual void GenerateFieldBuilderHeader(io::Printer* printer) const;
+  virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
+  virtual void GenerateDeclaration(io::Printer* printer) const;
+
+ protected:
+  virtual void GenerateFieldDataOffset(io::Printer *printer) const;
+
+ private:
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(MapEntryFieldGenerator);
+};
+
 // Convenience class which constructs FieldGenerators for a Descriptor.
 class FieldGeneratorMap {
  public:
@@ -125,11 +174,15 @@ class FieldGeneratorMap {
   uint32_t numHasBits() const {
     return numHasBits_;
   }
+  uint32_t numMapFields() const {
+    return numMapFields_;
+  }
 
  private:
   const Descriptor* descriptor_;
   std::unique_ptr<std::unique_ptr<FieldGenerator> []> field_generators_;
   uint32_t numHasBits_;
+  uint32_t numMapFields_;
 
   FieldGenerator* MakeGenerator(const FieldDescriptor* field);
 

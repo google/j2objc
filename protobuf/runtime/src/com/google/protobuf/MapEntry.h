@@ -28,29 +28,47 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Created by Keith Stanger on Apr. 3, 2017.
+//  Created by Keith Stanger on Apr. 19, 2017.
 //
-//  Hand written counterpart for com.google.protobuf.AbstractMessage.
+//  Hand written counterpart for com.google.protobuf.MapEntry.
 
-#ifndef __ComGoogleProtobufAbstractMessage_H__
-#define __ComGoogleProtobufAbstractMessage_H__
+#ifndef __ComGoogleProtobufMapEntry_H__
+#define __ComGoogleProtobufMapEntry_H__
 
 #include "JreEmulation.h"
 
-#include "com/google/protobuf/Message.h"
+#include "com/google/protobuf/AbstractMessage.h"
 
-@interface ComGoogleProtobufAbstractMessage : NSObject<ComGoogleProtobufMessage>
+@class ComGoogleProtobufMapEntry_Builder;
+
+@interface ComGoogleProtobufMapEntry : ComGoogleProtobufAbstractMessage
+
+- (instancetype)initWithKey:(id)key value:(id)value;
+
+- (id)getKey;
+
+- (id)getValue;
+
+- (ComGoogleProtobufMapEntry_Builder *)toBuilder;
+
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMapEntry)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMapEntry)
 
-@interface ComGoogleProtobufAbstractMessage_Builder : NSObject<ComGoogleProtobufMessage_Builder>
+@interface ComGoogleProtobufMapEntry_Builder : ComGoogleProtobufAbstractMessage_Builder
+
+- (ComGoogleProtobufMapEntry_Builder *)setKeyWithId:(id)key;
+
+- (ComGoogleProtobufMapEntry_Builder *)setValueWithId:(id)value;
+
+- (ComGoogleProtobufMapEntry *)build;
+
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufAbstractMessage_Builder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMapEntry_Builder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufAbstractMessage_Builder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMapEntry_Builder)
 
-#endif // __ComGoogleProtobufAbstractMessage_H__
+#endif // __ComGoogleProtobufMapEntry_H__

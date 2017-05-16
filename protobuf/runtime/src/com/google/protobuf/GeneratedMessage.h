@@ -61,7 +61,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
 
-@interface ComGoogleProtobufGeneratedMessage_Builder : NSObject<ComGoogleProtobufMessage_Builder>
+@interface ComGoogleProtobufGeneratedMessage_Builder : ComGoogleProtobufAbstractMessage_Builder
 
 - (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input;
 - (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input

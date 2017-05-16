@@ -43,3 +43,8 @@
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufAbstractMessage)
+
+@implementation ComGoogleProtobufAbstractMessage_Builder
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufAbstractMessage_Builder)

@@ -53,6 +53,15 @@ string UnderscoresToCamelCase(const string& input, bool cap_next_letter);
 string UnderscoresToCamelCase(const FieldDescriptor* field);
 string UnderscoresToCapitalizedCamelCase(const FieldDescriptor* field);
 
+inline bool IsMapEntry(const Descriptor* descriptor) {
+  return descriptor->options().map_entry();
+}
+
+inline bool IsMapField(const FieldDescriptor* descriptor) {
+  const Descriptor* message_type = descriptor->message_type();
+  return message_type != NULL ? IsMapEntry(message_type) : false;
+}
+
 // Returns the file's base name.
 string FileBaseName(const FileDescriptor* file);
 
