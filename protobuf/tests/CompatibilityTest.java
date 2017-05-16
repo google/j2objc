@@ -15,7 +15,7 @@
 import abc_def.gHiJkL.Foo2bar;
 import abc_def.gHiJkL.Foo_bar;
 import abc_def.gHiJkL.fooBar;
-import com.google.j2objc.PrefixDummy;
+import com.google.j2objc.test.PrefixDummy;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;

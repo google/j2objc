@@ -54,6 +54,7 @@ const int kPackagePrefixFieldNumber = 102687446;
 
 
 static std::map<string, string> prefixes;
+static std::map<string, string> wildcardPrefixes;
 
 static bool generateFileDirMapping = false;
 
@@ -138,11 +139,28 @@ string GetPackagePrefix(const FileDescriptor *file) {
     return package_prefix_field->length_delimited();
   }
 
+  // Look for a matching prefix from the prefixes file.
   string java_package = FileJavaPackage(file);
   std::map<string, string>::iterator it = prefixes.find(java_package);
   if (it != prefixes.end()) {
     return it->second;
   }
+
+  // Look for a matching wildcard prefix.
+  string sub_package = java_package;
+  while (!sub_package.empty()) {
+    it = wildcardPrefixes.find(sub_package);
+    if (it != wildcardPrefixes.end()) {
+      prefixes.insert(std::pair<string, string>(java_package, it->second));
+      return it->second;
+    }
+    size_t lastDot = sub_package.find_last_of(".");
+    if (lastDot == string::npos) {
+      break;
+    }
+    sub_package.erase(lastDot);
+  }
+
   return CapitalizeJavaPackage(java_package);
 }
 
@@ -607,8 +625,15 @@ string GetFieldOptionsData(const FieldDescriptor *descriptor) {
 void ParsePrefixLine(string line) {
   string::size_type equals = line.find('=');
   if (equals != string::npos) {
-    prefixes.insert(std::pair<string, string>(line.substr(0, equals),
-                                         line.substr(equals + 1)));
+    string pkg = line.substr(0, equals);
+    string prefix = line.substr(equals + 1);
+    // Check if this is a wildcard prefix. (eg. com.google.j2objc.*=CGJ)
+    if (pkg.compare(pkg.length() - 2, 2, ".*") == 0) {
+      wildcardPrefixes.insert(
+          std::pair<string, string>(pkg.substr(0, pkg.length() - 2), prefix));
+    } else {
+      prefixes.insert(std::pair<string, string>(pkg, prefix));
+    }
   }
 }
 

@@ -1,1 +1,1 @@
-com.google.j2objc=CGJ
+com.google.j2objc.*=CGJ
