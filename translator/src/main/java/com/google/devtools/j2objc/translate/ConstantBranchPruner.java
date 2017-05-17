@@ -235,6 +235,9 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
    * The evaluated result of the expression may differ from the original.
    */
   private Expression extractSideEffects(Expression expr) {
+    if (expr.getConstantValue() instanceof Boolean) {
+      return null;
+    }
     switch (expr.getKind()) {
       case INFIX_EXPRESSION:
         {
