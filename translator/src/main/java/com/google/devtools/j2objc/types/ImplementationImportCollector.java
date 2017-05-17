@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -119,6 +120,11 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
   public boolean visit(CatchClause node) {
     addImports(node.getException().getType());
     return true;
+  }
+
+  @Override
+  public void endVisit(EnhancedForStatement node) {
+    addImports(node.getExpression().getTypeMirror());
   }
 
   @Override
