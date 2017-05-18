@@ -48,7 +48,6 @@ NATIVE_JRE_SOURCES_CORE = \
   java/lang/reflect/Method.m \
   java_lang_Character.m \
   java_lang_Integer.m \
-  java_lang_IntegralToString.m \
   java_lang_Long.m \
   java_lang_Math.m \
   java_lang_StrictMath.m \
@@ -162,7 +161,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/InstantiationError.java \
   java/lang/InstantiationException.java \
   java/lang/Integer.java \
-  java/lang/IntegralToString.java \
   java/lang/InternalError.java \
   java/lang/InterruptedException.java \
   java/lang/LinkageError.java \

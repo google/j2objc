@@ -193,7 +193,6 @@
 		062026631D512CBE001EE455 /* DoubleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026551D512CBE001EE455 /* DoubleTest.m */; };
 		062026641D512CBE001EE455 /* EnumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026561D512CBE001EE455 /* EnumTest.m */; };
 		062026651D512CBE001EE455 /* FloatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026571D512CBE001EE455 /* FloatTest.m */; };
-		062026661D512CBE001EE455 /* IntegralToStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026581D512CBE001EE455 /* IntegralToStringTest.m */; };
 		062026671D512CBE001EE455 /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062026591D512CBE001EE455 /* ThrowableTest.m */; };
 		062026681D512CBE001EE455 /* AnnotationTypeMismatchExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620265A1D512CBE001EE455 /* AnnotationTypeMismatchExceptionTest.m */; };
 		062026691D512CBE001EE455 /* AnnotationsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620265B1D512CBE001EE455 /* AnnotationsTest.m */; };
@@ -936,7 +935,6 @@
 		062026551D512CBE001EE455 /* DoubleTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DoubleTest.m; path = libcore/java/lang/DoubleTest.m; sourceTree = "<group>"; };
 		062026561D512CBE001EE455 /* EnumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnumTest.m; path = libcore/java/lang/EnumTest.m; sourceTree = "<group>"; };
 		062026571D512CBE001EE455 /* FloatTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FloatTest.m; path = libcore/java/lang/FloatTest.m; sourceTree = "<group>"; };
-		062026581D512CBE001EE455 /* IntegralToStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntegralToStringTest.m; path = libcore/java/lang/IntegralToStringTest.m; sourceTree = "<group>"; };
 		062026591D512CBE001EE455 /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThrowableTest.m; path = libcore/java/lang/ThrowableTest.m; sourceTree = "<group>"; };
 		0620265A1D512CBE001EE455 /* AnnotationTypeMismatchExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotationTypeMismatchExceptionTest.m; path = libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.m; sourceTree = "<group>"; };
 		0620265B1D512CBE001EE455 /* AnnotationsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotationsTest.m; path = libcore/java/lang/reflect/AnnotationsTest.m; sourceTree = "<group>"; };
@@ -1953,8 +1951,6 @@
 		0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JRELogPaneViewController.xib; sourceTree = "<group>"; };
 		0660B4A81A02EA1C00B643F5 /* JRETestRunListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestRunListener.h; sourceTree = "<group>"; };
 		0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestRunListener.m; sourceTree = "<group>"; };
-		0661620D180F2A1900887D7D /* IntegralToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IntegralToString.h; path = build_result/Classes/java/lang/IntegralToString.h; sourceTree = "<group>"; };
-		0661620E180F2A1900887D7D /* IntegralToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IntegralToString.m; path = build_result/Classes/java/lang/IntegralToString.m; sourceTree = "<group>"; };
 		06616211180F2A1900887D7D /* TypeNotPresentException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeNotPresentException.h; path = build_result/Classes/java/lang/TypeNotPresentException.h; sourceTree = "<group>"; };
 		06616212180F2A1900887D7D /* TypeNotPresentException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeNotPresentException.m; path = build_result/Classes/java/lang/TypeNotPresentException.m; sourceTree = "<group>"; };
 		06619385155848D70004DAFE /* libjre_emul.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjre_emul.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1976,8 +1972,6 @@
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
 		0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractStringBuilder.m; path = java/lang/AbstractStringBuilder.m; sourceTree = "<group>"; };
-		0661AA8019F848FF00EFD1F5 /* java_lang_IntegralToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = java_lang_IntegralToString.h; path = android/libcore/luni/src/main/native/java_lang_IntegralToString.h; sourceTree = SOURCE_ROOT; };
-		0661AA8119F848FF00EFD1F5 /* java_lang_IntegralToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_lang_IntegralToString.m; path = android/libcore/luni/src/main/native/java_lang_IntegralToString.m; sourceTree = SOURCE_ROOT; };
 		0666CCC41978457C00A22C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_types.h; sourceTree = "<group>"; };
 		066899671E9EE12000DDD10B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -3916,8 +3910,6 @@
 				064914331AC47ED000E98733 /* J2ObjC_source.h */,
 				0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
-				0661AA8019F848FF00EFD1F5 /* java_lang_IntegralToString.h */,
-				0661AA8119F848FF00EFD1F5 /* java_lang_IntegralToString.m */,
 				069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */,
 				069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
@@ -4942,8 +4934,6 @@
 				06DD32B616A13FA000AD7ACE /* IntBuffer.m */,
 				06721B461559CC0300645E1B /* Integer.h */,
 				067219E31559C87100645E1B /* Integer.m */,
-				0661620D180F2A1900887D7D /* IntegralToString.h */,
-				0661620E180F2A1900887D7D /* IntegralToString.m */,
 				06C73DD319180C8A001D3CC8 /* InterfaceAddress.h */,
 				06C73DD419180C8A001D3CC8 /* InterfaceAddress.m */,
 				06721B471559CC0300645E1B /* InternalError.h */,
@@ -6395,7 +6385,6 @@
 				062025C71D512CA1001EE455 /* InputStreamReaderTest.m */,
 				062027BC1D512DED001EE455 /* InstantiationExceptionTest.m */,
 				062027BD1D512DED001EE455 /* IntegerTest.m */,
-				062026581D512CBE001EE455 /* IntegralToStringTest.m */,
 				062027BE1D512DED001EE455 /* InterruptedExceptionTest.m */,
 				0620271F1D512D82001EE455 /* IntrospectionExceptionTest.m */,
 				062027201D512D82001EE455 /* IntrospectorTest.m */,
@@ -7560,7 +7549,6 @@
 				062029AA1D512FFE001EE455 /* DefaultMethodsTest.m in Sources */,
 				062026A81D512D08001EE455 /* SmallTests.m in Sources */,
 				069C24431E9EF04900CE6BAF /* CertificateNotYetValidExceptionTest.m in Sources */,
-				062026661D512CBE001EE455 /* IntegralToStringTest.m in Sources */,
 				0620277D1D512D9D001EE455 /* MockNullSubClass.m in Sources */,
 				069C24421E9EF04900CE6BAF /* CertificateExpiredExceptionTest.m in Sources */,
 				062028701D512E3E001EE455 /* AlgorithmParametersTest.m in Sources */,

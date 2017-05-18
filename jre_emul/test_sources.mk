@@ -327,7 +327,6 @@ TEST_SOURCES := \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/EnumTest.java \
     libcore/java/lang/FloatTest.java \
-    libcore/java/lang/IntegralToStringTest.java \
     libcore/java/lang/ThrowableTest.java \
     libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/lang/reflect/AnnotationsTest.java \
