@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-Name: ClientSupport
+Bundle-Description: Provides SessionService, AuthenticationService. Extends RegistryService.
+Bundle-Activator: com.ibm.ive.eccomm.client.support.ClientSupportActivator
+Import-Package: com.ibm.ive.eccomm.client.services.log,
+ com.ibm.ive.eccomm.client.services.registry,
+ com.ibm.ive.eccomm.service.registry; specification-version=1.0.0,
+ com.ibm.ive.eccomm.service.session; specification-version=1.0.0,
+ com.ibm.ive.eccomm.service.framework; specification-version=1.2.0,
+ org.osgi.framework; specification-version=1.0.0,
+ org.osgi.service.log; specification-version=1.0.0,
+ com.ibm.ive.eccomm.flash; specification-version=1.2.0,
+ com.ibm.ive.eccomm.client.xml,
+ com.ibm.ive.eccomm.client.http.common,
+ com.ibm.ive.eccomm.client.http.client
+Import-Service: org.osgi.service.log.LogReaderService
+ org.osgi.service.log.LogService,
+ com.ibm.ive.eccomm.service.registry.RegistryService
+Export-Package: com.ibm.ive.eccomm.client.services.authentication; specification-version=1.0.0,
+ com.ibm.ive.eccomm.service.authentication; specification-version=1.0.0,
+ com.ibm.ive.eccomm.common; specification-version=1.0.0,
+ com.ibm.ive.eccomm.client.services.registry.store; specification-version=1.0.0
+Export-Service: com.ibm.ive.eccomm.service.authentication.AuthenticationService,
+ com.ibm.ive.eccomm.service.session.SessionService
+Bundle-Vendor: IBM
+Bundle-Version: 1.2.0

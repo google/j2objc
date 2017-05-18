@@ -1493,9 +1493,7 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/jar/JarFile.java \
   java/util/jar/JarInputStream.java \
   java/util/jar/JarOutputStream.java \
-  java/util/jar/JarVerifier.java \
   java/util/jar/Manifest.java \
-  java/util/jar/ManifestReader.java \
   java/util/zip/Adler32.java \
   java/util/zip/CRC32.java \
   java/util/zip/CheckedInputStream.java \
@@ -1519,6 +1517,7 @@ JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/zip/ZipOutputStream.java
 
 JAVA_PRIVATE_SOURCES_ZIP = \
+  java/util/jar/JarVerifier.java \
   java/util/zip/ZStreamRef.java \
   java/util/zip/ZipCoder.java \
   java/util/zip/ZipConstants64.java \
@@ -1528,8 +1527,13 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   libcore/net/url/JarHandler.java \
   libcore/net/url/JarURLConnectionImpl.java \
   libcore/util/CountingOutputStream.java \
+  sun/misc/ASCIICaseInsensitiveComparator.java \
   sun/misc/Cleaner.java \
-  sun/nio/ch/DirectBuffer.java
+  sun/nio/ch/DirectBuffer.java \
+  sun/security/timestamp/TimestampToken.java \
+  sun/security/util/SignatureFileVerifier.java \
+  sun/security/util/ManifestDigester.java \
+  sun/security/util/ManifestEntryVerifier.java
 
 JAVA_PUBLIC_SOURCES_SQL = \
   java/sql/Array.java \

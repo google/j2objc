@@ -339,7 +339,7 @@ Java_java_util_zip_ZipFile_getZipMessage(JNIEnv *env, jclass cls, jlong zfile)
 }
 
 JNIEXPORT jobjectArray JNICALL
-Java_java_util_zip_JarFile_getMetaInfEntryNames(JNIEnv *env, JavaUtilZipZipFile *obj)
+Java_java_util_jar_JarFile_getMetaInfEntryNames(JNIEnv *env, JavaUtilZipZipFile *obj)
 {
     jlong zfile = obj->jzfile_;
     jzfile *zip;
@@ -364,7 +364,7 @@ Java_java_util_zip_JarFile_getMetaInfEntryNames(JNIEnv *env, JavaUtilZipZipFile 
 
     /* If some names were found then build array of java strings */
     if (count > 0) {
-        IOSObjectArray *result = [IOSObjectArray arrayWithLength:count type:NSString_class_()];
+        result = [IOSObjectArray arrayWithLength:count type:NSString_class_()];
         if (result != 0) {
             for (i = 0; i < count; i++) {
                 IOSObjectArray_Set(result, i, [NSString stringWithUTF8String:zip->metanames[i]]);

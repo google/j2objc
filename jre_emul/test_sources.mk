@@ -394,6 +394,14 @@ TEST_SOURCES := \
     libcore/java/util/logging/OldMemoryHandlerTest.java \
     libcore/java/util/logging/OldSimpleFormatterTest.java \
     libcore/java/util/logging/OldXMLFormatterTest.java \
+    libcore/java/util/jar/OldAttributesNameTest.java \
+    libcore/java/util/jar/OldAttributesTest.java \
+    libcore/java/util/jar/OldJarEntryTest.java \
+    libcore/java/util/jar/OldJarExceptionTest.java \
+    libcore/java/util/jar/OldJarFileTest.java \
+    libcore/java/util/jar/OldJarInputStreamTest.java \
+    libcore/java/util/jar/OldJarOutputStreamTest.java \
+    libcore/java/util/jar/OldManifestTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
     libcore/java/util/zip/DeflaterOutputStreamTest.java \
     libcore/java/util/zip/DeflaterTest.java \
@@ -765,10 +773,16 @@ ANDROID_TEST_RESOURCES_SRCS = \
     tests/api/java/io/testFields.ser \
     tests/api/java/io/testFieldsDefaulted.ser \
     tests/api/java/io/testfile-utf8.txt \
+    tests/resources/Broken_entry_data.jar \
+    tests/resources/Broken_entry.jar \
     tests/resources/Broken_manifest.jar \
     tests/resources/hyts_ZipFile.zip \
     tests/resources/hyts_available.tst \
-    tests/resources/hyts_checkInput.txt
+    tests/resources/hyts_checkInput.txt \
+    tests/resources/hyts_patch.jar \
+    tests/resources/manifest/hyts_MANIFEST.MF \
+    tests/resources/Modified_SF_EntryAttributes.jar
+
 LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res.properties \
     bundles/java/util/logging/res2.properties \
