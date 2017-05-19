@@ -64,8 +64,7 @@ public class CodeReferenceMapTest extends TestCase {
         .build();
 
     String stringVersion = report.toString();
-    assertEquals(stringVersion, "[foo.bar.Baz]\n" 
-        + "{foo.bah.Bar=[xyz]}\n"
-        + "{foo.bah.Bar={abc=[()]}}");
+    assertEquals(
+        "[foo.bar.Baz]\n" + "{foo.bah.Bar=[xyz]}\n" + "{foo.bah.Bar={abc=[()]}}", stringVersion);
   }
 }

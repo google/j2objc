@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -746,9 +745,9 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0)).trim();
-    assertEquals(result, "jfloat f = JavaLangFloat_NaN;");
+    assertEquals("jfloat f = JavaLangFloat_NaN;", result);
     result = generateStatement(stmts.get(1)).trim();
-    assertEquals(result, "jdouble d = JavaLangDouble_POSITIVE_INFINITY;");
+    assertEquals("jdouble d = JavaLangDouble_POSITIVE_INFINITY;", result);
   }
 
   public void testInstanceStaticConstants() throws IOException {
