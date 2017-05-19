@@ -329,6 +329,7 @@ TEST_SOURCES := \
     libcore/java/lang/FloatTest.java \
     libcore/java/lang/ThrowableTest.java \
     libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
+    libcore/java/lang/ref/ReferenceQueueTest.java \
     libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \

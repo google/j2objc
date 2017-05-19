@@ -312,7 +312,7 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
         if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
           phantomRefs[numPhantom++] = reference;
         } else {
-          [reference enqueueInternal];
+          [reference enqueue];
         }
       }
 
@@ -323,7 +323,7 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
 
       // Queue all phantom references.
       for (int i = 0; i < numPhantom; i++) {
-        [phantomRefs[i] enqueueInternal];
+        [phantomRefs[i] enqueue];
       }
     }
   });
