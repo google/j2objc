@@ -114,7 +114,7 @@ jstring Java_libcore_icu_ICU_getCurrencySymbol(
 jstring Java_libcore_icu_ICU_getDisplayCountryNative(
     JNIEnv *env, jclass cls, jstring targetLanguageTag, jstring languageTag) {
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
-  NSString *country = [locale objectForKey:NSLocaleCountryCode];
+  NSString *country = [locale displayNameForKey:NSLocaleCountryCode value:targetLanguageTag];
   [locale release];
   return (country) ? country : targetLanguageTag;
 }
@@ -122,7 +122,7 @@ jstring Java_libcore_icu_ICU_getDisplayCountryNative(
 jstring Java_libcore_icu_ICU_getDisplayLanguageNative(
     JNIEnv *env, jclass cls, jstring targetLanguageTag, jstring languageTag) {
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
-  NSString *language = [locale objectForKey:NSLocaleLanguageCode];
+  NSString *language = [locale displayNameForKey:NSLocaleLanguageCode value:targetLanguageTag];
   [locale release];
   return (language) ? language : targetLanguageTag;
 }
@@ -130,7 +130,7 @@ jstring Java_libcore_icu_ICU_getDisplayLanguageNative(
 jstring Java_libcore_icu_ICU_getDisplayVariantNative(
     JNIEnv *env, jclass cls, jstring targetLanguageTag, jstring languageTag) {
   NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
-  NSString *variant = [locale objectForKey:NSLocaleVariantCode];
+  NSString *variant = [locale displayNameForKey:NSLocaleVariantCode value:targetLanguageTag];
   [locale release];
   return (variant) ? variant : targetLanguageTag;
 }

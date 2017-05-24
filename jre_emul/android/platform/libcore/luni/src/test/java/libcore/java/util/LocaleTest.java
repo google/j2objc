@@ -47,7 +47,6 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("aabbcc (DDEEFF,GGHHII)", invalid.getDisplayName());
     }*/
 
-    /* TODO(kstanger): enable when display names are supported.
     public void test_getDisplayName_emptyCodes() {
         Locale emptyLanguage = new Locale("", "DdeEFf");
         assertEquals("", emptyLanguage.getDisplayLanguage());
@@ -59,7 +58,7 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("", emptyCountryAndLanguage.getDisplayLanguage());
         assertEquals("", emptyCountryAndLanguage.getDisplayCountry());
         assertEquals("Farl", emptyCountryAndLanguage.getDisplayVariant());
-    }*/
+    }
 
     // http://b/2611311; if there's no display language/country/variant, use the raw codes.
     /* TODO(kstanger): enable when display names are supported.
@@ -75,13 +74,12 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("xx (YY,Traditional)", unknown.getDisplayName());
     }*/
 
-    /* TODO(kstanger): enable when display names are supported.
     public void test_getDisplayName_easy() throws Exception {
         assertEquals("English", Locale.ENGLISH.getDisplayLanguage(Locale.ENGLISH));
         assertEquals("German", Locale.GERMAN.getDisplayLanguage(Locale.ENGLISH));
         assertEquals("Englisch", Locale.ENGLISH.getDisplayLanguage(Locale.GERMAN));
         assertEquals("Deutsch", Locale.GERMAN.getDisplayLanguage(Locale.GERMAN));
-    }*/
+    }
 
     // https://b/issue?id=13790528
     /* TODO(kstanger): enable when display names are supported.
@@ -150,13 +148,12 @@ public class LocaleTest extends junit.framework.TestCase {
     }*/
 
     // http://b/3452611; Locale.getDisplayLanguage fails for the obsolete language codes.
-    /* TODO(kstanger): enable when display names are supported.
     public void test_getDisplayName_obsolete() throws Exception {
         // he (new) -> iw (obsolete)
         assertObsolete("he", "iw", "עברית");
         // id (new) -> in (obsolete)
         assertObsolete("id", "in", "Indonesia");
-    }*/
+    }
 
     private static void assertObsolete(String newCode, String oldCode, String displayName) {
         // Either code should get you the same locale.
