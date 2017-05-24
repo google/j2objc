@@ -106,6 +106,9 @@ public abstract class IosRSASignature extends SignatureSpi {
       throw new SignatureException("unknown key type: " + key.getClass());
     }
     long privateKey = ((IosRSAKey.IosRSAPrivateKey) key).getSecKeyRef();
+    if (privateKey == 0L) {
+      throw new SignatureException("RSA native key not available");
+    }
     return nativeEngineSign(privateKey);
   }
 
@@ -121,6 +124,9 @@ public abstract class IosRSASignature extends SignatureSpi {
       throw new SignatureException("unknown key type: " + key.getClass());
     }
     long publicKey = ((IosRSAKey.IosRSAPublicKey) key).getSecKeyRef();
+    if (publicKey == 0L) {
+      throw new SignatureException("RSA native key not available");
+    }
     return nativeEngineVerify(publicKey, sigBytes);
   }
 
