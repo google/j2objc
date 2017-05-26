@@ -24,12 +24,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.AbstractCollection;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -38,14 +39,34 @@ public final class ReflectionTest extends TestCase {
     String classB = "libcore.java.lang.reflect.ReflectionTest$B";
     String classC = "libcore.java.lang.reflect.ReflectionTest$C";
 
+    public void testClassGetSuperclass() {
+        assertEquals(AbstractList.class, ArrayList.class.getSuperclass());
+        assertEquals(AbstractCollection.class, AbstractList.class.getSuperclass());
+        assertEquals(AbstractCollection.class, AbstractList.class.getSuperclass());
+        assertEquals(Object.class, AbstractCollection.class.getSuperclass());
+        assertNull(Object.class.getSuperclass());
+    }
+
+    public void testPrimitiveGetSuperclass() {
+        assertNull(boolean.class.getSuperclass());
+        assertNull(int.class.getSuperclass());
+        assertNull(double.class.getSuperclass());
+        assertNull(void.class.getSuperclass());
+    }
+
+    public void testInterfaceGetSuperclass() {
+        assertNull(Comparable.class.getSuperclass());
+        assertNull(DefinesMember.class.getSuperclass());
+        assertNull(ExtendsDefinesMember.class.getSuperclass());
+    }
+
     /**
      * http://code.google.com/p/android/issues/detail?id=6636
      */
-    // TODO(tball): enable and fix.
-//    public void testGenericSuperclassToString() throws Exception {
-//        assertEquals("java.util.ArrayList<" + classA + ">",
-//                AList.class.getGenericSuperclass().toString());
-//    }
+    public void testGenericSuperclassToString() throws Exception {
+        assertEquals("java.util.ArrayList<" + classA + ">",
+                AList.class.getGenericSuperclass().toString());
+    }
 
     public void testClassGetName() {
         assertEquals("int", int.class.getName());
@@ -92,7 +113,7 @@ public final class ReflectionTest extends TestCase {
 //        Field fieldFour = C.class.getDeclaredField("fieldFour");
 //        String fieldFourRaw = "java.util.Map " + classC + ".fieldFour";
 //        assertEquals(fieldFourRaw, fieldFour.toString());
-//        String fieldFourGeneric = "java.util.Map<? super java.lang.Integer, [Ljava.lang.Integer;> "
+//        String fieldFourGeneric = "java.util.Map<? super java.lang.Integer, java.lang.Integer[]> "
 //                + classC + ".fieldFour";
 //        assertEquals(fieldFourGeneric, fieldFour.toGenericString());
 //
@@ -117,50 +138,48 @@ public final class ReflectionTest extends TestCase {
 //        assertEquals(constructorTwoGeneric, constructorTwo.toGenericString());
 //    }
 
-    // TODO(tball): enable and fix.
-//    public void testMethodToString() throws Exception {
-//        Method methodOne = C.class.getDeclaredMethod("methodOne", A.class, C.class);
-//        String methodOneRaw = "protected final synchronized " + classA + " "
-//                + classC + ".methodOne(" + classA + "," + classC + ") throws " + classB;
-//        assertEquals(methodOneRaw, methodOne.toString());
-//        assertEquals(methodOneRaw, methodOne.toGenericString());
-//
-//        Method methodTwo = C.class.getDeclaredMethod("methodTwo", List.class);
-//        String methodTwoRaw = "public abstract java.util.Map "
-//                + classC + ".methodTwo(java.util.List)";
-//        assertEquals(methodTwoRaw, methodTwo.toString());
-//        String methodTwoGeneric = "public abstract java.util.Map<" + classA + ", java.lang.String> "
-//                + classC + ".methodTwo(java.util.List<" + classA + ">)";
-//        assertEquals(methodTwoGeneric, methodTwo.toGenericString());
-//
-//        Method methodThree = C.class.getDeclaredMethod("methodThree", A.class, Set.class);
-//        String methodThreeRaw = "private static java.util.Map "
-//                + classC + ".methodThree(" + classA + ",java.util.Set)";
-//        assertEquals(methodThreeRaw, methodThree.toString());
-//        String methodThreeGeneric = "private static <T1,T2> java.util.Map<T1, ?> "
-//                + classC + ".methodThree(T1,java.util.Set<? super T2>)";
-//        assertEquals(methodThreeGeneric, methodThree.toGenericString());
-//
-//        Method methodFour = C.class.getDeclaredMethod("methodFour", Set.class);
-//        String methodFourRaw = "public java.lang.Comparable " + classC + ".methodFour(java.util.Set)";
-//        assertEquals(methodFourRaw, methodFour.toString());
-//        String methodFourGeneric = "public <T> T " + classC + ".methodFour(java.util.Set<T>)";
-//        assertEquals(methodFourGeneric, methodFour.toGenericString());
-//    }
+    public void testMethodToString() throws Exception {
+        Method methodOne = C.class.getDeclaredMethod("methodOne", A.class, C.class);
+        String methodOneRaw = "protected final synchronized " + classA + " "
+                + classC + ".methodOne(" + classA + "," + classC + ") throws " + classB;
+        assertEquals(methodOneRaw, methodOne.toString());
+        assertEquals(methodOneRaw, methodOne.toGenericString());
 
-    // TODO(tball): enable and fix.
-//    public void testTypeVariableWithMultipleBounds() throws Exception {
-//        TypeVariable t = C.class.getDeclaredMethod("methodFour", Set.class).getTypeParameters()[0];
-//        assertEquals("T", t.toString());
-//
-//        Type[] bounds = t.getBounds();
-//        ParameterizedType comparableT = (ParameterizedType) bounds[0];
-//        assertEquals(Comparable.class, comparableT.getRawType());
-//        assertEquals("T", ((TypeVariable) comparableT.getActualTypeArguments()[0]).getName());
-//        assertEquals(3, bounds.length);
-//        assertEquals(Serializable.class, bounds[1]);
-//        assertEquals(RandomAccess.class, bounds[2]);
-//    }
+        Method methodTwo = C.class.getDeclaredMethod("methodTwo", List.class);
+        String methodTwoRaw = "public abstract java.util.Map "
+                + classC + ".methodTwo(java.util.List)";
+        assertEquals(methodTwoRaw, methodTwo.toString());
+        String methodTwoGeneric = "public abstract java.util.Map<" + classA + ", java.lang.String> "
+                + classC + ".methodTwo(java.util.List<" + classA + ">)";
+        assertEquals(methodTwoGeneric, methodTwo.toGenericString());
+
+        Method methodThree = C.class.getDeclaredMethod("methodThree", A.class, Set.class);
+        String methodThreeRaw = "private static java.util.Map "
+                + classC + ".methodThree(" + classA + ",java.util.Set)";
+        assertEquals(methodThreeRaw, methodThree.toString());
+        String methodThreeGeneric = "private static <T1,T2> java.util.Map<T1, ?> "
+                + classC + ".methodThree(T1,java.util.Set<? super T2>)";
+        assertEquals(methodThreeGeneric, methodThree.toGenericString());
+
+        Method methodFour = C.class.getDeclaredMethod("methodFour", Set.class);
+        String methodFourRaw = "public java.lang.Comparable " + classC + ".methodFour(java.util.Set)";
+        assertEquals(methodFourRaw, methodFour.toString());
+        String methodFourGeneric = "public <T> T " + classC + ".methodFour(java.util.Set<T>)";
+        assertEquals(methodFourGeneric, methodFour.toGenericString());
+    }
+
+    public void testTypeVariableWithMultipleBounds() throws Exception {
+        TypeVariable t = C.class.getDeclaredMethod("methodFour", Set.class).getTypeParameters()[0];
+        assertEquals("T", t.toString());
+
+        Type[] bounds = t.getBounds();
+        ParameterizedType comparableT = (ParameterizedType) bounds[0];
+        assertEquals(Comparable.class, comparableT.getRawType());
+        assertEquals("T", ((TypeVariable) comparableT.getActualTypeArguments()[0]).getName());
+        assertEquals(3, bounds.length);
+        assertEquals(Serializable.class, bounds[1]);
+        assertEquals(RandomAccess.class, bounds[2]);
+    }
 
     public void testGetFieldNotFound() throws Exception {
         try {
@@ -283,6 +302,36 @@ public final class ReflectionTest extends TestCase {
         assertEquals(1, count(names(fields), "field"));
     }
 
+    public void testIsLocalClass() {
+        A methodLevelAnonymous = new A() {};
+        class Local {}
+        class $Local$1 {}
+        assertFalse(ReflectionTest.class.isLocalClass());
+        assertFalse(A.class.isLocalClass());
+        assertFalse($Dollar$1.class.isLocalClass());
+        assertFalse(CLASS_LEVEL_ANONYMOUS.getClass().isLocalClass());
+        assertFalse(methodLevelAnonymous.getClass().isLocalClass());
+        assertTrue(Local.class.isLocalClass());
+        assertTrue($Local$1.class.isLocalClass());
+        assertFalse(int.class.isLocalClass());
+        assertFalse(Object.class.isLocalClass());
+    }
+
+    public void testIsAnonymousClass() {
+        A methodLevelAnonymous = new A() {};
+        class Local {}
+        class $Local$1 {}
+        assertFalse(ReflectionTest.class.isAnonymousClass());
+        assertFalse(A.class.isAnonymousClass());
+        assertFalse($Dollar$1.class.isAnonymousClass());
+        assertTrue(CLASS_LEVEL_ANONYMOUS.getClass().isAnonymousClass());
+        assertTrue(methodLevelAnonymous.getClass().isAnonymousClass());
+        assertFalse(Local.class.isAnonymousClass());
+        assertFalse($Local$1.class.isAnonymousClass());
+        assertFalse(int.class.isAnonymousClass());
+        assertFalse(Object.class.isAnonymousClass());
+    }
+
     /**
      * Class.isEnum() erroneously returned true for indirect descendants of
      * Enum. http://b/1062200.
@@ -305,8 +354,10 @@ public final class ReflectionTest extends TestCase {
         assertNull(greenClass.getEnumConstants());
     }
 
+    static class $Dollar$1 {}
     static class A {}
     static class AList extends ArrayList<A> {}
+    static A CLASS_LEVEL_ANONYMOUS = new A() {};
 
     static class B extends Exception {}
 

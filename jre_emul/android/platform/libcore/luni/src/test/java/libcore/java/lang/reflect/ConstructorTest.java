@@ -48,7 +48,6 @@ public final class ConstructorTest extends TestCase {
     public void testGetConstructorWithNullArgumentsArray() throws Exception {
         Constructor<?> constructor = ConstructorTestHelper.class.getConstructor((Class[]) null);
         assertEquals(0, constructor.getParameterTypes().length);
-        assertNotNull(constructor.newInstance((Object[]) null));
     }
 
     public void testGetConstructorWithNullArgument() throws Exception {
@@ -59,20 +58,37 @@ public final class ConstructorTest extends TestCase {
         }
     }
 
-    // Not valid: all iOS constructors are public.
-//    public void testGetConstructorReturnsDoesNotReturnPrivateConstructor() throws Exception {
-//        try {
-//            ConstructorTestHelper.class.getConstructor(Object.class, Object.class);
-//            fail();
-//        } catch (NoSuchMethodException expected) {
-//        }
-//    }
+    public void testGetConstructorReturnsDoesNotReturnPrivateConstructor() throws Exception {
+        try {
+            ConstructorTestHelper.class.getConstructor(Object.class, Object.class);
+            fail();
+        } catch (NoSuchMethodException expected) {
+        }
+    }
 
-//    public void testGetDeclaredConstructorReturnsPrivateConstructor() throws Exception {
-//        Constructor<?> constructor = ConstructorTestHelper.class.getDeclaredConstructor(
-//                Object.class, Object.class);
-//        assertEquals(2, constructor.getParameterTypes().length);
-//    }
+    public void testGetDeclaredConstructorReturnsPrivateConstructor() throws Exception {
+        Constructor<?> constructor = ConstructorTestHelper.class.getDeclaredConstructor(
+                Object.class, Object.class);
+        assertEquals(2, constructor.getParameterTypes().length);
+    }
+
+    public void testEqualConstructorEqualsAndHashCode() throws Exception {
+        Constructor<?> c1 = ConstructorTestHelper.class.getConstructor();
+        Constructor<?> c2 = ConstructorTestHelper.class.getConstructor();
+        assertEquals(c1, c2);
+        assertEquals(c1.hashCode(), c2.hashCode());
+    }
+
+    public void testHashCodeSpec() throws Exception {
+        Constructor<?> c1 = ConstructorTestHelper.class.getConstructor();
+        assertEquals(ConstructorTestHelper.class.getName().hashCode(), c1.hashCode());
+    }
+
+    public void testDifferentConstructorEqualsAndHashCode() throws Exception {
+        Constructor<?> c1 = ConstructorTestHelper.class.getConstructor();
+        Constructor<?> c2 = ConstructorTestHelper.class.getConstructor(Object.class);
+        assertFalse(c1.equals(c2));
+    }
 
     static class ConstructorTestHelper {
         public ConstructorTestHelper() throws IndexOutOfBoundsException { }

@@ -40,6 +40,7 @@ SUPPORT_SOURCES = \
     java/lang/test/package-info.java \
     jsr166/BlockingQueueTest.java \
     jsr166/JSR166TestCase.java \
+    libcore/java/lang/reflect/package-info.java \
     libcore/java/net/AbstractCookiesTest.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \

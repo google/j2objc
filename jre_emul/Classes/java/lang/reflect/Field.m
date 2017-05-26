@@ -76,11 +76,11 @@
 - (NSString *)description {
   NSString *mods = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   if ([mods length] > 0) {
-    return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
+    return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [[self getType] getName],
             [[self getDeclaringClass] getName], [self getName]];
   }
-  return [NSString stringWithFormat:@"%@ %@.%@", [self getType], [[self getDeclaringClass] getName],
-          [self getName]];
+  return [NSString stringWithFormat:@"%@ %@.%@", [[self getType] getName],
+          [[self getDeclaringClass] getName], [self getName]];
 }
 
 static jboolean IsStatic(JavaLangReflectField *field) {

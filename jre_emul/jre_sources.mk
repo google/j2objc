@@ -233,7 +233,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/reflect/InvocationHandler.java \
   java/lang/reflect/InvocationTargetException.java \
   java/lang/reflect/MalformedParameterizedTypeException.java \
-  java/lang/reflect/MalformedParametersException.java \
   java/lang/reflect/Member.java \
   java/lang/reflect/Modifier.java \
   java/lang/reflect/Parameter.java \

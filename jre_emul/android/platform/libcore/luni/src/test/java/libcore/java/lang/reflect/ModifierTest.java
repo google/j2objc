@@ -100,6 +100,9 @@ public class ModifierTest extends junit.framework.TestCase {
     }
 
     public void test_toStringI() {
-        assertEquals("public abstract", Modifier.toString(Modifier.PUBLIC | Modifier.ABSTRACT));
+        // Note that it checks that "STRICT" is rendered as "strictfp" (for other modifiers,
+        // the displayed name is the same as the lowercase constant name).
+        assertEquals("public abstract strictfp",
+                Modifier.toString(Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.STRICT));
     }
 }

@@ -17,49 +17,10 @@
 package libcore.java.lang.reflect;
 
 import java.lang.reflect.Method;
+
 import junit.framework.TestCase;
 
 public final class MethodTest extends TestCase {
-    // Check that the VM gives useful detail messages.
-    public void test_invokeExceptions() throws Exception {
-        Method m = String.class.getMethod("charAt", int.class);
-        try {
-            m.invoke("hello"); // Wrong number of arguments.
-            fail();
-        } catch (IllegalArgumentException iae) {
-            // JVM returns right exception, different text.
-            //assertEquals("wrong number of arguments; expected 1, got 0", iae.getMessage());
-        }
-        try {
-            m.invoke("hello", "world"); // Wrong type.
-            fail();
-        } catch (IllegalArgumentException iae) {
-            // JVM returns right exception, different text.
-            //assertEquals("argument 1 should have type int, got java.lang.String", iae.getMessage());
-        }
-        try {
-            m.invoke("hello", (Object) null); // Null for a primitive argument.
-            fail();
-        } catch (IllegalArgumentException iae) {
-            // JVM returns right exception, different text.
-            //assertEquals("argument 1 should have type int, got null", iae.getMessage());
-        }
-        try {
-            m.invoke(new Integer(5)); // Wrong type for 'this'.
-            fail();
-        } catch (IllegalArgumentException iae) {
-            // JVM returns right exception, different text.
-            //assertEquals("expected receiver of type java.lang.String, but got java.lang.Integer", iae.getMessage());
-        }
-        try {
-            m.invoke(null); // Null for 'this'.
-            fail();
-        } catch (NullPointerException npe) {
-            // JVM returns right exception, different text.
-            //assertEquals("expected receiver of type java.lang.String, but got null", npe.getMessage());
-        }
-    }
-
     public void test_getExceptionTypes() throws Exception {
         Method method = MethodTestHelper.class.getMethod("m1", new Class[0]);
         Class[] exceptions = method.getExceptionTypes();
@@ -201,11 +162,31 @@ public final class MethodTest extends TestCase {
         assertEquals(anonymous.getClass(), method.getDeclaringClass());
     }
 
+    public void testEqualMethodEqualsAndHashCode() throws Exception {
+        Method m1 = MethodTestHelper.class.getMethod("m1");
+        Method m2 = MethodTestHelper.class.getMethod("m1");
+        assertEquals(m1, m2);
+        assertEquals(m1.hashCode(), m2.hashCode());
+        assertEquals(MethodTestHelper.class.getName().hashCode() ^ "m1".hashCode(), m1.hashCode());
+    }
+
+    public void testHashCodeSpec() throws Exception {
+        Method m1 = MethodTestHelper.class.getMethod("m1");
+        assertEquals(MethodTestHelper.class.getName().hashCode() ^ "m1".hashCode(), m1.hashCode());
+    }
+
+    public void testDifferentMethodEqualsAndHashCode() throws Exception {
+        Method m1 = MethodTestHelper.class.getMethod("m1");
+        Method m2 = MethodTestHelper.class.getMethod("m2", Object.class);
+        assertFalse(m1.equals(m2));
+        assertFalse(m1.hashCode() == m2.hashCode());
+    }
+
     // iOS: toString returns may be different than in Java.
-//    // http://b/1045939
+    // http://b/1045939
 //    public void testMethodToString() throws Exception {
-//        assertEquals("public final native void java.lang.Object.clone()",
-//                Object.class.getMethod("clone", new Class[] { }).toString());
+//        assertEquals("public final native void java.lang.Object.notify()",
+//                Object.class.getMethod("notify", new Class[] { }).toString());
 //        assertEquals("public java.lang.String java.lang.Object.toString()",
 //                Object.class.getMethod("toString", new Class[] { }).toString());
 //        assertEquals("public final native void java.lang.Object.wait(long,int)"
@@ -218,7 +199,26 @@ public final class MethodTest extends TestCase {
 //        assertEquals( "public java.lang.Process java.lang.Runtime.exec(java.lang.String[])"
 //                + " throws java.io.IOException",
 //                Runtime.class.getMethod("exec", new Class[] { String[].class }).toString());
+//        // http://b/18488857
+//        assertEquals(
+//                "public int java.lang.String.compareTo(java.lang.Object)",
+//                String.class.getMethod("compareTo", Object.class).toString());
 //    }
+
+    // Tests that the "varargs" modifier is handled correctly.
+    // The underlying constant value for it is the same as for the "transient" field modifier.
+    // http://b/18488857
+    /* J2ObjC: Android specific test
+    public void testVarargsModifier() throws NoSuchMethodException {
+        Method stringFormatMethod = String.class.getMethod(
+                "format", new Class[] { String.class, Object[].class });
+        assertTrue(stringFormatMethod.isVarArgs());
+        assertEquals(
+                "public static java.lang.String java.lang.String.format("
+                        + "java.lang.String,java.lang.Object[])",
+                stringFormatMethod.toString());
+    }
+    */
 
     public static class MethodTestHelper {
         public void m1() throws IndexOutOfBoundsException { }
