@@ -23,6 +23,7 @@ import com.google.common.io.Resources;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
@@ -307,6 +308,15 @@ public class GenerationTest extends TestCase {
     for (; matcher.find(); count++) {}
     if (count != times) {
       fail("expected:\"" + expected + "\" " + times + " times in:\n" + translation);
+    }
+  }
+  
+  /**
+   * Verify that two AST nodes are equal, by comparing their toString() outputs.
+   */
+  protected void assertEqualASTs(TreeNode first, TreeNode second) {
+    if (!first.toString().equals(second.toString())) {
+      fail("unmatched:\"" + first + "\" vs:\n" + second);
     }
   }
 
