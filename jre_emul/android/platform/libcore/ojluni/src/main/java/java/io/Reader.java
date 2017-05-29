@@ -25,6 +25,7 @@
 
 package java.io;
 
+import com.google.j2objc.annotations.Weak;
 
 /**
  * Abstract class for reading character streams.  The only methods that a
@@ -57,7 +58,7 @@ public abstract class Reader implements Readable, Closeable {
      * the object in this field rather than <tt>this</tt> or a synchronized
      * method.
      */
-    protected Object lock;
+    @Weak protected Object lock;
 
     /**
      * Creates a new character-stream reader whose critical sections will
