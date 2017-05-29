@@ -63,6 +63,10 @@ public class InputStreamReader extends Reader {
 
     private final StreamDecoder sd;
 
+    // J2ObjC added: Avoid creating a reference cycle by passing "this" for the mutex to
+    // StreamDecoder.
+    private final Object lock = new Object();
+
     /**
      * Creates an InputStreamReader that uses the default charset.
      *
@@ -71,7 +75,7 @@ public class InputStreamReader extends Reader {
     public InputStreamReader(InputStream in) {
         super(in);
         try {
-            sd = StreamDecoder.forInputStreamReader(in, this, (String)null); // ## check lock object
+            sd = StreamDecoder.forInputStreamReader(in, lock, (String)null); // ## check lock object
         } catch (UnsupportedEncodingException e) {
             // The default encoding should always be available
             throw new Error(e);
@@ -97,7 +101,7 @@ public class InputStreamReader extends Reader {
         super(in);
         if (charsetName == null)
             throw new NullPointerException("charsetName");
-        sd = StreamDecoder.forInputStreamReader(in, this, charsetName);
+        sd = StreamDecoder.forInputStreamReader(in, lock, charsetName);
     }
 
     /**
@@ -113,7 +117,7 @@ public class InputStreamReader extends Reader {
         super(in);
         if (cs == null)
             throw new NullPointerException("charset");
-        sd = StreamDecoder.forInputStreamReader(in, this, cs);
+        sd = StreamDecoder.forInputStreamReader(in, lock, cs);
     }
 
     /**
@@ -129,7 +133,7 @@ public class InputStreamReader extends Reader {
         super(in);
         if (dec == null)
             throw new NullPointerException("charset decoder");
-        sd = StreamDecoder.forInputStreamReader(in, this, dec);
+        sd = StreamDecoder.forInputStreamReader(in, lock, dec);
     }
 
     /**
