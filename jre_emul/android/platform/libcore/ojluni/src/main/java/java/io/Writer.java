@@ -73,7 +73,8 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * synchronize on the writer itself.
      */
     protected Writer() {
-        this.lock = this;
+        // J2ObjC changed: Avoid a leak by creating a new object for the lock.
+        this.lock = new Object();
     }
 
     /**

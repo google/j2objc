@@ -64,7 +64,8 @@ public abstract class Reader implements Readable, Closeable {
      * synchronize on the reader itself.
      */
     protected Reader() {
-        this.lock = this;
+        // J2ObjC changed: Avoid a leak by creating a new object for the lock.
+        this.lock = new Object();
     }
 
     /**
