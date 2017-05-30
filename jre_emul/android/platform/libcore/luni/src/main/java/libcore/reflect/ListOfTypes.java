@@ -66,9 +66,9 @@ public final class ListOfTypes {
         Type[] result = new Type[size];
         for (int i = 0; i < size; i++) {
             Type type = unresolved.get(i);
-            try {
+            if (type instanceof ParameterizedTypeImpl) {
                 result[i] = ((ParameterizedTypeImpl) type).getResolvedType();
-            } catch (ClassCastException e) {
+            } else {
                 result[i] = type;
             }
         }

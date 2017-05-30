@@ -17,7 +17,6 @@
 package libcore.reflect;
 
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
