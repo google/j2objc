@@ -20,29 +20,41 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.ThrowStatement;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -55,6 +67,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -373,5 +386,95 @@ public class Rewriter extends UnitTreeVisitor {
     if (options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName)) {
       unit.setHasNullabilityAnnotations();
     }
+  }
+
+  @Override
+  public boolean visit(TryStatement node) {
+    // This visit rewrites try-with-resources constructs into regular try statements according to
+    // JLS 14.20.3. The rewriting is done in a visit instead of endVisit because the mutations may
+    // result in more try-with-resources constructs that need to be rewritten recursively.
+    List<VariableDeclarationExpression> resources = node.getResources();
+    if (resources.isEmpty()) {
+      return true;
+    }
+
+    if (!node.getCatchClauses().isEmpty() || node.getFinally() != null) {
+      // Extended try-with-resources. (JLS 14.20.3.2)
+      // The new innerTry statement will be a "Basic try-with-resources" and will be rewritten by
+      // the code below when it is visited.
+      TryStatement innerTry = new TryStatement().setBody(TreeUtil.remove(node.getBody()));;
+      TreeUtil.moveList(resources, innerTry.getResources());
+      node.setBody(new Block().addStatement(innerTry));
+      return true;
+    }
+
+    // Basic try-with-resources. (JLS 14.20.3.1)
+    DeclaredType throwableType = (DeclaredType) typeUtil.getJavaThrowable().asType();
+    VariableElement primaryException = GeneratedVariableElement.newLocalVar(
+        "__primaryException" + resources.size(), throwableType, null);
+
+    List<VariableDeclarationFragment> resourceFrags = resources.remove(0).getFragments();
+    assert resourceFrags.size() == 1;
+    VariableDeclarationFragment resourceFrag = resourceFrags.get(0);
+    VariableElement resourceVar = resourceFrag.getVariableElement();
+
+    DeclaredType closeableType =
+        typeUtil.findSupertype(resourceVar.asType(), "java.lang.AutoCloseable");
+    ExecutablePair closeMethod = typeUtil.findMethod(closeableType, "close");
+    ExecutablePair addSuppressedMethod =
+        typeUtil.findMethod(throwableType, "addSuppressed", "java.lang.Throwable");
+
+    Block block = new Block();
+    block.addStatement(new VariableDeclarationStatement(
+        resourceVar, TreeUtil.remove(resourceFrag.getInitializer())));
+
+    block.addStatement(new VariableDeclarationStatement(
+        primaryException, new NullLiteral(typeUtil.getNull())));
+
+    // If the current try node is the only statement in its parent block then replace the parent
+    // block instead of the try node to avoid extra nesting of braces.
+    TreeNode parent = node.getParent();
+    if (parent instanceof Block && ((Block) parent).getStatements().size() == 1) {
+      parent.replaceWith(block);
+    } else {
+      node.replaceWith(block);
+    }
+    block.addStatement(TreeUtil.remove(node));
+
+    VariableElement caughtException =
+        GeneratedVariableElement.newLocalVar("e", throwableType, null);
+    Block catchBlock = new Block()
+        .addStatement(new ExpressionStatement(new Assignment(
+            new SimpleName(primaryException), new SimpleName(caughtException))))
+        .addStatement(new ThrowStatement(new SimpleName(caughtException)));
+    node.addCatchClause(new CatchClause()
+        .setException(new SingleVariableDeclaration(caughtException))
+        .setBody(catchBlock));
+
+    Statement closeResource = new ExpressionStatement(new MethodInvocation(
+        closeMethod, typeUtil.getVoid(), new SimpleName(resourceVar)));
+    VariableElement suppressedException =
+        GeneratedVariableElement.newLocalVar("e", throwableType, null);
+    node.setFinally(new Block().addStatement(new IfStatement()
+        .setExpression(new InfixExpression(
+            typeUtil.getBoolean(), InfixExpression.Operator.NOT_EQUALS,
+            new SimpleName(resourceVar), new NullLiteral(typeUtil.getNull())))
+        .setThenStatement(new Block().addStatement(new IfStatement()
+            .setExpression(new InfixExpression(
+                typeUtil.getBoolean(), InfixExpression.Operator.NOT_EQUALS,
+                new SimpleName(primaryException), new NullLiteral(typeUtil.getNull())))
+            .setThenStatement(new Block().addStatement(new TryStatement()
+                .setBody(new Block().addStatement(closeResource))
+                .addCatchClause(new CatchClause()
+                    .setException(new SingleVariableDeclaration(suppressedException))
+                    .setBody(new Block().addStatement(new ExpressionStatement(new MethodInvocation(
+                        addSuppressedMethod, typeUtil.getVoid(), new SimpleName(primaryException))
+                        .addArgument(new SimpleName(suppressedException))))))))
+            .setElseStatement(new Block().addStatement(closeResource.copy()))))));
+
+    // Visit the new block instead of the current node because some of content of the node (eg. the
+    // resource initializer) has been moved outside of the try node.
+    block.accept(this);
+    return false;
   }
 }

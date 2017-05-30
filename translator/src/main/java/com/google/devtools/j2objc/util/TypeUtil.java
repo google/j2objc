@@ -95,6 +95,7 @@ public final class TypeUtil {
   private final TypeElement javaString;
   private final TypeElement javaClass;
   private final TypeElement javaNumber;
+  private final TypeElement javaThrowable;
 
   private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
 
@@ -109,7 +110,7 @@ public final class TypeUtil {
     javaString = (TypeElement) env.resolve("java.lang.String");
     javaClass = (TypeElement) env.resolve("java.lang.Class");
     javaNumber = (TypeElement) env.resolve("java.lang.Number");
-    TypeElement javaThrowable = (TypeElement) env.resolve("java.lang.Throwable");
+    javaThrowable = (TypeElement) env.resolve("java.lang.Throwable");
     TypeElement javaCloneable = (TypeElement) env.resolve("java.lang.Cloneable");
 
     javaToObjcTypeMap = ImmutableMap.<TypeElement, TypeElement>builder()
@@ -300,6 +301,10 @@ public final class TypeUtil {
 
   public TypeElement getJavaNumber() {
     return javaNumber;
+  }
+
+  public TypeElement getJavaThrowable() {
+    return javaThrowable;
   }
 
   public boolean isString(TypeElement e) {

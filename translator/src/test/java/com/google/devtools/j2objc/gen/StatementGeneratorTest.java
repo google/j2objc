@@ -117,7 +117,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("@try {\n;\n}\n @catch (JavaLangException *e) {\n}", result);
+    assertEquals("@try {\n;\n}\n@catch (JavaLangException *e) {\n}", result);
   }
 
   public void testInstanceOfTranslation() throws IOException {
@@ -1368,11 +1368,11 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    } catch (FirstException|SecondException e) { throw e; }}}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "@catch (Test_FirstException *e) {\n    @throw nil_chk(e);\n  }");
+        "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
     assertTranslation(translation,
-        "@catch (Test_SecondException *e) {\n    @throw nil_chk(e);\n  }");
+        "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
     assertNotInTranslation(translation,
-        "@catch (JavaLangException *e) {\n    @throw nil_chk(e);\n  }");
+        "@catch (JavaLangException *e) {\n    @throw e;\n  }");
   }
 
   public void testDifferentTypesInConditionalExpression() throws IOException {
@@ -1394,138 +1394,6 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
     assertTranslation(translation, "(void) new_NSException_init();");
-  }
-
-  // Verify minimal try-with-resources translation.
-  public void testTryWithResourceNoCatchOrFinally() throws IOException {
-    String translation = translateSourceFile(
-        "import java.io.*; public class Test { String test(String path) throws IOException { "
-        + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
-        + "    return br.readLine(); } }}",
-        "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
-        + "create_JavaIoFileReader_initWithNSString_(path));",
-        "NSException *__primaryException1 = nil;",
-        "@try {",
-        "  return [br readLine];",
-        "}",
-        "@catch (NSException *e) {",
-        "  __primaryException1 = e;",
-        "  @throw e;",
-        "}",
-        "@finally {",
-        "  if (br != nil) {",
-        "    if (__primaryException1 != nil) {",
-        "      @try {",
-        "        [br close];",
-        "      } @catch (NSException *e) {",
-        "        [__primaryException1 addSuppressedWithNSException:e];",
-        "      }",
-        "    } else {",
-        "      [br close];",
-        "    }",
-        "  }",
-        "}");
-  }
-
-  // Verify try-with-resources translation with multiple resources.
-  public void testTryWithMultipleResourceNoCatchOrFinally() throws IOException {
-    String translation = translateSourceFile(
-        "import java.io.*; public class Test { String test(String path) throws IOException { "
-        + "  try (BufferedReader br = new BufferedReader(new FileReader(path));"
-        + "       BufferedReader br2 = new BufferedReader(new FileReader(path))) {"
-        + "    return br.readLine(); } }}",
-        "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
-            + "create_JavaIoFileReader_initWithNSString_(path));",
-        "NSException *__primaryException2 = nil;",
-        "@try {",
-        " JavaIoBufferedReader *br2 = create_JavaIoBufferedReader_initWithJavaIoReader_("
-            + "create_JavaIoFileReader_initWithNSString_(path));",
-        " NSException *__primaryException1 = nil;",
-        " @try {",
-        "  return [br readLine];",
-        " }",
-        " @catch (NSException *e) {",
-        "  __primaryException1 = e;",
-        "  @throw e;",
-        " }",
-        " @finally {",
-        "  if (br2 != nil) {",
-        "    if (__primaryException1 != nil) {",
-        "      @try {",
-        "        [br2 close];",
-        "      } @catch (NSException *e) {",
-        "        [__primaryException1 addSuppressedWithNSException:e];",
-        "      }",
-        "    } else {",
-        "      [br2 close];",
-        "    }",
-        "  }",
-        " }",
-        "}",
-        "@catch (NSException *e) {",
-        " __primaryException2 = e;",
-        " @throw e;",
-        "}",
-        "@finally {",
-        " if (br != nil) {",
-        "  if (__primaryException2 != nil) {",
-        "   @try {",
-        "    [br close];",
-        "   } @catch (NSException *e) {",
-        "    [__primaryException2 addSuppressedWithNSException:e];",
-        "   }",
-        "  } else {",
-        "   [br close];",
-        "  }",
-        " }",
-        "}");
-  }
-
-  // Verify try-with-resources translation is inside of try block with catch clause outside.
-  public void testTryWithResourceAndCatch() throws IOException {
-    String translation = translateSourceFile(
-        "import java.io.*; public class Test { String test(String path) throws IOException { "
-        + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
-        + "    return br.readLine(); "
-        + "  } catch (IOException e) {"
-        + "    System.out.println(e);"
-        + "    throw e;"
-        + "  } }}",
-        "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "@try {",
-        " JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
-        + "create_JavaIoFileReader_initWithNSString_(path));",
-        " NSException *__primaryException1 = nil;",
-        " @try {",
-        "  return [br readLine];",
-        " }",
-        " @catch (NSException *e) {",
-        "  __primaryException1 = e;",
-        "  @throw e;",
-        " }",
-        " @finally {",
-        "  if (br != nil) {",
-        "   if (__primaryException1 != nil) {",
-        "    @try {",
-        "     [br close];",
-        "    } @catch (NSException *e) {",
-        "     [__primaryException1 addSuppressedWithNSException:e];",
-        "    }",
-        "   } else {",
-        "    [br close];",
-        "   }",
-        "  }",
-        " }",
-        "}",
-        "@catch (JavaIoIOException *e) {",
-        " [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithId:e];",
-        " @throw nil_chk(e);",
-        "}");
   }
 
   // Verify that multiple resources are closed in reverse order from opening.

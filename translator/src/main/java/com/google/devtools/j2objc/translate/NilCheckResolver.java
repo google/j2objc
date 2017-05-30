@@ -738,6 +738,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
     pushScope();
     for (CatchClause catchClause : node.getCatchClauses()) {
       scope.mergeDownAndReset();
+      addSafeVar(catchClause.getException().getVariableElement());
       catchClause.accept(this);
     }
     popAndMerge();

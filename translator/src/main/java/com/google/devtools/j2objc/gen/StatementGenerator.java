@@ -292,19 +292,6 @@ public class StatementGenerator extends UnitTreeVisitor {
     return false;
   }
 
-  private void printMultiCatch(CatchClause node) {
-    SingleVariableDeclaration exception = node.getException();
-    for (Type exceptionType : ((UnionType) exception.getType()).getTypes()) {
-      buffer.append("@catch (");
-      exceptionType.accept(this);
-      buffer.append(" *");
-      buffer.append(nameTable.getVariableQualifiedName(exception.getVariableElement()));
-      buffer.append(") {\n");
-      printStatements(node.getBody().getStatements());
-      buffer.append("}\n");
-    }
-  }
-
   @Override
   public boolean visit(CharacterLiteral node) {
     buffer.append(UnicodeUtils.escapeCharLiteral(node.charValue()));
@@ -837,24 +824,10 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(TryStatement node) {
-    List<VariableDeclarationExpression> resources = node.getResources();
-    boolean hasResources = !resources.isEmpty();
-    boolean extendedTryWithResources = hasResources
-        && (!node.getCatchClauses().isEmpty() || node.getFinally() != null);
-
-    if (hasResources && !extendedTryWithResources) {
-      printBasicTryWithResources(node.getBody(), resources);
-      return false;
-    }
+    assert node.getResources().isEmpty() : "try-with-resources is handled by Rewriter.";
 
     buffer.append("@try ");
-    if (extendedTryWithResources) {
-      // Put resources inside the body of this statement (JSL 14.20.3.2).
-      printBasicTryWithResources(node.getBody(), resources);
-    } else {
-      node.getBody().accept(this);
-    }
-    buffer.append(' ');
+    node.getBody().accept(this);
 
     for (CatchClause cc : node.getCatchClauses()) {
       if (cc.getException().getType() instanceof UnionType) {
@@ -876,54 +849,17 @@ public class StatementGenerator extends UnitTreeVisitor {
     return false;
   }
 
-  /**
-   * Print basic try-with-resources, as defined by JLS 14.20.3.1.
-   */
-  private void printBasicTryWithResources(Block body,
-      List<VariableDeclarationExpression> resources) {
-    VariableDeclarationExpression resource = resources.get(0);
-    // Resource declaration can only have one fragment.
-    String resourceName =
-        nameTable.getVariableQualifiedName(resource.getFragment(0).getVariableElement());
-    String primaryExceptionName = UnicodeUtils.format("__primaryException%d", resources.size());
-
-    buffer.append("{\n");
-    resource.accept(this);
-    buffer.append(";\n");
-    buffer.append(UnicodeUtils.format("NSException *%s = nil;\n", primaryExceptionName));
-
-    buffer.append("@try ");
-    List<VariableDeclarationExpression> tail = resources.subList(1, resources.size());
-    if (tail.isEmpty()) {
-      body.accept(this);
-    } else {
-      printBasicTryWithResources(body, tail);
+  private void printMultiCatch(CatchClause node) {
+    SingleVariableDeclaration exception = node.getException();
+    for (Type exceptionType : ((UnionType) exception.getType()).getTypes()) {
+      buffer.append("@catch (");
+      exceptionType.accept(this);
+      buffer.append(" *");
+      buffer.append(nameTable.getVariableQualifiedName(exception.getVariableElement()));
+      buffer.append(") {\n");
+      printStatements(node.getBody().getStatements());
+      buffer.append("}\n");
     }
-
-    buffer.append(UnicodeUtils.format(
-        "@catch (NSException *e) {\n"
-        + "%s = e;\n"
-        + "@throw e;\n"
-        + "}\n", primaryExceptionName));
-
-    buffer.append(UnicodeUtils.format(
-        // Including !=nil in the tests isn't necessary, but makes it easier
-        // to compare to the JLS spec.
-        "@finally {\n"
-        + " if (%s != nil) {\n"
-        + "  if (%s != nil) {\n"
-        + "   @try {\n"
-        + "    [%s close];\n"
-        + "   } @catch (NSException *e) {\n"
-        + "    [%s addSuppressedWithNSException:e];\n"
-        + "   }\n"
-        + "  } else {\n"
-        + "   [%s close];\n"
-        + "  }\n"
-        + " }\n"
-        + "}\n",
-        resourceName, primaryExceptionName, resourceName, primaryExceptionName, resourceName));
-    buffer.append("}\n");
   }
 
   @Override

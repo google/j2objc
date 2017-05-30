@@ -345,4 +345,144 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "+ (void)initialize__ {");
   }
+
+  // Verify minimal try-with-resources translation.
+  public void testTryWithResourceNoCatchOrFinally() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { "
+        + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
+        + "    return br.readLine(); } }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
+        + "create_JavaIoFileReader_initWithNSString_(path));",
+        "NSException *__primaryException1 = nil;",
+        "@try {",
+        "  return [br readLine];",
+        "}",
+        "@catch (NSException *e) {",
+        "  __primaryException1 = e;",
+        "  @throw e;",
+        "}",
+        "@finally {",
+        "  if (br != nil) {",
+        "    if (__primaryException1 != nil) {",
+        "      @try {",
+        "        [br close];",
+        "      }",
+        "      @catch (NSException *e) {",
+        "        [__primaryException1 addSuppressedWithNSException:e];",
+        "      }",
+        "    }",
+        "    else {",
+        "      [br close];",
+        "    }",
+        "  }",
+        "}");
+  }
+
+  // Verify try-with-resources translation with multiple resources.
+  public void testTryWithMultipleResourceNoCatchOrFinally() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { "
+        + "  try (BufferedReader br = new BufferedReader(new FileReader(path));"
+        + "       BufferedReader br2 = new BufferedReader(new FileReader(path))) {"
+        + "    return br.readLine(); } }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
+            + "create_JavaIoFileReader_initWithNSString_(path));",
+        "NSException *__primaryException2 = nil;",
+        "@try {",
+        " JavaIoBufferedReader *br2 = create_JavaIoBufferedReader_initWithJavaIoReader_("
+            + "create_JavaIoFileReader_initWithNSString_(path));",
+        " NSException *__primaryException1 = nil;",
+        " @try {",
+        "  return [br readLine];",
+        " }",
+        " @catch (NSException *e) {",
+        "  __primaryException1 = e;",
+        "  @throw e;",
+        " }",
+        " @finally {",
+        "  if (br2 != nil) {",
+        "    if (__primaryException1 != nil) {",
+        "      @try {",
+        "        [br2 close];",
+        "      }",
+        "      @catch (NSException *e) {",
+        "        [__primaryException1 addSuppressedWithNSException:e];",
+        "      }",
+        "    }",
+        "    else {",
+        "      [br2 close];",
+        "    }",
+        "  }",
+        " }",
+        "}",
+        "@catch (NSException *e) {",
+        " __primaryException2 = e;",
+        " @throw e;",
+        "}",
+        "@finally {",
+        " if (br != nil) {",
+        "  if (__primaryException2 != nil) {",
+        "   @try {",
+        "    [br close];",
+        "   }",
+        "   @catch (NSException *e) {",
+        "    [__primaryException2 addSuppressedWithNSException:e];",
+        "   }",
+        "  }",
+        "  else {",
+        "   [br close];",
+        "  }",
+        " }",
+        "}");
+  }
+
+  // Verify try-with-resources translation is inside of try block with catch clause outside.
+  public void testTryWithResourceAndCatch() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { "
+        + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
+        + "    return br.readLine(); "
+        + "  } catch (IOException e) {"
+        + "    System.out.println(e);"
+        + "    throw e;"
+        + "  } }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "@try {",
+        " JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
+        + "create_JavaIoFileReader_initWithNSString_(path));",
+        " NSException *__primaryException1 = nil;",
+        " @try {",
+        "  return [br readLine];",
+        " }",
+        " @catch (NSException *e) {",
+        "  __primaryException1 = e;",
+        "  @throw e;",
+        " }",
+        " @finally {",
+        "  if (br != nil) {",
+        "   if (__primaryException1 != nil) {",
+        "    @try {",
+        "     [br close];",
+        "    }",
+        "    @catch (NSException *e) {",
+        "     [__primaryException1 addSuppressedWithNSException:e];",
+        "    }",
+        "   }",
+        "   else {",
+        "    [br close];",
+        "   }",
+        "  }",
+        " }",
+        "}",
+        "@catch (JavaIoIOException *e) {",
+        " [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithId:e];",
+        " @throw e;",
+        "}");
+  }
 }
