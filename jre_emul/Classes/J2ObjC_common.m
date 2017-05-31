@@ -280,9 +280,8 @@ static jint ComputeCapacity(const char *types, va_list va, NSString **objDescrip
         break;
       case '@':
         {
-          id obj = va_arg(va, id);
-          if (obj) {
-            NSString *description = [obj description];
+          NSString *description = [va_arg(va, id) description];
+          if (description) {
             *(objDescriptions++) = description;
             capacity += CFStringGetLength((CFStringRef)description);
           } else {

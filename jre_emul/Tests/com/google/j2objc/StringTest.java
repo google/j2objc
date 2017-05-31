@@ -250,4 +250,15 @@ public class StringTest extends TestCase {
       // Expected.
     }
   }
+
+  private static class NullToString {
+    public String toString() {
+      return null;
+    }
+  }
+
+  public void testStringConcatenationWithNullToString() {
+    Object o = new NullToString();
+    assertEquals("toString: null", "toString: " + o);
+  }
 }
