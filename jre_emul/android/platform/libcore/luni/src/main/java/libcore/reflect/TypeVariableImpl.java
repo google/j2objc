@@ -25,7 +25,9 @@ import java.lang.reflect.TypeVariable;
 
 
 public final class TypeVariableImpl<D extends GenericDeclaration> implements TypeVariable<D> {
-    private TypeVariableImpl<D> formalVar;
+    /* J2ObjC: Use genericDeclaration to indicate the "resolved" state instead because formalVar can
+     * be self-referential.
+    private TypeVariableImpl<D> formalVar;*/
     private final GenericDeclaration declOfVarUser;
     private final String name;
     private D genericDeclaration;
@@ -56,7 +58,7 @@ public final class TypeVariableImpl<D extends GenericDeclaration> implements Typ
         this.genericDeclaration = genericDecl;
         this.name = name;
         this.bounds = bounds;
-        this.formalVar = this;
+        //this.formalVar = this;
         this.declOfVarUser = null;
     }
 
@@ -100,7 +102,8 @@ public final class TypeVariableImpl<D extends GenericDeclaration> implements Typ
     }
 
     void resolve() {
-        if (formalVar != null) {
+        //if (formalVar != null) {
+        if (genericDeclaration != null) {
             return;
         }
         GenericDeclaration curLayer = declOfVarUser;
@@ -111,7 +114,7 @@ public final class TypeVariableImpl<D extends GenericDeclaration> implements Typ
                 throw new AssertionError("illegal type variable reference");
             }
         }
-        formalVar = (TypeVariableImpl<D>) var;
+        TypeVariableImpl<D> formalVar = (TypeVariableImpl<D>) var;
         this.genericDeclaration = formalVar.genericDeclaration;
         this.bounds = formalVar.bounds;
     }
