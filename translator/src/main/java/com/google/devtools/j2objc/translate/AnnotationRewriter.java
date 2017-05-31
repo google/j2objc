@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationValue;
@@ -71,7 +72,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     addMemberProperties(node, members, fieldElements);
     addDefaultAccessors(node, members);
     bodyDecls.add(createAnnotationTypeMethod(type));
-    bodyDecls.add(createDescriptionMethod(type));
+    bodyDecls.add(createDescriptionMethod(type, members, fieldElements));
     addConstructor(node, fieldElements);
   }
 
@@ -184,15 +185,42 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     return annotationTypeMethod;
   }
 
-  private MethodDeclaration createDescriptionMethod(TypeElement type) {
+  private MethodDeclaration createDescriptionMethod(TypeElement type,
+      List<AnnotationTypeMemberDeclaration> members,
+      Map<ExecutableElement, VariableElement> fieldElements) {
     ExecutableElement descriptionElement = GeneratedExecutableElement.newMethodWithSelector(
         "description", typeUtil.getJavaString().asType(), type);
     MethodDeclaration descriptionMethod = new MethodDeclaration(descriptionElement);
     descriptionMethod.setHasDeclaration(false);
     Block descriptionBody = new Block();
     descriptionMethod.setBody(descriptionBody);
-    descriptionBody.addStatement(new ReturnStatement(
-        new StringLiteral("@" + elementUtil.getBinaryName(type) + "()", typeUtil)));
+    StringBuilder description = new StringBuilder();
+
+    StringBuilder fields = new StringBuilder();
+    if (!members.isEmpty()) {
+      description.append("@\"@" + elementUtil.getBinaryName(type) + "(");
+      Iterator<AnnotationTypeMemberDeclaration> iter = members.iterator();
+      while (iter.hasNext()) {
+        AnnotationTypeMemberDeclaration member = iter.next();
+        ExecutableElement memberElement = member.getExecutableElement();
+        String propName = NameTable.getAnnotationPropertyName(memberElement);
+        String fieldName = nameTable.getVariableShortName(fieldElements.get(memberElement));
+
+        description.append(
+            propName + "=%" + TypeUtil.getObjcFormatSpecifier(memberElement.getReturnType()));
+        fields.append(fieldName);
+        if (iter.hasNext()) {
+          description.append(", ");
+          fields.append(", ");
+        }
+      }
+      description.append(")\", " + fields);
+      descriptionBody.addStatement(
+          new NativeStatement("return [NSString stringWithFormat:" + description + "];"));
+    } else {
+      descriptionBody.addStatement(new ReturnStatement(
+          new StringLiteral("@" + elementUtil.getBinaryName(type) + "()", typeUtil)));
+    }
     return descriptionMethod;
   }
 }

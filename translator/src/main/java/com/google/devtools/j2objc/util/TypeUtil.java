@@ -707,6 +707,25 @@ public final class TypeUtil {
     return INNER_CLASS_JOINER.join(components);
   }
 
+
+  /** 
+   * Returns a format specifier that is supported by the NSString, CFString and NSLog formatting
+   * methods.
+   */
+  public static String getObjcFormatSpecifier(TypeMirror t) {
+    switch (t.getKind()) {
+      case BOOLEAN:
+      case BYTE:
+      case INT: return "d";
+      case CHAR: return "c";
+      case DOUBLE: return "lf";
+      case FLOAT: return "f";
+      case LONG: return "lld";
+      case SHORT: return "hd";
+      default: return "@";
+    }
+  }
+
   /**
    * Get the "Reference" signature of a method.
    */
