@@ -162,18 +162,6 @@ TEST_SOURCES := \
     AbstractQueuedSynchronizerTest.java \
     AbstractQueueTest.java \
     ArrayBlockingQueueTest.java \
-    AtomicBooleanTest.java \
-    AtomicIntegerArrayTest.java \
-    AtomicIntegerFieldUpdaterTest.java \
-    AtomicIntegerTest.java \
-    AtomicLongArrayTest.java \
-    AtomicLongFieldUpdaterTest.java \
-    AtomicLongTest.java \
-    AtomicMarkableReferenceTest.java \
-    AtomicReferenceArrayTest.java \
-    AtomicReferenceFieldUpdaterTest.java \
-    AtomicReferenceTest.java \
-    AtomicStampedReferenceTest.java \
     ConcurrentHashMapTest.java \
     CopyOnWriteArrayListTest.java \
     CopyOnWriteArraySetTest.java \
@@ -243,6 +231,19 @@ TEST_SOURCES := \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \
+    jsr166/Atomic8Test.java \
+    jsr166/AtomicBooleanTest.java \
+    jsr166/AtomicIntegerArrayTest.java \
+    jsr166/AtomicIntegerFieldUpdaterTest.java \
+    jsr166/AtomicIntegerTest.java \
+    jsr166/AtomicLongArrayTest.java \
+    jsr166/AtomicLongFieldUpdaterTest.java \
+    jsr166/AtomicLongTest.java \
+    jsr166/AtomicMarkableReferenceTest.java \
+    jsr166/AtomicReferenceArrayTest.java \
+    jsr166/AtomicReferenceFieldUpdaterTest.java \
+    jsr166/AtomicReferenceTest.java \
+    jsr166/AtomicStampedReferenceTest.java \
     jsr166/ConcurrentLinkedDequeTest.java \
     jsr166/ConcurrentLinkedQueueTest.java \
     jsr166/LinkedTransferQueueTest.java \

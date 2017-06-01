@@ -10,6 +10,9 @@ package java.util.concurrent.atomic;
 #include "java/lang/IndexOutOfBoundsException.h"
 ]-*/
 
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntUnaryOperator;
+
 /**
  * An {@code int} array in which elements may be updated atomically.
  * See the {@link java.util.concurrent.atomic} package
@@ -22,6 +25,30 @@ public class AtomicIntegerArray implements java.io.Serializable {
     private static final long serialVersionUID = 2862133569453604235L;
 
     private final int[] array;
+    /* J2ObjC removed.
+    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
+    private static final int ABASE;
+    private static final int ASHIFT;
+
+    static {
+        ABASE = U.arrayBaseOffset(int[].class);
+        int scale = U.arrayIndexScale(int[].class);
+        if ((scale & (scale - 1)) != 0)
+            throw new Error("array index scale not a power of two");
+        ASHIFT = 31 - Integer.numberOfLeadingZeros(scale);
+    }
+
+    private long checkedByteOffset(int i) {
+        if (i < 0 || i >= array.length)
+            throw new IndexOutOfBoundsException("index " + i);
+
+        return byteOffset(i);
+    }
+
+    private static long byteOffset(int i) {
+        return ((long) i << ASHIFT) + ABASE;
+    }
+    */
 
     /**
      * Creates a new AtomicIntegerArray of the given length, with all
@@ -128,7 +155,7 @@ public class AtomicIntegerArray implements java.io.Serializable {
      * @param i the index
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful. False return indicates that
+     * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
     public final native boolean compareAndSet(int i, int expect, int update) /*-[
@@ -147,7 +174,7 @@ public class AtomicIntegerArray implements java.io.Serializable {
      * @param i the index
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful
+     * @return {@code true} if successful
      */
     public final native boolean weakCompareAndSet(int i, int expect, int update) /*-[
       return __c11_atomic_compare_exchange_weak(
@@ -192,7 +219,7 @@ public class AtomicIntegerArray implements java.io.Serializable {
      * @return the updated value
      */
     public final int incrementAndGet(int i) {
-        return addAndGet(i, 1);
+        return getAndAdd(i, 1) + 1;
     }
 
     /**
@@ -202,7 +229,7 @@ public class AtomicIntegerArray implements java.io.Serializable {
      * @return the updated value
      */
     public final int decrementAndGet(int i) {
-        return addAndGet(i, -1);
+        return getAndAdd(i, -1) - 1;
     }
 
     /**
@@ -215,6 +242,101 @@ public class AtomicIntegerArray implements java.io.Serializable {
     public final native int addAndGet(int i, int delta) /*-[
       return __c11_atomic_fetch_add(GetPtrChecked(self, i), delta, __ATOMIC_SEQ_CST) + delta;
     ]-*/;
+
+    /**
+     * Atomically updates the element at index {@code i} with the results
+     * of applying the given function, returning the previous value. The
+     * function should be side-effect-free, since it may be re-applied
+     * when attempted updates fail due to contention among threads.
+     *
+     * @param i the index
+     * @param updateFunction a side-effect-free function
+     * @return the previous value
+     * @since 1.8
+     */
+    public final int getAndUpdate(int i, IntUnaryOperator updateFunction) {
+        // long offset = checkedByteOffset(i);
+        int prev, next;
+        do {
+            prev = get(i);
+            next = updateFunction.applyAsInt(prev);
+        } while (!compareAndSet(i, prev, next));
+        return prev;
+    }
+
+    /**
+     * Atomically updates the element at index {@code i} with the results
+     * of applying the given function, returning the updated value. The
+     * function should be side-effect-free, since it may be re-applied
+     * when attempted updates fail due to contention among threads.
+     *
+     * @param i the index
+     * @param updateFunction a side-effect-free function
+     * @return the updated value
+     * @since 1.8
+     */
+    public final int updateAndGet(int i, IntUnaryOperator updateFunction) {
+        // long offset = checkedByteOffset(i);
+        int prev, next;
+        do {
+            prev = get(i);
+            next = updateFunction.applyAsInt(prev);
+        } while (!compareAndSet(i, prev, next));
+        return next;
+    }
+
+    /**
+     * Atomically updates the element at index {@code i} with the
+     * results of applying the given function to the current and
+     * given values, returning the previous value. The function should
+     * be side-effect-free, since it may be re-applied when attempted
+     * updates fail due to contention among threads.  The function is
+     * applied with the current value at index {@code i} as its first
+     * argument, and the given update as the second argument.
+     *
+     * @param i the index
+     * @param x the update value
+     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @return the previous value
+     * @since 1.8
+     */
+    public final int getAndAccumulate(int i, int x,
+                                      IntBinaryOperator accumulatorFunction) {
+        // long offset = checkedByteOffset(i);
+        int prev, next;
+        do {
+            prev = get(i);
+            next = accumulatorFunction.applyAsInt(prev, x);
+        } while (!compareAndSet(i, prev, next));
+        return prev;
+    }
+
+    /**
+     * Atomically updates the element at index {@code i} with the
+     * results of applying the given function to the current and
+     * given values, returning the updated value. The function should
+     * be side-effect-free, since it may be re-applied when attempted
+     * updates fail due to contention among threads.  The function is
+     * applied with the current value at index {@code i} as its first
+     * argument, and the given update as the second argument.
+     *
+     * @param i the index
+     * @param x the update value
+     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @return the updated value
+     * @since 1.8
+     */
+    public final int accumulateAndGet(int i, int x,
+                                      IntBinaryOperator accumulatorFunction) {
+        // long offset = checkedByteOffset(i);
+        int prev, next;
+        do {
+            //prev = getRaw(offset);
+            prev = get(i);
+            next = accumulatorFunction.applyAsInt(prev, x);
+        } while (!compareAndSet(i, prev, next));
+        return next;
+    }
 
     /**
      * Returns the String representation of the current values of array.

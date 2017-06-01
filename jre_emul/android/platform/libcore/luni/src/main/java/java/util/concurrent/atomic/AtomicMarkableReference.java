@@ -91,7 +91,7 @@ public class AtomicMarkableReference<V> {
      * @param newReference the new value for the reference
      * @param expectedMark the expected value of the mark
      * @param newMark the new value for the mark
-     * @return true if successful
+     * @return {@code true} if successful
      */
     public boolean weakCompareAndSet(V       expectedReference,
                                      V       newReference,
@@ -111,7 +111,7 @@ public class AtomicMarkableReference<V> {
      * @param newReference the new value for the reference
      * @param expectedMark the expected value of the mark
      * @param newMark the new value for the mark
-     * @return true if successful
+     * @return {@code true} if successful
      */
     public boolean compareAndSet(V       expectedReference,
                                  V       newReference,
@@ -149,7 +149,7 @@ public class AtomicMarkableReference<V> {
      *
      * @param expectedReference the expected value of the reference
      * @param newMark the new value for the mark
-     * @return true if successful
+     * @return {@code true} if successful
      */
     public boolean attemptMark(V expectedReference, boolean newMark) {
         Pair<V> current = pair;
@@ -158,6 +158,25 @@ public class AtomicMarkableReference<V> {
             (newMark == current.mark ||
              casPair(current, Pair.of(expectedReference, newMark)));
     }
+
+    // Unsafe mechanics
+
+    /* J2ObjC removed.
+    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
+    private static final long PAIR;
+    static {
+        try {
+            PAIR = U.objectFieldOffset
+                (AtomicMarkableReference.class.getDeclaredField("pair"));
+        } catch (ReflectiveOperationException e) {
+            throw new Error(e);
+        }
+    }
+
+    private boolean casPair(Pair<V> cmp, Pair<V> val) {
+        return U.compareAndSwapObject(this, PAIR, cmp, val);
+    }
+    */
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
       return JreCompareAndSwapVolatileStrongId(&self->pair_, cmp, val);

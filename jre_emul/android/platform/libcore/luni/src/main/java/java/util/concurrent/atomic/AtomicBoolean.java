@@ -20,6 +20,20 @@ package java.util.concurrent.atomic;
 public class AtomicBoolean implements java.io.Serializable {
     private static final long serialVersionUID = 4654671469794556979L;
 
+    /* J2ObjC removed.
+    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
+    private static final long VALUE;
+
+    static {
+        try {
+            VALUE = U.objectFieldOffset
+                (AtomicBoolean.class.getDeclaredField("value"));
+        } catch (ReflectiveOperationException e) {
+            throw new Error(e);
+        }
+    }
+    */
+
     private volatile int value;
 
     /**
@@ -52,7 +66,7 @@ public class AtomicBoolean implements java.io.Serializable {
      *
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful. False return indicates that
+     * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
     public final native boolean compareAndSet(boolean expect, boolean update) /*-[
@@ -71,7 +85,7 @@ public class AtomicBoolean implements java.io.Serializable {
      *
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful
+     * @return {@code true} if successful
      */
     public native boolean weakCompareAndSet(boolean expect, boolean update) /*-[
       jint e = expect ? 1 : 0;

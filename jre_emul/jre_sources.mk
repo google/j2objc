@@ -843,7 +843,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
   java/util/concurrent/atomic/AtomicReferenceArray.java \
   java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
   java/util/concurrent/atomic/AtomicStampedReference.java \
-  java/util/concurrent/atomic/Fences.java \
   java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
   java/util/concurrent/locks/Lock.java \
   java/util/concurrent/locks/ReadWriteLock.java \
