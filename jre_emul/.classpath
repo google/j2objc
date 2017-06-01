@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="android/libcore/harmony-tests/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/json/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/json/src/test/java"/>
+	<classpathentry kind="src" path="android/libcore/jsr166-tests/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/luni/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/luni/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/support/src/test/java"/>
