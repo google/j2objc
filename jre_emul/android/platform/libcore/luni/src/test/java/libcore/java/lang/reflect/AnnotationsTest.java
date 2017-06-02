@@ -244,7 +244,7 @@ public final class AnnotationsTest extends TestCase {
         assertFalse(Modifier.isPrivate(modifiers));
         assertFalse(Modifier.isAbstract(modifiers));
         assertTrue(Modifier.isStatic(modifiers));
-        assertFalse(Modifier.isFinal(modifiers));
+        assertTrue(Modifier.isFinal(modifiers));
         assertFalse(Modifier.isStrict(modifiers));
     }
 
