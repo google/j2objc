@@ -43,16 +43,8 @@ if [ ! -d "${XCODE_ROOT}" ]; then
   exit 1
 fi
 
-# Try looking in the install directory for Xcode 4.x.
-PLATFORM_ROOT=${XCODE_ROOT}/Platforms/${SDK_TYPE}.platform
-if [ -d "${PLATFORM_ROOT}" ]; then
-  SDKS_ROOT=${PLATFORM_ROOT}/Developer/SDKs
-  if [ -d "${SDKS_ROOT}" ]; then
-    # Return the alphabetically last SDK in the directory, which should be the
-    # latest version.  This will need to be improved if iOS 10 ever releases.
-    SDK_PATH=$(ls -rd "${SDKS_ROOT}/${SDK_TYPE}"* | head -1)
-  fi
-fi
+LC_SDK_NAME=$(echo $SDK_TYPE | tr /A-Z/ /a-z/)
+SDK_PATH=$(xcrun -sdk $LC_SDK_NAME --show-sdk-path)
 
 if [ "x${SDK_PATH}" = "x" ]; then
   # SDKs aren't in standard location, so ask xcodebuild to look up a common
