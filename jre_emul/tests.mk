@@ -53,7 +53,7 @@ else
 J2OBJCC := ../dist/j2objcc
 endif
 
-TEST_JOCC := $(J2OBJCC) -g $(WARNINGS)
+TEST_JOCC := $(J2OBJCC) -g $(WARNINGS) -isysroot `xcrun --show-sdk-path`
 LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support
 COMPILE_FLAGS := $(INCLUDE_ARGS) -c -Wno-objc-redundant-literal-use -Wno-format -Werror \
   -Wno-parentheses
@@ -237,6 +237,7 @@ $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
         ../dist/lib/macosx/libjre_emul.a ../dist/lib/macosx/libjunit.a
 	@echo Building test executable...
+	@echo "  " $(TEST_JOCC) $(LINK_FLAGS) ...
 	@$(TEST_JOCC) $(LINK_FLAGS) -o $@ $(TEST_OBJS)
 
 $(ALL_TESTS_SOURCE): tests.mk
