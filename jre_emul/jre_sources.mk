@@ -1742,6 +1742,7 @@ PUBLIC_NATIVE_HEADERS = \
   NSString+JavaString.h \
   java/lang/AbstractStringBuilder.h \
   java/lang/Iterable.h \
+  java/lang/Throwable.h \
   java/lang/reflect/AccessibleObject.h \
   java/lang/reflect/Constructor.h \
   java/lang/reflect/Executable.h \
