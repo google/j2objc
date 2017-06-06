@@ -22,6 +22,8 @@
 #   j2objcc <clang options> <files>
 #
 
+declare RAW_ARGS="$@"
+
 if [ -L "$0" ]; then
   readonly DIR=$(dirname $(readlink "$0"))
 else
@@ -44,7 +46,7 @@ fi
 
 declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow -Wno-compare-distinct-pointer-types"
 CC_FLAGS="${CC_FLAGS} -Wno-nullability-completeness"
-declare OBJC="-std=c11"
+declare STD_FLAG="c11"
 declare OTHER_LIBS="-l iconv -l z -l j2objc_main -l c++"
 declare SYSROOT_PATH="none"
 declare EMUL_LIB="-ljre_emul"
@@ -54,24 +56,25 @@ declare USE_ARC="no"
 declare CORE_LIB_WARNING="warning: linking the core runtime to reduce binary \
 size. Use -ljre_emul to link the full Java runtime."
 
-for arg; do
-  case $arg in
+while [ $# -gt 0 ]; do
+  case $1 in
     # Check whether linking is disabled by a -c, -S, or -E option.
     -[cSE]) DO_LINK="no" ;;
     -fobjc-arc) USE_ARC="yes" ;;
     # Check whether we need to build for C++ instead of C.
-    objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++98" OBJC= ;;
+    -x) if [ "$2" == "objective-c++" ]; then STD_FLAG="c++98"; fi; shift ;;
     # Save sysroot path for later inspection.
-    -isysroot) SYSROOT_PATH="${i#*=}" ;;
+    -isysroot) SYSROOT_PATH="$2"; shift ;;
     -ObjC) EMUL_LIB="-ljre_core" ;;
   esac
+  shift
 done
 
 if [[ "$USE_ARC" == "yes" ]]; then
   CC_FLAGS="$CC_FLAGS -fobjc-arc-exceptions"
 fi
 
-if [[ $@ =~ .*-l(\ )*jre_emul\ .* ]]; then
+if [[ $RAW_ARGS =~ .*-l(\ )*jre_emul\ .* ]]; then
   EMUL_LIB=""
 fi
 
@@ -87,4 +90,4 @@ if [[ "$DO_LINK" == "yes" ]]; then
   LINK_FLAGS="${EMUL_LIB} ${OTHER_LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
 fi
 
-xcrun clang "$@" -I ${INCLUDE_PATH} ${CC_FLAGS} ${OBJC} ${LINK_FLAGS}
+xcrun clang ${RAW_ARGS} -I ${INCLUDE_PATH} ${CC_FLAGS} -std=${STD_FLAG} ${LINK_FLAGS}
