@@ -2,6 +2,7 @@
 #import "com/google/j2objc/testing/JUnitTestRunner.h"
 
 #include "java/lang/Thread.h"
+#include "java/lang/Throwable.h"
 #include <errno.h>
 #include <execinfo.h>
 #include <signal.h>
@@ -56,10 +57,10 @@ int main(int argc, char *argv[]) {
     @try {
       UIApplicationMain(argc, argv, nil, @"TestRunnerAppDelegate");
     }
-    @catch (NSException *e) {
+    @catch (JavaLangThrowable *e) {
       JavaLangThread *currentThread = JavaLangThread_currentThread();
       id uncaughtHandler = [currentThread getUncaughtExceptionHandler];
-      [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withNSException:e];
+      [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withJavaLangThrowable:e];
       return 1;
     }
   }
