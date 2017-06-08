@@ -96,7 +96,8 @@ public class GenerationBatch {
 
   private void processSourceFile(String filename) {
     logger.finest("processing " + filename);
-    if (filename.endsWith(".java")) {
+    if (filename.endsWith(".java")
+        || (options.translateClassfiles() && filename.endsWith(".class"))) {
       processJavaFile(filename);
     } else {
       processJarFile(filename);

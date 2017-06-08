@@ -67,10 +67,17 @@ public class JavacParser extends Parser {
 
   @Override
   public CompilationUnit parse(InputFile file) {
-    String source = null;
     try {
-      source = options.fileUtil().readFile(file);
-      return parse(null, file.getUnitName(), source);
+      if (file.getUnitName().endsWith(".java")) {
+        String source = null;
+        source = options.fileUtil().readFile(file);
+        return parse(null, file.getUnitName(), source);
+      } else {
+        assert options.translateClassfiles();
+        JavacEnvironment parserEnv =
+            createEnvironment(Collections.emptyList(), Collections.emptyList(), false);
+        return ClassFileConverter.convert(options, parserEnv, file);
+      }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
       return null;

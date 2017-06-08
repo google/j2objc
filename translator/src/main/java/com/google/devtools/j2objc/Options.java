@@ -78,6 +78,7 @@ public class Options {
   private String lintArgument = null;
   private boolean reportJavadocWarnings = false;
   private boolean translateBootclasspath = false;
+  private boolean translateClassfiles = false;
   private String bootclasspath = System.getProperty("sun.boot.class.path");
 
   // TODO(tball): remove after front-end conversion is complete.
@@ -501,6 +502,8 @@ public class Options {
         javaFrontEnd = FrontEnd.JAVAC;
       } else if (arg.equals("-Xdump-ast")) {
         dumpAST = true;
+      } else if (arg.equals("-Xtranslate-classfiles")) {
+        translateClassfiles = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -882,5 +885,10 @@ public class Options {
   // TODO(kstanger): remove after front-end conversion is complete.
   public boolean isJDT() {
     return javaFrontEnd == FrontEnd.JDT;
+  }
+  
+  // Unreleased experimental project.
+  public boolean translateClassfiles() {
+    return translateClassfiles;
   }
 }
