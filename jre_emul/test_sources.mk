@@ -159,7 +159,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 TEST_SOURCES := \
     AbstractExecutorServiceTest.java \
-    AbstractQueuedSynchronizerTest.java \
     AbstractQueueTest.java \
     ArrayBlockingQueueTest.java \
     ConcurrentHashMapTest.java \
@@ -175,14 +174,11 @@ TEST_SOURCES := \
     FutureTaskTest.java \
     LinkedBlockingQueueTest.java \
     LinkedListTest.java \
-    LockSupportTest.java \
     MaxFloatingPointTest.java \
     NoPackageTest.java \
     PackagePrefixesTest.java \
     PriorityBlockingQueueTest.java \
     PriorityQueueTest.java \
-    ReentrantLockTest.java \
-    ReentrantReadWriteLockTest.java \
     SerializationTest.java \
     ScheduledExecutorTest.java \
     SynchronousQueueTest.java \
@@ -232,6 +228,8 @@ TEST_SOURCES := \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \
+    jsr166/AbstractQueuedLongSynchronizerTest.java \
+    jsr166/AbstractQueuedSynchronizerTest.java \
     jsr166/Atomic8Test.java \
     jsr166/AtomicBooleanTest.java \
     jsr166/AtomicIntegerArrayTest.java \
@@ -248,6 +246,9 @@ TEST_SOURCES := \
     jsr166/ConcurrentLinkedDequeTest.java \
     jsr166/ConcurrentLinkedQueueTest.java \
     jsr166/LinkedTransferQueueTest.java \
+    jsr166/LockSupportTest.java \
+    jsr166/ReentrantLockTest.java \
+    jsr166/ReentrantReadWriteLockTest.java \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \
     libcore/icu/NativeDecimalFormatTest.java \

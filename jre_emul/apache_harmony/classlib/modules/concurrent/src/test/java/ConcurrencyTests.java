@@ -14,6 +14,8 @@
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import jsr166.AbstractQueuedLongSynchronizerTest;
+import jsr166.AbstractQueuedSynchronizerTest;
 import jsr166.AtomicBooleanTest;
 import jsr166.AtomicIntegerArrayTest;
 import jsr166.AtomicIntegerFieldUpdaterTest;
@@ -26,6 +28,9 @@ import jsr166.AtomicReferenceArrayTest;
 import jsr166.AtomicReferenceFieldUpdaterTest;
 import jsr166.AtomicReferenceTest;
 import jsr166.AtomicStampedReferenceTest;
+import jsr166.LockSupportTest;
+import jsr166.ReentrantLockTest;
+import jsr166.ReentrantReadWriteLockTest;
 
 /**
  * Test suite for java.util.concurrent package.

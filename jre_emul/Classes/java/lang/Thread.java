@@ -77,7 +77,7 @@ public class Thread implements Runnable {
   private int parkState = ParkState.UNPARKED;
 
   /** The synchronization object responsible for this thread parking. */
-  private Object parkBlocker = new Object();
+  private Object parkBlocker;
 
   /** Callbacks to run on interruption. */
   private final List<Runnable> interruptActions = new ArrayList<Runnable>();
