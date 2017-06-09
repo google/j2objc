@@ -16,6 +16,7 @@
 
 package libcore.java.text;
 
+import com.google.j2objc.EnvironmentUtil;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -244,6 +245,8 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
     // Test the setting of locale specific patterns which have different fractional digits.
     public void test_currencyWithPatternDigits() throws Exception {
+      // Locale strings updated in macOS 10.12 to match iOS.
+      if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
         // Japanese Yen 0 fractional digits.
         NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.JAPAN);
         String result = nf.format(50.00);
@@ -257,6 +260,7 @@ public class NumberFormatTest extends junit.framework.TestCase {
         // Swiss Francs 2 fractional digits.
         nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("de-CH"));
         assertEquals("CHF\u00a050.00", nf.format(50.00));
+      }
     }
 
     // http://b/28893763

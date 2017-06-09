@@ -16,6 +16,7 @@
 
 package libcore.java.text;
 
+import com.google.j2objc.EnvironmentUtil;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -68,7 +69,9 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
     // The RI fails this test because this is an ICU-compatible Android extension.
     // Necessary for correct localization in various languages (http://b/2633414).
     public void testStandAloneNames() throws Exception {
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+      // Locale strings updated in macOS 10.12 to match iOS.
+      if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
+         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         Locale en = Locale.ENGLISH;
         Locale pl = new Locale("pl");
         Locale ru = new Locale("ru");
@@ -92,6 +95,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         assertEquals(Calendar.TUESDAY, parseDate(en, "cccc", "Tuesday").get(Calendar.DAY_OF_WEEK));
         assertEquals(Calendar.TUESDAY, parseDate(ru, "EEEE", "\u0432\u0442\u043e\u0440\u043d\u0438\u043a").get(Calendar.DAY_OF_WEEK));
         assertEquals(Calendar.TUESDAY, parseDate(ru, "cccc", "\u0412\u0442\u043e\u0440\u043d\u0438\u043a").get(Calendar.DAY_OF_WEEK));
+      }
     }
 
     // The RI fails this test because it doesn't fully support UTS #35.

@@ -16,6 +16,7 @@
 
 package libcore.icu;
 
+import com.google.j2objc.EnvironmentUtil;
 import java.util.Locale;
 
 public class LocaleDataTest extends junit.framework.TestCase {
@@ -87,16 +88,19 @@ public class LocaleDataTest extends junit.framework.TestCase {
   }
 
   public void test_ru_RU() throws Exception {
-    LocaleData l = LocaleData.get(new Locale("ru", "RU"));
+    // Russian locale strings updated in macOS 10.12 to match iOS.
+    if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
+      LocaleData l = LocaleData.get(new Locale("ru", "RU"));
 
-    assertEquals("воскресенье", l.longWeekdayNames[1]);
-    assertEquals("вс", l.shortWeekdayNames[1]);
-    assertEquals("вс", l.tinyWeekdayNames[1]);
+      assertEquals("воскресенье", l.longWeekdayNames[1]);
+      assertEquals("вс", l.shortWeekdayNames[1]);
+      assertEquals("вс", l.tinyWeekdayNames[1]);
 
-    // Russian stand-alone weekday names have no initial capital since CLDR 28/ICU 56.
-    assertEquals("воскресенье", l.longStandAloneWeekdayNames[1]);
-    assertEquals("вс", l.shortStandAloneWeekdayNames[1]);
-    assertEquals("В", l.tinyStandAloneWeekdayNames[1]);
+      // Russian stand-alone weekday names have no initial capital since CLDR 28/ICU 56.
+      assertEquals("воскресенье", l.longStandAloneWeekdayNames[1]);
+      assertEquals("вс", l.shortStandAloneWeekdayNames[1]);
+      assertEquals("В", l.tinyStandAloneWeekdayNames[1]);
+    }
   }
 
   // http://code.google.com/p/android/issues/detail?id=38844

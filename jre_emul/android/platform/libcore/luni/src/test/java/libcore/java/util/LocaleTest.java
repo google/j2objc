@@ -16,6 +16,7 @@
 
 package libcore.java.util;
 
+import com.google.j2objc.EnvironmentUtil;
 import java.io.ObjectInputStream;
 //import java.text.BreakIterator;
 import java.text.Collator;
@@ -149,10 +150,13 @@ public class LocaleTest extends junit.framework.TestCase {
 
     // http://b/3452611; Locale.getDisplayLanguage fails for the obsolete language codes.
     public void test_getDisplayName_obsolete() throws Exception {
-        // he (new) -> iw (obsolete)
+      // Locale strings updated in macOS 10.12 to match iOS.
+      if (!EnvironmentUtil.onMacOSX() || EnvironmentUtil.onMinimumOSVersion("10.12")) {
+         // he (new) -> iw (obsolete)
         assertObsolete("he", "iw", "עברית");
         // id (new) -> in (obsolete)
         assertObsolete("id", "in", "Indonesia");
+      }
     }
 
     private static void assertObsolete(String newCode, String oldCode, String displayName) {

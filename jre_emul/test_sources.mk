@@ -193,6 +193,7 @@ TEST_SOURCES := \
     com/google/j2objc/ArrayTest.java \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
+    com/google/j2objc/EnvironmentUtil.java \
     com/google/j2objc/FieldTest.java \
     com/google/j2objc/LinkedBlockingQueueTest.java \
     com/google/j2objc/LinkedListTest.java \

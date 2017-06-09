@@ -127,8 +127,4 @@ public class SystemTest extends TestCase {
       assertTrue("empty key returned: " + key, System.getProperty(key).length() > 0);
     }
   }
-
-  private static boolean onMac() {
-    return System.getProperty("os.name").equals("Mac OS X");
-  }
 }
