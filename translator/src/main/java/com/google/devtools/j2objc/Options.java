@@ -886,9 +886,14 @@ public class Options {
   public boolean isJDT() {
     return javaFrontEnd == FrontEnd.JDT;
   }
-  
+
   // Unreleased experimental project.
   public boolean translateClassfiles() {
     return translateClassfiles;
+  }
+
+  @VisibleForTesting
+  public void setTranslateClassfiles(boolean b) {
+    translateClassfiles = b;
   }
 }

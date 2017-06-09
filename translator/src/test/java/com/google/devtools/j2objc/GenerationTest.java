@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.SourceBuilder;
@@ -41,8 +42,10 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -59,6 +62,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import junit.framework.TestCase;
 
 /**
@@ -178,6 +183,47 @@ public class GenerationTest extends TestCase {
     int errors = ErrorUtil.errorCount();
     parser.setEnableDocComments(options.docCommentsEnabled());
     CompilationUnit unit = parser.parse(mainTypeName, path, source);
+    if (ErrorUtil.errorCount() > errors) {
+      int newErrorCount = ErrorUtil.errorCount() - errors;
+      String info = String.format(
+          "%d test compilation error%s", newErrorCount, (newErrorCount == 1 ? "" : "s"));
+      failWithMessages(info, ErrorUtil.getErrorMessages().subList(errors, ErrorUtil.errorCount()));
+    }
+    return unit;
+  }
+
+  /**
+   * Compiles Java source to a JVM class file, then converts it to a CompilationUnit.
+   *
+   * @param name the name of the public type being declared
+   * @param source the source code
+   * @return the parsed compilation unit
+   */
+  protected CompilationUnit compileAsClassFile(String name, String source) throws IOException {
+    assertTrue("Classfile translation not enabled", options.translateClassfiles());
+
+    String path = name.replace('.', '/') + ".java";
+    File srcFile = new File(tempDir, path);
+    srcFile.getParentFile().mkdirs();
+    try (FileWriter fw = new FileWriter(srcFile)) {
+      fw.write(source);
+    }
+
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    ByteArrayOutputStream errOut = new ByteArrayOutputStream();
+    compiler.run(null, null, errOut, srcFile.getPath());
+    if (errOut.size() > 0) {
+      String errMsg = errOut.toString();
+      ErrorUtil.error(errMsg);
+      failWithMessages("test compilation error(s)", Lists.newArrayList(errMsg));
+      return null;
+    }
+    File classFile = new File(tempDir, path.replace(".java", ".class"));
+    assertTrue(classFile.exists());
+
+    InputFile input = new RegularInputFile(classFile.getAbsolutePath(), name);
+    int errors = ErrorUtil.errorCount();
+    CompilationUnit unit = parser.parse(input);
     if (ErrorUtil.errorCount() > errors) {
       int newErrorCount = ErrorUtil.errorCount() - errors;
       String info = String.format(
@@ -310,7 +356,7 @@ public class GenerationTest extends TestCase {
       fail("expected:\"" + expected + "\" " + times + " times in:\n" + translation);
     }
   }
-  
+
   /**
    * Verify that two AST nodes are equal, by comparing their toString() outputs.
    */
