@@ -473,14 +473,13 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   nil_chk(value);
   checkBounds(value->size_, offset, count);
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
-    NSStringEncoding encoding =
-        (NSStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset nsEncoding];
-    NSString *result = [[[NSString alloc] initWithBytes:value->buffer_ + offset
-                                                 length:count
-                                               encoding:encoding] autorelease];
-    // NSString can return nil if there are invalid bytes in the input.
+    CFStringEncoding encoding =
+        (CFStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
+    NSString *result = (NSString *)CFStringCreateWithBytes(
+        NULL, (const UInt8 *)value->buffer_ + offset, count, encoding, true);
+    // CFString can return nil if there are invalid bytes in the input.
     if (result) {
-      return result;
+      return [result autorelease];
     }
   }
   JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
@@ -536,37 +535,33 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   return [self java_getBytesWithCharset:JavaNioCharsetCharset_forNameUEEWithNSString_(charsetName)];
 }
 
-static IOSByteArray *GetBytesWithEncoding(NSString *self, NSStringEncoding encoding) {
-  int max_length = (jint) [self maximumLengthOfBytesUsingEncoding:encoding];
-  jboolean includeBOM = (encoding == NSUTF16StringEncoding);
+static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encoding) {
+  CFStringRef cfStr = (CFStringRef)self;
+  CFIndex strLength = CFStringGetLength(cfStr);
+  CFIndex max_length = CFStringGetMaximumSizeForEncoding(strLength, encoding);
+  jboolean includeBOM = (encoding == kCFStringEncodingUTF16);
   if (includeBOM) {
     max_length += 2;
-    encoding = NSUTF16BigEndianStringEncoding;  // Java uses big-endian.
+    encoding = kCFStringEncodingUTF16BE;  // Java uses big-endian.
   }
-  char *buffer = (char *)malloc(max_length * sizeof(char));
-  char *p = buffer;
+  UInt8 *buffer = (UInt8 *)malloc(max_length * sizeof(UInt8));
+  UInt8 *p = buffer;
   if (includeBOM) {
-    *p++ = (char) 0xFE;
-    *p++ = (char) 0xFF;
+    *p++ = 0xFE;
+    *p++ = 0xFF;
     max_length -= 2;
   }
-  NSRange range = NSMakeRange(0, [self length]);
-  NSUInteger used_length;
-  NSRange remainingRange;
-  [self getBytes:p
-       maxLength:max_length
-      usedLength:&used_length
-        encoding:encoding
-         options:0
-           range:range
-  remainingRange:&remainingRange];
+  CFRange range = CFRangeMake(0, strLength);
+  CFIndex used_length;
+  CFIndex numConverted = CFStringGetBytes(
+      cfStr, range, encoding, 0, false, p, max_length, &used_length);
   if (includeBOM) {
     used_length += 2;
   }
   IOSByteArray *result = nil;
-  // If remainingRange.length > 0 then getBytes failed to encode the whole string, possibly due to a
+  // If numConverted != strLength then getBytes failed to encode the whole string, possibly due to a
   // character that can't be represented in the desired encoding.
-  if (remainingRange.length == 0) {
+  if (numConverted == strLength) {
     result = [IOSByteArray arrayWithBytes:(jbyte *)buffer count:(jint)used_length];
   }
   free(buffer);
@@ -577,8 +572,8 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, NSStringEncoding encod
   nil_chk(charset);
   IOSByteArray *result;
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
-    NSStringEncoding encoding =
-        (NSStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset nsEncoding];
+    CFStringEncoding encoding =
+        (CFStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
     result = GetBytesWithEncoding(self, encoding);
     if (result) {
       return result;

@@ -57,8 +57,8 @@ public class IOSCharset extends Charset {
     return [IOSByteArray arrayWithBytes:info->replacementBytes count:info->replacementBytesCount];
   ]-*/;
 
-  public native long nsEncoding() /*-[
-    return ((CharsetInfo *)self->charsetInfo_)->nsEncoding;
+  public native long cfEncoding() /*-[
+    return ((CharsetInfo *)self->charsetInfo_)->cfEncoding;
   ]-*/;
 
   @Override
@@ -107,7 +107,7 @@ public class IOSCharset extends Charset {
 
   /*-[
   typedef struct {
-    NSStringEncoding nsEncoding;
+    CFStringEncoding cfEncoding;
     const char *iconvName;
     NSString *javaName;
     NSString **aliases;
@@ -166,46 +166,46 @@ public class IOSCharset extends Charset {
   //
   // All encoding names must be uppercase, so map lookups are case-insensitive.
   static const CharsetInfo iosCharsets[] = {
-    { NSUTF8StringEncoding, "UTF-8", @"UTF-8", utf8_aliases, 2,
+    { kCFStringEncodingUTF8, "UTF-8", @"UTF-8", utf8_aliases, 2,
       1.1f, 3.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSASCIIStringEncoding, "ASCII", @"US-ASCII", ascii_aliases, 16,
+    { kCFStringEncodingASCII, "ASCII", @"US-ASCII", ascii_aliases, 16,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSJapaneseEUCStringEncoding, "EUC-JP", @"EUC-JP", eucjp_aliases, 7,
+    { kCFStringEncodingEUC_JP, "EUC-JP", @"EUC-JP", eucjp_aliases, 7,
       3.0f, 3.0f, 0.5f, 1.0f, ascii_replacement, 1 },
-    { NSISOLatin1StringEncoding, "ISO-8859-1", @"ISO-8859-1", iso8859_aliases, 15,
+    { kCFStringEncodingISOLatin1, "ISO-8859-1", @"ISO-8859-1", iso8859_aliases, 15,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSShiftJISStringEncoding, "SHIFT_JIS", @"SHIFT_JIS", shiftjis_aliases, 6,
+    { kCFStringEncodingDOSJapanese, "SHIFT_JIS", @"SHIFT_JIS", shiftjis_aliases, 6,
       2.0f, 2.0f, 0.5f, 1.0f, ascii_replacement, 1 },
-    { NSISOLatin2StringEncoding, "ISO-8859-2", @"ISO-8859-2", latin2_aliases, 13,
+    { kCFStringEncodingISOLatin2, "ISO-8859-2", @"ISO-8859-2", latin2_aliases, 13,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSUnicodeStringEncoding, "UTF-16", @"UTF-16", utf16_aliases, 5,
+    { kCFStringEncodingUnicode, "UTF-16", @"UTF-16", utf16_aliases, 5,
       2.0f, 4.0f, 0.5f, 1.0f, utf16be_replacement, 2 },
-    { NSWindowsCP1251StringEncoding, "CP1251", @"WINDOWS-1251", win1251_aliases, 3,
+    { kCFStringEncodingWindowsCyrillic, "CP1251", @"WINDOWS-1251", win1251_aliases, 3,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSWindowsCP1252StringEncoding, "CP1252", @"WINDOWS-1252", win1252_aliases, 2,
+    { kCFStringEncodingWindowsLatin1, "CP1252", @"WINDOWS-1252", win1252_aliases, 2,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSWindowsCP1253StringEncoding, "CP1253", @"WINDOWS-1253", win1253_aliases, 2,
+    { kCFStringEncodingWindowsGreek, "CP1253", @"WINDOWS-1253", win1253_aliases, 2,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSWindowsCP1254StringEncoding, "CP1254", @"WINDOWS-1254", win1254_aliases, 2,
+    { kCFStringEncodingWindowsLatin5, "CP1254", @"WINDOWS-1254", win1254_aliases, 2,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSWindowsCP1250StringEncoding, "CP1250", @"WINDOWS-1250", win1250_aliases, 2,
+    { kCFStringEncodingWindowsLatin2, "CP1250", @"WINDOWS-1250", win1250_aliases, 2,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSISO2022JPStringEncoding, "ISO-2022-JP", @"ISO-2022-JP", iso2022_aliases, 5,
+    { kCFStringEncodingISO_2022_JP, "ISO-2022-JP", @"ISO-2022-JP", iso2022_aliases, 5,
       4.0f, 8.0f, 0.5f, 1.0f, iso2022_replacement, 2 },
-    { NSMacOSRomanStringEncoding, "MacRoman", @"X-MACROMAN", macroman_aliases, 1,
+    { kCFStringEncodingMacRoman, "MacRoman", @"X-MACROMAN", macroman_aliases, 1,
       1.0f, 1.0f, 1.0f, 1.0f, ascii_replacement, 1 },
-    { NSUTF16BigEndianStringEncoding, "UTF-16BE", @"UTF-16BE", utf16be_aliases, 4,
+    { kCFStringEncodingUTF16BE, "UTF-16BE", @"UTF-16BE", utf16be_aliases, 4,
       2.0f, 2.0f, 0.5f, 1.0f, utf16be_replacement, 2 },
-    { NSUTF16LittleEndianStringEncoding, "UTF-16LE", @"UTF-16LE", utf16le_aliases, 3,
+    { kCFStringEncodingUTF16LE, "UTF-16LE", @"UTF-16LE", utf16le_aliases, 3,
       2.0f, 2.0f, 0.5f, 1.0f, utf16le_replacement, 2 },
     // "UTF-32" is mapped to NSUTF32BigEndianStringEncoding instead of NSUTF32StringEncoding because
     // the former (strangely) encodes in little endian but decodes in big endian. The latter is a
     // closer match to Java's "UTF-32".
-    { NSUTF32BigEndianStringEncoding, "UTF-32BE", @"UTF-32", utf32_aliases, 2,
+    { kCFStringEncodingUTF32BE, "UTF-32BE", @"UTF-32", utf32_aliases, 2,
       4.0f, 4.0f, 0.25f, 1.0f, utf32be_replacement, 4 },
-    { NSUTF32BigEndianStringEncoding, "UTF-32BE", @"UTF-32BE", utf32be_aliases, 2,
+    { kCFStringEncodingUTF32BE, "UTF-32BE", @"UTF-32BE", utf32be_aliases, 2,
       4.0f, 4.0f, 0.25f, 1.0f, utf32be_replacement, 4 },
-    { NSUTF32LittleEndianStringEncoding, "UTF-32LE", @"UTF-32LE", utf32le_aliases, 2,
+    { kCFStringEncodingUTF32LE, "UTF-32LE", @"UTF-32LE", utf32le_aliases, 2,
       4.0f, 4.0f, 0.25f, 1.0f, utf32le_replacement, 4 },
   };
   static const int numIosCharsets = sizeof(iosCharsets) / sizeof(CharsetInfo);
