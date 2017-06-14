@@ -21,9 +21,8 @@ import java.security.Signature;
 import java.security.spec.RSAPublicKeySpec;
 import junit.framework.TestCase;
 
-
 /**
- * Unit tests for {@link IosRSASignatureTest}.
+ * Unit tests for {@link IosRSASignature}.
  *
  * @author Tom Ball
  */

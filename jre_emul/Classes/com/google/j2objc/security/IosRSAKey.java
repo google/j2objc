@@ -30,6 +30,9 @@ import sun.security.util.DerInputStream;
 import sun.security.util.DerOutputStream;
 import sun.security.util.DerValue;
 
+/**
+ * Shared base classe for public and private RSA key implementations for iOS.
+ */
 public abstract class IosRSAKey implements RSAKey, Key {
 
   protected transient long iosSecKey = 0L;
@@ -79,6 +82,11 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
   protected abstract void decodeParameters();
 
+  /**
+   * iOS implementation of RSAPublicKey.
+   *
+   * TODO(tball): add support for macOS.
+   */
   public static class IosRSAPublicKey extends IosRSAKey implements RSAPublicKey {
 
     private BigInteger publicExponent;
@@ -94,7 +102,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
     }
 
     public IosRSAPublicKey(byte[] encoded) {
-      this(decode(encoded));
+      this(toPublicKeySpec(encoded));
     }
 
     @Override
@@ -226,8 +234,49 @@ public abstract class IosRSAKey implements RSAKey, Key {
       [publicKey release];
       return (jlong)secKeyRef;
     ]-*/;
+
+    private static RSAPublicKeySpec toPublicKeySpec(byte[] encoded) {
+     try {
+        DerInputStream input = new DerInputStream(encoded);
+        if (input.peekByte() == DerValue.tag_Sequence) {
+          DerValue[] values = input.getSequence(2);
+
+          /* Check for a PKCS #12 SubjectPublicKeyInfo ASN.1 type, and
+           * extract its public key if found:
+           *
+           * SubjectPublicKeyInfo ::= SEQUENCE {
+           *   algorithm AlgorithmIdentifier,
+           *   subjectPublicKey BIT STRING
+           * }
+           */
+          if (values.length == 2 && values[1].getTag() == DerValue.tag_BitString) {
+            input = new DerInputStream(values[1].getBitString());
+            values = input.getSequence(2);
+          }
+
+          /* Sequence should be PKCS #1 RSAPublicKey ASN.1 type:
+           *
+           * RSAPublicKey ::= SEQUENCE {
+           *   INTEGER modulus,
+           *   INTEGER exponent
+           * }
+           */
+          BigInteger modulus = values[0].getBigInteger();
+          BigInteger exponent = values[1].getBigInteger();
+          return new RSAPublicKeySpec(modulus, exponent);
+        }
+      } catch (IOException e) {
+        // Fall-through.
+      }
+      return null;  // Unknown format.
+    }
   }
 
+  /**
+   * iOS implementation of RSAPublicKey.
+   *
+   * TODO(tball): add support for macOS.
+   */
   public static class IosRSAPrivateKey extends IosRSAKey implements RSAPrivateKey {
 
     private BigInteger privateExponent;
