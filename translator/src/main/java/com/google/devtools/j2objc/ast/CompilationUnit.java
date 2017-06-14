@@ -40,6 +40,10 @@ public class CompilationUnit extends TreeNode {
   private final ChildList<AbstractTypeDeclaration> types =
       ChildList.create(AbstractTypeDeclaration.class, this);
 
+  public CompilationUnit(TranslationEnvironment env, String mainTypeName) {
+    this(env, "", mainTypeName, "");
+  }
+
   public CompilationUnit(
       TranslationEnvironment env, String sourceFilePath, String mainTypeName, String source) {
     super();
@@ -149,6 +153,9 @@ public class CompilationUnit extends TreeNode {
   }
 
   private static int[] findNewlines(String source) {
+    if (source.isEmpty()) {
+      return new int[0];
+    }
     List<Integer> newlinesList = Lists.newArrayList();
     newlinesList.add(0);
     int len = source.length();
