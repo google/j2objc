@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -162,12 +161,12 @@ public class J2ObjC {
     }
     long startTime = System.currentTimeMillis();
 
-    String[] files = null;
+    List<String> files = null;
     Options options = new Options();
 
     try {
       files = options.load(args);
-      if (files.length == 0) {
+      if (files.isEmpty()) {
         Options.usage("no source files");
       }
     } catch (IOException e) {
@@ -175,7 +174,7 @@ public class J2ObjC {
       System.exit(1);
     }
 
-    run(Arrays.asList(files), options);
+    run(files, options);
 
     TimingLevel timingLevel = options.timingLevel();
     if (timingLevel == TimingLevel.TOTAL || timingLevel == TimingLevel.ALL) {

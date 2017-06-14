@@ -19,8 +19,8 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -34,7 +34,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -52,7 +55,7 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class Options {
 
-  private List<String> processorPathEntries = Lists.newArrayList();
+  private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
@@ -330,78 +333,108 @@ public class Options {
    * detected, the appropriate status method is invoked and the app terminates.
    * @throws IOException
    */
-  public String[] load(String[] args) throws IOException {
+  public List<String> load(String[] args) throws IOException {
     setLogLevel(Level.WARNING);
 
     mappings.addJreMappings();
 
     // Create a temporary directory as the sourcepath's first entry, so that
     // modified sources will take precedence over regular files.
-    fileUtil.setSourcePathEntries(Lists.newArrayList());
+    fileUtil.setSourcePathEntries(new ArrayList<>());
 
-    int nArg = 0;
-    String[] noFiles = new String[0];
-    while (nArg < args.length) {
-      String arg = args[nArg];
-      if (arg.isEmpty()) {
-        ++nArg;
-        continue;
+    ArgProcessor processor = new ArgProcessor();
+    processor.processArgs(args);
+    postProcessArgs();
+
+    return processor.sourceFiles;
+  }
+
+  private class ArgProcessor {
+
+    private boolean processingSourceFiles = false;
+    private List<String> sourceFiles = new ArrayList<>();
+
+    private void processArgs(String[] args) throws IOException {
+      List<String> argsList = Arrays.asList(args);
+      Iterator<String> iter = Arrays.asList(args).iterator();
+      while (iter.hasNext()) {
+        processArg(iter);
       }
-      if (arg.equals("-classpath")) {
-        if (++nArg == args.length) {
-          return noFiles;
+    }
+
+    private void processArgsFile(String filename) throws IOException {
+      if (filename.isEmpty()) {
+        usage("no @ file specified");
+      }
+      File f = new File(filename);
+      String fileArgs = Files.toString(f, fileUtil.getCharset());
+      // Simple split on any whitespace, quoted values aren't supported.
+      processArgs(fileArgs.split("\\s+"));
+    }
+
+    private void processArg(Iterator<String> args) throws IOException {
+      String arg = args.next();
+      if (arg.isEmpty()) {
+        return;
+      } else if (arg.startsWith("@")) {
+        processArgsFile(arg.substring(1));
+      } else if (processingSourceFiles) {
+        sourceFiles.add(arg);
+      } else if (arg.equals("-classpath")) {
+        if (!args.hasNext()) {
+          usage("-classpath requires an argument");
         }
-        fileUtil.getClassPathEntries().addAll(getPathArgument(args[nArg]));
+        fileUtil.getClassPathEntries().addAll(getPathArgument(args.next()));
       } else if (arg.equals("-sourcepath")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-sourcepath requires an argument");
         }
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(args[nArg]));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(args.next()));
       } else if (arg.equals("-processorpath")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-processorpath requires an argument");
         }
-        processorPathEntries.addAll(getPathArgument(args[nArg]));
+        processorPathEntries.addAll(getPathArgument(args.next()));
       } else if (arg.equals("-d")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-d requires an argument");
         }
-        fileUtil.setOutputDirectory(new File(args[nArg]));
+        fileUtil.setOutputDirectory(new File(args.next()));
       } else if (arg.equals("--mapping")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("--mapping requires an argument");
         }
-        mappings.addMappingsFiles(args[nArg].split(","));
+        mappings.addMappingsFiles(args.next().split(","));
       } else if (arg.equals("--header-mapping")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("--header-mapping requires an argument");
         }
-        headerMap.setMappingFiles(args[nArg]);
+        headerMap.setMappingFiles(args.next());
       } else if (arg.equals("--output-header-mapping")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("--output-header-mapping requires an argument");
         }
-        headerMap.setOutputMappingFile(new File(args[nArg]));
+        headerMap.setOutputMappingFile(new File(args.next()));
       } else if (arg.equals("--dead-code-report")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("--dead-code-report requires an argument");
         }
-        proGuardUsageFile = new File(args[nArg]);
+        proGuardUsageFile = new File(args.next());
       } else if (arg.equals("--prefix")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("--prefix requires an argument");
         }
-        addPrefixOption(args[nArg]);
+        addPrefixOption(args.next());
       } else if (arg.equals("--prefixes")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("--prefixes requires an argument");
         }
-        packagePrefixes.addPrefixesFile(args[nArg]);
+        packagePrefixes.addPrefixesFile(args.next());
       } else if (arg.equals("-x")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-x requires an argument");
         }
-        String s = args[nArg];
+        String s = args.next();
         if (s.equals("objective-c")) {
           language = OutputLanguageOption.OBJECTIVE_C;
         } else if (s.equals("objective-c++")) {
@@ -451,11 +484,11 @@ public class Options {
       } else if (arg.equals("-Xno-jsni-warnings")) {
         jsniWarnings = false;
       } else if (arg.equals("-encoding")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-encoding requires an argument");
         }
         try {
-          fileUtil.setFileEncoding(args[nArg]);
+          fileUtil.setFileEncoding(args.next());
         } catch (UnsupportedCharsetException e) {
           ErrorUtil.warning(e.getMessage());
         }
@@ -483,10 +516,10 @@ public class Options {
       } else if (arg.equals("--swift-friendly")) {
         swiftFriendly = true;
       } else if (arg.equals("-processor")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-processor requires an argument");
         }
-        processors = args[nArg];
+        processors = args.next();
       } else if (arg.equals("--allow-inherited-constructors")) {
         disallowInheritedConstructors = false;
       } else if (arg.equals("--nullability")) {
@@ -511,31 +544,34 @@ public class Options {
       } else if (arg.equals("-X")) {
         xhelp();
       }  else if (arg.equals("-source")) {
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-source requires an argument");
         }
+        String s = args.next();
         // Handle aliasing of version numbers as supported by javac.
         try {
-          sourceVersion = SourceVersion.parse(args[nArg]);
+          sourceVersion = SourceVersion.parse(s);
         } catch (IllegalArgumentException e) {
-          usage("invalid source release: " + args[nArg]);
+          usage("invalid source release: " + s);
         }
       } else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.
-        if (++nArg == args.length) {
+        if (!args.hasNext()) {
           usage("-target requires an argument");
         }
-        // ignore
+        args.next();  // ignore
       } else if (obsoleteFlags.contains(arg)) {
         // also ignore
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
-        break;
+        processingSourceFiles = true;
+        sourceFiles.add(arg);
       }
-      ++nArg;
     }
+  }
 
+  private void postProcessArgs() {
     if (headerMap.useSourceDirectories() && buildClosure) {
       ErrorUtil.error(
           "--build-closure is not supported with -XcombineJars or --preserve-full-paths or "
@@ -565,14 +601,6 @@ public class Options {
       // javac performs best when all sources are compiled by one task.
       batchTranslateMaximum = Integer.MAX_VALUE;
     }
-
-    int nFiles = args.length - nArg;
-    String[] files = new String[nFiles];
-    for (int i = 0; i < nFiles; i++) {
-      String path = args[i + nArg];
-      files[i] = path;
-    }
-    return files;
   }
 
   /**
@@ -620,7 +648,7 @@ public class Options {
   }
 
   private static List<String> getPathArgument(String argument) {
-    List<String> entries = Lists.newArrayList();
+    List<String> entries = new ArrayList<>();
     for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       if (new File(entry).exists()) {  // JDT fails with bad path entries.
         entries.add(entry);

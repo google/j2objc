@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -58,39 +57,7 @@ public class GenerationBatch {
 
   public void processFileArgs(Iterable<String> args) {
     for (String arg : args) {
-      processFileArg(arg);
-    }
-  }
-
-  public void processFileArg(String arg) {
-    if (arg.startsWith("@")) {
-      processManifestFile(arg.substring(1));
-    } else {
       processSourceFile(arg);
-    }
-  }
-
-  private void processManifestFile(String filename) {
-    if (filename.isEmpty()) {
-      ErrorUtil.error("no @ file specified");
-      return;
-    }
-    File f = new File(filename);
-    if (!f.exists()) {
-      ErrorUtil.error("no such file: " + filename);
-      return;
-    }
-    try {
-      String fileList = Files.toString(f, options.fileUtil().getCharset());
-      if (fileList.isEmpty()) {
-        return;
-      }
-      String[] files = fileList.split("\\s+");  // Split on any whitespace.
-      for (String file : files) {
-        processSourceFile(file);
-      }
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
     }
   }
 
