@@ -195,4 +195,10 @@ public class SwitchRewriterTest extends GenerationTest {
         "  return 'z';",
         "}");
   }
+
+  public void testEmptySwitchStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(int i) { switch (i) { } } }", "Test", "Test.m");
+    assertTranslatedLines(translation, "switch (i) {", "}");
+  }
 }
