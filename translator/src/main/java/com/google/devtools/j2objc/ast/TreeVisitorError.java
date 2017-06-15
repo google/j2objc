@@ -29,14 +29,9 @@ public class TreeVisitorError extends AssertionError {
 
   private static String constructMessage(Throwable original, TreeNode node) {
     CompilationUnit unit = TreeUtil.getCompilationUnit(node);
-    String msg = original.getMessage();
-    if (msg == null || msg.isEmpty()) {
-      msg = original.getClass().getSimpleName();
-    }
-    if (unit == null) {
-      return msg;
-    }
-    return String.format(
-        "%s:%s: %s", unit.getSourceFilePath(), node.getLineNumber(), msg);
+    String sourceFile = unit != null ? unit.getSourceFilePath() : "<unknown source>";
+    return String.format("%s:%s: %s: %s",
+        sourceFile, node.getLineNumber(), original.getClass().getSimpleName(),
+        original.getMessage());
   }
 }
