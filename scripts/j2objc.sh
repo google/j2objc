@@ -39,17 +39,12 @@ fi
 PARSING_JAVA_ARGS=0
 JAVA_ARGS=$()
 J2OBJC_ARGS=$()
-CLASSPATH=${LIB_DIR}/j2objc_annotations.jar
-CLASSPATH_SET=0
-SOURCEPATH=
-SOURCEPATH_SET=0
+ANNOTATIONS_ARG="-Xannotations-jar ${LIB_DIR}/j2objc_annotations.jar"
 
 while [ $# -gt 0 ]; do
   case $1 in
     -begin-java-args) PARSING_JAVA_ARGS=1;;
     -end-java-args) PARSING_JAVA_ARGS=0;;
-    -classpath|-cp) CLASSPATH="${CLASSPATH}:$2"; CLASSPATH_SET=1; shift;;
-    -sourcepath) SOURCEPATH=$2; SOURCEPATH_SET=1; shift;;
     -J*) JAVA_ARGS[iJavaArgs++]=${1:2};;
     *)
       if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
@@ -61,12 +56,5 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if [ ${CLASSPATH_SET} -eq 0 ]; then
-  CLASSPATH=".:${CLASSPATH}"
-fi
-if [ ${SOURCEPATH_SET} -eq 0 ]; then
-  SOURCEPATH="."
-fi
-
-java ${JAVA_ARGS[*]} -jar "${JAR}" "${BOOT_PATH}" -classpath "${CLASSPATH}" \
-    -sourcepath "${SOURCEPATH}" "${J2OBJC_ARGS[@]}"
+java ${JAVA_ARGS[*]} -jar "${JAR}" "${BOOT_PATH}" ${ANNOTATIONS_ARG} \
+  "${J2OBJC_ARGS[@]}"

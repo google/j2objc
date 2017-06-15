@@ -13,7 +13,6 @@
  */
 package com.google.devtools.j2objc.util;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.J2ObjC;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -46,8 +46,8 @@ import javax.tools.JavaFileObject;
 public class FileUtil {
 
   private Set<String> tempDirs = new HashSet<>();
-  private List<String> sourcePathEntries = Lists.newArrayList(".");
-  private List<String> classPathEntries = Lists.newArrayList(".");
+  private List<String> sourcePathEntries = new ArrayList<>();
+  private List<String> classPathEntries = new ArrayList<>();
   private File outputDirectory = new File(".");
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private Charset charset = Charset.forName(fileEncoding);

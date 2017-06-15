@@ -83,6 +83,7 @@ public class Options {
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
   private String bootclasspath = System.getProperty("sun.boot.class.path");
+  private String annotationsJar = null;
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
@@ -380,7 +381,7 @@ public class Options {
         processArgsFile(arg.substring(1));
       } else if (processingSourceFiles) {
         sourceFiles.add(arg);
-      } else if (arg.equals("-classpath")) {
+      } else if (arg.equals("-classpath") || arg.equals("-cp")) {
         if (!args.hasNext()) {
           usage("-classpath requires an argument");
         }
@@ -537,6 +538,11 @@ public class Options {
         dumpAST = true;
       } else if (arg.equals("-Xtranslate-classfiles")) {
         translateClassfiles = true;
+      } else if (arg.equals("-Xannotations-jar")) {
+        if (!args.hasNext()) {
+          usage("-Xannotations-jar requires an argument");
+        }
+        annotationsJar = args.next();
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -572,6 +578,21 @@ public class Options {
   }
 
   private void postProcessArgs() {
+    // Fix up the classpath, adding the current dir if it is empty, as javac would.
+    List<String> classPaths = fileUtil.getClassPathEntries();
+    if (classPaths.isEmpty()) {
+      classPaths.add(".");
+    }
+    // javac will search the classpath for sources if no -sourcepath is specified. So here we copy
+    // the classpath entries to the sourcepath list.
+    List<String> sourcePaths = fileUtil.getSourcePathEntries();
+    if (sourcePaths.isEmpty()) {
+      sourcePaths.addAll(classPaths);
+    }
+    if (annotationsJar != null) {
+      classPaths.add(annotationsJar);
+    }
+
     if (headerMap.useSourceDirectories() && buildClosure) {
       ErrorUtil.error(
           "--build-closure is not supported with -XcombineJars or --preserve-full-paths or "
