@@ -356,7 +356,6 @@ public class Options {
     private List<String> sourceFiles = new ArrayList<>();
 
     private void processArgs(String[] args) throws IOException {
-      List<String> argsList = Arrays.asList(args);
       Iterator<String> iter = Arrays.asList(args).iterator();
       while (iter.hasNext()) {
         processArg(iter);
@@ -373,6 +372,13 @@ public class Options {
       processArgs(fileArgs.split("\\s+"));
     }
 
+    private String getArgValue(Iterator<String> args, String arg) {
+      if (!args.hasNext()) {
+        usage(arg + " requires an argument");
+      }
+      return args.next();
+    }
+
     private void processArg(Iterator<String> args) throws IOException {
       String arg = args.next();
       if (arg.isEmpty()) {
@@ -382,60 +388,27 @@ public class Options {
       } else if (processingSourceFiles) {
         sourceFiles.add(arg);
       } else if (arg.equals("-classpath") || arg.equals("-cp")) {
-        if (!args.hasNext()) {
-          usage("-classpath requires an argument");
-        }
-        fileUtil.getClassPathEntries().addAll(getPathArgument(args.next()));
+        fileUtil.getClassPathEntries().addAll(getPathArgument(getArgValue(args, arg)));
       } else if (arg.equals("-sourcepath")) {
-        if (!args.hasNext()) {
-          usage("-sourcepath requires an argument");
-        }
-        fileUtil.getSourcePathEntries().addAll(getPathArgument(args.next()));
+        fileUtil.getSourcePathEntries().addAll(getPathArgument(getArgValue(args, arg)));
       } else if (arg.equals("-processorpath")) {
-        if (!args.hasNext()) {
-          usage("-processorpath requires an argument");
-        }
-        processorPathEntries.addAll(getPathArgument(args.next()));
+        processorPathEntries.addAll(getPathArgument(getArgValue(args, arg)));
       } else if (arg.equals("-d")) {
-        if (!args.hasNext()) {
-          usage("-d requires an argument");
-        }
-        fileUtil.setOutputDirectory(new File(args.next()));
+        fileUtil.setOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("--mapping")) {
-        if (!args.hasNext()) {
-          usage("--mapping requires an argument");
-        }
-        mappings.addMappingsFiles(args.next().split(","));
+        mappings.addMappingsFiles(getArgValue(args, arg).split(","));
       } else if (arg.equals("--header-mapping")) {
-        if (!args.hasNext()) {
-          usage("--header-mapping requires an argument");
-        }
-        headerMap.setMappingFiles(args.next());
+        headerMap.setMappingFiles(getArgValue(args, arg));
       } else if (arg.equals("--output-header-mapping")) {
-        if (!args.hasNext()) {
-          usage("--output-header-mapping requires an argument");
-        }
-        headerMap.setOutputMappingFile(new File(args.next()));
+        headerMap.setOutputMappingFile(new File(getArgValue(args, arg)));
       } else if (arg.equals("--dead-code-report")) {
-        if (!args.hasNext()) {
-          usage("--dead-code-report requires an argument");
-        }
-        proGuardUsageFile = new File(args.next());
+        proGuardUsageFile = new File(getArgValue(args, arg));
       } else if (arg.equals("--prefix")) {
-        if (!args.hasNext()) {
-          usage("--prefix requires an argument");
-        }
-        addPrefixOption(args.next());
+        addPrefixOption(getArgValue(args, arg));
       } else if (arg.equals("--prefixes")) {
-        if (!args.hasNext()) {
-          usage("--prefixes requires an argument");
-        }
-        packagePrefixes.addPrefixesFile(args.next());
+        packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
-        if (!args.hasNext()) {
-          usage("-x requires an argument");
-        }
-        String s = args.next();
+        String s = getArgValue(args, arg);
         if (s.equals("objective-c")) {
           language = OutputLanguageOption.OBJECTIVE_C;
         } else if (s.equals("objective-c++")) {
@@ -485,11 +458,8 @@ public class Options {
       } else if (arg.equals("-Xno-jsni-warnings")) {
         jsniWarnings = false;
       } else if (arg.equals("-encoding")) {
-        if (!args.hasNext()) {
-          usage("-encoding requires an argument");
-        }
         try {
-          fileUtil.setFileEncoding(args.next());
+          fileUtil.setFileEncoding(getArgValue(args, arg));
         } catch (UnsupportedCharsetException e) {
           ErrorUtil.warning(e.getMessage());
         }
@@ -517,10 +487,7 @@ public class Options {
       } else if (arg.equals("--swift-friendly")) {
         swiftFriendly = true;
       } else if (arg.equals("-processor")) {
-        if (!args.hasNext()) {
-          usage("-processor requires an argument");
-        }
-        processors = args.next();
+        processors = getArgValue(args, arg);
       } else if (arg.equals("--allow-inherited-constructors")) {
         disallowInheritedConstructors = false;
       } else if (arg.equals("--nullability")) {
@@ -539,10 +506,7 @@ public class Options {
       } else if (arg.equals("-Xtranslate-classfiles")) {
         translateClassfiles = true;
       } else if (arg.equals("-Xannotations-jar")) {
-        if (!args.hasNext()) {
-          usage("-Xannotations-jar requires an argument");
-        }
-        annotationsJar = args.next();
+        annotationsJar = getArgValue(args, arg);
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -550,10 +514,7 @@ public class Options {
       } else if (arg.equals("-X")) {
         xhelp();
       }  else if (arg.equals("-source")) {
-        if (!args.hasNext()) {
-          usage("-source requires an argument");
-        }
-        String s = args.next();
+        String s = getArgValue(args, arg);
         // Handle aliasing of version numbers as supported by javac.
         try {
           sourceVersion = SourceVersion.parse(s);
@@ -562,10 +523,7 @@ public class Options {
         }
       } else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.
-        if (!args.hasNext()) {
-          usage("-target requires an argument");
-        }
-        args.next();  // ignore
+        getArgValue(args, arg);  // ignore
       } else if (obsoleteFlags.contains(arg)) {
         // also ignore
       } else if (arg.startsWith("-")) {
