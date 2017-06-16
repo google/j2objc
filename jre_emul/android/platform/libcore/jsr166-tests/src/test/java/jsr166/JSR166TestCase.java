@@ -10,7 +10,6 @@
 package jsr166;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.io.ByteArrayInputStream;
@@ -218,6 +217,7 @@ public class JSR166TestCase extends TestCase {
     // Instrumentation to debug very rare, but very annoying hung test runs.
     static volatile TestCase currentTestCase;
     // static volatile int currentRun = 0;
+    /* J2ObjC removed.
     static {
         Runnable checkForWedgedTest = new Runnable() { public void run() {
             // Avoid spurious reports with enormous runsPerTest.
@@ -248,6 +248,7 @@ public class JSR166TestCase extends TestCase {
         thread.setDaemon(true);
         thread.start();
     }
+    */
 
 //     public static String cpuModel() {
 //         try {
