@@ -50,6 +50,7 @@ public class ClassFileConverter extends ClassVisitor {
 
   public static CompilationUnit convert(
       Options options, JavacEnvironment env, InputFile file) throws IOException {
+    env.saveParameterNames();
     ClassReader classReader = new ClassReader(file.getInputStream());
     ClassFileConverter converter = new ClassFileConverter(env, file);
     /* TODO(user): need to return canonical name for use in visit()

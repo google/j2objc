@@ -184,4 +184,8 @@ class JavacEnvironment implements ParserEnvironment {
   public DiagnosticCollector<JavaFileObject> diagnostics() {
     return diagnostics;
   }
+
+  public void saveParameterNames() {
+    classReader.saveParameterNames = true;
+  }
 }
