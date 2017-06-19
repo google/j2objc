@@ -353,12 +353,11 @@ public class Thread implements Runnable {
     @autoreleasepool {
       @try {
         [thread run];
-      } @catch (NSException *t) {
-        [thread rethrowWithNSException:t];
+      } @catch (JavaLangThrowable *t) {
+        [thread rethrowWithJavaLangThrowable:t];
       } @catch (id error) {
-        [thread rethrowWithNSException:[NSException exceptionWithName:@"Unknown error"
-                                                               reason:[error description]
-                                                             userInfo:nil]];
+        [thread rethrowWithJavaLangThrowable:create_JavaLangThrowable_initWithNSString_(
+            [NSString stringWithFormat:@"Unknown error: %@", [error description]])];
       }
       return NULL;
     }

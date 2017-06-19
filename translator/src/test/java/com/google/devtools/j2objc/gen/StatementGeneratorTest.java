@@ -87,7 +87,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("create_JavaLangException_initWithNSException_(cause);", result);
+    assertEquals("create_JavaLangException_initWithJavaLangThrowable_(cause);", result);
   }
 
   public void testCastTranslation() throws IOException {
@@ -95,8 +95,8 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSException *t = "
-        + "(NSException *) cast_chk(o, [NSException class]);", result);
+    assertEquals("JavaLangThrowable *t = "
+        + "(JavaLangThrowable *) cast_chk(o, [JavaLangThrowable class]);", result);
     result = generateStatement(stmts.get(2));
     assertEquals("IOSIntArray *i = "
         + "(IOSIntArray *) cast_chk(o, [IOSIntArray class]);", result);
@@ -125,7 +125,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("if ([e isKindOfClass:[NSException class]]) {\n}", result);
+    assertEquals("if ([e isKindOfClass:[JavaLangThrowable class]]) {\n}", result);
   }
 
   public void testFullyQualifiedTypeTranslation() throws IOException {
@@ -1393,7 +1393,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  new Throwable(); }}",
         "Test", "Test.m");
     assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
-    assertTranslation(translation, "(void) new_NSException_init();");
+    assertTranslation(translation, "(void) new_JavaLangThrowable_init();");
   }
 
   // Verify that multiple resources are closed in reverse order from opening.

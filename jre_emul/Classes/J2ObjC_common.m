@@ -25,6 +25,7 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/Throwable.h"
 #import "java/util/logging/Level.h"
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
@@ -64,11 +65,11 @@ id nil_chk(id __unsafe_unretained p) {
 void JreFinalize(id self) {
   @try {
     [self java_finalize];
-  } @catch (NSException *e) {
+  } @catch (JavaLangThrowable *e) {
     [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
         logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
                        withNSString:@"Uncaught exception in finalizer"
-                    withNSException:e];
+              withJavaLangThrowable:e];
   }
 }
 

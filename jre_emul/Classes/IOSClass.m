@@ -32,7 +32,6 @@
 #import "IOSProxyClass.h"
 #import "IOSReflection.h"
 #import "NSCopying+JavaCloneable.h"
-#import "NSException+JavaThrowable.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
@@ -1209,7 +1208,6 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
          @"IOSClass",    @"java.lang.Class",
          @"NSNumber",    @"java.lang.Number",
          @"NSString",    @"java.lang.String",
-         @"NSException", @"java.lang.Throwable",
          @"NSCopying",   @"java.lang.Cloneable", nil];
 
     IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
@@ -1230,7 +1228,6 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     [JreObjectCategoryDummy class];
     [JreStringCategoryDummy class];
     [JreNumberCategoryDummy class];
-    [JreThrowableCategoryDummy class];
     [NSCopying class];
 
     // Verify that these categories successfully loaded.

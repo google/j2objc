@@ -201,7 +201,7 @@ static void doWait(id obj, long long timeout) {
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "getClass", "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;", "clone",
-    "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LNSException;", "notify",
+    "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LJavaLangThrowable;", "notify",
     "notifyAll", "wait", "J", "LJavaLangInterruptedException;", "JI" };
   static const J2ObjcClassInfo _NSObject = {
     "Object", "java.lang", ptrTable, methods, NULL, 7, 0x1, 12, 0, -1, -1, -1, -1, -1 };

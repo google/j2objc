@@ -848,13 +848,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
     assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
     assertTranslation(translation,
-        "- (instancetype)initWithNSException:(NSException *)arg0 NS_UNAVAILABLE;");
+        "- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)arg0 NS_UNAVAILABLE;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)arg0",
-        "withNSException:(NSException *)arg1 NS_UNAVAILABLE;");
+        "withJavaLangThrowable:(JavaLangThrowable *)arg1 NS_UNAVAILABLE;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)arg0",
-        "withNSException:(NSException *)arg1",
+        "withJavaLangThrowable:(JavaLangThrowable *)arg1",
         "withBoolean:(jboolean)arg2",
         "withBoolean:(jboolean)arg3 NS_UNAVAILABLE;");
   }

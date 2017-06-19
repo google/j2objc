@@ -50,7 +50,7 @@ public class CastResolverTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint i = ((jint) [create_NSException_init() hash]);", result);
+    assertEquals("jint i = ((jint) [create_JavaLangThrowable_init() hash]);", result);
   }
 
   // b/5872710: generic return type needs to be cast if chaining invocations.

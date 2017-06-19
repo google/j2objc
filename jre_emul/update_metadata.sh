@@ -28,7 +28,6 @@ mkdir -p $TEMP_DIR $TRANSLATION_DIR
 
 update_file Classes/IOSClass.m java/lang/Class.java
 update_file Classes/NSCopying+JavaCloneable.m java/lang/Cloneable.java
-update_file Classes/NSException+JavaThrowable.m java/lang/Throwable.java
 update_file Classes/NSNumber+JavaNumber.m java/lang/Number.java
 update_file Classes/NSObject+JavaObject.m java/lang/Object.java
 update_file Classes/NSString+JavaString.m java/lang/String.java

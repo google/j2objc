@@ -30,12 +30,12 @@ NATIVE_JRE_SOURCES_CORE = \
   IOSReflection.m \
   J2ObjC_common.m \
   J2ObjC_icu.m \
+  JavaThrowable.m \
   JreRetainedWith.m \
   NSCopying+JavaCloneable.m \
   NSDataInputStream.m \
   NSDataOutputStream.m \
   NSDictionaryMap.m \
-  NSException+JavaThrowable.m \
   NSNumber+JavaNumber.m \
   NSObject+JavaObject.m \
   NSString+JavaString.m \
@@ -197,6 +197,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/ThreadDeath.java \
   java/lang/ThreadGroup.java \
   java/lang/ThreadLocal.java \
+  java/lang/Throwable.java \
   java/lang/TypeNotPresentException.java \
   java/lang/UnsupportedOperationException.java \
   java/lang/VirtualMachineError.java \
@@ -337,6 +338,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/HashMap.java \
   java/util/HashSet.java \
   java/util/Hashtable.java \
+  java/util/IdentityHashMap.java \
   java/util/IllegalFormatCodePointException.java \
   java/util/IllegalFormatConversionException.java \
   java/util/IllegalFormatException.java \
@@ -782,7 +784,6 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/EventListener.java \
   java/util/EventListenerProxy.java \
   java/util/EventObject.java \
-  java/util/IdentityHashMap.java \
   java/util/Observable.java \
   java/util/Observer.java \
   java/util/PriorityQueue.java \
@@ -1707,10 +1708,10 @@ EMULATED_JAVA_SOURCES = \
   java/lang/Class.java \
   java/lang/Cloneable.java \
   java/lang/Iterable.java \
+  java/lang/NSException.java \
   java/lang/Number.java \
   java/lang/Object.java \
   java/lang/String.java \
-  java/lang/Throwable.java \
   java/lang/reflect/AccessibleObject.java \
   java/lang/reflect/AnnotatedType.java \
   java/lang/reflect/Constructor.java \
@@ -1736,13 +1737,11 @@ PUBLIC_NATIVE_HEADERS = \
   NSDataInputStream.h \
   NSDataOutputStream.h \
   NSDictionaryMap.h \
-  NSException+JavaThrowable.h \
   NSNumber+JavaNumber.h \
   NSObject+JavaObject.h \
   NSString+JavaString.h \
   java/lang/AbstractStringBuilder.h \
   java/lang/Iterable.h \
-  java/lang/Throwable.h \
   java/lang/reflect/AccessibleObject.h \
   java/lang/reflect/Constructor.h \
   java/lang/reflect/Executable.h \

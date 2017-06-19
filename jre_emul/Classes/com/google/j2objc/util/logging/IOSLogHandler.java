@@ -25,7 +25,6 @@ import java.util.logging.LogRecord;
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-#import "NSException+JavaThrowable.h"
 #import <asl.h>
 
 // Simple value holder, so aslclient is closed when thread dictionary is deallocated.

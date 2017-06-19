@@ -703,7 +703,7 @@ didCompleteWithError:(NSError *)error {
       }
       ComGoogleJ2objcNetNSErrorException *cause =
           create_ComGoogleJ2objcNetNSErrorException_initWithId_(error);
-      [responseException initCauseWithNSException:cause];
+      [responseException initCauseWithJavaLangThrowable:cause];
     }
 
     @synchronized(responseBodyStreamLock_) {
@@ -746,7 +746,7 @@ didCompleteWithError:(NSError *)error {
           [[self java_getClass] getName]);
       [logger logWithJavaUtilLoggingLevel:JreLoadStatic(JavaUtilLoggingLevel, SEVERE)
                              withNSString:@"session invalidated with error"
-                          withNSException:exception];
+                    withJavaLangThrowable:exception];
     }
   }
   ]-*/

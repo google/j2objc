@@ -22,9 +22,9 @@
 #import "Constructor.h"
 #import "IOSReflection.h"
 #import "J2ObjC_source.h"
-#import "NSException+JavaThrowable.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "java/lang/Throwable.h"
 #import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -63,8 +63,8 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
       [invocation invokeWithTarget:newInstance];
     }
   }
-  @catch (NSException *e) {
-    @throw create_JavaLangReflectInvocationTargetException_initWithNSException_(e);
+  @catch (JavaLangThrowable *e) {
+    @throw create_JavaLangReflectInvocationTargetException_initWithJavaLangThrowable_(e);
   }
   return newInstance;
 }

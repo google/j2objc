@@ -227,7 +227,7 @@ public class NilCheckResolverTest extends GenerationTest {
         "  JavaLangSystem_gc();",
         "  i = ((Test_Foo *) nil_chk(f))->i_;",
         "}",
-        "@catch (NSException *t) {",
+        "@catch (JavaLangThrowable *t) {",
         "  i = ((Test_Foo *) nil_chk(f))->i_;",
         "}",
         "@finally {",

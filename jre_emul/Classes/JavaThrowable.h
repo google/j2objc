@@ -11,23 +11,22 @@
 // limitations under the License.
 
 //
-// Prefix header for all source files of the 'JreEmulation' framework.
+// JavaThrowable.h
+// JreEmulation
+//
+// Provides the necessary "glue" to support java.lang.Throwable extending from
+// NSException.
 //
 
-#ifndef _JreEmulation_H_
-#define _JreEmulation_H_
+#ifndef JavaThrowable_H_
+#define JavaThrowable_H_
 
-#ifdef __OBJC__
-#import "J2ObjC_common.h"
-#import "JavaObject.h"
-#import "IOSClass.h"
-#import "IOSMetadata.h"
-#import "IOSObjectArray.h"
-#import "IOSPrimitiveArray.h"
-#import "NSCopying+JavaCloneable.h"
-#import "NSNumber+JavaNumber.h"
-#import "NSObject+JavaObject.h"
-#import "NSString+JavaString.h"
-#endif // __OBJC__
+#import <Foundation/Foundation.h>
 
-#endif // _JreEmulation_H_
+CF_EXTERN_C_BEGIN
+
+void NSException_initWithNSString_(NSException *self, NSString *message);
+
+CF_EXTERN_C_END
+
+#endif // JavaThrowable_H_

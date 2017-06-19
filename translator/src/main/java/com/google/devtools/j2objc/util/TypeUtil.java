@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -113,14 +114,21 @@ public final class TypeUtil {
     javaThrowable = (TypeElement) env.resolve("java.lang.Throwable");
     TypeElement javaCloneable = (TypeElement) env.resolve("java.lang.Cloneable");
 
-    javaToObjcTypeMap = ImmutableMap.<TypeElement, TypeElement>builder()
+    ImmutableMap.Builder<TypeElement, TypeElement> typeMapBuilder =
+        ImmutableMap.<TypeElement, TypeElement>builder()
         .put(javaObject, NS_OBJECT)
         .put(javaString, NS_STRING)
         .put(javaClass, IOS_CLASS)
         .put(javaNumber, NS_NUMBER)
-        .put(javaThrowable, NS_EXCEPTION)
-        .put(javaCloneable, NS_COPYING)
-        .build();
+        .put(javaCloneable, NS_COPYING);
+
+    Element javaNSException = env.resolve("java.lang.NSException");
+    // Could be null if the user is not using jre_emul.jar as the boot path.
+    if (javaNSException != null) {
+      typeMapBuilder.put((TypeElement) javaNSException, NS_EXCEPTION);
+    }
+
+    javaToObjcTypeMap = typeMapBuilder.build();
   }
 
   public ElementUtil elementUtil() {

@@ -60,8 +60,9 @@
 }
 
 - (IOSClass *)getSuperclass {
-  // Number is a special case where its superclass doesn't match Java's.
-  if (strcmp("NSNumber", class_getName(class_)) == 0) {
+  // Number and Throwable are special cases where its superclass doesn't match Java's.
+  const char *clsName = class_getName(class_);
+  if (strcmp("NSNumber", clsName) == 0 || strcmp("JavaLangThrowable", clsName) == 0) {
     return NSObject_class_();
   }
   Class superclass = [class_ superclass];

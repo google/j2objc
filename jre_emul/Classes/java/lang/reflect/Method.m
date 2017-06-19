@@ -26,6 +26,7 @@
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/Throwable.h"
 #import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -156,16 +157,11 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 }
 
 - (void)invoke:(NSInvocation *)invocation object:(id)object {
-  NSException *exception = nil;
   @try {
     [invocation invoke];
   }
-  @catch (NSException *t) {
-    exception = t;
-  }
-  if (exception) {
-    @throw AUTORELEASE([[JavaLangReflectInvocationTargetException alloc]
-                        initWithNSException:exception]);
+  @catch (JavaLangThrowable *t) {
+    @throw create_JavaLangReflectInvocationTargetException_initWithJavaLangThrowable_(t);
   }
 }
 
