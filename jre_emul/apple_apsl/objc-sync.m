@@ -150,11 +150,12 @@ static SyncCache *fetch_cache(BOOL create)
 }
 
 
-static SyncData* id2data(id object, enum usage why)
+static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
 {
     OSSpinLock *lockp = &LOCK_FOR_OBJ(object);
     SyncData **listp = &LIST_FOR_OBJ(object);
     SyncData* result = NULL;
+    SyncCacheItem *item = NULL;
     int err;
 
     // Check per-thread cache of already-owned locks for matching object
@@ -162,15 +163,15 @@ static SyncData* id2data(id object, enum usage why)
     if (cache) {
         unsigned i;
         for (i = 0; i < cache->used; i++) {
-            SyncCacheItem *item = &cache->list[i];
+            item = &cache->list[i];
             if (item->data->object != object) continue;
 
             // Found a match.
             result = item->data;
             require_action_string(result->threadCount > 0, cache_done,
-                                  result = NULL, "id2data cache is buggy");
+                                  item = NULL, "id2data cache is buggy");
             require_action_string(item->lockCount > 0, cache_done,
-                                  result = NULL, "id2data cache is buggy");
+                                  item = NULL, "id2data cache is buggy");
 
             switch(why) {
             case ACQUIRE:
@@ -192,7 +193,7 @@ static SyncData* id2data(id object, enum usage why)
             }
 
         cache_done:
-            return result;
+            return item;
         }
     }
     if (why == TEST) {
@@ -256,16 +257,24 @@ static SyncData* id2data(id object, enum usage why)
 
         require_string(result != NULL, really_done, "id2data is buggy");
         require_action_string(why == ACQUIRE || why == TEST, really_done,
-                              result = NULL, "id2data is buggy");
+                              item = NULL, "id2data is buggy");
         require_action_string(result->object == object, really_done,
-                              result = NULL, "id2data is buggy");
+                              item = NULL, "id2data is buggy");
 
         if (!cache) cache = fetch_cache(YES);
-        cache->list[cache->used++] = (SyncCacheItem){result, 1};
+        item = &cache->list[cache->used++];
+        *item = (SyncCacheItem){result, 1};
     }
 
  really_done:
-    return result;
+    return item;
+}
+
+
+static SyncData* id2data(id object, enum usage why)
+{
+    SyncCacheItem *item = id2SyncCacheItem(object, why);
+    return item ? item->data : NULL;
 }
 
 
@@ -332,11 +341,19 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
 {
     int result = OBJC_SYNC_SUCCESS;
 
-    SyncData* data = id2data(obj, CHECK);
-    if (!data) {
-      return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
+    SyncCacheItem* syncCacheItem = id2SyncCacheItem(obj, CHECK);
+
+    if (!syncCacheItem) {
+        return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
     }
 
+    int savedLockCount = syncCacheItem->lockCount;
+    SyncData* data = syncCacheItem->data;
+
+    // Perform savedLockCount-1 unlock actions on obj
+    for (int i = 0; i < savedLockCount - 1; ++i) {
+        pthread_mutex_unlock(&data->mutex);
+    }
 
     // XXX need to retry cond_wait under out-of-our-control failures
     if ( milliSecondsMaxWait == 0 ) {
@@ -353,13 +370,18 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
         }
     }
     // no-op to keep compiler from complaining about branch to next instruction
-    data = NULL;
+    syncCacheItem = NULL;
 
 done:
     if ( result == EPERM )
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
     else if ( result == ETIMEDOUT )
         result = OBJC_SYNC_TIMED_OUT;
+
+    // Perform savedLockCount-1 lock actions on obj
+    for (int i = 0; i < savedLockCount - 1; ++i) {
+        pthread_mutex_lock(&data->mutex);
+    }
 
     return result;
 }

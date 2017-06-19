@@ -22,6 +22,7 @@ SUPPORT_SOURCES = \
     android/text/SpannableTest.java \
     bar/Third.java \
     com/google/j2objc/NativeUtil.java \
+    com/google/j2objc/ObjectTest.java \
     com/google/j2objc/TestAnnotation.java \
     com/google/j2objc/java8/Lambdas.java \
     com/google/j2objc/mappedpkg/TestClass.java \

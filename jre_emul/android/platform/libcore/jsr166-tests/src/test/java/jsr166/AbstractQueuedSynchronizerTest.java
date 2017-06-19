@@ -1008,11 +1008,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
     public void testInterruptible_await()      { testInterruptible(AwaitMethod.await); }
     public void testInterruptible_awaitTimed() { testInterruptible(AwaitMethod.awaitTimed); }
     public void testInterruptible_awaitNanos() { testInterruptible(AwaitMethod.awaitNanos); }
-    /*
-    TODO(tball): replace with pthread_cancel (b/11536576)
-    TODO(zgao): enable after b/62378460 is fixed.
     public void testInterruptible_awaitUntil() { testInterruptible(AwaitMethod.awaitUntil); }
-    */
     public void testInterruptible(final AwaitMethod awaitMethod) {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();

@@ -939,11 +939,8 @@ public class ReentrantLockTest extends JSR166TestCase {
     public void testInterruptible_awaitTimed_fair() { testInterruptible(true,  AwaitMethod.awaitTimed); }
     public void testInterruptible_awaitNanos()      { testInterruptible(false, AwaitMethod.awaitNanos); }
     public void testInterruptible_awaitNanos_fair() { testInterruptible(true,  AwaitMethod.awaitNanos); }
-    /* TODO(tball): replace with pthread_cancel (b/11536576)
-     * TODO(zgao): enable after b/62378460 is fixed.
     public void testInterruptible_awaitUntil()      { testInterruptible(false, AwaitMethod.awaitUntil); }
     public void testInterruptible_awaitUntil_fair() { testInterruptible(true,  AwaitMethod.awaitUntil); }
-    */
     public void testInterruptible(boolean fair, final AwaitMethod awaitMethod) {
         final PublicReentrantLock lock =
             new PublicReentrantLock(fair);
