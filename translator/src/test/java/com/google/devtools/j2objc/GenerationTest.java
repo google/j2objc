@@ -193,13 +193,27 @@ public class GenerationTest extends TestCase {
   }
 
   /**
-   * Compiles Java source to a JVM class file, then converts it to a CompilationUnit.
+   * Compiles Java source to a JVM class file, then converts it to a CompilationUnit. The class
+   * file is compiled with parameter name and debug attributes.
    *
    * @param name the name of the public type being declared
    * @param source the source code
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileAsClassFile(String name, String source) throws IOException {
+    return compileAsClassFile(name, source, "-parameters", "-g");
+  }
+
+  /**
+   * Compiles Java source to a JVM class file, then converts it to a CompilationUnit.
+   *
+   * @param name the name of the public type being declared
+   * @param source the source code
+   * @param flags which javac flags to use
+   * @return the parsed compilation unit
+   */
+  protected CompilationUnit compileAsClassFile(String name, String source,
+      String... flags) throws IOException {
     assertTrue("Classfile translation not enabled", options.translateClassfiles());
 
     String path = name.replace('.', '/') + ".java";
@@ -209,13 +223,18 @@ public class GenerationTest extends TestCase {
       fw.write(source);
     }
 
+    String[] args = new String[flags.length + 1];
+    System.arraycopy(flags, 0, args, 0, flags.length);
+    args[flags.length] = srcFile.getPath();
+
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     ByteArrayOutputStream errOut = new ByteArrayOutputStream();
-    compiler.run(null, null, errOut, srcFile.getPath());
-    if (errOut.size() > 0) {
+    int numErrors = compiler.run(null, null, errOut, args);
+    if (numErrors > 0) {
       String errMsg = errOut.toString();
       ErrorUtil.error(errMsg);
-      failWithMessages("test compilation error(s)", Lists.newArrayList(errMsg));
+      failWithMessages("test compilation error" + (numErrors > 1 ? "s" : ""),
+          Lists.newArrayList(errMsg));
       return null;
     }
     File classFile = new File(tempDir, path.replace(".java", ".class"));
