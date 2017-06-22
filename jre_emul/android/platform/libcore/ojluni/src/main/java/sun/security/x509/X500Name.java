@@ -26,6 +26,8 @@
 
 package sun.security.x509;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.lang.reflect.*;
 import java.io.IOException;
 import java.io.StringReader;
@@ -135,7 +137,7 @@ public class X500Name implements GeneralNameInterface, Principal {
     private String rfc2253Dn; // RFC 2253 DN, or null
     private String canonicalDn; // canonical RFC 2253 DN or null
     private RDN[] names;        // RDNs (never null)
-    private X500Principal x500Principal;
+    @Weak private X500Principal x500Principal;
     private byte[] encoded;
 
     // cached immutable list of the RDNs and all the AVAs

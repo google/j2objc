@@ -25,7 +25,6 @@
 
 package javax.security.auth.x500;
 
-import com.google.j2objc.annotations.Weak;
 import java.io.*;
 import java.security.Principal;
 import java.util.Collections;
@@ -84,7 +83,6 @@ public final class X500Principal implements Principal, java.io.Serializable {
      *
      * NOTE: this field is reflectively accessed from within X500Name.
      */
-    @Weak
     private transient X500Name thisX500Name;
 
     /**
