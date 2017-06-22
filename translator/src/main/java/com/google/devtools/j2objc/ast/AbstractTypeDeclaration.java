@@ -40,7 +40,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
   }
 
   public AbstractTypeDeclaration(TypeElement typeElement) {
-    super();
+    super(typeElement);
     this.typeElement = typeElement;
     name.set(new SimpleName(typeElement));
   }
@@ -65,11 +65,6 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
-  }
-
-  public BodyDeclaration setBodyDeclarations(List<BodyDeclaration> newDeclarations) {
-    bodyDeclarations.replaceAll(newDeclarations);
-    return this;
   }
 
   public List<Statement> getClassInitStatements() {

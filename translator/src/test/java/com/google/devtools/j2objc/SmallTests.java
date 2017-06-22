@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.gen.SignatureGeneratorTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeDeclarationGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
+import com.google.devtools.j2objc.javac.ClassFileConverterTest;
 import com.google.devtools.j2objc.javac.JavacTreeConverterTest;
 import com.google.devtools.j2objc.jdt.TreeConverterTest;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripperTest;
@@ -103,6 +104,7 @@ public class SmallTests {
     ArrayRewriterTest.class,
     AutoboxerTest.class,
     CastResolverTest.class,
+    ClassFileConverterTest.class,
     CodeReferenceMapTest.class,
     ComplexExpressionExtractorTest.class,
     CompoundTypeTest.class,

@@ -386,6 +386,19 @@ public class GenerationTest extends TestCase {
   }
 
   /**
+   * Compiles Java source, as contained in a source file, and compares the parsed compilation units
+   * generated from the source and class files.
+   *
+   * @param type the public type being declared
+   * @param source the source code
+   */
+  protected void assertEqualSrcClassfile(String type, String source) throws IOException {
+    CompilationUnit srcUnit = compileType(type, source);
+    CompilationUnit classfileUnit = compileAsClassFile(type, source);
+    assertEqualASTs(srcUnit, classfileUnit);
+  }
+
+  /**
    * Translate a Java method into a JDT DOM MethodDeclaration.  Although JDT
    * has support for parsing methods, it doesn't resolve them.  The statements
    * are therefore wrapped in a type declaration so they having bindings.

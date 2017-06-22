@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import java.io.IOException;
 
 /**
@@ -31,10 +30,53 @@ public class ClassFileConverterTest extends GenerationTest {
     options.setTranslateClassfiles(true);
   }
 
-  public void testMarkerInterface() throws IOException {
-    String source = "package foo.bar; interface Test {}";
-    CompilationUnit srcUnit = compileType("foo.bar.Test", source);
-    CompilationUnit classfileUnit = compileAsClassFile("foo.bar.Test", source);
-    assertEqualASTs(srcUnit, classfileUnit);
+  public void testEmptyInterface() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "interface Test {}"
+    );
+    assertEqualSrcClassfile(type, source);
   }
+
+  public void testMethodInterface() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "interface Test {",
+        "  void hello();",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testMethodParamsInterface() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "interface Test {",
+        "  void hello(boolean a);",
+// TODO(tball): javac gives incorrect parameter names
+//        "  boolean world(boolean a, int b, float c, double d,",
+//        "      boolean[] e, int[] f, float[] g, double[] h);",
+        "  boolean world(boolean a, int... b);",
+        "  boolean world(boolean a, int[]... b);",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+// TODO(user): will uncomment after finishing AST toString method that ignores method bodies
+//  public void testStaticMethodInterface() throws IOException {
+//    String type = "foo.bar.Test";
+//    String source = String.join("\n",
+//        "package foo.bar;",
+//        "interface Test {",
+//        "  void hello();",
+//        "  static void world() {}",
+//        "  static boolean world(boolean a) { return a; }",
+//        "}"
+//    );
+//    assertEqualSrcClassfile(type, source);
+//  }
 }

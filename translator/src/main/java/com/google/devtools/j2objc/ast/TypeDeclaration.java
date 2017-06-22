@@ -45,8 +45,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   public TypeDeclaration(TypeElement typeElement) {
     super(typeElement);
     isInterface = typeElement.getKind().isInterface();
-    for (TypeMirror interfaceMirror : typeElement.getInterfaces()) {
-    }
   }
 
   @Override

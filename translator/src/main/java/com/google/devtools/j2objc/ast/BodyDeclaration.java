@@ -29,9 +29,7 @@ public abstract class BodyDeclaration extends TreeNode {
   protected ChildLink<Javadoc> javadoc = ChildLink.create(Javadoc.class, this);
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
-  BodyDeclaration() {
-    super();
-  }
+  BodyDeclaration() {}
 
   public BodyDeclaration(BodyDeclaration other) {
     super(other);

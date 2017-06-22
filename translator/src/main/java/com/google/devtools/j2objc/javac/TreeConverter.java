@@ -382,7 +382,7 @@ public class TreeConverter {
   private TreeNode convertAbstractTypeDeclaration(
       JCTree.JCClassDecl node, AbstractTypeDeclaration newNode) {
     convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
-    List<BodyDeclaration> bodyDeclarations = new ArrayList<>();
+    List<BodyDeclaration> bodyDeclarations = newNode.getBodyDeclarations();
     for (JCTree bodyDecl : node.getMembers()) {
       Object member = convert(bodyDecl);
       if (member instanceof BodyDeclaration) {  // Not true for enum constants.
@@ -395,8 +395,7 @@ public class TreeConverter {
     }
     return newNode
         .setName(convertSimpleName(node.sym, node.sym.asType(), getNamePosition(node)))
-        .setTypeElement(node.sym)
-        .setBodyDeclarations(bodyDeclarations);
+        .setTypeElement(node.sym);
   }
 
   private TreeNode convertAnnotation(JCTree.JCAnnotation node) {
@@ -644,7 +643,7 @@ public class TreeConverter {
     if (node.sym.isAnonymous()) {
       return convertClassDeclaration(node).setPosition(getPosition(node));
     }
-    EnumDeclaration newNode = (EnumDeclaration) new EnumDeclaration();
+    EnumDeclaration newNode = new EnumDeclaration();
     convertBodyDeclaration(node, node.getModifiers(), newNode, node.sym);
     newNode
         .setName(convertSimpleName(node.sym, node.type, getNamePosition(node)))

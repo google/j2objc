@@ -76,7 +76,7 @@ public class JavacParser extends Parser {
         assert options.translateClassfiles();
         JavacEnvironment parserEnv =
             createEnvironment(Collections.emptyList(), Collections.emptyList(), false);
-        return ClassFileConverter.convert(options, parserEnv, file);
+        return ClassFileConverter.convertClassFile(options, parserEnv, file);
       }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
