@@ -24,6 +24,7 @@ SUPPORT_SOURCES = \
     com/google/j2objc/NativeUtil.java \
     com/google/j2objc/ObjectTest.java \
     com/google/j2objc/TestAnnotation.java \
+    com/google/j2objc/ThreadTest.java \
     com/google/j2objc/java8/Lambdas.java \
     com/google/j2objc/mappedpkg/TestClass.java \
     com/google/j2objc/mappedpkg/package-info.java \
