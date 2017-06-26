@@ -22,6 +22,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SignatureASTPrinter;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -381,7 +382,19 @@ public class GenerationTest extends TestCase {
    */
   protected void assertEqualASTs(TreeNode first, TreeNode second) {
     if (!first.toString().equals(second.toString())) {
-      fail("unmatched:\"" + first + "\" vs:\n" + second);
+      fail("unmatched:\n" + first + "vs:\n" + second);
+    }
+  }
+
+  /**
+   * Verify that two AST nodes are equal excepting MethodDeclaration bodies, by comparing their
+   * signatures.
+   */
+  protected void assertEqualASTSignatures(TreeNode first, TreeNode second) {
+    String firstStr = SignatureASTPrinter.toString(first);
+    String secondStr = SignatureASTPrinter.toString(second);
+    if (!firstStr.equals(secondStr)) {
+      fail("unmatched:\n" + firstStr + "vs:\n" + secondStr);
     }
   }
 
@@ -395,7 +408,7 @@ public class GenerationTest extends TestCase {
   protected void assertEqualSrcClassfile(String type, String source) throws IOException {
     CompilationUnit srcUnit = compileType(type, source);
     CompilationUnit classfileUnit = compileAsClassFile(type, source);
-    assertEqualASTs(srcUnit, classfileUnit);
+    assertEqualASTSignatures(srcUnit, classfileUnit);
   }
 
   /**

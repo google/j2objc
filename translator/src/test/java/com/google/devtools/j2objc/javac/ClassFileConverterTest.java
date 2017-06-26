@@ -55,8 +55,7 @@ public class ClassFileConverterTest extends GenerationTest {
     String source = String.join("\n",
         "package foo.bar;",
         "interface Test {",
-        "  void hello(boolean a);",
-// TODO(tball): javac gives incorrect parameter names
+        "  void hello(String a);",
 //        "  boolean world(boolean a, int b, float c, double d,",
 //        "      boolean[] e, int[] f, float[] g, double[] h);",
         "  boolean world(boolean a, int... b);",
@@ -66,17 +65,207 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualSrcClassfile(type, source);
   }
 
-// TODO(user): will uncomment after finishing AST toString method that ignores method bodies
-//  public void testStaticMethodInterface() throws IOException {
-//    String type = "foo.bar.Test";
-//    String source = String.join("\n",
-//        "package foo.bar;",
-//        "interface Test {",
-//        "  void hello();",
-//        "  static void world() {}",
-//        "  static boolean world(boolean a) { return a; }",
-//        "}"
-//    );
-//    assertEqualSrcClassfile(type, source);
-//  }
+  public void testDefaultStaticInterface() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "interface Test {",
+        "  void hello(String a);",
+        "  static void world() {}",
+        "  static String world(String a) { return a; }",
+        "  default String bye(String a) { return a; }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testEmptyClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testMethodClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  String s;",
+        "  int i, j, k;",
+        "  void hello(String a) {}",
+//        "  boolean world(boolean a, int b, float c, double d,",
+//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  boolean world(boolean a, int... b) { return a; }",
+        "  boolean world(boolean a, int[]... b) { return a; }",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testStaticMethodClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  static String s;",
+        "  static int i, j, k;",
+        "  static void hello(String a) {}",
+//        "  static boolean world(boolean a, int b, float c, double d,",
+//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  static boolean world(boolean a, int... b) { return a; }",
+        "  static boolean world(boolean a, int[]... b) { return a; }",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testEmptyAbstractClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "abstract class Test {}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testMethodAbstractClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "abstract class Test {",
+        "  String s;",
+        "  int i, j, k;",
+        "  void hello(String a) {}",
+//        "  boolean world(boolean a, int b, float c, double d,",
+//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  abstract boolean world(boolean a, int... b);",
+        "  abstract boolean world(boolean a, int[]... b);",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testStaticMethodAbstractClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "abstract class Test {",
+        "  static String s;",
+        "  static int i, j, k;",
+        "  void hello(String a) {}",
+//        "  boolean world(boolean a, int b, float c, double d,",
+//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  static boolean world(boolean a, int... b) { return a; }",
+        "  static boolean world(boolean a, int[]... b) { return a; }",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testMixedAbstractClass() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "abstract class Test {",
+        "  static String s;",
+        "  int i, j, k;",
+        "  static void hello(String a) {}",
+//        "  static boolean world(boolean a, int b, float c, double d,",
+//        "      boolean[] e, int[] f, float[] g, double[] h) { return a; }",
+        "  abstract boolean world(boolean a, int... b);",
+        "  boolean world(boolean a, int[]... b) { return a; }",
+        "  Test() {",
+        "  }",
+        "  Test(String s, int i, int j, int k) {",
+        "    this.s = s;",
+        "    this.i = i;",
+        "    this.j = j;",
+        "    this.k = k;",
+        "  }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testConstantFields() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  static final boolean a = true;",
+        "  static final char b = 'H';",
+        "  static final byte c = 17;",
+        "  static final short d = 42;",
+        "  static final int e = 1984;",
+        "  static final long f = 87539319;",
+       /* TODO(user): format specifiers, casts, floating point roundoff
+        * "  static final float g = 3.14f;",
+        * "  static final float h = (float) 3.14;",
+        * "  static final double gh = 3.14f;", */
+        "  static final double i = 2.718;",
+        "  static final String j = \"Hello\";",
+        "  final boolean aa = true;",
+        "  final char bb = 'H';",
+        "  final byte cc = 17;",
+        "  final short dd = 42;",
+        "  final int ee = 1984;",
+        "  final long ff = 87539319;",
+       /* TODO(user): format specifiers, casts, floating point roundoff
+        * "  final float gg = 3.14f;",
+        * "  final float hh = (float) 3.14;",
+        * "  final double ghgh = 3.14f;", */
+        "  final double ii = 2.718;",
+        "  final String jj = \"Hello\";",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testFieldMethodModifiers() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "abstract class Test {",
+        "  private static final int sfa = 0;",
+        "  static final int sfb = 0;",
+        "  protected static final int sfc = 0;",
+        "  public static final int sfd = 0;",
+        "  abstract int bm();",
+        "  abstract protected int cm();",
+        "  abstract public int dm();",
+        "  private static final int sfam() { return 0; }",
+        "  static final int sfbm() { return 0; }",
+        "  protected static final int sfcm() { return 0; }",
+        "  public static final int sfdm() { return 0; }",
+        "}"
+    );
+    assertEqualSrcClassfile(type, source);
+  }
 }

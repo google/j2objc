@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
@@ -34,7 +35,7 @@ import javax.lang.model.type.TypeMirror;
  * @author Tom Ball
  */
 public class DebugASTPrinter extends TreeVisitor {
-  private SourceBuilder sb = new SourceBuilder(false);
+  protected SourceBuilder sb = new SourceBuilder(false);
   private boolean inIfStatement = false;
 
   public static String toString(TreeNode node) {
@@ -629,6 +630,14 @@ public class DebugASTPrinter extends TreeVisitor {
     return false;
   }
 
+  protected void printMethodBody(MethodDeclaration node) {
+    if (node.getBody() == null) {
+      sb.println(';');
+    } else {
+      node.getBody().accept(this);
+    }
+  }
+
   @Override
   public boolean visit(MethodDeclaration node) {
     sb.printIndent();
@@ -660,11 +669,7 @@ public class DebugASTPrinter extends TreeVisitor {
       }
       sb.print(' ');
     }
-    if (node.getBody() == null) {
-      sb.println(';');
-    } else {
-      node.getBody().accept(this);
-    }
+    printMethodBody(node);
     return false;
   }
 
@@ -1031,6 +1036,8 @@ public class DebugASTPrinter extends TreeVisitor {
     return false;
   }
 
+  protected void sort(List<BodyDeclaration> lst) {}
+
   @Override
   public boolean visit(TypeDeclaration node) {
     if (node.getJavadoc() != null) {
@@ -1062,8 +1069,10 @@ public class DebugASTPrinter extends TreeVisitor {
     }
     sb.println('{');
     sb.indent();
-    for (Iterator<BodyDeclaration> it = node.getBodyDeclarations().iterator(); it.hasNext(); ) {
-      it.next().accept(this);
+    List<BodyDeclaration> bodyDeclarations = new ArrayList<>(node.getBodyDeclarations());
+    sort(bodyDeclarations);
+    for (BodyDeclaration bodyDecl : bodyDeclarations) {
+      bodyDecl.accept(this);
     }
     printStaticBlock(node);
     sb.unindent();
@@ -1165,7 +1174,7 @@ public class DebugASTPrinter extends TreeVisitor {
     return false;
   }
 
-  private void printAnnotations(List<Annotation> annotations) {
+  protected void printAnnotations(List<Annotation> annotations) {
     Iterator<Annotation> iterator = annotations.iterator();
     while (iterator.hasNext()) {
       iterator.next().accept(this);
@@ -1179,7 +1188,7 @@ public class DebugASTPrinter extends TreeVisitor {
     builder.append(temp.sb.toString());
   }
 
-  private void printModifiers(int modifiers) {
+  protected void printModifiers(int modifiers) {
     if (Modifier.isPublic(modifiers)) {
       sb.print("public ");
     }
@@ -1218,7 +1227,7 @@ public class DebugASTPrinter extends TreeVisitor {
     }
   }
 
-  private void printTypeParameters(List<? extends TypeParameterElement> typeParams) {
+  protected void printTypeParameters(List<? extends TypeParameterElement> typeParams) {
     if (!typeParams.isEmpty()) {
       sb.print('<');
       for (int i = 0; i < typeParams.size(); ) {
@@ -1231,7 +1240,7 @@ public class DebugASTPrinter extends TreeVisitor {
     }
   }
 
-  private void printStaticBlock(AbstractTypeDeclaration node) {
+  protected void printStaticBlock(AbstractTypeDeclaration node) {
     if (!node.getClassInitStatements().isEmpty()) {
       sb.printIndent();
       sb.println("static {");

@@ -18,6 +18,8 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -26,6 +28,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
@@ -134,8 +137,9 @@ public class ClassFileConverter extends ClassVisitor {
 //        break;
 //      case EXCEPTION_PARAMETER:
 //        break;
-//      case FIELD:
-//        break;
+      case FIELD:
+        node = convertFieldDeclaration((VariableElement) element);
+        break;
 //      case INSTANCE_INIT:
 //        break;
 //      case LOCAL_VARIABLE:
@@ -221,5 +225,17 @@ public class ClassFileConverter extends ClassVisitor {
     return new SingleVariableDeclaration(element);
         /* TODO(user): annotations; finish when supported
          * .setAnnotations(convertAnnotations(node.getModifiers())); */
+  }
+
+  /* TODO(user): fields are linked to the static initializer and constructors;
+   * consider storing static final compile-time constants;
+   * static final primitive types or Strings */
+  private TreeNode convertFieldDeclaration(VariableElement element) {
+    Object constantValue = element.getConstantValue();
+    Expression initializer = constantValue != null
+        ? TreeUtil.newLiteral(constantValue, translationEnv.typeUtil()) : null;
+    FieldDeclaration fieldDecl = new FieldDeclaration(element, initializer);
+    convertBodyDeclaration(fieldDecl);
+    return fieldDecl;
   }
 }

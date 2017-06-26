@@ -132,6 +132,7 @@ JAVA_SOURCES = \
 	ast/QualifiedName.java \
 	ast/QualifiedType.java \
 	ast/ReturnStatement.java \
+	ast/SignatureASTPrinter.java \
 	ast/SimpleName.java \
 	ast/SimpleType.java \
 	ast/SingleMemberAnnotation.java \
