@@ -57,6 +57,4 @@ enum {
 // Returns true if an object has a pthread_mutux allocated for it on this thread.
 BOOL j2objc_sync_holds_lock(id obj);
 
-pthread_key_t java_thread_key;
-
 #endif // __OBJC_SNYC_H_

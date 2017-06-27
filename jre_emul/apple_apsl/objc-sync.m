@@ -26,7 +26,6 @@
 #include <libkern/OSAtomic.h>
 
 #include "JreEmulation.h"
-#include "java/lang/Thread.h"
 #include "objc-sync.h"
 
 // Redefine DEBUG_ASSERT_MESSAGE macro to not call the deprecated DebugAssert call.
@@ -297,18 +296,7 @@ int objc_sync_enter(id obj)
         SyncData* data = id2data(obj, ACQUIRE);
         require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_INITIALIZED, "id2data failed");
 
-        JavaLangThread *javaThread = pthread_getspecific(java_thread_key);
-        if (javaThread != NULL) {
-            result = pthread_mutex_trylock(&data->mutex);
-            if (result != 0 ) {
-                JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_BLOCKED);
-                result = pthread_mutex_lock(&data->mutex);
-                JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_RUNNABLE);
-            }
-        } else {
-            result = pthread_mutex_lock(&data->mutex);
-        }
-
+        result = pthread_mutex_lock(&data->mutex);
         require_noerr_string(result, done, "pthread_mutex_lock failed");
     } else {
         // @synchronized(nil) does nothing
@@ -367,13 +355,8 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
         pthread_mutex_unlock(&data->mutex);
     }
 
-    JavaLangThread *javaThread = pthread_getspecific(java_thread_key);
-
     // XXX need to retry cond_wait under out-of-our-control failures
     if ( milliSecondsMaxWait == 0 ) {
-        if (javaThread != NULL) {
-          JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_WAITING);
-        }
         result = pthread_cond_wait(&data->conditionVariable, &data->mutex);
         require_noerr_string(result, done, "pthread_cond_wait failed");
     }
@@ -381,9 +364,6 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
        	struct timespec maxWait;
         maxWait.tv_sec  = (time_t)(milliSecondsMaxWait / 1000);
         maxWait.tv_nsec = (long)((milliSecondsMaxWait - (maxWait.tv_sec * 1000)) * 1000000);
-        if (javaThread != NULL) {
-          JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_TIMED_WAITING);
-        }
         result = pthread_cond_timedwait_relative_np(&data->conditionVariable, &data->mutex, &maxWait);
         if (result != ETIMEDOUT) {
           require_noerr_string(result, done, "pthread_cond_timedwait_relative_np failed");
@@ -393,10 +373,6 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
     syncCacheItem = NULL;
 
 done:
-    if (javaThread != NULL) {
-      JreAssignVolatileInt(&javaThread->state_, JavaLangThread_STATE_RUNNABLE);
-    }
-
     if ( result == EPERM )
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
     else if ( result == ETIMEDOUT )
