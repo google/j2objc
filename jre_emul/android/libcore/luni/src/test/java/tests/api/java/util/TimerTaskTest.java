@@ -192,7 +192,11 @@ public class TimerTaskTest extends junit.framework.TestCase {
             t = new Timer();
             testTask = new TimerTestTask();
             t.schedule(testTask, 100, 500);
-            long estNow = System.currentTimeMillis() + 100;
+
+            // Should be scheduled ~100ms from "now" (and then again in ~600ms) so account
+            // for some jitter.
+            long estNow = System.currentTimeMillis() + 200;
+
             // Will wake in 100, and every 500 run again
             // We want to try to get it after it's run at least once but not
             // twice

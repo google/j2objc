@@ -626,6 +626,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
   sun/reflect/misc/ReflectUtil.java \
+  sun/util/ResourceBundleEnumeration.java \
   sun/util/calendar/AbstractCalendar.java \
   sun/util/calendar/BaseCalendar.java \
   sun/util/calendar/CalendarDate.java \
@@ -915,6 +916,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/nio/SelectorProviderImpl.java \
   java/nio/ServerSocketChannelImpl.java \
   java/nio/SocketChannelImpl.java \
+  sun/misc/LRUCache.java \
   sun/nio/ch/ChannelInputStream.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
