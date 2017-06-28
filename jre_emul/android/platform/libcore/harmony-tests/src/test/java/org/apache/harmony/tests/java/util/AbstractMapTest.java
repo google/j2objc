@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -135,6 +135,94 @@ public class AbstractMapTest extends junit.framework.TestCase {
     }
 
     /**
+     * java.util.AbstractMap#clear()
+     */
+    public void test_clear() {
+        // normal clear()
+        AbstractMap map = new HashMap();
+        map.put(1, 1);
+        map.clear();
+        assertTrue(map.isEmpty());
+
+        // Special entrySet return a Set with no clear method.
+        AbstractMap myMap = new MocAbstractMap();
+        try {
+            myMap.clear();
+            fail("Should throw UnsupportedOprationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    class MocAbstractMap<K, V> extends AbstractMap {
+
+        public Set entrySet() {
+            Set set = new MySet();
+            return set;
+        }
+
+        class MySet extends HashSet {
+            public void clear() {
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    /**
+     * java.util.AbstractMap#containsKey(Object)
+     */
+    public void test_containsKey() {
+        AbstractMap map = new AMT();
+
+        assertFalse(map.containsKey("k"));
+        assertFalse(map.containsKey(null));
+
+        map.put("k", "v");
+        map.put("key", null);
+        map.put(null, "value");
+        map.put(null, null);
+
+        assertTrue(map.containsKey("k"));
+        assertTrue(map.containsKey("key"));
+        assertTrue(map.containsKey(null));
+    }
+
+    /**
+     * java.util.AbstractMap#containsValue(Object)
+     */
+    public void test_containValue() {
+        AbstractMap map = new AMT();
+
+        assertFalse(map.containsValue("v"));
+        assertFalse(map.containsValue(null));
+
+        map.put("k", "v");
+        map.put("key", null);
+        map.put(null, "value");
+
+        assertTrue(map.containsValue("v"));
+        assertTrue(map.containsValue("value"));
+        assertTrue(map.containsValue(null));
+    }
+
+    /**
+     * java.util.AbstractMap#get(Object)
+     */
+    public void test_get() {
+        AbstractMap map = new AMT();
+        assertNull(map.get("key"));
+        assertNull(map.get(null));
+
+        map.put("k", "v");
+        map.put("key", null);
+        map.put(null, "value");
+
+        assertEquals("v", map.get("k"));
+        assertNull(map.get("key"));
+        assertEquals("value", map.get(null));
+    }
+
+    /**
      * java.util.AbstractMap#values()
      */
     public void test_values() {
@@ -183,11 +271,11 @@ public class AbstractMapTest extends junit.framework.TestCase {
                 try {
                     return super.clone();
                 } catch (CloneNotSupportedException e) {
-                    throw new AssertionError(e); // android-changed
+                    fail("Clone must be supported");
+                    return null;
                 }
             }
         }
-        ;
         MyMap map = new MyMap();
         map.put("one", "1");
         Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
@@ -201,7 +289,7 @@ public class AbstractMapTest extends junit.framework.TestCase {
 
         // Very crude AbstractMap implementation
         Vector values = new Vector();
-        Vector keys   = new Vector();
+        Vector keys = new Vector();
 
         public Set entrySet() {
             return new AbstractSet() {
@@ -260,7 +348,7 @@ public class AbstractMapTest extends junit.framework.TestCase {
      * {@link java.util.AbstractMap#putAll(Map)}
      */
     public void test_putAllLMap() {
-        Hashtable ht  = new Hashtable();
+        Hashtable ht = new Hashtable();
         AMT amt = new AMT();
         ht.put("this", "that");
         amt.putAll(ht);

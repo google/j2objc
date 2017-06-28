@@ -513,7 +513,6 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/CollectionsTest.java \
     org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.java \
     org/apache/harmony/luni/tests/java/util/EnumSetTest.java \
-    org/apache/harmony/luni/tests/java/util/EventObjectTest.java \
     org/apache/harmony/luni/tests/java/util/HashSetTest.java \
     org/apache/harmony/luni/tests/java/util/IdentityHashMapTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedHashSetTest.java \
@@ -601,16 +600,26 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/text/NumberFormatTest.java \
     org/apache/harmony/tests/java/text/ParsePositionTest.java \
     org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
+    org/apache/harmony/tests/java/util/AbstractMapTest.java \
+    org/apache/harmony/tests/java/util/BitSetTest.java \
     org/apache/harmony/tests/java/util/CalendarTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
     org/apache/harmony/tests/java/util/DateTest.java \
+    org/apache/harmony/tests/java/util/EventObjectTest.java \
+    org/apache/harmony/tests/java/util/FormattableFlagsTest.java \
     org/apache/harmony/tests/java/util/FormatterTest.java \
     org/apache/harmony/tests/java/util/GregorianCalendarTest.java \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
+    org/apache/harmony/tests/java/util/ListResourceBundleTest.java \
     org/apache/harmony/tests/java/util/LocaleTest.java \
+    org/apache/harmony/tests/java/util/ObservableTest.java \
+    org/apache/harmony/tests/java/util/PropertyResourceBundleTest.java \
+    org/apache/harmony/tests/java/util/ResourceBundleTest.java \
     org/apache/harmony/tests/java/util/SimpleTimeZoneTest.java \
+    org/apache/harmony/tests/java/util/TimerTaskTest.java \
+    org/apache/harmony/tests/java/util/TimerTest.java \
     org/apache/harmony/tests/java/util/TimeZoneTest.java \
     org/apache/harmony/tests/java/util/zip/Adler32Test.java \
     org/apache/harmony/tests/java/util/zip/CRC32Test.java \
@@ -649,15 +658,6 @@ TEST_SOURCES := \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
     tests/api/java/lang/reflect/ProxyTest.java \
-    tests/api/java/util/AbstractMapTest.java \
-    tests/api/java/util/BitSetTest.java \
-    tests/api/java/util/FormattableFlagsTest.java \
-    tests/api/java/util/ListResourceBundleTest.java \
-    tests/api/java/util/ObservableTest.java \
-    tests/api/java/util/PropertyResourceBundleTest.java \
-    tests/api/java/util/ResourceBundleTest.java \
-    tests/api/java/util/TimerTaskTest.java \
-    tests/api/java/util/TimerTest.java \
     tests/security/cert/X509Certificate2Test.java \
     tests/security/interfaces/RSAKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
@@ -763,6 +763,7 @@ HARMONY_TEST_RESOURCES_SRCS = \
     tests/resources/hyts_gInput.txt.gz
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
+    org/apache/harmony/tests/java/util/TestUtf8ResourceBundle.properties \
     tests/targets/security/MD5.check \
     tests/targets/security/MD5.data \
     tests/targets/security/SHA-1.check \

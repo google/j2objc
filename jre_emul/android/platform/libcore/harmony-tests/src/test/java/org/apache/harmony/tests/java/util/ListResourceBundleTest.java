@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.Enumeration;
 import java.util.ListResourceBundle;
@@ -24,18 +24,16 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 
 public class ListResourceBundleTest extends junit.framework.TestCase {
-
     /**
      * java.util.ListResourceBundle#getKeys()
      */
-    @SuppressWarnings("unchecked")
     public void test_getKeys() {
         ResourceBundle bundle;
         String name = "tests.support.Support_TestResource";
         Locale.setDefault(new Locale("en", "US"));
         bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
-        Enumeration keys = bundle.getKeys();
-        Vector result = new Vector();
+        Enumeration<String> keys = bundle.getKeys();
+        Vector<String> result = new Vector<String>();
         while (keys.hasMoreElements()) {
             result.addElement(keys.nextElement());
         }
@@ -48,13 +46,11 @@ public class ListResourceBundleTest extends junit.framework.TestCase {
         assertTrue("Missing key child3", result.contains("child3"));
     }
 
-
-    @SuppressWarnings("unchecked")
     public void test_handleGetObjectLjava_lang_String() {
         ListResourceBundle bundle;
         String name = "tests.support.Support_TestResource";
         Locale.setDefault(new Locale("en", "US"));
-        bundle = (ListResourceBundle)ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
+        bundle = (ListResourceBundle) ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
         Enumeration keys = bundle.getKeys();
         String keyValue = null;
         Vector result = new Vector();

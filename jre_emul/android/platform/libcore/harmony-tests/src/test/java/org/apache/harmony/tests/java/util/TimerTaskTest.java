@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -173,9 +173,12 @@ public class TimerTaskTest extends junit.framework.TestCase {
     public void test_scheduledExecutionTime() {
         Timer t = null;
         try {
+            TimerTestTask testTask = new TimerTestTask();
+            assertEquals(0, testTask.scheduledExecutionTime());
+
             // Ensure scheduledExecutionTime is roughly right
             t = new Timer();
-            TimerTestTask testTask = new TimerTestTask();
+            testTask = new TimerTestTask();
             t.schedule(testTask, 100);
             long time = System.currentTimeMillis() + 100;
             synchronized (testTask.sync) {

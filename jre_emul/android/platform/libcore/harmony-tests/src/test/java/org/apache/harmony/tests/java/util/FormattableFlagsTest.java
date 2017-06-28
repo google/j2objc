@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.FormattableFlags;
 import junit.framework.TestCase;
 
 public class FormattableFlagsTest extends TestCase {
-
-    /**
-     * @test java.util.FormattableFlags ConstantFieldValues
-     */
     public void test_ConstantFieldValues() {
         assertEquals(1, FormattableFlags.LEFT_JUSTIFY);
         assertEquals(2, FormattableFlags.UPPERCASE);

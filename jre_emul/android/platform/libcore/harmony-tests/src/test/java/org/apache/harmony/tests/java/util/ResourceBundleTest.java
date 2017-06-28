@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.Enumeration;
 import java.util.Locale;
@@ -82,6 +82,79 @@ public class ResourceBundleTest extends junit.framework.TestCase {
             //expected
         }
     }
+
+//    /**
+//     * java.util.ResourceBundle#getBundle(java.lang.String,
+//     *        java.util.Locale, java.lang.ClassLoader)
+//     */
+//    @KnownFailure("It's not allowed to pass null as parent class loader to"
+//            + " a new ClassLoader anymore. Maybe we need to change"
+//            + " URLClassLoader to allow this? It's not specified.")
+//    public void test_getBundleLjava_lang_StringLjava_util_LocaleLjava_lang_ClassLoader() {
+//        String classPath = System.getProperty("java.class.path");
+//        StringTokenizer tok = new StringTokenizer(classPath, File.pathSeparator);
+//        Vector<URL> urlVec = new Vector<URL>();
+//        String resPackage = Support_Resources.RESOURCE_PACKAGE;
+//        try {
+//            while (tok.hasMoreTokens()) {
+//                String path = tok.nextToken();
+//                String url;
+//                if (new File(path).isDirectory())
+//                    url = "file:" + path + resPackage + "subfolder/";
+//                else
+//                    url = "jar:file:" + path + "!" + resPackage + "subfolder/";
+//                urlVec.addElement(new URL(url));
+//            }
+//        } catch (MalformedURLException e) {
+//        }
+//        URL[] urls = new URL[urlVec.size()];
+//        for (int i = 0; i < urlVec.size(); i++)
+//            urls[i] = urlVec.elementAt(i);
+//        URLClassLoader loader = new URLClassLoader(urls, null);
+//
+//        String name = Support_Resources.RESOURCE_PACKAGE_NAME
+//                + ".hyts_resource";
+//        ResourceBundle bundle = ResourceBundle.getBundle(name, Locale
+//                .getDefault());
+//            assertEquals("Wrong value read", "parent", bundle.getString("property"));
+//        bundle = ResourceBundle.getBundle(name, Locale.getDefault(), loader);
+//        assertEquals("Wrong cached value",
+//                "resource", bundle.getString("property"));
+//
+//        try {
+//            ResourceBundle.getBundle(null, Locale.getDefault(), loader);
+//            fail("NullPointerException expected");
+//        } catch (NullPointerException ee) {
+//            //expected
+//        }
+//
+//        try {
+//            ResourceBundle.getBundle(name, null, loader);
+//            fail("NullPointerException expected");
+//        } catch (NullPointerException ee) {
+//            //expected
+//        }
+//
+//        try {
+//            ResourceBundle.getBundle(name, Locale.getDefault(), (ClassLoader) null);
+//            fail("NullPointerException expected");
+//        } catch (NullPointerException ee) {
+//            //expected
+//        }
+//
+//        try {
+//            ResourceBundle.getBundle("", Locale.getDefault(), loader);
+//            fail("MissingResourceException expected");
+//        } catch (MissingResourceException ee) {
+//            //expected
+//        }
+//
+//        // Regression test for Harmony-3823
+//        B bb = new B();
+//        String s = bb.find("nonexistent");
+//        s = bb.find("name");
+//        assertEquals("Wrong property got", "Name", s);
+//    }
 
     /**
      * java.util.ResourceBundle#getString(java.lang.String)
@@ -312,5 +385,13 @@ public class ResourceBundleTest extends junit.framework.TestCase {
         }
 
         Locale.setDefault(defLocale);
+    }
+
+    // http://b/26879578
+    public void testBundleWithUtf8Values() {
+        ResourceBundle bundle = ResourceBundle.getBundle(
+                "org.apache.harmony.tests.java.util.TestUtf8ResourceBundle");
+        assertEquals("Страх мой удивительный UTF-8 синтаксического анализа",
+                bundle.getString("key"));
     }
 }

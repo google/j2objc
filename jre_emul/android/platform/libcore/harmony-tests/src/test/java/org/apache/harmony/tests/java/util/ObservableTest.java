@@ -15,11 +15,12 @@
  *  limitations under the License.
  */
 
-package tests.api.java.util;
+package org.apache.harmony.tests.java.util;
 
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ObservableTest extends junit.framework.TestCase {
 
@@ -227,6 +228,24 @@ public class ObservableTest extends junit.framework.TestCase {
                 1, ((TestObserver) observer).updateCount());
         assertTrue("Failed to pass Object arg", ((TestObserver) observer).objv
                 .elementAt(0).equals(obj));
+    }
+
+    static final class AlwaysChangedObservable extends Observable {
+        @Override
+        public boolean hasChanged() {
+            return true;
+        }
+    }
+
+    // http://b/28797950
+    public void test_observableWithOverridenHasChanged() throws Exception {
+        final AtomicReference<Observable> updated = new AtomicReference<>();
+        final Observer observer = (observable1, data) -> updated.set(observable1);
+
+        Observable alwaysChanging = new AlwaysChangedObservable();
+        alwaysChanging.addObserver(observer);
+        alwaysChanging.notifyObservers(null);
+        assertSame(alwaysChanging, updated.get());
     }
 
     /**
