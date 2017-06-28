@@ -528,4 +528,46 @@ public class FunctionizerTest extends GenerationTest {
     assertNotInTranslation(translation, "new_Test_init");
     assertNotInTranslation(translation, "create_Test_init");
   }
+
+  public void testWrapperAndReflectionStripping() throws IOException {
+    addSourceFile("class Test { public Test() {} public static void foo() {} }", "Test.java");
+    String initSig = "- (instancetype)init";
+    String fooSig = "+ (void)foo";
+
+    // No reflection or wrapper stripping.
+    String header = translateSourceFile("Test", "Test.h");
+    String source = getTranslatedFile("Test.m");
+    assertTranslation(header, initSig);
+    assertTranslation(header, fooSig);
+    assertTranslation(source, initSig);
+    assertTranslation(source, fooSig);
+
+    // Reflection stripped: same result because wrappers aren't stripped.
+    options.setStripReflection(true);
+    header = translateSourceFile("Test", "Test.h");
+    source = getTranslatedFile("Test.m");
+    assertTranslation(header, initSig);
+    assertTranslation(header, fooSig);
+    assertTranslation(source, initSig);
+    assertTranslation(source, fooSig);
+
+    // Reflection not stripped, wrapper methods stripped: no declarations in the header.
+    options.setStripReflection(false);
+    options.setEmitWrapperMethods(false);
+    header = translateSourceFile("Test", "Test.h");
+    source = getTranslatedFile("Test.m");
+    assertNotInTranslation(header, initSig);
+    assertNotInTranslation(header, fooSig);
+    assertTranslation(source, initSig);
+    assertTranslation(source, fooSig);
+
+    // Both reflection and wrapper methods stripped: no declarations or implementations.
+    options.setStripReflection(true);
+    header = translateSourceFile("Test", "Test.h");
+    source = getTranslatedFile("Test.m");
+    assertNotInTranslation(header, initSig);
+    assertNotInTranslation(header, fooSig);
+    assertNotInTranslation(source, initSig);
+    assertNotInTranslation(source, fooSig);
+  }
 }

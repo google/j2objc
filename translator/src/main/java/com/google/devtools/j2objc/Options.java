@@ -67,6 +67,7 @@ public class Options {
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
   private boolean stripReflection = false;
+  private boolean emitWrapperMethods = true;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
   private boolean staticAccessorMethods = false;
@@ -467,6 +468,8 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         stripReflection = true;
+      } else if (arg.equals("--no-wrapper-methods")) {
+        emitWrapperMethods = false;
       } else if (arg.equals("--no-segmented-headers")) {
         segmentedHeaders = false;
       } else if (arg.equals("--build-closure")) {
@@ -789,6 +792,15 @@ public class Options {
   @VisibleForTesting
   public void setStripReflection(boolean b) {
     stripReflection = b;
+  }
+
+  public boolean emitWrapperMethods() {
+    return emitWrapperMethods;
+  }
+
+  @VisibleForTesting
+  public void setEmitWrapperMethods(boolean b) {
+    emitWrapperMethods = b;
   }
 
   public boolean extractUnsequencedModifications() {

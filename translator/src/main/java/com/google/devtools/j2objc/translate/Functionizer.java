@@ -334,24 +334,33 @@ public class Functionizer extends UnitTreeVisitor {
         // Enums with ARC need the retaining constructor.
         declarationList.add(makeAllocatingConstructor(node, false));
       }
-      // Instance methods must be kept in case they are invoked using "super".
-      boolean keepMethod = isInstanceMethod
-          // Public methods must be kept for the public API.
-          || !(ElementUtil.isPrivateInnerType(declaringClass) || ElementUtil.isPrivate(element))
-          // Methods must be kept for reflection if enabled.
-          || (translationUtil.needsReflection(declaringClass)
-              && !isEnumConstructor);
-      if (keepMethod) {
-        if (isDefaultMethod) {
-          // For default methods keep only the declaration. Implementing classes will add a shim.
-          node.setBody(null);
-          node.addModifiers(Modifier.ABSTRACT);
-        } else {
-          setFunctionCaller(node, element);
+      if (isDefaultMethod) {
+        // For default methods keep only the declaration. Implementing classes will add a shim.
+        node.setBody(null);
+        node.addModifiers(Modifier.ABSTRACT);
+      } else if (isInstanceMethod) {
+        // Instance methods must be kept in case they are invoked using "super".
+        // TODO(kstanger): Is this true for final methods?
+        setFunctionCaller(node, element);
+      } else if (isEnumConstructor) {
+        // Enum constructors are never needed.
+        node.remove();
+      } else if (translationUtil.needsReflection(declaringClass)) {
+        // Static methods and constructors, keep for reflection.
+        setFunctionCaller(node, element);
+        if (!options.emitWrapperMethods()) {
+          // Take out of the header, only needed for reflection.
+          node.setHasDeclaration(false);
         }
       } else {
-        node.remove();
+        // Static methods and constructors, no reflection.
+        if (options.emitWrapperMethods()) {
+          setFunctionCaller(node, element);
+        } else {
+          node.remove();
+        }
       }
+
       ErrorUtil.functionizedMethod();
     }
   }
