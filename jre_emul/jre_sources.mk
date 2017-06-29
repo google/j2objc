@@ -1278,6 +1278,9 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/KeyManagerFactory.java \
   javax/net/ssl/KeyManagerFactorySpi.java \
   javax/net/ssl/ManagerFactoryParameters.java \
+  javax/net/ssl/SNIHostName.java \
+  javax/net/ssl/SNIMatcher.java \
+  javax/net/ssl/SNIServerName.java \
   javax/net/ssl/SSLContext.java \
   javax/net/ssl/SSLContextSpi.java \
   javax/net/ssl/SSLEngine.java \
@@ -1295,6 +1298,7 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/SSLSessionContext.java \
   javax/net/ssl/SSLSocket.java \
   javax/net/ssl/SSLSocketFactory.java \
+  javax/net/ssl/StandardConstants.java \
   javax/net/ssl/TrustManager.java \
   javax/net/ssl/TrustManagerFactory.java \
   javax/net/ssl/TrustManagerFactorySpi.java \
