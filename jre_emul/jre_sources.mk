@@ -51,6 +51,7 @@ NATIVE_JRE_SOURCES_CORE = \
   java_lang_Long.m \
   java_lang_Math.m \
   java_lang_StrictMath.m \
+  java_lang_Thread.m \
   java_util_regex_Matcher.m \
   java_util_regex_Pattern.m \
   jni.m \

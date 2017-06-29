@@ -26,6 +26,7 @@ import java.util.Map;
 
 /*-[
 #import "java/lang/AssertionError.h"
+#import "java_lang_Thread.h"
 #import "objc-sync.h"
 #import <pthread.h>
 ]-*/
@@ -58,7 +59,6 @@ public class Thread implements Runnable {
   private final long threadId;
   private String name;
   private final long stackSize;
-  private volatile State state = State.NEW;
   private int priority = NORM_PRIORITY;
   private volatile UncaughtExceptionHandler uncaughtExceptionHandler;
   private boolean isDaemon;
@@ -66,6 +66,15 @@ public class Thread implements Runnable {
   private ClassLoader contextClassLoader;
   ThreadLocal.ThreadLocalMap threadLocals = null;
   ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
+
+  static final int STATE_NEW = 0;
+  static final int STATE_RUNNABLE = 1;
+  static final int STATE_BLOCKED = 2;
+  static final int STATE_WAITING = 3;
+  static final int STATE_TIMED_WAITING = 4;
+  static final int STATE_TERMINATED = 5;
+  // Accessing a volatile int is cheaper than a volatile object.
+  volatile int state = STATE_NEW;
 
   /** The object the thread is waiting on (normally null). */
   Object blocker;
@@ -331,7 +340,7 @@ public class Thread implements Runnable {
       }
     } else {
       // Thread is already running.
-      state = State.RUNNABLE;
+      state = STATE_RUNNABLE;
       group.add(this);
     }
     this.threadGroup = group;
@@ -339,13 +348,6 @@ public class Thread implements Runnable {
   }
 
   /*-[
-  pthread_key_t java_thread_key;
-
-  void javaThreadDestructor(void *javaThread) {
-    JavaLangThread *thread = (JavaLangThread *)javaThread;
-    [thread exit];
-    [thread release];
-  }
 
   void *start_routine(void *arg) {
     JavaLangThread *thread = (JavaLangThread *)arg;
@@ -372,9 +374,7 @@ public class Thread implements Runnable {
    * Create a Thread wrapper around the main native thread.
    */
   private static native void initializeThreadClass() /*-[
-    if (pthread_key_create(&java_thread_key, &javaThreadDestructor)) {
-      @throw create_JavaLangAssertionError_initWithId_(@"Failed to create pthread key.");
-    }
+    initJavaThreadKeyOnce();
     NativeThread *nt = [[[NativeThread alloc] init] autorelease];
     nt->t = pthread_self();
     JavaLangThread *mainThread = JavaLangThread_createMainThreadWithId_(nt);
@@ -398,7 +398,7 @@ public class Thread implements Runnable {
   ]-*/;
 
   public synchronized void start() {
-    if (state != State.NEW) {
+    if (state != STATE_NEW) {
       throw new IllegalThreadStateException("This thread was already started!");
     }
     threadGroup.add(this);
@@ -406,7 +406,7 @@ public class Thread implements Runnable {
     if (priority != NORM_PRIORITY) {
       nativeSetPriority(priority);
     }
-    state = State.RUNNABLE;
+    state = STATE_RUNNABLE;
   }
 
   private native void start0() /*-[
@@ -420,8 +420,8 @@ public class Thread implements Runnable {
     pthread_create(&nt->t, &attr, &start_routine, [self retain]);
   ]-*/;
 
-  private void exit() {
-    state = State.TERMINATED;
+  void exit() {
+    state = STATE_TERMINATED;
     if (threadGroup != null) {
       threadGroup.threadTerminated(this);
       threadGroup = null;
@@ -521,11 +521,27 @@ public class Thread implements Runnable {
   ]-*/;
 
   public State getState() {
-    return state;
+    switch (state) {
+      case STATE_NEW:
+        return State.NEW;
+      case STATE_RUNNABLE:
+        return State.RUNNABLE;
+      case STATE_BLOCKED:
+        return State.BLOCKED;
+      case STATE_WAITING:
+        return State.WAITING;
+      case STATE_TIMED_WAITING:
+        return State.TIMED_WAITING;
+      case STATE_TERMINATED:
+        return State.TERMINATED;
+    }
+
+    // Unreachable.
+    return null;
   }
 
   public ThreadGroup getThreadGroup() {
-    return state == State.TERMINATED ? null : threadGroup;
+    return state == STATE_TERMINATED ? null : threadGroup;
   }
 
   public StackTraceElement[] getStackTrace() {
@@ -740,8 +756,8 @@ public class Thread implements Runnable {
   }
 
   public final boolean isAlive() {
-    State s = state;
-    return s != State.NEW && s != State.TERMINATED;
+    int s = state;
+    return s != STATE_NEW && s != STATE_TERMINATED;
   }
 
   public void checkAccess() {
