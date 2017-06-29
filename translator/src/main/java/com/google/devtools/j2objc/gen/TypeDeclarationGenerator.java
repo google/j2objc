@@ -616,18 +616,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" NS_UNAVAILABLE");
     }
     println(";");
-
-    // TODO(kstanger): Remove after users have fully migrated. (b/30729312)
-    if (methodName.contains("NSException:")) {
-      String[] selParts = methodName.split(":");
-      for (int i = 0; i < selParts.length; i++) {
-        String part = selParts[i];
-        if (part.endsWith("NSException")) {
-          String oldPart = part.substring(0, part.length() - 11) + "JavaLangThrowable";
-          printf("#define %s %s\n", oldPart, part);
-        }
-      }
-    }
   }
 
   @Override
