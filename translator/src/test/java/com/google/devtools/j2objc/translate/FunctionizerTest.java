@@ -530,26 +530,33 @@ public class FunctionizerTest extends GenerationTest {
   }
 
   public void testWrapperAndReflectionStripping() throws IOException {
-    addSourceFile("class Test { public Test() {} public static void foo() {} }", "Test.java");
+    addSourceFile(
+        "class Test { public Test() {} public static void foo() {} private static void bar() {} }",
+        "Test.java");
     String initSig = "- (instancetype)init";
     String fooSig = "+ (void)foo";
+    String barSig = "+ (void)bar";
 
     // No reflection or wrapper stripping.
     String header = translateSourceFile("Test", "Test.h");
     String source = getTranslatedFile("Test.m");
     assertTranslation(header, initSig);
     assertTranslation(header, fooSig);
+    assertNotInTranslation(header, barSig);
     assertTranslation(source, initSig);
     assertTranslation(source, fooSig);
+    assertTranslation(source, barSig);
 
-    // Reflection stripped: same result because wrappers aren't stripped.
+    // Reflection stripped: Private static method wrapper is removed.
     options.setStripReflection(true);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
     assertTranslation(header, initSig);
     assertTranslation(header, fooSig);
+    assertNotInTranslation(header, barSig);
     assertTranslation(source, initSig);
     assertTranslation(source, fooSig);
+    assertNotInTranslation(source, barSig);
 
     // Reflection not stripped, wrapper methods stripped: no declarations in the header.
     options.setStripReflection(false);
@@ -558,8 +565,10 @@ public class FunctionizerTest extends GenerationTest {
     source = getTranslatedFile("Test.m");
     assertNotInTranslation(header, initSig);
     assertNotInTranslation(header, fooSig);
+    assertNotInTranslation(header, barSig);
     assertTranslation(source, initSig);
     assertTranslation(source, fooSig);
+    assertTranslation(source, barSig);
 
     // Both reflection and wrapper methods stripped: no declarations or implementations.
     options.setStripReflection(true);
@@ -567,7 +576,9 @@ public class FunctionizerTest extends GenerationTest {
     source = getTranslatedFile("Test.m");
     assertNotInTranslation(header, initSig);
     assertNotInTranslation(header, fooSig);
+    assertNotInTranslation(header, barSig);
     assertNotInTranslation(source, initSig);
     assertNotInTranslation(source, fooSig);
+    assertNotInTranslation(source, barSig);
   }
 }

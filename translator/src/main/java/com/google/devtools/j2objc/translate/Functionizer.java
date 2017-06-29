@@ -354,7 +354,8 @@ public class Functionizer extends UnitTreeVisitor {
         }
       } else {
         // Static methods and constructors, no reflection.
-        if (options.emitWrapperMethods()) {
+        if (options.emitWrapperMethods() && !ElementUtil.isPrivateInnerType(declaringClass)
+            && !ElementUtil.isPrivate(element)) {
           setFunctionCaller(node, element);
         } else {
           node.remove();
