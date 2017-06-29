@@ -695,6 +695,26 @@ public final class TypeUtil {
   }
 
   /**
+   * Returns the descriptor of a constructor or method (JLS 4.3.3).
+   */
+  public String getMethodDescriptor(ExecutableType method) {
+    StringBuilder sb = new StringBuilder("(");
+    for (TypeMirror t : method.getParameterTypes()) {
+      sb.append(getSignatureName(t));
+    }
+    sb.append(")");
+    sb.append(getSignatureName(method.getReturnType()));
+    return sb.toString();
+  }
+
+  /**
+   * Returns the descriptor for a field (JLS 4.3.2).
+   */
+  public String getFieldDescriptor(TypeMirror type) {
+    return getSignatureName(type);
+  }
+
+  /**
    * Get the "Reference" name of a method.
    * For non-constructors this is the method's name.
    * For constructors of top-level classes, this is the name of the class.
@@ -716,7 +736,7 @@ public final class TypeUtil {
   }
 
 
-  /** 
+  /**
    * Returns a format specifier that is supported by the NSString, CFString and NSLog formatting
    * methods.
    */

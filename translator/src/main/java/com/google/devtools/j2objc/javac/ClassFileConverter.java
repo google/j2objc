@@ -34,10 +34,12 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +49,16 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 /**
  * Converts a JVM classfile into a CompilationUnit.
@@ -61,44 +67,46 @@ public class ClassFileConverter extends ClassVisitor {
   private final JavacEnvironment parserEnv;
   private final TranslationEnvironment translationEnv;
   private final InputFile file;
+  private final ClassFile classFile;
   private String typeName;
 
   public static CompilationUnit convertClassFile(
-      Options options, JavacEnvironment env, InputFile file) throws IOException {
-    env.saveParameterNames();
-    ClassReader classReader = new ClassReader(file.getInputStream());
-    ClassFileConverter converter = new ClassFileConverter(
-        env, new TranslationEnvironment(options, env), file);
-    String internalName = classReader.getClassName();
-    converter.setClassPath(internalName);
-    /* TODO(user): inner classes; need to return canonical name for use in visit(); see
-     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-6.html#jls-6.7 */
-    converter.typeName = org.objectweb.asm.Type.getObjectType(internalName).getClassName();
-    classReader.accept(converter, 0);
-    return converter.createUnit();
+      Options options, JavacEnvironment env, InputFile file) {
+    try {
+      env.saveParameterNames();
+      ClassFileConverter converter = new ClassFileConverter(
+          env, new TranslationEnvironment(options, env), file);
+      converter.setClassPath();
+      return converter.createUnit();
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
+      return null;
+    }
   }
 
-  private ClassFileConverter(
-      JavacEnvironment parserEnv, TranslationEnvironment translationEnv, InputFile file) {
+  private ClassFileConverter(JavacEnvironment parserEnv, TranslationEnvironment translationEnv,
+      InputFile file) throws IOException {
     super(Opcodes.ASM5);
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
     this.file = file;
+    this.classFile = ClassFile.create(file.getInputStream(), translationEnv.typeUtil());
+    this.typeName = convertInternalTypeName(classFile.name);
+  }
+
+  private static String convertInternalTypeName(String internalName) {
+    return org.objectweb.asm.Type.getObjectType(internalName).getClassName();
   }
 
   /**
    * Set classpath to the root path of the input file, to support typeElement lookup.
    */
-  private void setClassPath(String name) {
-    try {
-      String fullPath = file.getAbsolutePath();
-      String rootPath = fullPath.substring(0, fullPath.lastIndexOf(name + ".class"));
-      List<File> classPath = new ArrayList<>();
-      classPath.add(new File(rootPath));
-      parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
-    }
+  private void setClassPath() throws IOException {
+    String fullPath = file.getAbsolutePath();
+    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(classFile.name + ".class"));
+    List<File> classPath = new ArrayList<>();
+    classPath.add(new File(rootPath));
+    parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
   }
 
   private CompilationUnit createUnit() {
@@ -237,5 +245,44 @@ public class ClassFileConverter extends ClassVisitor {
     FieldDeclaration fieldDecl = new FieldDeclaration(element, initializer);
     convertBodyDeclaration(fieldDecl);
     return fieldDecl;
+  }
+
+  // Extension of ClassNode that supports look up of ASM nodes using elements.
+  static class ClassFile extends ClassNode {
+    private final TypeUtil typeUtil;
+
+    static ClassFile create(InputStream clazz, TypeUtil typeUtil) throws IOException {
+      ClassReader classReader = new ClassReader(clazz);
+      ClassFile cn = new ClassFile(typeUtil);
+      classReader.accept(cn, ClassReader.EXPAND_FRAMES);
+      return cn;
+    }
+
+    ClassFile(TypeUtil typeUtil) {
+      super(Opcodes.ASM5);
+      this.typeUtil = typeUtil;
+    }
+
+    FieldNode getFieldNode(VariableElement field) {
+      String name = field.getSimpleName().toString();
+      String descriptor = typeUtil.getFieldDescriptor(field.asType());
+      for (FieldNode node : fields) {
+        if (node.name.equals(name) && node.desc.equals(descriptor)) {
+          return node;
+        }
+      }
+      throw new AssertionError("unable to find field node for " + field);
+    }
+
+    MethodNode getMethodNode(ExecutableElement method) {
+      String name = method.getSimpleName().toString();
+      String descriptor = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
+      for (MethodNode node : methods) {
+        if (node.name.equals(name) && node.desc.equals(descriptor)) {
+          return node;
+        }
+      }
+      throw new AssertionError("unable to find method node for " + method);
+    }
   }
 }
