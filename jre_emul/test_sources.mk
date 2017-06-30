@@ -48,7 +48,6 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
-    libcore/javax/net/ssl/TestSSLContext.java \
     libcore/util/SerializationTester.java \
     okio/MockSink.java \
     okio/TestUtil.java \
@@ -662,6 +661,15 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/zip/ZipFileTest.java \
     org/apache/harmony/tests/java/util/zip/ZipInputStreamTest.java \
     org/apache/harmony/tests/java/util/zip/ZipOutputStreamTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLEngineResultHandshakeStatusTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLEngineResultStatusTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLEngineResultTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLExceptionTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLHandshakeExceptionTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLKeyExceptionTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLPeerUnverifiedExceptionTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLProtocolExceptionTest.java \
+    org/apache/harmony/tests/javax/net/ssl/SSLSessionBindingEventTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateEncodingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateExpiredExceptionTest.java \

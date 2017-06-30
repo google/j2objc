@@ -1288,6 +1288,7 @@ JAVA_PUBLIC_SOURCES_SSL = \
   javax/net/ssl/SSLEngineResult.java \
   javax/net/ssl/SSLException.java \
   javax/net/ssl/SSLHandshakeException.java \
+  javax/net/ssl/SSLKeyException.java \
   javax/net/ssl/SSLParameters.java \
   javax/net/ssl/SSLPeerUnverifiedException.java \
   javax/net/ssl/SSLProtocolException.java \
