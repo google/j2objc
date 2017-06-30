@@ -144,6 +144,11 @@ public class Thread implements Runnable {
     void uncaughtException(Thread t, Throwable e);
   }
 
+  // Fields accessed reflectively by ThreadLocalRandom.
+  long threadLocalRandomSeed;
+  int threadLocalRandomProbe;
+  int threadLocalRandomSecondarySeed;
+
   /**
    * Holds the default handler for uncaught exceptions, in case there is one.
    */

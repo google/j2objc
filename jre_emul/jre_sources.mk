@@ -650,7 +650,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/util/locale/UnicodeLocaleExtension.java \
   sun/util/logging/LoggingProxy.java \
   sun/util/logging/LoggingSupport.java \
-  sun/util/logging/PlatformLogger.java
+  sun/util/logging/PlatformLogger.java \
+  java/util/concurrent/Helpers.java
 
 JAVA_PUBLIC_SOURCES_IO = \
   java/io/CharArrayReader.java \

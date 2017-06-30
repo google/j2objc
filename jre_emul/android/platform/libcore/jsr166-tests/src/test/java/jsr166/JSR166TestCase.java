@@ -12,6 +12,7 @@ package jsr166;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
+import com.google.j2objc.annotations.RetainedLocalRef;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -19,7 +20,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
- import java.security.CodeSource;
+import java.security.CodeSource;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Permissions;
@@ -677,6 +678,7 @@ public class JSR166TestCase extends TestCase {
      * Finds missing PoolCleaners
      */
     void checkForkJoinPoolThreadLeaks() throws InterruptedException {
+        @RetainedLocalRef
         Thread[] survivors = new Thread[7];
         int count = Thread.enumerate(survivors);
         for (int i = 0; i < count; i++) {

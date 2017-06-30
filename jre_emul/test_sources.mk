@@ -17,7 +17,6 @@
 # Author: Tom Ball, Keith Stanger
 
 SUPPORT_SOURCES = \
-    JSR166TestCase.java \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
     bar/Third.java \
@@ -40,6 +39,7 @@ SUPPORT_SOURCES = \
     java/lang/test/Example.java \
     java/lang/test/package-info.java \
     jsr166/BlockingQueueTest.java \
+    jsr166/CollectionImplementation.java \
     jsr166/JSR166TestCase.java \
     libcore/java/lang/reflect/package-info.java \
     libcore/java/net/AbstractCookiesTest.java \
@@ -159,33 +159,56 @@ SUPPORT_SOURCES = \
 NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 TEST_SOURCES := \
-    AbstractExecutorServiceTest.java \
-    AbstractQueueTest.java \
-    ArrayBlockingQueueTest.java \
-    ConcurrentHashMapTest.java \
-    CopyOnWriteArrayListTest.java \
-    CopyOnWriteArraySetTest.java \
-    CountDownLatchTest.java \
-    CyclicBarrierTest.java \
+    jsr166/AbstractExecutorServiceTest.java \
+    jsr166/AbstractQueueTest.java \
+    jsr166/ArrayBlockingQueueTest.java \
+    jsr166/ArrayDequeTest.java \
+    jsr166/ConcurrentHashMapTest.java \
+    jsr166/ConcurrentSkipListMapTest.java \
+    jsr166/ConcurrentSkipListSetTest.java \
+    jsr166/ConcurrentSkipListSubMapTest.java \
+    jsr166/ConcurrentSkipListSubSetTest.java \
+    jsr166/CountedCompleterTest.java \
+    jsr166/CopyOnWriteArrayListTest.java \
+    jsr166/CopyOnWriteArraySetTest.java \
+    jsr166/CountDownLatchTest.java \
+    jsr166/CyclicBarrierTest.java \
     DateFormatTest.java \
-    DelayQueueTest.java \
-    ExchangerTest.java \
-    ExecutorCompletionServiceTest.java \
-    ExecutorsTest.java \
-    FutureTaskTest.java \
-    LinkedBlockingQueueTest.java \
-    LinkedListTest.java \
+    jsr166/DelayQueueTest.java \
+    jsr166/EntryTest.java \
+    jsr166/ExchangerTest.java \
+    jsr166/ExecutorCompletionServiceTest.java \
+    jsr166/ExecutorsTest.java \
+    jsr166/ForkJoinPool8Test.java \
+    jsr166/ForkJoinPoolTest.java \
+    jsr166/ForkJoinTask8Test.java \
+    jsr166/ForkJoinTaskTest.java \
+    jsr166/FutureTaskTest.java \
+    jsr166/LinkedBlockingDequeTest.java \
+    jsr166/LinkedBlockingQueueTest.java \
+    jsr166/LinkedListTest.java \
+    jsr166/PhaserTest.java \
     MaxFloatingPointTest.java \
     NoPackageTest.java \
     PackagePrefixesTest.java \
-    PriorityBlockingQueueTest.java \
-    PriorityQueueTest.java \
+    jsr166/PriorityBlockingQueueTest.java \
+    jsr166/PriorityQueueTest.java \
     SerializationTest.java \
-    ScheduledExecutorTest.java \
-    SynchronousQueueTest.java \
-    SystemTest.java \
-    ThreadPoolExecutorTest.java \
-    TimeUnitTest.java \
+    jsr166/RecursiveActionTest.java \
+    jsr166/RecursiveTaskTest.java \
+    jsr166/ScheduledExecutorSubclassTest.java \
+    jsr166/ScheduledExecutorTest.java \
+    jsr166/SynchronousQueueTest.java \
+    jsr166/SystemTest.java \
+    jsr166/ThreadLocalRandomTest.java \
+    jsr166/ThreadPoolExecutorSubclassTest.java \
+    jsr166/ThreadTest.java \
+    jsr166/TreeMapTest.java \
+    jsr166/TreeSetTest.java \
+    jsr166/TreeSubMapTest.java \
+    jsr166/TreeSubSetTest.java \
+    jsr166/ThreadPoolExecutorTest.java \
+    jsr166/TimeUnitTest.java \
     UTF16EncodingTest.java \
     android/text/SpannableStringBuilderTest.java \
     android/text/SpannableStringTest.java \
@@ -688,7 +711,7 @@ TEST_SOURCES := \
     tests/targets/security/MessageDigestTestSHA512.java \
 
 SUITE_SOURCES = \
-    ConcurrencyTests.java \
+    jsr166/ConcurrencyTests.java \
     com/google/j2objc/ReflectionTests.java \
     com/google/j2objc/java8/SmallTests.java \
     libcore/java/io/SmallTests.java \
@@ -719,7 +742,7 @@ SUITE_SOURCES := $(SUITE_SOURCES) \
 endif
 
 TESTS_TO_SKIP = \
-    ExchangerTest.java
+    jsr166/ExchangerTest.java
 
 FAILING_TESTS = \
     libcore/java/text/DateFormatSymbolsTest.java
