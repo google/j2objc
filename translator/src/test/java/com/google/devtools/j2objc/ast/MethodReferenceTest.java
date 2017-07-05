@@ -283,10 +283,9 @@ public class MethodReferenceTest extends GenerationTest {
         + "class Test { void foo() {} static class TestSub extends Test { void foo() {}"
         + "class Inner { I test() { return TestSub.super::foo; } } } }",
         "Test", "Test.m");
-    assertTranslatedSegments(translation,
-        "static void (*Test_TestSub_super$_foo)(id, SEL);",
+    assertTranslatedLines(translation,
         "- (void)bar {",
-        "  Test_TestSub_super$_foo(this$0_->this$0_, @selector(foo));",
+        "  Test_foo(this$0_->this$0_);",
         "}");
   }
 

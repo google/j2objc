@@ -26,20 +26,20 @@ import java.io.IOException;
 public class SuperMethodInvocationRewriterTest extends GenerationTest {
 
   public void testQualifiedSuperMethodInvocation() throws IOException {
+    addSourceFile("class SuperClass { double foo(int i) { return 1.2; } }", "SuperClass.java");
     String translation = translateSourceFile(
-        "class Test { double foo(int i) { return 1.2; } "
-        + "static class Inner extends Test { Runnable test() { return new Runnable() { "
-        + "public void run() { Inner.super.foo(1); } }; } } }", "Test", "Test.m");
+        "class Test extends SuperClass { Runnable test() { return new Runnable() { "
+        + "public void run() { Test.super.foo(1); } }; } }", "Test", "Test.m");
     // Declaration of the super function.
     assertTranslation(translation,
-        "static jdouble (*Test_Inner_super$_fooWithInt_)(id, SEL, jint);");
+        "static jdouble (*Test_super$_fooWithInt_)(id, SEL, jint);");
     // Initialization of the super function.
     assertTranslation(translation,
-        "Test_Inner_super$_fooWithInt_ = (jdouble (*)(id, SEL, jint))"
-        + "[Test instanceMethodForSelector:@selector(fooWithInt:)];");
+        "Test_super$_fooWithInt_ = (jdouble (*)(id, SEL, jint))"
+        + "[SuperClass instanceMethodForSelector:@selector(fooWithInt:)];");
     // Invocation of the super function.
     assertTranslation(translation,
-        "Test_Inner_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
+        "Test_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
   }
 
   public void testSuperFunctionInitializedBeforeStaticInit() throws IOException {

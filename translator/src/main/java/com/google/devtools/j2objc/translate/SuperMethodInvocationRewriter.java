@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
-import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -105,24 +104,7 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
     ExecutableElement method = node.getExecutableElement();
     TypeMirror exprType = node.getTypeMirror();
 
-    // Handle default method invocation: SomeInterface.super.method(...)
-    if (ElementUtil.isDefault(method)) {
-      FunctionElement element = new FunctionElement(
-          nameTable.getFullFunctionName(method), exprType, ElementUtil.getDeclaringClass(method))
-          .addParameters(TypeUtil.ID_TYPE)
-          .addParameters(ElementUtil.asTypes(method.getParameters()));
-      FunctionInvocation invocation = new FunctionInvocation(element, exprType);
-      List<Expression> args = invocation.getArguments();
-      if (receiver == null) {
-        args.add(new ThisExpression(TreeUtil.getEnclosingTypeElement(node).asType()));
-      } else {
-        // OuterReferenceResolver has provided an outer path.
-        args.add(TreeUtil.remove(receiver));
-      }
-      TreeUtil.copyList(node.getArguments(), args);
-      node.replaceWith(invocation);
-      return;
-    }
+    assert !ElementUtil.isDefault(method) : "Default methods are handled in Functionizer.java";
 
     if (receiver == null) {
       return;

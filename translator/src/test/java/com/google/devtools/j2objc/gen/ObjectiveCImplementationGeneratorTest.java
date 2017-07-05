@@ -181,9 +181,9 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testNSObjectMessageSuperRename() throws IOException {
+    addSourceFile("public class SuperClass { int load() { return 1; }}", "SuperClass.java");
     String translation = translateSourceFile(
-        "public class Example { int load() { return 1; }} "
-        + "class SubClass extends Example { int load() { return super.load(); }}",
+        "class Example extends SuperClass { int load() { return super.load(); }}",
         "Example", "Example.m");
     assertTranslation(translation, "return [super load__];");
   }

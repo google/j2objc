@@ -107,7 +107,8 @@ public class FunctionizerTest extends GenerationTest {
         "return self->hello_;");
   }
 
-  // Verify there isn't any super method invocations in functions.
+  // Verify a method with super invocations can be funcitonized if those super invocations can also
+  // be functionized.
   public void testSuperMethodInvocationInFunction() throws IOException {
     String translation = translateSourceFile(
         "class A { "
@@ -120,11 +121,11 @@ public class FunctionizerTest extends GenerationTest {
         + "  void use() { test1(); test2(); }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "- (NSString *)test1 {",
-        "return [super hello];");
+        "NSString *A_B_test1(A_B *self) {",
+        "return A_hello(self);");
     assertTranslatedLines(translation,
-        "- (NSString *)test2 {",
-        "return [super shout];");
+        "NSString *A_B_test2(A_B *self) {",
+        "return A_shout(self);");
   }
 
   // Verify functions can call other functions, correctly passing the instance variable.

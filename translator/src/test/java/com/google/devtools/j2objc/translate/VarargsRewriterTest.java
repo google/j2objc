@@ -66,7 +66,7 @@ public class VarargsRewriterTest extends GenerationTest {
         // MethodInvocation
         "[self fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ 5 } count:1]];",
         // SuperMethodInvocation
-        "[super fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ 6 } count:1]];");
+        "A_fooWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){ 6 } count:1]);");
     // MethodReference
     assertTranslatedLines(translation,
         "- (void)fooWithInt:(jint)a {",
@@ -99,7 +99,7 @@ public class VarargsRewriterTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "JavaUtilArrays_asListWithNSObjectArray_(array);",
-        "[super barWithNSObjectArray:array];",
+        "Bar_barWithNSObjectArray_(self, array);",
         "create_Foo_initWithNSObjectArray_(array);");
     // Lambda implementation for Arrays::asList.
     assertTranslatedLines(translation,
@@ -157,10 +157,10 @@ public class VarargsRewriterTest extends GenerationTest {
 
   public void testGenericSuperMethodInvocation() throws IOException {
     String translation = translateSourceFile(
-        "class Test { class A<E> { void test(E... objs) {} } class B<E> extends A<E> { "
+        "class Test { class A<E> { void test(E... objsVararg) {} } class B<E> extends A<E> { "
         + "void test(E... objs) { super.test(objs); } } }", "Test", "Test.m");
     // Must pass the objs parameter as a direct argument, not wrap in a varargs array.
-    assertTranslation(translation, "[super testWithNSObjectArray:objs];");
+    assertTranslation(translation, "Test_A_testWithNSObjectArray_(self, objs);");
   }
 
   public void testGenericVarargsInvocation() throws IOException {
