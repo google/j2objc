@@ -537,7 +537,7 @@ static jobject AllocObject(JNIEnv *env, jclass clazz) {
       || [clazz isArray] || [clazz isEnum]) {
     @throw create_JavaLangInstantiationException_initWithNSString_([clazz getName]);
   }
-  return [clazz.objcClass alloc];
+  return [[clazz.objcClass alloc] autorelease];
 }
 
 static jobject NewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
