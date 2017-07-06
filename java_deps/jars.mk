@@ -30,9 +30,6 @@ HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar
 MOCKITO_JAR = mockito-core-1.9.5.jar
 MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
-ASM_JAR = asm-5.0.4.jar
-ASM_SOURCE_JAR = asm-5.0.4-sources.jar
-
 PROTOBUF_JAR = protobuf-java-3.3.0.jar
 
 ECLIPSE_JARS = \
@@ -60,3 +57,6 @@ JAVAC_JAR = tools.jar
 
 DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
+
+ASM_JAR = asm-all-5.1.jar
+ASM_SOURCE_JAR = asm-all-5.1-sources.jar
