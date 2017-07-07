@@ -263,10 +263,20 @@ public class ClassFileConverter extends ClassVisitor {
       this.typeUtil = typeUtil;
     }
 
+    @SuppressWarnings("unchecked")
+    List<FieldNode> getFields() {
+      return fields;
+    }
+
+    @SuppressWarnings("unchecked")
+    List<MethodNode> getMethods() {
+      return methods;
+    }
+
     FieldNode getFieldNode(VariableElement field) {
       String name = field.getSimpleName().toString();
       String descriptor = typeUtil.getFieldDescriptor(field.asType());
-      for (FieldNode node : fields) {
+      for (FieldNode node : getFields()) {
         if (node.name.equals(name) && node.desc.equals(descriptor)) {
           return node;
         }
@@ -277,7 +287,7 @@ public class ClassFileConverter extends ClassVisitor {
     MethodNode getMethodNode(ExecutableElement method) {
       String name = method.getSimpleName().toString();
       String descriptor = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
-      for (MethodNode node : methods) {
+      for (MethodNode node : getMethods()) {
         if (node.name.equals(name) && node.desc.equals(descriptor)) {
           return node;
         }

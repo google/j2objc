@@ -186,6 +186,7 @@ JAVA_SOURCES = \
 	gen/TypeGenerator.java \
 	gen/TypeImplementationGenerator.java \
 	gen/TypePrivateDeclarationGenerator.java \
+	javac/ClassFileConverter.java \
 	javac/JavacEnvironment.java \
 	javac/JavacJ2ObjCIncompatibleStripper.java \
 	javac/JavacParser.java \

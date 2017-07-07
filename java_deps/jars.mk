@@ -32,6 +32,8 @@ MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
 
 PROTOBUF_JAR = protobuf-java-3.3.0.jar
 
+ASM_JAR = asm-all-5.1.jar
+
 ECLIPSE_JARS = \
     org.eclipse.core.contenttype-3.4.200.v20140207-1251.jar \
     org.eclipse.core.jobs-3.6.1.v20141014-1248.jar \
@@ -57,6 +59,3 @@ JAVAC_JAR = tools.jar
 
 DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
-
-ASM_JAR = asm-all-5.1.jar
-ASM_SOURCE_JAR = asm-all-5.1-sources.jar
