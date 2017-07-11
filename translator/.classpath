@@ -8,9 +8,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/asm-5.0.4.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/asm-all-5.1.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar" sourcepath="../java_deps/build_result/javac-src.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.jobs_3.6.1.v20141204-0235.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.resources_3.9.1.v20140825-1431.jar"/>
