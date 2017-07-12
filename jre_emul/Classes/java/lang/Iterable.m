@@ -87,7 +87,7 @@ NSUInteger JreDefaultFastEnumeration(
     // The for/in loop could break early so we have no guarantee of being able
     // to release the iterator. As long as the current autorelease pool is not
     // cleared within the loop, this should be fine.
-    iter = [obj iterator];
+    iter = nil_chk([obj iterator]);
     state->extra[0] = (unsigned long) iter;
     state->extra[1] = (unsigned long) [iter methodForSelector:hasNextSel];
     state->extra[2] = (unsigned long) [iter methodForSelector:nextSel];
