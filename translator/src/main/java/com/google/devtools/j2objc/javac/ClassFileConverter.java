@@ -41,6 +41,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
@@ -74,6 +75,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.ParameterNode;
 
 /**
  * Converts a JVM classfile into a CompilationUnit.
@@ -305,8 +307,27 @@ public class ClassFileConverter extends ClassVisitor {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
     convertBodyDeclaration(methodDecl, element);
     List<SingleVariableDeclaration> parameters = methodDecl.getParameters();
-    for (VariableElement param : element.getParameters()) {
-      parameters.add((SingleVariableDeclaration) convert(param));
+    int nParams = element.getParameters().size();
+    if (nParams > 0) {
+      // If classfile was compiled with -parameters flag; use the MethodNode
+      // to work around potential javac8 bug iterating over parameter names.
+      MethodNode asmNode = classFile.getMethodNode(element);
+      int nMethodNodes = asmNode.parameters != null ? asmNode.parameters.size() : 0;
+
+      for (int i = 0; i < nParams; i++) {
+        VariableElement param = element.getParameters().get(i);
+        SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
+        if (nMethodNodes == nParams) {
+          ParameterNode paramNode = (ParameterNode) asmNode.parameters.get(i);
+          // If element's name doesn't match the ParameterNode's name, use the latter.
+          if (!paramNode.name.equals(param.getSimpleName().toString())) {
+            param = GeneratedVariableElement.newParameter(paramNode.name, param.asType(),
+                param.getEnclosingElement());
+            varDecl.setVariableElement(param);
+          }
+        }
+        parameters.add(varDecl);
+      }
     }
     if (element.isVarArgs()) {
       SingleVariableDeclaration lastParam = parameters.get(parameters.size() - 1);
