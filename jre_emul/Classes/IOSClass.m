@@ -216,7 +216,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 - (NSString *)getName {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
 - (NSString *)getSimpleName {
@@ -228,7 +228,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 - (NSString *)objcName {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
 - (void)appendMetadataName:(NSMutableString *)str {
@@ -357,15 +357,15 @@ static NSString *Capitalize(NSString *s) {
   // Java's getConstructor() only returns the constructor if it's public.
   // However, all constructors in Objective-C are public, so this method
   // is identical to getDeclaredConstructor().
-  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
+  @throw create_JavaLangNoSuchMethodException_init();
 }
 
 - (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)parameterTypes {
-  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
+  @throw create_JavaLangNoSuchMethodException_init();
 }
 
 - (jboolean)isAssignableFrom:(IOSClass *)cls {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
 - (IOSClass *)asSubclass:(IOSClass *)cls {
@@ -373,7 +373,7 @@ static NSString *Capitalize(NSString *s) {
     return self;
   }
 
-  @throw AUTORELEASE([[JavaLangClassCastException alloc] initWithNSString:[self description]]);
+  @throw create_JavaLangClassCastException_initWithNSString_([self description]);
 }
 
 - (NSString *)description {
@@ -1166,7 +1166,7 @@ IOSClass *IOSClass_NewProxyClass(Class cls) {
   if (!FastPointerLookupAddMapping(&classLookup, cls, result)) {
     // This function should only be called by java.lang.reflect.Proxy
     // immediately after creating a new proxy class.
-    @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
+    @throw create_JavaLangAssertionError_init();
   }
   return result;
 }
@@ -1409,6 +1409,12 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   static const J2ObjcClassInfo _IOSClass = {
     "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 49, -1 };
   return &_IOSClass;
+}
+
+- (void)dealloc {
+  @throw create_JavaLangAssertionError_initWithId_(
+      [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
+  [super dealloc];
 }
 
 @end
