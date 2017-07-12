@@ -202,7 +202,7 @@ public class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileAsClassFile(String name, String source) throws IOException {
-    return compileAsClassFile(name, source, "-parameters", "-g");
+    return compileAsClassFile(name, source, "-parameters", "-cp", tempDir.getAbsolutePath());
   }
 
   /**

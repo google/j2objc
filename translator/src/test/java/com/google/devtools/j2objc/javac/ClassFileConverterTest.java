@@ -342,9 +342,6 @@ public class ClassFileConverterTest extends GenerationTest {
     String type = "foo.bar.Test";
     String source = String.join("\n",
         "package foo.bar;",
-        "@interface SuppressWarningsClass {",
-        "  String value();",
-        "}",
         "class Test {",
         "  /**",
         "   * @deprecated",
@@ -365,6 +362,8 @@ public class ClassFileConverterTest extends GenerationTest {
         "  }",
         "}"
     );
+    addSourceFile("package foo.bar; @interface SuppressWarningsClass { String value(); }",
+        "foo/bar/SuppressWarningsClass.java");
     assertEqualSrcClassfile(type, source);
   }
 
@@ -372,14 +371,13 @@ public class ClassFileConverterTest extends GenerationTest {
     String type = "foo.bar.Test";
     String source = String.join("\n",
         "package foo.bar;",
-        "@interface ArrayAnnot {",
-        "  String[] strings();",
-        "}",
         "@ArrayAnnot(",
         "  strings = {\"Hello\", \"World\", \"Goodbye\"}",
         ")",
         "class Test {}"
     );
+    addSourceFile("package foo.bar; @interface ArrayAnnot { String[] strings(); }",
+        "foo/bar/ArrayAnnot.java");
     assertEqualSrcClassfile(type, source);
   }
 
@@ -387,14 +385,6 @@ public class ClassFileConverterTest extends GenerationTest {
     String type = "foo.bar.Test";
     String source = String.join("\n",
         "package foo.bar;",
-        "@interface Preamble {",
-        "  String author();",
-        "  String date();",
-        "  int currentRevision() default 1;",
-        "  String lastModified() default \"N/A\";",
-        "  String lastModifiedBy() default \"N/A\";",
-        "  String[] reviewers();",
-        "}",
         "@Preamble(",
         "  author = \"John Doe\",",
         "  date = \"3/17/2002\",",
@@ -406,12 +396,7 @@ public class ClassFileConverterTest extends GenerationTest {
         ")",
         "class Test {}"
     );
-    assertEqualSrcClassfile(type, source);
-  }
-
-  public void testDefaultsAnnotationType() throws IOException {
-    String type = "foo.bar.Test";
-    String source = String.join("\n",
+    String annotationSource = String.join("\n",
         "package foo.bar;",
         "@interface Preamble {",
         "  String author();",
@@ -420,7 +405,15 @@ public class ClassFileConverterTest extends GenerationTest {
         "  String lastModified() default \"N/A\";",
         "  String lastModifiedBy() default \"N/A\";",
         "  String[] reviewers();",
-        "}",
+        "}");
+    addSourceFile(annotationSource, "foo/bar/Preamble.java");
+    assertEqualSrcClassfile(type, source);
+  }
+
+  public void testDefaultsAnnotationType() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
         "@Preamble(",
         "  author = \"John Doe\",",
         "  date = \"3/17/2002\",",
@@ -430,6 +423,17 @@ public class ClassFileConverterTest extends GenerationTest {
         ")",
         "class Test {}"
     );
+    String annotationSource = String.join("\n",
+        "package foo.bar;",
+        "@interface Preamble {",
+        "  String author();",
+        "  String date();",
+        "  int currentRevision() default 1;",
+        "  String lastModified() default \"N/A\";",
+        "  String lastModifiedBy() default \"N/A\";",
+        "  String[] reviewers();",
+        "}");
+    addSourceFile(annotationSource, "foo/bar/Preamble.java");
     assertEqualSrcClassfile(type, source);
   }
 

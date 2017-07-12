@@ -78,7 +78,15 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.ParameterNode;
 
 /**
- * Converts a JVM classfile into a CompilationUnit.
+ * Converts a JVM classfile into a CompilationUnit. The resulting unit
+ * is different from one created from the same source, because several
+ * modifications made on source files during translation are already
+ * present in a classfile. These include moving initializers into
+ * constructors and the class initializer method, extracting inner
+ * classes, and adding enum support fields and methods.
+ *
+ * @author Manvith Narahari
+ * @author Tom Ball
  */
 public class ClassFileConverter extends ClassVisitor {
   private final JavacEnvironment parserEnv;
@@ -138,9 +146,7 @@ public class ClassFileConverter extends ClassVisitor {
     String mainTypeName = typeElement.getSimpleName().toString();
     CompilationUnit compUnit = new CompilationUnit(translationEnv, mainTypeName);
     compUnit.setPackage((PackageDeclaration) convert(pkgElement));
-    for (Element elem : pkgElement.getEnclosedElements()) {
-      compUnit.addType((AbstractTypeDeclaration) convert(elem));
-    }
+    compUnit.addType((AbstractTypeDeclaration) convert(typeElement));
     return compUnit;
   }
 
@@ -165,32 +171,20 @@ public class ClassFileConverter extends ClassVisitor {
       case ENUM_CONSTANT:
         node = convertEnumConstantDeclaration((VariableElement) element);
         break;
-//      case EXCEPTION_PARAMETER:
-//        break;
       case FIELD:
         node = convertFieldDeclaration((VariableElement) element);
         break;
-//      case INSTANCE_INIT:
-//        break;
-//      case LOCAL_VARIABLE:
-//        break;
-//      case OTHER:
-//        break;
       case PACKAGE:
         node = convertPackage((PackageElement) element);
         break;
       case PARAMETER:
         node = convertParameter((VariableElement) element);
         break;
-//      case RESOURCE_VARIABLE:
-//        break;
       case STATIC_INIT:
         node = convertMethodDeclaration((ExecutableElement) element);
         break;
-//      case TYPE_PARAMETER:
-//        break;
       default:
-        throw new AssertionError("Unknown element kind: " + element.getKind());
+        throw new AssertionError("Unsupported element kind: " + element.getKind());
     }
     return node;
   }
@@ -292,8 +286,6 @@ public class ClassFileConverter extends ClassVisitor {
   private TreeNode convertTypeDeclaration(TypeElement element) {
     TypeDeclaration typeDecl = new TypeDeclaration(element);
     convertBodyDeclaration(typeDecl, element);
-    /* TODO(user): inheritance; may need to also use Elements.getAllMembers(TypeElement type) or
-     * ElementUtil.getMethods(), etc. */
     for (Element elem : element.getEnclosedElements()) {
       typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem));
     }
@@ -346,9 +338,6 @@ public class ClassFileConverter extends ClassVisitor {
     return new SingleVariableDeclaration(element).setAnnotations(convertAnnotations(element));
   }
 
-  /* TODO(user): fields are linked to the static initializer and constructors;
-   * consider storing static final compile-time constants;
-   * static final primitive types or Strings */
   private TreeNode convertFieldDeclaration(VariableElement element) {
     Object constantValue = element.getConstantValue();
     Expression initializer = constantValue != null
@@ -360,7 +349,6 @@ public class ClassFileConverter extends ClassVisitor {
 
   private boolean isEnumSynthetic(Element e, TypeMirror enumType) {
     if (e.getKind() == ElementKind.STATIC_INIT) {
-      /* TODO(user): what if enum has static initializer? */
       return true;
     } else if (e.getKind() == ElementKind.METHOD) {
       ExecutableElement method = (ExecutableElement) e;
@@ -380,8 +368,6 @@ public class ClassFileConverter extends ClassVisitor {
   private TreeNode convertEnumDeclaration(TypeElement element){
     EnumDeclaration enumDecl = new EnumDeclaration(element);
     convertBodyDeclaration(enumDecl, element);
-    /* TODO(user): may need to also use Elements.getAllMembers(TypeElement type) when dealing
-     * with inheritance, or ElementUtil.getMethods(), etc. */
     for (Element elem : element.getEnclosedElements()) {
       TreeNode encElem = convert(elem);
       if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
@@ -397,15 +383,6 @@ public class ClassFileConverter extends ClassVisitor {
   private TreeNode convertEnumConstantDeclaration(VariableElement element) {
     EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
     convertBodyDeclaration(enumConstDecl, element);
-    /* TODO(user): enum constant declarations are linked to the static initializer */
-//    ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer());
-//    TreeUtil.moveList(init.getArguments(), newNode.getArguments());
-//    if (init.getAnonymousClassDeclaration() != null) {
-//      newNode.setAnonymousClassDeclaration(TreeUtil.remove(init.getAnonymousClassDeclaration()));
-//    }
-//    return newNode
-//        .setExecutablePair(init.getExecutablePair())
-//        .setVarargsType(init.getVarargsType());
     return enumConstDecl;
   }
 
