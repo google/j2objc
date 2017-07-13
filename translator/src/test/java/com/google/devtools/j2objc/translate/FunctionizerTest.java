@@ -535,6 +535,7 @@ public class FunctionizerTest extends GenerationTest {
         "class Test { public Test() {} public static void foo() {} private static void bar() {} }",
         "Test.java");
     String initSig = "- (instancetype)init";
+    String initDisallowedSig = "- (instancetype)init NS_UNAVAILABLE";
     String fooSig = "+ (void)foo";
     String barSig = "+ (void)bar";
 
@@ -564,7 +565,7 @@ public class FunctionizerTest extends GenerationTest {
     options.setEmitWrapperMethods(false);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertNotInTranslation(header, initSig);
+    assertTranslation(header, initDisallowedSig);
     assertNotInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
     assertTranslation(source, initSig);
@@ -575,11 +576,18 @@ public class FunctionizerTest extends GenerationTest {
     options.setStripReflection(true);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertNotInTranslation(header, initSig);
+    assertTranslation(header, initDisallowedSig);
     assertNotInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
     assertNotInTranslation(source, initSig);
     assertNotInTranslation(source, fooSig);
     assertNotInTranslation(source, barSig);
+  }
+
+  public void testDisallowedConstructorsWithNoWrapperMethods() throws IOException {
+    options.setDisallowInheritedConstructors(true);
+    options.setEmitWrapperMethods(false);
+    String translation = translateSourceFile("class A {}", "A", "A.h");
+    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
   }
 }
