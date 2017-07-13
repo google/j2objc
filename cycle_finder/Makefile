@@ -46,7 +46,8 @@ JAVA_SOURCES = \
 RESOURCES = \
     com/google/devtools/cyclefinder/CycleFinder.properties \
     com/google/devtools/j2objc/J2ObjC.properties \
-    com/google/devtools/j2objc/JRE.mappings
+    com/google/devtools/j2objc/JRE.mappings \
+    com/google/devtools/j2objc/reserved_names.txt
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
 INTERNAL_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(ASM_JAR) $(JAVAC_JAR)
