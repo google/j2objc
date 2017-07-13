@@ -21,8 +21,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -38,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
@@ -97,10 +94,9 @@ public class NameTable {
   private static final ImmutableSet<String> reservedNames = loadReservedNames();
 
   private static ImmutableSet<String> loadReservedNames() {
-    try {
+    try (InputStream stream = J2ObjC.class.getResourceAsStream(RESERVED_NAMES_FILE);
+        BufferedReader lines = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
       ImmutableSet.Builder<String> builder = ImmutableSet.builder();
-      InputStream stream = J2ObjC.class.getResourceAsStream(RESERVED_NAMES_FILE);
-      BufferedReader lines = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
       String line;
       while ((line = lines.readLine()) != null) {
         if (line.startsWith("#")) {
@@ -114,7 +110,7 @@ public class NameTable {
     }
   }
 
-  private static final Set<String> badParameterNames = Sets.newHashSet(
+  private static final ImmutableSet<String> badParameterNames = ImmutableSet.of(
       // Objective-C type qualifier keywords.
       "in", "out", "inout", "oneway", "bycopy", "byref");
 
@@ -125,7 +121,7 @@ public class NameTable {
    * "public boolean isEqual(Object o)" would be translated as
    * "- (BOOL)isEqualWithObject:(NSObject *)o", not NSObject's "isEqual:".
    */
-  public static final List<String> nsObjectMessages = Lists.newArrayList(
+  public static final ImmutableSet<String> nsObjectMessages = ImmutableSet.of(
       "alloc", "attributeKeys", "autoContentAccessingProxy", "autorelease",
       "classCode", "classDescription", "classForArchiver",
       "classForKeyedArchiver", "classFallbacksForKeyedArchiver",
