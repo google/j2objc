@@ -303,7 +303,7 @@ JAVA_SOURCES = \
 	util/UnicodeUtils.java \
 	util/Version.java
 
-RESOURCES = J2ObjC.properties JRE.mappings
+RESOURCES = J2ObjC.properties JRE.mappings reserved_names.txt
 RESOURCE_DIR = $(SOURCE_DIR)/resources
 TEST_RESOURCES_DIR = $(TEST_SOURCE_DIR)/resources
 
