@@ -32,9 +32,11 @@ import com.strobel.decompiler.languages.java.ast.AstNode;
 import com.strobel.decompiler.languages.java.ast.BlockStatement;
 import com.strobel.decompiler.languages.java.ast.IAstVisitor;
 import com.strobel.decompiler.patterns.Pattern;
+import java.util.HashMap;
 import java.util.function.Consumer;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
@@ -49,13 +51,17 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   private final TranslationEnvironment translationEnv;
   private final ExecutableElement element;
   private final TypeDeclaration typeDecl;
+  private final HashMap<String, VariableElement> localVariableTable;
+
 
   public MethodTranslator(ParserEnvironment parserEnv, TranslationEnvironment translationEnv,
-                          ExecutableElement element, TypeDeclaration typeDecl) {
+                          ExecutableElement element, TypeDeclaration typeDecl,
+                          HashMap<String, VariableElement> localVariableTable) {
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
     this.element = element;
     this.typeDecl = typeDecl;
+    this.localVariableTable = localVariableTable;
   }
 
   protected void visitChildren(final AstNode node, Consumer<TreeNode> builder) {
@@ -117,11 +123,9 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitIdentifier(
       com.strobel.decompiler.languages.java.ast.Identifier node, Void data) {
-    SimpleName name = new SimpleName()
-        .setIdentifier(node.getName())
-        .setTypeMirror(null);
-    visitChildren(node, (TreeNode expr) -> {});
-    return name;
+    SimpleName simpleName = new SimpleName(localVariableTable.get(node.getName()));
+    visitChildren(node, (TreeNode tn) -> {});
+    return simpleName;
   }
 
   @Override
@@ -153,7 +157,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
         break;
       }
     }
-    visitChildren(node, (TreeNode expr) -> {});
+    visitChildren(node, (TreeNode tn) -> {});
     return superCall;
   }
 
@@ -167,7 +171,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitBlockStatement(
       com.strobel.decompiler.languages.java.ast.BlockStatement node, Void data) {
     Block block = new Block();
-    visitChildren(node, (TreeNode stmt) -> block.addStatement((Statement) stmt));
+    visitChildren(node, (TreeNode tn) -> block.addStatement((Statement) tn));
     return block;
   }
 
@@ -223,7 +227,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitReturnStatement(
       com.strobel.decompiler.languages.java.ast.ReturnStatement node, Void data) {
     ReturnStatement returnStatement = new ReturnStatement();
-    visitChildren(node, (TreeNode expr) -> returnStatement.setExpression((Expression) expr));
+    visitChildren(node, (TreeNode tn) -> returnStatement.setExpression((Expression) tn));
     return returnStatement;
   }
 
@@ -374,7 +378,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   public TreeNode visitPrimitiveExpression(
       com.strobel.decompiler.languages.java.ast.PrimitiveExpression node, Void data) {
     Expression expr = TreeUtil.newLiteral(node.getValue(), translationEnv.typeUtil());
-    visitChildren(node, (obj) -> {});
+    visitChildren(node, (TreeNode tn) -> {});
     return expr;
   }
 

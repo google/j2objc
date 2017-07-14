@@ -57,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -295,6 +296,7 @@ public class ClassFileConverter {
   private TreeNode convertMethodDeclaration(ExecutableElement element, TypeDeclaration node) {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
     convertBodyDeclaration(methodDecl, element);
+    HashMap<String, VariableElement> localVariableTable = new HashMap<>();
     List<SingleVariableDeclaration> parameters = methodDecl.getParameters();
     String name = element.getSimpleName().toString();
     String descriptor = getMethodDescriptor(element);
@@ -314,6 +316,7 @@ public class ClassFileConverter {
           varDecl.setVariableElement(param);
         }
         parameters.add(varDecl);
+        localVariableTable.put(param.getSimpleName().toString(), param);
       }
     }
     if (element.isVarArgs()) {
@@ -328,7 +331,8 @@ public class ClassFileConverter {
       EntityDeclaration decl = methodDecl.isConstructor()
           ? classFile.getConstructor(descriptor)
           : classFile.getMethod(name, descriptor);
-      MethodTranslator translator = new MethodTranslator(parserEnv, translationEnv, element, node);
+      MethodTranslator translator = new MethodTranslator(
+          parserEnv, translationEnv, element, node, localVariableTable);
       methodDecl.setBody((Block) decl.acceptVisitor(translator, null));
     }
     return methodDecl;

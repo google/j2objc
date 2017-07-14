@@ -648,13 +648,28 @@ public class ClassFileConverterTest extends GenerationTest {
     assertEqualASTSrcClassfile(type, source);
   }
 
+  public void testLookupVars() throws IOException {
+    String type = "foo.bar.Test";
+    String source = String.join("\n",
+        "package foo.bar;",
+        "class Test {",
+        "  int run(int hello) { return hello; }",
+        "}"
+    );
+    assertEqualASTSrcClassfile(type, source);
+  }
+
 //  public void testConvertVars() throws IOException {
 //    String type = "foo.bar.Test";
 //    String source = String.join("\n",
 //        "package foo.bar;",
 //        "class Test {",
 //        "  public int run(int yip) {",
-//        "    return yip;",
+//        "    int i = 42;",
+//        "    if (i < yip) {",
+//        "      i = yip;",
+//        "    }",
+//        "    return i;",
 //        "  }",
 //        "}"
 //    );
