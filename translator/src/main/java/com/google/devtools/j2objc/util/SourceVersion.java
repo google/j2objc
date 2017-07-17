@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.util;
  */
 public enum SourceVersion {
 
+  // TODO(tball): add JAVA_9 when Java 9 releases.
   JAVA_8(8, "1.8"), JAVA_7(7, "1.7"), JAVA_6(6, "1.6"), JAVA_5(5, "1.5");
 
   private final int version;
@@ -43,6 +44,10 @@ public enum SourceVersion {
       if (sv.flag.equals(fullFlag)) {
         return sv;
       }
+    }
+    if (fullFlag.equals("1.9")) {
+      // Map to JAVA_8 to support testing with pre-release Java 9.
+      return JAVA_8;
     }
     throw new IllegalArgumentException(flag);
   }
