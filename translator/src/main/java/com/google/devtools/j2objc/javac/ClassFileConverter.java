@@ -305,7 +305,6 @@ public class ClassFileConverter extends ClassVisitor {
       // to work around potential javac8 bug iterating over parameter names.
       MethodNode asmNode = classFile.getMethodNode(element);
       int nMethodNodes = asmNode.parameters != null ? asmNode.parameters.size() : 0;
-
       for (int i = 0; i < nParams; i++) {
         VariableElement param = element.getParameters().get(i);
         SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
