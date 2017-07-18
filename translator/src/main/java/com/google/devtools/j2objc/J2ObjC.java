@@ -91,15 +91,24 @@ public class J2ObjC {
     File strippedSourcesDir = null;
     Parser parser = null;
     try {
+      // zee { src 의 pure-objc 를 먼저 확인하기 위한 조치.
+      parser = createParser(options);
+      List<ProcessingContext> srcInputs = Lists.newArrayList();
+      List<String> srcArgs = options.fileUtil().getSourcePathEntries();
+      new GenerationBatch(options, parser).processFileArgs(srcArgs);
+      //*/
+
       List<ProcessingContext> inputs = Lists.newArrayList();
-      GenerationBatch batch = new GenerationBatch(options);
+      GenerationBatch batch = new GenerationBatch(options, null);
       batch.processFileArgs(fileArgs);
       inputs.addAll(batch.getInputs());
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
+      /** zee
       parser = createParser(options);
+      //*/
       Parser.ProcessingResult processingResult = parser.processAnnotations(fileArgs, inputs);
       List<ProcessingContext> generatedInputs = processingResult.getGeneratedSources();
       inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.

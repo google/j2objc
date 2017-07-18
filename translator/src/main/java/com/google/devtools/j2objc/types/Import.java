@@ -18,9 +18,12 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Oz;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
+
 import java.util.Collection;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
@@ -38,14 +41,33 @@ public class Import implements Comparable<Import> {
   private final String importFileName;
   private final String javaQualifiedName;
   private final boolean isInterface;
+  // zee add
+  private final boolean isNativeEnum;
 
+  /** zee
   private Import(TypeElement type, NameTable nameTable, Options options) {
+  /*/
+  private Import(TypeElement type, NameTable nameTable, TranslationEnvironment env) {
+  //*/
     this.typeName = nameTable.getFullName(type);
+  // zee {
+    String s = env.elementUtil().getType(type).toString();
+    if (s.startsWith("com.wise.airwise.Html")) {
+    		int a = 3;
+    		a ++;
+    }
+    	
+    this.isNativeEnum = (env.elementUtil().isEnum(type) || env.elementUtil().isEnumConstant(type)) && Oz.isPureObjC(env.elementUtil().getType(type));
+  // } zee 
     TypeElement mainType = type;
     while (!ElementUtil.isTopLevel(mainType)) {
       mainType = ElementUtil.getDeclaringClass(mainType);
     }
+  /** zee
     this.importFileName = options.getHeaderMap().get(mainType);
+  /*/
+    this.importFileName = env.options().getHeaderMap().get(mainType);
+  //*/
     this.javaQualifiedName =
         ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
     this.isInterface = type.getKind().isInterface();
@@ -74,6 +96,11 @@ public class Import implements Comparable<Import> {
 
   public boolean isInterface() {
     return isInterface;
+  }
+
+  // zee
+  public boolean isNativeEnum() {
+	  return isNativeEnum;
   }
 
   @Override
@@ -115,7 +142,11 @@ public class Import implements Comparable<Import> {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
     for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
+    	/* zee
       Import newImport = new Import(objcClass, env.nameTable(), env.options());
+      /*/
+        Import newImport = new Import(objcClass, env.nameTable(), env);
+        //*/
       // An empty header indicates a Foundation type that doesn't require an import or forward
       // declaration.
       if (!newImport.getImportFileName().isEmpty()) {

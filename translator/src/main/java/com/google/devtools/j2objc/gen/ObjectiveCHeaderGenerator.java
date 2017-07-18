@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.Oz;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -53,7 +54,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   public void generate() {
+		if (Oz.inPureObjCMode()) {
+			//
+		}
+		else {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
+		}
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
     }
@@ -63,7 +69,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printTypeDeclaration(generatedType);
     }
 
+		if (!Oz.inPureObjCMode()) {
     generateFileFooter();
+		}
+		else {
+			printf("#endif // __" + varPrefix + "_H__");
+		}
     save(getOutputPath());
   }
 
@@ -72,16 +83,20 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void generateFileHeader() {
+	if (!Oz.inPureObjCMode()) {
     printf("#ifndef %s_H\n", varPrefix);
     printf("#define %s_H\n", varPrefix);
     pushIgnoreDeprecatedDeclarationsPragma();
     pushIgnoreNullabilityCompletenessPragma();
+	}
 
     Set<String> seenTypes = Sets.newHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
     Set<Import> forwardDeclarations = Sets.newHashSet();
 
+    if (!Oz.inPureObjCMode()) {
     includeFiles.add("J2ObjC_header.h");
+    }
 
     for (GeneratedType type : getOrderedTypes()) {
       String name = type.getTypeName();

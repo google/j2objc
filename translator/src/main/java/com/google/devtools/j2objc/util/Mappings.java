@@ -77,10 +77,16 @@ public class Mappings {
     return ImmutableMap.copyOf(classMappings);
   }
 
+  /* zee 
   public ImmutableMap<String, String> getMethodMappings() {
     return ImmutableMap.copyOf(methodMappings);
   }
-
+  */
+  public Map<String, String> getMethodMappings() {
+	  /* zee add */
+    return methodMappings;
+  }
+  
   @VisibleForTesting
   void addClass(String key, String name) {
     classMappings.put(key, name);

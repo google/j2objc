@@ -135,7 +135,11 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
     Set<String> forwardStmts = Sets.newTreeSet();
     for (Import imp : forwardDecls) {
+      /** zee
       forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
+      /*/
+      forwardStmts.add(createForwardDeclaration(imp));
+      //*/
     }
     if (!forwardStmts.isEmpty()) {
       newline();
@@ -145,7 +149,16 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     }
   }
 
+  /** zee
   private String createForwardDeclaration(String typeName, boolean isInterface) {
+  /*/
+  private String createForwardDeclaration(Import imp) {
+		String typeName = imp.getTypeName();
+		boolean isInterface = imp.isInterface();
+		if (imp.isNativeEnum()) {
+			return "typedef NS_ENUM(NSUInteger, " + typeName + ");";
+		}
+  //*/
     return UnicodeUtils.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 

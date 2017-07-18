@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.pipeline;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Oz;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -155,7 +156,9 @@ abstract class FileProcessor {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
     try {
+    	Oz.initOutputMode(file);
       processConvertedTree(input, unit);
+      Oz.setPureObjCMode(false);
     } catch (Throwable t) {
       // Report any uncaught exceptions.
       ErrorUtil.fatalError(t, input.getOriginalSourcePath());

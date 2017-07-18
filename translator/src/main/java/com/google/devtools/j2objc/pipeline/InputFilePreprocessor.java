@@ -48,6 +48,19 @@ public class InputFilePreprocessor {
   }
 
   public void processInputs(Iterable<ProcessingContext> inputs) {
+      // zee { 
+	  String target = options.getDebugSourceFile();
+	  if (target != null) {
+	    for (ProcessingContext input : inputs) {
+	    	String s = input.getOriginalSourcePath();
+	    	if (s.endsWith(target)) {
+	    		processInput(input);
+	    		break;
+	    	}
+	      }
+	    return;
+	  }
+	  // } zee
     for (ProcessingContext input : inputs) {
       processInput(input);
     }

@@ -57,6 +57,7 @@ public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
+  private boolean zee_noPackageDeirectories = false;
   private MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
@@ -97,6 +98,7 @@ public class Options {
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
   private SourceVersion sourceVersion = null;
+  private String oz_debugSource;
 
   private static File proGuardUsageFile = null;
 
@@ -406,6 +408,12 @@ public class Options {
         proGuardUsageFile = new File(getArgValue(args, arg));
       } else if (arg.equals("--prefix")) {
         addPrefixOption(getArgValue(args, arg));
+      } else if (arg.equals("--pure-objc")) {
+    	  // @zee
+          if (++nArg == args.length) {
+            usage("----pure-objc requires an argument");
+          }
+          Oz.addPureObjC(args[nArg]);
       } else if (arg.equals("--prefixes")) {
         packagePrefixes.addPrefixesFile(getArgValue(args, arg));
       } else if (arg.equals("-x")) {
@@ -422,7 +430,12 @@ public class Options {
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
       } else if (arg.equals("--no-package-directories")) {
+    	  /* @zee
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
+          /*/
+    	    zee_noPackageDeirectories = true;
+    	  //*/
+
       } else if (arg.equals("--preserve-full-paths")) {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.SOURCE);
       } else if (arg.equals("-XcombineJars")) {
@@ -512,6 +525,17 @@ public class Options {
         annotationsJar = getArgValue(args, arg);
       } else if (arg.equals("-version")) {
         version();
+      } else if (arg.equals("-debugSource")) {
+        if (++nArg == args.length) {
+          usage("-singleSource requires an argument");
+        }
+        // Handle aliasing of version numbers as supported by javac.
+        oz_debugSource = args[nArg].replace('\\', '/');
+		if (!oz_debugSource.endsWith(".java")) {
+			oz_debugSource += ".java";
+		}
+      } else if (arg.equals("-!debugSource")) {
+        ++nArg;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.equals("-X")) {
@@ -914,5 +938,9 @@ public class Options {
   @VisibleForTesting
   public void setTranslateClassfiles(boolean b) {
     translateClassfiles = b;
+    }
+    
+   public String getDebugSourceFile() {
+	return oz_debugSource;
   }
 }

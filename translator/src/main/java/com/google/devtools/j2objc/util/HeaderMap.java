@@ -89,6 +89,9 @@ public class HeaderMap {
     /** Use the relative directory of the input file. */
     SOURCE,
 
+    /** zee add. */
+    DIRECTORY,
+    
     /** Don't use a relative directory. */
     NONE
   }
