@@ -208,7 +208,7 @@ run-each-test: link resources $(TEST_BIN)
 # Note: the simulator app's name was changed to "Simulator" in Xcode 7.
 run-xctests: test
 	@xcrun xcodebuild -project JreEmulation.xcodeproj -scheme jre_emul -destination \
-	    'platform=iOS Simulator,name=iPhone 7 Plus' test
+	    'platform=iOS Simulator,name=iPhone 6 (10.3)' test
 	@killall 'Simulator'
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)

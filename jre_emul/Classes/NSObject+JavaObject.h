@@ -65,6 +65,20 @@ __attribute__((always_inline)) inline NSObject *create_NSObject_init() {
 @interface JreObjectCategoryDummy : NSObject
 @end
 
+#define J2OBJC_ENABLE_GC 1
+#ifdef J2OBJC_ENABLE_GC
+@interface java_Object : NSObject
++ (instancetype)alloc;
+- (void)dealloc;
+
+- (instancetype)retain;
+- (oneway void)release;
+- (instancetype)autorelease;
+@end
+#else
+#define java_Object     NSObject
+#endif
+
 J2OBJC_EMPTY_STATIC_INIT(NSObject)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSObject)
