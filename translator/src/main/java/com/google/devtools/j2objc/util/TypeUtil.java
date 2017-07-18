@@ -224,7 +224,7 @@ public final class TypeUtil {
     TypeMirror t = arrayType;
     while (t.getKind().equals(TypeKind.ARRAY)) {
       dimCount++;
-      t = (((ArrayType) t).getComponentType());
+      t = ((ArrayType) t).getComponentType();
     }
     return dimCount;
   }

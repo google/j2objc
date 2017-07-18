@@ -96,15 +96,20 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(ArrayCreation node) {
+    Type componentType = node.getType().getComponentType();
+    int emptyDims = 1;
+    while (componentType.getKind() == TreeNode.Kind.ARRAY_TYPE) {
+      componentType = ((ArrayType) componentType).getComponentType();
+      emptyDims++;
+    }
+    emptyDims -= node.getDimensions().size();
     sb.print("new ");
-    node.getType().accept(this);
+    componentType.accept(this);
     for (Expression dim : node.getDimensions()) {
       sb.print('[');
       dim.accept(this);
       sb.print(']');
     }
-    int emptyDims = TypeUtil.getDimensions((javax.lang.model.type.ArrayType) node.getTypeMirror())
-        - node.getDimensions().size();
     for (int i = 0; i < emptyDims; i++) {
       sb.print("[]");
     }
