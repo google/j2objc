@@ -290,7 +290,7 @@ public final class TranslationUtil {
     if (ElementUtil.isVolatile(var)) {
       modifier += "Volatile";
     }
-    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || options.useARC())) {
+    if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || !options.useReferenceCounting())) {
       modifier += "Strong";
     }
     return modifier;

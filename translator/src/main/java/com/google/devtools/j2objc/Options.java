@@ -154,7 +154,7 @@ public class Options {
   /**
    * Types of memory management to be used by translated code.
    */
-  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
+  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC, GC }
 
   /**
    * What languages can be generated.
@@ -421,6 +421,8 @@ public class Options {
         ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
+      } else if (arg.equals("-use-gc")) {
+          checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("--no-package-directories")) {
         headerMap.setOutputStyle(HeaderMap.OutputStyleOption.NONE);
       } else if (arg.equals("--preserve-full-paths")) {
@@ -680,6 +682,10 @@ public class Options {
     return memoryManagementOption == MemoryManagementOption.ARC;
   }
 
+  public boolean useGC() {
+	    return memoryManagementOption == MemoryManagementOption.GC;
+	  }
+  
   public MemoryManagementOption getMemoryManagementOption() {
     return memoryManagementOption;
   }

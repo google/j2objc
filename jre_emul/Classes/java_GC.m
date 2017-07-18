@@ -35,16 +35,24 @@
 
 @implementation java_Object (JavaObject)
 static const int _1M = 1024*1024;
+NSMutableArray<java_Object*>* _globalRoots;
+NSMutableArray<java_Object*>* _weakObjects;
+
 static NSZone* _gcZone;
+
+
 + (void) initialize
 {
     _gcZone = NSCreateZone(8 * _1M, _1M, true);
+    _globalRoots = [[NSMutableArray alloc] init];
 }
 
 
 + (instancetype)alloc
 {
-    instancetype obj = [NSObject allocWithZone: _gcZone];
+    id obj = [NSObject allocWithZone: _gcZone];
+    [obj autorelease];
+    [_weakObjects addObject:obj];
     return obj;
 }
 
@@ -55,18 +63,64 @@ static NSZone* _gcZone;
 
 - (instancetype)retain
 {
-    instancetype self = [super retain];
-    if ([self retainCount] > 1) {
-        
+    self = [super retain];
+    if ([self retainCount] == 2) {
+        [_globalRoots addObject:self];
     }
     return self;
 }
+
 - (oneway void)release
 {
+    [super release];
 }
 
 - (instancetype)autorelease
 {
-    
+    return [super autorelease];
 }
+
+
+- (id)java_clone {
+    if (![NSCopying_class_() isInstance:self]) {
+        @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
+    }
+    
+    // Use the Java getClass method because it returns the class we want in case
+    // self's class hass been swizzled by a WeakReference or RetainedWith field.
+    Class cls = [self java_getClass].objcClass;
+    size_t instanceSize = class_getInstanceSize(cls);
+    // We don't want to copy the NSObject portion of the object, in particular the
+    // isa pointer, because it may contain the retain count.
+    size_t nsObjectSize = class_getInstanceSize([NSObject class]);
+    
+    // Deliberately not calling "init" on the cloned object. To match Java's
+    // behavior we simply copy the data. However we must additionally retain all
+    // fields with object type.
+    id clone = AUTORELEASE([cls alloc]);
+    memcpy((char *)clone + nsObjectSize, (char *)self + nsObjectSize, instanceSize - nsObjectSize);
+    
+    // Reflectively examine all the fields for the object's type and retain any
+    // object fields.
+    while (cls && cls != [NSObject class]) {
+        unsigned int ivarCount;
+        Ivar *ivars = class_copyIvarList(cls, &ivarCount);
+        for (unsigned int i = 0; i < ivarCount; i++) {
+            Ivar ivar = ivars[i];
+            const char *ivarType = ivar_getTypeEncoding(ivar);
+            if (*ivarType == '@') {
+                ptrdiff_t offset = ivar_getOffset(ivar);
+                id field = *(id *)((char *)clone + offset);
+                [field retain];
+            }
+        }
+        free(ivars);
+        cls = class_getSuperclass(cls);
+    }
+    
+    // Releases any @Weak fields that shouldn't have been retained.
+    [clone __javaClone:self];
+    return clone;
+}
+
 @end

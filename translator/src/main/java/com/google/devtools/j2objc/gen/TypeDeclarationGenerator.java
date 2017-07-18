@@ -168,7 +168,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (supertype != null) {
       return nameTable.getFullName(supertype);
     }
-    return "NSObject";
+    return "java_Object";
   }
 
   private List<String> getInterfaceNames() {
@@ -392,7 +392,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : NSObject", typeName);
+    printf("\n@interface %s : java_Object", typeName);
     if (ElementUtil.isRuntimeAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);

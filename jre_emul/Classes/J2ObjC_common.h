@@ -21,6 +21,8 @@
 
 #import "J2ObjC_types.h"
 
+#define J2OBJC_USE_GC 1
+
 @class IOSClass;
 
 #ifndef __has_feature
@@ -71,6 +73,10 @@ void JreThrowClassCastException() __attribute__((noreturn));
 
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
+
+#ifdef J2OBJC_USE_GC
+id JreUnknownAssign(__strong id *pIvar, id value);
+#endif
 
 id JreLoadVolatileId(volatile_id *pVar);
 id JreAssignVolatileId(volatile_id *pVar, id value);

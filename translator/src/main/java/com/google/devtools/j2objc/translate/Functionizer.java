@@ -317,7 +317,7 @@ public class Functionizer extends UnitTreeVisitor {
     TypeElement type = ElementUtil.getDeclaringClass(element);
     FunctionElement funcElement = newAllocatingConstructorElement(element);
     FunctionInvocation invocation = new FunctionInvocation(funcElement, node.getTypeMirror());
-    invocation.setHasRetainedResult(node.hasRetainedResult() || options.useARC());
+    invocation.setHasRetainedResult(node.hasRetainedResult() || !options.useReferenceCounting());
     List<Expression> args = invocation.getArguments();
     Expression outerExpr = node.getExpression();
     if (outerExpr != null) {
@@ -359,7 +359,7 @@ public class Functionizer extends UnitTreeVisitor {
       if (isConstructor && !ElementUtil.isAbstract(declaringClass) && !isEnumConstructor) {
         declarationList.add(makeAllocatingConstructor(node, false));
         declarationList.add(makeAllocatingConstructor(node, true));
-      } else if (isEnumConstructor && options.useARC()) {
+      } else if (isEnumConstructor && !options.useReferenceCounting()) {
         // Enums with ARC need the retaining constructor.
         declarationList.add(makeAllocatingConstructor(node, false));
       }

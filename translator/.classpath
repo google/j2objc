@@ -7,19 +7,19 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/jsr305.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/asm-5.0.4.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar" sourcepath="../java_deps/build_result/javac-src.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.jobs_3.6.1.v20141204-0235.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.resources_3.9.1.v20140825-1431.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.compiler.apt_1.1.0.v20140909-0014.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.core_3.10.2.v20141211-0121.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.osgi_3.10.2.v20141103-1919.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.text_3.5.300.v20130515-1451.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/asm-all-5.1.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/jsr305-3.0.0.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.core.contenttype-3.4.200.v20140207-1251.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.core.jobs-3.6.1.v20141014-1248.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.core.resources-3.9.1.v20140825-1431.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.core.runtime-3.10.0.v20140318-2214.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.equinox.common-3.6.200.v20130402-1505.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.equinox.preferences-3.5.200.v20140224-1527.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.jdt.compiler.apt-1.1.0.v20140509-1235.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.jdt.core-3.10.0.v20140604-1726.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.osgi-3.10.2.v20150203-1939.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/org.eclipse.text-3.5.101.jar"/>
+	<classpathentry kind="lib" path="/Users/zeedh/work/j2objc/java_deps/build_result/tools.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

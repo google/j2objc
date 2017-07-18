@@ -81,7 +81,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     if (node.getEnumConstants().isEmpty()) {
       return;
     }
-    if (options.useARC()) {
+    if (!options.useReferenceCounting()) {
       addArcInitialization(node);
     } else {
       if (isSimpleEnum(node)) {

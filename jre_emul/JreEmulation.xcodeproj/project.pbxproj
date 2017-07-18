@@ -754,6 +754,8 @@
 		78A56B051F1E179D00F3BA1A /* SSLEngineResultHandshakeStatusTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B041F1E179D00F3BA1A /* SSLEngineResultHandshakeStatusTest.m */; };
 		78A56B071F1E17AC00F3BA1A /* SSLPeerUnverifiedExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B061F1E17AC00F3BA1A /* SSLPeerUnverifiedExceptionTest.m */; };
 		78A56B091F1E17BB00F3BA1A /* SSLSessionBindingEventTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B081F1E17BB00F3BA1A /* SSLSessionBindingEventTest.m */; };
+		78A56B0A1F1E192900F3BA1A /* java_GC.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56A831F1DF95E00F3BA1A /* java_GC.m */; };
+		78A56B0C1F1E369A00F3BA1A /* GCTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A56B0B1F1E369A00F3BA1A /* GCTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3829,6 +3831,9 @@
 		78A56B041F1E179D00F3BA1A /* SSLEngineResultHandshakeStatusTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLEngineResultHandshakeStatusTest.m; path = org/apache/harmony/tests/javax/net/ssl/SSLEngineResultHandshakeStatusTest.m; sourceTree = "<group>"; };
 		78A56B061F1E17AC00F3BA1A /* SSLPeerUnverifiedExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLPeerUnverifiedExceptionTest.m; path = org/apache/harmony/tests/javax/net/ssl/SSLPeerUnverifiedExceptionTest.m; sourceTree = "<group>"; };
 		78A56B081F1E17BB00F3BA1A /* SSLSessionBindingEventTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSLSessionBindingEventTest.m; path = org/apache/harmony/tests/javax/net/ssl/SSLSessionBindingEventTest.m; sourceTree = "<group>"; };
+		78A56B0B1F1E369A00F3BA1A /* GCTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCTest.m; path = ../../../temp/j2objc/GCTest.m; sourceTree = "<group>"; };
+		78A56B0D1F1E36AA00F3BA1A /* GCTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCTest.h; path = ../../../temp/j2objc/GCTest.h; sourceTree = "<group>"; };
+		78A56B0E1F1E384400F3BA1A /* GCTest.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = GCTest.java; path = ../translator/src/test/java/GCTest.java; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3891,6 +3896,9 @@
 		0661937A155848D70004DAFE = {
 			isa = PBXGroup;
 			children = (
+				78A56B0E1F1E384400F3BA1A /* GCTest.java */,
+				78A56B0D1F1E36AA00F3BA1A /* GCTest.h */,
+				78A56B0B1F1E369A00F3BA1A /* GCTest.m */,
 				0661938A155848D70004DAFE /* Classes */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				0620F4E71BB60A6100626242 /* jre_emul_xctests */,
@@ -7455,6 +7463,7 @@
 				062028A81D512E78001EE455 /* DoubleTest.m in Sources */,
 				78A56A9C1F1E09E100F3BA1A /* PriorityQueueTest.m in Sources */,
 				062026461D512CA1001EE455 /* OldRandomAccessFileTest.m in Sources */,
+				78A56B0A1F1E192900F3BA1A /* java_GC.m in Sources */,
 				062028041D512DED001EE455 /* StringTest.m in Sources */,
 				0620263C1D512CA1001EE455 /* OldLineNumberReaderTest.m in Sources */,
 				062029B21D514671001EE455 /* TextAttributeTest.m in Sources */,
@@ -7526,6 +7535,7 @@
 				062025601D512B37001EE455 /* SocketPolicy.m in Sources */,
 				062024FA1D512AA2001EE455 /* Base64Test.m in Sources */,
 				069C24491E9EF09900CE6BAF /* X509Certificate2Test.m in Sources */,
+				78A56B0C1F1E369A00F3BA1A /* GCTest.m in Sources */,
 				78A56AD21F1E0CB600F3BA1A /* ThreadPoolExecutorSubclassTest.m in Sources */,
 				062026E51D512D17001EE455 /* AbstractZipFileTest.m in Sources */,
 				78A56AE51F1E14B600F3BA1A /* LinkedBlockingDequeTest.m in Sources */,

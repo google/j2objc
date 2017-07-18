@@ -65,8 +65,7 @@ __attribute__((always_inline)) inline NSObject *create_NSObject_init() {
 @interface JreObjectCategoryDummy : NSObject
 @end
 
-#define J2OBJC_ENABLE_GC 1
-#ifdef J2OBJC_ENABLE_GC
+#ifdef J2OBJC_USE_GC
 @interface java_Object : NSObject
 + (instancetype)alloc;
 - (void)dealloc;
@@ -75,6 +74,11 @@ __attribute__((always_inline)) inline NSObject *create_NSObject_init() {
 - (oneway void)release;
 - (instancetype)autorelease;
 @end
+
+__attribute__((always_inline)) inline void java_Object_init(NSObject *self) {
+#pragma unused(self)
+}
+
 #else
 #define java_Object     NSObject
 #endif
