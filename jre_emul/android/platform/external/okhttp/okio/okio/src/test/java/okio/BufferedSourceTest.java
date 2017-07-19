@@ -576,13 +576,12 @@ public class BufferedSourceTest {
     }
   }
 
-  // TODO(tball): fix, b/27836996
-//  @Test public void inputStreamSkip() throws Exception {
-//    sink.writeUtf8("abcde");
-//    InputStream in = source.inputStream();
-//    assertEquals(4, in.skip(4));
-//    assertEquals('e', in.read());
-//  }
+  @Test public void inputStreamSkip() throws Exception {
+    sink.writeUtf8("abcde");
+    InputStream in = source.inputStream();
+    assertEquals(4, in.skip(4));
+    assertEquals('e', in.read());
+  }
 
   @Test public void inputStreamCharByChar() throws Exception {
     sink.writeUtf8("abc");
