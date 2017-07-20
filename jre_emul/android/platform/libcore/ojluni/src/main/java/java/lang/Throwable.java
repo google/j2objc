@@ -965,6 +965,10 @@ public class Throwable extends NSException implements Serializable {
             // empty stack traces.
             stackTrace = new StackTraceElement[0];
         }
+
+        if (cause == this) {
+          cause = UNSET_CAUSE;
+        }
     }
 
     /**
@@ -983,12 +987,17 @@ public class Throwable extends NSException implements Serializable {
         getOurStackTrace();
 
         StackTraceElement[] oldStackTrace = stackTrace;
+        Throwable oldCause = cause;
         try {
             if (stackTrace == null)
                 stackTrace = SentinelHolder.STACK_TRACE_SENTINEL;
+            if (cause == UNSET_CAUSE) {
+              cause = this;
+            }
             s.defaultWriteObject();
         } finally {
             stackTrace = oldStackTrace;
+            cause = oldCause;
         }
     }
 
