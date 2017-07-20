@@ -266,6 +266,9 @@ public class GenerationTest extends TestCase {
       classpath.add(0, tempPath);
       args.add(String.join(":", classpath));
     }
+    if (options.emitLineDirectives() && !args.contains("-g")) {
+      args.add("-g");
+    }
     args.add(srcFile.getPath());
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -507,6 +510,22 @@ public class GenerationTest extends TestCase {
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
     return generateFromUnit(translateType(typeName, source), fileName);
+  }
+
+  /**
+   * Compile Java source and translate the resulting class file, returning the
+   * contents of either the generated header or implementation file.
+   *
+   * @param source the Java source to compile
+   * @param typeName the name of the main type defined by this source file
+   * @param fileName the name of the file whose contents should be returned,
+   *                 which is either the Obj-C header or implementation file
+   */
+  protected String compileAndTranslateSourceFile(String source, String typeName, String fileName)
+      throws IOException {
+    CompilationUnit newUnit = compileAsClassFile(typeName, source);
+    TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
+    return generateFromUnit(newUnit, fileName);
   }
 
   protected String generateFromUnit(CompilationUnit unit, String filename) throws IOException {
