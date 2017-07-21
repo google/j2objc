@@ -183,11 +183,8 @@ public class Options {
     static FrontEnd defaultFrontEnd() {
       String envFlag = System.getenv(ENV_FRONT_END_FLAG);
       if (envFlag != null) {
-        try {
-          return FrontEnd.valueOf(envFlag);
-        } catch (IllegalArgumentException e) {
-          ErrorUtil.error("Invalid front end environment flag: " + envFlag);
-        }
+        ErrorUtil.warning("Environment variable " + ENV_FRONT_END_FLAG
+                          + " is being ignored. JAVAC is the only available frontend.");
       }
       return JAVAC;
     }
@@ -502,8 +499,6 @@ public class Options {
         lintOptions = LintOption.parse(arg);
       } else if (arg.equals("-Xtranslate-bootclasspath")) {
         translateBootclasspath = true;
-      } else if (arg.equals("-Xuse-jdt")) {
-        javaFrontEnd = FrontEnd.JDT;
       } else if (arg.equals("-Xuse-javac")) {
         javaFrontEnd = FrontEnd.JAVAC;
       } else if (arg.equals("-Xdump-ast")) {
