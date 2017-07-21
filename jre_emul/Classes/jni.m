@@ -471,7 +471,7 @@ static jmethodID GetMethodID(JNIEnv *env, jclass clazz, const char *name, const 
   JNIMethodSignature methodSig = JNIParseMethodSignature(sig);
   JavaLangReflectExecutable *result = nil;
   if (strcmp(name, "<init>") == 0) {
-    result = [iosClass getConstructor:methodSig.paramTypes];
+    result = [iosClass getDeclaredConstructor:methodSig.paramTypes];
   } else {
     result = [iosClass getDeclaredMethod:[NSString stringWithUTF8String:name]
                           parameterTypes:methodSig.paramTypes];
