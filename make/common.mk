@@ -8,7 +8,7 @@ DIST_DIR = $(J2OBJC_ROOT)/dist
 DIST_INCLUDE_DIR = $(DIST_DIR)/include
 DIST_LIB_DIR = $(DIST_DIR)/lib
 DIST_JAR_DIR = $(DIST_LIB_DIR)
-DIST_LICENSE_DIR = $(DIST_DIR)/license
+DIST_LICENSE_DIR = $(DIST_DIR)/licenses
 DIST_FRAMEWORK_DIR = $(DIST_DIR)/frameworks
 
 # Release version string used by j2objc and cycle_finder's -version flag.

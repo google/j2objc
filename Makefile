@@ -39,6 +39,19 @@ install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
 	@install -C -m 0644 $? $(DIST_DIR)/man/man1
 
+EXTRA_DIST_FILES = LICENSE WORKSPACE BUILD
+
+$(DIST_DIR)/%: %.dist
+	@mkdir -p $(@D)
+	@install -C -m 644 $< $@
+
+$(DIST_DIR)/%: %
+	@mkdir -p $(@D)
+	@install -C -m 644 $< $@
+
+install-extras: $(EXTRA_DIST_FILES:%=$(DIST_DIR)/%)
+	@:
+
 frameworks: dist
 	@cd jre_emul && $(MAKE) framework
 	@cd junit && $(MAKE) framework
@@ -53,7 +66,7 @@ all_frameworks: frameworks protobuf_dist
 
 dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
   javax_inject_dist guava_dist mockito_dist cycle_finder_dist \
-  xalan_dist install-man-pages
+  xalan_dist install-man-pages install-extras
 
 protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 
