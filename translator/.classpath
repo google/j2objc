@@ -21,5 +21,6 @@
 	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.core_3.10.2.v20141211-0121.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.osgi_3.10.2.v20141103-1919.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.text_3.5.300.v20130515-1451.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/procyon-decompiler.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>

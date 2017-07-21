@@ -42,16 +42,18 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ClassFile;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
+import com.strobel.assembler.metadata.MethodDefinition;
+import com.strobel.assembler.metadata.ParameterDefinition;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,13 +71,6 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.ParameterNode;
 
 /**
  * Converts a JVM classfile into a CompilationUnit. The resulting unit
@@ -88,7 +83,7 @@ import org.objectweb.asm.tree.ParameterNode;
  * @author Manvith Narahari
  * @author Tom Ball
  */
-public class ClassFileConverter extends ClassVisitor {
+public class ClassFileConverter {
   private final JavacEnvironment parserEnv;
   private final TranslationEnvironment translationEnv;
   private final InputFile file;
@@ -111,16 +106,11 @@ public class ClassFileConverter extends ClassVisitor {
 
   private ClassFileConverter(JavacEnvironment parserEnv, TranslationEnvironment translationEnv,
       InputFile file) throws IOException {
-    super(Opcodes.ASM5);
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
     this.file = file;
-    this.classFile = ClassFile.create(file.getInputStream(), translationEnv.typeUtil());
-    this.typeName = convertInternalTypeName(classFile.name);
-  }
-
-  private static String convertInternalTypeName(String internalName) {
-    return org.objectweb.asm.Type.getObjectType(internalName).getClassName();
+    this.classFile = ClassFile.create(file.getAbsolutePath(), translationEnv.typeUtil());
+    this.typeName = classFile.getFullName();
   }
 
   /**
@@ -128,7 +118,7 @@ public class ClassFileConverter extends ClassVisitor {
    */
   private void setClassPath() throws IOException {
     String fullPath = file.getAbsolutePath();
-    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(classFile.name + ".class"));
+    String rootPath = fullPath.substring(0, fullPath.lastIndexOf(classFile.getName() + ".class"));
     List<File> classPath = new ArrayList<>();
     classPath.add(new File(rootPath));
     parserEnv.fileManager().setLocation(StandardLocation.CLASS_PATH, classPath);
@@ -303,16 +293,17 @@ public class ClassFileConverter extends ClassVisitor {
     if (nParams > 0) {
       // If classfile was compiled with -parameters flag; use the MethodNode
       // to work around potential javac8 bug iterating over parameter names.
-      MethodNode asmNode = classFile.getMethodNode(element);
-      int nMethodNodes = asmNode.parameters != null ? asmNode.parameters.size() : 0;
+      MethodDefinition methodDef = classFile.getMethodNode(element);
+      List<ParameterDefinition> defParams = methodDef.getParameters();
+      int nMethodNodes = defParams.size();
       for (int i = 0; i < nParams; i++) {
         VariableElement param = element.getParameters().get(i);
         SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
         if (nMethodNodes == nParams) {
-          ParameterNode paramNode = (ParameterNode) asmNode.parameters.get(i);
+          String nameDef = defParams.get(i).getName();
           // If element's name doesn't match the ParameterNode's name, use the latter.
-          if (!paramNode.name.equals(param.getSimpleName().toString())) {
-            param = GeneratedVariableElement.newParameter(paramNode.name, param.asType(),
+          if (!nameDef.equals(param.getSimpleName().toString())) {
+            param = GeneratedVariableElement.newParameter(nameDef, param.asType(),
                 param.getEnclosingElement());
             varDecl.setVariableElement(param);
           }
@@ -383,54 +374,5 @@ public class ClassFileConverter extends ClassVisitor {
     EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
     convertBodyDeclaration(enumConstDecl, element);
     return enumConstDecl;
-  }
-
-  // Extension of ClassNode that supports look up of ASM nodes using elements.
-  static class ClassFile extends ClassNode {
-    private final TypeUtil typeUtil;
-
-    static ClassFile create(InputStream clazz, TypeUtil typeUtil) throws IOException {
-      ClassReader classReader = new ClassReader(clazz);
-      ClassFile cn = new ClassFile(typeUtil);
-      classReader.accept(cn, ClassReader.EXPAND_FRAMES);
-      return cn;
-    }
-
-    ClassFile(TypeUtil typeUtil) {
-      super(Opcodes.ASM5);
-      this.typeUtil = typeUtil;
-    }
-
-    @SuppressWarnings("unchecked")
-    List<FieldNode> getFields() {
-      return fields;
-    }
-
-    @SuppressWarnings("unchecked")
-    List<MethodNode> getMethods() {
-      return methods;
-    }
-
-    FieldNode getFieldNode(VariableElement field) {
-      String name = field.getSimpleName().toString();
-      String descriptor = typeUtil.getFieldDescriptor(field.asType());
-      for (FieldNode node : getFields()) {
-        if (node.name.equals(name) && node.desc.equals(descriptor)) {
-          return node;
-        }
-      }
-      throw new AssertionError("unable to find field node for " + field);
-    }
-
-    MethodNode getMethodNode(ExecutableElement method) {
-      String name = method.getSimpleName().toString();
-      String descriptor = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
-      for (MethodNode node : getMethods()) {
-        if (node.name.equals(name) && node.desc.equals(descriptor)) {
-          return node;
-        }
-      }
-      throw new AssertionError("unable to find method node for " + method);
-    }
   }
 }
