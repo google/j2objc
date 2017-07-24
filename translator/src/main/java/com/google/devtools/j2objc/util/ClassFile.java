@@ -14,13 +14,17 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.file.InputFile;
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.FieldDefinition;
+import com.strobel.assembler.metadata.ITypeLoader;
+import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.assembler.metadata.MetadataSystem;
 import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
 import java.io.IOException;
+import java.util.jar.JarFile;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
@@ -32,8 +36,21 @@ public class ClassFile {
   private final TypeDefinition typeDef;
   private final TypeUtil typeUtil;
 
-  public static ClassFile create(String path, TypeUtil typeUtil) throws IOException {
-    final MetadataSystem metadataSystem = new MetadataSystem(new InputTypeLoader());
+  public static ClassFile create(InputFile file, TypeUtil typeUtil) throws IOException {
+    ITypeLoader loader;
+    String path = file.getAbsolutePath();
+    if (path.endsWith(".jar")) {
+      loader = new JarTypeLoader(new JarFile(path));
+      path = file.getUnitName();
+      if (!path.endsWith(".class")) {
+        return null;
+      }
+      // Remove .class suffix, as JarTypeLoader adds it.
+      path = path.substring(0, path.length() - 6);
+    } else {
+      loader = new InputTypeLoader();
+    }
+    MetadataSystem metadataSystem = new MetadataSystem(loader);
     TypeReference typeRef = metadataSystem.lookupType(path);
     TypeDefinition typeDef = metadataSystem.resolve(typeRef);
     return new ClassFile(typeDef, typeUtil);

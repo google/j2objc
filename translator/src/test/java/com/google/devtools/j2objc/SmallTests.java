@@ -77,6 +77,7 @@ import com.google.devtools.j2objc.translate.VariableRenamerTest;
 import com.google.devtools.j2objc.types.CompoundTypeTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
+import com.google.devtools.j2objc.util.ClassFileTest;
 import com.google.devtools.j2objc.util.CodeReferenceMapTest;
 import com.google.devtools.j2objc.util.ElementUtilTest;
 import com.google.devtools.j2objc.util.ErrorUtilTest;
@@ -105,6 +106,7 @@ public class SmallTests {
     AutoboxerTest.class,
     CastResolverTest.class,
     ClassFileConverterTest.class,
+    ClassFileTest.class,
     CodeReferenceMapTest.class,
     ComplexExpressionExtractorTest.class,
     CompoundTypeTest.class,

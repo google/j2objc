@@ -109,7 +109,7 @@ public class ClassFileConverter {
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
     this.file = file;
-    this.classFile = ClassFile.create(file.getAbsolutePath(), translationEnv.typeUtil());
+    this.classFile = ClassFile.create(file, translationEnv.typeUtil());
     this.typeName = classFile.getFullName();
   }
 
