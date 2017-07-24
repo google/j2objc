@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import java.util.Collections;
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -35,6 +36,10 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
     super(other);
     stripSuperInterfaces = other.stripSuperInterfaces;
     enumConstants.copyFrom(other.getEnumConstants());
+  }
+
+  public EnumDeclaration(TypeElement typeElement) {
+    super(typeElement);
   }
 
   @Override

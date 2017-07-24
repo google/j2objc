@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
@@ -300,11 +299,9 @@ public final class TranslationUtil {
     if (expressions.isEmpty()) {
       return new ArrayCreation(arrayType, typeUtil, 0);
     }
-    ArrayCreation creation = new ArrayCreation(arrayType, typeUtil);
     ArrayInitializer initializer = new ArrayInitializer(arrayType);
     initializer.getExpressions().addAll(expressions);
-    creation.setInitializer(initializer);
-    return creation;
+    return new ArrayCreation(initializer);
   }
 
   public Expression createAnnotation(AnnotationMirror annotationMirror) {
@@ -325,9 +322,7 @@ public final class TranslationUtil {
 
   public Expression createAnnotationValue(TypeMirror type, AnnotationValue aValue) {
     Object value = aValue.getValue();
-    if (value == null) {
-      return new NullLiteral(typeUtil.getNull());
-    } else if (value instanceof VariableElement) {
+    if (value instanceof VariableElement) {
       return new SimpleName((VariableElement) value);
     } else if (TypeUtil.isArray(type)) {
       assert value instanceof List;

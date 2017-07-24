@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import javax.lang.model.element.TypeElement;
+
 /**
  * Node type for an annotation type declaration.
  */
@@ -23,6 +25,10 @@ public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
 
   public AnnotationTypeDeclaration(AnnotationTypeDeclaration other) {
     super(other);
+  }
+
+  public AnnotationTypeDeclaration(TypeElement typeElement) {
+    super(typeElement);
   }
 
   @Override

@@ -16,25 +16,37 @@ package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MarkerAnnotation;
+import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.SourcePosition;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.j2objc.annotations.Property;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
@@ -43,7 +55,11 @@ import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -59,9 +75,18 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.ParameterNode;
 
 /**
- * Converts a JVM classfile into a CompilationUnit.
+ * Converts a JVM classfile into a CompilationUnit. The resulting unit
+ * is different from one created from the same source, because several
+ * modifications made on source files during translation are already
+ * present in a classfile. These include moving initializers into
+ * constructors and the class initializer method, extracting inner
+ * classes, and adding enum support fields and methods.
+ *
+ * @author Manvith Narahari
+ * @author Tom Ball
  */
 public class ClassFileConverter extends ClassVisitor {
   private final JavacEnvironment parserEnv;
@@ -129,8 +154,9 @@ public class ClassFileConverter extends ClassVisitor {
   private TreeNode convert(Element element) {
     TreeNode node;
     switch (element.getKind()) {
-//      case ANNOTATION_TYPE:
-//        break;
+      case ANNOTATION_TYPE:
+        node = convertAnnotationTypeDeclaration((TypeElement) element);
+        break;
       case CLASS:
       case INTERFACE:
         node = convertTypeDeclaration((TypeElement) element);
@@ -139,40 +165,30 @@ public class ClassFileConverter extends ClassVisitor {
       case METHOD:
         node = convertMethodDeclaration((ExecutableElement) element);
         break;
-//      case ENUM:
-//        break;
-//      case ENUM_CONSTANT:
-//        break;
-//      case EXCEPTION_PARAMETER:
-//        break;
+      case ENUM:
+        node = convertEnumDeclaration((TypeElement) element);
+        break;
+      case ENUM_CONSTANT:
+        node = convertEnumConstantDeclaration((VariableElement) element);
+        break;
       case FIELD:
         node = convertFieldDeclaration((VariableElement) element);
         break;
-//      case INSTANCE_INIT:
-//        break;
-//      case LOCAL_VARIABLE:
-//        break;
-//      case OTHER:
-//        break;
       case PACKAGE:
         node = convertPackage((PackageElement) element);
         break;
       case PARAMETER:
         node = convertParameter((VariableElement) element);
         break;
-//      case RESOURCE_VARIABLE:
-//        break;
-//      case STATIC_INIT:
-//        break;
-//      case TYPE_PARAMETER:
-//        break;
+      case STATIC_INIT:
+        node = convertMethodDeclaration((ExecutableElement) element);
+        break;
       default:
-        throw new AssertionError("Unknown element kind: " + element.getKind());
+        throw new AssertionError("Unsupported element kind: " + element.getKind());
     }
-    return node.setPosition(SourcePosition.NO_POSITION);
+    return node;
   }
 
-  /* TODO(user): source-level debugging; see TreeConverter.convertName() */
   private Name convertName(Symbol symbol) {
     if (symbol.owner == null || symbol.owner.name.isEmpty()) {
       return new SimpleName(symbol);
@@ -186,35 +202,123 @@ public class ClassFileConverter extends ClassVisitor {
         .setName(convertName((PackageSymbol) element));
   }
 
-  private TreeNode convertBodyDeclaration(BodyDeclaration newNode) {
-    return newNode;
-        /* TODO(user): annotations, source-level debugging; finish when supported
-         * .setAnnotations(convertAnnotations(modifiers))
-         * .setJavadoc((Javadoc) getAssociatedJavaDoc(node, element)); */
+  private BodyDeclaration convertBodyDeclaration(BodyDeclaration newNode, Element element) {
+    return newNode.setAnnotations(convertAnnotations(element));
+  }
+
+  private void removeInterfaceModifiers(AbstractTypeDeclaration typeDecl) {
+    typeDecl.removeModifiers(Modifier.PUBLIC | Modifier.ABSTRACT);
+    for (BodyDeclaration bodyDecl : typeDecl.getBodyDeclarations()) {
+      bodyDecl.removeModifiers(Modifier.PUBLIC | Modifier.ABSTRACT);
+    }
+  }
+
+  private AnnotationTypeMemberDeclaration convertAnnotationTypeMemberDeclaration(
+      ExecutableElement element) {
+    AnnotationValue annotValue = element.getDefaultValue();
+    Expression expr = annotValue != null
+        ? convertAnnotationValue(element.getReturnType(), annotValue) : null;
+    AnnotationTypeMemberDeclaration memberDeclaration =
+        new AnnotationTypeMemberDeclaration(element).setDefault(expr);
+    convertBodyDeclaration(memberDeclaration, element);
+    return memberDeclaration;
+  }
+
+  private TreeNode convertAnnotationTypeDeclaration(TypeElement element) {
+    AnnotationTypeDeclaration annotTypeDecl = new AnnotationTypeDeclaration(element);
+    convertBodyDeclaration(annotTypeDecl, element);
+    for (Element elem : element.getEnclosedElements()) {
+      BodyDeclaration bodyDecl = elem.getKind() == ElementKind.METHOD
+          ? convertAnnotationTypeMemberDeclaration((ExecutableElement) elem)
+          : (BodyDeclaration) convert(elem);
+      annotTypeDecl.addBodyDeclaration(bodyDecl);
+    }
+    removeInterfaceModifiers(annotTypeDecl);
+    return annotTypeDecl;
+  }
+
+  private Expression convertAnnotationValue(TypeMirror type, AnnotationValue annot) {
+    /* TODO(user): see if the method implements the AnnotationMirror branch correctly */
+    return translationEnv.translationUtil().createAnnotationValue(type, annot);
+  }
+
+  private Annotation convertAnnotation(AnnotationMirror mirror) {
+    Map<? extends ExecutableElement, ? extends AnnotationValue> args = mirror.getElementValues();
+    String annotationName = mirror.getAnnotationType().toString();
+    Annotation annotation;
+    if (annotationName.equals(Property.class.getSimpleName())
+        || annotationName.equals(Property.class.getName())) {
+      PropertyAnnotation propAnnot = new PropertyAnnotation();
+      for (String attr : ElementUtil.parsePropertyAttribute(mirror)) {
+        propAnnot.addAttribute(attr);
+      }
+      annotation = propAnnot;
+    } else if (args.isEmpty()) {
+      annotation = new MarkerAnnotation();
+    } else if (args.size() == 1) {
+      Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry =
+          args.entrySet().iterator().next();
+      annotation = new SingleMemberAnnotation()
+          .setValue(convertAnnotationValue(entry.getKey().getReturnType(), entry.getValue()));
+    } else {
+      NormalAnnotation normalAnnot = new NormalAnnotation();
+      args.forEach((exec, annot) -> {
+          MemberValuePair memberPair = new MemberValuePair()
+              .setName(new SimpleName(exec))
+              .setValue(convertAnnotationValue(exec.getReturnType(), annot));
+          normalAnnot.addValue(memberPair);
+      });
+      annotation = normalAnnot;
+    }
+    return annotation.setAnnotationMirror(mirror)
+        .setTypeName(new SimpleName(mirror.getAnnotationType().asElement()));
+  }
+
+  private List<Annotation> convertAnnotations(Element element) {
+    List<Annotation> annotations = new ArrayList<>();
+    /* TODO(user): inheritance; consider Elements.getAllAnnotationMirrors() */
+    for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+      annotations.add(convertAnnotation(annotationMirror));
+    }
+    return annotations;
   }
 
   private TreeNode convertTypeDeclaration(TypeElement element) {
     TypeDeclaration typeDecl = new TypeDeclaration(element);
-    convertBodyDeclaration(typeDecl);
-    /* TODO(user): inheritance; may need to also use Elements.getAllMembers(TypeElement type) or
-     * ElementUtil.getMethods(), etc. */
+    convertBodyDeclaration(typeDecl, element);
     for (Element elem : element.getEnclosedElements()) {
       typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem));
     }
     if (typeDecl.isInterface()) {
-      typeDecl.removeModifiers(Modifier.PUBLIC | Modifier.ABSTRACT);
-      for (BodyDeclaration bodyDecl : typeDecl.getBodyDeclarations()) {
-        bodyDecl.removeModifiers(Modifier.PUBLIC | Modifier.ABSTRACT);
-      }
+      removeInterfaceModifiers(typeDecl);
     }
     return typeDecl;
   }
 
   private TreeNode convertMethodDeclaration(ExecutableElement element) {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
+    convertBodyDeclaration(methodDecl, element);
     List<SingleVariableDeclaration> parameters = methodDecl.getParameters();
-    for (VariableElement param : element.getParameters()) {
-      parameters.add((SingleVariableDeclaration) convert(param));
+    int nParams = element.getParameters().size();
+    if (nParams > 0) {
+      // If classfile was compiled with -parameters flag; use the MethodNode
+      // to work around potential javac8 bug iterating over parameter names.
+      MethodNode asmNode = classFile.getMethodNode(element);
+      int nMethodNodes = asmNode.parameters != null ? asmNode.parameters.size() : 0;
+      for (int i = 0; i < nParams; i++) {
+        VariableElement param = element.getParameters().get(i);
+        SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
+        if (nMethodNodes == nParams) {
+          ParameterNode paramNode = (ParameterNode) asmNode.parameters.get(i);
+          // If element's name doesn't match the ParameterNode's name, use the latter.
+          if (!paramNode.name.equals(param.getSimpleName().toString())) {
+            param = GeneratedVariableElement.newParameter(paramNode.name, param.asType(),
+                param.getEnclosingElement());
+            varDecl.setVariableElement(param);
+          }
+        }
+        parameters.add(varDecl);
+      }
     }
     if (element.isVarArgs()) {
       SingleVariableDeclaration lastParam = parameters.get(parameters.size() - 1);
@@ -230,21 +334,55 @@ public class ClassFileConverter extends ClassVisitor {
   }
 
   private TreeNode convertParameter(VariableElement element) {
-    return new SingleVariableDeclaration(element);
-        /* TODO(user): annotations; finish when supported
-         * .setAnnotations(convertAnnotations(node.getModifiers())); */
+    return new SingleVariableDeclaration(element).setAnnotations(convertAnnotations(element));
   }
 
-  /* TODO(user): fields are linked to the static initializer and constructors;
-   * consider storing static final compile-time constants;
-   * static final primitive types or Strings */
   private TreeNode convertFieldDeclaration(VariableElement element) {
     Object constantValue = element.getConstantValue();
     Expression initializer = constantValue != null
         ? TreeUtil.newLiteral(constantValue, translationEnv.typeUtil()) : null;
     FieldDeclaration fieldDecl = new FieldDeclaration(element, initializer);
-    convertBodyDeclaration(fieldDecl);
+    convertBodyDeclaration(fieldDecl, element);
     return fieldDecl;
+  }
+
+  private boolean isEnumSynthetic(Element e, TypeMirror enumType) {
+    if (e.getKind() == ElementKind.STATIC_INIT) {
+      return true;
+    } else if (e.getKind() == ElementKind.METHOD) {
+      ExecutableElement method = (ExecutableElement) e;
+      TypeUtil typeUtil = translationEnv.typeUtil();
+      String enumSig = typeUtil.getSignatureName(enumType);
+      String valueOfDesc = "(Ljava/lang/String;)" + enumSig;
+      String valuesDesc = "()[" + enumSig;
+      String name = method.getSimpleName().toString();
+      String methodDesc = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
+      boolean isValueOf = name.equals("valueOf") && methodDesc.equals(valueOfDesc);
+      boolean isValues = name.equals("values") && methodDesc.equals(valuesDesc);
+      return isValueOf || isValues;
+    }
+    return false;
+  }
+
+  private TreeNode convertEnumDeclaration(TypeElement element){
+    EnumDeclaration enumDecl = new EnumDeclaration(element);
+    convertBodyDeclaration(enumDecl, element);
+    for (Element elem : element.getEnclosedElements()) {
+      TreeNode encElem = convert(elem);
+      if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
+        enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
+      } else if (!isEnumSynthetic(elem, element.asType())) {
+        enumDecl.addBodyDeclaration((BodyDeclaration) encElem);
+      }
+    }
+    enumDecl.removeModifiers(Modifier.FINAL);
+    return enumDecl;
+  }
+
+  private TreeNode convertEnumConstantDeclaration(VariableElement element) {
+    EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
+    convertBodyDeclaration(enumConstDecl, element);
+    return enumConstDecl;
   }
 
   // Extension of ClassNode that supports look up of ASM nodes using elements.

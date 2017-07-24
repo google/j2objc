@@ -393,7 +393,9 @@ public class TreeUtil {
   }
 
   public static Expression newLiteral(Object value, TypeUtil typeUtil) {
-    if (value instanceof Boolean) {
+    if (value == null) {
+      return new NullLiteral(typeUtil.getNull());
+    } else if (value instanceof Boolean) {
       return new BooleanLiteral((Boolean) value, typeUtil);
     } else if (value instanceof Character) {
       return new CharacterLiteral((Character) value, typeUtil);

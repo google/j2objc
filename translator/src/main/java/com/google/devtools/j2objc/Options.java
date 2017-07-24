@@ -73,7 +73,7 @@ public class Options {
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = -1;
   private String processors = null;
-  private boolean disallowInheritedConstructors = false;
+  private boolean disallowInheritedConstructors = true;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
@@ -83,8 +83,10 @@ public class Options {
   private boolean reportJavadocWarnings = false;
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
-  private String bootclasspath = System.getProperty("sun.boot.class.path");
   private String annotationsJar = null;
+
+  // Property not defined in Java 9, so use empty bootclasspath.
+  private String bootclasspath = System.getProperty("sun.boot.class.path", "");
 
   // TODO(tball): remove after front-end conversion is complete.
   private FrontEnd javaFrontEnd = FrontEnd.defaultFrontEnd();
@@ -573,7 +575,7 @@ public class Options {
 
     // Pull source version from system properties if it is not passed with -source flag.
     if (sourceVersion == null) {
-      sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
+      sourceVersion = SourceVersion.parse(System.getProperty("java.specification.version"));
     }
 
     if (isJDT()) {

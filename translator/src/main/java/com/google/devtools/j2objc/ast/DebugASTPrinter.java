@@ -96,15 +96,20 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(ArrayCreation node) {
+    Type componentType = node.getType().getComponentType();
+    int emptyDims = 1;
+    while (componentType.getKind() == TreeNode.Kind.ARRAY_TYPE) {
+      componentType = ((ArrayType) componentType).getComponentType();
+      emptyDims++;
+    }
+    emptyDims -= node.getDimensions().size();
     sb.print("new ");
-    node.getType().accept(this);
+    componentType.accept(this);
     for (Expression dim : node.getDimensions()) {
       sb.print('[');
       dim.accept(this);
       sb.print(']');
     }
-    int emptyDims = TypeUtil.getDimensions((javax.lang.model.type.ArrayType) node.getTypeMirror())
-        - node.getDimensions().size();
     for (int i = 0; i < emptyDims; i++) {
       sb.print("[]");
     }
@@ -1050,7 +1055,8 @@ public class DebugASTPrinter extends TreeVisitor {
     printTypeParameters(node.getTypeElement().getTypeParameters());
     sb.print(' ');
     TypeMirror superclassTypeMirror = node.getSuperclassTypeMirror();
-    if (!TypeUtil.isNone(superclassTypeMirror)) {
+    if (!(TypeUtil.isNone(superclassTypeMirror)
+        || TypeUtil.isJavaObject(superclassTypeMirror))) {
       sb.print("extends ");
       sb.print(superclassTypeMirror.toString());
       sb.print(' ');
@@ -1227,14 +1233,29 @@ public class DebugASTPrinter extends TreeVisitor {
     }
   }
 
+  protected void printTypeParameter(TypeParameterElement element) {
+    sb.print(element.getSimpleName().toString());
+    Iterator<? extends TypeMirror> boundsList = element.getBounds().iterator();
+    TypeMirror bound = boundsList.next();
+    if (!TypeUtil.isJavaObject(bound) || boundsList.hasNext()) {
+      sb.print(" extends ");
+      sb.print(bound.toString());
+    }
+    while (boundsList.hasNext()) {
+      sb.print(" & ");
+      bound = boundsList.next();
+      sb.print(bound.toString());
+    }
+  }
+
   protected void printTypeParameters(List<? extends TypeParameterElement> typeParams) {
-    if (!typeParams.isEmpty()) {
+    Iterator<? extends TypeParameterElement> it = typeParams.iterator();
+    if (it.hasNext()) {
       sb.print('<');
-      for (int i = 0; i < typeParams.size(); ) {
-        sb.print(typeParams.get(i).getSimpleName().toString());
-        if (++i < typeParams.size()){
-          sb.print(',');
-        }
+      printTypeParameter(it.next());
+      while (it.hasNext()) {
+        sb.print(',');
+        printTypeParameter(it.next());
       }
       sb.print('>');
     }

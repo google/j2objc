@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="android/libcore/harmony-tests/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/json/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/json/src/test/java"/>
-	<classpathentry kind="src" path="android/libcore/jsr166-tests/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/luni/src/main/java"/>
 	<classpathentry kind="src" path="android/libcore/luni/src/test/java"/>
 	<classpathentry kind="src" path="android/libcore/support/src/test/java"/>
@@ -15,7 +14,6 @@
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/support/java"/>
-	<classpathentry kind="src" path="apache_harmony/classlib/modules/concurrent/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni/src/test/api/common"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/text/src/test/java"/>

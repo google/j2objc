@@ -49,7 +49,6 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.CaptureInfo;
 import com.google.devtools.j2objc.util.ElementUtil;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -393,8 +392,6 @@ public class Functionizer extends UnitTreeVisitor {
           node.remove();
         }
       }
-
-      ErrorUtil.functionizedMethod();
     }
   }
 
@@ -533,12 +530,12 @@ public class Functionizer extends UnitTreeVisitor {
     TypeElement typeElement = node.getTypeElement();
     TypeElement superClass = ElementUtil.getSuperclass(typeElement);
     if (ElementUtil.isPrivateInnerType(typeElement) || ElementUtil.isAbstract(typeElement)
-        || superClass == null) {
+        || superClass == null
+        // If we're not emitting constructors we don't need to disallow anything unless our
+        // superclass is NSObject.
+        || (!options.emitWrapperMethods()
+            && typeUtil.getObjcClass(superClass) != TypeUtil.NS_OBJECT)) {
       return;
-    }
-    Set<String> constructors = new HashSet<>();
-    for (ExecutableElement constructor : ElementUtil.getConstructors(typeElement)) {
-      constructors.add(nameTable.getMethodSelector(constructor));
     }
     Map<String, ExecutableElement> inheritedConstructors = new HashMap<>();
     // Add super constructors that have unique parameter lists.
@@ -548,8 +545,12 @@ public class Functionizer extends UnitTreeVisitor {
         continue;
       }
       String selector = nameTable.getMethodSelector(superC);
-      if (!constructors.contains(selector)) {
-        inheritedConstructors.put(selector, superC);
+      inheritedConstructors.put(selector, superC);
+    }
+    // Don't disallow this class' constructors if we're emitting wrapper methods.
+    if (options.emitWrapperMethods()) {
+      for (ExecutableElement constructor : ElementUtil.getConstructors(typeElement)) {
+        inheritedConstructors.remove(nameTable.getMethodSelector(constructor));
       }
     }
     for (Map.Entry<String, ExecutableElement> entry : inheritedConstructors.entrySet()) {

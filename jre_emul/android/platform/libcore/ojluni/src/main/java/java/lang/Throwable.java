@@ -189,14 +189,16 @@ public class Throwable extends NSException implements Serializable {
     /**
      * The throwable that caused this throwable to get thrown, or null if this
      * throwable was not caused by another throwable, or if the causative
-     * throwable is unknown.  If this field is equal to this throwable itself,
+     * throwable is unknown.  If this field is equal to UNSET_CAUSE,
      * it indicates that the cause of this throwable has not yet been
      * initialized.
      *
      * @serial
      * @since 1.4
      */
-    private Throwable cause = this;
+    private Throwable cause = UNSET_CAUSE;
+
+    private static final Throwable UNSET_CAUSE = new Throwable((Throwable) null);
 
     /**
      * The stack trace, as returned by {@link #getStackTrace()}.
@@ -417,7 +419,7 @@ public class Throwable extends NSException implements Serializable {
      * @since 1.4
      */
     public synchronized Throwable getCause() {
-        return (cause==this ? null : cause);
+        return (cause == UNSET_CAUSE ? null : cause);
     }
 
     /**
@@ -457,7 +459,7 @@ public class Throwable extends NSException implements Serializable {
      * @since  1.4
      */
     public synchronized Throwable initCause(Throwable cause) {
-        if (this.cause != this)
+        if (this.cause != UNSET_CAUSE)
             throw new IllegalStateException("Can't overwrite cause with " +
                                             Objects.toString(cause, "a null"), this);
         if (cause == this)

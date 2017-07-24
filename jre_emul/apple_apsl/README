@@ -21,3 +21,5 @@ Modifications:
 - Used NSLog instead internal logging function in objc_sync_enter().
 - Fixed assertion in objc_sync_wait() so valid time-outs don't fail.
 - Used NSSpinLock functions instead of private _spin_lock functions.
+- Renamed require_noerr_string() references to __Require_noErr_String(),
+  as recommended by comment in Apple's AssertMacros.h.

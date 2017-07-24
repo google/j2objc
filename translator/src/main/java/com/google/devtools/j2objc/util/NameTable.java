@@ -16,21 +16,26 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
@@ -78,173 +83,34 @@ public class NameTable {
 
   private static final Logger logger = Logger.getLogger(NameTable.class.getName());
 
+  private static final String RESERVED_NAMES_FILE = "reserved_names.txt";
+  private static final Splitter RESERVED_NAMES_SPLITTER =
+      Splitter.on(CharMatcher.whitespace()).omitEmptyStrings();
+
   /**
    * The list of predefined types, common primitive typedefs, constants and
-   * variables.
+   * variables. Loaded from a resource file.
    */
-  public static final Set<String> reservedNames = Sets.newHashSet(
-      // types
-      "id", "bool", "BOOL", "SEL", "IMP", "unichar",
+  private static final ImmutableSet<String> reservedNames = loadReservedNames();
 
-      // constants
-      "nil", "Nil", "YES", "NO", "TRUE", "FALSE",
+  private static ImmutableSet<String> loadReservedNames() {
+    try (InputStream stream = J2ObjC.class.getResourceAsStream(RESERVED_NAMES_FILE);
+        BufferedReader lines = new BufferedReader(new InputStreamReader(stream, "UTF-8"))) {
+      ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+      String line;
+      while ((line = lines.readLine()) != null) {
+        if (line.startsWith("#")) {
+          continue;
+        }
+        builder.addAll(RESERVED_NAMES_SPLITTER.split(line));
+      }
+      return builder.build();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+  }
 
-      // C99 keywords
-      "auto", "const", "entry", "extern", "goto", "inline", "register", "restrict", "signed",
-      "sizeof", "struct", "typedef", "union", "unsigned", "volatile",
-
-      // C++ keywords
-      "and", "and_eq", "asm", "bitand", "bitor", "compl", "const_cast", "delete", "dynamic_cast",
-      "explicit", "export", "friend", "mutable", "namespace", "not", "not_eq", "operator", "or",
-      "or_eq", "reinterpret_cast", "static_cast", "template", "typeid", "typename", "using",
-      "virtual", "wchar_t", "xor", "xor_eq",
-
-      // variables
-      "self", "isa",
-
-      // Definitions from standard C and Objective-C headers, not including
-      // typedefs and #defines that start with "_", nor #defines for
-      // functions.  Some of these may seem very unlikely to be used in
-      // Java source, but if a name is legal some Java developer might very
-      // well use it.
-
-      // Definitions from stddef.h
-      "ptrdiff_t", "size_t", "wchar_t", "wint_t",
-
-      // Definitions from stdint.h
-      "int8_t", "int16_t", "int32_t", "int64_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t",
-      "int_least8_t", "int_least16_t", "int_least32_t", "int_least64_t",
-      "uint_least8_t", "uint_least16_t", "uint_least32_t", "uint_least64_t",
-      "int_fast8_t", "int_fast16_t", "int_fast32_t", "int_fast64_t",
-      "uint_fast8_t", "uint_fast16_t", "uint_fast32_t", "uint_fast64_t",
-      "intptr_t", "uintptr_t", "intmax_t", "uintmax_t",
-      "INT8_MAX", "INT16_MAX", "INT32_MAX", "INT64_MAX", "INT8_MIN", "INT16_MIN", "INT32_MIN",
-      "INT64_MIN", "UINT8_MAX", "UINT16_MAX", "UINT32_MAX", "UINT64_MAX", "INT_LEAST8_MIN",
-      "INT_LEAST16_MIN", "INT_LEAST32_MIN", "INT_LEAST64_MIN", "INT_LEAST8_MAX", "INT_LEAST16_MAX",
-      "INT_LEAST32_MAX", "INT_LEAST64_MAX", "INT_FAST8_MIN", "INT_FAST16_MIN", "INT_FAST32_MIN",
-      "INT_FAST64_MIN", "INT_FAST8_MAX", "INT_FAST16_MAX", "INT_FAST32_MAX", "INT_FAST64_MAX",
-      "UINT_FAST8_MAX", "UINT_FAST16_MAX", "UINT_FAST32_MAX", "UINT_FAST64_MAX", "INTPTR_MIN",
-      "INTPTR_MAX", "UINTPTR_MAX", "INTMAX_MIN", "INTMAX_MAX", "UINTMAX_MAX", "PTRDIFF_MIN",
-      "PTRDIFF_MAX", "SIZE_MAX", "WCHAR_MAX", "WCHAR_MIN", "WINT_MIN", "WINT_MAX",
-      "SIG_ATOMIC_MIN", "SIG_ATOMIC_MAX", "INT8_MAX", "INT16_MAX", "INT32_MAX", "INT64_MAX",
-      "UINT8_C", "UINT16_C", "UINT32_C", "UINT64_C", "INTMAX_C", "UINTMAX_C",
-
-      // Definitions from stdio.h
-      "va_list", "fpos_t", "FILE", "off_t", "ssize_t", "BUFSIZ", "EOF", "FOPEN_MAX",
-      "FILENAME_MAX", "R_OK", "SEEK_SET", "SEEK_CUR", "SEEK_END", "stdin", "STDIN_FILENO",
-      "stdout", "STDOUT_FILENO", "stderr", "STDERR_FILENO", "TMP_MAX", "W_OK", "X_OK",
-      "sys_errlist",
-
-      // Definitions from stdlib.h
-      "ct_rune_t", "rune_t", "div_t", "ldiv_t", "lldiv_t", "dev_t", "mode_t",
-      "NULL", "EXIT_FAILURE", "EXIT_SUCCESS", "RAND_MAX", "MB_CUR_MAX", "MB_CUR_MAX_L",
-
-      // Definitions from errno.h
-      "errno", "EPERM", "ENOENT", "ESRCH", "EINTR", "EIO", "ENXIO", "E2BIG", "ENOEXEC",
-      "EBADF", "ECHILD", "EDEADLK", "ENOMEM", "EACCES", "EFAULT", "ENOTBLK", "EBUSY",
-      "EEXIST", "EXDEV", "ENODEV", "ENOTDIR", "EISDIR", "EINVAL", "ENFILE", "EMFILE",
-      "ENOTTY", "ETXTBSY", "EFBIG", "ENOSPC", "ESPIPE", "EROFS", "EMLINK", "EPIPE",
-      "EDOM", "ERANGE", "EAGAIN", "EWOULDBLOCK", "EINPROGRESS", "EALREADY", "ENOTSOCK",
-      "EDESTADDRREQ", "EMSGSIZE", "EPROTOTYPE", "ENOPROTOOPT", "EPROTONOSUPPORT",
-      "ESOCKTNOSUPPORT", "ENOTSUP", "ENOTSUPP", "EPFNOSUPPORT", "EAFNOSUPPORT", "EADDRINUSE",
-      "EADDRNOTAVAIL", "ENETDOWN", "ENETUNREACH", "ENETRESET", "ECONNABORTED", "ECONNRESET",
-      "ENOBUFS", "EISCONN", "ENOTCONN", "ESHUTDOWN", "ETOOMANYREFS", "ETIMEDOUT", "ECONNREFUSED",
-      "ELOOP", "ENAMETOOLONG", "EHOSTDOWN", "EHOSTUNREACH", "ENOTEMPTY", "EPROCLIM", "EUSERS",
-      "EDQUOT", "ESTALE", "EREMOTE", "EBADRPC", "ERPCMISMATCH", "EPROGUNAVAIL", "EPROGMISMATCH",
-      "EPROCUNAVAIL", "ENOLCK", "ENOSYS", "EFTYPE", "EAUTH", "ENEEDAUTH", "EPWROFF", "EDEVERR",
-      "EOVERFLOW", "EBADEXEC", "EBADARCH", "ESHLIBVERS", "EBADMACHO", "ECANCELED", "EIDRM",
-      "ENOMSG", "ENOATTR", "EBADMSG", "EMULTIHOP", "ENODATA", "ENOLINK", "ENOSR", "ENOSTR",
-      "EPROTO", "ETIME", "ENOPOLICY", "ENOTRECOVERABLE", "EOWNERDEAD", "EQFULL", "EILSEQ",
-      "EOPNOTSUPP", "ELAST",
-
-      // Definitions from fcntl.h
-      "F_DUPFD", "F_GETFD", "F_SETFD", "F_GETFL", "F_SETFL", "F_GETOWN", "F_SETOWN",
-      "F_GETLK", "F_SETLK", "F_SETLKW", "FD_CLOEXEC", "F_RDLCK", "F_UNLCK", "F_WRLCK",
-      "SEEK_SET", "SEEK_CUR", "SEEK_END",
-      "O_RDONLY", "O_WRONLY", "O_RDWR", "O_ACCMODE", "O_NONBLOCK", "O_APPEND", "O_SYNC", "O_CREAT",
-      "O_TRUNC", "O_EXCL", "O_NOCTTY", "O_NOFOLLOW",
-
-      // Definitions from math.h
-      "DOMAIN", "HUGE", "INFINITY", "NAN", "OVERFLOW", "SING", "UNDERFLOW", "signgam",
-
-      // Definitions from mman.h
-      "MAP_FIXED", "MAP_PRIVATE", "MAP_SHARED", "MCL_CURRENT", "MCL_FUTURE", "MS_ASYNC",
-      "MS_INVALIDATE", "MS_SYNC", "PROT_EXEC", "PROT_NONE", "PROT_READ", "PROT_WRITE",
-
-      // Definitions from netdb.h
-      "AI_ADDRCONFIG", "AI_ALL", "AI_CANONNAME", "AI_NUMERICHOST", "AI_NUMERICSERV",
-      "AI_PASSIVE", "AI_V4MAPPED", "EAI_AGAIN", "EAI_BADFLAGS", "EAI_FAIL", "EAI_FAMILY",
-      "EAI_MEMORY", "EAI_NODATA", "EAI_NONAME", "EAI_OVERFLOW", "EAI_SERVICE", "EAI_SOCKTYPE",
-      "EAI_SYSTEM", "HOST_NOT_FOUND", "NI_NAMEREQD", "NI_NUMERICHOST", "NO_DATA",
-      "NO_RECOVERY", "TRY_AGAIN",
-
-      // Definitions from net/if.h
-      "IFF_LOOPBACK", "IFF_MULTICAST", "IFF_POINTTOPOINT", "IFF_UP", "SIOCGIFADDR",
-      "SIOCGIFBRDADDR", "SIOCGIFNETMASK", "SIOCGIFDSTADDR",
-
-      // Definitions from netinet/in.h, in6.h
-      "IPPROTO_IP", "IPPROTO_IPV6", "IPPROTO_TCP", "IPV6_MULTICAST_HOPS", "IPV6_MULTICAST_IF",
-      "IP_MULTICAST_LOOP", "IPV6_TCLASS", "MCAST_JOIN_GROUP", "MCAST_JOIN_GROUP",
-
-      // Definitions from socket.h
-      "AF_INET", "AF_INET6", "AF_UNIX", "AF_UNSPEC", "MSG_OOB", "MSG_PEEK", "SHUT_RD", "SHUT_RDWR",
-      "SHUT_WR", "SOCK_DGRAM", "SOCK_STREAM", "SOL_SOCKET", "SO_BINDTODEVICE", "SO_BROADCAST",
-      "SO_ERROR", "SO_KEEPALIVE", "SO_LINGER", "SOOOBINLINE", "SO_REUSEADDR", "SO_RCVBUF",
-      "SO_RCVTIMEO", "SO_SNDBUF", "TCP_NODELAY",
-
-      // Definitions from stat.h
-      "S_IFBLK", "S_IFCHR", "S_IFDIR", "S_IFIFO", "S_IFLNK", "S_IFMT", "S_IFREG", "S_IFSOCK",
-
-      // Definitions from sys/poll.h
-      "POLLERR", "POLLHUP", "POLLIN", "POLLOUT",
-
-      // Definitions from sys/syslimits.h
-      "ARG_MAX", "LINE_MAX", "MAX_INPUT", "NAME_MAX", "NZERO", "PATH_MAX",
-
-      // Definitions from limits.h, machine/limits.h
-      "CHAR_BIT", "CHAR_MAX", "CHAR_MIN", "INT_MAX", "INT_MIN", "LLONG_MAX", "LLONG_MIN",
-      "LONG_BIT", "LONG_MAX", "LONG_MIN", "MB_LEN_MAX", "OFF_MIN", "OFF_MAX",
-      "PTHREAD_DESTRUCTOR_ITERATIONS", "PTHREAD_KEYS_MAX", "PTHREAD_STACK_MIN", "QUAD_MAX",
-      "QUAD_MIN", "SCHAR_MAX", "SCHAR_MIN", "SHRT_MAX", "SHRT_MIN", "SIZE_T_MAX", "SSIZE_MAX",
-      "UCHAR_MAX", "UINT_MAX", "ULONG_MAX", "UQUAD_MAX", "USHRT_MAX", "UULONG_MAX", "WORD_BIT",
-
-      // Definitions from time.h
-      "daylight", "getdate_err", "tzname",
-
-      // Definitions from types.h
-      "S_IRGRP", "S_IROTH", "S_IRUSR", "S_IRWXG", "S_IRWXO", "S_IRWXU", "S_IWGRP", "S_IWOTH",
-      "S_IWUSR", "S_IXGRP", "S_IXOTH", "S_IXUSR",
-
-      // Definitions from unistd.h
-      "F_OK", "R_OK", "STDERR_FILENO", "STDIN_FILENO", "STDOUT_FILENO", "W_OK", "X_OK",
-      "_SC_PAGESIZE", "_SC_PAGE_SIZE", "optind", "opterr", "optopt", "optreset",
-
-      // Cocoa definitions from ConditionalMacros.h
-      "CFMSYSTEMCALLS", "CGLUESUPPORTED", "FUNCTION_PASCAL", "FUNCTION_DECLSPEC",
-      "FUNCTION_WIN32CC", "GENERATING68881", "GENERATING68K", "GENERATINGCFM", "GENERATINGPOWERPC",
-      "OLDROUTINELOCATIONS", "PRAGMA_ALIGN_SUPPORTED", "PRAGMA_ENUM_PACK", "PRAGMA_ENUM_ALWAYSINT",
-      "PRAGMA_ENUM_OPTIONS", "PRAGMA_IMPORT", "PRAGMA_IMPORT_SUPPORTED", "PRAGMA_ONCE",
-      "PRAGMA_STRUCT_ALIGN", "PRAGMA_STRUCT_PACK", "PRAGMA_STRUCT_PACKPUSH",
-      "TARGET_API_MAC_CARBON", "TARGET_API_MAC_OS8", "TARGET_API_MAC_OSX", "TARGET_CARBON",
-      "TYPE_BOOL", "TYPE_EXTENDED", "TYPE_LONGDOUBLE_IS_DOUBLE", "TYPE_LONGLONG",
-      "UNIVERSAL_INTERFACES_VERSION",
-
-      // Core Foundation definitions
-      "BIG_ENDIAN", "BYTE_ORDER", "LITTLE_ENDIAN", "PDP_ENDIAN",
-
-      // CoreServices definitions
-      "positiveInfinity", "negativeInfinity",
-
-      // Common preprocessor definitions.
-      "DEBUG", "NDEBUG",
-
-      // Foundation methods with conflicting return types
-      "scale",
-
-      // Syntactic sugar for Objective-C block types
-      "block_type");
-
-  private static final Set<String> badParameterNames = Sets.newHashSet(
+  private static final ImmutableSet<String> badParameterNames = ImmutableSet.of(
       // Objective-C type qualifier keywords.
       "in", "out", "inout", "oneway", "bycopy", "byref");
 
@@ -255,7 +121,7 @@ public class NameTable {
    * "public boolean isEqual(Object o)" would be translated as
    * "- (BOOL)isEqualWithObject:(NSObject *)o", not NSObject's "isEqual:".
    */
-  public static final List<String> nsObjectMessages = Lists.newArrayList(
+  public static final ImmutableSet<String> nsObjectMessages = ImmutableSet.of(
       "alloc", "attributeKeys", "autoContentAccessingProxy", "autorelease",
       "classCode", "classDescription", "classForArchiver",
       "classForKeyedArchiver", "classFallbacksForKeyedArchiver",

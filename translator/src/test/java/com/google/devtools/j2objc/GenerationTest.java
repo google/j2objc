@@ -202,7 +202,7 @@ public class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileAsClassFile(String name, String source) throws IOException {
-    return compileAsClassFile(name, source, "-parameters", "-g");
+    return compileAsClassFile(name, source, "-parameters", "-cp", tempDir.getAbsolutePath());
   }
 
   /**
@@ -390,7 +390,7 @@ public class GenerationTest extends TestCase {
    * Verify that two AST nodes are equal excepting MethodDeclaration bodies, by comparing their
    * signatures.
    */
-  protected void assertEqualASTSignatures(TreeNode first, TreeNode second) {
+  protected void assertEqualSignatures(TreeNode first, TreeNode second) {
     String firstStr = SignatureASTPrinter.toString(first);
     String secondStr = SignatureASTPrinter.toString(second);
     if (!firstStr.equals(secondStr)) {
@@ -400,15 +400,28 @@ public class GenerationTest extends TestCase {
 
   /**
    * Compiles Java source, as contained in a source file, and compares the parsed compilation units
+   * generated from the source and class files, while ignoring method bodies.
+   *
+   * @param type the public type being declared
+   * @param source the source code
+   */
+  protected void assertEqualSignatureSrcClassfile(String type, String source) throws IOException {
+    CompilationUnit srcUnit = compileType(type, source);
+    CompilationUnit classfileUnit = compileAsClassFile(type, source);
+    assertEqualSignatures(srcUnit, classfileUnit);
+  }
+
+  /**
+   * Compiles Java source, as contained in a source file, and compares the parsed compilation units
    * generated from the source and class files.
    *
    * @param type the public type being declared
    * @param source the source code
    */
-  protected void assertEqualSrcClassfile(String type, String source) throws IOException {
+  protected void assertEqualASTSrcClassfile(String type, String source) throws IOException {
     CompilationUnit srcUnit = compileType(type, source);
     CompilationUnit classfileUnit = compileAsClassFile(type, source);
-    assertEqualASTSignatures(srcUnit, classfileUnit);
+    assertEqualASTs(srcUnit, classfileUnit);
   }
 
   /**

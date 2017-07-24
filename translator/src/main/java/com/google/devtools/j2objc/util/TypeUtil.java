@@ -203,6 +203,11 @@ public final class TypeUtil {
     return isDeclaredType(t) ? (TypeElement) ((DeclaredType) t).asElement() : null;
   }
 
+  public static boolean isJavaObject(TypeMirror t) {
+    TypeElement typeElement = asTypeElement(t);
+    return typeElement != null && !isInterface(t) && isNone(typeElement.getSuperclass());
+  }
+
   public static TypeParameterElement asTypeParameterElement(TypeMirror t) {
     return isTypeVariable(t) ? (TypeParameterElement) ((TypeVariable) t).asElement() : null;
   }
@@ -224,7 +229,7 @@ public final class TypeUtil {
     TypeMirror t = arrayType;
     while (t.getKind().equals(TypeKind.ARRAY)) {
       dimCount++;
-      t = (((ArrayType) t).getComponentType());
+      t = ((ArrayType) t).getComponentType();
     }
     return dimCount;
   }
