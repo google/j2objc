@@ -16,27 +16,34 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.file.InputFile;
 import com.strobel.assembler.InputTypeLoader;
-import com.strobel.assembler.metadata.FieldDefinition;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.assembler.metadata.MetadataSystem;
-import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
+import com.strobel.decompiler.DecompilerContext;
+import com.strobel.decompiler.languages.EntityType;
+import com.strobel.decompiler.languages.java.ast.AstBuilder;
+import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
+import com.strobel.decompiler.languages.java.ast.AstType;
+import com.strobel.decompiler.languages.java.ast.CompilationUnit;
+import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
+import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
+import com.strobel.decompiler.languages.java.ast.FieldDeclaration;
+import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
+import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
+import com.strobel.decompiler.languages.java.ast.TypeDeclaration;
 import java.io.IOException;
 import java.util.jar.JarFile;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ExecutableType;
 
 /**
  * JVM class file model, which uses a Procyon TypeDefinition as a delegate.
  */
 public class ClassFile {
-  private final TypeDefinition typeDef;
-  private final TypeUtil typeUtil;
+  private final CompilationUnit unit;
+  private final TypeDeclaration type;
 
-  public static ClassFile create(InputFile file, TypeUtil typeUtil) throws IOException {
+  public static ClassFile create(InputFile file) throws IOException {
     ITypeLoader loader;
     String path = file.getAbsolutePath();
     if (path.endsWith(".jar")) {
@@ -53,55 +60,104 @@ public class ClassFile {
     MetadataSystem metadataSystem = new MetadataSystem(loader);
     TypeReference typeRef = metadataSystem.lookupType(path);
     TypeDefinition typeDef = metadataSystem.resolve(typeRef);
-    return new ClassFile(typeDef, typeUtil);
+    AstBuilder astBuilder = new AstBuilder(new DecompilerContext());
+    astBuilder.addType(typeDef);
+    CompilationUnit unit = astBuilder.getCompilationUnit();
+    return new ClassFile(unit);
   }
 
-  private ClassFile(TypeDefinition typeDefinition, TypeUtil typeUtil) {
-    this.typeDef = typeDefinition;
-    this.typeUtil = typeUtil;
+  private ClassFile(CompilationUnit unit) {
+    this.unit = unit;
+    assert unit.getTypes().size() == 1;
+    this.type = unit.getTypes().firstOrNullObject();
   }
 
   /**
    * Returns the simple name of the type defined by this class file.
    */
   public String getName() {
-    return typeDef.getName();
+    return type.getName();
   }
 
   /**
    * Returns the fully-qualified name of the type defined by this class file.
    */
   public String getFullName() {
-    return typeDef.getFullName();
+    return unit.getPackage().getName() + "." + type.getName();
   }
 
   /**
-   * Returns the Procyon field definition for a specified variable element,
+   * Returns the Procyon field definition for a specified variable,
    * or null if not found.
    */
-  public FieldDefinition getFieldNode(VariableElement field) {
-    String name = field.getSimpleName().toString();
-    String descriptor = typeUtil.getFieldDescriptor(field.asType());
-    for (FieldDefinition node : typeDef.getDeclaredFields()) {
-      if (node.getName().equals(name) && node.getErasedSignature().equals(descriptor)) {
-        return node;
+  public FieldDeclaration getFieldNode(String name, String signature) {
+    for (EntityDeclaration node : type.getMembers()) {
+      if (node.getEntityType() == EntityType.FIELD) {
+        FieldDeclaration field = (FieldDeclaration) node;
+        if (field.getName().equals(name)
+            && signature(field.getReturnType()).equals(signature)) {
+          return field;
+        }
       }
     }
     return null;
   }
 
   /**
-   * Returns the Procyon method definition for a specified executable element,
+   * Returns the Procyon method definition for a specified method,
    * or null if not found.
    */
-  public MethodDefinition getMethodNode(ExecutableElement method) {
-    String name = method.getSimpleName().toString();
-    String descriptor = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
-    for (MethodDefinition node : typeDef.getDeclaredMethods()) {
-      if (node.getName().equals(name) && node.getErasedSignature().equals(descriptor)) {
-        return node;
+  public MethodDeclaration getMethod(String name, String signature) {
+    for (EntityDeclaration node : type.getMembers()) {
+      if (node.getEntityType() == EntityType.METHOD) {
+        MethodDeclaration method = (MethodDeclaration) node;
+        if (method.getName().equals(name) && signature.equals(signature(method))) {
+          return method;
+        }
       }
     }
     return null;
+  }
+
+  /**
+   * Returns the Procyon method definition for a specified constructor,
+   * or null if not found.
+   */
+  public ConstructorDeclaration getConstructor(String signature) {
+    for (EntityDeclaration node : type.getMembers()) {
+      if (node.getEntityType() == EntityType.CONSTRUCTOR) {
+        ConstructorDeclaration cons = (ConstructorDeclaration) node;
+        if (signature.equals(signature(cons))) {
+          return cons;
+        }
+      }
+    }
+    return null;
+  }
+
+  private String signature(MethodDeclaration method) {
+    StringBuilder sb = new StringBuilder();
+    signature(method.getParameters(), sb);
+    sb.append(signature(method.getReturnType()));
+    return sb.toString();
+  }
+
+  private String signature(ConstructorDeclaration cons) {
+    StringBuilder sb = new StringBuilder();
+    signature(cons.getParameters(), sb);
+    sb.append('V');
+    return sb.toString();
+  }
+
+  private void signature(AstNodeCollection<ParameterDeclaration> parameters, StringBuilder sb) {
+    sb.append('(');
+    for (ParameterDeclaration param : parameters) {
+      sb.append(signature(param.getType()));
+    }
+    sb.append(')');
+  }
+
+  private String signature(AstType type) {
+    return type.toTypeReference().getErasedSignature();
   }
 }

@@ -30,7 +30,7 @@ public class ClassFileTest extends GenerationTest {
     String jarFilePath = getResourceAsFile("packageInfoLookupTest.jar");
     InputFile input = new JarredInputFile(jarFilePath,
         "com/google/test/packageInfoLookupTest/package-info.class");
-    ClassFile cf = ClassFile.create(input, null);
+    ClassFile cf = ClassFile.create(input);
     assertNotNull(cf);
     assertEquals("com.google.test.packageInfoLookupTest.package-info", cf.getFullName());
   }

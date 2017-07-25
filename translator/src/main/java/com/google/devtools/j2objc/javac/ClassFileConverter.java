@@ -48,14 +48,14 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
-import com.strobel.assembler.metadata.MethodDefinition;
-import com.strobel.assembler.metadata.ParameterDefinition;
+import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
@@ -109,7 +109,7 @@ public class ClassFileConverter {
     this.parserEnv = parserEnv;
     this.translationEnv = translationEnv;
     this.file = file;
-    this.classFile = ClassFile.create(file, translationEnv.typeUtil());
+    this.classFile = ClassFile.create(file);
     this.typeName = classFile.getFullName();
   }
 
@@ -293,20 +293,21 @@ public class ClassFileConverter {
     if (nParams > 0) {
       // If classfile was compiled with -parameters flag; use the MethodNode
       // to work around potential javac8 bug iterating over parameter names.
-      MethodDefinition methodDef = classFile.getMethodNode(element);
-      List<ParameterDefinition> defParams = methodDef.getParameters();
-      int nMethodNodes = defParams.size();
+      String name = element.getSimpleName().toString();
+      String descriptor =
+          translationEnv.typeUtil().getMethodDescriptor((ExecutableType) element.asType());
+      Iterator<ParameterDeclaration> paramsIterator = ElementUtil.isConstructor(element)
+          ? classFile.getConstructor(descriptor).getParameters().iterator()
+          : classFile.getMethod(name, descriptor).getParameters().iterator();
       for (int i = 0; i < nParams; i++) {
         VariableElement param = element.getParameters().get(i);
         SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
-        if (nMethodNodes == nParams) {
-          String nameDef = defParams.get(i).getName();
-          // If element's name doesn't match the ParameterNode's name, use the latter.
-          if (!nameDef.equals(param.getSimpleName().toString())) {
-            param = GeneratedVariableElement.newParameter(nameDef, param.asType(),
-                param.getEnclosingElement());
-            varDecl.setVariableElement(param);
-          }
+        String nameDef = paramsIterator.next().getName();
+        // If element's name doesn't match the ParameterNode's name, use the latter.
+        if (!nameDef.equals(param.getSimpleName().toString())) {
+          param = GeneratedVariableElement.newParameter(nameDef, param.asType(),
+              param.getEnclosingElement());
+          varDecl.setVariableElement(param);
         }
         parameters.add(varDecl);
       }
