@@ -36,7 +36,7 @@ GEN_OBJC_DIR = $(TRANSLATED_SOURCE_DIR)
 TRANSLATE_NAME = jre_emul
 TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
-TRANSLATE_ARGS = -sourcepath $(JRE_SRC) \
+TRANSLATE_ARGS = -sourcepath $(JRE_SRC) -use-gc \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --doc-comments -Xtranslate-bootclasspath
 include ../make/translate.mk
 

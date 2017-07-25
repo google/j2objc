@@ -187,8 +187,10 @@ OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0
 # Require C11 compilation to support Java volatile translation.
 OBJCFLAGS += -std=c11
 
+export CLANG_ENABLE_OBJC_ARC = YES
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
-$(error The jre_emul build no longer supports an ARC build)
+OBJCFLAGS += -fobjc-arc
+# $(error The jre_emul build no longer supports an ARC build)
 endif
 
 # Specify bitcode flag if clang version 7 or greater. This is necessary to support
@@ -197,3 +199,4 @@ endif
 ifeq ("$(XCODE_7_MINIMUM)", "YES")
 OBJCFLAGS += -fembed-bitcode
 endif
+
