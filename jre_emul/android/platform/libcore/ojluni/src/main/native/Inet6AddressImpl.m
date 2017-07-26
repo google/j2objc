@@ -116,8 +116,7 @@ Inet6AddressImpl_getHostByAddr0(JNIEnv *env, jobject this,
             len = sizeof(him6) ;
         }
 
-        error = (*getnameinfo_ptr)(sa, len, host, NI_MAXHOST, NULL, 0,
-                                   NI_NAMEREQD);
+        error = getnameinfo(sa, len, host, NI_MAXHOST, NULL, 0, NI_NAMEREQD);
 
         if (!error) {
             ret = (*env)->NewStringUTF(env, host);

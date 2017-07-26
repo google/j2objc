@@ -47,6 +47,12 @@
 #include <sys/sockio.h>
 #include <stropts.h>
 #include <inet/nd.h>
+
+/* needed from libsocket on Solaris 8 */
+getaddrinfo_f getaddrinfo_ptr = NULL;
+freeaddrinfo_f freeaddrinfo_ptr = NULL;
+gai_strerror_f gai_strerror_ptr = NULL;
+getnameinfo_f getnameinfo_ptr = NULL;
 #endif
 
 #ifdef __linux__
@@ -69,13 +75,6 @@
 #include "java/net/Inet6Address.h"
 #include "java/net/SocketException.h"
 #include "java/net/UnknownHostException.h"
-
-/* needed from libsocket on Solaris 8 */
-
-getaddrinfo_f getaddrinfo_ptr = NULL;
-freeaddrinfo_f freeaddrinfo_ptr = NULL;
-gai_strerror_f gai_strerror_ptr = NULL;
-getnameinfo_f getnameinfo_ptr = NULL;
 
 /*
  * EXCLBIND socket options only on Solaris
@@ -495,8 +494,7 @@ void ThrowUnknownHostExceptionWithGaiError(JNIEnv *env,
     int size;
     char *buf;
     const char *format = "%s: %s";
-    const char *error_string =
-        (gai_strerror_ptr == NULL) ? NULL : (*gai_strerror_ptr)(gai_error);
+    const char *error_string = gai_strerror(gai_error);
     if (error_string == NULL)
         error_string = "unknown error";
 
@@ -907,7 +905,7 @@ NET_IsEqual(jbyte* caddr1, jbyte* caddr2) {
 }
 
 jboolean NET_addrtransAvailable() {
-    return (jboolean)(getaddrinfo_ptr != NULL);
+    return JNI_TRUE;
 }
 
 int NET_IsZeroAddr(jbyte* caddr) {
