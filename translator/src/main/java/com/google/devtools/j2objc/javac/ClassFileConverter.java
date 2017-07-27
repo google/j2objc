@@ -381,7 +381,7 @@ public class ClassFileConverter {
   private TypeElement resolve(AstType type) {
     String fqn = type.toTypeReference().getErasedSignature();
     Element element = parserEnv.resolve(fqn);
-    if (element == null || element instanceof TypeElement) {
+    if (element == null || !(element instanceof TypeElement)) {
       throw new AssertionError("failed resolving type: " + fqn);
     }
     return (TypeElement) element;
