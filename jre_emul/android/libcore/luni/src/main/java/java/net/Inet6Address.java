@@ -45,8 +45,8 @@ public final class Inet6Address extends InetAddress {
             new Inet6Address(new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
                     "localhost", 0);
 
-    private boolean scope_id_set;
-    private int scope_id;
+    boolean scope_id_set;
+    int scope_id;
 
     private boolean scope_ifname_set;
     private String ifname;
@@ -66,6 +66,11 @@ public final class Inet6Address extends InetAddress {
         super(AF_INET6, ipaddress, hostName);
         this.scope_id = scope_id;
         this.scope_id_set = (scope_id != 0);
+    }
+
+    // J2ObjC: Added for JNI.
+    Inet6Address() {
+      super(AF_INET6, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, null);
     }
 
     /**

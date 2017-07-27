@@ -703,7 +703,7 @@ public class DatagramSocket implements Closeable {
     /**
      * @hide internal use only
      */
-    public final FileDescriptor getFileDescriptor$() {
+    public FileDescriptor getFileDescriptor$() {
         return impl.fd;
     }
 }

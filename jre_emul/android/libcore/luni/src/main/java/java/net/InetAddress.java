@@ -130,7 +130,7 @@ public class InetAddress implements Serializable {
 
     private static final long serialVersionUID = 3286316764910316507L;
 
-    private int family;
+    int family;
 
     byte[] ipaddress;
 

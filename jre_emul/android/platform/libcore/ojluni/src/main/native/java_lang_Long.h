@@ -29,6 +29,8 @@
 
 #include "J2ObjC_common.h"
 
+#define java_lang_Long_MAX_VALUE 9223372036854775807LL
+
 CF_EXTERN_C_BEGIN
 
 void JavaLangLong_getCharsRaw(jlong i, jint index, jchar *buf);

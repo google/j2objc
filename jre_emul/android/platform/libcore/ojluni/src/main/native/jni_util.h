@@ -33,6 +33,9 @@
 extern "C" {
 #endif
 
+#define J2ObjCThrowByName(EXCEPTION, MSG) \
+    @throw create_##EXCEPTION##_initWithNSString_(MSG)
+
 /*
  * This file contains utility functions that can be implemented in pure JNI.
  *

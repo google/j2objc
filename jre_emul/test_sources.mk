@@ -105,6 +105,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
+    org/apache/harmony/tests/java/nio/channels/spi/MockAbstractSelector.java \
     org/apache/harmony/tests/java/text/Support_DecimalFormat.java \
     org/apache/harmony/tests/java/text/Support_Format.java \
     org/apache/harmony/tests/java/text/Support_MessageFormat.java \
@@ -613,6 +614,10 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
     org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectorTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectableChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractInterruptibleChannelTest.java \
+    org/apache/harmony/tests/java/nio/channels/spi/AbstractSelectionKeyTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \

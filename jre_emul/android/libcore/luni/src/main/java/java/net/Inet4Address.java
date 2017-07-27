@@ -52,6 +52,11 @@ public final class Inet4Address extends InetAddress {
         super(AF_INET, ipaddress, hostName);
     }
 
+    // J2ObjC: Added for JNI.
+    Inet4Address() {
+      super(AF_INET, new byte[] { 0, 0, 0, 0 }, null);
+    }
+
     @Override public boolean isAnyLocalAddress() {
         return ipaddress[0] == 0 && ipaddress[1] == 0 && ipaddress[2] == 0 && ipaddress[3] == 0; // 0.0.0.0
     }

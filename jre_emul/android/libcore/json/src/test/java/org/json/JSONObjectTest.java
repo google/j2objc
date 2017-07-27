@@ -986,7 +986,6 @@ public class JSONObjectTest extends TestCase {
         assertTrue(JSONObject.wrap(new HashMap<String, String>()) instanceof JSONObject);
         assertTrue(JSONObject.wrap(Double.valueOf(0)) instanceof Double);
         assertTrue(JSONObject.wrap("hello") instanceof String);
-        assertTrue(JSONObject.wrap(java.nio.channels.Selector.open()) instanceof String);
     }
 
     // https://code.google.com/p/android/issues/detail?id=55114

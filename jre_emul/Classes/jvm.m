@@ -20,6 +20,7 @@
 //  Created by Keith Stanger on Mar. 8, 2016.
 //
 
+#include <dlfcn.h>
 #include <pthread.h>
 
 #include "TempFailureRetry.h"
@@ -74,6 +75,11 @@ jint JVM_Close(jint fd) {
 
 jlong JVM_Lseek(jint fd, jlong offset, jint whence) {
   return TEMP_FAILURE_RETRY(lseek(fd, offset, whence));
+}
+
+jlong JVM_CurrentTimeMillis(JNIEnv *env, jclass ignored) {
+  return (long long) ((CFAbsoluteTimeGetCurrent()
+      + kCFAbsoluteTimeIntervalSince1970) * 1000);
 }
 
 void *JVM_RawMonitorCreate(void) {

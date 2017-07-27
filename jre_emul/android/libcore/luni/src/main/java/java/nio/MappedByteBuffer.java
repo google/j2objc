@@ -123,4 +123,9 @@ public abstract class MappedByteBuffer extends ByteBuffer {
       throw new UnsupportedOperationException();
     }
   }
+
+  // TODO(user): Remove after java.nio is updated to OpenJDK.
+  public long address() {
+      return block.toLong();
+  }
 }

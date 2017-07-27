@@ -17,6 +17,7 @@
 NATIVE_JRE_SOURCES_CORE = \
   DebugUtils.m \
   FastPointerLookup.m \
+  FileDescriptor_md.m \
   IOSArray.m \
   IOSArrayClass.m \
   IOSClass.m \
@@ -55,6 +56,8 @@ NATIVE_JRE_SOURCES_CORE = \
   java_util_regex_Matcher.m \
   java_util_regex_Pattern.m \
   jni.m \
+  jni_util.m \
+  jvm.m \
   libcore_icu_ICU.m \
   objc-sync.m \
   sun_misc_Unsafe.m
@@ -614,6 +617,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/MutableLong.java \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java \
+  sun/misc/Cleaner.java \
   sun/misc/CompoundEnumeration.java \
   sun/misc/DoubleConsts.java \
   sun/misc/FDBigInt.java \
@@ -623,6 +627,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   sun/misc/FormattedFloatingDecimal.java \
   sun/misc/FpUtils.java \
   sun/misc/Hashing.java \
+  sun/nio/ch/DirectBuffer.java \
+  sun/nio/ch/Interruptible.java \
   sun/nio/cs/StreamDecoder.java \
   sun/reflect/CallerSensitive.java \
   sun/reflect/Reflection.java \
@@ -909,6 +915,10 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/util/Scanner.java
 
 JAVA_PRIVATE_SOURCES_CHANNELS = \
+  dalvik/system/SocketTagger.java \
+  java/lang/UnsatisfiedLinkError.java \
+  java/net/ProtocolFamily.java \
+  java/net/StandardProtocolFamily.java \
   java/nio/ChannelUtils.java \
   java/nio/DatagramChannelImpl.java \
   java/nio/FileChannelImpl.java \
@@ -918,8 +928,65 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/nio/SelectorProviderImpl.java \
   java/nio/ServerSocketChannelImpl.java \
   java/nio/SocketChannelImpl.java \
+  sun/misc/IoTrace.java \
   sun/misc/LRUCache.java \
-  sun/nio/ch/ChannelInputStream.java
+  sun/net/NetHooks.java \
+  sun/net/ResourceManager.java \
+  sun/nio/ch/AbstractPollArrayWrapper.java \
+  sun/nio/ch/AbstractPollSelectorImpl.java \
+  sun/nio/ch/AllocatedNativeObject.java \
+  sun/nio/ch/ChannelInputStream.java \
+  sun/nio/ch/DatagramChannelImpl.java \
+  sun/nio/ch/DatagramDispatcher.java \
+  sun/nio/ch/DatagramSocketAdaptor.java \
+  sun/nio/ch/DefaultSelectorProvider.java \
+  sun/nio/ch/ExtendedSocketOption.java \
+  sun/nio/ch/FileDescriptorHolderSocketImpl.java \
+  sun/nio/ch/FileDispatcherImpl.java \
+  sun/nio/ch/FileDispatcher.java \
+  sun/nio/ch/InheritedChannel.java \
+  sun/nio/ch/IOStatus.java \
+  sun/nio/ch/IOUtil.java \
+  sun/nio/ch/IOVecWrapper.java \
+  sun/nio/ch/NativeDispatcher.java \
+  sun/nio/ch/NativeObject.java \
+  sun/nio/ch/NativeThread.java \
+  sun/nio/ch/Net.java \
+  sun/nio/ch/OptionKey.java \
+  sun/nio/ch/PipeImpl.java \
+  sun/nio/ch/PollArrayWrapper.java \
+  sun/nio/ch/PollSelectorImpl.java \
+  sun/nio/ch/PollSelectorProvider.java \
+  sun/nio/ch/Reflect.java \
+  sun/nio/ch/SelChImpl.java \
+  sun/nio/ch/SelectionKeyImpl.java \
+  sun/nio/ch/SelectorImpl.java \
+  sun/nio/ch/SelectorProviderImpl.java \
+  sun/nio/ch/ServerSocketAdaptor.java \
+  sun/nio/ch/ServerSocketChannelImpl.java \
+  sun/nio/ch/SinkChannelImpl.java \
+  sun/nio/ch/SocketAdaptor.java \
+  sun/nio/ch/SocketChannelImpl.java \
+  sun/nio/ch/SocketDispatcher.java \
+  sun/nio/ch/SocketOptionRegistry.java \
+  sun/nio/ch/SourceChannelImpl.java \
+  sun/nio/ch/Util.java
+
+NATIVE_JRE_SOURCES_CHANNELS = \
+  DatagramChannelImpl.m \
+  DatagramDispatcher.m \
+  FileDispatcherImpl.m \
+  Inet4AddressImpl.m \
+  Inet6AddressImpl.m \
+  InheritedChannel.m \
+  IOUtil.m \
+  NativeThread.m \
+  Net.m \
+  PollArrayWrapper.m \
+  ServerSocketChannelImpl.m \
+  SocketChannelImpl.m \
+  net_util_md.m \
+  net_util.m
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
@@ -1487,8 +1554,6 @@ NATIVE_JRE_SOURCES_ZIP = \
   java_util_zip_Deflater.m \
   java_util_zip_Inflater.m \
   java_util_zip_ZipFile.m \
-  jni_util.m \
-  jvm.m \
   zip_util.m
 
 JAVA_PUBLIC_SOURCES_ZIP = \
@@ -1534,8 +1599,6 @@ JAVA_PRIVATE_SOURCES_ZIP = \
   libcore/net/url/JarURLConnectionImpl.java \
   libcore/util/CountingOutputStream.java \
   sun/misc/ASCIICaseInsensitiveComparator.java \
-  sun/misc/Cleaner.java \
-  sun/nio/ch/DirectBuffer.java \
   sun/security/timestamp/TimestampToken.java \
   sun/security/util/SignatureFileVerifier.java \
   sun/security/util/ManifestDigester.java \
@@ -1625,7 +1688,6 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 # in a testing environment. The other classes are errors only thrown by a JVM.
 JAVA_PUBLIC_SOURCES_OTHER = \
   java/lang/ClassCircularityError.java \
-  java/lang/UnsatisfiedLinkError.java \
   java/lang/UnsupportedClassVersionError.java \
   javax/lang/model/element/Modifier.java
 
@@ -1794,4 +1856,5 @@ JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_JRE) $(ANDROID_PUBLIC_SOURCES) \
   $(JAVA_PUBLIC_SOURCES_XMLPULL)
 JAVA_SOURCES = $(JAVA_PUBLIC_SOURCES) $(JAVA_PRIVATE_SOURCES)
 
-NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP)
+NATIVE_JRE_SOURCES = $(NATIVE_JRE_SOURCES_CORE) $(NATIVE_JRE_SOURCES_ZIP) \
+  $(NATIVE_JRE_SOURCES_CHANNELS)
