@@ -57,7 +57,7 @@ public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
-  private MemoryManagementOption memoryManagementOption = null;
+  private static MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
@@ -676,15 +676,15 @@ public class Options {
     this.language = language;
   }
 
-  public boolean useReferenceCounting() {
+  public static boolean useReferenceCounting() {
     return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
 
-  public boolean useARC() {
+  public static boolean useARC() {
     return memoryManagementOption == MemoryManagementOption.ARC;
   }
 
-  public boolean useGC() {
+  public static boolean useGC() {
 	    return memoryManagementOption == MemoryManagementOption.GC;
 	  }
   

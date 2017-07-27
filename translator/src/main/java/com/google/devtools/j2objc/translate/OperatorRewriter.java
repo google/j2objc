@@ -190,7 +190,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isStrong = !isPrimitive && !ElementUtil.isWeakReference(var);
     boolean isVolatile = ElementUtil.isVolatile(var);
 
-    if (isRetainedWith) {
+    if (!options.useGC() && isRetainedWith) {
       return isVolatile ? "JreVolatileRetainedWithAssign" : "JreRetainedWithAssign";
     }
 
@@ -203,15 +203,14 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
 
     String funcName = null;
-    if (isStrong) {
+    if (isStrong  && !isPrimitive) {
     	if (options.useGC()) {
     		if (ElementUtil.isStatic(var)) {
-        		funcName = "JreStrongAssign";
+    			funcName = "JreStrongAssign";
     		}
-    		else 
-    		if (TypeUtil.asTypeElement(type) == typeUtil.getJavaObject() 
-    		&&  TypeUtil.asTypeElement(node.getRightHandSide().getTypeMirror()) == typeUtil.getJavaObject()){
-    			funcName = "JreUnknownAssign";
+    		else {
+    			String fType = typeUtil.getArgcFieldType(type);
+    			funcName = "Jre" + fType + "FieldAssign";
     		}
     	}
     	else if (options.useReferenceCounting()) {

@@ -416,7 +416,7 @@ public final class ElementUtil {
   }
 
   public static boolean isRetainedWithField(VariableElement varElement) {
-    return hasAnnotation(varElement, RetainedWith.class);
+    return !Options.useGC() && hasAnnotation(varElement, RetainedWith.class);
   }
 
   public static <T extends Element> Iterable<T> filterEnclosedElements(

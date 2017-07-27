@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -165,10 +166,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private String getSuperTypeName() {
     TypeElement supertype = TranslationUtil.getSuperType(typeNode);
-    if (supertype != null) {
+    if (supertype != null && typeUtil.getObjcClass(supertype) != TypeUtil.NS_OBJECT) {
       return nameTable.getFullName(supertype);
     }
-    return "java_Object";
+    return this.isInterfaceType() ? "NSObject" : "JavaLangObject";
   }
 
   private List<String> getInterfaceNames() {
@@ -265,7 +266,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         lastDeclaration = declaration;
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
+        if (options.useGC() && typeUtil.isARGCField(varElement.asType()) && !ElementUtil.isVolatile(varElement)) {
+        	print("ARGC_FIELD_REF ");
+        }
+        else if (ElementUtil.isWeakReference(varElement) && !ElementUtil.isVolatile(varElement)) {
           // We must add this even without -use-arc because the header may be
           // included by a file compiled with ARC.
           print("__unsafe_unretained ");
@@ -392,7 +396,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : java_Object", typeName);
+    printf("\n@interface %s : %s", typeName, getSuperTypeName());
     if (ElementUtil.isRuntimeAnnotation(typeElement)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
@@ -455,8 +459,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       String fieldName = nameTable.getVariableShortName(var);
       String isVolatile = ElementUtil.isVolatile(var) ? "_VOLATILE" : "";
-      println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
+      if (options.useGC() && isVolatile.length() == 0) {
+      	println(UnicodeUtils.format("J2OBJC_FIELD_SETTER(%s, %s, %s, %s)",
+                typeName, typeUtil.getArgcFieldType(var.asType()),  fieldName, typeStr));
+      }
+      else {
+    	println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
           isVolatile, typeName, fieldName, typeStr));
+      }
     }
   }
 

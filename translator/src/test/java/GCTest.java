@@ -4,6 +4,11 @@ public class GCTest {
 	static GCTest staticField;
 	Object instanceNSObjectField;
 	GCTest instanceField;
+    String str;
+    boolean sealed;
+    Integer no;
+    Exception ex;
+    Object obj;
 	
 	GCTest() {
 	}
@@ -14,6 +19,10 @@ public class GCTest {
 		staticNSObjectField = unknown;
 		
 		this.instanceField = this;
+        this.str = "Heelo";
+        this.no = 3;
+        this.ex = new Exception();
+        this.obj = unknown;
 		this.instanceNSObjectField = unknown;
 		this.instanceNSObjectField = this;
 	}
