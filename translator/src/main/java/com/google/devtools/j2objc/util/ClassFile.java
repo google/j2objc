@@ -83,7 +83,9 @@ public class ClassFile {
    * Returns the fully-qualified name of the type defined by this class file.
    */
   public String getFullName() {
-    return unit.getPackage().getName() + "." + type.getName();
+    String pkgName = unit.getPackage().getName();
+    String typeName = type.getName();
+    return pkgName.isEmpty() ? typeName : pkgName + "." + typeName;
   }
 
   /**
