@@ -666,7 +666,7 @@ public class ObjectStreamClass implements Serializable {
       Class cls = [self resolveConstructorClassWithIOSClass:instantiationClass].objcClass;
       SEL sel = [resolvedConstructor_ getSelector];
       IMP imp = class_getMethodImplementation(cls, sel);
-      id newInstance = [[instantiationClass.objcClass alloc] autorelease];
+      id newInstance = AUTORELEASE([instantiationClass.objcClass alloc]);
       return imp(newInstance, sel);
     ]-*/;
 
