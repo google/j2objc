@@ -16,14 +16,17 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.file.InputFile;
 import com.strobel.assembler.InputTypeLoader;
+import com.strobel.assembler.metadata.IMetadataResolver;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.assembler.metadata.JarTypeLoader;
+import com.strobel.assembler.metadata.MetadataParser;
 import com.strobel.assembler.metadata.MetadataSystem;
 import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
-import com.strobel.decompiler.DecompilerContext;
+import com.strobel.decompiler.DecompilationOptions;
+import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.languages.EntityType;
-import com.strobel.decompiler.languages.java.ast.AstBuilder;
+import com.strobel.decompiler.languages.Languages;
 import com.strobel.decompiler.languages.java.ast.AstNodeCollection;
 import com.strobel.decompiler.languages.java.ast.AstType;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
@@ -58,12 +61,32 @@ public class ClassFile {
       loader = new InputTypeLoader();
     }
     MetadataSystem metadataSystem = new MetadataSystem(loader);
-    TypeReference typeRef = metadataSystem.lookupType(path);
-    TypeDefinition typeDef = metadataSystem.resolve(typeRef);
-    AstBuilder astBuilder = new AstBuilder(new DecompilerContext());
-    astBuilder.addType(typeDef);
-    CompilationUnit unit = astBuilder.getCompilationUnit();
+    CompilationUnit unit = decompileClassFile(path, metadataSystem);
+
     return new ClassFile(unit);
+  }
+
+  private static CompilationUnit decompileClassFile(String path, MetadataSystem metadataSystem) {
+    TypeReference typeRef;
+    /* Hack to get around classes whose descriptors clash with primitive types. */
+    if (path.length() == 1) {
+      MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+      typeRef = metadataSystem.resolve(parser.parseTypeDescriptor(path));
+    } else {
+      typeRef = metadataSystem.lookupType(path);
+    }
+    TypeDefinition typeDef = typeRef.resolve();
+
+    /* TODO(tball): Support deobfuscation?
+     * DeobfuscationUtilities.processType(typeDef);
+     */
+
+    DecompilationOptions options = new DecompilationOptions();
+    DecompilerSettings settings = DecompilerSettings.javaDefaults();
+    settings.setShowSyntheticMembers(true);
+    options.setSettings(settings);
+    options.setFullDecompilation(true);
+    return Languages.java().decompileTypeToAst(typeDef, options);
   }
 
   private ClassFile(CompilationUnit unit) {

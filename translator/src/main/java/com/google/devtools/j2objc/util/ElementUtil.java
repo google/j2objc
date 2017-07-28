@@ -197,8 +197,7 @@ public final class ElementUtil {
   }
 
   public static TypeElement getSuperclass(TypeElement element) {
-    TypeMirror supertype = element.getSuperclass();
-    return supertype != null ? TypeUtil.asTypeElement(supertype) : null;
+    return TypeUtil.asTypeElement(element.getSuperclass());
   }
 
   public static List<TypeElement> getInterfaces(TypeElement element) {

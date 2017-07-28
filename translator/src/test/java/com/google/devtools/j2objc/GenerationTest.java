@@ -171,6 +171,10 @@ public class GenerationTest extends TestCase {
     return newUnit;
   }
 
+  protected String typeNameToSource(String name) {
+    return name.replace('.', '/') + ".java";
+  }
+
   /**
    * Compiles Java source, as contained in a source file.
    *
@@ -180,7 +184,7 @@ public class GenerationTest extends TestCase {
    */
   protected CompilationUnit compileType(String name, String source) {
     String mainTypeName = name.substring(name.lastIndexOf('.') + 1);
-    String path = name.replace('.', '/') + ".java";
+    String path = typeNameToSource(name);
     int errors = ErrorUtil.errorCount();
     parser.setEnableDocComments(options.docCommentsEnabled());
     CompilationUnit unit = parser.parse(mainTypeName, path, source);
@@ -216,7 +220,6 @@ public class GenerationTest extends TestCase {
   protected CompilationUnit compileAsClassFile(String name, String source,
       String... flags) throws IOException {
     assertTrue("Classfile translation not enabled", options.translateClassfiles());
-
     InputFile input = createClassFile(name, source, flags);
     if (input == null) {
       // Class file compilation failed.
@@ -257,7 +260,7 @@ public class GenerationTest extends TestCase {
    */
   protected InputFile createClassFile(String typeName, String source, String... flags)
       throws IOException {
-    String path = typeName.replace('.', '/') + ".java";
+    String path = typeNameToSource(typeName);
     File srcFile = new File(tempDir, path);
     srcFile.getParentFile().mkdirs();
     try (FileWriter fw = new FileWriter(srcFile)) {
@@ -491,7 +494,7 @@ public class GenerationTest extends TestCase {
    *                 which is either the Obj-C header or implementation file
    */
   protected String translateSourceFile(String typeName, String fileName) throws IOException {
-    String source = getTranslatedFile(typeName.replace('.', '/') + ".java");
+    String source = getTranslatedFile(typeNameToSource(typeName));
     return translateSourceFile(source, typeName, fileName);
   }
 

@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -46,9 +47,9 @@ import com.google.devtools.j2objc.util.ClassFile;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
-import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import com.strobel.decompiler.languages.java.ast.AstType;
+import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.ParameterDeclaration;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.PackageSymbol;
@@ -89,7 +90,7 @@ public class ClassFileConverter {
   private final TranslationEnvironment translationEnv;
   private final InputFile file;
   private final ClassFile classFile;
-  private String typeName;
+  private final String typeName;
 
   public static CompilationUnit convertClassFile(
       Options options, JavacEnvironment env, InputFile file) {
@@ -136,13 +137,13 @@ public class ClassFileConverter {
     }
     String mainTypeName = typeElement.getSimpleName().toString();
     CompilationUnit compUnit = new CompilationUnit(translationEnv, mainTypeName);
-    compUnit.setPackage((PackageDeclaration) convert(pkgElement));
-    compUnit.addType((AbstractTypeDeclaration) convert(typeElement));
+    compUnit.setPackage((PackageDeclaration) convert(pkgElement, compUnit));
+    compUnit.addType((AbstractTypeDeclaration) convert(typeElement, compUnit));
     return compUnit;
   }
 
   @SuppressWarnings("fallthrough")
-  private TreeNode convert(Element element) {
+  private TreeNode convert(Element element, TreeNode parent) {
     TreeNode node;
     switch (element.getKind()) {
       case ANNOTATION_TYPE:
@@ -154,7 +155,7 @@ public class ClassFileConverter {
         break;
       case CONSTRUCTOR:
       case METHOD:
-        node = convertMethodDeclaration((ExecutableElement) element);
+        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
         break;
       case ENUM:
         node = convertEnumDeclaration((TypeElement) element);
@@ -172,7 +173,7 @@ public class ClassFileConverter {
         node = convertParameter((VariableElement) element);
         break;
       case STATIC_INIT:
-        node = convertMethodDeclaration((ExecutableElement) element);
+        node = convertMethodDeclaration((ExecutableElement) element, (TypeDeclaration) parent);
         break;
       default:
         throw new AssertionError("Unsupported element kind: " + element.getKind());
@@ -221,7 +222,7 @@ public class ClassFileConverter {
     for (Element elem : element.getEnclosedElements()) {
       BodyDeclaration bodyDecl = elem.getKind() == ElementKind.METHOD
           ? convertAnnotationTypeMemberDeclaration((ExecutableElement) elem)
-          : (BodyDeclaration) convert(elem);
+          : (BodyDeclaration) convert(elem, annotTypeDecl);
       annotTypeDecl.addBodyDeclaration(bodyDecl);
     }
     removeInterfaceModifiers(annotTypeDecl);
@@ -278,7 +279,7 @@ public class ClassFileConverter {
     TypeDeclaration typeDecl = new TypeDeclaration(element);
     convertBodyDeclaration(typeDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem));
+      typeDecl.addBodyDeclaration((BodyDeclaration) convert(elem, typeDecl));
     }
     if (typeDecl.isInterface()) {
       removeInterfaceModifiers(typeDecl);
@@ -286,23 +287,24 @@ public class ClassFileConverter {
     return typeDecl;
   }
 
-  private TreeNode convertMethodDeclaration(ExecutableElement element) {
+  private String getMethodDescriptor(ExecutableElement exec) {
+    return translationEnv.typeUtil().getMethodDescriptor((ExecutableType) exec.asType());
+  }
+
+  private TreeNode convertMethodDeclaration(ExecutableElement element, TypeDeclaration node) {
     MethodDeclaration methodDecl = new MethodDeclaration(element);
     convertBodyDeclaration(methodDecl, element);
     List<SingleVariableDeclaration> parameters = methodDecl.getParameters();
-    int nParams = element.getParameters().size();
-    if (nParams > 0) {
-      // If classfile was compiled with -parameters flag; use the MethodNode
-      // to work around potential javac8 bug iterating over parameter names.
-      String name = element.getSimpleName().toString();
-      String descriptor =
-          translationEnv.typeUtil().getMethodDescriptor((ExecutableType) element.asType());
-      Iterator<ParameterDeclaration> paramsIterator = ElementUtil.isConstructor(element)
+    String name = element.getSimpleName().toString();
+    String descriptor = getMethodDescriptor(element);
+    if (element.getParameters().size() > 0) {
+      Iterator<ParameterDeclaration> paramsIterator = methodDecl.isConstructor()
           ? classFile.getConstructor(descriptor).getParameters().iterator()
           : classFile.getMethod(name, descriptor).getParameters().iterator();
-      for (int i = 0; i < nParams; i++) {
-        VariableElement param = element.getParameters().get(i);
-        SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param);
+      // If classfile was compiled with -parameters flag; use the MethodNode
+      // to work around potential javac8 bug iterating over parameter names.
+      for (VariableElement param : element.getParameters()) {
+        SingleVariableDeclaration varDecl = (SingleVariableDeclaration) convert(param, methodDecl);
         String nameDef = paramsIterator.next().getName();
         // If element's name doesn't match the ParameterNode's name, use the latter.
         if (!nameDef.equals(param.getSimpleName().toString())) {
@@ -321,9 +323,14 @@ public class ClassFileConverter {
       lastParam.setType(Type.newType(varArgType));
       lastParam.setIsVarargs(true);
     }
+    if (!ElementUtil.isAbstract(element)) {
+      EntityDeclaration decl = methodDecl.isConstructor()
+          ? classFile.getConstructor(descriptor)
+          : classFile.getMethod(name, descriptor);
+      MethodTranslator translator = new MethodTranslator(parserEnv, translationEnv, element, node);
+      methodDecl.setBody((Block) decl.acceptVisitor(translator, null));
+    }
     return methodDecl;
-        /* TODO(user): method translation; finish when supported
-         * .setBody((Block) convert(node.getBody())); */
   }
 
   private TreeNode convertParameter(VariableElement element) {
@@ -344,12 +351,11 @@ public class ClassFileConverter {
       return true;
     } else if (e.getKind() == ElementKind.METHOD) {
       ExecutableElement method = (ExecutableElement) e;
-      TypeUtil typeUtil = translationEnv.typeUtil();
-      String enumSig = typeUtil.getSignatureName(enumType);
+      String enumSig = translationEnv.typeUtil().getSignatureName(enumType);
       String valueOfDesc = "(Ljava/lang/String;)" + enumSig;
       String valuesDesc = "()[" + enumSig;
       String name = method.getSimpleName().toString();
-      String methodDesc = typeUtil.getMethodDescriptor((ExecutableType) method.asType());
+      String methodDesc = getMethodDescriptor(method);
       boolean isValueOf = name.equals("valueOf") && methodDesc.equals(valueOfDesc);
       boolean isValues = name.equals("values") && methodDesc.equals(valuesDesc);
       return isValueOf || isValues;
@@ -361,7 +367,7 @@ public class ClassFileConverter {
     EnumDeclaration enumDecl = new EnumDeclaration(element);
     convertBodyDeclaration(enumDecl, element);
     for (Element elem : element.getEnclosedElements()) {
-      TreeNode encElem = convert(elem);
+      TreeNode encElem = convert(elem, enumDecl);
       if (encElem.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
         enumDecl.addEnumConstant((EnumConstantDeclaration) encElem);
       } else if (!isEnumSynthetic(elem, element.asType())) {
@@ -375,6 +381,7 @@ public class ClassFileConverter {
   private TreeNode convertEnumConstantDeclaration(VariableElement element) {
     EnumConstantDeclaration enumConstDecl = new EnumConstantDeclaration(element);
     convertBodyDeclaration(enumConstDecl, element);
+    /* TODO(user): set ExecutablePair */
     return enumConstDecl;
   }
 
