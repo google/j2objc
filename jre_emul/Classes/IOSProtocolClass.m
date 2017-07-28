@@ -120,7 +120,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
       if (!result) {
         unsigned int count;
         Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
-        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, false);
         __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
         free(protocolList);
       }

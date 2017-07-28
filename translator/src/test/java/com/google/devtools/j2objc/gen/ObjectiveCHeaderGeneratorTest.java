@@ -488,7 +488,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  Color_Enum_WHITE = 1,",
         "  Color_Enum_BLUE = 2,",
         "};");
-    assertTranslation(translation, "@interface Color : JavaLangEnum < NSCopying >");
+    assertTranslation(translation, "@interface Color : JavaLangEnum");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (Color *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FOUNDATION_EXPORT Color *Color_values_[];");
@@ -648,7 +648,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "enum Foo implements I, Runnable, Cloneable { "
         + "A, B, C; public void run() {}}}", "A", "A.h");
     assertTranslation(translation,
-        "@interface A_Foo : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
+        "@interface A_Foo : JavaLangEnum < A_I, JavaLangRunnable, NSCopying >");
     assertTranslation(translation, "#include \"java/lang/Runnable.h\"");
   }
 

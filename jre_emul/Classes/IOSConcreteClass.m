@@ -175,7 +175,14 @@ static IOSObjectArray *GetConstructorsImpl(IOSConcreteClass *iosClass, bool publ
       if (!result) {
         unsigned int count;
         Protocol **protocolList = class_copyProtocolList(class_, &count);
-        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+        bool excludeNSCopying = false;
+        const char *clsName = class_getName(class_);
+        // IOSClass and JavaLangEnum are made to conform to NSCopying so that they can be used as
+        // keys in a NSDictionary but in Java they don't implement Cloneable.
+        if (strcmp("IOSClass", clsName) == 0 || strcmp("JavaLangEnum", clsName) == 0) {
+          excludeNSCopying = true;
+        }
+        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count, excludeNSCopying);
         __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
         free(protocolList);
       }

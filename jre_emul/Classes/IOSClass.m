@@ -715,9 +715,9 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
 }
 
 // Checks if a ObjC protocol is a translated Java interface.
-bool IsJavaInterface(Protocol *protocol) {
+bool IsJavaInterface(Protocol *protocol, bool excludeNSCopying) {
   if (protocol == @protocol(NSCopying)) {
-    return true;
+    return !excludeNSCopying;
   }
   unsigned int count;
   Protocol **protocolList = protocol_copyProtocolList(protocol, &count);
@@ -736,14 +736,15 @@ bool IsJavaInterface(Protocol *protocol) {
   return result;
 }
 
-IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count) {
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
+    Protocol **list, unsigned int count, bool excludeNSCopying) {
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
     Protocol *protocol = list[i];
     // It is not uncommon for protocols to be added to classes like NSObject using categories. Here
     // we filter out any protocols that aren't translated from Java interfaces.
-    if (IsJavaInterface(protocol)) {
+    if (IsJavaInterface(protocol, excludeNSCopying)) {
       buffer[actualCount++] = IOSClass_fromProtocol(list[i]);
     }
   }

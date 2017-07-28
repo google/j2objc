@@ -179,7 +179,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
       names.add(nameTable.getFullName(intrface));
     }
-    if (ElementUtil.isEnum(typeElement)) {
+    if (ElementUtil.getQualifiedName(typeElement).equals("java.lang.Enum")) {
       names.remove("NSCopying");
       names.add(0, "NSCopying");
     } else if (isInterfaceType()) {

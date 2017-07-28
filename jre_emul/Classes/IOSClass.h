@@ -240,7 +240,8 @@ const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass);
 IOSClass *IOSClass_NewProxyClass(Class cls);
 
 // Return value is retained
-IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count);
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
+    Protocol **list, unsigned int count, bool excludeNSCopying);
 
 CF_EXTERN_C_END
 

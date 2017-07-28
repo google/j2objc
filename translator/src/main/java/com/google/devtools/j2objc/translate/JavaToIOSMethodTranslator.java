@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -122,7 +123,9 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     // copyWithZone: method that calls clone().
     TypeElement type = node.getTypeElement();
     if (implementsCloneable(type.asType()) && !implementsCloneable(type.getSuperclass())) {
-      addCopyWithZoneMethod(node);
+      addCopyWithZoneMethod(node, false);
+    } else if (ElementUtil.getQualifiedName(type).equals("java.lang.Enum")) {
+      addCopyWithZoneMethod(node, true);
     }
   }
 
@@ -130,10 +133,12 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     return type != null && typeUtil.findSupertype(type, "java.lang.Cloneable") != null;
   }
 
-  private void addCopyWithZoneMethod(TypeDeclaration node) {
+  private void addCopyWithZoneMethod(TypeDeclaration node, boolean singleton) {
+    TypeElement type = node.getTypeElement();
+
     // Create copyWithZone: method.
     GeneratedExecutableElement copyElement = GeneratedExecutableElement.newMethodWithSelector(
-        "copyWithZone:", TypeUtil.ID_TYPE, node.getTypeElement());
+        "copyWithZone:", TypeUtil.ID_TYPE, type);
     MethodDeclaration copyDecl = new MethodDeclaration(copyElement);
     copyDecl.setHasDeclaration(false);
 
@@ -146,12 +151,16 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     Block block = new Block();
     copyDecl.setBody(block);
 
-    ExecutableElement cloneElement = ElementUtil.findMethod(typeUtil.getJavaObject(), "clone");
-    MethodInvocation invocation = new MethodInvocation(new ExecutablePair(cloneElement), null);
-    if (options.useReferenceCounting()) {
-      invocation = new MethodInvocation(new ExecutablePair(RETAIN_METHOD), invocation);
+    if (singleton) {
+      block.addStatement(new ReturnStatement(new ThisExpression(type.asType())));
+    } else {
+      ExecutableElement cloneElement = ElementUtil.findMethod(typeUtil.getJavaObject(), "clone");
+      MethodInvocation invocation = new MethodInvocation(new ExecutablePair(cloneElement), null);
+      if (options.useReferenceCounting()) {
+        invocation = new MethodInvocation(new ExecutablePair(RETAIN_METHOD), invocation);
+      }
+      block.addStatement(new ReturnStatement(invocation));
     }
-    block.addStatement(new ReturnStatement(invocation));
 
     node.addBodyDeclaration(copyDecl);
   }

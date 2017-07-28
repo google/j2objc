@@ -292,35 +292,17 @@ public class EnumRewriter extends UnitTreeVisitor {
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeElement());
     int numConstants = node.getEnumConstants().size();
-    boolean swiftFriendly = options.swiftFriendly();
-
-    StringBuilder header = new StringBuilder();
-    StringBuilder implementation = new StringBuilder();
-
-    header.append("- (id)copyWithZone:(NSZone *)zone;\n");
-
-    // Append enum type suffix.
-    String nativeName = NameTable.getNativeEnumName(typeName);
 
     // The native type is not declared for an empty enum.
-    if (swiftFriendly && numConstants > 0) {
-      header.append(UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName));
-    }
-
-    if (swiftFriendly && numConstants > 0) {
-      implementation.append(UnicodeUtils.format(
-          "- (%s)toNSEnum {\n"
+    if (options.swiftFriendly() && numConstants > 0) {
+      String nativeName = NameTable.getNativeEnumName(typeName);
+      node.addBodyDeclaration(NativeDeclaration.newInnerDeclaration(
+          UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName),
+          UnicodeUtils.format(
+              "- (%s)toNSEnum {\n"
               + "  return (%s)[self ordinal];\n"
-              + "}\n\n", nativeName, nativeName));
+              + "}\n\n", nativeName, nativeName)));
     }
-
-    // Enum constants needs to implement NSCopying. Being singletons, they can
-    // just return self. No need to increment the retain count because enum
-    // values are never deallocated.
-    implementation.append("- (id)copyWithZone:(NSZone *)zone {\n  return self;\n}\n");
-
-    node.addBodyDeclaration(NativeDeclaration.newInnerDeclaration(
-        header.toString(), implementation.toString()));
 
     StringBuilder outerHeader = new StringBuilder();
     StringBuilder outerImpl = new StringBuilder();

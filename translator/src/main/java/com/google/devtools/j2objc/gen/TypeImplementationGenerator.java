@@ -318,9 +318,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   @Override
   protected void printNativeDeclaration(NativeDeclaration declaration) {
-    newline();
     String code = declaration.getImplementationCode();
     if (code != null) {
+      newline();
       println(reindent(code));
     }
   }
