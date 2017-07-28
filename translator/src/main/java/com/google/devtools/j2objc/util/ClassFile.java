@@ -160,6 +160,10 @@ public class ClassFile {
     return null;
   }
 
+  public TypeDeclaration getType() {
+    return type;
+  }
+
   private String signature(MethodDeclaration method) {
     StringBuilder sb = new StringBuilder();
     signature(method.getParameters(), sb);

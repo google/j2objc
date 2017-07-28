@@ -107,10 +107,11 @@ public class GenerationTest extends TestCase {
 
   protected void loadOptions() throws IOException {
     options = new Options();
-
+    String tempPath = tempDir.getAbsolutePath();
     options.load(new String[]{
-        "-d", tempDir.getAbsolutePath(),
-        "-sourcepath", tempDir.getAbsolutePath(),
+        "-d", tempPath,
+        "-sourcepath", tempPath,
+        "-classpath", tempPath,
         "-q", // Suppress console output.
         "-encoding", "UTF-8" // Translate strings correctly when encodings are nonstandard.
     });
@@ -206,7 +207,7 @@ public class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileAsClassFile(String name, String source) throws IOException {
-    return compileAsClassFile(name, source, "-parameters", "-cp", tempDir.getAbsolutePath());
+    return compileAsClassFile(name, source, "-parameters");
   }
 
   /**
@@ -241,20 +242,6 @@ public class GenerationTest extends TestCase {
    *
    * @param typeName the name of the type being declared
    * @param source the source code
-   * @return the InputFile defining the class file
-   */
-  protected InputFile createClassFile(String typeName, String source) throws IOException {
-    String tempPath = tempDir.getAbsolutePath();
-    List<String> classpath = getComGoogleDevtoolsJ2objcPath();
-    classpath.add(0, tempPath);
-    return createClassFile(typeName, source, "-d", tempPath, "-cp", String.join(":", classpath));
-  }
-
-  /**
-   * Compiles Java source to a JVM class file.
-   *
-   * @param typeName the name of the type being declared
-   * @param source the source code
    * @param flags which javac flags to use
    * @return the InputFile defining the class file
    */
@@ -267,13 +254,23 @@ public class GenerationTest extends TestCase {
       fw.write(source);
     }
 
-    String[] args = new String[flags.length + 1];
-    System.arraycopy(flags, 0, args, 0, flags.length);
-    args[flags.length] = srcFile.getPath();
+    List<String> args = new ArrayList<>(Arrays.asList(flags));
+    String tempPath = tempDir.getAbsolutePath();
+    if (!args.contains("-d")) {
+      args.add("-d");
+      args.add(tempPath);
+    }
+    if (!args.contains("-classpath") && !args.contains("-cp")) {
+      args.add("-classpath");
+      List<String> classpath = getComGoogleDevtoolsJ2objcPath();
+      classpath.add(0, tempPath);
+      args.add(String.join(":", classpath));
+    }
+    args.add(srcFile.getPath());
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     ByteArrayOutputStream errOut = new ByteArrayOutputStream();
-    int numErrors = compiler.run(null, null, errOut, args);
+    int numErrors = compiler.run(null, null, errOut, args.toArray(new String[0]));
     if (numErrors > 0) {
       String errMsg = errOut.toString();
       ErrorUtil.error(errMsg);
@@ -558,6 +555,15 @@ public class GenerationTest extends TestCase {
     file.getParentFile().mkdirs();
     Files.write(source, file, options.fileUtil().getCharset());
     return file.getPath();
+  }
+
+  /**
+   * Removes a file from the tmp directory,
+   */
+  protected void removeFile(String relativePath) {
+    if (!new File(tempDir, relativePath).delete()) {
+
+    }
   }
 
   /**

@@ -67,6 +67,7 @@ public class PackageInfoLookupTest extends GenerationTest {
     createClassFile("foo.package-info",
         "@ReflectionSupport(value = ReflectionSupport.Level.FULL) package foo;"
         + "import com.google.j2objc.annotations.ReflectionSupport;");
+    removeFile("foo/package-info.java");
     CompilationUnit unit = translateType("foo.A", "package foo; public class A {}");
     PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
     assertSame(ReflectionSupport.Level.FULL, packageInfoLookup.getReflectionSupportLevel("foo"));
@@ -76,6 +77,7 @@ public class PackageInfoLookupTest extends GenerationTest {
     createClassFile("bar.package-info",
         "@ReflectionSupport(ReflectionSupport.Level.FULL) package bar;"
         + "import com.google.j2objc.annotations.ReflectionSupport;");
+    removeFile("bar/package-info.java");
     CompilationUnit unit = translateType("bar.A", "package bar; public class A {}");
     PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
     assertSame(ReflectionSupport.Level.FULL, packageInfoLookup.getReflectionSupportLevel("bar"));
@@ -85,6 +87,7 @@ public class PackageInfoLookupTest extends GenerationTest {
     createClassFile("baz.package-info",
         "@com.google.j2objc.annotations.ReflectionSupport"
         + "(com.google.j2objc.annotations.ReflectionSupport.Level.NATIVE_ONLY) package baz;");
+    removeFile("baz/package-info.java");
     CompilationUnit unit = translateType("baz.A", "package baz; public class A {}");
     PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
     assertSame(ReflectionSupport.Level.NATIVE_ONLY,
@@ -95,6 +98,7 @@ public class PackageInfoLookupTest extends GenerationTest {
     createClassFile("foo.package-info",
         "@ObjectiveCName(\"XYZ\") package foo; "
         + "import com.google.j2objc.annotations.ObjectiveCName;");
+    removeFile("foo/package-info.java");
     String translation = translateSourceFile("package foo; public class A {}", "foo.A", "foo/A.h");
     assertTranslation(translation, "@interface XYZA");
   }
@@ -110,6 +114,7 @@ public class PackageInfoLookupTest extends GenerationTest {
     createClassFile("bar.package-info",
         "@ParametersAreNonnullByDefault package bar;"
         + "import javax.annotation.ParametersAreNonnullByDefault;");
+    removeFile("bar/package-info.java");
     CompilationUnit unit = translateType("bar.A", "package bar; public class A {}");
     PackageInfoLookup packageInfoLookup = unit.getEnv().options().getPackageInfoLookup();
     assertTrue(packageInfoLookup.hasParametersAreNonnullByDefault("bar"));
