@@ -217,7 +217,47 @@ public class GenerationTest extends TestCase {
       String... flags) throws IOException {
     assertTrue("Classfile translation not enabled", options.translateClassfiles());
 
-    String path = name.replace('.', '/') + ".java";
+    InputFile input = createClassFile(name, source, flags);
+    if (input == null) {
+      // Class file compilation failed.
+      return null;
+    }
+    int errors = ErrorUtil.errorCount();
+    CompilationUnit unit = parser.parse(input);
+    if (ErrorUtil.errorCount() > errors) {
+      int newErrorCount = ErrorUtil.errorCount() - errors;
+      String info = String.format(
+          "%d test compilation error%s", newErrorCount, (newErrorCount == 1 ? "" : "s"));
+      failWithMessages(info, ErrorUtil.getErrorMessages().subList(errors, ErrorUtil.errorCount()));
+    }
+    return unit;
+  }
+
+  /**
+   * Compiles Java source to a JVM class file.
+   *
+   * @param typeName the name of the type being declared
+   * @param source the source code
+   * @return the InputFile defining the class file
+   */
+  protected InputFile createClassFile(String typeName, String source) throws IOException {
+    String tempPath = tempDir.getAbsolutePath();
+    List<String> classpath = getComGoogleDevtoolsJ2objcPath();
+    classpath.add(0, tempPath);
+    return createClassFile(typeName, source, "-d", tempPath, "-cp", String.join(":", classpath));
+  }
+
+  /**
+   * Compiles Java source to a JVM class file.
+   *
+   * @param typeName the name of the type being declared
+   * @param source the source code
+   * @param flags which javac flags to use
+   * @return the InputFile defining the class file
+   */
+  protected InputFile createClassFile(String typeName, String source, String... flags)
+      throws IOException {
+    String path = typeName.replace('.', '/') + ".java";
     File srcFile = new File(tempDir, path);
     srcFile.getParentFile().mkdirs();
     try (FileWriter fw = new FileWriter(srcFile)) {
@@ -241,16 +281,7 @@ public class GenerationTest extends TestCase {
     File classFile = new File(tempDir, path.replace(".java", ".class"));
     assertTrue(classFile.exists());
 
-    InputFile input = new RegularInputFile(classFile.getAbsolutePath(), name);
-    int errors = ErrorUtil.errorCount();
-    CompilationUnit unit = parser.parse(input);
-    if (ErrorUtil.errorCount() > errors) {
-      int newErrorCount = ErrorUtil.errorCount() - errors;
-      String info = String.format(
-          "%d test compilation error%s", newErrorCount, (newErrorCount == 1 ? "" : "s"));
-      failWithMessages(info, ErrorUtil.getErrorMessages().subList(errors, ErrorUtil.errorCount()));
-    }
-    return unit;
+    return new RegularInputFile(classFile.getAbsolutePath(), typeName);
   }
 
   protected static List<String> getComGoogleDevtoolsJ2objcPath() {
