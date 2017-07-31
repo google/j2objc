@@ -13,6 +13,7 @@
 # Defines macros for building fat libraries.
 #
 # Author: Keith Stanger
+SUFFIXES:.mm
 
 FAT_LIB_PLIST_DIR = $(BUILD_DIR)/plists
 
@@ -78,16 +79,19 @@ fat_lib_dependencies:
 #   3: compile command
 #   4: precompiled header file, or empty
 #   5: other compiler flags
+
+DT_TOOLCHAIN_DIR := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
 define compile_rule
+$(1)/%.o: $(2)/%.mm $(4:%=$(1)/%.pch) | fat_lib_dependencies
+	@mkdir -p $$(@D)
+	@echo compiling++ $(DT_TOOLCHAIN_DIR) '$$<'
+	clang++ -x objective-c++ -std=gnu++11 -I$(DT_TOOLCHAIN_DIR)/usr/include/c++/v1 $(5) -MD -c '$$<' -o '$$@'
+
 $(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
-	@echo compiling '$$<'
-	@$(3) $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
+	@echo compiling   '$$<'
+	@$(3) -std=c11 $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
 
-$(1)/%.o: $(2)/%.mm $(4:%=%.pch) | fat_lib_dependencies
-	@mkdir -p $$(@D)
-	@echo compiling '$$<'
-	@$(3) -x objective-c++ $(4:%=-include %) $(5) -MD -c '$$<' -o '$$@'
 endef
 
 # Generates rule to build precompiled headers file.

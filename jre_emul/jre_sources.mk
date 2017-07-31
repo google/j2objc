@@ -14,6 +14,10 @@
 # classes that are part of the public API, and do not include non-public classes
 # or classes from non-public packages (like libcore.*).
 
+NATIVE_ARGC_SOURCES = \
+  ARGC/ARGC.mm 
+
+
 NATIVE_JRE_SOURCES_CORE = \
   DebugUtils.m \
   FastPointerLookup.m \
