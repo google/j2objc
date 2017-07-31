@@ -33,6 +33,11 @@ public final class AnnotationTypeMemberDeclaration extends BodyDeclaration {
     defaultValue.copyFrom(other.getDefault());
   }
 
+  public AnnotationTypeMemberDeclaration(ExecutableElement element) {
+    super(element);
+    this.element = element;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.ANNOTATION_TYPE_MEMBER_DECLARATION;

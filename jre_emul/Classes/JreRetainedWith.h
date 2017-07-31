@@ -21,6 +21,7 @@
 #ifndef JRE_RETAINED_WITH_H_
 #define JRE_RETAINED_WITH_H_
 
+#ifndef J2OBJC_USE_GC
 #import <Foundation/Foundation.h>
 
 // Called by @RetainedWith assignment functions. Caller must ensure that value
@@ -54,5 +55,7 @@ FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
       [super release]; \
     } \
   }
-
+#else
+#define RETAINED_WITH_CHILD(PARENT) /*ignore*/
+#endif
 #endif // JRE_RETAINED_WITH_H_

@@ -38,31 +38,32 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
   @Override
   public native KeyPair generateKeyPair() /*-[
     // Requested keypair attributes.
+    NSMutableDictionary * keyPairAttr = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *publicKeyAttr = [[NSMutableDictionary alloc] init];
     NSMutableDictionary * privateKeyAttr = [[NSMutableDictionary alloc] init];
-    [privateKeyAttr setObject:[NSNumber numberWithBool:true] forKey:(id)kSecAttrIsPermanent];
-    NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PRIVATE_KEY_TAG()
-                          dataUsingEncoding:NSUTF8StringEncoding];
-    [privateKeyAttr setObject:privateTag forKey:(id)kSecAttrApplicationTag];
 
-    NSMutableDictionary * publicKeyAttr = [[NSMutableDictionary alloc] init];
-    [publicKeyAttr setObject:[NSNumber numberWithBool:true] forKey:(id)kSecAttrIsPermanent];
     NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PUBLIC_KEY_TAG()
                          dataUsingEncoding:NSUTF8StringEncoding];
     [publicKeyAttr setObject:publicTag forKey:(id)kSecAttrApplicationTag];
+    [publicKeyAttr setObject:@YES forKey:(id)kSecAttrIsPermanent];
 
-    NSMutableDictionary * keyPairAttr = [[NSMutableDictionary alloc] init];
+    NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PRIVATE_KEY_TAG()
+                          dataUsingEncoding:NSUTF8StringEncoding];
+    [privateKeyAttr setObject:privateTag forKey:(id)kSecAttrApplicationTag];
+    [privateKeyAttr setObject:@YES forKey:(id)kSecAttrIsPermanent];
+
     [keyPairAttr setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
     [keyPairAttr setObject:[NSNumber numberWithUnsignedInteger:keySize_]
                     forKey:(id)kSecAttrKeySizeInBits];
-    [keyPairAttr setObject:privateKeyAttr forKey:@"private"];
-    [keyPairAttr setObject:publicKeyAttr forKey:@"public"];
+    [keyPairAttr setObject:privateKeyAttr forKey:(id)kSecPrivateKeyAttrs];
+    [keyPairAttr setObject:publicKeyAttr forKey:(id)kSecPublicKeyAttrs];
 
     SecKeyRef publicKeyRef = NULL;
     SecKeyRef privateKeyRef = NULL;
     SecKeyGeneratePair((CFDictionaryRef)keyPairAttr, &publicKeyRef, &privateKeyRef);
-    [privateKeyAttr release];
-    [publicKeyAttr release];
-    [keyPairAttr release];
+    RELEASE_(privateKeyAttr);
+    RELEASE_(publicKeyAttr);
+    RELEASE_(keyPairAttr);
 
     ComGoogleJ2objcSecurityIosRSAKey_IosRSAPublicKey *publicKey =
         [[ComGoogleJ2objcSecurityIosRSAKey_IosRSAPublicKey alloc]
@@ -73,8 +74,8 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     JavaSecurityKeyPair *keyPair =
         AUTORELEASE([[JavaSecurityKeyPair alloc] initWithJavaSecurityPublicKey:publicKey
                                                     withJavaSecurityPrivateKey:privateKey]);
-    [publicKey release];
-    [privateKey release];
+    RELEASE_(publicKey);
+    RELEASE_(privateKey);
     return keyPair;
   ]-*/;
 

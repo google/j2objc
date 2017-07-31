@@ -27,29 +27,29 @@ public class OptionsTest extends GenerationTest {
 
   public void testSourceVersionFlags() throws IOException {
      // Check that version default is correctly pulled from system properties.
-     String javaVersion = System.getProperty("java.version");
+     String javaVersion = System.getProperty("java.specification.version");
 
      options = new Options();
      options.load(new String[] {});
      assertEquals(javaVersion.substring(0, 3), options.getSourceVersion().toString());
 
-     System.setProperty("java.version", "1.8.0_91");
+     System.setProperty("java.specification.version", "1.8");
      options = new Options();
      options.load(new String[] {});
      assertEquals(SourceVersion.JAVA_8, options.getSourceVersion());
 
-     System.setProperty("java.version", "1.6.0");
+     System.setProperty("java.specification.version", "1.6");
      options = new Options();
      options.load(new String[] {});
      assertEquals(SourceVersion.JAVA_6, options.getSourceVersion());
 
-     System.setProperty("java.version", "1.7");
+     System.setProperty("java.specification.version", "1.7");
      options = new Options();
      options.load(new String[] {});
      assertEquals(SourceVersion.JAVA_7, options.getSourceVersion());
 
      // Reset the java.version property to prevent any unexpected jvm behavior after testing.
-     System.setProperty("java.version", javaVersion);
+     System.setProperty("java.specification.version", javaVersion);
 
     String[] argsJavaSource = "-source 1.6".split(" ");
     options.load(argsJavaSource);

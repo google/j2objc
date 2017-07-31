@@ -784,7 +784,7 @@ public class File implements Serializable, Comparable<File> {
       BOOL result = [[NSFileManager defaultManager] setAttributes:newAttrs
                                                      ofItemAtPath:self->path_
                                                             error:nil];
-      [newAttrs release];
+      RELEASE_(newAttrs);
       return result;
     ]-*/;
 

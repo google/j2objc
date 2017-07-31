@@ -340,10 +340,6 @@ public class TranslationProcessor extends FileProcessor {
           nFiles, nFiles == 1 ? "file" : "files", ErrorUtil.errorCount(),
           ErrorUtil.warningCount()));
     }
-    if (logger.isLoggable(Level.FINE)) {
-      System.out.println(String.format("Translated %d methods as functions",
-          ErrorUtil.functionizedMethodCount()));
-    }
   }
 
   private void checkDependencies(CompilationUnit unit) {

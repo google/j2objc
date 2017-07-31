@@ -190,7 +190,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isStrong = !isPrimitive && !ElementUtil.isWeakReference(var);
     boolean isVolatile = ElementUtil.isVolatile(var);
 
-    if (isRetainedWith) {
+    if (!options.useGC() && isRetainedWith) {
       return isVolatile ? "JreVolatileRetainedWithAssign" : "JreRetainedWithAssign";
     }
 
@@ -202,20 +202,41 @@ public class OperatorRewriter extends UnitTreeVisitor {
           + (isPrimitive ? NameTable.capitalize(TypeUtil.getName(type)) : "Id");
     }
 
-    if (isStrong && options.useReferenceCounting()) {
-      String funcName = "JreStrongAssign";
-      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
-      if (retainedRhs != null) {
-        funcName += "AndConsume";
-        node.setRightHandSide(retainedRhs);
-      }
-      return funcName;
+    String funcName = null;
+    if (isStrong  && !isPrimitive) {
+    	if (options.useGC()) {
+    		if (ElementUtil.isStatic(var)) {
+    			funcName = "JreStrongAssign";
+    		}
+    		else {
+    			String fType = typeUtil.getArgcFieldType(type);
+    			funcName = "Jre" + fType + "FieldAssign";
+    		}
+    	}
+    	else if (options.useReferenceCounting()) {
+    		funcName = "JreStrongAssign";
+    	}
+    }
+    
+    if (funcName != null) {
+	      Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
+	      if (retainedRhs != null) {
+	    	  if (!options.useGC()) {
+	    		  funcName += "AndConsume";
+	    	  }
+	        node.setRightHandSide(retainedRhs);
+	      }
+	      return funcName;
     }
 
     return null;
   }
 
-  // Counter to create unique local variables for the RetainedWith target.
+  private boolean isStaticVar(VariableElement var) {
+	return ElementUtil.isStatic(var);
+}
+
+// Counter to create unique local variables for the RetainedWith target.
   private int rwCount = 0;
 
   // Gets the target object for a call to the RetainedWith wrapper.

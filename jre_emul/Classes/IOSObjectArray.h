@@ -52,7 +52,7 @@
    * The elements of this array.
    */
   // Ensure alignment for java.util.concurrent.atomic.AtomicReferenceArray.
-  id __strong buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
+  id ARGC_FIELD_REF buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
 }
 
 @property (readonly) IOSClass *elementType;
@@ -144,6 +144,7 @@ FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index,
 FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(
     IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value);
 
+#ifndef J2OBJC_USE_GC
 // Internal only. Provides a pointer to an element with the array itself.
 // Used for translating certain compound expressions.
 typedef struct JreArrayRef {
@@ -158,5 +159,5 @@ __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
   return (JreArrayRef){ .arr = array, .pValue = &array->buffer_[index] };
 }
 FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
-
+#endif
 #endif // IOSObjectArray_H

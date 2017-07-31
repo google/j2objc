@@ -80,14 +80,14 @@ TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   $(TESTS_DIR),\
   $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
-  $(TRANSLATE_ARGS))
+  $(TRANSLATE_ARGS) -use-gc)
 
 TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   jre_emul_tests_arc,\
   $(TESTS_DIR)/arc,\
   $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES:%=$(GEN_JAVA_DIR)/%),\
   ,\
-  $(TRANSLATE_ARGS) -use-arc)
+  $(TRANSLATE_ARGS) -use-gc)
 
 TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_ARC)
 
@@ -208,7 +208,7 @@ run-each-test: link resources $(TEST_BIN)
 # Note: the simulator app's name was changed to "Simulator" in Xcode 7.
 run-xctests: test
 	@xcrun xcodebuild -project JreEmulation.xcodeproj -scheme jre_emul -destination \
-	    'platform=iOS Simulator,name=iPhone 7 Plus' test
+	    'platform=iOS Simulator,name=iPhone 6 (10.3)' test
 	@killall 'Simulator'
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
@@ -223,12 +223,12 @@ $(TESTS_DIR):
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | $(TRANSLATE_ARTIFACTS)
 	@mkdir -p $(@D)
-	@echo j2objcc -c $?
-	@$(TEST_JOCC) $(COMPILE_FLAGS) -o $@ $<
+	@echo j2objcc -c -use-gc $?
+	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -o $@ $<
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/arc/%.m | $(TRANSLATE_ARTIFACTS)
 	@mkdir -p $(@D)
-	@echo j2objcc -c $?
+	@echo j2objcc -c -use-gc $?
 	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -o $@ $<
 
 $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)

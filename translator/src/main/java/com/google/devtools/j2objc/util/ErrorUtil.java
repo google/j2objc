@@ -40,7 +40,6 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
 
   private static int errorCount = 0;
   private static int warningCount = 0;
-  private static int functionizedMethodCount = 0;
   private static PrintStream errorStream = System.err;
   private static List<String> errorMessages = Lists.newArrayList();
   private static List<String> warningMessages = Lists.newArrayList();
@@ -171,14 +170,6 @@ public class ErrorUtil implements DiagnosticListener<JavaFileObject> {
   private static String formatMessage(TreeNode node, String message) {
     CompilationUnit unit = TreeUtil.getCompilationUnit(node);
     return String.format("%s:%s: %s", unit.getSourceFilePath(), node.getLineNumber(), message);
-  }
-
-  public static void functionizedMethod() {
-    ++functionizedMethodCount;
-  }
-
-  public static int functionizedMethodCount() {
-    return functionizedMethodCount;
   }
 
   @Override

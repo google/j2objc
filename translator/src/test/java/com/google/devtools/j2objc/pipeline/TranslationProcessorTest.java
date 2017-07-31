@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.Parser;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,7 +33,7 @@ import java.util.jar.JarOutputStream;
  * @author kstanger@google.com (Keith Stanger)
  */
 public class TranslationProcessorTest extends GenerationTest {
-
+	  
   public void testJarBatchTranslation() throws IOException {
     String fooSource = "package mypkg; class Foo {}";
     String barSource = "package mypkg; class Bar {}";
@@ -54,7 +55,7 @@ public class TranslationProcessorTest extends GenerationTest {
     options.fileUtil().appendSourcePath(jarFile.getPath());
     options.setBatchTranslateMaximum(2);
 
-    GenerationBatch batch = new GenerationBatch(options);
+    GenerationBatch batch = new GenerationBatch(options, parser);
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
@@ -68,7 +69,7 @@ public class TranslationProcessorTest extends GenerationTest {
 
     addSourceFile("class Test { }", "Test.java");
 
-    GenerationBatch batch = new GenerationBatch(options);
+    GenerationBatch batch = new GenerationBatch(options, parser);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
     processor.processInputs(batch.getInputs());
@@ -91,7 +92,7 @@ public class TranslationProcessorTest extends GenerationTest {
     addSourceFile("class Foo { void foo1() {} }", "Foo.java");
     addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
 
-    GenerationBatch batch = new GenerationBatch(options);
+    GenerationBatch batch = new GenerationBatch(options, parser);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);

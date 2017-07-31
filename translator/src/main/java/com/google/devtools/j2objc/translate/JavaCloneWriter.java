@@ -118,7 +118,7 @@ public class JavaCloneWriter extends UnitTreeVisitor {
   }
 
   private Statement createReleaseStatement(VariableElement var) {
-    if (options.useARC()) {
+    if (!options.useReferenceCounting()) {
       TypeMirror voidType = typeUtil.getVoid();
       FunctionElement element = new FunctionElement("JreRelease", voidType, null)
           .addParameters(TypeUtil.ID_TYPE);

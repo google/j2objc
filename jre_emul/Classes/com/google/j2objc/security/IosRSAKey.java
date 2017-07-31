@@ -131,7 +131,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
-      NSData *publicKey = nil;
       NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -141,14 +140,16 @@ public abstract class IosRSAKey implements RSAKey, Key {
       publicKeyQuery[(id)kSecAttrKeyType] = (id)kSecAttrKeyTypeRSA;
       publicKeyQuery[(id)kSecAttrKeyClass] = (id)kSecAttrKeyClassPublic;
       publicKeyQuery[(id) kSecReturnData] = (id) kCFBooleanTrue;
+      CFTypeRef publicKeyRef = nil;
       OSStatus result =
-          SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, (CFTypeRef *)&publicKey);
-      [publicKeyQuery release];
+          SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, &publicKeyRef);
+      RELEASE_(publicKeyQuery);
 
       IOSByteArray *bytes = nil;
+      NSData* publicKey = (__bridge NSData*)publicKeyRef;
       if (result == noErr && publicKey.length > 0) {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)publicKey.bytes count:publicKey.length];
-        [publicKey release];
+        RELEASE_(publicKey);
       }
       return bytes;
     ]-*/;
@@ -231,7 +232,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
         @throw create_JavaSecurityProviderException_initWithNSString_(msg);
       }
 
-      [publicKey release];
+      RELEASE_(publicKey);
       return (jlong)secKeyRef;
     ]-*/;
 
@@ -297,7 +298,6 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
     @Override
     public native byte[] getEncoded() /*-[
-      NSData *privateKey = nil;
       NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -306,14 +306,16 @@ public abstract class IosRSAKey implements RSAKey, Key {
       [privateKeyQuery setObject:privateTag forKey:(id)kSecAttrApplicationTag];
       [privateKeyQuery setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
       [privateKeyQuery setObject:[NSNumber numberWithBool:true] forKey:(id)kSecReturnData];
+      CFTypeRef privateKeyRef = nil;
       OSStatus result =
-          SecItemCopyMatching((CFDictionaryRef)privateKeyQuery, (CFTypeRef *)&privateKey);
-      [privateKeyQuery release];
+          SecItemCopyMatching((CFDictionaryRef)privateKeyQuery, &privateKeyRef);
+      RELEASE_(privateKeyQuery);
 
       IOSByteArray *bytes = nil;
+      NSData* privateKey = (__bridge NSData*)privateKeyRef;
       if (result == noErr && privateKey.length > 0) {
         bytes = [IOSByteArray arrayWithBytes:(jbyte *)privateKey.bytes count:privateKey.length];
-        [privateKey release];
+        RELEASE_(privateKey);
       }
       return bytes;
     ]-*/;

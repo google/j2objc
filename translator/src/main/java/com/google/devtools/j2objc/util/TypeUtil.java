@@ -48,6 +48,8 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 
+import org.eclipse.jdt.core.util.ISignatureAttribute;
+
 /**
  * Utility methods for working with TypeMirrors.
  *
@@ -92,11 +94,11 @@ public final class TypeUtil {
   private final ElementUtil elementUtil;
 
   // Commonly accessed types.
-  private final TypeElement javaObject;
-  private final TypeElement javaString;
-  private final TypeElement javaClass;
-  private final TypeElement javaNumber;
-  private final TypeElement javaThrowable;
+  public final TypeElement javaObject;
+  public final TypeElement javaString;
+  public final TypeElement javaClass;
+  public final TypeElement javaNumber;
+  public final TypeElement javaThrowable;
 
   private final Map<TypeElement, TypeElement> javaToObjcTypeMap;
 
@@ -203,6 +205,38 @@ public final class TypeUtil {
     return isDeclaredType(t) ? (TypeElement) ((DeclaredType) t).asElement() : null;
   }
 
+  public static boolean isJavaObject(TypeMirror t) {
+    TypeElement typeElement = asTypeElement(t);
+    return typeElement != null && !isInterface(t) && isNone(typeElement.getSuperclass());
+  }
+
+  public boolean isARGCField(TypeMirror t) {
+	  if (isPrimitiveOrVoid(t)) {
+		  return false;
+	  }
+	  
+	  return getArgcFieldType(t) != "Native";
+  }
+  
+  public String getArgcFieldType(TypeMirror t) {
+	  TypeElement e = asTypeElement(t);
+	  if (TypeUtil.isInterface(t) || e == javaObject) {
+		  return "Generic";
+	  }
+	  while (e != null) {
+		  if (e == this.javaNumber  || e == javaThrowable || e == this.javaString) {
+			  return "Native";
+		  }
+		  TypeMirror m = e.getSuperclass();
+		  if (isNone(m)) {
+			  break;
+		  }
+		  e = asTypeElement(m);
+	  }
+	  return "Object";
+}
+  
+  
   public static TypeParameterElement asTypeParameterElement(TypeMirror t) {
     return isTypeVariable(t) ? (TypeParameterElement) ((TypeVariable) t).asElement() : null;
   }
@@ -224,7 +258,7 @@ public final class TypeUtil {
     TypeMirror t = arrayType;
     while (t.getKind().equals(TypeKind.ARRAY)) {
       dimCount++;
-      t = (((ArrayType) t).getComponentType());
+      t = ((ArrayType) t).getComponentType();
     }
     return dimCount;
   }
@@ -784,4 +818,5 @@ public final class TypeUtil {
   private static TypeElement newPrimitiveIosArray(String name) {
     return GeneratedTypeElement.newIosClass(name, NS_OBJECT, "IOSPrimitiveArray.h");
   }
+
 }

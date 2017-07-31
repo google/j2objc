@@ -33,7 +33,9 @@
 #define SUPPORTS_SOFT_REFERENCES 1
 #endif
 
-#if __has_feature(objc_arc)
+#if !defined(J2OBJC_USE_GC)
+
+#if !defined(J2OBJC_USE_GC) && __has_feature(objc_arc)
 #error "IOSReference is not built with ARC"
 #endif
 
@@ -366,3 +368,5 @@ static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
 }
 
 @end
+
+#endif

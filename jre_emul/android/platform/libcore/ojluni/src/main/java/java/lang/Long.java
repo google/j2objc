@@ -474,14 +474,14 @@ public final class Long extends Number implements Comparable<Long> {
 
         private static native void fillValues(Long[] values) /*-[
           Class self = [JavaLangLong class];
-          size_t objSize = class_getInstanceSize(self);
-          uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
-          id *buf = values->buffer_;
+          //size_t objSize = class_getInstanceSize(self);
+          //uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+          ARGC_FIELD_REF id *buf = values->buffer_;
           for (jint i = -128; i < 128; i++) {
-            id obj = objc_constructInstance(self, (void *)ptr);
+            id obj = [JavaLangLong alloc]; //objc_constructInstance(self, (void *)ptr);
             JavaLangLong_initWithLong_(obj, i);
-            *(buf++) = obj;
-            ptr += objSize;
+            JreGenericFieldAssign(buf++, obj);
+            //ptr += objSize;
           }
         ]-*/;
     }

@@ -189,7 +189,7 @@ public class Thread implements Runnable {
   }
 
   private static native Object newNativeThread() /*-[
-    return [[[NativeThread alloc] init] autorelease];
+    return AUTORELEASE([[NativeThread alloc] init]);
   ]-*/;
 
   /**
@@ -355,8 +355,8 @@ public class Thread implements Runnable {
   /*-[
 
   void *start_routine(void *arg) {
-    JavaLangThread *thread = (JavaLangThread *)arg;
-    pthread_setspecific(java_thread_key, thread);
+    JavaLangThread *thread = (__bridge JavaLangThread *)arg;
+    pthread_setspecific(java_thread_key, (__bridge void *)thread);
     @autoreleasepool {
       @try {
         [thread run];
@@ -380,10 +380,10 @@ public class Thread implements Runnable {
    */
   private static native void initializeThreadClass() /*-[
     initJavaThreadKeyOnce();
-    NativeThread *nt = [[[NativeThread alloc] init] autorelease];
+    NativeThread *nt = AUTORELEASE([[NativeThread alloc] init]);
     nt->t = pthread_self();
     JavaLangThread *mainThread = JavaLangThread_createMainThreadWithId_(nt);
-    pthread_setspecific(java_thread_key, [mainThread retain]);
+    pthread_setspecific(java_thread_key, (__bridge_retained void*)mainThread);
   ]-*/;
 
   private static Thread createCurrentThread(Object nativeThread) {
@@ -391,14 +391,14 @@ public class Thread implements Runnable {
   }
 
   public static native Thread currentThread() /*-[
-    JavaLangThread *thread = pthread_getspecific(java_thread_key);
+    JavaLangThread *thread = (__bridge JavaLangThread *)pthread_getspecific(java_thread_key);
     if (thread) {
       return thread;
     }
-    NativeThread *nt = [[[NativeThread alloc] init] autorelease];
+    NativeThread *nt = AUTORELEASE([[NativeThread alloc] init]);
     nt->t = pthread_self();
     thread = JavaLangThread_createCurrentThreadWithId_(nt);
-    pthread_setspecific(java_thread_key, [thread retain]);
+    pthread_setspecific(java_thread_key, (__bridge_retained void*)thread);
     return thread;
   ]-*/;
 
@@ -422,7 +422,7 @@ public class Thread implements Runnable {
     if (stack >= PTHREAD_STACK_MIN) {
       pthread_attr_setstacksize(&attr, stack);
     }
-    pthread_create(&nt->t, &attr, &start_routine, [self retain]);
+    pthread_create(&nt->t, &attr, &start_routine, (__bridge_retained void*)self);
   ]-*/;
 
   void exit() {

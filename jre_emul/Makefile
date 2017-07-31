@@ -36,7 +36,7 @@ GEN_OBJC_DIR = $(TRANSLATED_SOURCE_DIR)
 TRANSLATE_NAME = jre_emul
 TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
-TRANSLATE_ARGS = -sourcepath $(JRE_SRC) \
+TRANSLATE_ARGS = -sourcepath $(JRE_SRC) -use-gc \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --doc-comments -Xtranslate-bootclasspath
 include ../make/translate.mk
 
@@ -53,6 +53,7 @@ FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
 endif
 
 CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(NATIVE_JRE_SOURCES_CORE:.m=.o)
+ARGC_OBJS_RELATIVE = $(NATIVE_ARGC_SOURCES:.mm=.o)
 IO_OBJS_RELATIVE = $(JAVA_SOURCES_IO:.java=.o)
 NET_OBJS_RELATIVE = $(JAVA_SOURCES_NET:.java=.o)
 UTIL_OBJS_RELATIVE = $(JAVA_SOURCES_UTIL:.java=.o)
@@ -69,8 +70,8 @@ ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
-LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE))
+LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE) $(ARGC_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE) $(ARGC_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_io,$(IO_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_util,$(UTIL_OBJS_RELATIVE))

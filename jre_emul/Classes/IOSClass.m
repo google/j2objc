@@ -193,7 +193,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
   LibcoreReflectGenericSignatureParser *parser = NewParsedClassSignature(self);
   if (parser) {
     result = [LibcoreReflectTypes getType:parser->superclassType_];
-    [parser release];
+    RELEASE_(parser);
   }
   return result;
 }
@@ -216,7 +216,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 - (NSString *)getName {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
 - (NSString *)getSimpleName {
@@ -228,7 +228,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 - (NSString *)objcName {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
 - (void)appendMetadataName:(NSMutableString *)str {
@@ -357,15 +357,15 @@ static NSString *Capitalize(NSString *s) {
   // Java's getConstructor() only returns the constructor if it's public.
   // However, all constructors in Objective-C are public, so this method
   // is identical to getDeclaredConstructor().
-  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
+  @throw create_JavaLangNoSuchMethodException_init();
 }
 
 - (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)parameterTypes {
-  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
+  @throw create_JavaLangNoSuchMethodException_init();
 }
 
 - (jboolean)isAssignableFrom:(IOSClass *)cls {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
+  @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
 - (IOSClass *)asSubclass:(IOSClass *)cls {
@@ -373,7 +373,7 @@ static NSString *Capitalize(NSString *s) {
     return self;
   }
 
-  @throw AUTORELEASE([[JavaLangClassCastException alloc] initWithNSString:[self description]]);
+  @throw create_JavaLangClassCastException_initWithNSString_([self description]);
 }
 
 - (NSString *)description {
@@ -704,7 +704,7 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
   LibcoreReflectGenericSignatureParser *parser = NewParsedClassSignature(self);
   if (parser) {
     IOSObjectArray *result = [LibcoreReflectTypes getTypeArray:parser->interfaceTypes_ clone:false];
-    [parser release];
+    RELEASE_(parser);
     return result;
   }
   // Just return regular interfaces list.
@@ -720,7 +720,7 @@ bool IsJavaInterface(Protocol *protocol) {
     return true;
   }
   unsigned int count;
-  Protocol **protocolList = protocol_copyProtocolList(protocol, &count);
+  __unsafe_unretained Protocol **protocolList = protocol_copyProtocolList(protocol, &count);
   bool result = false;
   // Every translated Java interface has JavaObject as the last inherited protocol.
   // Every translated Java annotation has JavaLangAnnotationAnnotation as its only inherited
@@ -736,7 +736,7 @@ bool IsJavaInterface(Protocol *protocol) {
   return result;
 }
 
-IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count) {
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(__unsafe_unretained Protocol **list, unsigned int count) {
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
@@ -757,8 +757,8 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   if (!parser) {
     return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
   }
-  IOSObjectArray *result = [[parser->formalTypeParameters_ retain] autorelease];
-  [parser release];
+  IOSObjectArray *result = AUTORELEASE(RETAIN_(parser->formalTypeParameters_));
+  RELEASE_(parser);
   return result;
 }
 
@@ -805,7 +805,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   }
   IOSObjectArray *result =
       [IOSObjectArray arrayWithNSArray:array type:JavaLangAnnotationAnnotation_class_()];
-  [array release];
+  RELEASE_(array);
   return result;
 }
 
@@ -1016,7 +1016,7 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
   }
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:innerClasses
                                                        type:IOSClass_class_()];
-  [innerClasses release];
+  RELEASE_(innerClasses);
   return result;
 }
 
@@ -1025,7 +1025,7 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
   GetInnerClasses(self, declaredClasses, false, true);
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:declaredClasses
                                                        type:IOSClass_class_()];
-  [declaredClasses release];
+  RELEASE_(declaredClasses);
   return result;
 }
 
@@ -1092,7 +1092,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
 
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
-  return (id)rawValue->asId;
+  return rawValue->asId;
 }
 
 - (jboolean)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
@@ -1101,17 +1101,34 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
 }
 
 - (void)__readRawValue:(J2ObjcRawValue *)rawValue fromAddress:(const void *)addr {
-  rawValue->asId = *(id *)addr;
+  rawValue->asPointer = (void*)addr;
 }
 
 - (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr {
-  *(id *)addr = (id)rawValue->asId;
+  ((J2ObjcRawValue *)addr)->asId = (id)rawValue->asId;
 }
 
 - (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
   // No conversion necessary if both types are ids.
   return ![type isPrimitive];
 }
+
+
+OS_INLINE id FastObjectLookup(FastPointerLookup_t *lookup, __unsafe_unretained id key) {
+    J2ObjcRawValue v;
+    v.asId = key;
+    v.asPointer = FastPointerLookup(lookup, v.asPointer);
+    return v.asId;
+}
+
+OS_INLINE bool FastObjectLookupAddMapping(FastPointerLookup_t *lookup, __unsafe_unretained id key, __unsafe_unretained id value) {
+    J2ObjcRawValue k, v;
+    k.asId = key;
+    v.asId = value;
+    return FastPointerLookupAddMapping(lookup, k.asPointer, v.asPointer);
+}
+
+
 
 // Implementing NSCopying allows IOSClass objects to be used as keys in the
 // class cache.
@@ -1137,8 +1154,8 @@ static jboolean IsStringType(Class cls) {
   return false;
 }
 
-static void *ClassLookup(void *clsPtr) {
-  Class cls = (Class)clsPtr;
+static IOSClass* ClassLookup(Class cls) {
+  //Class cls = (Class)clsPtr;
   if (IsStringType(cls)) {
     // NSString is implemented by several subclasses.
     // Thread safety is guaranteed by the FastPointerLookup that calls this.
@@ -1152,49 +1169,53 @@ static void *ClassLookup(void *clsPtr) {
   return result;
 }
 
-static FastPointerLookup_t classLookup = FAST_POINTER_LOOKUP_INIT(&ClassLookup);
+
+#define FAST_OBJECT_LOOKUP_INIT(create_func) \
+{ PTHREAD_MUTEX_INITIALIZER, (void*(*)(void*))create_func, 0, NULL }
+
+static FastPointerLookup_t classLookup = FAST_OBJECT_LOOKUP_INIT(&ClassLookup);
 
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
   // lookup because +initialize makes calls into IOSClass_fromClass().
   IOSClass_initialize();
-  return (IOSClass *)FastPointerLookup(&classLookup, cls);
+  return (IOSClass *)FastObjectLookup(&classLookup, cls);
 }
 
 IOSClass *IOSClass_NewProxyClass(Class cls) {
   IOSClass *result = [[IOSProxyClass alloc] initWithClass:cls];
-  if (!FastPointerLookupAddMapping(&classLookup, cls, result)) {
+  if (!FastObjectLookupAddMapping(&classLookup, cls, result)) {
     // This function should only be called by java.lang.reflect.Proxy
     // immediately after creating a new proxy class.
-    @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
+    @throw create_JavaLangAssertionError_init();
   }
   return result;
 }
 
-static void *ProtocolLookup(void *protocol) {
+static IOSProtocolClass *ProtocolLookup(Protocol *protocol) {
   return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
 }
 
-static FastPointerLookup_t protocolLookup = FAST_POINTER_LOOKUP_INIT(&ProtocolLookup);
+static FastPointerLookup_t protocolLookup = FAST_OBJECT_LOOKUP_INIT(&ProtocolLookup);
 
 IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
-  return (IOSClass *)FastPointerLookup(&protocolLookup, protocol);
+  return (IOSClass *)FastObjectLookup(&protocolLookup, protocol);
 }
 
-static void *ArrayLookup(void *componentType) {
+static IOSArrayClass *ArrayLookup(IOSClass *componentType) {
   return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
 }
 
-static FastPointerLookup_t arrayLookup = FAST_POINTER_LOOKUP_INIT(&ArrayLookup);
+static FastPointerLookup_t arrayLookup = FAST_OBJECT_LOOKUP_INIT(&ArrayLookup);
 
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
-  return (IOSClass *)FastPointerLookup(&arrayLookup, componentType);
+  return (IOSClass *)FastObjectLookup(&arrayLookup, componentType);
 }
 
 IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
-  IOSClass *result = (IOSClass *)FastPointerLookup(&arrayLookup, componentType);
+  IOSClass *result = (IOSClass *)FastObjectLookup(&arrayLookup, componentType);
   while (--dimensions > 0) {
-    result = (IOSClass *)FastPointerLookup(&arrayLookup, result);
+    result = (IOSClass *)FastObjectLookup(&arrayLookup, result);
   }
   return result;
 }
@@ -1409,6 +1430,14 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   static const J2ObjcClassInfo _IOSClass = {
     "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 64, 1, -1, -1, -1, 49, -1 };
   return &_IOSClass;
+}
+
+- (void)dealloc {
+  @throw create_JavaLangAssertionError_initWithId_(
+      [NSString stringWithFormat:@"Unexpected IOSClass dealloc: %@", [self getName]]);
+#if !__has_feature(objc_arc)
+  [super dealloc];
+#endif
 }
 
 @end

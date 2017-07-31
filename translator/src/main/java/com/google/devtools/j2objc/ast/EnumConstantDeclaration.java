@@ -44,6 +44,11 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
+  public EnumConstantDeclaration(VariableElement variableElement) {
+    super(variableElement);
+    this.variableElement = variableElement;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.ENUM_CONSTANT_DECLARATION;

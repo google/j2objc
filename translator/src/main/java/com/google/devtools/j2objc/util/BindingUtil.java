@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.devtools.j2objc.Options;
 import com.google.j2objc.annotations.RetainedWith;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -528,7 +529,7 @@ public final class BindingUtil {
   }
 
   public static boolean isRetainedWithField(IVariableBinding var) {
-    return hasAnnotation(var, RetainedWith.class);
+    return !Options.useGC() && hasAnnotation(var, RetainedWith.class);
   }
 
   /**

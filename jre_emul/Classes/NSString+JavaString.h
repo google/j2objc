@@ -320,7 +320,7 @@ FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaL
     id<JavaLangCharSequence> delimiter, id<JavaLangIterable> elements);
 
 // Empty class to force category to be loaded.
-@interface JreStringCategoryDummy : NSObject
+@interface JreStringCategoryDummy : JavaLangObject
 @end
 
 // Use the category dummy to initialize static variables for the String class.

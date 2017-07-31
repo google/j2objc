@@ -21,6 +21,7 @@
 #include "J2ObjC_source.h"
 #include "java/lang/AssertionError.h"
 
+#ifndef J2OBJC_USE_GC
 // Associate the return reference so that it can be artificially weakened when
 // the child's retain count is 1.
 static char returnRefKey;
@@ -38,6 +39,8 @@ static id RetainedWithRetain(id self, SEL _cmd) {
     return ((id (*)(id, SEL))superRetain)(self, @selector(retain));
   }
 }
+
+
 
 static void RetainedWithRelease(id self, SEL _cmd) {
   @synchronized (self) {
@@ -167,3 +170,4 @@ void JreRetainedWithHandlePreviousValue(id parent, id value) {
     }
   }
 }
+#endif

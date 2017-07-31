@@ -47,19 +47,19 @@ typedef jint            jsize;
 /*
  * Reference types, in Objective-C.
  */
-typedef id               jobject;
-typedef IOSClass*        jclass;
-typedef NSString*        jstring;
-typedef IOSArray*        jarray;
-typedef IOSObjectArray*  jobjectArray;
-typedef IOSBooleanArray* jbooleanArray;
-typedef IOSByteArray*    jbyteArray;
-typedef IOSCharArray*    jcharArray;
-typedef IOSShortArray*   jshortArray;
-typedef IOSIntArray*     jintArray;
-typedef IOSLongArray*    jlongArray;
-typedef IOSFloatArray*   jfloatArray;
-typedef IOSDoubleArray*  jdoubleArray;
+typedef __unsafe_unretained id jobject;
+typedef __unsafe_unretained IOSClass*        jclass;
+typedef __unsafe_unretained NSString*        jstring;
+typedef __unsafe_unretained IOSArray*        jarray;
+typedef __unsafe_unretained IOSObjectArray*  jobjectArray;
+typedef __unsafe_unretained IOSBooleanArray* jbooleanArray;
+typedef __unsafe_unretained IOSByteArray*    jbyteArray;
+typedef __unsafe_unretained IOSCharArray*    jcharArray;
+typedef __unsafe_unretained IOSShortArray*   jshortArray;
+typedef __unsafe_unretained IOSIntArray*     jintArray;
+typedef __unsafe_unretained IOSLongArray*    jlongArray;
+typedef __unsafe_unretained IOSFloatArray*   jfloatArray;
+typedef __unsafe_unretained IOSDoubleArray*  jdoubleArray;
 typedef jobject          jthrowable;
 typedef jobject          jweak;
 
@@ -138,11 +138,16 @@ typedef union jvalue {
 #endif
 } jvalue;
 
+#if __has_feature(objc_arc)
+typedef __unsafe_unretained id jfieldID;
+typedef __unsafe_unretained id jmethodID;
+#else
 struct _jfieldID;
 typedef struct _jfieldID *jfieldID;
 
 struct _jmethodID;
 typedef struct _jmethodID *jmethodID;
+#endif
 
 /* Forward declaration for JNIEnv */
 struct _JNIEnv;

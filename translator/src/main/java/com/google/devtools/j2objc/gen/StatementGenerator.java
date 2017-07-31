@@ -402,7 +402,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     Expression expression = node.getExpression();
     TypeMirror type = expression.getTypeMirror();
     if (!type.getKind().isPrimitive() && !type.getKind().equals(TypeKind.VOID)
-        && options.useARC() && (expression instanceof MethodInvocation
+        && !options.useReferenceCounting() && (expression instanceof MethodInvocation
             || expression instanceof SuperMethodInvocation
             || expression instanceof FunctionInvocation)) {
       // Avoid clang warning that the return value is unused.
