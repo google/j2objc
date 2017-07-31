@@ -70,17 +70,9 @@ public class GenerationBatch {
   }
 
   public void processFileArgs(Iterable<String> args) {
-    for (String arg : args) {
-      processFileArg(arg);
-    }
-  }
-
-  public void processFileArg(String arg) {
-    if (arg.startsWith("@")) {
-      processManifestFile(arg.substring(1));
-    } else {
-      processSourceFile(arg);
-    }
+	for (String arg : args) {
+	  processSourceFile(arg);
+	}
   }
 
   private void processSourceFile(String filename) {
