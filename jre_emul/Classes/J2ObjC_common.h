@@ -81,13 +81,13 @@ void JreThrowClassCastException() __attribute__((noreturn));
 __attribute__((always_inline)) inline id JreStrongAssign(__strong id *pIvar, id value) {
     id old = *pIvar;
     *pIvar = value;
-    return old;
+    return value;
 }
 
 __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *pIvar, id value) {
     id old = *pIvar;
     *pIvar = value;
-    return old;
+    return value;
 }
 
 #define JreNativeFieldAssign            JreStrongAssign
@@ -96,25 +96,25 @@ __attribute__((always_inline)) inline id JreStrongAssignAndConsume(__strong id *
 __attribute__((always_inline)) inline id JreObjectFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
     id old = *pIvar;
     ARGC_assignARGCObject(pIvar, (JavaLangObject*)value);
-    return old;
+    return value;
 }
 
 __attribute__((always_inline)) inline id JreObjectFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
     id old = *pIvar;
     ARGC_assignARGCObject(pIvar, (JavaLangObject*)value);
-    return old;
+    return value;
 }
 
 __attribute__((always_inline)) inline id JreGenericFieldAssign(ARGC_FIELD_REF id *pIvar, id value) {
     id old = *pIvar;
     ARGC_assignGenericObject(pIvar, value);
-    return old;
+    return value;
 }
 
 __attribute__((always_inline)) inline id JreGenericFieldAssignAndConsume(ARGC_FIELD_REF id *pIvar, id value) {
     id old = *pIvar;
     ARGC_assignGenericObject(pIvar, value);
-    return old;
+    return value;
 }
 
 #else
@@ -161,7 +161,8 @@ CF_EXTERN_C_END
 
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     ARGC_FIELD_REF id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  return *pIvar = AUTORELEASE(value);
+  JreGenericAssign(pIvar, AUTORELEASE(value));
+    return value;
 }
 
 __attribute__((always_inline)) inline id JreRetainedLocalValue(id value) {

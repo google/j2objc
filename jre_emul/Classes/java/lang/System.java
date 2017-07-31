@@ -242,7 +242,7 @@ public class System {
         SEL currentDeviceSel = NSSelectorFromString(@"currentDevice");
         SEL systemVersionSel = NSSelectorFromString(@"systemVersion");
         id currentDevice = ((id(*)(id, SEL))[uiDeviceClass methodForSelector:currentDeviceSel])(uiDeviceClass, currentDeviceSel);
-        versionString = ((NSString *(*)(id, SEL))[currentDevice methodForSelector:systemVersionSel](currentDevice, systemVersionSel);
+        versionString = ((NSString *(*)(id, SEL))[currentDevice methodForSelector:systemVersionSel])(currentDevice, systemVersionSel);
         if (versionString) {
           onSimulator = true;
         } else {

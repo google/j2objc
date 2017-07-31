@@ -104,7 +104,7 @@ define compile_pch_rule
 $(1): $(2) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(3) -x objective-c-header $(4) -MD -c $$< -o $$@
+	@$(3) -std=c11 -x objective-c-header $(4) -MD -c $$< -o $$@
 endef
 
 # Generates analyze rule.

@@ -56,13 +56,15 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, j
 static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
     jint length, IOSClass *type, jboolean retained, const id *objects) {
   IOSObjectArray *array = IOSObjectArray_CreateArray(length, type, retained);
-#if !__has_feature(objc_arc)
+#ifdef J2OBJC_USE_GC
+    for (jint i = 0; i < length; i++) {
+        JreGenericFieldAssign(array->buffer_ + i, objects[i]);
+    }
+#else
   if (retained) {
-#endif
     for (jint i = 0; i < length; i++) {
       array->buffer_[i] = RETAIN_(objects[i]);
     }
-#if !__has_feature(objc_arc)
   }
   else {
     memcpy(array->buffer_, objects, length * sizeof(id));
@@ -213,6 +215,13 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
 }
 
 static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, jint length) {
+#ifdef J2OBJC_USE_GC
+    __unsafe_unretained *pSrc = buffer + src;
+    __unsafe_unretained *pDst = buffer + dest;
+    while (--length >= 0) {
+        JreGenericFieldAssign(pDst, pSrc);
+    }
+#else
   jint releaseStart = dest;
   jint releaseEnd = dest + length;
   jint retainStart = src;
@@ -233,6 +242,7 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
   for (jint i = retainStart; i < retainEnd; i++) {
     (void)RETAIN_(buffer[i]);
   }
+#endif
 }
 
 - (void)arraycopy:(jint)offset
@@ -292,9 +302,15 @@ static void DoRetainedMove(id __unsafe_unretained *buffer, jint src, jint dest, 
 
 - (id)copyWithZone:(NSZone *)zone {
   IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_, true);
+#ifdef J2OBJC_USE_GC
+    for (jint i = 0; i < size; i++) {
+        JreGenericFieldAssign(result->buffer_ + i, buffer_[i]);
+    }
+#else
   for (jint i = 0; i < size_; i++) {
     result->buffer_[i] = RETAIN_(buffer_[i]);
   }
+#endif
   return result;
 }
 

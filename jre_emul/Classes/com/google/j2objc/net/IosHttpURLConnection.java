@@ -726,7 +726,7 @@ didCompleteWithError:(NSError *)error {
     // -URLSession:dataTask:didReceiveResponse: may not be called if a non-server error (such as
     // lost connection) occurs.
     @synchronized(getResponseLock_) {
-      JreStrongAssign(&self->responseException_, responseException);
+      JreNativeFieldAssign(&self->responseException_, responseException);
       [self->getResponseLock_ java_notifyAll];
     }
   }
