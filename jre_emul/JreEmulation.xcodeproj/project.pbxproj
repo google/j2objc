@@ -780,13 +780,6 @@
 			remoteGlobalIDString = 06E4E35A197F1172005DDE69;
 			remoteInfo = "j2objc build tests";
 		};
-		785E93341F25EBE1005DE785 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 78C49A611F222ABA0099E72B;
-			remoteInfo = ARGC;
-		};
 		789598C01F260C0700D08F11 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0661937C155848D70004DAFE /* Project object */;
@@ -3771,14 +3764,12 @@
 		6AF8A60A1D08B42F00B4CA82 /* NativeTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeTimeZone.h; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.h; sourceTree = "<group>"; };
 		6AF8A60B1D08B42F00B4CA82 /* NativeTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeTimeZone.m; path = build_result/Classes/com/google/j2objc/util/NativeTimeZone.m; sourceTree = "<group>"; };
 		784EDCCE1F2B737400FFC3E4 /* ARGC-copy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ARGC-copy.m"; sourceTree = "<group>"; };
-		784EDCCF1F2B737400FFC3E4 /* ARGC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGC.h; sourceTree = "<group>"; };
 		784EDCD01F2B737400FFC3E4 /* ARGC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ARGC.mm; sourceTree = "<group>"; };
 		784EDCD11F2B737400FFC3E4 /* ARGCArray_ARGCObjectArray_mm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCArray_ARGCObjectArray_mm.h; sourceTree = "<group>"; };
 		784EDCD21F2B737400FFC3E4 /* ARGCArrayUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCArrayUtil.h; sourceTree = "<group>"; };
 		784EDCD31F2B737400FFC3E4 /* ARGCObjectArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARGCObjectArray.h; sourceTree = "<group>"; };
 		784EDCD41F2B737400FFC3E4 /* ARGCObjectArray.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ARGCObjectArray.mm; sourceTree = "<group>"; };
 		784EDCD51F2B7C5900FFC3E4 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
-		785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ARC+GC.xcodeproj"; path = "../../../9Folders/hd4/airnote-ios-library/ARC+GC/ARC+GC.xcodeproj"; sourceTree = "<group>"; };
 		789598C61F26ECD100D08F11 /* IOSMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSMetadata.h; sourceTree = "<group>"; };
 		789598C71F26ECD100D08F11 /* IOSProxyClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSProxyClass.h; sourceTree = "<group>"; };
 		789598C81F26ECD200D08F11 /* IOSProxyClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSProxyClass.m; sourceTree = "<group>"; };
@@ -3922,7 +3913,6 @@
 		0661937A155848D70004DAFE = {
 			isa = PBXGroup;
 			children = (
-				785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */,
 				78A56B0E1F1E384400F3BA1A /* GCTest.java */,
 				78A56B0D1F1E36AA00F3BA1A /* GCTest.h */,
 				78A56B0B1F1E369A00F3BA1A /* GCTest.m */,
@@ -7042,7 +7032,6 @@
 			isa = PBXGroup;
 			children = (
 				784EDCCE1F2B737400FFC3E4 /* ARGC-copy.m */,
-				784EDCCF1F2B737400FFC3E4 /* ARGC.h */,
 				784EDCD01F2B737400FFC3E4 /* ARGC.mm */,
 				784EDCD11F2B737400FFC3E4 /* ARGCArray_ARGCObjectArray_mm.h */,
 				784EDCD21F2B737400FFC3E4 /* ARGCArrayUtil.h */,
@@ -7050,14 +7039,6 @@
 				784EDCD41F2B737400FFC3E4 /* ARGCObjectArray.mm */,
 			);
 			path = ARGC;
-			sourceTree = "<group>";
-		};
-		785E93311F25EBE0005DE785 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				785E93351F25EBE1005DE785 /* ARGC.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -7176,12 +7157,6 @@
 			mainGroup = 0661937A155848D70004DAFE;
 			productRefGroup = 06619386155848D70004DAFE /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 785E93311F25EBE0005DE785 /* Products */;
-					ProjectRef = 785E93301F25EBE0005DE785 /* ARC+GC.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				06619384155848D70004DAFE /* jre_emul */,
@@ -7192,16 +7167,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		785E93351F25EBE1005DE785 /* ARGC.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ARGC.framework;
-			remoteRef = 785E93341F25EBE1005DE785 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0620F4E41BB60A6100626242 /* Resources */ = {

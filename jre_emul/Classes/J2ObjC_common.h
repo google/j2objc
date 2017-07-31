@@ -23,7 +23,7 @@
 
 #define J2OBJC_USE_GC 1
 #ifdef J2OBJC_USE_GC
-#import "ARGC.h"
+#import "ARGC/ARGC.h"
 #endif
 
 @class IOSClass;
